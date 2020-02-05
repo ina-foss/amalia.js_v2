@@ -1,0 +1,10 @@
+{
+  "player": {
+    "poster": "url du post",
+    "autoplay": true,
+    "duration": 5000,
+    "defaultVolume": 100,
+    "crossOrigin": "*.ina",
+    "data": null
+  }
+}
