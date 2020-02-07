@@ -2,19 +2,25 @@ import {LoggerInterface} from './logger/logger-interface';
 import {ConfigurationManager} from './config/configuration-manager';
 import {DefaultConfigConverter} from './config/converter/default-config-converter';
 import {DefaultConfigLoader} from './config/loader/default-config-loader';
-import {ConfigLoader} from './config/loader/config-loader';
 import {PlayerState} from './constant/player-state';
+import {MetadataManager} from './metadata/metadata-manager';
+import {Loader} from './loader/loader';
+import {Metadata} from '@ina/amalia-model';
+import {ConfigData} from './config/model/config-data';
 
 /**
  * In charge to create player
  */
 export class MediaPlayerElement {
   private configurationManager: ConfigurationManager;
+  private metadataManager: MetadataManager;
+  private readonly defaultLoader: Loader<Array<Metadata>>;
   private readonly logger: LoggerInterface;
   private state: PlayerState;
 
-  constructor(logger: LoggerInterface) {
+  constructor(defaultLoader: Loader<Array<Metadata>>, logger: LoggerInterface) {
     this.logger = logger;
+    this.defaultLoader = defaultLoader;
     this.state = PlayerState.CREATED;
   }
 
@@ -30,11 +36,16 @@ export class MediaPlayerElement {
    * @param config param
    * @param configLoader configuration loader when empty we use default configuration loader
    */
-  public init(config: object, configLoader?: ConfigLoader): Promise<PlayerState> {
+  public init(config: object, configLoader?: Loader<ConfigData>): Promise<PlayerState> {
+    const loader = configLoader ? configLoader : new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
+    // Init player
     return new Promise<PlayerState>((resolve, reject) => {
       try {
-        const loader = configLoader ? configLoader : new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
+        // Init configuration manager
         this.configurationManager = new ConfigurationManager(loader, this.logger);
+        // Init metadata manager
+        this.metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
+        // load configuration
         this.loadConfiguration(config).then(() => {
             this.state = PlayerState.INITIALIZED;
             this.logger.debug('Config loaded ...');

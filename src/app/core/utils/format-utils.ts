@@ -6,11 +6,11 @@ export class FormatUtils {
    * Method in charge to format time
    * @method formatTime
    * @param seconds seconds
-   * @param defaultFps frames per second
    * @param format Format specifier h/m/s/f/ms/mms
+   * @param defaultFps frames per second
    * @return return format time
    */
-  public static formatTime(seconds: number, defaultFps: number = 25, format: string = null) {
+  public static formatTime(seconds: number, format: string = null, defaultFps: number = 25) {
     let minute: number = Math.floor(seconds / 60);
     let formatTime: string;
     const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);
@@ -30,7 +30,7 @@ export class FormatUtils {
         formatTime = hoursStr + ':' + minuteStr;
         break;
       case 's' :
-        formatTime = hours + ':' + minuteStr + ':' + seconds;
+        formatTime = hoursStr + ':' + minuteStr + ':' + secondsStr;
         break;
       case 'seconds' :
         formatTime = hours * 3600 + minute * 60 + milliseconds.toFixed(4);

@@ -15,12 +15,14 @@
       true,
       "attribute",
       "ina",
+      "amalia",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
       "ina",
+      "amalia",
       "kebab-case"
     ],
     "import-blacklist": [

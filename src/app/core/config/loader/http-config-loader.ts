@@ -1,19 +1,19 @@
-import {ConfigLoader} from './config-loader';
-import {ConfigConverter} from '../converter/config-converter';
 import {ConfigData} from '../model/config-data';
 import {HttpClient} from '@angular/common/http';
 import {LoggerInterface} from '../../logger/logger-interface';
 import {AmaliaException} from '../../exception/amalia-exception';
+import {Loader} from '../../loader/loader';
+import {Converter} from '../../converter/converter';
 
 /**
  * In charge to load amalia config from specified url
  */
-export class HttpConfigLoader implements ConfigLoader {
-  private converter: ConfigConverter;
+export class HttpConfigLoader implements Loader<ConfigData> {
+  private converter: Converter<ConfigData>;
   private readonly httpClient: HttpClient;
   private readonly logger: LoggerInterface;
 
-  constructor(converter: ConfigConverter, httpClient: HttpClient, logger: LoggerInterface) {
+  constructor(converter: Converter<ConfigData>, httpClient: HttpClient, logger: LoggerInterface) {
     this.converter = converter;
     this.httpClient = httpClient;
     this.logger = logger;

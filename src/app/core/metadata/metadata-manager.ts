@@ -1,10 +1,10 @@
-import {MetadataLoader} from './loader/metadata-loader';
 import {Metadata} from '@ina/amalia-model';
 import {AmaliaException} from '../exception/amalia-exception';
 import {ConfigurationManager} from '../config/configuration-manager';
 import {LoggerInterface} from '../logger/logger-interface';
 import {isArray} from 'util';
 import {ConfigDataSource} from '../config/model/config-data-source';
+import {Loader} from '../loader/loader';
 
 /**
  * In charge to handle metadata
@@ -12,10 +12,10 @@ import {ConfigDataSource} from '../config/model/config-data-source';
 export class MetadataManager {
   private logger: LoggerInterface;
   private configurationManager: ConfigurationManager;
-  private readonly defaultLoader: MetadataLoader;
+  private readonly defaultLoader: Loader<Array<Metadata>>;
   private listOfMetadata: Map<string, Metadata> = new Map<string, Metadata>();
 
-  constructor(configurationManager: ConfigurationManager, defaultLoader: MetadataLoader, logger: LoggerInterface) {
+  constructor(configurationManager: ConfigurationManager, defaultLoader: Loader<Array<Metadata>>, logger: LoggerInterface) {
     this.configurationManager = configurationManager;
     this.defaultLoader = defaultLoader;
     this.logger = logger;
@@ -41,7 +41,7 @@ export class MetadataManager {
    */
   private loadDataSource(loadData: ConfigDataSource) {
     if (loadData && loadData.url) {
-      const loader: MetadataLoader = loadData.loader ? loadData.loader : this.defaultLoader;
+      const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
       loader
         .load(loadData)
         .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata))

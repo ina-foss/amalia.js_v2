@@ -1,0 +1,12 @@
+<div class="player">
+  <video *ngIf="state == PlayerState.INITIALIZED"></video>
+  <div class="loader" *ngIf="inLoading"></div>
+  <div class="error" *ngIf="inError">
+    <p>Une erreur technique est survenue.<br>Votre média n'a pas pu être chargé dans le player</p>
+  </div>
+  <div class="context-menu">
+    <ul>
+      <li>{{version}}</li>
+    </ul>
+  </div>
+</div>

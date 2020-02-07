@@ -6,6 +6,8 @@ import {DefaultLogger} from './logger/default-logger';
 import {DefaultConfigConverter} from './config/converter/default-config-converter';
 import {DefaultConfigLoader} from './config/loader/default-config-loader';
 import {PlayerState} from './constant/player-state';
+import {DefaultMetadataConverter} from './metadata/converter/default-metadata-converter';
+import {DefaultMetadataLoader} from './metadata/loader/default-metadata-loader';
 
 describe('Test Media player element', () => {
   let injector: TestBed;
@@ -31,7 +33,9 @@ describe('Test Media player element', () => {
   it('Init Media player element ', () => {
     const configData = require('tests/assets/config-mpe.json');
     const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
-    const mpe = new MediaPlayerElement(logger);
+    const metadataConverter = new DefaultMetadataConverter();
+    const metadataLoader = new DefaultMetadataLoader(httpClient, metadataConverter, logger);
+    const mpe = new MediaPlayerElement(metadataLoader, logger);
     expect(mpe.getState()).toEqual(PlayerState.CREATED);
     mpe.init(configData, configLoader)
       .then((state) => {

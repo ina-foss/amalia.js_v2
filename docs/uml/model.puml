@@ -51,7 +51,7 @@ package metadata <<Frame>> {
 
 package loader <<Frame>> {
   LoaderInterface <|-[hidden]- BaseLoader
-  BaseLoader <|-- HttpLoader
+  BaseLoader <|-- DefaultMetadataLoader
   BaseLoader <|-- WSLoader
 }
 

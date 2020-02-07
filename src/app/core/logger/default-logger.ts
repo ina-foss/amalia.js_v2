@@ -16,33 +16,41 @@ export class DefaultLogger implements LoggerInterface {
   private static log(level: LoggerLevel, log: LoggerData): void {
     if (console) {
       const msg = `[${LoggerLevel.valToString(level)}] - ${log.msg}`;
+      let logConsole = null;
       switch (level) {
         case LoggerLevel.Trace:
           // tslint:disable-next-line:no-console
-          console.log(msg, log.data);
+          logConsole = console.log;
           break;
         case LoggerLevel.Debug:
           // tslint:disable-next-line:no-console
-          console.debug(msg, log.data);
+          logConsole = console.debug;
           break;
         case LoggerLevel.Info:
           // tslint:disable-next-line:no-console
-          console.info(msg, log.data);
+          logConsole = console.info;
           break;
         case LoggerLevel.Warn:
           // tslint:disable-next-line:no-console
-          console.warn(msg, log.data);
+          logConsole = console.warn;
           break;
         case LoggerLevel.Error:
           // tslint:disable-next-line:no-console
-          console.error(msg, log.data);
+          logConsole = console.error;
           break;
         case LoggerLevel.Fatal:
           // tslint:disable-next-line:no-console
-          console.error(msg, log.data);
+          logConsole = console.error;
           break;
         default:
           throw new AmaliaException('Unsupported log level');
+      }
+      if (logConsole && log.data) {
+        if (log.data) {
+          logConsole(log.msg, log.data);
+        } else {
+          logConsole(log.msg);
+        }
       }
     }
   }

@@ -1,9 +1,10 @@
 import {ConfigData} from '../model/config-data';
+import {Converter} from '../../converter/converter';
 
 /**
  * Default amalia config converter
  */
-export class DefaultConfigConverter {
+export class DefaultConfigConverter implements Converter<ConfigData> {
 
   /**
    * in charge to convert config

@@ -3,9 +3,9 @@
  */
 import {ConfigData} from './model/config-data';
 import {AmaliaException} from '../exception/amalia-exception';
-import {ConfigLoader} from './loader/config-loader';
 import {PluginConfigData} from './model/plugin-config-data';
 import {LoggerInterface} from '../logger/logger-interface';
+import {Loader} from '../loader/loader';
 
 
 /**
@@ -13,10 +13,10 @@ import {LoggerInterface} from '../logger/logger-interface';
  */
 export class ConfigurationManager {
   private configData: ConfigData;
-  private loader: ConfigLoader;
+  private loader: Loader<ConfigData>;
   private logger: LoggerInterface;
 
-  constructor(loader: ConfigLoader, logger: LoggerInterface) {
+  constructor(loader: Loader<ConfigData>, logger: LoggerInterface) {
     this.loader = loader;
     this.logger = logger;
   }

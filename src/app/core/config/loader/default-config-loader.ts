@@ -1,16 +1,16 @@
-import {ConfigLoader} from './config-loader';
-import {ConfigConverter} from '../converter/config-converter';
 import {ConfigData} from '../model/config-data';
 import {LoggerInterface} from '../../logger/logger-interface';
+import {Loader} from '../../loader/loader';
+import {Converter} from '../../converter/converter';
 
 /**
  * Default config loader in charge use params to ConfigData
  */
-export class DefaultConfigLoader implements ConfigLoader {
-  private converter: ConfigConverter;
+export class DefaultConfigLoader implements Loader<ConfigData> {
+  private converter: Converter<ConfigData>;
   private logger: LoggerInterface;
 
-  constructor(converter: ConfigConverter, logger: LoggerInterface) {
+  constructor(converter: Converter<ConfigData>, logger: LoggerInterface) {
     this.converter = converter;
     this.logger = logger;
   }

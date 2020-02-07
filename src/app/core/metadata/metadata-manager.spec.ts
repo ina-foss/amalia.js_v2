@@ -3,8 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {DefaultLogger} from '../logger/default-logger';
 import {DefaultMetadataConverter} from './converter/default-metadata-converter';
-import {MetadataLoader} from './loader/metadata-loader';
-import {HttpLoader} from './loader/http-loader';
+import {DefaultMetadataLoader} from './loader/default-metadata-loader';
 import {Metadata} from '@ina/amalia-model';
 import {MetadataManager} from './metadata-manager';
 import {DefaultConfigConverter} from '../config/converter/default-config-converter';
@@ -43,7 +42,7 @@ describe('Test Metadata manager', () => {
     configData = {player, pluginsConfiguration, dataSources};
     const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     const configurationManager = new ConfigurationManager(configLoader, logger);
-    const metadataLoader: MetadataLoader = new HttpLoader(httpClient, new DefaultMetadataConverter(), logger);
+    const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
     src.setSrc(mediaSrc);
     metadataManager = new MetadataManager(configurationManager, metadataLoader, logger);
 
@@ -57,7 +56,7 @@ describe('Test Metadata manager', () => {
 
   it('Test Metadata: loader', fakeAsync(() => {
     const converter = new DefaultMetadataConverter();
-    const loader: MetadataLoader = new HttpLoader(httpClient, converter, logger);
+    const loader = new DefaultMetadataLoader(httpClient, converter, logger);
     const metadataPromise = loader.load(testMetadata);
     // .load('./tests/assets/metadata/sample-transcription.json');
     metadataPromise.then((data) => {
@@ -78,7 +77,7 @@ describe('Test Metadata manager', () => {
     });
     try {
       // tslint:disable-next-line:no-unused-expression
-      new HttpLoader(null, converter, logger);
+      new DefaultMetadataLoader(null, converter, logger);
     } catch (e) {
       expect().nothing();
     }

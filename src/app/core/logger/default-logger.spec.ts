@@ -14,42 +14,6 @@ describe('Test Logger', () => {
     injector = getTestBed();
   }));
 
-  it('Default loader', () => {
-    console.log = jasmine.createSpy('log');
-    // tslint:disable-next-line:no-console
-    console.debug = jasmine.createSpy('log');
-    // tslint:disable-next-line:no-console
-    console.info = jasmine.createSpy('log');
-    console.warn = jasmine.createSpy('log');
-    console.error = jasmine.createSpy('log');
-    const data = {log: 'test'};
-
-    let msg = `[${LoggerLevel.valToString(LoggerLevel.Trace)}] - Test`;
-    logger.trace('Test', data);
-    expect(console.log).toHaveBeenCalledWith(msg, data);
-
-    msg = `[${LoggerLevel.valToString(LoggerLevel.Debug)}] - Test`;
-    logger.debug('Test', data);
-    // tslint:disable-next-line:no-console
-    expect(console.debug).toHaveBeenCalledWith(msg, data);
-
-    msg = `[${LoggerLevel.valToString(LoggerLevel.Info)}] - Test`;
-    logger.info('Test', data);
-    // tslint:disable-next-line:no-console
-    expect(console.info).toHaveBeenCalledWith(msg, data);
-
-    msg = `[${LoggerLevel.valToString(LoggerLevel.Warn)}] - Test`;
-    logger.warn('Test', data);
-    expect(console.warn).toHaveBeenCalledWith(msg, data);
-
-    msg = `[${LoggerLevel.valToString(LoggerLevel.Error)}] - Test`;
-    logger.error('Test', data);
-    expect(console.error).toHaveBeenCalledWith(msg, data);
-
-    msg = `[${LoggerLevel.valToString(LoggerLevel.Fatal)}] - Test`;
-    logger.fatal('Test', data);
-    expect(console.error).toHaveBeenCalledWith(msg, data);
-  });
 
   it('Test log level', () => {
     expect(LoggerLevel.Trace).toEqual(0);

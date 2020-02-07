@@ -1,21 +1,21 @@
 import {HttpClient} from '@angular/common/http';
-import {MetadataLoader} from './metadata-loader';
 import {Metadata} from '@ina/amalia-model';
 import {AmaliaException} from '../../exception/amalia-exception';
 import {LoggerInterface} from '../../logger/logger-interface';
-import {MetadataConverter} from '../converter/metadata-converter';
 import {isArray} from 'util';
 import {PlayerErrorCode} from '../../constant/error-type';
+import {Loader} from '../../loader/loader';
+import {Converter} from '../../converter/converter';
 
 /**
  * In charge to load http resource
  */
-export class HttpLoader implements MetadataLoader {
+export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
   private readonly httpClient: HttpClient;
   private readonly logger: LoggerInterface;
-  private readonly converter: MetadataConverter;
+  private readonly converter: Converter<Metadata>;
 
-  constructor(httpClient: HttpClient, converter: MetadataConverter, logger: LoggerInterface) {
+  constructor(httpClient: HttpClient, converter: Converter<Metadata>, logger: LoggerInterface) {
     this.httpClient = httpClient;
     this.converter = converter;
     this.logger = logger;
