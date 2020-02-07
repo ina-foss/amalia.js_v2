@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_app_core_metadata_loader_http_loader_.html">&quot;app/core/metadata/loader/http-loader&quot;</a>
+					<a href="../modules/_app_core_metadata_loader_default_metadata_loader_.html">&quot;app/core/metadata/loader/default-metadata-loader&quot;</a>
 				</li>
 				<li>
-					<a href="_app_core_metadata_loader_http_loader_.httploader.html">DefaultMetadataLoader</a>
+					<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html">DefaultMetadataLoader</a>
 				</li>
 			</ul>
 			<h1 style="position: relative;"><img src="./assets/images/logo-ina.svg" style="position: relative;top: 15px;width: 50px;" />Class DefaultMetadataLoader</h1>
@@ -87,7 +87,7 @@
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_app_core_metadata_loader_metadata_loader_.metadataloader.html" class="tsd-signature-type">MetadataLoader</a></li>
+					<li><a href="../interfaces/_app_core_loader_loader_.loader.html" class="tsd-signature-type">Loader</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Metadata</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -97,22 +97,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_app_core_metadata_loader_http_loader_.httploader.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_http_loader_.httploader.html#converter" class="tsd-kind-icon">converter</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_http_loader_.httploader.html#httpclient" class="tsd-kind-icon">http<wbr>Client</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_http_loader_.httploader.html#logger" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#converter" class="tsd-kind-icon">converter</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#httpclient" class="tsd-kind-icon">http<wbr>Client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#logger" class="tsd-kind-icon">logger</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_app_core_metadata_loader_http_loader_.httploader.html#load" class="tsd-kind-icon">load</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_http_loader_.httploader.html#mapresponse" class="tsd-kind-icon">map<wbr>Response</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#load" class="tsd-kind-icon">load</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#mapresponse" class="tsd-kind-icon">map<wbr>Response</a></li>
 							</ul>
 						</section>
 					</div>
@@ -124,7 +124,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Http<wbr>Loader<span class="tsd-signature-symbol">(</span>httpClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HttpClient</span>, converter<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_metadata_converter_metadata_converter_.metadataconverter.html" class="tsd-signature-type">MetadataConverter</a>, logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_app_core_metadata_loader_http_loader_.httploader.html" class="tsd-signature-type">DefaultMetadataLoader</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Default<wbr>Metadata<wbr>Loader<span class="tsd-signature-symbol">(</span>httpClient<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">HttpClient</span>, converter<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_converter_converter_.converter.html" class="tsd-signature-type">Converter</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Metadata</span><span class="tsd-signature-symbol">&gt;</span>, logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html" class="tsd-signature-type">DefaultMetadataLoader</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -139,13 +139,13 @@
 									<h5>httpClient: <span class="tsd-signature-type">HttpClient</span></h5>
 								</li>
 								<li>
-									<h5>converter: <a href="../interfaces/_app_core_metadata_converter_metadata_converter_.metadataconverter.html" class="tsd-signature-type">MetadataConverter</a></h5>
+									<h5>converter: <a href="../interfaces/_app_core_converter_converter_.converter.html" class="tsd-signature-type">Converter</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Metadata</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
 									<h5>logger: <a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_app_core_metadata_loader_http_loader_.httploader.html" class="tsd-signature-type">DefaultMetadataLoader</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html" class="tsd-signature-type">DefaultMetadataLoader</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -155,7 +155,7 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="converter" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> converter</h3>
-					<div class="tsd-signature tsd-kind-icon">converter<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_app_core_metadata_converter_metadata_converter_.metadataconverter.html" class="tsd-signature-type">MetadataConverter</a></div>
+					<div class="tsd-signature tsd-kind-icon">converter<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_app_core_converter_converter_.converter.html" class="tsd-signature-type">Converter</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Metadata</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
 							<li>Defined in src/app/core/metadata/loader/default-metadata-loader.ts:16</li>
@@ -194,7 +194,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_app_core_metadata_loader_metadata_loader_.metadataloader.html">MetadataLoader</a>.<a href="../interfaces/_app_core_metadata_loader_metadata_loader_.metadataloader.html#load">load</a></p>
+								<p>Implementation of <a href="../interfaces/_app_core_loader_loader_.loader.html">Loader</a>.<a href="../interfaces/_app_core_loader_loader_.loader.html#load">load</a></p>
 								<ul>
 									<li>Defined in src/app/core/metadata/loader/default-metadata-loader.ts:31</li>
 								</ul>
@@ -257,7 +257,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_app_core_metadata_loader_http_loader_.html">&quot;app/core/metadata/loader/http-<wbr>loader&quot;</a>
+						<a href="../modules/_app_core_metadata_loader_default_metadata_loader_.html">&quot;app/core/metadata/loader/default-<wbr>metadata-<wbr>loader&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -266,25 +266,25 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_app_core_metadata_loader_http_loader_.httploader.html" class="tsd-kind-icon">Http<wbr>Loader</a>
+						<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html" class="tsd-kind-icon">Default<wbr>Metadata<wbr>Loader</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_app_core_metadata_loader_http_loader_.httploader.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_app_core_metadata_loader_http_loader_.httploader.html#converter" class="tsd-kind-icon">converter</a>
+								<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#converter" class="tsd-kind-icon">converter</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_app_core_metadata_loader_http_loader_.httploader.html#httpclient" class="tsd-kind-icon">http<wbr>Client</a>
+								<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#httpclient" class="tsd-kind-icon">http<wbr>Client</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_app_core_metadata_loader_http_loader_.httploader.html#logger" class="tsd-kind-icon">logger</a>
+								<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#logger" class="tsd-kind-icon">logger</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_app_core_metadata_loader_http_loader_.httploader.html#load" class="tsd-kind-icon">load</a>
+								<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#load" class="tsd-kind-icon">load</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_app_core_metadata_loader_http_loader_.httploader.html#mapresponse" class="tsd-kind-icon">map<wbr>Response</a>
+								<a href="_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.html#mapresponse" class="tsd-kind-icon">map<wbr>Response</a>
 							</li>
 						</ul>
 					</li>

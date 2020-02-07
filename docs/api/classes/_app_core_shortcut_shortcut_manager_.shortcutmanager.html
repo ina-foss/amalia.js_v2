@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DefaultConfigLoader | Amalia</title>
+	<title>ShortcutManager | Amalia</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_app_core_config_loader_default_config_loader_.html">&quot;app/core/config/loader/default-config-loader&quot;</a>
+					<a href="../modules/_app_core_shortcut_shortcut_manager_.html">&quot;app/core/shortcut/shortcut-manager&quot;</a>
 				</li>
 				<li>
-					<a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html">DefaultConfigLoader</a>
+					<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html">ShortcutManager</a>
 				</li>
 			</ul>
-			<h1 style="position: relative;"><img src="./assets/images/logo-ina.svg" style="position: relative;top: 15px;width: 50px;" />Class DefaultConfigLoader</h1>
+			<h1 style="position: relative;"><img src="./assets/images/logo-ina.svg" style="position: relative;top: 15px;width: 50px;" />Class ShortcutManager</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Default config loader in charge use params to ConfigData</p>
+						<p>In charge to handle amalia shortcut</p>
 					</div>
 				</div>
 			</section>
@@ -80,14 +80,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">DefaultConfigLoader</span>
+						<span class="target">ShortcutManager</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implements</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_app_core_loader_loader_.loader.html" class="tsd-signature-type">Loader</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -97,20 +91,23 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#converter" class="tsd-kind-icon">converter</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#logger" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#configurationmanager" class="tsd-kind-icon">configuration<wbr>Manager</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#listofshortcut" class="tsd-kind-icon">list<wbr>OfShortcut</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#logger" class="tsd-kind-icon">logger</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#load" class="tsd-kind-icon">load</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#addshortcut" class="tsd-kind-icon">add<wbr>Shortcut</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#getlistofshortcutkeys" class="tsd-kind-icon">get<wbr>List<wbr>OfShortcut<wbr>Keys</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#removeshortcut" class="tsd-kind-icon">remove<wbr>Shortcut</a></li>
 							</ul>
 						</section>
 					</div>
@@ -122,25 +119,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Default<wbr>Config<wbr>Loader<span class="tsd-signature-symbol">(</span>converter<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_converter_converter_.converter.html" class="tsd-signature-type">Converter</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span>, logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html" class="tsd-signature-type">DefaultConfigLoader</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Shortcut<wbr>Manager<span class="tsd-signature-symbol">(</span>configurationManager<span class="tsd-signature-symbol">: </span><a href="_app_core_config_configuration_manager_.configurationmanager.html" class="tsd-signature-type">ConfigurationManager</a>, logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html" class="tsd-signature-type">ShortcutManager</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/app/core/config/loader/default-config-loader.ts:11</li>
+									<li>Defined in src/app/core/shortcut/shortcut-manager.ts:11</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>converter: <a href="../interfaces/_app_core_converter_converter_.converter.html" class="tsd-signature-type">Converter</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>configurationManager: <a href="_app_core_config_configuration_manager_.configurationmanager.html" class="tsd-signature-type">ConfigurationManager</a></h5>
 								</li>
 								<li>
 									<h5>logger: <a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html" class="tsd-signature-type">DefaultConfigLoader</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html" class="tsd-signature-type">ShortcutManager</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -148,12 +145,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="converter" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> converter</h3>
-					<div class="tsd-signature tsd-kind-icon">converter<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_app_core_converter_converter_.converter.html" class="tsd-signature-type">Converter</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="configurationmanager" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> configuration<wbr>Manager</h3>
+					<div class="tsd-signature tsd-kind-icon">configuration<wbr>Manager<span class="tsd-signature-symbol">:</span> <a href="_app_core_config_configuration_manager_.configurationmanager.html" class="tsd-signature-type">ConfigurationManager</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/config/loader/default-config-loader.ts:10</li>
+							<li>Defined in src/app/core/shortcut/shortcut-manager.ts:9</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="listofshortcut" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> list<wbr>OfShortcut</h3>
+					<div class="tsd-signature tsd-kind-icon">list<wbr>OfShortcut<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map&lt;string, Array&lt;Promise&lt;any&gt;&gt;&gt;()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in src/app/core/shortcut/shortcut-manager.ts:11</li>
 						</ul>
 					</aside>
 				</section>
@@ -163,7 +170,7 @@
 					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/config/loader/default-config-loader.ts:11</li>
+							<li>Defined in src/app/core/shortcut/shortcut-manager.ts:10</li>
 						</ul>
 					</aside>
 				</section>
@@ -171,34 +178,98 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="load" class="tsd-anchor"></a>
-					<h3>load</h3>
+					<a name="addshortcut" class="tsd-anchor"></a>
+					<h3>add<wbr>Shortcut</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">load<span class="tsd-signature-symbol">(</span>params<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Shortcut<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, promise<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/_app_core_loader_loader_.loader.html">Loader</a>.<a href="../interfaces/_app_core_loader_loader_.loader.html#load">load</a></p>
 								<ul>
-									<li>Defined in src/app/core/config/loader/default-config-loader.ts:22</li>
+									<li>Defined in src/app/core/shortcut/shortcut-manager.ts:31</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>In charge to load config</p>
+									<p>In charge to add shortcut</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>params: <span class="tsd-signature-type">any</span></h5>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>ConfigData</p>
+										<p>shortcut key</p>
+									</div>
+								</li>
+								<li>
+									<h5>promise: <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>called when shortcut called</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getlistofshortcutkeys" class="tsd-anchor"></a>
+					<h3>get<wbr>List<wbr>OfShortcut<wbr>Keys</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>List<wbr>OfShortcut<wbr>Keys<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in src/app/core/shortcut/shortcut-manager.ts:21</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Return all shortcut with promise</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeshortcut" class="tsd-anchor"></a>
+					<h3>remove<wbr>Shortcut</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Shortcut<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, promise<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in src/app/core/shortcut/shortcut-manager.ts:44</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>In charge to add shortcut</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>shortcut key</p>
+									</div>
+								</li>
+								<li>
+									<h5>promise: <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>called when shortcut called</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -211,7 +282,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_app_core_config_loader_default_config_loader_.html">&quot;app/core/config/loader/default-<wbr>config-<wbr>loader&quot;</a>
+						<a href="../modules/_app_core_shortcut_shortcut_manager_.html">&quot;app/core/shortcut/shortcut-<wbr>manager&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -220,19 +291,28 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html" class="tsd-kind-icon">Default<wbr>Config<wbr>Loader</a>
+						<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html" class="tsd-kind-icon">Shortcut<wbr>Manager</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#converter" class="tsd-kind-icon">converter</a>
+								<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#configurationmanager" class="tsd-kind-icon">configuration<wbr>Manager</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#logger" class="tsd-kind-icon">logger</a>
+								<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#listofshortcut" class="tsd-kind-icon">list<wbr>OfShortcut</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#logger" class="tsd-kind-icon">logger</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_app_core_config_loader_default_config_loader_.defaultconfigloader.html#load" class="tsd-kind-icon">load</a>
+								<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#addshortcut" class="tsd-kind-icon">add<wbr>Shortcut</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#getlistofshortcutkeys" class="tsd-kind-icon">get<wbr>List<wbr>OfShortcut<wbr>Keys</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_app_core_shortcut_shortcut_manager_.shortcutmanager.html#removeshortcut" class="tsd-kind-icon">remove<wbr>Shortcut</a>
 							</li>
 						</ul>
 					</li>

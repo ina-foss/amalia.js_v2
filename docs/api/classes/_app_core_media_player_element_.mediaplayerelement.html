@@ -98,7 +98,9 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_media_player_element_.mediaplayerelement.html#configurationmanager" class="tsd-kind-icon">configuration<wbr>Manager</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_media_player_element_.mediaplayerelement.html#defaultloader" class="tsd-kind-icon">default<wbr>Loader</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_media_player_element_.mediaplayerelement.html#logger" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_media_player_element_.mediaplayerelement.html#metadatamanager" class="tsd-kind-icon">metadata<wbr>Manager</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_app_core_media_player_element_.mediaplayerelement.html#state" class="tsd-kind-icon">state</a></li>
 							</ul>
 						</section>
@@ -120,17 +122,20 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Media<wbr>Player<wbr>Element<span class="tsd-signature-symbol">(</span>logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_app_core_media_player_element_.mediaplayerelement.html" class="tsd-signature-type">MediaPlayerElement</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Media<wbr>Player<wbr>Element<span class="tsd-signature-symbol">(</span>defaultLoader<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_loader_loader_.loader.html" class="tsd-signature-type">Loader</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Metadata</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>, logger<span class="tsd-signature-symbol">: </span><a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_app_core_media_player_element_.mediaplayerelement.html" class="tsd-signature-type">MediaPlayerElement</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/app/core/media-player-element.ts:14</li>
+									<li>Defined in src/app/core/media-player-element.ts:19</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
+								<li>
+									<h5>defaultLoader: <a href="../interfaces/_app_core_loader_loader_.loader.html" class="tsd-signature-type">Loader</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Metadata</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
 								<li>
 									<h5>logger: <a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a></h5>
 								</li>
@@ -148,7 +153,17 @@
 					<div class="tsd-signature tsd-kind-icon">configuration<wbr>Manager<span class="tsd-signature-symbol">:</span> <a href="_app_core_config_configuration_manager_.configurationmanager.html" class="tsd-signature-type">ConfigurationManager</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/media-player-element.ts:12</li>
+							<li>Defined in src/app/core/media-player-element.ts:15</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="defaultloader" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> default<wbr>Loader</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Loader<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_app_core_loader_loader_.loader.html" class="tsd-signature-type">Loader</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Metadata</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in src/app/core/media-player-element.ts:17</li>
 						</ul>
 					</aside>
 				</section>
@@ -158,7 +173,17 @@
 					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_app_core_logger_logger_interface_.loggerinterface.html" class="tsd-signature-type">LoggerInterface</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/media-player-element.ts:13</li>
+							<li>Defined in src/app/core/media-player-element.ts:18</li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="metadatamanager" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> metadata<wbr>Manager</h3>
+					<div class="tsd-signature tsd-kind-icon">metadata<wbr>Manager<span class="tsd-signature-symbol">:</span> <a href="_app_core_metadata_metadata_manager_.metadatamanager.html" class="tsd-signature-type">MetadataManager</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in src/app/core/media-player-element.ts:16</li>
 						</ul>
 					</aside>
 				</section>
@@ -168,7 +193,7 @@
 					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <a href="../enums/_app_core_constant_player_state_.playerstate.html" class="tsd-signature-type">PlayerState</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/media-player-element.ts:14</li>
+							<li>Defined in src/app/core/media-player-element.ts:19</li>
 						</ul>
 					</aside>
 				</section>
@@ -185,7 +210,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/app/core/media-player-element.ts:24</li>
+									<li>Defined in src/app/core/media-player-element.ts:30</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -201,13 +226,13 @@
 					<a name="init" class="tsd-anchor"></a>
 					<h3>init</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, configLoader<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_app_core_config_loader_config_loader_.configloader.html" class="tsd-signature-type">ConfigLoader</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_app_core_constant_player_state_.playerstate.html" class="tsd-signature-type">PlayerState</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span>, configLoader<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_app_core_loader_loader_.loader.html" class="tsd-signature-type">Loader</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_app_core_constant_player_state_.playerstate.html" class="tsd-signature-type">PlayerState</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/app/core/media-player-element.ts:33</li>
+									<li>Defined in src/app/core/media-player-element.ts:39</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -224,7 +249,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> configLoader: <a href="../interfaces/_app_core_config_loader_config_loader_.configloader.html" class="tsd-signature-type">ConfigLoader</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> configLoader: <a href="../interfaces/_app_core_loader_loader_.loader.html" class="tsd-signature-type">Loader</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_app_core_config_model_config_data_.configdata.html" class="tsd-signature-type">ConfigData</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>configuration loader when empty we use default configuration loader</p>
 									</div>
@@ -244,7 +269,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/app/core/media-player-element.ts:61</li>
+									<li>Defined in src/app/core/media-player-element.ts:72</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -275,7 +300,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/app/core/media-player-element.ts:70</li>
+									<li>Defined in src/app/core/media-player-element.ts:81</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -314,7 +339,13 @@
 								<a href="_app_core_media_player_element_.mediaplayerelement.html#configurationmanager" class="tsd-kind-icon">configuration<wbr>Manager</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_app_core_media_player_element_.mediaplayerelement.html#defaultloader" class="tsd-kind-icon">default<wbr>Loader</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_app_core_media_player_element_.mediaplayerelement.html#logger" class="tsd-kind-icon">logger</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_app_core_media_player_element_.mediaplayerelement.html#metadatamanager" class="tsd-kind-icon">metadata<wbr>Manager</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_app_core_media_player_element_.mediaplayerelement.html#state" class="tsd-kind-icon">state</a>
