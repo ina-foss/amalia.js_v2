@@ -13,7 +13,7 @@ Amalia is composed of three main parts :
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4000/`. The app will automatically reload if you change any of the source files.
+Run `npm start` for a dev server. Navigate to `http://localhost:4000/`. The app will automatically reload if you change any of the source files.
 
 ## Build
 
@@ -26,6 +26,18 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+
+## Debugging with webstrome / phpstrome
+- In first you need to install chrome extension and right click the chrome extension and clic to inspect.
+- Crate launcher angular cli and launch in debug mode.
+
+### Install Chrome extension
+ 
+[Doc](https://chrome.google.com/webstore/detail/jetbrains-ide-support/hmhgeddbohgjknpmjagkdomcpobmllji)
+
+### Create launcher
+[Doc](https://blog.jetbrains.com/webstorm/2017/01/debugging-angular-apps/)
+
 
 ## Further help
 
