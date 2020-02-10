@@ -1,10 +1,11 @@
 // Colors
-$amalia-primary: #0086B1 !default;
-$amalia-secondary: #34495E !default;
-$amalia-success: #20CC61 !default;
-$amalia-info: #D0B840 !default;
-$amalia-warning: #F2711B !default;
-$amalia-bg: #E5E5E5 !default;
+$amalia-primary-color: var(--amalia-primary-color, #0086B1);
+$amalia-secondary-color: var(--amalia-secondary-color, #34495E);
+$amalia-success-color: var(--amalia-success-color, #20CC61);
+$amalia-info-color: var(--amalia-info-color, #D0B840);
+$amalia-warning-color: var(--amalia-warning-color, #F2711B);
+$amalia-bg-color: var(--amalia-bg-color, #E5E5E5);
 
-$amalia-tooltip-z-index: 1070 !default;
-$amalia-tooltip-opacity: .9 !default;
+$amalia-player-bg-color: var(--amalia-player-bg-color, black);
+$amalia-tooltip-z-index: var(--amalia-tooltip-z-index, 1070);
+$amalia-tooltip-opacity: var(--amalia-tooltip-opacity, .9);

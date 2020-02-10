@@ -4,7 +4,6 @@ import {ConfigData} from './model/config-data';
 import {PlayerConfigData} from './model/player-config-data';
 import {PluginConfigData} from './model/plugin-config-data';
 import {ConfigDataSource} from './model/config-data-source';
-import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {DefaultConfigConverter} from './converter/default-config-converter';
 import {HttpConfigLoader} from './loader/http-config-loader';
 import {HttpClient} from '@angular/common/http';
@@ -39,8 +38,6 @@ describe('ConfigurationManager', () => {
 
 
   it('Create configuration manager with default loader', () => {
-    const src = new DefaultMediaSourceExtension();
-    src.setSrc(mediaSrc);
     const player: PlayerConfigData = {
       autoplay: false,
       crossOrigin: null,
@@ -48,7 +45,7 @@ describe('ConfigurationManager', () => {
       defaultVolume: 0,
       duration: null,
       poster: '',
-      src
+      src: mediaSrc
     };
     const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
     const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
@@ -60,7 +57,7 @@ describe('ConfigurationManager', () => {
     const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     const configurationManager = new ConfigurationManager(loader, logger);
     configurationManager.load(c).then(() => {
-      expect(configurationManager.getCoreConfig().player.src.getSrc()).toContain(mediaSrc);
+      expect(configurationManager.getCoreConfig().player.src).toContain(mediaSrc);
       configurationManager.addPluginConfiguration('test', {
         data: null,
         debug: false,

@@ -39,7 +39,7 @@ export class ConfigurationManager {
         })
         .catch(error => {
           reject(error);
-          this.logger.info('Error to load config ', this.configData);
+          this.logger.error('Error to load config ', this.configData);
         });
     });
   }

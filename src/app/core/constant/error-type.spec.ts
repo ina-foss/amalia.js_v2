@@ -1,6 +1,5 @@
 import {async, getTestBed, TestBed} from '@angular/core/testing';
 import {DefaultLogger} from '../logger/default-logger';
-import {HttpTestingController} from '@angular/common/http/testing';
 import {LoggerInterface} from '../logger/logger-interface';
 import {ErrorMessage} from './error-message';
 import {PlayerErrorCode} from './error-type';

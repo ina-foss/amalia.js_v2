@@ -36,40 +36,6 @@ export class MetadataManager {
   }
 
   /**
-   * In charge to load data
-   * @param loadData ConfigDataSource
-   */
-  private loadDataSource(loadData: ConfigDataSource) {
-    if (loadData && loadData.url) {
-      const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
-      loader
-        .load(loadData)
-        .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata))
-        .catch(() => this.logger.warn('Error to load metadata'));
-    } else {
-      this.logger.warn('Error to load data source');
-    }
-  }
-
-  /**
-   * Called on metadata loaded
-   * @param listOfMetadata list of metadata
-   */
-  private onMetadataLoaded(listOfMetadata: Array<Metadata>) {
-    if (listOfMetadata && isArray(listOfMetadata)) {
-      for (const metadata of listOfMetadata) {
-        try {
-          this.addMetadata(metadata);
-        } catch (e) {
-          this.logger.warn('Error to add metadata', metadata);
-        }
-      }
-    } else {
-      this.logger.warn('Error to load data');
-    }
-  }
-
-  /**
    * Get Metadata block
    * @param metadataId metadata id
    * @throws AmaliaException
@@ -105,6 +71,40 @@ export class MetadataManager {
       this.listOfMetadata.delete(metadata.id);
     } else {
       throw new AmaliaException('Error to found metadata');
+    }
+  }
+
+  /**
+   * In charge to load data
+   * @param loadData ConfigDataSource
+   */
+  private loadDataSource(loadData: ConfigDataSource) {
+    if (loadData && loadData.url) {
+      const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
+      loader
+        .load(loadData)
+        .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata))
+        .catch(() => this.logger.warn('Error to load metadata'));
+    } else {
+      this.logger.warn('Error to load data source');
+    }
+  }
+
+  /**
+   * Called on metadata loaded
+   * @param listOfMetadata list of metadata
+   */
+  private onMetadataLoaded(listOfMetadata: Array<Metadata>) {
+    if (listOfMetadata && isArray(listOfMetadata)) {
+      for (const metadata of listOfMetadata) {
+        try {
+          this.addMetadata(metadata);
+        } catch (e) {
+          this.logger.warn('Error to add metadata', metadata);
+        }
+      }
+    } else {
+      this.logger.warn('Error to load data');
     }
   }
 

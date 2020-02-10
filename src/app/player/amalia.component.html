@@ -1,7 +1,7 @@
-<div class="player">
-  <video *ngIf="state == PlayerState.INITIALIZED"></video>
-  <div class="loader" *ngIf="inLoading"></div>
-  <div class="error" *ngIf="inError">
+<div class="media-player">
+  <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
+  <div *ngIf="inLoading" class="loader"></div>
+  <div *ngIf="inError" class="error">
     <p>Une erreur technique est survenue.<br>Votre média n'a pas pu être chargé dans le player</p>
   </div>
   <div class="context-menu">

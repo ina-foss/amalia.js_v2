@@ -8,6 +8,7 @@ import {Loader} from './loader/loader';
 import {Metadata} from '@ina/amalia-model';
 import {ConfigData} from './config/model/config-data';
 
+
 /**
  * In charge to create player
  */
@@ -17,6 +18,7 @@ export class MediaPlayerElement {
   private readonly defaultLoader: Loader<Array<Metadata>>;
   private readonly logger: LoggerInterface;
   private state: PlayerState;
+  private mediaPlayer: HTMLMediaElement;
 
   constructor(defaultLoader: Loader<Array<Metadata>>, logger: LoggerInterface) {
     this.logger = logger;
@@ -38,17 +40,19 @@ export class MediaPlayerElement {
    */
   public init(config: object, configLoader?: Loader<ConfigData>): Promise<PlayerState> {
     const loader = configLoader ? configLoader : new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
+    // Init configuration manager
+    this.configurationManager = new ConfigurationManager(loader, this.logger);
+    // Init metadata manager
+    this.metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
+
     // Init player
     return new Promise<PlayerState>((resolve, reject) => {
       try {
-        // Init configuration manager
-        this.configurationManager = new ConfigurationManager(loader, this.logger);
-        // Init metadata manager
-        this.metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
         // load configuration
         this.loadConfiguration(config).then(() => {
             this.state = PlayerState.INITIALIZED;
-            this.logger.debug('Config loaded ...');
+            // set media source specified by config
+            this.setMediaSource();
             this.loadDataSources().then(ds => this.logger.info('', ds));
             resolve(this.state);
           },
@@ -63,6 +67,13 @@ export class MediaPlayerElement {
         reject(this.state);
       }
     });
+  }
+
+  /**
+   * Return media source
+   */
+  public setMediaPlayer(mediaPlayer: HTMLMediaElement): void {
+    this.mediaPlayer = mediaPlayer;
   }
 
   /**
@@ -82,6 +93,23 @@ export class MediaPlayerElement {
     return new Promise(() => {
       // TODO
     });
+  }
+
+  /**
+   * In charge to load data sources
+   */
+  private setMediaSource(): void {
+    if (this.mediaPlayer && this.configurationManager.getCoreConfig().player && this.configurationManager.getCoreConfig().player.src) {
+      if (typeof this.configurationManager.getCoreConfig().player.src === 'string') {
+        this.mediaPlayer.src = this.configurationManager.getCoreConfig().player.src.toString();
+      } else {
+        // Todo HSL
+        // this.mediaPlayer.srcObject = this.configurationManager.getCoreConfig().player.src.getSrc();
+      }
+      this.logger.info('Set media source SRC : ', this.mediaPlayer.src);
+    } else {
+      this.logger.error('Error to set media source');
+    }
   }
 
 

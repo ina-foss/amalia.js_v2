@@ -1,7 +1,6 @@
 import {LoggerInterface} from './logger-interface';
 import {LoggerLevel} from './logger-level';
 import {LoggerData} from './logger-data';
-import {AmaliaException} from '../exception/amalia-exception';
 
 /**
  * In charge to outputs a message to the web console
@@ -42,14 +41,13 @@ export class DefaultLogger implements LoggerInterface {
           // tslint:disable-next-line:no-console
           logConsole = console.error;
           break;
-        default:
-          throw new AmaliaException('Unsupported log level');
       }
-      if (logConsole && log.data) {
+
+      if (logConsole && log) {
         if (log.data) {
-          logConsole(log.msg, log.data);
+          logConsole(msg, log.data);
         } else {
-          logConsole(log.msg);
+          logConsole(msg);
         }
       }
     }

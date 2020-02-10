@@ -6,12 +6,12 @@ import {MediaSourceExtension} from './media-source-extension';
 export class DefaultMediaSourceExtension implements MediaSourceExtension {
   private src: string;
 
-  setSrc(src: any) {
-    this.src = src;
+  getSrc(): string {
+    return this.src;
   }
 
-  getSrc(): any {
-    return this.src;
+  setSrc(src: string) {
+    this.src = src;
   }
 
 }

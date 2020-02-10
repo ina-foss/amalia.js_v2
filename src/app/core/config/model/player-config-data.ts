@@ -1,7 +1,5 @@
-import {MediaSourceExtension} from '../../mse/media-source-extension';
-
 export interface PlayerConfigData {
-  src: MediaSourceExtension;
+  src: string | MediaStream | MediaSource | Blob | null;
   poster?: string;
   autoplay?: boolean;
   duration?: number;

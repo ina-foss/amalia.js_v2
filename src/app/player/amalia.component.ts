@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
 import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
 import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
@@ -16,7 +16,8 @@ import {PlayerState} from '../core/constant/player-state';
 @Component({
   selector: 'amalia-player',
   templateUrl: './amalia.component.html',
-  styleUrls: ['./amalia.component.scss']
+  styleUrls: ['./amalia.component.scss'],
+  encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AmaliaComponent implements OnInit {
   /**
@@ -35,7 +36,7 @@ export class AmaliaComponent implements OnInit {
    * Player configuration
    */
   @Input()
-  public playerConfig: ConfigData;
+  public playerConfig: ConfigData = {player: {src: 'https://www.w3schools.com/html/mov_bbb.mp4'}};
   /**
    * Config loader in charge to load config data
    */
@@ -51,6 +52,11 @@ export class AmaliaComponent implements OnInit {
    */
   @Input()
   public metadataLoader: Loader<Array<Metadata>>;
+  /**
+   * containe media player
+   */
+  @ViewChild('video', {static: true})
+  public mediaPlayer: ElementRef<HTMLMediaElement>;
   /**
    * Default loader
    */
@@ -76,7 +82,7 @@ export class AmaliaComponent implements OnInit {
     this.httpClient = httpClient;
   }
 
-  /**
+  /**setMediaPlayer
    * Invoked immediately after the  first time the component has initialised
    */
   ngOnInit() {
@@ -87,6 +93,8 @@ export class AmaliaComponent implements OnInit {
     if (this.configLoader && this.metadataConverter && this.metadataLoader) {
       // Created media player element
       this.mediaPlayerElement = new MediaPlayerElement(this.metadataLoader, this.logger);
+      // set media player in charge to player video or audio files
+      this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
       this.mediaPlayerElement.init(this.playerConfig, this.configLoader)
         .then((state) => this.onInitConfig(state))
         .catch((state) => this.onErrorInitConfig(state));
@@ -99,15 +107,15 @@ export class AmaliaComponent implements OnInit {
    * In charge to init default handlers when input not specified
    */
   private initDefaultHandlers() {
-    if (this.configLoader) {
+    if (!this.configLoader) {
       // Default Config load this loader use input config parameter
       this.configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
     }
-    if (this.metadataConverter) {
+    if (!this.metadataConverter) {
       // Default use parameter load metadata
       this.metadataConverter = new DefaultMetadataConverter();
     }
-    if (this.metadataLoader) {
+    if (!this.metadataLoader) {
       // Default use load source form http request
       this.metadataLoader = new DefaultMetadataLoader(this.httpClient, this.metadataConverter, this.logger);
     }
@@ -120,6 +128,7 @@ export class AmaliaComponent implements OnInit {
   private onInitConfig(state: PlayerState) {
     this.state = state;
     this.inLoading = false;
+
   }
 
   /**
@@ -130,6 +139,6 @@ export class AmaliaComponent implements OnInit {
     this.state = state;
     this.inLoading = false;
     this.inError = true;
-    this.logger.error(`Error to initialize player (state :${state})`);
+    this.logger.error(`Error to initialize player.`);
   }
 }

@@ -8,7 +8,6 @@ import {Metadata} from '@ina/amalia-model';
 import {MetadataManager} from './metadata-manager';
 import {DefaultConfigConverter} from '../config/converter/default-config-converter';
 import {ConfigurationManager} from '../config/configuration-manager';
-import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {PluginConfigData} from '../config/model/plugin-config-data';
 import {ConfigDataSource} from '../config/model/config-data-source';
@@ -33,9 +32,8 @@ describe('Test Metadata manager', () => {
     injector = getTestBed();
     httpTestingController = injector.get(HttpTestingController);
     httpClient = injector.get(HttpClient);
-    const src = new DefaultMediaSourceExtension();
     const player: PlayerConfigData = {
-      autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src
+      autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
     };
     const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
     const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
@@ -43,7 +41,6 @@ describe('Test Metadata manager', () => {
     const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     const configurationManager = new ConfigurationManager(configLoader, logger);
     const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
-    src.setSrc(mediaSrc);
     metadataManager = new MetadataManager(configurationManager, metadataLoader, logger);
 
   }));

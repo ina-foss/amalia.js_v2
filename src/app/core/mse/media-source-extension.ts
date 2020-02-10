@@ -6,10 +6,11 @@ export interface MediaSourceExtension {
    * In charge to set source
    * @param src media source
    */
-  setSrc(src: any);
+  setSrc(src: string | MediaStream | MediaSource | Blob | null);
+
 
   /**
    * In charge to get source
    */
-  getSrc(): any;
+  getSrc(): string | MediaStream | MediaSource | Blob | null;
 }
