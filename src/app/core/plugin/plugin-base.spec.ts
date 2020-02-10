@@ -1,11 +1,10 @@
 import {async} from '@angular/core/testing';
-import {PlayerPlugin} from './player-plugin';
-
+import {PluginBase} from './plugin-base';
 
 describe('Plugin', () => {
-  let component: PlayerPlugin;
+  let component: PluginBase;
   beforeEach(async(() => {
-    component = new PlayerPlugin();
+    component = new PluginBase();
   }));
 
   beforeEach(() => {

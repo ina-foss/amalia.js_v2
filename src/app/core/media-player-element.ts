@@ -7,6 +7,7 @@ import {MetadataManager} from './metadata/metadata-manager';
 import {Loader} from './loader/loader';
 import {Metadata} from '@ina/amalia-model';
 import {ConfigData} from './config/model/config-data';
+import {PluginConfigData} from './config/model/plugin-config-data';
 
 
 /**
@@ -67,6 +68,20 @@ export class MediaPlayerElement {
         reject(this.state);
       }
     });
+  }
+
+  /**
+   * Return configuration
+   */
+  public getConfiguration(): ConfigData {
+    return this.configurationManager.getCoreConfig();
+  }
+
+  /**
+   * Return configuration
+   */
+  public getPluginConfiguration(pluginName: string): PluginConfigData {
+    return this.configurationManager.getPluginConfiguration(pluginName);
   }
 
   /**
