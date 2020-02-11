@@ -1,0 +1,294 @@
+%svg-common {
+	background: url("svg/sprite.css-d5aeeb8c.svg") no-repeat;
+}
+
+.svg-backward {
+	@extend %svg-common;
+	background-position: 39.02439024390244% 0;
+}
+
+.svg-backward-dims {
+	width: 35px;
+	height: 24px;
+}
+
+.svg-backward-10seconds {
+	@extend %svg-common;
+	background-position: 66.66666666666667% 98.1651376146789%;
+}
+
+.svg-backward-10seconds-dims {
+	width: 23px;
+	height: 22px;
+}
+
+.svg-backward-frame {
+	@extend %svg-common;
+	background-position: 55.97014925373134% 76.6355140186916%;
+}
+
+.svg-backward-frame-dims {
+	width: 24px;
+	height: 24px;
+}
+
+.svg-backward-second {
+	@extend %svg-common;
+	background-position: 100% 21.10091743119266%;
+}
+
+.svg-backward-second-dims {
+	width: 19px;
+	height: 22px;
+}
+
+.svg-blue-pause {
+	@extend %svg-common;
+	background-position: 26.984126984126984% 48.484848484848484%;
+}
+
+.svg-blue-pause-dims {
+	width: 32px;
+	height: 32px;
+}
+
+.svg-blue-play {
+	@extend %svg-common;
+	background-position: 65.87301587301587% 0;
+}
+
+.svg-blue-play-dims {
+	width: 32px;
+	height: 32px;
+}
+
+.svg-checked {
+	@extend %svg-common;
+	background-position: 62.878787878787875% 30.476190476190474%;
+}
+
+.svg-checked-dims {
+	width: 26px;
+	height: 26px;
+}
+
+.svg-clear {
+	@extend %svg-common;
+	background-position: 62.40601503759399% 54.205607476635514%;
+}
+
+.svg-clear-dims {
+	width: 25px;
+	height: 24px;
+}
+
+.svg-compress {
+	@extend %svg-common;
+	background-position: 85.82089552238806% 0;
+}
+
+.svg-compress-dims {
+	width: 24px;
+	height: 24px;
+}
+
+.svg-down {
+	@extend %svg-common;
+	background-position: 95.20547945205479% 78.2258064516129%;
+}
+
+.svg-down-dims {
+	width: 12px;
+	height: 7px;
+}
+
+.svg-download {
+	@extend %svg-common;
+	background-position: 0 77.35849056603773%;
+}
+
+.svg-download-dims {
+	width: 25px;
+	height: 25px;
+}
+
+.svg-drag-drop {
+	@extend %svg-common;
+	background-position: 93.91891891891892% 70.43478260869566%;
+}
+
+.svg-drag-drop-dims {
+	width: 10px;
+	height: 16px;
+}
+
+.svg-error {
+	@extend %svg-common;
+	background-position: 0 0;
+}
+
+.svg-error-dims {
+	width: 48px;
+	height: 48px;
+}
+
+.svg-forward {
+	@extend %svg-common;
+	background-position: 39.02439024390244% 22.429906542056074%;
+}
+
+.svg-forward-dims {
+	width: 35px;
+	height: 24px;
+}
+
+.svg-forward-10seconds {
+	@extend %svg-common;
+	background-position: 85.82089552238806% 22.01834862385321%;
+}
+
+.svg-forward-10seconds-dims {
+	width: 24px;
+	height: 22px;
+}
+
+.svg-forward-frame {
+	@extend %svg-common;
+	background-position: 84.55882352941177% 42.99065420560748%;
+}
+
+.svg-forward-frame-dims {
+	width: 22px;
+	height: 24px;
+}
+
+.svg-forward-second {
+	@extend %svg-common;
+	background-position: 100% 0;
+}
+
+.svg-forward-second-dims {
+	width: 19px;
+	height: 23px;
+}
+
+.svg-fullscreen {
+	@extend %svg-common;
+	background-position: 85.82089552238806% 64.81481481481481%;
+}
+
+.svg-fullscreen-dims {
+	width: 24px;
+	height: 23px;
+}
+
+.svg-padlock-close {
+	@extend %svg-common;
+	background-position: 97.2027972027972% 39.823008849557525%;
+}
+
+.svg-padlock-close-dims {
+	width: 15px;
+	height: 18px;
+}
+
+.svg-padlock-open {
+	@extend %svg-common;
+	background-position: 97.2027972027972% 55.75221238938053%;
+}
+
+.svg-padlock-open-dims {
+	width: 15px;
+	height: 18px;
+}
+
+.svg-pause {
+	@extend %svg-common;
+	background-position: 0 100%;
+}
+
+.svg-pause-dims {
+	width: 18px;
+	height: 24px;
+}
+
+.svg-play {
+	@extend %svg-common;
+	background-position: 45.205479452054796% 44.85981308411215%;
+}
+
+.svg-play-dims {
+	width: 12px;
+	height: 24px;
+}
+
+.svg-refresh {
+	@extend %svg-common;
+	background-position: 0 49.48453608247423%;
+}
+
+.svg-refresh-dims {
+	width: 34px;
+	height: 34px;
+}
+
+.svg-screenshot {
+	@extend %svg-common;
+	background-position: 18.796992481203006% 76.6355140186916%;
+}
+
+.svg-screenshot-dims {
+	width: 25px;
+	height: 24px;
+}
+
+.svg-search {
+	@extend %svg-common;
+	background-position: 37.59398496240601% 76.6355140186916%;
+}
+
+.svg-search-dims {
+	width: 25px;
+	height: 24px;
+}
+
+.svg-subtitle {
+	@extend %svg-common;
+	background-position: 13.432835820895523% 100%;
+}
+
+.svg-subtitle-dims {
+	width: 24px;
+	height: 24px;
+}
+
+.svg-up {
+	@extend %svg-common;
+	background-position: 95.20547945205479% 83.2%;
+}
+
+.svg-up-dims {
+	width: 12px;
+	height: 6px;
+}
+
+.svg-volume-off {
+	@extend %svg-common;
+	background-position: 31.34328358208955% 98.1651376146789%;
+}
+
+.svg-volume-off-dims {
+	width: 24px;
+	height: 22px;
+}
+
+.svg-volume-on {
+	@extend %svg-common;
+	background-position: 49.25373134328358% 98.1651376146789%;
+}
+
+.svg-volume-on-dims {
+	width: 24px;
+	height: 22px;
+}
+
