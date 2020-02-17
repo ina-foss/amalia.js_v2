@@ -1,6 +1,6 @@
 interface AmaliaPluginConfig {
-  selector: string;
-  template: string;
-  style?: string;
-  useShadow?: boolean;
+    selector: string;
+    template: string;
+    style?: string;
+    useShadow?: boolean;
 }

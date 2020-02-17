@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
-    <title>picto32/play btn pause@x2</title>
-    <desc>Created with Sketch.</desc>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
     <g id="Style-guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Artboard" transform="translate(-296.000000, -90.000000)">
             <g id="picto32/play-btn-pause" transform="translate(296.000000, 90.000000)">
                 <circle id="Oval-7" fill="#0086B1" cx="16" cy="16" r="16"></circle>
-                <rect id="Rectangle" stroke="#FFFFFF" stroke-width="1.5" x="9.75" y="6.75" width="4.33333333" height="18.5"></rect>
-                <rect id="Rectangle-Copy" stroke="#FFFFFF" stroke-width="1.5" x="18.9166667" y="6.75" width="4.33333333" height="18.5"></rect>
+                <rect id="Rectangle" stroke="#FFFFFF" stroke-width="1.5" x="9.75" y="6.75" width="4.33333333"
+                      height="18.5"></rect>
+                <rect id="Rectangle-Copy" stroke="#FFFFFF" stroke-width="1.5" x="18.9166667" y="6.75" width="4.33333333"
+                      height="18.5"></rect>
             </g>
         </g>
     </g>

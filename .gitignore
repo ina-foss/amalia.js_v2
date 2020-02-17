@@ -54,3 +54,6 @@ Thumbs.db
 .idea/modules.xml
 .idea/sonarlint/
 .idea/vcs.xml
+
+/src/styles/**/*.html
+/src/assets/svgs/**/*.html

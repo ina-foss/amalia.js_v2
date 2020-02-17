@@ -10,41 +10,41 @@ import {DefaultMetadataConverter} from './metadata/converter/default-metadata-co
 import {DefaultMetadataLoader} from './metadata/loader/default-metadata-loader';
 
 describe('Test Media player element', () => {
-  let injector: TestBed;
-  let httpClient: HttpClient;
-  let httpTestingController: HttpTestingController;
-  const logger = new DefaultLogger();
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [],
-    }).compileComponents();
-    injector = getTestBed();
-    httpTestingController = injector.get(HttpTestingController);
-    httpClient = injector.get(HttpClient);
+    let injector: TestBed;
+    let httpClient: HttpClient;
+    let httpTestingController: HttpTestingController;
+    const logger = new DefaultLogger();
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            declarations: [],
+        }).compileComponents();
+        injector = getTestBed();
+        httpTestingController = injector.get(HttpTestingController);
+        httpClient = injector.get(HttpClient);
 
-  }));
+    }));
 
-  afterEach(() => {
-    // After every test, assert that there are no more pending requests.
-    httpTestingController.verify();
-  });
+    afterEach(() => {
+        // After every test, assert that there are no more pending requests.
+        httpTestingController.verify();
+    });
 
-  it('Init Media player element ', () => {
-    const configData = require('tests/assets/config-mpe.json');
-    const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
-    const metadataConverter = new DefaultMetadataConverter();
-    const metadataLoader = new DefaultMetadataLoader(httpClient, metadataConverter, logger);
-    const mpe = new MediaPlayerElement(metadataLoader, logger);
-    expect(mpe.getState()).toEqual(PlayerState.CREATED);
-    mpe.init(configData, configLoader)
-      .then((state) => {
-        expect(state).toEqual(PlayerState.INITIALIZED);
-      })
-      .catch(() => {
-        fail('Error to init player');
-      });
-  });
+    it('Init Media player element ', () => {
+        const configData = require('tests/assets/config-mpe.json');
+        const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+        const metadataConverter = new DefaultMetadataConverter();
+        const metadataLoader = new DefaultMetadataLoader(httpClient, metadataConverter, logger);
+        const mpe = new MediaPlayerElement(logger);
+        expect(mpe.getState()).toEqual(PlayerState.CREATED);
+        mpe.init(configData, metadataLoader, configLoader)
+            .then((state) => {
+                expect(state).toEqual(PlayerState.INITIALIZED);
+            })
+            .catch(() => {
+                fail('Error to init player');
+            });
+    });
 });
 
 

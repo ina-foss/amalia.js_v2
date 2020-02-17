@@ -3,13 +3,13 @@
  */
 export interface LoggerData {
 
-  /**
-   * Message to log.
-   */
-  msg: string;
+    /**
+     * Message to log.
+     */
+    msg: string;
 
-  /**
-   * Optional additional data, by default JSON.stringify(..) is used to log it in addition to the message.
-   */
-  data?: any;
+    /**
+     * Optional additional data, by default JSON.stringify(..) is used to log it in addition to the message.
+     */
+    data?: any;
 }

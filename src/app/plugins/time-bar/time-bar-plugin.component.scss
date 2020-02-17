@@ -1,0 +1,23 @@
+@import '../../core/styles/typo';
+@import '../../core/styles/variables';
+
+:host {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-family: $amalia-font-family;
+  z-index: $amalia-default-z-index;
+  background: $amalia-ctrl-bar-bg-color;
+  user-select: none;
+
+  div {
+    padding: 5px;
+    color: white;
+  }
+
+
+}
+

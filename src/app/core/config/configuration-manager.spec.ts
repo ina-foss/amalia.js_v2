@@ -15,92 +15,92 @@ import {DefaultConfigLoader} from './loader/default-config-loader';
 
 
 describe('ConfigurationManager', () => {
-  let injector: TestBed;
-  let httpClient: HttpClient;
-  let httpTestingController: HttpTestingController;
-  const logger: LoggerInterface = new DefaultLogger();
-  const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
-  const configUrl = './tests/assets/config.json';
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [],
-    }).compileComponents();
-    injector = getTestBed();
-    httpClient = injector.get(HttpClient);
-    httpTestingController = injector.get(HttpTestingController);
-  }));
+    let injector: TestBed;
+    let httpClient: HttpClient;
+    let httpTestingController: HttpTestingController;
+    const logger: LoggerInterface = new DefaultLogger();
+    const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
+    const configUrl = './tests/assets/config.json';
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            declarations: [],
+        }).compileComponents();
+        injector = getTestBed();
+        httpClient = injector.get(HttpClient);
+        httpTestingController = injector.get(HttpTestingController);
+    }));
 
-  afterEach(() => {
-    // After every test, assert that there are no more pending requests.
-    httpTestingController.verify();
-  });
-
-
-  it('Create configuration manager with default loader', () => {
-    const player: PlayerConfigData = {
-      autoplay: false,
-      crossOrigin: null,
-      data: null,
-      defaultVolume: 0,
-      duration: null,
-      poster: '',
-      src: mediaSrc
-    };
-    const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
-    const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
-    const c: ConfigData = {
-      player,
-      pluginsConfiguration,
-      dataSources
-    };
-    const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
-    const configurationManager = new ConfigurationManager(loader, logger);
-    configurationManager.load(c).then(() => {
-      expect(configurationManager.getCoreConfig().player.src).toContain(mediaSrc);
-      configurationManager.addPluginConfiguration('test', {
-        data: null,
-        debug: false,
-        metadataIds: ['test'],
-        name: 'test'
-      });
-      expect(configurationManager.getPluginConfiguration('test')).toEqual({
-        data: null,
-        debug: false,
-        metadataIds: ['test'],
-        name: 'test'
-      });
-      expect(() => configurationManager.getPluginConfiguration('test1'))
-        .toThrow(new AmaliaException(`Error to get configuration for plugin test1.`));
+    afterEach(() => {
+        // After every test, assert that there are no more pending requests.
+        httpTestingController.verify();
     });
-    expect(configurationManager).toBeTruthy();
-  });
 
-  it('Create configuration manager with http loader', fakeAsync(() => {
-      const configData = require('tests/assets/config.json');
-      const loader = new HttpConfigLoader(new DefaultConfigConverter(), httpClient, logger);
-      const configurationManager = new ConfigurationManager(loader, logger);
-      configurationManager.load(configUrl).then(() => {
-        expect(configurationManager.getCoreConfig()).toBeTruthy();
-      }).catch(() => {
-        fail('Error to call assert');
-      });
-      httpTestingController.expectOne(configUrl).flush(configData, {status: 200, statusText: 'Ok'});
-      expect(configurationManager).toBeTruthy();
-      tick();
-      configurationManager.load(configUrl).then(() => {
-        fail('Error to call assert');
-      }).catch(() => {
-        expect().nothing();
-      });
-      httpTestingController.expectOne(configUrl).flush(null, {status: 200, statusText: 'Ok'});
 
-      expect(configurationManager).toBeTruthy();
+    it('Create configuration manager with default loader', () => {
+        const player: PlayerConfigData = {
+            autoplay: false,
+            crossOrigin: null,
+            data: null,
+            defaultVolume: 0,
+            duration: null,
+            poster: '',
+            src: mediaSrc
+        };
+        const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
+        const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
+        const c: ConfigData = {
+            player,
+            pluginsConfiguration,
+            dataSources
+        };
+        const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+        const configurationManager = new ConfigurationManager(loader, logger);
+        configurationManager.load(c).then(() => {
+            expect(configurationManager.getCoreConfig().player.src).toContain(mediaSrc);
+            configurationManager.addPluginConfiguration('test', {
+                data: null,
+                debug: false,
+                metadataIds: ['test'],
+                name: 'test'
+            });
+            expect(configurationManager.getPluginConfiguration('test')).toEqual({
+                data: null,
+                debug: false,
+                metadataIds: ['test'],
+                name: 'test'
+            });
+            expect(() => configurationManager.getPluginConfiguration('test1'))
+                .toThrow(new AmaliaException(`Error to get configuration for plugin test1.`));
+        });
+        expect(configurationManager).toBeTruthy();
+    });
 
-      tick();
+    it('Create configuration manager with http loader', fakeAsync(() => {
+            const configData = require('tests/assets/config.json');
+            const loader = new HttpConfigLoader(new DefaultConfigConverter(), httpClient, logger);
+            const configurationManager = new ConfigurationManager(loader, logger);
+            configurationManager.load(configUrl).then(() => {
+                expect(configurationManager.getCoreConfig()).toBeTruthy();
+            }).catch(() => {
+                fail('Error to call assert');
+            });
+            httpTestingController.expectOne(configUrl).flush(configData, {status: 200, statusText: 'Ok'});
+            expect(configurationManager).toBeTruthy();
+            tick();
+            configurationManager.load(configUrl).then(() => {
+                fail('Error to call assert');
+            }).catch(() => {
+                expect().nothing();
+            });
+            httpTestingController.expectOne(configUrl).flush(null, {status: 200, statusText: 'Ok'});
 
-    })
-  );
+            expect(configurationManager).toBeTruthy();
+
+            tick();
+
+        })
+    );
 
 
 });

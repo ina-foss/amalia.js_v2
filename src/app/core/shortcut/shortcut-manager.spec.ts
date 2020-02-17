@@ -13,66 +13,66 @@ import {ShortcutManager} from './shortcut-manager';
 
 
 describe('Test Shortcut manager', () => {
-  let injector: TestBed;
-  let httpClient: HttpClient;
-  let httpTestingController: HttpTestingController;
-  const logger = new DefaultLogger();
-  let configurationManager;
-  const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      declarations: [],
-    }).compileComponents();
-    injector = getTestBed();
-    httpTestingController = injector.get(HttpTestingController);
-    httpClient = injector.get(HttpClient);
+    let injector: TestBed;
+    let httpClient: HttpClient;
+    let httpTestingController: HttpTestingController;
+    const logger = new DefaultLogger();
+    let configurationManager;
+    const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            declarations: [],
+        }).compileComponents();
+        injector = getTestBed();
+        httpTestingController = injector.get(HttpTestingController);
+        httpClient = injector.get(HttpClient);
 
-    const player: PlayerConfigData = {
-      autoplay: false,
-      crossOrigin: null,
-      data: null,
-      defaultVolume: 0,
-      duration: null,
-      poster: '',
-      src: mediaSrc
-    };
-    const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
-    const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
-    const c: ConfigData = {
-      player,
-      pluginsConfiguration,
-      dataSources
-    };
-    const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
-    configurationManager = new ConfigurationManager(loader, logger);
-  }));
+        const player: PlayerConfigData = {
+            autoplay: false,
+            crossOrigin: null,
+            data: null,
+            defaultVolume: 0,
+            duration: null,
+            poster: '',
+            src: mediaSrc
+        };
+        const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
+        const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
+        const c: ConfigData = {
+            player,
+            pluginsConfiguration,
+            dataSources
+        };
+        const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+        configurationManager = new ConfigurationManager(loader, logger);
+    }));
 
-  afterEach(() => {
-    // After every test, assert that there are no more pending requests.
-    httpTestingController.verify();
-  });
-
-  it('Test list of Shortcut ', () => {
-    const shortcutManager = new ShortcutManager(configurationManager, logger);
-    const playPromise = new Promise<void>(() => {
+    afterEach(() => {
+        // After every test, assert that there are no more pending requests.
+        httpTestingController.verify();
     });
-    const pausePromise = new Promise<void>(() => {
+
+    it('Test list of Shortcut ', () => {
+        const shortcutManager = new ShortcutManager(configurationManager, logger);
+        const playPromise = new Promise<void>(() => {
+        });
+        const pausePromise = new Promise<void>(() => {
+        });
+        shortcutManager.addShortcut('p', playPromise);
+        shortcutManager.addShortcut('p', pausePromise);
+        shortcutManager.addShortcut('l', playPromise);
+        let list = shortcutManager.getListOfShortcutKeys();
+        expect(list.next().value).toContain(`p`);
+        expect(list.next().value).toContain(`l`);
+        shortcutManager.removeShortcut('l', playPromise);
+        list = shortcutManager.getListOfShortcutKeys();
+        let item = list.next();
+        expect(item.value).toContain('p');
+        expect(item.done).toEqual(false);
+        item = list.next();
+        expect(item.done).toEqual(true);
     });
-    shortcutManager.addShortcut('p', playPromise);
-    shortcutManager.addShortcut('p', pausePromise);
-    shortcutManager.addShortcut('l', playPromise);
-    let list = shortcutManager.getListOfShortcutKeys();
-    expect(list.next().value).toContain(`p`);
-    expect(list.next().value).toContain(`l`);
-    shortcutManager.removeShortcut('l', playPromise);
-    list = shortcutManager.getListOfShortcutKeys();
-    let item = list.next();
-    expect(item.value).toContain('p');
-    expect(item.done).toEqual(false);
-    item = list.next();
-    expect(item.done).toEqual(true);
-  });
 });
 
 

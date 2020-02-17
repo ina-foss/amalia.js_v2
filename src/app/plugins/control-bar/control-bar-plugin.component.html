@@ -1,0 +1,83 @@
+<div *ngIf="hasComponentWithoutZone('progressBar')" class="control progress-bar">
+    <div class="ui-slider">
+        <div class="ui-slider-progress" [style]="{width:currentTime+'%'}"></div>
+        <input type="range" min="0" [max]="duration" value="50" class="slider" [(ngModel)]="currentTime">
+    </div>
+</div>
+<div class="column" *ngFor="let colId of [1,2,3]; index as i; last as isLast;"
+     [ngClass]="{'last':isLast,'mid':i===1} ">
+    <!-- ngSwitch by controls-->
+    <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
+        <div title="{{c.label}}" class="play-pause control" *ngSwitchCase="'playPause'"
+             (click)="controlClicked(c.control)">
+            <svg class="amalia-svg-play-size icon" *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
+            </svg>
+            <svg class="amalia-svg-pause-size icon" *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#pause'"></use>
+            </svg>
+        </div>
+        <div title="{{c.label}}" class="aspect-ratio" *ngSwitchCase="'aspectRatio'">
+            {{aspectRatio}}
+        </div>
+        <!--Volume-->
+        <div title="{{c.label}}" class="volume control" *ngSwitchCase="'volume'">
+            <svg class="amalia-svg-volume-size icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+            </svg>
+            <div class="volume-control on">
+                <div class="channel-volume-sliders ">
+                    <div class="header-list">Volume (m)</div>
+                    <div class="channel-volume-control">
+                        <div class="channel-volume-control-left">
+                            <div class="channel-volume-icon" (click)="changeVolume( volumeLeft==0 ? 100:0,'l')">
+                                <svg class="amalia-svg-volume-on-size icon">
+                                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+                                </svg>
+                            </div>
+                            <div class="left-volume-slider ui-slider">
+                                <div class="ui-slider-progress" [style]="{width:volumeLeft+'%'}"></div>
+                                <input type="range" min="1" max="100" value="50" class="slider"
+                                       [(ngModel)]="volumeLeft" #leftVolumeSlider
+                                       (change)="changeVolume(leftVolumeSlider.value,'l')">
+                            </div>
+                            <div class="channel-volume-info"><span class="text-volume">G</span></div>
+                        </div>
+                        <div class="channel-volume-control-mid on"></div>
+                        <div class="channel-volume-control-right">
+                            <div class="channel-volume-icon" (click)="changeVolume( volumeRight==0 ? 100:0,'r')">
+                                <svg class="amalia-svg-volume-on-size icon">
+                                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+                                </svg>
+                            </div>
+                            <div class="right-volume-slider ui-slider ">
+                                <div class="ui-slider-progress" [style]="{width:volumeRight+'%'}"></div>
+                                <input type="range" min="1" max="100" value="50" class="slider"
+                                       #rightVolumeSlider [(ngModel)]="volumeRight"
+                                       (change)="changeVolume(rightVolumeSlider.value,'r')">
+                            </div>
+                            <div class="channel-volume-info"><span class="text-volume">D</span></div>
+                        </div>
+                        <div class="channel-volume-info-mid" (click)="changeSameVolumeState()">
+                            <svg class="amalia-svg-padlock-open-size icon" *ngIf="!sameVolume">
+                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#padlock-open'"></use>
+                            </svg>
+                            <svg class="amalia-svg-padlock-close-size icon" *ngIf="sameVolume">
+                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#padlock-close'"></use>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Other controls-->
+        <div title="{{c.label}}" class="control" (click)="controlClicked(c.control)"
+             *ngSwitchDefault
+             (click)="controlClicked(c.control)">
+            <svg class="amalia-svg-{{c.icon}}-size icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+            </svg>
+        </div>
+    </ng-container>
+</div>
+

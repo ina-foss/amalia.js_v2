@@ -6,11 +6,11 @@ import {Converter} from '../../converter/converter';
  */
 export class DefaultConfigConverter implements Converter<ConfigData> {
 
-  /**
-   * in charge to convert config
-   * @param data configuration data
-   */
-  convert(data: any): ConfigData {
-    return data as ConfigData;
-  }
+    /**
+     * in charge to convert config
+     * @param data configuration data
+     */
+    convert(data: any): ConfigData {
+        return data as ConfigData;
+    }
 }

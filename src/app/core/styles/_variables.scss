@@ -4,8 +4,41 @@ $amalia-secondary-color: var(--amalia-secondary-color, #34495E);
 $amalia-success-color: var(--amalia-success-color, #20CC61);
 $amalia-info-color: var(--amalia-info-color, #D0B840);
 $amalia-warning-color: var(--amalia-warning-color, #F2711B);
-$amalia-bg-color: var(--amalia-bg-color, #E5E5E5);
+$amalia-bg-color: var(--amalia-bg-color, rgba(34, 34, 34, 0.9));
 
 $amalia-player-bg-color: var(--amalia-player-bg-color, black);
-$amalia-tooltip-z-index: var(--amalia-tooltip-z-index, 1070);
+$amalia-player-bg-color1: var(--amalia-player-bg-color1, white);
+$amalia-default-z-index: var(--amalia-default-z-index, 2000);
+$amalia-volume-bar-z-index: var(--amalia-volume-bar-z-index, 2010);
+$amalia-context-menu-z-index: var(--amalia-volume-bar-z-index, 2999);
+$amalia-tooltip-z-index: var(--amalia-tooltip-z-index, 2100);
 $amalia-tooltip-opacity: var(--amalia-tooltip-opacity, .9);
+
+
+// Mixin for ratio dimensions
+@mixin viewportRatio($x, $y) {
+  /* height: 56.25vw; !* height:width ratio = 9/16 = .5625  *!
+     max-width: 177.78vh; !* 16/9 = 1.778 *!*/
+  height: ($y/$x)*100vw;
+  max-width: $x /  $y *100vh;
+}
+
+// Control bar back
+$amalia-ctrl-bar-bg-color: var(--amalia-ctrl-bar-bg-color, rgba(34, 34, 34, 0.9));
+$amalia-ctrl-bar-btn-hover: var(--amalia-ctrl-bar-btn-hover, invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%));
+$backgroundColor: #2e2e2e;
+
+
+/**
+ * global animation
+ * $properties transition
+ * $param : Time duration (s), function
+ */
+@mixin transition($property:all, $time-duration:1s, $function-style:ease-out) {
+
+  -webkit-transition: $property $time-duration $function-style;
+  -moz-transition: $property $time-duration $function-style;
+  -ms-transition: $property $time-duration $function-style;
+  -o-transition: $property $time-duration $function-style;
+  transition: $property $time-duration $function-style;
+}

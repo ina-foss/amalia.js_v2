@@ -1,29 +1,49 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {Injector, NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule} from '@angular/core';
 import {AmaliaComponent} from './player/amalia.component';
 import {createCustomElement} from '@angular/elements';
 import {HttpClientModule} from '@angular/common/http';
-
+import {MediaPlayerElement} from './core/media-player-element';
+import {DefaultLogger} from './core/logger/default-logger';
+import {FormsModule} from '@angular/forms';
+import {TcFormatPipe} from './core/utils/tc-format.pipe';
+import {TimeBarPluginComponent} from './plugins/time-bar/time-bar-plugin.component';
+import {ControlBarPluginComponent} from './plugins/control-bar/control-bar-plugin.component';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    HttpClientModule
-  ],
-  declarations: [AmaliaComponent],
-  entryComponents: [AmaliaComponent],
-  providers: [],
-  bootstrap: []
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        FormsModule
+    ],
+    declarations: [
+        AmaliaComponent,
+        TcFormatPipe,
+        ControlBarPluginComponent,
+        TimeBarPluginComponent
+    ],
+    entryComponents: [AmaliaComponent],
+    providers: [DefaultLogger, MediaPlayerElement],
+    bootstrap: [],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ]
 })
 export class AppModule {
-  private readonly injector: Injector;
+    private readonly injector: Injector;
 
-  constructor(injector: Injector) {
-    this.injector = injector;
-  }
+    constructor(injector: Injector) {
+        this.injector = injector;
+    }
 
-  ngDoBootstrap() {
-    const customElementAmalia = createCustomElement(AmaliaComponent, {injector: this.injector});
-    customElements.define('amalia-player', customElementAmalia);
-  }
+    ngDoBootstrap() {
+        const customElementAmalia = createCustomElement(AmaliaComponent, {injector: this.injector});
+        customElements.define('amalia-player', customElementAmalia);
+
+        const controlBarPlugin = createCustomElement(ControlBarPluginComponent, {injector: this.injector});
+        customElements.define('amalia-control-bar', controlBarPlugin);
+
+        const timeBarPlugin = createCustomElement(TimeBarPluginComponent, {injector: this.injector});
+        customElements.define('amalia-time-bar', timeBarPlugin);
+    }
 }

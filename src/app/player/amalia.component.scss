@@ -8,70 +8,117 @@
   position: relative;
   overflow: hidden;
   font-family: $amalia-font-family;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
+  z-index: $amalia-default-z-index;
+  padding: 0;
+  margin: 0;
+  background-color: $amalia-player-bg-color;
 
   .media-player {
-    width: inherit;
-    height: inherit;
+    width: 100vw;
+    max-height: 100vh;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0; /* vertical center */
+    left: 0;
+    right: 0; /* horizontal center */
+    z-index: $amalia-default-z-index;
+    background-color: white;
 
-    .player {
+    &.aspect-ratio-16by9 {
+      @include viewportRatio(16, 9);
+    }
+
+    &.aspect-ratio-4by3 {
+      @include viewportRatio(4, 3);
+    }
+
+    video.player {
       position: relative;
-      width: inherit;
-      height: inherit;
-      background-color: $amalia-player-bg-color;
-    }
-
-    .loader {
-      color: white;
-      position: absolute;
-      z-index: 1;
-      text-align: center;
+      top: 0;
+      left: 0;
+      z-index: $amalia-default-z-index;
+      object-fit: fill;
       width: 100%;
       height: 100%;
-      top: 50%;
-      font-size: 100px;
-      margin-top: -50px;
-      background-color: #2b91af;
-    }
-
-    .error {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      line-height: 19px;
-      font-size: 14px;
-    }
-
-    .tooltip {
-      position: absolute;
-      z-index: $amalia-tooltip-z-index;
-      display: block;
-      margin: 5px;
-      word-wrap: break-word;
-      opacity: 0;
-
-      &.show {
-        opacity: $amalia-tooltip-opacity;
-      }
-
-      .tooltip-arrow {
-        position: absolute;
-        display: block;
-        width: 20px;
-        height: 20px;
-
-        &::before {
-          position: absolute;
-          content: "";
-          border-color: transparent;
-          border-style: solid;
-        }
-      }
     }
   }
 
+
+  .context-menu {
+    position: absolute;
+    top: 0px;
+    background-color: $amalia-ctrl-bar-bg-color;
+    z-index: $amalia-context-menu-z-index;
+    font-family: $amalia-font-family;
+    font-size: 11px;
+    color: white;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        margin: 0;
+        padding: 10px 10px 10px 15px;
+
+        &:hover {
+          font-weight: bold;
+        }
+      }
+    }
+
+  }
+
+  .loader {
+    color: white;
+    position: absolute;
+    z-index: 1;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    font-size: 100px;
+    margin-top: -50px;
+    background-color: #2b91af;
+  }
+
+  .error {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    line-height: 19px;
+    font-size: 14px;
+  }
+
+  .tooltip {
+    position: absolute;
+    z-index: $amalia-tooltip-z-index;
+    display: block;
+    margin: 5px;
+    word-wrap: break-word;
+    opacity: 0;
+
+    &.show {
+      opacity: $amalia-tooltip-opacity;
+    }
+
+    .tooltip-arrow {
+      position: absolute;
+      display: block;
+      width: 20px;
+      height: 20px;
+
+      &::before {
+        position: absolute;
+        content: "";
+        border-color: transparent;
+        border-style: solid;
+      }
+    }
+  }
 }
+
+

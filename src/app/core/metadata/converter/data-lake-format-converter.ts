@@ -6,12 +6,12 @@ import {Converter} from '../../converter/converter';
  * In charge to convert data lake format
  */
 export class DataLakeFormatConverter implements Converter<Metadata> {
-  /**
-   * Not implemented
-   * @param data data to convert
-   * @throws AmaliaException
-   */
-  convert(data: any): Metadata {
-    throw new AmaliaException('Not implemented');
-  }
+    /**
+     * Not implemented
+     * @param data data to convert
+     * @throws AmaliaException
+     */
+    convert(data: any): Metadata {
+        throw new AmaliaException('Not implemented');
+    }
 }

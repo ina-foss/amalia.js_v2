@@ -1,13 +1,15 @@
-<div class="media-player">
-  <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
-  <div *ngIf="inLoading" class="loader"></div>
-  <div *ngIf="inError" class="error">
-    <p>Une erreur technique est survenue.<br>Votre média n'a pas pu être chargé dans le player</p>
-  </div>
-  <div class="context-menu">
-    <ul>
-      <li>{{version}}</li>
-    </ul>
-  </div>
-  <ng-content></ng-content>
+<div class="media-player aspect-ratio-{{aspectRatio}}" (contextmenu)="onContextMenu($event)">
+    <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
 </div>
+
+<div *ngIf="inLoading" class="loader"></div>
+<div *ngIf="inError" class="error">
+    <p>Une erreur technique est survenue.<br>Votre média n'a pas pu être chargé dans le player</p>
+</div>
+<div class="context-menu" #contextMenu [hidden]="!contextMenuState" (mouseleave)="contextMenuState=false">
+    <ul>
+        <li>Amalia {{version}}</li>
+    </ul>
+</div>
+<ng-content></ng-content>
+
