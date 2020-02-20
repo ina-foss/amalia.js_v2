@@ -1,3 +1,5 @@
+import * as Hls from 'hls.js';
+
 export interface PlayerConfigData {
     src: string | MediaStream | MediaSource | Blob | null;
     poster?: string;
@@ -7,4 +9,5 @@ export interface PlayerConfigData {
     crossOrigin?: string;
     data?: any;
     framerate?: number;
+    hls?: { enable: boolean, config?: Hls.Config };
 }

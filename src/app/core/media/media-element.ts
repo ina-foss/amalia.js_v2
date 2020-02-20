@@ -2,6 +2,10 @@ import {LoggerInterface} from '../logger/logger-interface';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from '../constant/event-type';
 import {AutoBind} from '../decorator/auto-bind.decorator';
+import {MediaSourceExtension} from '../mse/media-source-extension';
+import {PlayerConfigData} from '../config/model/player-config-data';
+import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
+import {HLSMediaSourceExtension} from '../mse/hsl-media-source-extension';
 
 /**
  * Media element
@@ -10,6 +14,7 @@ export class MediaElement {
     private readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
     private readonly logger: LoggerInterface;
+    private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
 
@@ -17,6 +22,16 @@ export class MediaElement {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
         this.logger = logger;
+    }
+
+    private _playbackRate = 1;
+
+    get playbackRate(): number {
+        return this._playbackRate;
+    }
+
+    set playbackRate(value: number) {
+        this._playbackRate = value;
     }
 
     private _withMergeVolume = true;
@@ -84,18 +99,18 @@ export class MediaElement {
      * @param src media source
      * @param crossOrigin value example anonymous
      */
-    setSrc(src: string | MediaStream | MediaSource | Blob | null, crossOrigin ?: string): void {
-        if (typeof src === 'string') {
-            const source = document.createElement('source');
-            source.src = src;
-            if (crossOrigin) {
-                source.setAttribute('crossorigin', crossOrigin);
-            }
-            this.mediaElement.append(source);
-        } else {
-            // Todo HSL
-            // this.mediaPlayer.srcObject = this.configurationManager.getCoreConfig().player.src.getSrc();
+    setSrc(config: PlayerConfigData): void {
+
+        // remove old mse config
+        if (this.mse) {
+            this.mse.destroy();
         }
+        if (config.hls && config.hls.enable) {
+            this.mse = new HLSMediaSourceExtension(this.mediaElement, config, this.logger);
+        } else {
+            this.mse = new DefaultMediaSourceExtension(this.mediaElement, config, this.logger);
+        }
+        this.mse.setSrc(config);
         // init handle events
         this.initPlayerEvents();
     }
