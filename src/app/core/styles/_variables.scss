@@ -19,8 +19,10 @@ $amalia-tooltip-opacity: var(--amalia-tooltip-opacity, .9);
 @mixin viewportRatio($x, $y) {
   /* height: 56.25vw; !* height:width ratio = 9/16 = .5625  *!
      max-width: 177.78vh; !* 16/9 = 1.778 *!*/
-  height: ($y/$x)*100vw;
-  max-width: $x /  $y *100vh;
+  /*  height: ($y/$x)*100vw;
+    max-width: $x /  $y *100vh;*/
+  width: calc(100% * (16 / 9 - 1));
+  height: calc(100% * 9 / 16);
 }
 
 // Control bar back

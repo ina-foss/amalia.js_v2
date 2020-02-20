@@ -5,7 +5,7 @@ import {ErrorMessage} from './error-message';
 import {PlayerErrorCode} from './error-type';
 
 
-describe('ConfigurationManager', () => {
+describe('Error type', () => {
     let injector: TestBed;
     const logger: LoggerInterface = new DefaultLogger();
     beforeEach(async(() => {

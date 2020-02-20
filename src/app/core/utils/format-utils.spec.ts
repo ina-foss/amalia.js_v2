@@ -86,4 +86,7 @@ describe('Test Format utils', () => {
         expect(FormatUtils.formatTime(3600 + (48 * 60) + 58 + (1 / customFps * 61), 'f', customFps)).toContain('01:48:59:01');
     });
 
+    it('Test Format string', () => {
+        expect(FormatUtils.formatString('{0} is {1} {2}', 'This', 'formatting', 'hack')).toContain('This is formatting hack');
+    });
 });

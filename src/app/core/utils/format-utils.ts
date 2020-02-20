@@ -10,7 +10,7 @@ export class FormatUtils {
      * @param defaultFps frames per second
      * @return return format time
      */
-    public static formatTime(seconds: number, format: string = null, defaultFps: number = 25) {
+    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 'f', defaultFps: number = 25) {
         let minute: number = Math.floor(seconds / 60);
         let formatTime: string;
         const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);
@@ -48,6 +48,18 @@ export class FormatUtils {
                 formatTime = hoursStr + ':' + minuteStr + ':' + secondsStr + ':' + milliseconds.toFixed(2).split('.')[1];
         }
         return formatTime;
+    }
+
+    /**
+     *  Formatting a string in java is using
+     * @param str A format string
+     * @param val Arguments referenced by the format specifiers in the format string
+     */
+    public static formatString(str: string, ...val: string[]) {
+        for (let index = 0; index < val.length; index++) {
+            str = str.replace(`{${index}}`, val[index]);
+        }
+        return str;
     }
 
 }

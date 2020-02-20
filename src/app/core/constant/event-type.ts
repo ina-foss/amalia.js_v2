@@ -3,27 +3,27 @@
  */
 export enum PlayerEventType {
     /**
-     * Fired when the player has initialized.
+     * Invoked when the player has initialized.
      */
     INIT = 'ina.player.INIT',
     /**
-     * Fired when the player has started with duration.
+     * Invoked when the player has started with duration.
      */
     STARTED = 'ina.player.STARTED',
     /**
-     * Fires when playing event.
+     * Invoked when playing event.
      */
     CAST_PLAYING = 'ina.player.CAST_PLAYING',
     /**
-     * Fires the paused/resumed
+     * Invoked the paused/resumed
      */
     CAST_PAUSED = 'ina.player.CAST_PAUSED',
     /**
-     * Fires when playing event.
+     * Invoked when playing event.
      */
     PLAYING = 'ina.player.PLAYING',
     /**
-     * Fires the paused/resumed
+     * Invoked the paused/resumed
      */
     PAUSED = 'ina.player.PAUSED',
     /**
@@ -31,7 +31,7 @@ export enum PlayerEventType {
      */
     ENDED = 'ina.player.ENDED',
     /**
-     * This fires when the volume level is equal to 0.
+     * Invoked when the volume level is equal to 0.
      */
     MUTE = 'ina.player.MUTE',
     /**
@@ -48,73 +48,81 @@ export enum PlayerEventType {
      * 'percent'
      */
     TIME_CHANGE = 'ina.player.TIME_CHANGE',
+
     /**
-     * This fires when full-screen mode change
+     * Invoked on media duration changed
      */
-    FULLSCREEN_CHANGE = 'ina.player.FULLSCREEN_CHANGES',
+    DURATION_CHANGE = 'ina.player.DURATION_CHANGE',
     /**
-     * Fired when the user seeks.
+     * Invoked on full-screen state mode change
      */
-    SEEK = 'ina.player.SEEK',
+    FULLSCREEN_STATE_CHANGE = 'ina.player.FULLSCREEN_STATE_CHANGE',
     /**
-     * Fired when a media error has occurred.
+     * Invoked when the user seeks.
+     */
+    SEEKED = 'ina.player.SEEKED',
+    /**
+     * Invoked when A seek operation began.
+     */
+    SEEKING = 'ina.player.SEEKING',
+
+    /**
+     * Invoked when data change
+     */
+    DATA_CHANGE = 'ina.player.DATA_CHANGE',
+    /**
+     * Invoked at the beginning of data change
+     */
+    BEGIN_DATA_CHANGE = 'ina.player.BEGIN_DATA_CHANGE',
+    /**
+     * Invoked end of data change
+     */
+    END_DATA_CHANGE = 'ina.player.END_DATA_CHANGE',
+    /**
+     * Invoked when image capture
+     */
+    IMAGE_CAPTURE = 'ina.player.IMAGE_CAPTURE',
+    /**
+     * Invoked when zoom range change
+     */
+    ZOOM_RANGE_CHANGE = 'ina.player.ZOOM_RANGE_CHANGE',
+    /**
+     * Invoked when selected metadata has changed
+     */
+    SELECTED_METADATA_CHANGE = 'ina.player.SELECTED_METADATA_CHANGE',
+    /**
+     * Invoked when selected item has changed
+     */
+    SELECTED_ITEMS_CHANGE = 'ina.player.SELECTED_ITEMS_CHANGE',
+    /**
+     * Invoked when bind metadata
+     */
+    BIND_METADATA = 'ina.player.BIND_METADATA',
+    /**
+     * Invoked when unbind metadata
+     */
+    UNBIND_METADATA = 'ina.player.UNBIND_METADATA',
+    /**
+     * Invoked when unbind metadata
+     */
+    PLAYBACK_RATE_CHANGE = 'ina.player.PLAYBACK_RATE_CHANGE',
+    /**
+     * Invoked when Stop Seeking
+     */
+    START_SEEKING = 'ina.player.START_SEEKING',
+    /**
+     * Invoked when Stop Seeking
+     */
+    STOP_SEEKING = 'ina.player.STOP_SEEKING',
+
+    /**
+     * Invoked when a media error has occurred.
      */
     ERROR = 'ina.player.ERROR',
 
     /**
-     * Fired when a plugin error has occurred.
+     * Invoked when a plugin error has occurred.
      */
     PLUGIN_ERROR = 'ina.player.PLUGIN_ERROR',
-    /**
-     * Fired when data change
-     */
-    DATA_CHANGE = 'ina.player.DATA_CHANGE',
-    /**
-     * Fired at the beginning of data change
-     */
-    BEGIN_DATA_CHANGE = 'ina.player.BEGIN_DATA_CHANGE',
-    /**
-     * Fired end of data change
-     */
-    END_DATA_CHANGE = 'ina.player.END_DATA_CHANGE',
-    /**
-     * Fired when image capture
-     */
-    IMAGE_CAPTURE = 'ina.player.IMAGE_CAPTURE',
-    /**
-     * Fired when zoom range change
-     */
-    ZOOM_RANGE_CHANGE = 'ina.player.ZOOM_RANGE_CHANGE',
-    /**
-     * Fired when selected metadata has changed
-     */
-    SELECTED_METADATA_CHANGE = 'ina.player.SELECTED_METADATA_CHANGE',
-    /**
-     * Fired when selected item has changed
-     */
-    SELECTED_ITEMS_CHANGE = 'ina.player.SELECTED_ITEMS_CHANGE',
-    /**
-     * Fired when bind metadata
-     */
-    BIND_METADATA = 'ina.player.BIND_METADATA',
-    /**
-     * Fired when unbind metadata
-     */
-    UNBIND_METADATA = 'ina.player.UNBIND_METADATA',
-    /**
-     * Fired when unbind metadata
-     */
-    PLAYBACK_RATE_CHANGE = 'ina.player.PLAYBACK_RATE_CHANGE',
-    /**
-     * Fired when Stop Seeking
-     */
-    START_SEEKING = 'ina.player.START_SEEKING',
-    /**
-     * Fired when Stop Seeking
-     */
-    STOP_SEEKING = 'ina.player.STOP_SEEKING',
-    /**
-     * Fired when seeking
-     */
-    SEEKING = 'ina.player.SEEKING',
+
 }

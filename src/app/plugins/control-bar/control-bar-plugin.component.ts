@@ -3,12 +3,16 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MediaPlayerElement} from '../../core/media-player-element';
 import {DefaultLogger} from '../../core/logger/default-logger';
 import * as _ from 'lodash';
+import {PlayerEventType} from '../../core/constant/event-type';
+import {AutoBind} from '../../core/decorator/auto-bind.decorator';
+import {ControlBarConfig} from '../../core/config/model/control-bar-config';
+
 
 @Component({
     selector: 'amalia-control-bar',
     templateUrl: './control-bar-plugin.component.html',
     styleUrls: ['./control-bar-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.Emulated
+    encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ControlBarPluginComponent extends PluginBase implements OnInit {
     /**
@@ -19,10 +23,6 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      * Volume right side
      */
     public volumeRight = 100;
-    /**
-     * State for store volume
-     */
-    public sameVolume = true;
     /**
      * Selected aspectRatio
      */
@@ -36,10 +36,18 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      * Media duration
      */
     public duration: number;
+
+    public stateControl: 'small' | 'large' = 'large';
+
+    /**
+     * On slide progress bar
+     */
+    private isSliding = false;
+
     /**
      * list of controls
      */
-    private readonly listOfControls = new Array<{ 'label': string, icon?: string, 'control': string, 'zone'?: number, order?: number }>();
+    private readonly listOfControls = new Array<ControlBarConfig>();
 
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
@@ -63,7 +71,13 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
 
         // Expert
         this.listOfControls.push({label: 'Barre de progression', control: 'progressBar'});
-        this.listOfControls.push({label: 'Capture Image', control: 'screenshot', icon: 'screenshot', zone: 1});
+        this.listOfControls.push({
+            label: 'Capture Image',
+            control: 'download',
+            icon: 'screenshot',
+            zone: 1,
+            data: {href: 'http://localhost:4200/assets/logo.svg'}
+        });
 
         this.listOfControls.push({label: 'backward-start', icon: 'backward-start', control: 'backward-start', zone: 2});
         this.listOfControls.push({label: 'backward-frame', icon: 'backward-frame', control: 'backward-frame', zone: 2});
@@ -73,11 +87,15 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
         this.listOfControls.push({label: 'forward', icon: 'forward', control: 'forward', zone: 2});
         this.listOfControls.push({label: 'forward-5seconds', icon: 'forward-5seconds', control: 'forward-5seconds', zone: 2});
         this.listOfControls.push({label: 'forward-frame', icon: 'forward-frame', control: 'forward-frame', zone: 2});
-        this.listOfControls.push({label: 'forward-end', icon: 'forward-end', control: 'forward-frame', zone: 2});
+        this.listOfControls.push({label: 'forward-end', icon: 'forward-end', control: 'forward-end', zone: 2});
 
         this.listOfControls.push({label: 'Volume', control: 'volume', zone: 3});
         this.listOfControls.push({label: 'Fullscreen', control: 'pause', icon: 'fullscreen', zone: 3});
         this.listOfControls.push({label: 'Aspect ratio (a)', control: 'aspectRatio', zone: 3});
+
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
     }
 
     /**
@@ -95,28 +113,50 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
                 mediaPlayer.playPause();
                 break;
             case 'screenshot':
-                mediaPlayer.captureImage();
+                mediaPlayer.captureImage(100);
                 break;
+            case 'backward':
+                this.logger.warn('Control not implemented', control);
+                break;
+            case 'backward-5seconds':
+                mediaPlayer.movePrevFrame(5);
+                break;
+            case 'backward-frame':
+                mediaPlayer.movePrevFrame(1);
+                break;
+            case 'backward-start':
+                mediaPlayer.seekToBegin();
+                break;
+            case 'forward':
+                this.logger.warn('Control not implemented', control);
+                break;
+            case 'forward-5seconds':
+                mediaPlayer.moveNextFrame(5);
+                break;
+            case 'forward-frame':
+                mediaPlayer.moveNextFrame(1);
+                break;
+            case 'forward-end':
+                mediaPlayer.seekToEnd();
+                break;
+
+            case 'download':
+                mediaPlayer.seekToEnd();
+                break;
+
             default:
                 this.logger.warn('Control not implemented', control);
                 break;
         }
     }
 
+    /**
+     * Change volume
+     * @param value volume percentage
+     * @param volumeSide volume side (l or r)
+     */
     public changeVolume(value: string | number, volumeSide?: string) {
-        this.logger.debug(`Volume change ${volumeSide} ${value} with same volume ${this.sameVolume}`);
-        const volume = Number(value);
-        if (this.sameVolume) {
-            this.volumeLeft = volume;
-            this.volumeRight = volume;
-        } else {
-            if (volumeSide === 'r') {
-                this.volumeRight = volume;
-            } else if (volumeSide === 'l') {
-                this.volumeLeft = volume;
-            }
-        }
-        this.mediaPlayerElement.getMediaPlayer().setVolume(volume);
+        this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
     }
 
     /**
@@ -128,22 +168,64 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
         return !(control && control.hasOwnProperty('zone') && control.zone);
     }
 
+    /**
+     * Invoked on mouse move
+     * @param event mouseEvent
+     */
+    public moveSliderCursor(value: any) {
+        this.logger.info('moveSliderCursor ', value);
+        this.currentTime = value * this.duration / 100;
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+    }
+
+    /**
+     * Change volume state
+     */
     private changeSameVolumeState() {
-        this.sameVolume = !this.sameVolume;
-        if (this.sameVolume) {
+        this.mediaPlayerElement.getMediaPlayer().withMergeVolume = !this.mediaPlayerElement.getMediaPlayer().withMergeVolume;
+        if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
             this.changeVolume(Math.min(this.volumeRight, this.volumeLeft));
         }
     }
 
     /**
-     * return list controls by zone id
+     * Return list controls by zone id
      * @param zone zone id
      */
-    private getControlsByZone(zone: number): Array<{ 'label': string, icon?: string, 'control': string, 'zone'?: number, order?: number }> {
+    private getControlsByZone(zone: number): Array<ControlBarConfig> {
         // Sort by order attribute
         _.sortBy(this.listOfControls, [(o) => {
             return (o.order) ? o.order : 0;
         }]);
         return _.filter(this.listOfControls, {zone});
     }
+
+    /**
+     * Invoked time change event for :
+     * - update progress bar
+     */
+    @AutoBind
+    private handleOnTimeChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+    }
+
+    /**
+     * Invoked on volume change :
+     * - change left volume
+     */
+    @AutoBind
+    private handleOnVolumeChange() {
+        this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+        this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
+    }
+
+    /**
+     * Invoked on duration change
+     */
+    @AutoBind
+    private handleOnDurationChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+    }
+
 }

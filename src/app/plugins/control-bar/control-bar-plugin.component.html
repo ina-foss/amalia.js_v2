@@ -1,27 +1,35 @@
-<div *ngIf="hasComponentWithoutZone('progressBar')" class="control progress-bar">
+<div *ngIf="hasComponentWithoutZone('progressBar')" class="control progress-bar {{stateControl}}">
     <div class="ui-slider">
-        <div class="ui-slider-progress" [style]="{width:currentTime+'%'}"></div>
-        <input type="range" min="0" [max]="duration" value="50" class="slider" [(ngModel)]="currentTime">
+        <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
+        <input type="range" class="slider" min="0" [value]="(currentTime/duration)*100" #progressBar
+               (change)="moveSliderCursor(progressBar.value)">
     </div>
 </div>
-<div class="column" *ngFor="let colId of [1,2,3]; index as i; last as isLast;"
-     [ngClass]="{'last':isLast,'mid':i===1} ">
+<div *ngFor="let colId of [1,2,3]; index as i; last as isLast;" [ngClass]="{'last':isLast,'mid':i===1} "
+     class="column {{stateControl}}">
     <!-- ngSwitch by controls-->
     <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
-        <div title="{{c.label}}" class="play-pause control" *ngSwitchCase="'playPause'"
-             (click)="controlClicked(c.control)">
-            <svg class="amalia-svg-play-size icon" *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()">
+        <div (click)="controlClicked(c.control)" *ngSwitchCase="'playPause'" class="play-pause control"
+             title="{{c.label}}">
+            <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
             </svg>
-            <svg class="amalia-svg-pause-size icon" *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()">
+            <svg *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-pause-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#pause'"></use>
             </svg>
         </div>
-        <div title="{{c.label}}" class="aspect-ratio" *ngSwitchCase="'aspectRatio'">
+        <div *ngSwitchCase="'aspectRatio'" class="aspect-ratio" title="{{c.label}}">
             {{aspectRatio}}
         </div>
+        <div *ngSwitchCase="'download'" class="control download" title="{{c.label}}">
+            <a [href]="c.data?.href" [download]="c.label" target="_blank">
+                <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                </svg>
+            </a>
+        </div>
         <!--Volume-->
-        <div title="{{c.label}}" class="volume control" *ngSwitchCase="'volume'">
+        <div *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}">
             <svg class="amalia-svg-volume-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
             </svg>
@@ -30,39 +38,43 @@
                     <div class="header-list">Volume (m)</div>
                     <div class="channel-volume-control">
                         <div class="channel-volume-control-left">
-                            <div class="channel-volume-icon" (click)="changeVolume( volumeLeft==0 ? 100:0,'l')">
+                            <div (click)="changeVolume( volumeLeft==0 ? 100:0,'l')" class="channel-volume-icon">
                                 <svg class="amalia-svg-volume-on-size icon">
                                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                                 </svg>
                             </div>
                             <div class="left-volume-slider ui-slider">
-                                <div class="ui-slider-progress" [style]="{width:volumeLeft+'%'}"></div>
-                                <input type="range" min="1" max="100" value="50" class="slider"
-                                       [(ngModel)]="volumeLeft" #leftVolumeSlider
-                                       (change)="changeVolume(leftVolumeSlider.value,'l')">
+                                <div [style]="{width:volumeLeft+'%'}" class="ui-slider-progress"></div>
+                                <input #leftVolumeSlider (change)="changeVolume(leftVolumeSlider.value,'l')"
+                                       [(ngModel)]="volumeLeft" class="slider" max="100"
+                                       min="1" type="range"
+                                       value="50">
                             </div>
                             <div class="channel-volume-info"><span class="text-volume">G</span></div>
                         </div>
                         <div class="channel-volume-control-mid on"></div>
                         <div class="channel-volume-control-right">
-                            <div class="channel-volume-icon" (click)="changeVolume( volumeRight==0 ? 100:0,'r')">
+                            <div (click)="changeVolume( volumeRight==0 ? 100:0,'r')" class="channel-volume-icon">
                                 <svg class="amalia-svg-volume-on-size icon">
                                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                                 </svg>
                             </div>
                             <div class="right-volume-slider ui-slider ">
-                                <div class="ui-slider-progress" [style]="{width:volumeRight+'%'}"></div>
-                                <input type="range" min="1" max="100" value="50" class="slider"
-                                       #rightVolumeSlider [(ngModel)]="volumeRight"
-                                       (change)="changeVolume(rightVolumeSlider.value,'r')">
+                                <div [style]="{width:volumeRight+'%'}" class="ui-slider-progress"></div>
+                                <input #rightVolumeSlider (change)="changeVolume(rightVolumeSlider.value,'r')"
+                                       [(ngModel)]="volumeRight" class="slider" max="100"
+                                       min="1" type="range"
+                                       value="50">
                             </div>
                             <div class="channel-volume-info"><span class="text-volume">D</span></div>
                         </div>
-                        <div class="channel-volume-info-mid" (click)="changeSameVolumeState()">
-                            <svg class="amalia-svg-padlock-open-size icon" *ngIf="!sameVolume">
+                        <div (click)="changeSameVolumeState()" class="channel-volume-info-mid">
+                            <svg *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume"
+                                 class="amalia-svg-padlock-open-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#padlock-open'"></use>
                             </svg>
-                            <svg class="amalia-svg-padlock-close-size icon" *ngIf="sameVolume">
+                            <svg *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
+                                 class="amalia-svg-padlock-close-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#padlock-close'"></use>
                             </svg>
                         </div>
@@ -71,10 +83,8 @@
             </div>
         </div>
         <!--Other controls-->
-        <div title="{{c.label}}" class="control" (click)="controlClicked(c.control)"
-             *ngSwitchDefault
-             (click)="controlClicked(c.control)">
-            <svg class="amalia-svg-{{c.icon}}-size icon">
+        <div class="control" title="{{c.label}}" (click)="controlClicked(c.control)" *ngSwitchDefault>
+            <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
             </svg>
         </div>

@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
 import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
 import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
@@ -12,6 +12,8 @@ import {Converter} from '../core/converter/converter';
 import {Metadata} from '@ina/amalia-model';
 import {environment} from '../../environments/environment';
 import {PlayerState} from '../core/constant/player-state';
+import {PlayerEventType} from '../core/constant/event-type';
+import {AutoBind} from '../core/decorator/auto-bind.decorator';
 
 @Component({
     selector: 'amalia-player',
@@ -24,6 +26,7 @@ export class AmaliaComponent implements OnInit {
      * version of player
      */
     public version = environment.VERSION;
+
     /**
      * player state
      */
@@ -33,54 +36,77 @@ export class AmaliaComponent implements OnInit {
      * Selected aspectRatio
      */
     public aspectRatio: '16by9' | '4by3' = '4by3';
+
     /**
      * True for shown context menu
      */
     public contextMenuState: boolean;
+
     /**
      * player state 4by3
      */
     public PlayerState = PlayerState;
+
     /**
      * Player configuration
      */
     @Input()
-    public playerConfig: ConfigData = {player: {src: 'https://www.w3schools.com/html/mov_bbb.mp4'}};
+    public playerConfig: ConfigData = {player: {src: 'https://www.w3schools.com/html/mov_bbb.mp4', crossOrigin: 'anonymous'}};
+
     /**
      * Config loader in charge to load config data
      */
     @Input()
     public configLoader: Loader<ConfigData>;
+
     /**
      * Metadata converter, converter metadata parameter
      */
     @Input()
     public metadataConverter: Converter<Metadata>;
+
     /**
      * Metadata loader
      */
     @Input()
     public metadataLoader: Loader<Array<Metadata>>;
+
     /**
-     * containe media player
+     * Amalia events
+     */
+    @Output()
+    public amaliaEvent = new EventEmitter();
+
+    /**
+     * get video html element
      */
     @ViewChild('video', {static: true})
-    public mediaPlayer: ElementRef<HTMLMediaElement>;
+    public mediaPlayer: ElementRef<HTMLVideoElement>;
 
+    /**
+     * Get context menu html element
+     */
     @ViewChild('contextMenu', {static: true})
-    public contextMenu: ElementRef<HTMLMediaElement>;
+    public contextMenu: ElementRef<HTMLElement>;
+
     /**
      * true when player load content
      */
     private inLoading = false;
+
     /**
      * true when player load content
      */
     private inError = false;
+
     /**
      * In charge to load resource
      */
     private readonly httpClient: HttpClient;
+    /**
+     * Amalia player main manager
+     */
+    private readonly _mediaPlayerElement: MediaPlayerElement;
 
     constructor(mediaPlayerElement: MediaPlayerElement, httpClient: HttpClient) {
         this.httpClient = httpClient;
@@ -95,11 +121,6 @@ export class AmaliaComponent implements OnInit {
     get logger(): DefaultLogger {
         return this._logger;
     }
-
-    /**
-     * Amalia player main manager
-     */
-    private _mediaPlayerElement: MediaPlayerElement;
 
     /**
      * In charge to return media element
@@ -122,6 +143,8 @@ export class AmaliaComponent implements OnInit {
             this._mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
                 .then((state) => this.onInitConfig(state))
                 .catch((state) => this.onErrorInitConfig(state));
+            // bind events
+            this.bindEvents();
         } else {
             this._logger.error('Error to initialize media player element.');
         }
@@ -138,6 +161,24 @@ export class AmaliaComponent implements OnInit {
         this.contextMenu.nativeElement.style.left = `${event.clientX - defaultMouseMargin}px`;
         this.contextMenu.nativeElement.style.top = `${event.clientY - defaultMouseMargin}px`;
         return false;
+    }
+
+    /**
+     * In charge to bin events
+     */
+    private bindEvents() {
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.onPlaying);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.IMAGE_CAPTURE, this.onCaptureImage);
+    }
+
+    @AutoBind
+    private onPlaying() {
+        this.logger.info('player is player in the amalia component');
+    }
+
+    @AutoBind
+    private onCaptureImage(event: any) {
+        this.logger.info('Image captured', event);
     }
 
     /**

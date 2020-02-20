@@ -4,7 +4,7 @@ import {FormatUtils} from './format-utils';
 
 @Pipe({name: 'tcFormat'})
 export class TcFormatPipe implements PipeTransform {
-    transform(tc: number, format: string = null, defaultFps: number = 25) {
+    transform(tc: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = null, defaultFps: number = 25) {
         return FormatUtils.formatTime(tc, format, defaultFps);
     }
 }

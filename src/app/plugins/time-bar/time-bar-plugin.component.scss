@@ -16,6 +16,10 @@
   div {
     padding: 5px;
     color: white;
+
+    &.small {
+      display: none;
+    }
   }
 
 

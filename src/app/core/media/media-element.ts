@@ -1,11 +1,32 @@
+import {LoggerInterface} from '../logger/logger-interface';
+import {EventEmitter} from 'events';
+import {PlayerEventType} from '../constant/event-type';
+import {AutoBind} from '../decorator/auto-bind.decorator';
+
 /**
  * Media element
  */
 export class MediaElement {
-    private readonly mediaElement: HTMLMediaElement;
+    private readonly mediaElement: HTMLVideoElement;
+    private readonly eventEmitter: EventEmitter;
+    private readonly logger: LoggerInterface;
+    private volumeLeft: number;
+    private volumeRight: number;
 
-    constructor(mediaElement: HTMLMediaElement) {
+    constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, logger: LoggerInterface) {
         this.mediaElement = mediaElement;
+        this.eventEmitter = eventEmitter;
+        this.logger = logger;
+    }
+
+    private _withMergeVolume = true;
+
+    get withMergeVolume(): boolean {
+        return this._withMergeVolume;
+    }
+
+    set withMergeVolume(value: boolean) {
+        this._withMergeVolume = value;
     }
 
     private _framerate = 25;
@@ -60,31 +81,56 @@ export class MediaElement {
 
     /**
      * Invoked to set media source and autoplay
+     * @param src media source
+     * @param crossOrigin value example anonymous
      */
-    setSrc(src: string | MediaStream | MediaSource | Blob | null) {
+    setSrc(src: string | MediaStream | MediaSource | Blob | null, crossOrigin ?: string): void {
         if (typeof src === 'string') {
-            this.mediaElement.src = src;
+            const source = document.createElement('source');
+            source.src = src;
+            if (crossOrigin) {
+                source.setAttribute('crossorigin', crossOrigin);
+            }
+            this.mediaElement.append(source);
         } else {
             // Todo HSL
             // this.mediaPlayer.srcObject = this.configurationManager.getCoreConfig().player.src.getSrc();
         }
+        // init handle events
+        this.initPlayerEvents();
     }
 
     /**
      * Returns the player's current volume, an integer between 0 and 100. Note that getVolume()
      * will return the volume even if the player is muted.
      */
-    getVolume(): number {
-        return this.mediaElement ? this.mediaElement.volume * 100 : 0;
+    getVolume(side?: 'r' | 'l'): number {
+        if (side) {
+            return (side === 'l') ? this.volumeLeft : this.volumeRight;
+        } else {
+            return this.mediaElement ? this.mediaElement.volume * 100 : 0;
+        }
     }
 
     /**
      * Sets the volume. Accepts an integer between 0 and 100.
      */
-    setVolume(volume: number): void {
-        if (this.mediaElement) {
-            this.mediaElement.volume = volume / 100;
+    setVolume(volume: number, volumeSide?: string) {
+        this.logger.debug(`setVolume change side :${volumeSide} volume: ${volume} with same volume ${this._withMergeVolume}`);
+        if (this._withMergeVolume) {
+            this.volumeLeft = volume;
+            this.volumeRight = volume;
+        } else {
+            if (volumeSide === 'r') {
+                this.volumeRight = volume;
+            } else if (volumeSide === 'l') {
+                this.volumeLeft = volume;
+            } else {
+                this.volumeRight = volume;
+                this.volumeLeft = volume;
+            }
         }
+        this.mediaElement.volume = Math.min(volume / 100, 1);
     }
 
     /**
@@ -203,9 +249,14 @@ export class MediaElement {
 
     /**
      * In charge to capture image
+     * @return image base 64
      */
-    captureImage() {
-
+    captureImage(scale: number): string {
+        const image = this.getCurrentImage(scale);
+        if (image) {
+            this.eventEmitter.emit(PlayerEventType.IMAGE_CAPTURE, image);
+        }
+        return image;
     }
 
     /**
@@ -218,4 +269,163 @@ export class MediaElement {
             this.pause();
         }
     }
+
+    /**
+     * In charge to init player events
+     */
+    private initPlayerEvents() {
+        this.mediaElement.addEventListener('loadstart', this.handleLoadstart);
+        this.mediaElement.addEventListener('playing', this.handlePlay);
+        this.mediaElement.addEventListener('pause', this.handlePause);
+        this.mediaElement.addEventListener('ended', this.handleEnd);
+        this.mediaElement.addEventListener('durationchange', this.handleDurationchange);
+        this.mediaElement.addEventListener('timeupdate', this.handleTimeupdate);
+        this.mediaElement.addEventListener('volumechange', this.handleVolumeChange);
+        this.mediaElement.addEventListener('seeked', this.handleSeeked);
+        this.mediaElement.addEventListener('seeking', this.handleSeeking);
+        this.mediaElement.addEventListener('resize', this.handleResize);
+
+        this.mediaElement.addEventListener('waiting', this.handleWaiting);
+        this.mediaElement.addEventListener('suspend', this.handleWaiting);
+        // Error handle
+        this.mediaElement.querySelector('source').addEventListener('error', this.onSourceError);
+
+        document.addEventListener('fullscreenchange ', this.handleFullscreenHandler);
+    }
+
+    /**
+     * Invoked when first frame of the media has finished loading.
+     */
+    @AutoBind
+    private handleLoadstart() {
+        this.logger.debug('onLoadstart');
+        this.eventEmitter.emit(PlayerEventType.INIT);
+    }
+
+    /**
+     * Invoked when Playback has begun.
+     */
+    @AutoBind
+    private handlePlay() {
+        this.eventEmitter.emit(PlayerEventType.PLAYING);
+    }
+
+    /**
+     * Invoked when Playback has been paused.
+     */
+    @AutoBind
+    private handlePause() {
+        this.logger.debug('handlePause');
+        this.eventEmitter.emit(PlayerEventType.PAUSED);
+    }
+
+    /**
+     * Invoked when playback has stopped because the end of the media was reached.
+     */
+    @AutoBind
+    private handleEnd() {
+        this.logger.debug('handleEnd');
+        this.eventEmitter.emit(PlayerEventType.ENDED);
+    }
+
+    /**
+     * Invoked when the duration attribute has been updated.
+     */
+    @AutoBind
+    private handleDurationchange() {
+        this.logger.debug('handleDurationchange');
+        this.eventEmitter.emit(PlayerEventType.DURATION_CHANGE);
+    }
+
+    /**
+     * The time indicated by the currentTime attribute has been updated.
+     */
+    @AutoBind
+    private handleTimeupdate() {
+        this.logger.debug('handleTimeupdate');
+        this.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
+    }
+
+    /**
+     * Invoked when a seek operation completed.
+     */
+    @AutoBind
+    private handleSeeked() {
+        this.logger.debug('handleSeeked');
+        this.eventEmitter.emit(PlayerEventType.SEEKED);
+    }
+
+    /**
+     * Invoked when a seek operation began.
+     */
+    @AutoBind
+    private handleSeeking() {
+        this.logger.debug('handleSeeking');
+        this.eventEmitter.emit(PlayerEventType.SEEKING);
+    }
+
+    /**
+     * Invoked when the volume has changed.
+     */
+    @AutoBind
+    private handleVolumeChange() {
+        this.logger.debug('handleVolumeChange');
+        this.eventEmitter.emit(PlayerEventType.VOLUME_CHANGE);
+    }
+
+
+    /**
+     * Invoked when the fullscreen state changed.
+     */
+    @AutoBind
+    private handleFullscreenHandler() {
+        this.logger.debug('handleFullscreenHandler');
+        this.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
+    }
+
+    /**
+     * Invoked when  The volume has changed.
+     */
+    @AutoBind
+    private onSourceError() {
+        this.logger.debug('onSourceError');
+        this.eventEmitter.emit(PlayerEventType.ERROR);
+    }
+
+    /**
+     * Invoked when  The volume has changed.
+     */
+    @AutoBind
+    private handleWaiting() {
+        this.logger.debug('handleWaiting');
+    }
+
+    /**
+     * Invoked when player resized
+     */
+    @AutoBind
+    private handleResize() {
+        this.logger.debug('Player resized !');
+    }
+
+    /**
+     * Return current image
+     * @param scale max 1=> 100%
+     */
+    private getCurrentImage(scale) {
+        try {
+            const videoContent = this.mediaElement;
+            const canvas: HTMLCanvasElement = document.createElement('canvas');
+            scale = (scale) ? Math.min(1, parseFloat(scale)) : 1;
+            canvas.width = videoContent.videoWidth * scale;
+            canvas.height = videoContent.videoHeight * scale;
+            canvas.getContext('2d').drawImage(videoContent, 0, 0, canvas.width, canvas.height);
+            return canvas.toDataURL('image/png');
+        } catch (error) {
+            this.logger.warn('Error to create image capture', error.stack);
+        }
+        return null;
+    }
+
+
 }

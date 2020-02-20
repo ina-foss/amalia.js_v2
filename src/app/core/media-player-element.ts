@@ -11,6 +11,7 @@ import {PluginConfigData} from './config/model/plugin-config-data';
 import {Inject, Injectable} from '@angular/core';
 import {DefaultLogger} from './logger/default-logger';
 import {MediaElement} from './media/media-element';
+import {EventEmitter} from 'events';
 
 
 /**
@@ -24,9 +25,16 @@ export class MediaPlayerElement {
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
     private readonly logger: LoggerInterface;
+    private readonly _eventEmitter: EventEmitter;
 
     constructor(@Inject(DefaultLogger) logger: LoggerInterface) {
         this.logger = logger;
+        this._eventEmitter = new EventEmitter();
+    }
+
+
+    get eventEmitter(): EventEmitter {
+        return this._eventEmitter;
     }
 
     /**
@@ -55,7 +63,7 @@ export class MediaPlayerElement {
                     this.state = PlayerState.INITIALIZED;
                     // set media source specified by config
                     this.setMediaSource();
-                    // todo
+                    // TODO : load metadata
                     this.loadDataSources().then(ds => this.logger.info('', ds));
                     resolve(this.state);
                 },
@@ -84,8 +92,8 @@ export class MediaPlayerElement {
     /**
      * Set media element
      */
-    public setMediaPlayer(mediaPlayer: HTMLMediaElement): void {
-        this.mediaPlayer = new MediaElement(mediaPlayer);
+    public setMediaPlayer(mediaPlayer: HTMLVideoElement): void {
+        this.mediaPlayer = new MediaElement(mediaPlayer, this._eventEmitter, this.logger);
         this.logger.debug('set media player', mediaPlayer);
     }
 
@@ -100,18 +108,9 @@ export class MediaPlayerElement {
      * In charge to put element on full screen
      * @param element to put in fullscreen
      */
-    openFullscreen(element) {
+    openFullscreen(element: HTMLElement) {
         if (element.requestFullscreen) {
             element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) {
-            /* Firefox */
-            element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) {
-            /* Chrome, Safari and Opera */
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-            /* IE/Edge */
-            element.msRequestFullscreen();
         }
     }
 
@@ -119,20 +118,12 @@ export class MediaPlayerElement {
      * In charge to exit fullscreen
      * @param document main document element
      */
-    closeFullscreen(document) {
+    closeFullscreen() {
         if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            /* Firefox */
-            document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-            /* Chrome, Safari and Opera */
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            /* IE/Edge */
-            document.msExitFullscreen();
+            document.exitFullscreen().then(() => this.logger.debug('exitFullscreen mode'));
         }
     }
+
 
     /**
      * In charge to load configuration

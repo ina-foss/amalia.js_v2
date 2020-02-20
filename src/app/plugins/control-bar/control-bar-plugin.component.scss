@@ -19,6 +19,10 @@
     max-height: 50px;
     flex: 1;
 
+    &.small {
+      display: none;
+    }
+
     &.mid {
       text-align: center;
     }
@@ -32,6 +36,7 @@
   .control {
     padding: 5px 5px 5px 5px;
     display: inline;
+
 
     .ui-slider {
       position: relative;
@@ -86,14 +91,40 @@
       padding: 0;
       margin: 0;
 
+      &.small {
+        display: none;
+      }
+
       .ui-slider {
+        background-color: grey;
+        height: 5px;
+        top: 10px;
+
         .slider {
           height: 5px;
+          top: -9px;
+          position: relative;
+          background: transparent;
         }
 
         .ui-slider-progress {
           height: 5px;
-          top: 10px;
+          top: 0px;
+        }
+
+        .ui-slider-cursor {
+          height: 15px;
+          position: absolute;
+          width: 15px;
+          display: block;
+          border-radius: 15px;
+          top: -5px;
+          cursor: pointer;
+          background-color: $amalia-primary-color;
+
+          &:hover {
+            transform: scale(1.2);
+          }
         }
       }
     }
