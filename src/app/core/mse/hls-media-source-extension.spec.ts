@@ -31,10 +31,10 @@ describe('Test HLS Source extension', () => {
             'Ux4WTJpc25TV3NnQUh0Z3NWeGZWTEpKSXFwbmdXNUVodnd2dFZZT0s2dUlDb3RLemR0KzZ2cFkvRkVERmN6VzdTUHNqR25hUzYxZXBIOUJxUWJINmJ1VUIyYTRyS' +
             'UJ0SURUWmVsVndFcTFGRi9hZWsyN0U1UlhaNEF6VC9zbF9pdi9lenA3dnp3MWlnWEMzOUtHdXZTMG9RPT0vc2xfaG0vc2VnLTItdjEtYTEudHMKI0VYVC1YLUVOR' +
             'ExJU1QK';
-     /*   expect(HLSMediaSourceExtension.isUrl(m3u8Url)).toEqual(true);
+        expect(HLSMediaSourceExtension.isUrl(m3u8Url)).toEqual(true);
 
         expect(HLSMediaSourceExtension.isUrl(m3u8List))
-            .toEqual(false);*/
+            .toEqual(false);
     });
 });
 

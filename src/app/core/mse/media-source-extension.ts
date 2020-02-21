@@ -6,7 +6,7 @@ import {PlayerConfigData} from '../config/model/player-config-data';
 export interface MediaSourceExtension {
 
     /**
-     * In charge to set source
+     * Invoked to set source
      * @param src media source
      * @param crossOrigin media crossOrigin
      */
@@ -14,12 +14,18 @@ export interface MediaSourceExtension {
 
 
     /**
-     * In charge to get source
+     * Invoked to get source
      */
     getSrc(): string | MediaStream | MediaSource | Blob | null;
 
     /**
-     * In charge clean buffer
+     * Invoked for clean buffer
      */
     destroy(): void;
+
+    /**
+     * Invoked when error to load source,
+     * Emmit event Error
+     */
+    handleError(): void;
 }

@@ -23,4 +23,22 @@ export class MPEGDashMediaSourceExtension implements MediaSourceExtension {
     setSrc(src: any) {
         throw new AmaliaException('Not implemented');
     }
+
+    /**
+     * Not implemented
+     * @throws AmaliaException
+     */
+    destroy(): void {
+        throw new AmaliaException('Not implemented');
+    }
+
+    /**
+     * Not implemented
+     * @throws AmaliaException
+     */
+    handleError(): void {
+        throw new AmaliaException('Not implemented');
+    }
+
+
 }
