@@ -10,7 +10,7 @@ export class FormatUtils {
      * @param defaultFps frames per second
      * @return return format time
      */
-    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 'f', defaultFps: number = 25) {
+    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's', defaultFps: number = 25) {
         let minute: number = Math.floor(seconds / 60);
         let formatTime: string;
         const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);

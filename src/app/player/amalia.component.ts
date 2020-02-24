@@ -51,7 +51,36 @@ export class AmaliaComponent implements OnInit {
      * Player configuration
      */
     @Input()
-    public playerConfig: ConfigData = {player: {src: 'https://www.w3schools.com/html/mov_bbb.mp4', crossOrigin: 'anonymous'}};
+    public playerConfig: ConfigData = {
+        player: {
+            // src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+            // src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+            src: 'I0VYVE0zVQojRVhULVgtVkVSU0lPTjozCiNFWFQtWC1QTEFZTElTVC1UWVBFOlZPRAojRVhULVgtVEFSR0' +
+                'VURFVSQVRJT046MgojRVhULVgtTUVESUEtU0VRVUVOQ0U6MQojRVhUSU5GOjEwLjAsCmh0dHBzOi8vd3MtbWVkaWEtY3B1LmluYS5mci9tZWRpYXMvZWZw' +
+                'L3NLWFV6cnJOaHJadHEvdEpuRVFVZ3drangzdDc1bGJteUNObWM3ZWJTK3cvelBkTk5SUWdqUmlYWWJrSmxHNCszb25pQXpVTjlMTGE2TWNhQ3kvNTJxMlF' +
+                'nQ0ZSK1RYQkxWb2ZqV2FhVW85OS9xZVdwNEhRWmlZdDhGQmtvdTdQZFN5K1dvcEdiNzVGVVhRTVJhR2lRUHFSSlRudCt3K0hBMG1XSmJheS9DSFJmUHM3S0' +
+                '9VRmZVblZNU0ROUGNCcUcxTEZ0Ky9ZQ3dCWmdkWm1TK0pXTnFIVFF3Q0xDWUZXQkg3RE1PTDBFZUY0SEYvZE9INTd4MG1HcFMwUGU0RVpoOThtQWUwNExBcU' +
+                '5YcFpYNWxodm5kSzVYVlorbUkvRHpPRlNXMjNuZFROd2MwSEt5OWIzNUJnTWl3N2tlUDluRGFrRmhSSDlDdlBqQjFEd0FWRW16LzRuQk4wNDJtVndhZE5hQ3' +
+                'QvN3A1MTAvR0Q2dE1wemRWUnVjbldUdUVURzkycURQZHVRM2l4Rzk1cC90N3NMVmpLM1hpU2xJaU41KzJscXh3UnVBK2pmNzRzOXhSdW5XYUhvZ3FwaHBwNU' +
+                'lRcHFMZFJLWnJnVWNPZHRPMDQyL1REQ0lBdXNJN1BUdXBWRytTOFl6eUtLa1VGc0RDanhSOUNGOHFoekpBT3FlOGRaVkxDZzdhWXFUVXd1T1V4TCtaT1BaNX' +
+                'I0RHdSa05zTEVlRTg1Ui9UUVByUWpQUkk3dkkzR09VTXVHRXV6RVlMeFkyaXNuU1dzZ0FIdGdzVnhmVkxKSklxcG5nVzVFaHZ3dnRWWU9LNnVJQ290S3pkdC' +
+                's2dnBZL0ZFREZjelc3U1BzakduYVM2MWVwSDlCcVFiSDZidVVCMmE0cklCdElEVFplbFZ3RXExRkYvYWVrMjdFNVJYWjRBelQvc2xfaXYvZXpwN3Z6dzFpZ1' +
+                'hDMzlLR3V2UzBvUT09L3NsX2htL3NlZy0xLXYxLWExLnRzCiNFWFRJTkY6MTAuMCwKaHR0cHM6Ly93cy1tZWRpYS1jcHUuaW5hLmZyL21lZGlhcy9lZnAvc0' +
+                'tYVXpyck5oclp0cS90Sm5FUVVnd2tqeDN0NzVsYm15Q05tYzdlYlMrdy96UGROTlJRZ2pSaVhZYmtKbEc0KzNvbmlBelVOOUxMYTZNY2FDeS81MnEyUWdDRl' +
+                'IrVFhCTFZvZmpXYWFVbzk5L3FlV3A0SFFaaVl0OEZCa291N1BkU3krV29wR2I3NUZVWFFNUmFHaVFQcVJKVG50K3crSEEwbVdKYmF5L0NIUmZQczdLT1VGZl' +
+                'VuVk1TRE5QY0JxRzFMRnQrL1lDd0JaZ2RabVMrSldOcUhUUXdDTENZRldCSDdETU9MMEVlRjRIRi9kT0g1N3gwbUdwUzBQZTRFWmg5OG1BZTA0TEFxTlhwWl' +
+                'g1bGh2bmRLNVhWWittSS9Eek9GU1cyM25kVE53YzBIS3k5YjM1QmdNaXc3a2VQOW5EYWtGaFJIOUN2UGpCMUR3QVZFbXovNG5CTjA0Mm1Wd2FkTmFDdC83cD' +
+                'UxMC9HRDZ0TXB6ZFZSdWNuV1R1RVRHOTJxRFBkdVEzaXhHOTVwL3Q3c0xWakszWGlTbElpTjUrMmxxeHdSdUEramY3NHM5eFJ1bldhSG9ncXBocHA1SVFwcU' +
+                'xkUktacmdVY09kdE8wNDIvVERDSUF1c0k3UFR1cFZHK1M4WXp5S0trVUZzRENqeFI5Q0Y4cWh6SkFPcWU4ZFpWTENnN2FZcVRVd3VPVXhMK1pPUFo1cjREd1' +
+                'JrTnNMRWVFODVSL1RRUHJRalBSSTd2STNHT1VNdUdFdXpFWUx4WTJpc25TV3NnQUh0Z3NWeGZWTEpKSXFwbmdXNUVodnd2dFZZT0s2dUlDb3RLemR0KzZ2cF' +
+                'kvRkVERmN6VzdTUHNqR25hUzYxZXBIOUJxUWJINmJ1VUIyYTRySUJ0SURUWmVsVndFcTFGRi9hZWsyN0U1UlhaNEF6VC9zbF9pdi9lenA3dnp3MWlnWEMzOU' +
+                'tHdXZTMG9RPT0vc2xfaG0vc2VnLTItdjEtYTEudHMKI0VYVC1YLUVORExJU1QK',
+            hls: {
+                enable: true,
+            },
+            crossOrigin: 'anonymous'
+        }
+    };
 
     /**
      * Config loader in charge to load config data

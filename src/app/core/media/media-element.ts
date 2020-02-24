@@ -2,23 +2,63 @@ import {LoggerInterface} from '../logger/logger-interface';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from '../constant/event-type';
 import {AutoBind} from '../decorator/auto-bind.decorator';
+import {MediaSourceExtension} from '../mse/media-source-extension';
+import {PlayerConfigData} from '../config/model/player-config-data';
+import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
+import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
+
 
 /**
  * Media element
  */
 export class MediaElement {
+    public static DEFAULT_FRAMERATE = 25;
     private readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
     private readonly logger: LoggerInterface;
+    private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
 
+    /**
+     * Init media element for handle html video element
+     * @param mediaElement html video element
+     * @param eventEmitter event emitter
+     * @param logger logger
+     */
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, logger: LoggerInterface) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
         this.logger = logger;
     }
 
+    /**
+     * Selected audio channel
+     */
+    private _audioChannel = 1;
+
+    get audioChannel(): number {
+        return this._audioChannel;
+    }
+
+    set audioChannel(value: number) {
+        this._audioChannel = value;
+    }
+
+    private _playbackRate = 1;
+
+    get playbackRate(): number {
+        return this._playbackRate;
+    }
+
+    set playbackRate(value: number) {
+        this._playbackRate = value;
+        this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, value);
+    }
+
+    /**
+     * To handle merge channel state
+     */
     private _withMergeVolume = true;
 
     get withMergeVolume(): boolean {
@@ -29,6 +69,9 @@ export class MediaElement {
         this._withMergeVolume = value;
     }
 
+    /**
+     * Video framerate used for foreword and backward
+     */
     private _framerate = 25;
 
     get framerate(): number {
@@ -80,23 +123,24 @@ export class MediaElement {
     }
 
     /**
-     * Invoked to set media source and autoplay
+     * Invoked to set media source and autoplay, by default
      * @param src media source
      * @param crossOrigin value example anonymous
      */
-    setSrc(src: string | MediaStream | MediaSource | Blob | null, crossOrigin ?: string): void {
-        if (typeof src === 'string') {
-            const source = document.createElement('source');
-            source.src = src;
-            if (crossOrigin) {
-                source.setAttribute('crossorigin', crossOrigin);
-            }
-            this.mediaElement.append(source);
-        } else {
-            // Todo HSL
-            // this.mediaPlayer.srcObject = this.configurationManager.getCoreConfig().player.src.getSrc();
+    setSrc(config: PlayerConfigData): void {
+        // remove old mse config
+        if (this.mse) {
+            this.mse.destroy();
         }
-        // init handle events
+        if ((config.hls && config.hls.enable) || config.src.toString().search(/.m3u8/) !== -1) {
+            this.mse = new HLSMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
+            this.logger.info('Init media source with HLS media extension');
+        } else {
+            this.mse = new DefaultMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
+        }
+        this.mse.setSrc(config);
+        this.playbackRate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
+        // Init handle events
         this.initPlayerEvents();
     }
 
@@ -287,8 +331,6 @@ export class MediaElement {
 
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
-        // Error handle
-        this.mediaElement.querySelector('source').addEventListener('error', this.onSourceError);
 
         document.addEventListener('fullscreenchange ', this.handleFullscreenHandler);
     }
@@ -383,14 +425,6 @@ export class MediaElement {
         this.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 
-    /**
-     * Invoked when  The volume has changed.
-     */
-    @AutoBind
-    private onSourceError() {
-        this.logger.debug('onSourceError');
-        this.eventEmitter.emit(PlayerEventType.ERROR);
-    }
 
     /**
      * Invoked when  The volume has changed.
