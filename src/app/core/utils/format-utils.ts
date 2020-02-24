@@ -1,6 +1,8 @@
 /**
  * Utils for format
  */
+import {AmaliaException} from '../exception/amalia-exception';
+
 export class FormatUtils {
     /**
      * Method in charge to format time
@@ -44,8 +46,9 @@ export class FormatUtils {
             case 'f' :
                 formatTime = hoursStr + ':' + minuteStr + ':' + secondsStr + ':' + fpsStr;
                 break;
-            default :
-                formatTime = hoursStr + ':' + minuteStr + ':' + secondsStr + ':' + milliseconds.toFixed(2).split('.')[1];
+            default:
+                throw new AmaliaException('Unknown time format');
+            break;
         }
         return formatTime;
     }

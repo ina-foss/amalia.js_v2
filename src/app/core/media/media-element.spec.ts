@@ -19,6 +19,26 @@ describe('Test Media element', () => {
 
     it('Media player element ', () => {
         expect(component).toBeTruthy();
+        expect(component.audioChannel).toEqual(1);
+        component.audioChannel = 2;
+        expect(component.audioChannel).toEqual(2);
+    });
+    it('test playbackrate setter and getter' , () => {
+        expect(component.playbackRate).toEqual(1);
+    });
+    it('Tests merge volume' , () => {
+        expect(component.withMergeVolume).toEqual(true);
+        component.withMergeVolume = false;
+        expect(component.withMergeVolume).toEqual(false);
+    });
+    it('Tests framerate' , () => {
+        expect(component.framerate).toEqual(25);
+        component.framerate = 60;
+        expect(component.framerate).toEqual(60);
+    });
+    it('Tests poster' , () => {
+        component.poster = '../assets/image.png';
+        expect(component.poster).toEqual('../assets/image.png');
     });
 });
 
