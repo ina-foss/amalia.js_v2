@@ -196,18 +196,26 @@ export class AmaliaComponent implements OnInit {
      * In charge to bin events
      */
     private bindEvents() {
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.onPlaying);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.IMAGE_CAPTURE, this.onCaptureImage);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlaying);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.IMAGE_CAPTURE, this.handleCaptureImage);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
     }
 
     @AutoBind
-    private onPlaying() {
+    private handlePlaying() {
         this.logger.info('player is player in the amalia component');
     }
 
     @AutoBind
-    private onCaptureImage(event: any) {
+    private handleCaptureImage(event: any) {
         this.logger.info('Image captured', event);
+    }
+
+
+    @AutoBind
+    private handleError(event: any) {
+        this.inError = true;
+        this.logger.error('Error', event);
     }
 
     /**

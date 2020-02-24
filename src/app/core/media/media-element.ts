@@ -234,7 +234,7 @@ export class MediaElement {
      */
     moveNextFrame(nbFrames = 1) {
         this.pause();
-        this.setCurrentTime(this.getCurrentTime() + ((1 / this.framerate) * nbFrames));
+        this.setCurrentTime(Math.max(0, this.getCurrentTime() + ((1 / this.framerate) * nbFrames)));
     }
 
     /**
@@ -243,7 +243,7 @@ export class MediaElement {
      */
     movePrevFrame(nbFrames = 1) {
         this.pause();
-        this.setCurrentTime(Math.max(0, this.getCurrentTime() + ((1 / this.framerate) * nbFrames)));
+        this.setCurrentTime(Math.max(0, this.getCurrentTime() - ((1 / this.framerate) * nbFrames)));
     }
 
     /**
