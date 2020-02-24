@@ -27,5 +27,5 @@ export interface MediaSourceExtension {
      * Invoked when error to load source,
      * Emmit event Error
      */
-    handleError(): void;
+    handleError(event): void;
 }

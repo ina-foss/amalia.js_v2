@@ -5,7 +5,7 @@ import {AutoBind} from '../decorator/auto-bind.decorator';
 import {MediaSourceExtension} from '../mse/media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
-import {HLSMediaSourceExtension} from '../mse/hls-media-source-extension';
+import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
 
 
 /**
@@ -123,7 +123,7 @@ export class MediaElement {
     }
 
     /**
-     * Invoked to set media source and autoplay
+     * Invoked to set media source and autoplay, by default
      * @param src media source
      * @param crossOrigin value example anonymous
      */
@@ -132,14 +132,15 @@ export class MediaElement {
         if (this.mse) {
             this.mse.destroy();
         }
-        if (config.hls && config.hls.enable) {
+        if ((config.hls && config.hls.enable) || config.src.toString().search(/.m3u8/) !== -1) {
             this.mse = new HLSMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
+            this.logger.info('Init media source with HLS media extension');
         } else {
             this.mse = new DefaultMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
         }
         this.mse.setSrc(config);
         this.playbackRate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
-        // init handle events
+        // Init handle events
         this.initPlayerEvents();
     }
 

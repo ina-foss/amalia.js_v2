@@ -39,7 +39,6 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 [Doc](https://blog.jetbrains.com/webstorm/2017/01/debugging-angular-apps/)
 
 
-
 ## NPM configuration
 
 ### Config repo ina

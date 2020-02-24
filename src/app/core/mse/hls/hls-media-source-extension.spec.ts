@@ -1,5 +1,5 @@
 import {async} from '@angular/core/testing';
-import {HLSMediaSourceExtension} from './hsl-media-source-extension';
+import {HLSMediaSourceExtension} from './hls-media-source-extension';
 
 describe('Test HLS Source extension', () => {
 

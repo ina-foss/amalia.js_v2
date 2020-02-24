@@ -33,7 +33,6 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
             source.src = this.mediaSrc;
             if (config.crossOrigin) {
                 source.setAttribute('crossorigin', config.crossOrigin);
-
             }
             // Error handle
             source.addEventListener('error', this.handleError);
@@ -52,10 +51,9 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
     }
 
     @AutoBind
-    handleError(): void {
-        this.logger.error('Error to load source');
+    handleError(event): void {
+        this.logger.error('Error to load source', event);
         this.eventEmitter.emit(PlayerEventType.ERROR);
     }
-
 
 }

@@ -149,7 +149,7 @@ export class MediaPlayerElement {
      */
     private setMediaSource(): void {
         if (this.mediaPlayer && this.configurationManager.getCoreConfig().player && this.configurationManager.getCoreConfig().player.src) {
-            this.mediaPlayer.setSrc(this.configurationManager.getCoreConfig().player.src);
+            this.mediaPlayer.setSrc(this.configurationManager.getCoreConfig().player);
             this.logger.info('Set media source SRC : ', this.configurationManager.getCoreConfig().player.src);
         } else {
             this.logger.error('Error to set media source');

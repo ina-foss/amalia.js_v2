@@ -13,8 +13,8 @@ describe('Test Format utils', () => {
     }));
 
     it('Test FormatTime test default', () => {
-        expect(FormatUtils.formatTime(3600)).toContain('01:00:00:00');
-        expect(FormatUtils.formatTime(3600 + 2700 + 1.21)).toContain('01:45:01:21');
+        expect(FormatUtils.formatTime(3600)).toContain('01:00:00');
+        expect(FormatUtils.formatTime(3600 + 2700 + 1.21)).toContain('01:45:01');
     });
     it('Test FormatTime test hour', () => {
         expect(FormatUtils.formatTime(3600 + 2700, 'h')).toContain('01');
@@ -54,8 +54,6 @@ describe('Test Format utils', () => {
     it('Test FormatTime test frames', () => {
         const defaultFps = 25;
         const customFps = 60;
-        expect(FormatUtils.formatTime(3600)).toContain('01:00:00:00');
-        expect(FormatUtils.formatTime(3600 + 2700)).toContain('01:45:00:00');
         expect(FormatUtils.formatTime(3600 + 2700 + 25 + (1 / defaultFps), 'f', defaultFps)).toContain('01:45:25:01');
         expect(FormatUtils.formatTime(3600 + 2700 + 25 + (1 / defaultFps * 2), 'f', defaultFps)).toContain('01:45:25:02');
         expect(FormatUtils.formatTime(3600 + 2700 + 25 + (0.04 * 10), 'f', defaultFps)).toContain('01:45:25:10');
