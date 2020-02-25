@@ -139,7 +139,7 @@ export class MediaElement {
             this.mse = new DefaultMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
         }
         this.mse.setSrc(config);
-        this.playbackRate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
+        this.framerate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
         // Init handle events
         this.initPlayerEvents();
     }
@@ -243,7 +243,7 @@ export class MediaElement {
      */
     movePrevFrame(nbFrames = 1) {
         this.pause();
-        this.setCurrentTime(Math.max(0, this.getCurrentTime() + ((1 / this.framerate) * nbFrames)));
+        this.setCurrentTime(Math.max(0, this.getCurrentTime() - ((1 / this.framerate) * nbFrames)));
     }
 
     /**
