@@ -220,13 +220,12 @@ export class MediaElement {
         // model rewind
         if (this.modelRewind) {
             clearInterval(this.intervalRewind);
-            this._playbackRate = 1;
             this.intervalRewind = setInterval(() => {
                 this.mediaElement.playbackRate = 1;
                 let currentTime = this.getCurrentTime();
                 if (currentTime === 0) {
                     clearInterval(this.intervalRewind);
-                    this._playbackRate = 1;
+                    speed = 1;
                     this.pause();
                 } else {
                     currentTime += speed;
@@ -241,6 +240,7 @@ export class MediaElement {
                 this.mediaElement.playbackRate = speed;
             }
         }
+        this._playbackRate = speed;
         this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
     }
 

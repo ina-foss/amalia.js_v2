@@ -9,7 +9,7 @@ import {OnInit} from '@angular/core';
 export abstract class PluginBase implements OnInit {
     protected pluginName: string;
     protected pluginConfiguration: PluginConfigData;
-    protected readonly mediaPlayerElement: MediaPlayerElement;
+    public readonly mediaPlayerElement: MediaPlayerElement;
     protected readonly logger: DefaultLogger;
 
     protected constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {

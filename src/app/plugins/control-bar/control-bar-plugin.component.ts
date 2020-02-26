@@ -225,7 +225,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
     /**
      * Change volume state
      */
-    private changeSameVolumeState() {
+    public changeSameVolumeState() {
         this.mediaPlayerElement.getMediaPlayer().withMergeVolume = !this.mediaPlayerElement.getMediaPlayer().withMergeVolume;
         if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
             this.changeVolume(Math.min(this.volumeRight, this.volumeLeft));
@@ -236,7 +236,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      * Return list controls by zone id
      * @param zone zone id
      */
-    private getControlsByZone(zone: number): Array<ControlBarConfig> {
+    public getControlsByZone(zone: number): Array<ControlBarConfig> {
         return _.filter(this.listOfControls, {zone});
     }
 

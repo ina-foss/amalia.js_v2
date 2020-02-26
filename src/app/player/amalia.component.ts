@@ -121,12 +121,12 @@ export class AmaliaComponent implements OnInit {
     /**
      * true when player load content
      */
-    private inLoading = false;
+    public inLoading = false;
 
     /**
      * true when player load content
      */
-    private inError = false;
+    public inError = false;
 
     /**
      * In charge to load resource
