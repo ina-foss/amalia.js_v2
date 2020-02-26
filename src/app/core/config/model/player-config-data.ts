@@ -11,4 +11,5 @@ export interface PlayerConfigData {
     data?: any;
     framerate?: number;
     hls?: { enable: boolean, config?: Hls.Config };
+    mpegDash?: { enable: boolean, config?: any };
 }

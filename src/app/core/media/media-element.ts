@@ -6,6 +6,7 @@ import {MediaSourceExtension} from '../mse/media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
+import {AmaliaException} from '../exception/amalia-exception';
 
 
 /**
@@ -19,6 +20,8 @@ export class MediaElement {
     private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
+    private modelRewind = false;
+    private intervalRewind = null;
 
     /**
      * Init media element for handle html video element
@@ -53,7 +56,8 @@ export class MediaElement {
 
     set playbackRate(value: number) {
         this._playbackRate = value;
-        this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, value);
+        this.setPlaybackRate(value);
+
     }
 
     /**
@@ -135,11 +139,15 @@ export class MediaElement {
         if ((config.hls && config.hls.enable) || config.src.toString().search(/.m3u8/) !== -1) {
             this.mse = new HLSMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
             this.logger.info('Init media source with HLS media extension');
+        } else if ((config.mpegDash && config.mpegDash.enable) || config.src.toString().search(/.mpd/) !== -1) {
+            // TODO Mpeg dash
+            throw new AmaliaException('Not implemented');
         } else {
             this.mse = new DefaultMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
         }
+
         this.mse.setSrc(config);
-        this.playbackRate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
+        this._framerate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
         // Init handle events
         this.initPlayerEvents();
     }
@@ -199,7 +207,7 @@ export class MediaElement {
      * @returns the current playback speed of the audio/video.
      */
     getPlaybackRate(): number | null {
-        return this.mediaElement ? this.mediaElement.playbackRate : null;
+        return this.playbackRate ? this.playbackRate : this.mediaElement.playbackRate;
     }
 
     /**
@@ -207,9 +215,24 @@ export class MediaElement {
      * @param speed the current playback speed of the audio/video.
      * @returns the current playback speed of the audio/video.
      */
-    setPlaybackRate(speed: number = 0) {
-        if (speed <= 0) {
-            // TODO
+    setPlaybackRate(speed: number) {
+        this.modelRewind = (this.playbackRate < 0);
+        // model rewind
+        if (this.modelRewind) {
+            clearInterval(this.intervalRewind);
+            this._playbackRate = 1;
+            this.intervalRewind = setInterval(() => {
+                this.mediaElement.playbackRate = 1;
+                let currentTime = this.getCurrentTime();
+                if (currentTime === 0) {
+                    clearInterval(this.intervalRewind);
+                    this._playbackRate = 1;
+                    this.pause();
+                } else {
+                    currentTime += speed;
+                    this.setCurrentTime(currentTime);
+                }
+            }, 30);
         } else {
             if (this.isPaused()) {
                 this.play();
@@ -218,6 +241,7 @@ export class MediaElement {
                 this.mediaElement.playbackRate = speed;
             }
         }
+        this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
     }
 
     /**

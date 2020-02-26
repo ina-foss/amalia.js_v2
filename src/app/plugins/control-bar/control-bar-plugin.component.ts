@@ -1,5 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {MediaPlayerElement} from '../../core/media-player-element';
 import {DefaultLogger} from '../../core/logger/default-logger';
 import * as _ from 'lodash';
@@ -15,6 +15,8 @@ import {ControlBarConfig} from '../../core/config/model/control-bar-config';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ControlBarPluginComponent extends PluginBase implements OnInit {
+    @Input()
+    public listOfPlaybackRate = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
     /**
      * Volume left side
      */
@@ -27,7 +29,6 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      * Selected aspectRatio
      */
     public aspectRatio: '16by9' | '4by3' = '4by3';
-
     /**
      * return  current time
      */
@@ -36,18 +37,16 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      * Media duration
      */
     public duration: number;
-
-    public stateControl: 'small' | 'large' = 'large';
-
     /**
-     * On slide progress bar
+     * Player playback rate
      */
-    private isSliding = false;
-
+    public currentPlaybackRate = 1;
+    public stateControl: 'small' | 'large' = 'large';
     /**
      * list of controls
      */
     private readonly listOfControls = new Array<ControlBarConfig>();
+
 
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
@@ -92,10 +91,13 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
         this.listOfControls.push({label: 'Volume', control: 'volume', zone: 3});
         this.listOfControls.push({label: 'Fullscreen', control: 'pause', icon: 'fullscreen', zone: 3});
         this.listOfControls.push({label: 'Aspect ratio (a)', control: 'aspectRatio', zone: 3});
+        this.listOfControls.push({label: 'Playback Rate', control: 'playbackRate', zone: 3});
 
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
     }
 
     /**
@@ -116,7 +118,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
                 mediaPlayer.captureImage(100);
                 break;
             case 'backward':
-                this.logger.warn('Control not implemented', control);
+                this.prevPlaybackRate();
                 break;
             case 'backward-5seconds':
                 mediaPlayer.movePrevFrame(5);
@@ -128,7 +130,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
                 mediaPlayer.seekToBegin();
                 break;
             case 'forward':
-                this.logger.warn('Control not implemented', control);
+                this.nextPlaybackRate();
                 break;
             case 'forward-5seconds':
                 mediaPlayer.moveNextFrame(5);
@@ -139,11 +141,9 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
             case 'forward-end':
                 mediaPlayer.seekToEnd();
                 break;
-
             case 'download':
                 mediaPlayer.seekToEnd();
                 break;
-
             default:
                 this.logger.warn('Control not implemented', control);
                 break;
@@ -179,6 +179,35 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
     }
 
     /**
+     * Invoked for change aspect ratio
+     */
+    public changeAspectRatio() {
+        this.mediaPlayerElement.aspectRatio = (this.aspectRatio === '4by3') ? '16by9' : '4by3';
+    }
+
+    /**
+     * Invoked on change playback rate
+     */
+    public onChangePlaybackRate(value) {
+        this.currentPlaybackRate = value;
+        this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+    }
+
+    /**
+     * Return interval min value
+     */
+    public getPlaybackRateIntervalMinValue() {
+        return _.min(this.listOfPlaybackRate);
+    }
+
+    /**
+     * Return interval max value
+     */
+    public getPlaybackRateIntervalMaxValue() {
+        return _.max(this.listOfPlaybackRate);
+    }
+
+    /**
      * Change volume state
      */
     private changeSameVolumeState() {
@@ -199,6 +228,42 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
         }]);
         return _.filter(this.listOfControls, {zone});
     }
+
+    /**
+     * Invoked for change playback rate
+     */
+    private prevPlaybackRate() {
+        let indexOfCurrentPlaybackRate = this.listOfPlaybackRate.indexOf(this.currentPlaybackRate);
+        if (indexOfCurrentPlaybackRate !== -1) {
+            indexOfCurrentPlaybackRate = Math.max(0, indexOfCurrentPlaybackRate - 1);
+            this.changePlaybackRate(this.listOfPlaybackRate[indexOfCurrentPlaybackRate]);
+        } else {
+            this.logger.warn('Error to found selected playback rate');
+        }
+    }
+
+    /**
+     * Invoked for change playback rate
+     */
+    private nextPlaybackRate() {
+        let indexOfCurrentPlaybackRate = this.listOfPlaybackRate.indexOf(this.currentPlaybackRate);
+        if (indexOfCurrentPlaybackRate !== -1) {
+            indexOfCurrentPlaybackRate = Math.min(indexOfCurrentPlaybackRate + 1, this.listOfPlaybackRate.length - 1);
+            this.changePlaybackRate(this.listOfPlaybackRate[indexOfCurrentPlaybackRate]);
+        } else {
+            this.logger.warn('Error to found selected playback rate');
+        }
+    }
+
+
+    /**
+     * Invoked for change playback rate
+     */
+    private changePlaybackRate(value: number) {
+        this.currentPlaybackRate = value;
+        this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+    }
+
 
     /**
      * Invoked time change event for :
@@ -226,6 +291,24 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+    }
+
+    /**
+     * Invoked on playback change
+     * @param event playback rate
+     */
+    @AutoBind
+    private handlePlaybackRateChange(event) {
+        this.logger.info('Playback rate change', event);
+    }
+
+    /**
+     * Invoked on aspect ratio change
+     * @param event aspect ratio
+     */
+    @AutoBind
+    private handleAspectRatioChange(event) {
+        this.aspectRatio = event;
     }
 
 }

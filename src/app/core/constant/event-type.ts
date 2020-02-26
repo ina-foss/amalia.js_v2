@@ -128,6 +128,10 @@ export enum PlayerEventType {
     /**
      * Invoked when audio channel changed
      */
-    AUDIO_CHANNEL_CHANGE = 'audioChannelChange',
+    AUDIO_CHANNEL_CHANGE = 'ina.player.audioChannelChange',
+    /**
+     * Invoked when audio channel changed
+     */
+    ASPECT_RATIO_CHANGE = 'ina.player.aspectRatioChange',
 
 }

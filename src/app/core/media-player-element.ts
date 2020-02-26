@@ -12,6 +12,7 @@ import {Inject, Injectable} from '@angular/core';
 import {DefaultLogger} from './logger/default-logger';
 import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
+import {PlayerEventType} from './constant/event-type';
 
 
 /**
@@ -32,6 +33,19 @@ export class MediaPlayerElement {
         this._eventEmitter = new EventEmitter();
     }
 
+    /**
+     * Selected aspectRatio
+     */
+    private _aspectRatio: '16by9' | '4by3' = '4by3';
+
+    get aspectRatio(): '16by9' | '4by3' {
+        return this._aspectRatio;
+    }
+
+    set aspectRatio(value: '16by9' | '4by3') {
+        this._aspectRatio = value;
+        this.eventEmitter.emit(PlayerEventType.ASPECT_RATIO_CHANGE, value);
+    }
 
     get eventEmitter(): EventEmitter {
         return this._eventEmitter;
