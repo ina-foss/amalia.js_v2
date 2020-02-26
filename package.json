@@ -9,6 +9,7 @@
     "gendoc": "typedoc --out docs/api src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md --theme docs/api-theme",
     "build": "npm run build-icon && ng build --prod --extraWebpackConfig webpack.extra.js --output-hashing none --single-bundle true",
     "build-icon": "svg-sprite -C svg-sprite.config.json src/styles/svgs/*.svg",
+    "start-samples": "npm run build && cp -r build/ samples/libs/ && http-server samples -p 4201",
     "test": "ng test --codeCoverage=true",
     "sonar": "node sonar.conf.js",
     "lint": "ng lint",
