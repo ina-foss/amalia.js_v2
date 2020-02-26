@@ -43,6 +43,10 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
     public currentPlaybackRate = 1;
     public stateControl: 'small' | 'large' = 'large';
     /**
+     * Volume slider state
+     */
+    public enableVolumeSlider = false;
+    /**
      * list of controls
      */
     private readonly listOfControls = new Array<ControlBarConfig>();
@@ -75,8 +79,19 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
             control: 'download',
             icon: 'screenshot',
             zone: 1,
+            order: 2,
             data: {href: 'http://localhost:4200/assets/logo.svg'}
         });
+
+        this.listOfControls.push({
+            label: 'Download',
+            control: 'download',
+            icon: 'download',
+            zone: 1,
+            order: 1,
+            data: {href: 'http://localhost:4200/assets/logo.svg'}
+        });
+        this.listOfControls.push({label: 'Playback Rate', control: 'playbackRate', zone: 1});
 
         this.listOfControls.push({label: 'backward-start', icon: 'backward-start', control: 'backward-start', zone: 2});
         this.listOfControls.push({label: 'backward-frame', icon: 'backward-frame', control: 'backward-frame', zone: 2});
@@ -91,7 +106,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
         this.listOfControls.push({label: 'Volume', control: 'volume', zone: 3});
         this.listOfControls.push({label: 'Fullscreen', control: 'pause', icon: 'fullscreen', zone: 3});
         this.listOfControls.push({label: 'Aspect ratio (a)', control: 'aspectRatio', zone: 3});
-        this.listOfControls.push({label: 'Playback Rate', control: 'playbackRate', zone: 3});
+
 
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -104,7 +119,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      * Invoked player with specified control function name
      * @param control control name
      */
-    public controlClicked(control: string, a?: any) {
+    public controlClicked(control: string) {
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
         switch (control) {
@@ -170,7 +185,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
 
     /**
      * Invoked on mouse move
-     * @param event mouseEvent
+     * @param value change value
      */
     public moveSliderCursor(value: any) {
         this.logger.info('moveSliderCursor ', value);
@@ -222,10 +237,6 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      * @param zone zone id
      */
     private getControlsByZone(zone: number): Array<ControlBarConfig> {
-        // Sort by order attribute
-        _.sortBy(this.listOfControls, [(o) => {
-            return (o.order) ? o.order : 0;
-        }]);
         return _.filter(this.listOfControls, {zone});
     }
 
