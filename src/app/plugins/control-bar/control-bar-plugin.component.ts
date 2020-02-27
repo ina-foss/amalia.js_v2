@@ -266,7 +266,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
      */
     private createPlaybackRateList() {
         this.listOfPlaybackRate = new Array<number>();
-        for (let _i = this.minPlaybackRate; _i <= this.maxPlaybackRate; _i += this.minPlaybackRate) {
+        for (let _i = this.minPlaybackRate; _i <= this.maxPlaybackRate; _i += this.stepPlaybackRate) {
             this.listOfPlaybackRate.push(_i);
         }
     }

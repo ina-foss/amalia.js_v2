@@ -18,6 +18,17 @@ Run `npm start` for a dev server. Navigate to `http://localhost:4000/`. The app 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+> Before build this script [build icon](#build-icon)
+
+## Build icon
+
+We use SVG Sprites With Fragment Identifiers for optimization the rendering of the icons. 
+For build SVG Sprites we use only [svg-sprite](#https://github.com/jkphl/svg-sprite) module. Run `npm run build-icon`
+
+
+## Run examples
+
+Run `npm run start-examples` start static server for view examples  
 
 ## Running unit tests
 
@@ -48,7 +59,10 @@ npm set strict-ssl false
 npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots
 npm login --registry=https://repo.sas.ina/repository/npm-snapshots --scope=@ina
 ```
-
+## Publish to npm
+For publishing you need to login in local repository [config](#npm-configuration)
+Run `npm run publish-local-repo` this script use package-public.json config file for publishing to the repository.
+> Before publish you need to [build project](#build) 
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

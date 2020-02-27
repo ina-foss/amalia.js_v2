@@ -79,9 +79,6 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             // load source
             this.hlsPlayer.loadSource(this.mediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
-            // @ts-ignore
-            this.config.hls.config.fLoader._audioChannel = 2;
-            this.hlsPlayer.audioTrack = 2;
             // handle events
             this.hlsPlayer.on(Hls.Events.MANIFEST_LOADED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
