@@ -283,10 +283,12 @@
           height: 10px; /* Slider handle height */
           background: $amalia-primary-color; /* Green background */
           cursor: pointer; /* Cursor on hover */
-
+          margin-left: 20px;
         }
 
         &::-moz-range-thumb {
+          position: relative;
+          appearance: none;
           width: 25px; /* Set a specific slider handle width */
           height: 10px; /* Slider handle height */
           background: $amalia-primary-color; /* Green background */

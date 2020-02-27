@@ -110,9 +110,9 @@
 <div class="playback-rate-slider">
     <div class="playback-rate-labels">
         <input type="range" #playbackRateCursor
-               [min]="getPlaybackRateIntervalMinValue()"
-               [max]="getPlaybackRateIntervalMaxValue()" list="playback-rate-list"
-               step="2"
+               [min]="minPlaybackRate"
+               [max]="maxPlaybackRate" list="playback-rate-list"
+               step="stepPlaybackRate"
                [value]="currentPlaybackRate"
                (change)="onChangePlaybackRate(playbackRateCursor.value)">
         <datalist id="playback-rate-list">

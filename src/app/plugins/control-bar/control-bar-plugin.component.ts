@@ -16,7 +16,12 @@ import {ControlBarConfig} from '../../core/config/model/control-bar-config';
 })
 export class ControlBarPluginComponent extends PluginBase implements OnInit {
     @Input()
-    public listOfPlaybackRate = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
+    public minPlaybackRate = -10;
+    @Input()
+    public maxPlaybackRate = 10;
+
+    public listOfPlaybackRate: Array<number>;
+
     /**
      * Volume left side
      */
@@ -59,6 +64,7 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
 
     ngOnInit(): void {
         super.ngOnInit();
+        this.createPlaybackRateList();
         // Simple player
         // this.listOfControls.push({label: 'Barre de progression', control: 'progressBar'});
         // this.listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 1});
@@ -208,19 +214,6 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
     }
 
-    /**
-     * Return interval min value
-     */
-    public getPlaybackRateIntervalMinValue() {
-        return _.min(this.listOfPlaybackRate);
-    }
-
-    /**
-     * Return interval max value
-     */
-    public getPlaybackRateIntervalMaxValue() {
-        return _.max(this.listOfPlaybackRate);
-    }
 
     /**
      * Change volume state
@@ -263,6 +256,16 @@ export class ControlBarPluginComponent extends PluginBase implements OnInit {
             this.changePlaybackRate(this.listOfPlaybackRate[indexOfCurrentPlaybackRate]);
         } else {
             this.logger.warn('Error to found selected playback rate');
+        }
+    }
+
+    /**
+     * Init playback rate list
+     */
+    private createPlaybackRateList() {
+        this.listOfPlaybackRate = new Array<number>();
+        for (let _i = this.minPlaybackRate; _i <= this.maxPlaybackRate; _i++) {
+            this.listOfPlaybackRate.push(_i);
         }
     }
 
