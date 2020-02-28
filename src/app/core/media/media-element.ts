@@ -6,7 +6,6 @@ import {MediaSourceExtension} from '../mse/media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
-import {AmaliaException} from '../exception/amalia-exception';
 
 
 /**
@@ -139,9 +138,6 @@ export class MediaElement {
         if ((config.hls && config.hls.enable) || config.src.toString().search(/.m3u8/) !== -1) {
             this.mse = new HLSMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
             this.logger.info('Init media source with HLS media extension');
-        } else if ((config.mpegDash && config.mpegDash.enable) || config.src.toString().search(/.mpd/) !== -1) {
-            // TODO Mpeg dash
-            throw new AmaliaException('Not implemented');
         } else {
             this.mse = new DefaultMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
         }
