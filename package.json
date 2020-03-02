@@ -14,7 +14,7 @@
     "publish-local-repo": "cp -r package-public.json dist/amalia/package.json && cd dist/amalia && npm publish",
     "test": "ng test --codeCoverage=true",
     "build-test": "ng test --codeCoverage=true --watch=false",
-    "sonar": "node sonar.conf.js",
+    "sonar": "npm run build-test && node sonar.conf.js",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
