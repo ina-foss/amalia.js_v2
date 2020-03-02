@@ -25,9 +25,11 @@ pipeline {
         }
         stage('SonarQube analysis') {
             steps {
-                withSonarQubeEnv('sonar.priv.ina') {
-                    def scannerHome = tool 'sonar';
-                    sh "export SONAR_SCANNER_OPTS='-Xmx1024m -XX:MaxPermSize=512m'; ${scannerHome}/bin/sonar-scanner -Dsonar.projectKey='Amalia' -Dsonar.projectName='Amalia' -Dsonar.projectVersion='2.0' -Dsonar.sourceEncoding='UTF-8' -Dsonar.forceAnalysis='true' -Dsonar.projectBaseDir=. -Dsonar.sources=src/. -Dsonar.sonar.exclusions='**.spec.ts,**.mock.ts' -Dsonar.typescript.lcov.reportPaths=./coverage/amalia/lcov.info"
+                script {
+                    withSonarQubeEnv('sonar.priv.ina') {
+                        def scannerHome = tool 'sonar';
+                        sh "export SONAR_SCANNER_OPTS='-Xmx1024m -XX:MaxPermSize=512m'; ${scannerHome}/bin/sonar-scanner -Dsonar.projectKey='Amalia' -Dsonar.projectName='Amalia' -Dsonar.projectVersion='2.0' -Dsonar.sourceEncoding='UTF-8' -Dsonar.forceAnalysis='true' -Dsonar.projectBaseDir=. -Dsonar.sources=src/. -Dsonar.sonar.exclusions='**.spec.ts,**.mock.ts' -Dsonar.typescript.lcov.reportPaths=./coverage/amalia/lcov.info"
+                    }
                 }
             }
         }
