@@ -13,6 +13,8 @@ import {PluginConfigData} from '../config/model/plugin-config-data';
 import {ConfigDataSource} from '../config/model/config-data-source';
 import {ConfigData} from '../config/model/config-data';
 import {DefaultConfigLoader} from '../config/loader/default-config-loader';
+import {TimeBarConfig} from '../config/model/ time-bar-config';
+import {TimeBarPluginComponent} from '../../plugins/time-bar/time-bar-plugin.component';
 
 describe('Test Metadata manager', () => {
     let injector: TestBed;
@@ -35,7 +37,10 @@ describe('Test Metadata manager', () => {
         const player: PlayerConfigData = {
             autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
         };
-        const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
+        const pluginsConfiguration: Map<string, PluginConfigData<any>> = new Map<string, PluginConfigData<any>>();
+        const conf: PluginConfigData<TimeBarConfig> = {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f'}};
+        pluginsConfiguration.set(TimeBarPluginComponent.PLUGIN_NAME, conf);
+
         const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
         configData = {player, pluginsConfiguration, dataSources};
         const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);

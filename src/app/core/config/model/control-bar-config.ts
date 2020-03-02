@@ -1,6 +1,8 @@
 /**
  * Control bar configuration
  */
+import {CallbackHandler} from './config-data';
+
 export interface ControlBarConfig {
     /**
      * Control label
@@ -26,4 +28,9 @@ export interface ControlBarConfig {
      * Custom data control
      */
     data?: any;
+
+    /**
+     * Callback handler
+     */
+    callback?: CallbackHandler;
 }

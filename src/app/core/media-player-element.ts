@@ -12,6 +12,8 @@ import {Inject, Injectable} from '@angular/core';
 import {DefaultLogger} from './logger/default-logger';
 import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
+import {PlayerEventType} from './constant/event-type';
+import {PreferenceStorageManager} from './storage/preference-storage-manager';
 
 
 /**
@@ -24,14 +26,29 @@ export class MediaPlayerElement {
     private defaultLoader: Loader<Array<Metadata>>;
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
+    private readonly preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
 
     constructor(@Inject(DefaultLogger) logger: LoggerInterface) {
         this.logger = logger;
+        this.preferenceStorageManager = new PreferenceStorageManager();
         this._eventEmitter = new EventEmitter();
     }
 
+    /**
+     * Selected aspectRatio
+     */
+    private _aspectRatio: '16by9' | '4by3' = '4by3';
+
+    get aspectRatio(): '16by9' | '4by3' {
+        return this._aspectRatio;
+    }
+
+    set aspectRatio(value: '16by9' | '4by3') {
+        this._aspectRatio = value;
+        this.eventEmitter.emit(PlayerEventType.ASPECT_RATIO_CHANGE, value);
+    }
 
     get eventEmitter(): EventEmitter {
         return this._eventEmitter;
@@ -85,7 +102,7 @@ export class MediaPlayerElement {
     /**
      * Return configuration
      */
-    public getPluginConfiguration(pluginName: string): PluginConfigData {
+    public getPluginConfiguration(pluginName: string): PluginConfigData<any> {
         return this.configurationManager.getPluginConfiguration(pluginName);
     }
 
@@ -149,7 +166,7 @@ export class MediaPlayerElement {
      */
     private setMediaSource(): void {
         if (this.mediaPlayer && this.configurationManager.getCoreConfig().player && this.configurationManager.getCoreConfig().player.src) {
-            this.mediaPlayer.setSrc(this.configurationManager.getCoreConfig().player.src);
+            this.mediaPlayer.setSrc(this.configurationManager.getCoreConfig().player);
             this.logger.info('Set media source SRC : ', this.configurationManager.getCoreConfig().player.src);
         } else {
             this.logger.error('Error to set media source');

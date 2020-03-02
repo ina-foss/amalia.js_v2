@@ -4,6 +4,8 @@ import {MediaPlayerElement} from '../../core/media-player-element';
 import {DefaultLogger} from '../../core/logger/default-logger';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
+import {TimeBarConfig} from '../../core/config/model/ time-bar-config';
+import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 
 @Component({
     selector: 'amalia-time-bar',
@@ -11,7 +13,8 @@ import {AutoBind} from '../../core/decorator/auto-bind.decorator';
     styleUrls: ['./time-bar-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class TimeBarPluginComponent extends PluginBase implements OnInit {
+export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements OnInit {
+    public static PLUGIN_NAME = 'TIME_BAR';
     /**
      * Return  current time
      */
@@ -42,13 +45,20 @@ export class TimeBarPluginComponent extends PluginBase implements OnInit {
 
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
-        this.pluginName = 'time-bar';
+        this.pluginName = TimeBarPluginComponent.PLUGIN_NAME;
     }
 
     ngOnInit(): void {
         super.ngOnInit();
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+    }
+
+    /**
+     * Return default config
+     */
+    getDefaultConfig(): PluginConfigData<TimeBarConfig> {
+        return {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f'}};
     }
 
     /**

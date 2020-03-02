@@ -5,6 +5,7 @@ import {LoggerInterface} from '../logger/logger-interface';
 import {isArray} from 'util';
 import {ConfigDataSource} from '../config/model/config-data-source';
 import {Loader} from '../loader/loader';
+import {isArrayLike} from 'rxjs/internal-compatibility';
 
 /**
  * In charge to handle metadata
@@ -26,7 +27,7 @@ export class MetadataManager {
      */
     public init() {
         const dataSources = this.configurationManager.getCoreConfig().dataSources;
-        if (dataSources && isArray(dataSources)) {
+        if (dataSources && isArrayLike<Array<ConfigDataSource>>(dataSources)) {
             dataSources.forEach(dataSource => {
                 this.loadDataSource(dataSource);
             });
@@ -78,7 +79,7 @@ export class MetadataManager {
      * In charge to load data
      * @param loadData ConfigDataSource
      */
-    private loadDataSource(loadData: ConfigDataSource) {
+    private async loadDataSource(loadData: ConfigDataSource) {
         if (loadData && loadData.url) {
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
@@ -95,7 +96,7 @@ export class MetadataManager {
      * @param listOfMetadata list of metadata
      */
     private onMetadataLoaded(listOfMetadata: Array<Metadata>) {
-        if (listOfMetadata && isArray(listOfMetadata)) {
+        if (listOfMetadata && isArrayLike<Metadata>(listOfMetadata)) {
             for (const metadata of listOfMetadata) {
                 try {
                     this.addMetadata(metadata);

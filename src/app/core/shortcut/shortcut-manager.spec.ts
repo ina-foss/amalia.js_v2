@@ -37,7 +37,7 @@ describe('Test Shortcut manager', () => {
             poster: '',
             src: mediaSrc
         };
-        const pluginsConfiguration: Map<string, PluginConfigData> = new Map<string, PluginConfigData>();
+        const pluginsConfiguration: Map<string, PluginConfigData<any>> = new Map<string, PluginConfigData<any>>();
         const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
         const c: ConfigData = {
             player,

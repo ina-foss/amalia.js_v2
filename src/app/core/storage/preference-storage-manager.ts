@@ -13,12 +13,13 @@ export class PreferenceStorageManager {
     /**
      * Storage name
      */
-    private storageNamespace = 'ina.amalia.player';
+    private readonly storageNamespace: string;
 
     /**
-     * Init this class
+     * Init this class preference storage manager with namespace default namespace is `ina.amalia.player`
      */
-    constructor() {
+    constructor(storageNamespace: string = 'ina.amalia.player') {
+        this.storageNamespace = storageNamespace;
         this.initializeStorage();
     }
 

@@ -47,7 +47,7 @@
 
   .context-menu {
     position: absolute;
-    top: 0px;
+    top: 0;
     background-color: $amalia-ctrl-bar-bg-color;
     z-index: $amalia-context-menu-z-index;
     font-family: $amalia-font-family;
@@ -88,8 +88,17 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    line-height: 19px;
-    font-size: 14px;
+    background-color: $amalia-player-bg-color2;
+    line-height: 20px;
+    color: $amalia-player-bg-color;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: $amalia-error-z-index;
+    text-align: center;
+    font-family: $amalia-font-family;
+    svg {
+      margin-top: 5%;
+    }
   }
 
   .tooltip {
