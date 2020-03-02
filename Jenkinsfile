@@ -19,7 +19,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'npm set strict-ssl false; npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots; npm install; '
+                    sh 'npm set strict-ssl false; npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots; npm install; npm run build-test;'
                 }
             }
         }
