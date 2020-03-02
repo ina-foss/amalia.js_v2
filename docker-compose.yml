@@ -1,5 +1,9 @@
 version: '3'
 services:
+  node-devkit:
+    image: dev.cr.ina/node-devkit:lts
+    build: .
+
   sonarqube:
     image: hub.cr.ina/sonarqube
     ports:
