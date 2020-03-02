@@ -9,7 +9,7 @@ pipeline {
     }
 
     stages {
-        stage("SonarQube analysis") {
+        stage('SonarQube analysis') {
             agent {
                 docker {
                     image 'node:lts-alpine'
@@ -19,11 +19,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh "npm set strict-ssl false; npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots;  npm install; "
-                }
-                withSonarQubeEnv('sonar.priv.ina') {
-                    def scannerHome = tool 'sonar';
-                    sh "export SONAR_SCANNER_OPTS='-Xmx1024m -XX:MaxPermSize=512m'; ${scannerHome}/bin/sonar-scanner -Dsonar.projectKey='Amalia' -Dsonar.projectName='Amalia' -Dsonar.projectVersion='2.0' -Dsonar.sourceEncoding='UTF-8' -Dsonar.forceAnalysis='true' -Dsonar.projectBaseDir=. -Dsonar.sources=src/. -Dsonar.sonar.exclusions='**.spec.ts,**.mock.ts' -Dsonar.typescript.lcov.reportPaths=./coverage/amalia/lcov.info"
+                    sh 'npm set strict-ssl false; npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots; npm install; '
                 }
             }
         }
