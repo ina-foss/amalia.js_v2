@@ -12,7 +12,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'npm set strict-ssl false; npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots; npm install; npm install karma-chrome-launcher --save-dev -f;  npm run build-test;'
+                    sh 'npm set strict-ssl false; npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots; npm install; npm run build-test;'
                 }
             }
         }
