@@ -8,7 +8,7 @@ pipeline {
                     image 'dev.cr.ina/node-devkit:lts'
                     registryUrl 'https://dev.cr.ina'
                     registryCredentialsId '615401f4-404d-492c-988b-74a55a97ba19'
-                    args '-v /var/lib/jenkins/workspace/AMALIA/AMALIA_V2_SONAR:/src -w /src -e CHROME_BIN=/usr/bin/google-chrome --entrypoint=\'\''
+                    args '-v /var/lib/jenkins/workspace/AMALIA/AMALIA_V2_SONAR:/src -w /src -e CHROME_BIN=/usr/bin/chromium-browser --entrypoint=\'\''
                     reuseNode true
                 }
             }
