@@ -125,4 +125,13 @@ export enum PlayerEventType {
      */
     PLUGIN_ERROR = 'ina.player.PLUGIN_ERROR',
 
+    /**
+     * Invoked when audio channel changed
+     */
+    AUDIO_CHANNEL_CHANGE = 'ina.player.audioChannelChange',
+    /**
+     * Invoked when audio channel changed
+     */
+    ASPECT_RATIO_CHANGE = 'ina.player.aspectRatioChange',
+
 }

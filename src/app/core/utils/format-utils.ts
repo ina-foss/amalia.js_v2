@@ -1,6 +1,8 @@
 /**
  * Utils for format
  */
+import {AmaliaException} from '../exception/amalia-exception';
+
 export class FormatUtils {
     /**
      * Method in charge to format time
@@ -10,7 +12,7 @@ export class FormatUtils {
      * @param defaultFps frames per second
      * @return return format time
      */
-    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 'f', defaultFps: number = 25) {
+    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's', defaultFps: number = 25) {
         let minute: number = Math.floor(seconds / 60);
         let formatTime: string;
         const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);
@@ -44,8 +46,9 @@ export class FormatUtils {
             case 'f' :
                 formatTime = hoursStr + ':' + minuteStr + ':' + secondsStr + ':' + fpsStr;
                 break;
-            default :
-                formatTime = hoursStr + ':' + minuteStr + ':' + secondsStr + ':' + milliseconds.toFixed(2).split('.')[1];
+            default:
+                throw new AmaliaException('Unknown time format');
+            break;
         }
         return formatTime;
     }

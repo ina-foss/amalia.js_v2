@@ -2,23 +2,61 @@ import {LoggerInterface} from '../logger/logger-interface';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from '../constant/event-type';
 import {AutoBind} from '../decorator/auto-bind.decorator';
+import {MediaSourceExtension} from '../mse/media-source-extension';
+import {PlayerConfigData} from '../config/model/player-config-data';
+import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
+import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
+
 
 /**
  * Media element
  */
 export class MediaElement {
+    public static DEFAULT_FRAMERATE = 25;
     private readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
     private readonly logger: LoggerInterface;
+    private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
+    private modelRewind = false;
+    private intervalRewind = null;
 
+    /**
+     * Init media element for handle html video element
+     * @param mediaElement html video element
+     * @param eventEmitter event emitter
+     * @param logger logger
+     */
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, logger: LoggerInterface) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
         this.logger = logger;
     }
 
+    /**
+     * Selected audio channel
+     */
+    private _audioChannel = 1;
+
+    get audioChannel(): number {
+        return this._audioChannel;
+    }
+
+    set audioChannel(value: number) {
+        this._audioChannel = value;
+    }
+
+    private _playbackRate = 1;
+
+    set playbackRate(value: number) {
+        this._playbackRate = value;
+        this.setPlaybackRate(value);
+    }
+
+    /**
+     * To handle merge channel state
+     */
     private _withMergeVolume = true;
 
     get withMergeVolume(): boolean {
@@ -29,6 +67,9 @@ export class MediaElement {
         this._withMergeVolume = value;
     }
 
+    /**
+     * Video framerate used for foreword and backward
+     */
     private _framerate = 25;
 
     get framerate(): number {
@@ -56,8 +97,14 @@ export class MediaElement {
         return this.mediaElement.play();
     }
 
+    /**
+     * Invoked for paused player
+     */
     pause(): void {
-        return this.mediaElement.pause();
+        this.mediaElement.pause();
+        if (this.getPlaybackRate() !== 1) {
+            this.playbackRate = 1;
+        }
     }
 
     stop(): void {
@@ -80,23 +127,25 @@ export class MediaElement {
     }
 
     /**
-     * Invoked to set media source and autoplay
+     * Invoked to set media source and autoplay, by default
      * @param src media source
      * @param crossOrigin value example anonymous
      */
-    setSrc(src: string | MediaStream | MediaSource | Blob | null, crossOrigin ?: string): void {
-        if (typeof src === 'string') {
-            const source = document.createElement('source');
-            source.src = src;
-            if (crossOrigin) {
-                source.setAttribute('crossorigin', crossOrigin);
-            }
-            this.mediaElement.append(source);
-        } else {
-            // Todo HSL
-            // this.mediaPlayer.srcObject = this.configurationManager.getCoreConfig().player.src.getSrc();
+    setSrc(config: PlayerConfigData): void {
+        // remove old mse config
+        if (this.mse) {
+            this.mse.destroy();
         }
-        // init handle events
+        if ((config.hls && config.hls.enable) || config.src.toString().search(/.m3u8/) !== -1) {
+            this.mse = new HLSMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
+            this.logger.info('Init media source with HLS media extension');
+        } else {
+            this.mse = new DefaultMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
+        }
+
+        this.mse.setSrc(config);
+        this._framerate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
+        // Init handle events
         this.initPlayerEvents();
     }
 
@@ -155,7 +204,7 @@ export class MediaElement {
      * @returns the current playback speed of the audio/video.
      */
     getPlaybackRate(): number | null {
-        return this.mediaElement ? this.mediaElement.playbackRate : null;
+        return this.playbackRate ? this.playbackRate : this.mediaElement.playbackRate;
     }
 
     /**
@@ -163,9 +212,23 @@ export class MediaElement {
      * @param speed the current playback speed of the audio/video.
      * @returns the current playback speed of the audio/video.
      */
-    setPlaybackRate(speed: number = 0) {
-        if (speed <= 0) {
-            // TODO
+    private setPlaybackRate(speed: number) {
+        this.modelRewind = (this.playbackRate < 0);
+        // model rewind
+        if (this.modelRewind) {
+            clearInterval(this.intervalRewind);
+            this.intervalRewind = setInterval(() => {
+                this.mediaElement.playbackRate = 1;
+                let currentTime = this.getCurrentTime();
+                if (currentTime === 0) {
+                    clearInterval(this.intervalRewind);
+                    speed = 1;
+                    this.pause();
+                } else {
+                    currentTime += speed;
+                    this.setCurrentTime(currentTime);
+                }
+            }, 30);
         } else {
             if (this.isPaused()) {
                 this.play();
@@ -174,6 +237,8 @@ export class MediaElement {
                 this.mediaElement.playbackRate = speed;
             }
         }
+        this._playbackRate = speed;
+        this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
     }
 
     /**
@@ -190,7 +255,7 @@ export class MediaElement {
      */
     moveNextFrame(nbFrames = 1) {
         this.pause();
-        this.setCurrentTime(this.getCurrentTime() + ((1 / this.framerate) * nbFrames));
+        this.setCurrentTime(Math.max(0, this.getCurrentTime() + ((1 / this.framerate) * nbFrames)));
     }
 
     /**
@@ -199,7 +264,7 @@ export class MediaElement {
      */
     movePrevFrame(nbFrames = 1) {
         this.pause();
-        this.setCurrentTime(Math.max(0, this.getCurrentTime() + ((1 / this.framerate) * nbFrames)));
+        this.setCurrentTime(Math.max(0, this.getCurrentTime() - ((1 / this.framerate) * nbFrames)));
     }
 
     /**
@@ -287,8 +352,6 @@ export class MediaElement {
 
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
-        // Error handle
-        this.mediaElement.querySelector('source').addEventListener('error', this.onSourceError);
 
         document.addEventListener('fullscreenchange ', this.handleFullscreenHandler);
     }
@@ -317,6 +380,7 @@ export class MediaElement {
     private handlePause() {
         this.logger.debug('handlePause');
         this.eventEmitter.emit(PlayerEventType.PAUSED);
+        this.getPlaybackRate();
     }
 
     /**
@@ -383,14 +447,6 @@ export class MediaElement {
         this.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 
-    /**
-     * Invoked when  The volume has changed.
-     */
-    @AutoBind
-    private onSourceError() {
-        this.logger.debug('onSourceError');
-        this.eventEmitter.emit(PlayerEventType.ERROR);
-    }
 
     /**
      * Invoked when  The volume has changed.

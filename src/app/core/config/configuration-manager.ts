@@ -32,7 +32,7 @@ export class ConfigurationManager {
                 .then(config => {
                     this.configData = config;
                     if (!config.pluginsConfiguration) {
-                        this.configData.pluginsConfiguration = new Map<string, PluginConfigData>();
+                        this.configData.pluginsConfiguration = new Map<string, PluginConfigData<any>>();
                     }
                     this.logger.info('Config loaded', config);
                     resolve(true);
@@ -56,7 +56,7 @@ export class ConfigurationManager {
      * @param name plugin name
      * @param config plugin configuration
      */
-    addPluginConfiguration(name: string, config: PluginConfigData) {
+    addPluginConfiguration(name: string, config: PluginConfigData<any>) {
         this.configData.pluginsConfiguration.set(name, config);
     }
 
@@ -65,7 +65,7 @@ export class ConfigurationManager {
      * @param name plugin name
      * @throws AmaliaException if plugin don't contain config
      */
-    getPluginConfiguration(name: string): PluginConfigData {
+    getPluginConfiguration(name: string): PluginConfigData<any> {
         if (this.configData.pluginsConfiguration.has(name)) {
             return this.configData.pluginsConfiguration.get(name);
         } else {

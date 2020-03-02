@@ -14,13 +14,16 @@ describe('Test Storage Manager', () => {
 
     afterEach(() => {
     });
-
     it('Preference storage Manager ', () => {
         component.clear();
         component.setItem('test', 'toto');
+        expect(component.setItem('test2', 'value')).toEqual(true);
         expect(component.hasItem('test')).toEqual(true);
         expect(component.getItem('test')).toContain('toto');
+        expect(component.getItem('testing')).toEqual(null);
+        expect(component.getItem(null)).toEqual(null);
         expect(component.removeItem('test')).toEqual(true);
+        expect(component.removeItem(null)).toEqual(false);
         expect(component).toBeTruthy();
     });
 });
