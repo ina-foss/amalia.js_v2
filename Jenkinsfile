@@ -12,9 +12,7 @@ pipeline {
     stage("Dependency Check") {
       agent {
         docker {
-          image 'hub.cr.ina/node:lts-alpine'
-          registryUrl 'https://hub.cr.ina'
-          registryCredentialsId '615401f4-404d-492c-988b-74a55a97ba19'
+          image 'node:lts-alpine'
           args '-v /var/lib/jenkins/workspace/AMALIA/AMALIA_V2_SONAR:/src -w /src --entrypoint=\'\''
           reuseNode true
         }
