@@ -3,11 +3,6 @@ pipeline {
 
     agent { label 'composer' }
 
-    options {
-        gitLabConnection('GitLab INA')
-        gitlabBuilds(builds: ['Dependency install', 'SonarQube analysis'])
-    }
-
     stages {
         stage('Dependency install') {
             agent {
