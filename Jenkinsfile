@@ -6,7 +6,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:lts-alpine'
-                    args '-v /var/lib/jenkins/workspace/AMALIA/AMALIA_V2_SONAR:/src -w /src --entrypoint=\'\''
+                    args '-v /var/lib/jenkins/workspace/AMALIA/AMALIA_V2_SONAR:/src -w /src -e CHROME_BIN=/usr/bin/google-chrome --entrypoint=\'\''
                     reuseNode true
                 }
             }
