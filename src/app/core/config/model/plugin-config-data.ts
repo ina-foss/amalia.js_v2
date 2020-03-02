@@ -1,6 +1,6 @@
-export interface PluginConfigData {
+export interface PluginConfigData<T> {
     name: string;
     debug?: boolean;
-    metadataIds: Array<string>;
-    data: any;
+    data: T;
+    metadataIds?: Array<string>;
 }

@@ -267,13 +267,15 @@
         position: relative;
         width: 100%;
         height: 1px;
-        margin: 42px 0 0 0;
+        margin: 30px 0 0 0;
         box-sizing: border-box;
         -webkit-appearance: none; /* Override default CSS styles */
         appearance: none;
-        background: grey;
+        background: transparent;
         outline: none; /* Remove outline */
         z-index: 2100;
+        padding-right: 20px;
+        padding-left: 20px;
 
         &::-webkit-slider-thumb {
           position: relative;
@@ -283,7 +285,7 @@
           height: 10px; /* Slider handle height */
           background: $amalia-primary-color; /* Green background */
           cursor: pointer; /* Cursor on hover */
-          margin-left: 20px;
+          top: 5px;
         }
 
         &::-moz-range-thumb {
@@ -300,19 +302,34 @@
         display: flex;
         width: 100%;
         justify-content: space-between;
-        margin: -40px 0 0 0;
-        padding: 0;
+        margin: -35px 0 0 0;
         color: $amalia-ctrl-bar-pslider-bg-color;
         z-index: 2070;
+        text-align: left;
+        padding-left: 20px;
+        padding-right: 20px;
+
+        &:before {
+          content: "";
+          position: absolute;
+          top: 85px;
+          z-index: 2070;
+          background-color: grey;
+          display: block;
+          height: 1px;
+          width: calc(100% - 68px);
+          left: 36px;
+        }
 
         option {
           position: relative;
           display: flex;
-          align-items: flex-end;
+          align-items: flex-start;
           color: $amalia-ctrl-bar-pslider-bg-color;
           z-index: 2070;
           margin-top: 10px;
           cursor: pointer;
+          text-align: left;
 
           &.selected {
             color: $amalia-ctrl-bar-pslider-bg-color-hover;

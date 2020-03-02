@@ -53,8 +53,8 @@ export class AmaliaComponent implements OnInit {
     @Input()
     public playerConfig: ConfigData = {
         player: {
-            src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-            // src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+            //src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+            src: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
             // src: 'I0VYVE0zVQojRVhULVgtVkVSU0lPTjozCiNFWFQtWC1QTEFZTElTVC1UWVBFOlZPRAojRVhULVgtVEFSR0' +
             //     'VURFVSQVRJT046MgojRVhULVgtTUVESUEtU0VRVUVOQ0U6MQojRVhUSU5GOjEwLjAsCmh0dHBzOi8vd3MtbWVkaWEtY3B1LmluYS5mci9tZWRpYXMvZWZw' +
             //     'L3NLWFV6cnJOaHJadHEvdEpuRVFVZ3drangzdDc1bGJteUNObWM3ZWJTK3cvelBkTk5SUWdqUmlYWWJrSmxHNCszb25pQXpVTjlMTGE2TWNhQ3kvNTJxMlF' +

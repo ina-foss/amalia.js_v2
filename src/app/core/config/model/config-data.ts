@@ -13,7 +13,7 @@ export interface ConfigData {
      */
     tcOffset?: number;
     player: PlayerConfigData;
-    pluginsConfiguration?: Map<string, PluginConfigData>;
+    pluginsConfiguration?: Map<string, PluginConfigData<any>>;
     dataSources?: Array<ConfigDataSource>;
     data?: any;
     debug?: boolean;

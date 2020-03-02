@@ -13,6 +13,7 @@ import {DefaultLogger} from './logger/default-logger';
 import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from './constant/event-type';
+import {PreferenceStorageManager} from './storage/preference-storage-manager';
 
 
 /**
@@ -25,11 +26,13 @@ export class MediaPlayerElement {
     private defaultLoader: Loader<Array<Metadata>>;
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
+    private readonly preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
 
     constructor(@Inject(DefaultLogger) logger: LoggerInterface) {
         this.logger = logger;
+        this.preferenceStorageManager = new PreferenceStorageManager();
         this._eventEmitter = new EventEmitter();
     }
 
@@ -99,7 +102,7 @@ export class MediaPlayerElement {
     /**
      * Return configuration
      */
-    public getPluginConfiguration(pluginName: string): PluginConfigData {
+    public getPluginConfiguration(pluginName: string): PluginConfigData<any> {
         return this.configurationManager.getPluginConfiguration(pluginName);
     }
 

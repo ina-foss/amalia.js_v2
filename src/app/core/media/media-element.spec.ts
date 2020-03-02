@@ -29,35 +29,32 @@ describe('Test Media element', () => {
         component.audioChannel = 2;
         expect(component.audioChannel).toEqual(2);
     });
-    it('test playbackrate setter and getter' , () => {
-        expect(component.playbackRate).toEqual(1);
+    it('test playbackrate setter and getter', () => {
         expect(component.getPlaybackRate()).toEqual(1);
-        component.playbackRate = 2;
-        expect(component.playbackRate).toEqual(2);
-        component.setPlaybackRate(4);
+        component.playbackRate = 4;
         expect(component.getPlaybackRate()).toEqual(4);
     });
-    it('Tests merge volume' , () => {
+    it('Tests merge volume', () => {
         expect(component.withMergeVolume).toEqual(true);
         component.withMergeVolume = false;
         expect(component.withMergeVolume).toEqual(false);
     });
-    it('Tests framerate' , () => {
+    it('Tests framerate', () => {
         expect(component.framerate).toEqual(25);
         component.framerate = 60;
         expect(component.framerate).toEqual(60);
         component.framerate = 25;
         expect(component.framerate).toEqual(25);
     });
-    it('Tests poster' , () => {
+    it('Tests poster', () => {
         component.poster = '../assets/image.png';
         expect(component.poster).toEqual('../assets/image.png');
     });
-    it('Test currentTime' , () => {
+    it('Test currentTime', () => {
         component.stop();
         expect(component.getCurrentTime()).toEqual(0);
     });
-    it('Test events' , () => {
+    it('Test events', () => {
         expect(component.isPaused()).toEqual(true);
         component.seekToBegin();
         component.stop();
@@ -70,19 +67,19 @@ describe('Test Media element', () => {
         expect(component.getCurrentTime()).toEqual(0);
         component.moveNextFrame(2);
         expect(component.isPaused()).toEqual(true);
-        expect(component.getCurrentTime()).toEqual(0 + (1 / 25 * 2) );
+        expect(component.getCurrentTime()).toEqual(0 + (1 / 25 * 2));
         component.movePrevFrame(1);
-        expect(component.getCurrentTime()).toEqual((1 / 25 * 2)  - (1 / 25 * 1));
+        expect(component.getCurrentTime()).toEqual((1 / 25 * 2) - (1 / 25 * 1));
         component.seekToEnd();
         expect(typeof (component.getDuration())).toBe('number');
 
     });
-    it('Test Volume' , () => {
+    it('Test Volume', () => {
         component.setVolume(50);
         expect(component.getVolume()).toEqual(50);
     });
-    it('Test Image' , () => {
-        expect(typeof(component.captureImage(50))).toBe('string');
+    it('Test Image', () => {
+        expect(typeof (component.captureImage(50))).toBe('string');
     });
 });
 

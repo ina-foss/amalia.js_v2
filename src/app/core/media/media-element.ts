@@ -49,14 +49,9 @@ export class MediaElement {
 
     private _playbackRate = 1;
 
-    get playbackRate(): number {
-        return this._playbackRate;
-    }
-
     set playbackRate(value: number) {
         this._playbackRate = value;
         this.setPlaybackRate(value);
-
     }
 
     /**
@@ -102,8 +97,14 @@ export class MediaElement {
         return this.mediaElement.play();
     }
 
+    /**
+     * Invoked for paused player
+     */
     pause(): void {
-        return this.mediaElement.pause();
+        this.mediaElement.pause();
+        if (this.getPlaybackRate() !== 1) {
+            this.playbackRate = 1;
+        }
     }
 
     stop(): void {
@@ -211,7 +212,7 @@ export class MediaElement {
      * @param speed the current playback speed of the audio/video.
      * @returns the current playback speed of the audio/video.
      */
-    setPlaybackRate(speed: number) {
+    private setPlaybackRate(speed: number) {
         this.modelRewind = (this.playbackRate < 0);
         // model rewind
         if (this.modelRewind) {
@@ -379,6 +380,7 @@ export class MediaElement {
     private handlePause() {
         this.logger.debug('handlePause');
         this.eventEmitter.emit(PlayerEventType.PAUSED);
+        this.getPlaybackRate();
     }
 
     /**

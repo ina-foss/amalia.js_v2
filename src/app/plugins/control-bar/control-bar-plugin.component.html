@@ -110,13 +110,13 @@
 <div class="playback-rate-slider">
     <div class="playback-rate-labels">
         <input type="range" #playbackRateCursor
-               [min]="minPlaybackRate"
-               [max]="maxPlaybackRate" list="playback-rate-list"
+               [min]="minPlaybackRateSlider"
+               [max]="maxPlaybackRateSlider" list="playback-rate-list"
                step="stepPlaybackRate"
                [value]="currentPlaybackRate"
                (change)="onChangePlaybackRate(playbackRateCursor.value)">
         <datalist id="playback-rate-list">
-            <option class="label" *ngFor="let pr of listOfPlaybackRate;first:as isFirst; last as isLast;"
+            <option class="label" *ngFor="let pr of sliderListOfPlaybackRateStep;first:as isFirst; last as isLast;"
                     [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
                     (click)="onChangePlaybackRate(pr)" [selected]="pr ==currentPlaybackRate">{{pr}}x
             </option>

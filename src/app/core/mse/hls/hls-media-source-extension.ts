@@ -98,8 +98,10 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      */
     @AutoBind
     public handleError(event) {
-        this.logger.error('Error to load hls file', event);
-        this.eventEmitter.emit(PlayerEventType.ERROR);
+        this.logger.info('Error to load hls file', event);
+        if (event !== 'hlsError') {
+            this.eventEmitter.emit(PlayerEventType.ERROR);
+        }
     }
 
     /**
