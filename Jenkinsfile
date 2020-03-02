@@ -23,6 +23,9 @@ pipeline {
                 }
             }
         }
+    }
+
+    stages {
         stage('SonarQube analysis') {
             withSonarQubeEnv('sonar.priv.ina') {
                 def scannerHome = tool 'sonar';
@@ -30,8 +33,5 @@ pipeline {
             }
         }
     }
-
-
-
 
 }
