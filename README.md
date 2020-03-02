@@ -25,6 +25,10 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 We use SVG Sprites With Fragment Identifiers for optimization the rendering of the icons. 
 For build SVG Sprites we use only [svg-sprite](#https://github.com/jkphl/svg-sprite) module. Run `npm run build-icon`
 
+## Run Test with coverage report
+
+Run `npm run build-test`
+
 
 ## Run examples
 
