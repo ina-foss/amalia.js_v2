@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 pipeline {
-
+    agent { label 'composer' }
     stages {
         stage('Dependency install') {
             agent {
