@@ -13,8 +13,8 @@
     "build": "npm run build-icon && npm run build-web-comp",
     "publish-local-repo": "cp -r package-public.json dist/amalia/package.json && cd dist/amalia && npm publish",
     "test": "ng test --codeCoverage=true",
-    "build-test": "ng test --codeCoverage=true --watch=false",
-    "sonar": "npm run build-test && node sonar.conf.js",
+    "build-test": "ng test --codeCoverage=true --watch=false --browsers=ChromeHeadlessCI",
+    "sonar": "node sonar.conf.js",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

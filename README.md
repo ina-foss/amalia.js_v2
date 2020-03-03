@@ -25,6 +25,10 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 We use SVG Sprites With Fragment Identifiers for optimization the rendering of the icons. 
 For build SVG Sprites we use only [svg-sprite](#https://github.com/jkphl/svg-sprite) module. Run `npm run build-icon`
 
+## Run Test with coverage report
+
+Run `npm run build-test`
+
 
 ## Run examples
 
@@ -33,6 +37,8 @@ Run `npm run start-examples` start static server for view examples
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+In side docker ` docker run --rm -ti -v $PWD:/usr/src:rw -w /usr/src  --entrypoint='' trion/ng-cli-karma npm run build-test`
 
 ## Running end-to-end tests
 
