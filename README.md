@@ -38,6 +38,8 @@ Run `npm run start-examples` start static server for view examples
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
+In side docker ` docker run --rm -ti -v $PWD:/usr/src:rw -w /usr/src  --entrypoint='' trion/ng-cli-karma npm run build-test`
+
 ## Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
