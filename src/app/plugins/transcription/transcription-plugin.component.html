@@ -1,0 +1,24 @@
+<div class="header" *ngIf="pluginConfiguration && pluginConfiguration.data.title">
+    <div class="resume">
+        <h3 class="heading">{{pluginConfiguration.data?.title}}</h3>
+        <p *ngIf="pluginConfiguration.data?.description">{{pluginConfiguration.data?.description}}</p>
+    </div>
+</div>
+<div *ngIf="transcriptions && transcriptions.length>0; then transcriptionBlock; else emptyBlock"></div>
+<ng-template class="transcription" #transcriptionBlock *ngIf="transcriptions">
+    <div class="segment" *ngFor="let t of transcriptions">
+        <div class="title">{{t.label}}</div>
+        <div class="timecode">
+            <div class="tcin">00:01:17</div>
+            <div class="separator"></div>
+            <div class="tcout">00:03:01</div>
+        </div>
+        <div class="progress-bar" [ngStyle]="{width: '50%'}"></div>
+        <div class="text">
+            <span class="word">Ce reportage montre</span> <span class="word">la mobilisation générale pour la</span>
+            sauvegarde de <span class="word">la couche</span><span class="word selected"> d'ozone que les
+            ozonicides attaquent de plus en plus.</span>
+        </div>
+    </div>
+</ng-template>
+<ng-template #emptyBlock>Error to find transcription</ng-template>

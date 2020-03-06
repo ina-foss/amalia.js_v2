@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run build-icon && ng serve",
-    "start-examples": "cp -r dist/amalia/assets/ samples/ &&  cp -r dist/amalia/main-es2015.js samples/main.js && static-server -z -f -p 4201 samples/",
+    "start-examples": "cp -r dist/amalia/assets/ samples/ &&  cp -r dist/amalia/main-es2015.js samples/main.js && static-server -c '*' -z -f -p 4201 samples/",
     "gendoc": "typedoc --out docs/api src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md --theme docs/api-theme",
     "build-web-comp": "ng build --prod --single-bundle true --keep-polyfills --output-hashing none",
     "build-icon": "svg-sprite -C svg-sprite.config.json src/styles/svgs/*.svg",

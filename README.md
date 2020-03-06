@@ -87,6 +87,19 @@ with the following format:
 
 ## Third party libraries
 
+# Troubleshooting
+
+## Watch folder with webstorm/phpstrom
+sudo -i
+echo 1048576 > /proc/sys/fs/inotify/max_user_watches
+
+sudo tee -a /etc/sysctl.conf << END
+
+fs.inotify.max_user_watches = 1048576
+vm.max_map_count = 262144
+
+END
+
 ### Future work
 
 

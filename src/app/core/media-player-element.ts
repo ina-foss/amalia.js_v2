@@ -22,7 +22,7 @@ import {PreferenceStorageManager} from './storage/preference-storage-manager';
 @Injectable()
 export class MediaPlayerElement {
     private configurationManager: ConfigurationManager;
-    private metadataManager: MetadataManager;
+    private _metadataManager: MetadataManager;
     private defaultLoader: Loader<Array<Metadata>>;
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
@@ -61,6 +61,14 @@ export class MediaPlayerElement {
         return this.state;
     }
 
+    get metadataManager(): MetadataManager {
+        return this._metadataManager;
+    }
+
+    set metadataManager(value: MetadataManager) {
+        this._metadataManager = value;
+    }
+
     /**
      * In  charge to init config
      * @param config param
@@ -72,7 +80,7 @@ export class MediaPlayerElement {
         // Init configuration manager
         this.configurationManager = new ConfigurationManager(loader, this.logger);
         // Init metadata manager
-        this.metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
+        this._metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
         // Init player
         return await new Promise<PlayerState>((resolve, reject) => {
             // load configuration
@@ -80,8 +88,7 @@ export class MediaPlayerElement {
                     this.state = PlayerState.INITIALIZED;
                     // set media source specified by config
                     this.setMediaSource();
-                    // TODO : load metadata
-                    this.loadDataSources().then(ds => this.logger.info('', ds));
+                    this.loadDataSources().then(() => this.handleMetadataLoaded());
                     resolve(this.state);
                 },
                 error => {
@@ -125,7 +132,7 @@ export class MediaPlayerElement {
      * In charge to put element on full screen
      * @param element to put in fullscreen
      */
-    openFullscreen(element: HTMLElement) {
+    public openFullscreen(element: HTMLElement) {
         if (element.requestFullscreen) {
             element.requestFullscreen();
         }
@@ -146,19 +153,21 @@ export class MediaPlayerElement {
      * In charge to load configuration
      * @param config configuration parameter
      */
-    private loadConfiguration(config: string | object): Promise<boolean> {
+    private loadConfiguration(config: string | object): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.configurationManager.load(config).then(() => resolve(true), () => reject(false));
+            this.configurationManager.load(config).then(() => resolve(), () => reject());
         });
     }
 
     /**
      * In charge to load data sources
      */
-    private loadDataSources(): Promise<boolean> {
-        return new Promise(() => {
-            // TODO
-        });
+    private loadDataSources(): Promise<void> {
+        return this._metadataManager.init();
+    }
+
+    private handleMetadataLoaded() {
+        this.eventEmitter.emit(PlayerEventType.METADATA_LOADED);
     }
 
     /**

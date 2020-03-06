@@ -5,13 +5,39 @@
     <title>Amalia</title>
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-<div style=" display:block;width: 80vw; height: 80vh;">
-    <amalia-player>
-        <amalia-time-bar></amalia-time-bar>
-        <amalia-control-bar></amalia-control-bar>
-    </amalia-player>
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Showcase Amalia</h5>
 </div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 p-2" style="height: 500px;">
+            <amalia-player>
+                <amalia-time-bar></amalia-time-bar>
+                <amalia-control-bar></amalia-control-bar>
+            </amalia-player>
+        </div>
+        <div class="col-6 p-2">
+            <amalia-transcription style="--amalia-player-bg-transcription:#001872"
+                    plugin-configuration='{"metadataIds":["text-amalia01"],"data":{"title":"Test","description":"Test description"}}'></amalia-transcription>
+        </div>
+    </div>
+</div>
+<footer class="border-top">
+    <div class="row pt-3 pl-3">
+        <div class="col-12 col-md">
+            <img class="mb-2 d-inline" src="assets/logo.svg" alt="" width="40" height="40">
+            <small class="d-block mb-3 text-muted">&copy; 2020</small>
+        </div>
+    </div>
+</footer>
+<script>
+
+</script>
 </body>
 </html>

@@ -6,6 +6,7 @@ import {isArray} from 'util';
 import {PlayerErrorCode} from '../../constant/error-type';
 import {Loader} from '../../loader/loader';
 import {Converter} from '../../converter/converter';
+import {ConfigDataSource} from '../../config/model/config-data-source';
 
 /**
  * In charge to load http resource
@@ -28,7 +29,7 @@ export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
      * In charge to load metadata
      * @param url for load metadata
      */
-    load(url: any): Promise<Array<Metadata>> {
+    load(url: string): Promise<Array<Metadata>> {
         return new Promise<Array<Metadata>>((resolve, reject) => {
             this.httpClient.get(url)
                 .toPromise()

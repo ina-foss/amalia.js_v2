@@ -101,10 +101,10 @@ export class MediaElement {
      * Invoked for paused player
      */
     pause(): void {
-        this.mediaElement.pause();
         if (this.getPlaybackRate() !== 1) {
             this.playbackRate = 1;
         }
+        this.mediaElement.pause();
     }
 
     stop(): void {
@@ -128,8 +128,7 @@ export class MediaElement {
 
     /**
      * Invoked to set media source and autoplay, by default
-     * @param src media source
-     * @param crossOrigin value example anonymous
+     * @param config PlayerConfigData
      */
     setSrc(config: PlayerConfigData): void {
         // remove old mse config
@@ -231,7 +230,7 @@ export class MediaElement {
             }, 30);
         } else {
             if (this.isPaused()) {
-                this.play();
+                this.play().then(() => this.logger.debug('played'));
             }
             if (this.mediaElement) {
                 this.mediaElement.playbackRate = speed;
@@ -329,7 +328,7 @@ export class MediaElement {
      */
     playPause() {
         if (this.isPaused()) {
-            this.play();
+            this.play().then(() => this.logger.debug('Played'));
         } else {
             this.pause();
         }

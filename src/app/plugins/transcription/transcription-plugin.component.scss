@@ -1,0 +1,69 @@
+@import '../../core/styles/typo';
+@import '../../core/styles/variables';
+
+:host {
+  position: relative;
+  font-family: $amalia-font-family;
+  background-color: $amalia-plugin-transcription-bg;
+
+  .header {
+    overflow: hidden;
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    .resume {
+      background: #555;
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-size: $amalia-body3-size;
+
+      .heading {
+        font-size: 24px;
+        font-weight: 100;
+        color: white;
+        line-height: 1.1;
+        padding: 0;
+        margin: 0;
+        }
+      }
+    }
+
+  .transcription {
+    display: block;
+    margin: 0;
+    padding: 5px;
+
+    .segment {
+      display: block;
+      margin: 0;
+      padding: 0;
+
+      .title {
+        display: block;
+        }
+
+      .timecode {
+        display: flex;
+
+        div {
+          margin: 5px 5px 5px 0px;
+          }
+        }
+
+      .text {
+        span.selected {
+          font-weight: $amalia-font-weight-bold;
+          }
+        }
+
+      .progress-bar {
+        height: 2px;
+        display: block;
+        background-color: $amalia-plugin-transcription-progess-bar;
+        }
+      }
+    }
+  }
+

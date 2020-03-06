@@ -78,8 +78,14 @@ export class AmaliaComponent implements OnInit {
             // hls: {
             //     enable: true,
             // },
-            crossOrigin: 'anonymous'
-        }
+            crossOrigin: 'anonymous',
+
+        },
+        dataSources: [
+            {url: 'http://localhost:4201/metadata/amalia01-events.json'},
+            {url: 'http://localhost:4201/metadata/amalia01-ball.json'},
+            {url: 'http://localhost:4201/metadata/amalia01-text.json'}
+        ]
     };
 
     /**

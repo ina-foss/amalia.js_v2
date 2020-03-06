@@ -2,10 +2,11 @@ import {Metadata} from '@ina/amalia-model';
 import {AmaliaException} from '../exception/amalia-exception';
 import {ConfigurationManager} from '../config/configuration-manager';
 import {LoggerInterface} from '../logger/logger-interface';
-import {isArray} from 'util';
 import {ConfigDataSource} from '../config/model/config-data-source';
 import {Loader} from '../loader/loader';
 import {isArrayLike} from 'rxjs/internal-compatibility';
+import {MetadataUtils} from '../utils/metadata-utils';
+import {TranscriptionLocalisation} from '../config/model/transcription-localisation';
 
 /**
  * In charge to handle metadata
@@ -13,8 +14,9 @@ import {isArrayLike} from 'rxjs/internal-compatibility';
 export class MetadataManager {
     private logger: LoggerInterface;
     private configurationManager: ConfigurationManager;
-    private readonly defaultLoader: Loader<Array<Metadata>>;
     private listOfMetadata: Map<string, Metadata> = new Map<string, Metadata>();
+    private toLoadData = 0;
+    private readonly defaultLoader: Loader<Array<Metadata>>;
 
     constructor(configurationManager: ConfigurationManager, defaultLoader: Loader<Array<Metadata>>, logger: LoggerInterface) {
         this.configurationManager = configurationManager;
@@ -25,15 +27,20 @@ export class MetadataManager {
     /**
      * In charge to load data source
      */
-    public init() {
-        const dataSources = this.configurationManager.getCoreConfig().dataSources;
-        if (dataSources && isArrayLike<Array<ConfigDataSource>>(dataSources)) {
-            dataSources.forEach(dataSource => {
-                this.loadDataSource(dataSource);
-            });
-        } else {
-            this.logger.warn('Can\'t find data sources');
-        }
+    public init(): Promise<void> {
+        return new Promise((resolve) => {
+            const dataSources = this.configurationManager.getCoreConfig().dataSources;
+            if (dataSources && isArrayLike<Array<ConfigDataSource>>(dataSources)) {
+                this.toLoadData = dataSources.length;
+                dataSources.forEach(dataSource => {
+                    this.loadDataSource(dataSource, resolve)
+                        .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                });
+                // resolve() called on complete
+            } else {
+                this.logger.info('Can\'t find data sources');
+            }
+        });
     }
 
     /**
@@ -41,7 +48,7 @@ export class MetadataManager {
      * @param metadataId metadata id
      * @throws AmaliaException
      */
-    getMetadata(metadataId: string) {
+    public getMetadata(metadataId: string) {
         if (metadataId && metadataId !== '' && this.listOfMetadata.has(metadataId)) {
             return this.listOfMetadata.get(metadataId);
         } else {
@@ -54,7 +61,7 @@ export class MetadataManager {
      * @param metadata metadata
      * @throws AmaliaException
      */
-    addMetadata(metadata: Metadata) {
+    public addMetadata(metadata: Metadata) {
         if (metadata && metadata.id) {
             this.listOfMetadata.set(metadata.id, metadata);
         } else {
@@ -67,7 +74,7 @@ export class MetadataManager {
      * @param metadata metadata
      * @throws AmaliaException
      */
-    removeMetadata(metadata: Metadata) {
+    public removeMetadata(metadata: Metadata) {
         if (metadata && metadata.id && this.listOfMetadata.has(metadata.id)) {
             this.listOfMetadata.delete(metadata.id);
         } else {
@@ -75,17 +82,35 @@ export class MetadataManager {
         }
     }
 
+
+    /**
+     * Return transcription metadata
+     * @param metadataId metadata
+     * @param maxParseLevel parse level
+     */
+    public getTranscriptionLocalisations(metadataId: string, maxParseLevel: number = 1): Array<TranscriptionLocalisation> | null {
+        try {
+            const metadata = this.getMetadata(metadataId);
+            if (metadata) {
+                return MetadataUtils.getTranscriptionLocalisations(metadata, maxParseLevel);
+            }
+        } catch (e) {
+            this.logger.warn(`Error to find metadata : ${metadataId}`);
+        }
+        return null;
+    }
+
     /**
      * In charge to load data
      * @param loadData ConfigDataSource
      */
-    private async loadDataSource(loadData: ConfigDataSource) {
+    private async loadDataSource(loadData: ConfigDataSource, completed) {
         if (loadData && loadData.url) {
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
-                .load(loadData)
-                .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata))
-                .catch(() => this.logger.warn('Error to load metadata'));
+                .load(loadData.url)
+                .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata, completed))
+                .catch(() => this.errorToLoadMetadata(loadData.url, completed));
         } else {
             this.logger.warn('Error to load data source');
         }
@@ -95,7 +120,7 @@ export class MetadataManager {
      * Called on metadata loaded
      * @param listOfMetadata list of metadata
      */
-    private onMetadataLoaded(listOfMetadata: Array<Metadata>) {
+    private onMetadataLoaded(listOfMetadata: Array<Metadata>, completed) {
         if (listOfMetadata && isArrayLike<Metadata>(listOfMetadata)) {
             for (const metadata of listOfMetadata) {
                 try {
@@ -107,6 +132,22 @@ export class MetadataManager {
         } else {
             this.logger.warn('Error to load data');
         }
+        this.toLoadData--;
+        if (this.toLoadData < 1) {
+            completed();
+        }
     }
 
+    /**
+     * Error to load data
+     * @param url error to local url
+     * @param completed promise resolve function
+     */
+    private errorToLoadMetadata(url, completed) {
+        this.toLoadData--;
+        if (this.toLoadData < 1) {
+            completed();
+        }
+        this.logger.warn(`Error to load data source : ${url}`);
+    }
 }
