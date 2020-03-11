@@ -108,8 +108,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const elementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.w'));
             if (elementNodes) {
                 const filteredNodes = elementNodes
-                    .filter(node => this.currentTime >= Math.round(parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta)
-                        && this.currentTime < Math.round(parseFloat(node.getAttribute('data-tcout')) + karaokeTcDelta));
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                        && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
                 if (filteredNodes && filteredNodes.length > 0) {
                     filteredNodes.forEach(n => {
                         n.classList.add(TranscriptionPluginComponent.SELECTED_CLASS_NAME);

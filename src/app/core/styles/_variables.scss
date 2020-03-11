@@ -23,7 +23,8 @@ $amalia-plugin-transcription-progress-bar: var(--amalia-plugin-transcription-pro
 $amalia-plugin-transcription-tc: var(--amalia-plugin-transcription-tc, #727070);
 $amalia-plugin-transcription-tc-hover: var(--amalia-plugin-transcription-tc-hover, #34495E);
 $amalia-plugin-transcription-separator: var(--amalia-plugin-transcription-separator, '>');
-
+$amalia-plugin-subtitle-bg: var(--amalia-plugin-subtitle-bg, rgba(34, 34, 34, 0.8));
+$amalia-plugin-subtitle-color: var(--amalia-plugin-subtitle-color, rgb(255, 255, 255));
 
 // Mixin for ratio dimensions
 @mixin viewportRatio($x, $y) {

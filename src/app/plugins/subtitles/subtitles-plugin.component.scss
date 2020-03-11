@@ -1,0 +1,17 @@
+@import '../../core/styles/typo';
+@import '../../core/styles/variables';
+
+:host {
+  padding: 0;
+  margin: 0;
+  display: block;
+  position: absolute;
+  width: 100%;
+  bottom: 115px;
+  text-align: center;
+  font-family: $amalia-font-family;
+  z-index: $amalia-default-z-index;
+  background: $amalia-ctrl-bar-bg-color;
+  color: $amalia-plugin-subtitle-color;
+}
+

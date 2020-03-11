@@ -40,14 +40,25 @@ export abstract class PluginBase<T> implements OnInit {
     }
 
     ngOnInit(): void {
+        const defaultConfig = this.getDefaultConfig();
         try {
-            if (!this.pluginConfiguration) {
-                this.pluginConfiguration = this.mediaPlayerElement.getPluginConfiguration(this.pluginName);
+            const customConfig = this.mediaPlayerElement.getPluginConfiguration(this.pluginName);
+            if (customConfig) {
+                this.pluginConfiguration = {
+                    ...defaultConfig,
+                    ...customConfig
+                };
             }
         } catch (e) {
-            if (!this.pluginConfiguration) {
-                this.pluginConfiguration = this.getDefaultConfig();
-            }
+
+        }
+        if (!this.pluginConfiguration) {
+            this.pluginConfiguration = defaultConfig;
+        } else {
+            this.pluginConfiguration = {
+                ...defaultConfig,
+                ...this.pluginConfiguration
+            };
         }
     }
 
