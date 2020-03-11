@@ -9,6 +9,7 @@ import {FormsModule} from '@angular/forms';
 import {TcFormatPipe} from './core/utils/tc-format.pipe';
 import {TimeBarPluginComponent} from './plugins/time-bar/time-bar-plugin.component';
 import {ControlBarPluginComponent} from './plugins/control-bar/control-bar-plugin.component';
+import {TranscriptionPluginComponent} from './plugins/transcription/transcription-plugin.component';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import {ControlBarPluginComponent} from './plugins/control-bar/control-bar-plugi
         AmaliaComponent,
         TcFormatPipe,
         ControlBarPluginComponent,
-        TimeBarPluginComponent
+        TimeBarPluginComponent,
+        TranscriptionPluginComponent
     ],
     entryComponents: [AmaliaComponent],
     providers: [DefaultLogger, MediaPlayerElement],
@@ -45,5 +47,8 @@ export class AppModule {
 
         const timeBarPlugin = createCustomElement(TimeBarPluginComponent, {injector: this.injector});
         customElements.define('amalia-time-bar', timeBarPlugin);
+
+        const transcriptionPlugin = createCustomElement(TranscriptionPluginComponent, {injector: this.injector});
+        customElements.define('amalia-transcription', transcriptionPlugin);
     }
 }

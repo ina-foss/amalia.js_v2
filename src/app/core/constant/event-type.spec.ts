@@ -40,6 +40,7 @@ describe('Test Event', () => {
         expect(PlayerEventType.ZOOM_RANGE_CHANGE).toContain('ina.player.ZOOM_RANGE_CHANGE');
         expect(PlayerEventType.SELECTED_METADATA_CHANGE).toContain('ina.player.SELECTED_METADATA_CHANGE');
         expect(PlayerEventType.SELECTED_ITEMS_CHANGE).toContain('ina.player.SELECTED_ITEMS_CHANGE');
+        expect(PlayerEventType.METADATA_LOADED).toContain('ina.player.METADATA_LOADED');
         expect(PlayerEventType.BIND_METADATA).toContain('ina.player.BIND_METADATA');
         expect(PlayerEventType.UNBIND_METADATA).toContain('ina.player.UNBIND_METADATA');
         expect(PlayerEventType.PLAYBACK_RATE_CHANGE).toContain('ina.player.PLAYBACK_RATE_CHANGE');

@@ -1,0 +1,37 @@
+<div class="header" *ngIf="pluginConfiguration && pluginConfiguration.data.title" #headerBlock>
+    <div class="resume">
+        <h3 class="heading">{{pluginConfiguration.data?.title}}</h3>
+        <p *ngIf="pluginConfiguration.data?.description">{{pluginConfiguration.data?.description}}</p>
+    </div>
+</div>
+
+<div *ngIf="transcriptions && transcriptions.length>0; then transcriptionBlock; else emptyBlock"></div>
+<ng-template #transcriptionBlock>
+    <div class="transcription" #transcriptionElement>
+        <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
+            <div class="title">{{t.label}}</div>
+            <div class="timecode" (click)="callSeek(t.tcIn)">
+                <div class="tcin">{{t.tcIn|tcFormat:tcDisplayFormat}}</div>
+                <div class="separator"></div>
+                <div class="tcout">{{t.tcOut|tcFormat:tcDisplayFormat}}</div>
+            </div>
+            <div class="progress-bar" [ngStyle]="{width: '0%'}"></div>
+            <div class="text" (click)="seekToWord($event)">
+                <span *ngIf="t.subLocalisations && t.subLocalisations.length>0; then subLocalisationBlock; else wordBlock"></span>
+                <ng-template #subLocalisationBlock>
+                    <span *ngFor="let w of t.subLocalisations"
+                          class="w"
+                          [attr.data-tcin]="w.tcIn"
+                          [attr.data-tcOut]="w.tcOut">{{w.text}}</span>
+                </ng-template>
+                <ng-template #wordBlock><span class="w">{{t.text}}</span></ng-template>
+            </div>
+        </div>
+    </div>
+    <div class="auto-scroll" (click)="toggleAutoScroll()">
+        <svg class="amalia-svg-auto-scroll-size icon" [ngClass]="{'selected':autoScroll}">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#refresh'"></use>
+        </svg>
+    </div>
+</ng-template>
+<ng-template #emptyBlock>Error to find transcription</ng-template>

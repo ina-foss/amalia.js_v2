@@ -17,6 +17,14 @@ $amalia-tooltip-opacity: var(--amalia-tooltip-opacity, .9);
 $amalia-error-z-index: var(--amalia-error-z-index, 3000);
 
 
+$amalia-plugin-transcription-bg: var(--amalia-plugin-transcription-bg, #555);
+$amalia-plugin-transcription-header: var(--amalia-plugin-transcription-header, #0086B1);
+$amalia-plugin-transcription-progress-bar: var(--amalia-plugin-transcription-progress-bar, #0086B1);
+$amalia-plugin-transcription-tc: var(--amalia-plugin-transcription-tc, #727070);
+$amalia-plugin-transcription-tc-hover: var(--amalia-plugin-transcription-tc-hover, #34495E);
+$amalia-plugin-transcription-separator: var(--amalia-plugin-transcription-separator, '>');
+
+
 // Mixin for ratio dimensions
 @mixin viewportRatio($x, $y) {
   /* height: 56.25vw; !* height:width ratio = 9/16 = .5625  *!

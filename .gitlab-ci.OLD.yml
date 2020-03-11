@@ -1,0 +1,7 @@
+pages:
+  script:
+    - echo Updated Doc on $(date)
+    - cp -rp docs/api public
+  artifacts:
+    paths:
+      - public
