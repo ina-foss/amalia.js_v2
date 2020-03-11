@@ -194,7 +194,7 @@ export class MediaElement {
     public setCurrentTime(value: number): void {
         const currentTime = isNaN(value) ? 0 : value;
         if (this.mediaElement) {
-            this.mediaElement.currentTime = currentTime;
+            this.mediaElement.currentTime = Math.max(0, currentTime);
         }
     }
 

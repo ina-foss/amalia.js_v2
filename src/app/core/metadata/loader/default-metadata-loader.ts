@@ -6,7 +6,6 @@ import {isArray} from 'util';
 import {PlayerErrorCode} from '../../constant/error-type';
 import {Loader} from '../../loader/loader';
 import {Converter} from '../../converter/converter';
-import {ConfigDataSource} from '../../config/model/config-data-source';
 
 /**
  * In charge to load http resource

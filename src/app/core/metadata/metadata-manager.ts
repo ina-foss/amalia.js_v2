@@ -86,13 +86,14 @@ export class MetadataManager {
     /**
      * Return transcription metadata
      * @param metadataId metadata
-     * @param maxParseLevel parse level
+     * @param parseLevel parse level default 1
+     * @param withSubLocalisations sub localisation default false
      */
-    public getTranscriptionLocalisations(metadataId: string, maxParseLevel: number = 1): Array<TranscriptionLocalisation> | null {
+    public getTranscriptionLocalisations(metadataId: string, parseLevel: number = 1, withSubLocalisations = false): Array<TranscriptionLocalisation> | null {
         try {
             const metadata = this.getMetadata(metadataId);
             if (metadata) {
-                return MetadataUtils.getTranscriptionLocalisations(metadata, maxParseLevel);
+                return MetadataUtils.getTranscriptionLocalisations(metadata, parseLevel, withSubLocalisations);
             }
         } catch (e) {
             this.logger.warn(`Error to find metadata : ${metadataId}`);

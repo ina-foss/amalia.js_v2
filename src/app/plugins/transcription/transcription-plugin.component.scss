@@ -4,16 +4,19 @@
 :host {
   position: relative;
   font-family: $amalia-font-family;
-  background-color: $amalia-plugin-transcription-bg;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   .header {
     overflow: hidden;
     display: block;
     margin: 0;
     padding: 0;
+    min-height: fit-content;
 
     .resume {
-      background: #555;
+      background: $amalia-plugin-transcription-bg;
       color: white;
       padding: 15px;
       text-align: left;
@@ -26,14 +29,36 @@
         line-height: 1.1;
         padding: 0;
         margin: 0;
-        }
       }
     }
+  }
+
+  .auto-scroll {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+
+    .icon {
+      width: 45px;
+      display: inline;
+      cursor: pointer;
+
+      &.selected,
+      &:hover {
+        filter: $amalia-ctrl-bar-btn-hover
+      }
+    }
+  }
 
   .transcription {
     display: block;
     margin: 0;
     padding: 5px;
+    flex: 1 1 auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 0;
+    scroll-behavior: smooth;
 
     .segment {
       display: block;
@@ -42,28 +67,42 @@
 
       .title {
         display: block;
-        }
+      }
 
       .timecode {
         display: flex;
+        cursor: pointer;
 
         div {
           margin: 5px 5px 5px 0px;
+        }
+
+        .separator:before {
+          content: $amalia-plugin-transcription-separator;
+        }
+      }
+
+
+      .text {
+        .w {
+          cursor: pointer;
+
+          &:hover {
+            text-decoration: underline;
           }
         }
 
-      .text {
         span.selected {
           font-weight: $amalia-font-weight-bold;
-          }
         }
+      }
 
       .progress-bar {
         height: 2px;
         display: block;
-        background-color: $amalia-plugin-transcription-progess-bar;
-        }
+        background-color: $amalia-plugin-transcription-progress-bar;
       }
     }
   }
+}
 

@@ -4,4 +4,5 @@ export interface TranscriptionLocalisation {
     text: string;
     tcIn: number;
     tcOut: number;
+    subLocalisations?: Array<TranscriptionLocalisation>;
 }

@@ -33,14 +33,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Playback rate step
      */
     @Input()
-    public stepPlaybackRateSlider = 1;
+    public stepPlaybackRateSlider = 0.05;
 
     /**
      * list playback rate step (2/6/8) // ralentis (0.2
      */
     @Input()
-    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
-    public sliderListOfPlaybackRateStepWidth: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateStepWidth: Array<number> = [];
 
     /**
      * list of backward playback step
@@ -261,6 +261,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public getControlsByZone(zone: number): Array<ControlBarConfig> {
         return _.filter(this.pluginConfiguration.data, {zone});
     }
+
     /**
      * In charge to build step width size
      */
@@ -271,8 +272,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             const startStep = this.sliderListOfPlaybackRateStep[i];
             const endStep = this.sliderListOfPlaybackRateStep[(i === maxStep - 1) ? i - 1 : i + 1];
             // maxStepAbs = Math.max(Math.abs(this.sliderListOfPlaybackRateStep[i]), maxStepAbs);
-            this.sliderListOfPlaybackRateStepWidth[i] = Math.abs(startStep - endStep);
+            if (i === maxStep - 1) {
+                this.sliderListOfPlaybackRateStepWidth[i] = 1;
+            } else {
+                this.sliderListOfPlaybackRateStepWidth[i] = Math.abs(startStep - endStep);
+            }
         }
+        console.log(this.sliderListOfPlaybackRateStepWidth);
         const sumEcart = _.sum(this.sliderListOfPlaybackRateStepWidth);
         for (let i = 0; i < maxStep; i++) {
             this.sliderListOfPlaybackRateStepWidth[i] = (this.sliderListOfPlaybackRateStepWidth[i] * 100 / sumEcart);
