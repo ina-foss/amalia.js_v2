@@ -95,6 +95,10 @@ export enum PlayerEventType {
      */
     SELECTED_ITEMS_CHANGE = 'ina.player.SELECTED_ITEMS_CHANGE',
     /**
+     * Invoked when metadata loaded
+     */
+    METADATA_LOADED = 'ina.player.METADATA_LOADED',
+    /**
      * Invoked when bind metadata
      */
     BIND_METADATA = 'ina.player.BIND_METADATA',

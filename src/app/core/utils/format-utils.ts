@@ -12,7 +12,7 @@ export class FormatUtils {
      * @param defaultFps frames per second
      * @return return format time
      */
-    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's', defaultFps: number = 25) {
+    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's', defaultFps: number = 25): string {
         let minute: number = Math.floor(seconds / 60);
         let formatTime: string;
         const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);
@@ -48,9 +48,25 @@ export class FormatUtils {
                 break;
             default:
                 throw new AmaliaException('Unknown time format');
-            break;
+                break;
         }
         return formatTime;
+    }
+
+    public static convertTcToSeconds(tc: string): number {
+        let time = null;
+        // regex patter to search on
+        const patt = /\d{2}:\d{2}:\d{2}/;
+        // return the matching date string
+        let result;
+        if (patt.exec(tc) !== null) {
+            result = tc.split(':');
+            const hours = Math.floor(result[0]);
+            const minutes = Math.floor(result[1]);
+            const seconds = parseFloat(result[2]);
+            time = (hours * 60 * 60) + (minutes * 60) + seconds;
+        }
+        return time;
     }
 
     /**

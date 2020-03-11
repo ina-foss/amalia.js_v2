@@ -6,6 +6,7 @@ import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {TimeBarConfig} from '../../core/config/model/ time-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
+import {DEFAULT} from '../../core/constant/default';
 
 @Component({
     selector: 'amalia-time-bar',
@@ -36,7 +37,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * Media fps
      */
-    public fps = 25;
+    public fps = DEFAULT.FPS;
 
     /**
      * Plugin display state

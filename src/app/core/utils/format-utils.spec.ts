@@ -1,5 +1,6 @@
 import {async, getTestBed, TestBed} from '@angular/core/testing';
 import {FormatUtils} from './format-utils';
+import {DEFAULT} from '../constant/default';
 
 
 describe('Test Format utils', () => {
@@ -52,7 +53,7 @@ describe('Test Format utils', () => {
     });
 
     it('Test FormatTime test frames', () => {
-        const defaultFps = 25;
+        const defaultFps = DEFAULT.FPS;
         const customFps = 60;
         expect(FormatUtils.formatTime(3600 + 2700 + 25 + (1 / defaultFps), 'f', defaultFps)).toContain('01:45:25:01');
         expect(FormatUtils.formatTime(3600 + 2700 + 25 + (1 / defaultFps * 2), 'f', defaultFps)).toContain('01:45:25:02');
