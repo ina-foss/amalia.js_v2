@@ -76,9 +76,9 @@ export class MediaPlayerElement {
      */
     public async init(config: object, defaultLoader?: Loader<Array<Metadata>>, configLoader?: Loader<ConfigData>): Promise<PlayerState> {
         this.defaultLoader = defaultLoader;
-        const loader = configLoader ? configLoader : new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
+        configLoader = configLoader ? configLoader : new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
         // Init configuration manager
-        this.configurationManager = new ConfigurationManager(loader, this.logger);
+        this.configurationManager = new ConfigurationManager(configLoader, this.logger);
         // Init metadata manager
         this._metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
         // Init player
