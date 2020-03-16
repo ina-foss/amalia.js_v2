@@ -1,4 +1,4 @@
-<div class="control-bar" (mouseleave)="enableVolumeSlider=false">
+<div class="control-bar" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
     <div *ngIf="hasComponentWithoutZone('progressBar')" class="control progress-bar">
         <div class="ui-slider">
             <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
@@ -107,12 +107,11 @@
     </div>
 </div>
 
-<div class="playback-rate-slider">
+<div class="playback-rate-slider" *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
     <div class="playback-rate-labels">
-        <input type="range" #playbackRateCursor
+        <input type="range" list="playback-rate-list" #playbackRateCursor
                [min]="minPlaybackRateSlider"
                [max]="maxPlaybackRateSlider"
-               list="playback-rate-list"
                [step]="stepPlaybackRateSlider"
                [value]="currentPlaybackRate"
                (change)="onChangePlaybackRate(playbackRateCursor.value)">
@@ -124,5 +123,12 @@
                     (click)="onChangePlaybackRate(pr)" [selected]="pr ==currentPlaybackRate">{{pr}}x
             </option>
         </datalist>
+    </div>
+</div>
+<div class="playback-rate-slider2" *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
+    <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first:as isFirst; last as isLast;"
+         [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
+         (click)="onChangePlaybackRate(pr)">{{pr}}x
+        <div class="line"></div>
     </div>
 </div>

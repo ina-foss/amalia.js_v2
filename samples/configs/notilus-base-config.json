@@ -25,14 +25,6 @@
           "control": "progressBar"
         },
         {
-          "label": "Barre de progression",
-          "control": "progressBar"
-        },
-        {
-          "label": "Barre de progression",
-          "control": "progressBar"
-        },
-        {
           "label": "Capture Image",
           "control": "download",
           "icon": "screenshot",

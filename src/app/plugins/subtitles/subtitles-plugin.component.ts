@@ -33,6 +33,10 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
 
     ngOnInit(): void {
         super.ngOnInit();
+    }
+    @AutoBind
+    init(): void {
+        super.init();
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
     }

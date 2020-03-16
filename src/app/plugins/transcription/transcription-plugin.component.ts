@@ -18,13 +18,17 @@ import {DEFAULT} from '../../core/constant/default';
 })
 export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements OnInit {
     public static PLUGIN_NAME = 'TRANSCRIPTION';
-    public static KARAOKE_TC_DELTA = 0.5;
-    public static SELECTED_CLASS_NAME = 'selected';
+    public static KARAOKE_TC_DELTA = 0.250;
+    public static SELECTOR_SEGMENT = 'segment';
+    public static SELECTOR_SELECTED = 'selected';
+    public static SELECTOR_PROGRESS_BAR = '.progress-bar';
     public tcDisplayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's';
     public fps = DEFAULT.FPS;
     public autoScroll = false;
+    public ignoreNextScroll = false;
     @ViewChild('transcriptionElement', {static: false})
     public transcriptionElement: ElementRef<HTMLElement>;
+    public displayProgressBar = false;
     /**
      * Return  current time
      */
@@ -38,6 +42,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     ngOnInit(): void {
         super.ngOnInit();
+    }
+
+    @AutoBind
+    init() {
+        super.init();
         if (this.pluginConfiguration.data) {
             if (this.pluginConfiguration.data.timeFormat) {
                 this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat;
@@ -49,6 +58,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.autoScroll = true;
                 this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
+            this.displayProgressBar = this.pluginConfiguration.data.progressBar || false;
         }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
     }
@@ -59,7 +69,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     public callSeek(tc) {
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
-
     }
 
     /**
@@ -68,7 +77,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public getDefaultConfig(): PluginConfigData<TranscriptionConfig> {
         return {
             name: TranscriptionPluginComponent.PLUGIN_NAME,
-            data: {timeFormat: 's', fps: DEFAULT.FPS, autoScroll: true, parseLevel: 1, withSubLocalisations: false}
+            data: {
+                timeFormat: 's',
+                fps: DEFAULT.FPS,
+                autoScroll: true,
+                parseLevel: 1,
+                withSubLocalisations: false,
+                karaokeTcDelta: TranscriptionPluginComponent.KARAOKE_TC_DELTA,
+                progressBar: false
+            }
         };
     }
 
@@ -82,7 +99,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         if (tcIn) {
             const seekTc = this.pluginConfiguration.data.tcDelta ? tcIn - this.pluginConfiguration.data.tcDelta : tcIn;
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(seekTc);
-            this.scroll(element);
+            this.scroll();
         }
     }
 
@@ -101,21 +118,66 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
-            Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTED_CLASS_NAME}`)).forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTED_CLASS_NAME);
-            });
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
-            const elementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.w'));
-            if (elementNodes) {
-                const filteredNodes = elementNodes
-                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
-                if (filteredNodes && filteredNodes.length > 0) {
-                    filteredNodes.forEach(n => {
-                        n.classList.add(TranscriptionPluginComponent.SELECTED_CLASS_NAME);
-                    });
-                    this.scroll(filteredNodes[0]);
+            this.disableRemoveAllSelectedNodes();
+            if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
+                this.selectWords(karaokeTcDelta);
+            }
+            this.selectSegment(karaokeTcDelta);
+        }
+    }
+
+    /**
+     *  In charge to remove selected elements and disable progress bar
+     */
+    private disableRemoveAllSelectedNodes() {
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+            if (this.pluginConfiguration.data && this.pluginConfiguration.data.progressBar) {
+                const progressBarNode = (node.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR) as HTMLElement);
+                if (progressBarNode) {
+                    progressBarNode.style.width = '0%';
                 }
+            }
+        });
+    }
+
+    /**
+     * In charge to select word in time range
+     * @param karaokeTcDelta time code delta
+     */
+    private selectWords(karaokeTcDelta: number) {
+        const elementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.w'));
+        if (elementNodes) {
+            const filteredNodes = elementNodes
+                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+            if (filteredNodes && filteredNodes.length > 0) {
+                filteredNodes.forEach(n => {
+                    n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                });
+            }
+        }
+    }
+
+    /**
+     * In charge to select segment
+     */
+    private selectSegment(karaokeTcDelta: number) {
+        const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+        if (segmentElementNodes) {
+            const segmentFilteredNodes = segmentElementNodes
+                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+            if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
+                segmentFilteredNodes.forEach(n => {
+                    const tcIn = Math.round(parseFloat(n.getAttribute('data-tcin')));
+                    const tcOut = Math.round(parseFloat(n.getAttribute('data-tcout')));
+                    const percentWidth = ((Math.round(this.currentTime) - tcIn) * 100) / (tcOut - tcIn);
+                    n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    (n.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR) as HTMLElement).style.width = percentWidth + '%';
+                });
+                this.scroll();
             }
         }
     }
@@ -123,11 +185,34 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
      */
-    private scroll(scrollNode: HTMLElement) {
-        if (this.autoScroll) {
-            this.transcriptionElement.nativeElement.scrollTop = scrollNode.parentElement.parentElement.offsetTop
-                - this.transcriptionElement.nativeElement.offsetTop - scrollNode.parentElement.parentElement.offsetHeight;
+    private scroll() {
+        const scrollNode = this.transcriptionElement.nativeElement.querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`) as HTMLElement;
+        if (scrollNode) {
+            const scrollPos = scrollNode.offsetTop
+                - this.transcriptionElement.nativeElement.offsetTop;
+            const scrollWin = this.transcriptionElement.nativeElement.scrollTop;
+            // in charge of modifying the status of the scroll when reading segment is display area
+            if (this.ignoreNextScroll && scrollWin < scrollPos) {
+                this.ignoreNextScroll = false;
+            }
+            if (this.autoScroll && !this.ignoreNextScroll) {
+                // Sliding window
+                if ((scrollPos - this.transcriptionElement.nativeElement.scrollTop) > scrollNode.parentElement.clientHeight / 1.4) {
+                    this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                }
+            }
         }
+    }
+
+
+    /**
+     * handle user scrool
+     */
+    private handleScroll(ignoreNextScroll?: boolean) {
+        this.ignoreNextScroll = ignoreNextScroll && ignoreNextScroll === true ? ignoreNextScroll : false;
+        //this.autoScroll = (this.pluginConfiguration?.data.autoScroll) ? !this.ignoreNextScroll : false;
+
+        console.log('handleScroll', this.autoScroll, this.ignoreNextScroll);
     }
 
     /**

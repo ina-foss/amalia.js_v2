@@ -2,6 +2,8 @@ import {MediaPlayerElement} from '../media-player-element';
 import {PluginConfigData} from '../config/model/plugin-config-data';
 import {DefaultLogger} from '../logger/default-logger';
 import {Input, OnInit} from '@angular/core';
+import {PlayerEventType} from '../constant/event-type';
+import {AutoBind} from '../decorator/auto-bind.decorator';
 
 /**
  * Base class for create plugin
@@ -40,6 +42,12 @@ export abstract class PluginBase<T> implements OnInit {
     }
 
     ngOnInit(): void {
+        // Init events
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init);
+    }
+
+    @AutoBind
+    init() {
         const defaultConfig = this.getDefaultConfig();
         try {
             const customConfig = this.mediaPlayerElement.getPluginConfiguration(this.pluginName);
@@ -50,7 +58,7 @@ export abstract class PluginBase<T> implements OnInit {
                 };
             }
         } catch (e) {
-
+            console.log(e);
         }
         if (!this.pluginConfiguration) {
             this.pluginConfiguration = defaultConfig;

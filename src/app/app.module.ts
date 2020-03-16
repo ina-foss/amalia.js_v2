@@ -44,11 +44,11 @@ export class AppModule {
         const customElementAmalia = createCustomElement(AmaliaComponent, {injector: this.injector});
         customElements.define('amalia-player', customElementAmalia);
 
-        const controlBarPlugin = createCustomElement(ControlBarPluginComponent, {injector: this.injector});
-        customElements.define('amalia-control-bar', controlBarPlugin);
-
         const timeBarPlugin = createCustomElement(TimeBarPluginComponent, {injector: this.injector});
         customElements.define('amalia-time-bar', timeBarPlugin);
+
+        const controlBarPlugin = createCustomElement(ControlBarPluginComponent, {injector: this.injector});
+        customElements.define('amalia-control-bar', controlBarPlugin);
 
         const transcriptionPlugin = createCustomElement(TranscriptionPluginComponent, {injector: this.injector});
         customElements.define('amalia-transcription', transcriptionPlugin);
