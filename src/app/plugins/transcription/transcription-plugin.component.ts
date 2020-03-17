@@ -186,7 +186,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
      */
     private scroll() {
-        const scrollNode = this.transcriptionElement.nativeElement.querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`) as HTMLElement;
+        const scrollNode = this.transcriptionElement.nativeElement
+            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`) as HTMLElement;
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop
                 - this.transcriptionElement.nativeElement.offsetTop;
@@ -206,13 +207,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
 
     /**
-     * handle user scrool
+     * handle scroll event
      */
-    private handleScroll(ignoreNextScroll?: boolean) {
+    public handleScroll(ignoreNextScroll?: boolean) {
         this.ignoreNextScroll = ignoreNextScroll && ignoreNextScroll === true ? ignoreNextScroll : false;
-        //this.autoScroll = (this.pluginConfiguration?.data.autoScroll) ? !this.ignoreNextScroll : false;
-
-        console.log('handleScroll', this.autoScroll, this.ignoreNextScroll);
     }
 
     /**

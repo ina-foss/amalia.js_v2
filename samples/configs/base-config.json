@@ -25,12 +25,12 @@
           "control": "progressBar"
         },
         {
-          "label": "Barre de progression",
-          "control": "progressBar"
+          "label": "Playback rate custom steps",
+          "control": "playbackRateCustomSteps"
         },
         {
-          "label": "Barre de progression",
-          "control": "progressBar"
+          "label": "Playback rate steps",
+          "control": "playbackRateSteps"
         },
         {
           "label": "Capture Image",
