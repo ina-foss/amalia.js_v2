@@ -51,6 +51,11 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
 
     ngOnInit(): void {
         super.ngOnInit();
+    }
+
+    @AutoBind
+    init() {
+        super.init();
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
     }

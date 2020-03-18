@@ -42,10 +42,9 @@
       width: 45px;
       display: inline;
       cursor: pointer;
-
       &.selected,
       &:hover {
-        filter: $amalia-ctrl-bar-btn-hover
+        --hover: #2196F3;
       }
     }
   }
@@ -53,7 +52,6 @@
   .transcription {
     display: block;
     margin: 0;
-    padding: 5px;
     flex: 1 1 auto;
     overflow-x: hidden;
     overflow-y: auto;
@@ -63,7 +61,12 @@
     .segment {
       display: block;
       margin: 0;
-      padding: 0;
+
+      padding: 5px;
+
+      &.selected {
+        background-color: $amalia_plugin-transcription-bg_hover;
+      }
 
       .title {
         display: block;
@@ -94,6 +97,7 @@
 
         span.selected {
           font-weight: $amalia-font-weight-bold;
+          color: $amalia-plugin-transcription-tc-hover;
         }
       }
 

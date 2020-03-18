@@ -1,5 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {MediaPlayerElement} from '../../core/media-player-element';
 import {DefaultLogger} from '../../core/logger/default-logger';
 import * as _ from 'lodash';
@@ -15,7 +15,7 @@ import {PluginConfigData} from '../../core/config/model/plugin-config-data';
     styleUrls: ['./control-bar-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnInit {
+export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> {
     public static PLUGIN_NAME = 'CONTROL_BAR';
     /**
      * Min playback rate
@@ -36,10 +36,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public stepPlaybackRateSlider = 0.05;
 
     /**
-     * list playback rate step (2/6/8) // ralentis (0.2
+     * list playback rate step (2/6/8)
      */
     @Input()
     public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10];
+    /**
+     * List of playback rate
+     */
+    @Input()
+    public sliderListOfPlaybackRateCustomSteps: Array<number> = [-10, -8, -6, -4, -2, -0.5, -0.25, -1, 0, 0.25, 0.5, 1, 1.5, 2, 4, 6, 8, 10];
+
     public sliderListOfPlaybackRateStepWidth: Array<number> = [];
 
     /**
@@ -52,7 +58,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @Input()
     public forwardPlaybackRateStep: Array<number> = [2, 6, 10];
-
     /**
      * Volume left side
      */
@@ -88,16 +93,21 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enableVolumeSlider = false;
 
+    /**
+     * List of control for Zone 1
+     */
+    public elements;
+
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
     }
 
-
-    ngOnInit(): void {
-        super.ngOnInit();
+    @AutoBind
+    init() {
+        super.init();
+        this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
-        // Init events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
@@ -111,41 +121,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
         const listOfControls = new Array<ControlBarConfig>();
-        // Expert
         listOfControls.push({label: 'Barre de progression', control: 'progressBar'});
-        listOfControls.push({
-            label: 'Capture Image',
-            control: 'download',
-            icon: 'screenshot',
-            zone: 1,
-            order: 2,
-            data: {href: 'http://localhost:4200/assets/logo.svg'}
-        });
-
-        listOfControls.push({
-            label: 'Download',
-            control: 'download',
-            icon: 'download',
-            zone: 1,
-            order: 1,
-            data: {href: 'http://localhost:4200/assets/logo.svg'}
-        });
-        listOfControls.push({label: 'Playback Rate', control: 'playbackRate', zone: 1});
-
-        listOfControls.push({label: 'backward-start', icon: 'backward-start', control: 'backward-start', zone: 2});
-        listOfControls.push({label: 'backward-frame', icon: 'backward-frame', control: 'backward-frame', zone: 2});
-        listOfControls.push({label: 'backward-5seconds', icon: 'backward-5seconds', control: 'backward-5seconds', zone: 2});
-        listOfControls.push({label: 'backward', icon: 'backward', control: 'backward', zone: 2});
         listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2});
-        listOfControls.push({label: 'forward', icon: 'forward', control: 'forward', zone: 2});
-        listOfControls.push({label: 'forward-5seconds', icon: 'forward-5seconds', control: 'forward-5seconds', zone: 2});
-        listOfControls.push({label: 'forward-frame', icon: 'forward-frame', control: 'forward-frame', zone: 2});
-        listOfControls.push({label: 'forward-end', icon: 'forward-end', control: 'forward-end', zone: 2});
-
-        listOfControls.push({label: 'Volume', control: 'volume', zone: 3});
         listOfControls.push({label: 'Fullscreen', control: 'pause', icon: 'fullscreen', zone: 3});
-        listOfControls.push({label: 'Aspect ratio (a)', control: 'aspectRatio', zone: 3});
-
         return {
             name: ControlBarPluginComponent.PLUGIN_NAME,
             data: listOfControls
@@ -213,9 +191,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Return true if the component is in ths configuration without zone
      * @param componentName compoent name
      */
-    public hasComponentWithoutZone(componentName: string) {
+    public hasComponentWithoutZone(componentName: string): boolean {
         const control = _.find(this.pluginConfiguration.data, {control: componentName});
-        return !(control && control.hasOwnProperty('zone') && control.zone);
+        return (control);
     }
 
     /**
@@ -259,7 +237,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param zone zone id
      */
     public getControlsByZone(zone: number): Array<ControlBarConfig> {
-        return _.filter(this.pluginConfiguration.data, {zone});
+        if (this.elements) {
+            return _.filter(this.elements, {zone});
+        }
+        return null;
     }
 
     /**
@@ -278,10 +259,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.sliderListOfPlaybackRateStepWidth[i] = Math.abs(startStep - endStep);
             }
         }
-        console.log(this.sliderListOfPlaybackRateStepWidth);
-        const sumEcart = _.sum(this.sliderListOfPlaybackRateStepWidth);
+        const sumOfGap = _.sum(this.sliderListOfPlaybackRateStepWidth);
         for (let i = 0; i < maxStep; i++) {
-            this.sliderListOfPlaybackRateStepWidth[i] = (this.sliderListOfPlaybackRateStepWidth[i] * 100 / sumEcart);
+            this.sliderListOfPlaybackRateStepWidth[i] = (this.sliderListOfPlaybackRateStepWidth[i] * 100 / sumOfGap);
         }
     }
 
@@ -352,12 +332,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Invoked on playback change
-     * @param event playback rate
+     * @param playbackRate playback rate
      */
     @AutoBind
-    private handlePlaybackRateChange(playbackRate) {
+    private handlePlaybackRateChange(playbackRate: number) {
         this.currentPlaybackRate = playbackRate;
-        this.logger.info('handle playback rate change', playbackRate);
+        this.logger.info('Handle playback rate change', playbackRate);
     }
 
     /**

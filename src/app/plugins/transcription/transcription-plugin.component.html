@@ -7,7 +7,7 @@
 
 <div *ngIf="transcriptions && transcriptions.length>0; then transcriptionBlock; else emptyBlock"></div>
 <ng-template #transcriptionBlock>
-    <div class="transcription" #transcriptionElement>
+    <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
             <div class="title">{{t.label}}</div>
             <div class="timecode" (click)="callSeek(t.tcIn)">
@@ -15,7 +15,7 @@
                 <div class="separator"></div>
                 <div class="tcout">{{t.tcOut|tcFormat:tcDisplayFormat}}</div>
             </div>
-            <div class="progress-bar" [ngStyle]="{width: '0%'}"></div>
+            <div class="progress-bar" [ngStyle]="{width: '0%'}" *ngIf="displayProgressBar"></div>
             <div class="text" (click)="seekToWord($event)">
                 <span *ngIf="t.subLocalisations && t.subLocalisations.length>0; then subLocalisationBlock; else wordBlock"></span>
                 <ng-template #subLocalisationBlock>
@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="auto-scroll" (click)="toggleAutoScroll()">
-        <svg class="amalia-svg-auto-scroll-size icon" [ngClass]="{'selected':autoScroll}">
+        <svg class="amalia-svg-auto-scroll-size icon" [ngClass]="{'selected':autoScroll && !ignoreNextScroll}">
             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#refresh'"></use>
         </svg>
     </div>

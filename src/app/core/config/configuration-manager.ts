@@ -66,8 +66,8 @@ export class ConfigurationManager {
      * @throws AmaliaException if plugin don't contain config
      */
     getPluginConfiguration(name: string): PluginConfigData<any> {
-        if (this.configData.pluginsConfiguration.has(name)) {
-            return this.configData.pluginsConfiguration.get(name);
+        if (this.configData.pluginsConfiguration.hasOwnProperty(name)) {
+            return this.configData.pluginsConfiguration[name];
         } else {
             throw new AmaliaException(`Error to get configuration for plugin ${name}.`);
         }

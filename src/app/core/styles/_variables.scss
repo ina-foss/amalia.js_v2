@@ -18,12 +18,15 @@ $amalia-error-z-index: var(--amalia-error-z-index, 3000);
 
 
 $amalia-plugin-transcription-bg: var(--amalia-plugin-transcription-bg, #555);
+$amalia-plugin-transcription-bg-hover: var(--amalia-plugin-transcription-bg-hover, rgba(85, 85, 85, 0.7));
 $amalia-plugin-transcription-header: var(--amalia-plugin-transcription-header, #0086B1);
 $amalia-plugin-transcription-progress-bar: var(--amalia-plugin-transcription-progress-bar, #0086B1);
 $amalia-plugin-transcription-tc: var(--amalia-plugin-transcription-tc, #727070);
-$amalia-plugin-transcription-tc-hover: var(--amalia-plugin-transcription-tc-hover, #34495E);
+$amalia-plugin-transcription-tc-hover: var(--amalia-plugin-transcription-tc-hover, #0086B1);
+$amalia-plugin-transcription-auto-scroll: var(--amalia-plugin-transcription-auto-scroll, #0086B1);
 $amalia-plugin-transcription-separator: var(--amalia-plugin-transcription-separator, '>');
-
+$amalia-plugin-subtitle-bg: var(--amalia-plugin-subtitle-bg, rgba(34, 34, 34, 0.8));
+$amalia-plugin-subtitle-color: var(--amalia-plugin-subtitle-color, rgb(255, 255, 255));
 
 // Mixin for ratio dimensions
 @mixin viewportRatio($x, $y) {
@@ -42,6 +45,7 @@ $backgroundColor: #2e2e2e;
 // Playback rate slider
 $amalia-ctrl-bar-pslider-bg-color: var(--amalia-ctrl-bar-pslider-bg-color, #6c6c6c);
 $amalia-ctrl-bar-pslider-bg-color-hover: var(--amalia-ctrl-bar-pslider-bg-color, #bebebe);
+$amalia-ctrl-bar-pslider-bg-selected: var(--amalia-ctrl-bar-pslider-bg-selected, #0086B1);
 
 
 /**
