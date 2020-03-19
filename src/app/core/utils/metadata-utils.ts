@@ -9,7 +9,6 @@ import {FormatUtils} from './format-utils';
 export class MetadataUtils {
     /**
      * Return list of transcription
-     * Todo sub localisation
      * @param metadata localisation
      * @param maxParselevel max parse level
      */

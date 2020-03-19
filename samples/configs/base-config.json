@@ -29,10 +29,6 @@
           "control": "playbackRateCustomSteps"
         },
         {
-          "label": "Playback rate steps",
-          "control": "playbackRateSteps"
-        },
-        {
           "label": "Capture Image",
           "control": "download",
           "icon": "screenshot",

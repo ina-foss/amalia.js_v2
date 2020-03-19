@@ -9,6 +9,7 @@ import {TranscriptionConfig} from '../../core/config/model/transcription-config'
 import {isArrayLike} from 'rxjs/internal-compatibility';
 import {TranscriptionLocalisation} from '../../core/config/model/transcription-localisation';
 import {DEFAULT} from '../../core/constant/default';
+import {TextUtils} from '../../core/utils/text-utils';
 
 @Component({
     selector: 'amalia-transcription',
@@ -20,6 +21,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public static PLUGIN_NAME = 'TRANSCRIPTION';
     public static KARAOKE_TC_DELTA = 0.250;
     public static SELECTOR_SEGMENT = 'segment';
+    public static SELECTOR_WORD = 'w';
     public static SELECTOR_SELECTED = 'selected';
     public static SELECTOR_PROGRESS_BAR = '.progress-bar';
     public tcDisplayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's';
@@ -34,6 +36,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     public currentTime: number;
     public transcriptions: Array<TranscriptionLocalisation> = null;
+    private listOfSearchedNodes: Array<HTMLElement>;
+    private searchedWordIndex = 0;
 
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
@@ -131,7 +135,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      *  In charge to remove selected elements and disable progress bar
      */
     private disableRemoveAllSelectedNodes() {
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+        // remove selected word
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`span.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+            if (!node.parentElement.parentElement.classList.contains(TranscriptionPluginComponent.SELECTOR_SELECTED)) {
+                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+            }
+        });
+        // remove selected segment
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`div.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.progressBar) {
                 const progressBarNode = (node.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR) as HTMLElement);
@@ -189,20 +200,29 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const scrollNode = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`) as HTMLElement;
         if (scrollNode) {
-            const scrollPos = scrollNode.offsetTop
-                - this.transcriptionElement.nativeElement.offsetTop;
-            const scrollWin = this.transcriptionElement.nativeElement.scrollTop;
-            // in charge of modifying the status of the scroll when reading segment is display area
-            if (this.ignoreNextScroll && scrollWin < scrollPos) {
-                this.ignoreNextScroll = false;
-            }
-            if (this.autoScroll && !this.ignoreNextScroll) {
-                // Sliding window
-                if ((scrollPos - this.transcriptionElement.nativeElement.scrollTop) > scrollNode.parentElement.clientHeight / 1.4) {
-                    this.transcriptionElement.nativeElement.scrollTop = scrollPos;
-                }
+            this.scrollToNode(scrollNode);
+        }
+    }
+
+    /**
+     * Invoked to scroll to node
+     * @param scrollNode scroll node element
+     */
+    private scrollToNode(scrollNode: HTMLElement) {
+        const scrollPos = scrollNode.offsetTop
+            - this.transcriptionElement.nativeElement.offsetTop;
+        const scrollWin = this.transcriptionElement.nativeElement.scrollTop;
+        // in charge of modifying the status of the scroll when reading segment is display area
+        if (this.ignoreNextScroll && scrollWin < scrollPos) {
+            this.ignoreNextScroll = false;
+        }
+        if (this.autoScroll && !this.ignoreNextScroll) {
+            // Sliding window
+            if ((scrollPos - this.transcriptionElement.nativeElement.scrollTop) > scrollNode.parentElement.clientHeight / 1.4) {
+                this.transcriptionElement.nativeElement.scrollTop = scrollPos;
             }
         }
+
     }
 
 
@@ -232,6 +252,34 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     this.transcriptions = this.transcriptions.concat(transcriptionLocalisations);
                 }
             });
+        }
+    }
+
+
+    public searchWord(searchText: string) {
+        this.listOfSearchedNodes = new Array<HTMLElement>();
+        const SEARCH_SELECTOR = 'search-text';
+        if (searchText !== '') {
+            Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
+                node.classList.remove(SEARCH_SELECTOR);
+                if (TextUtils.hasSearchText(node.textContent, searchText)) {
+                    node.classList.add(SEARCH_SELECTOR);
+                    this.listOfSearchedNodes.push(node as HTMLElement);
+                }
+
+            });
+        }
+        console.log('search word' + searchText, this.listOfSearchedNodes);
+
+    }
+
+
+    public scrollToSearchedWord(direction: string) {
+        if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
+            this.searchedWordIndex = Math.max(0, Math.min(
+                (direction === 'up') ? this.searchedWordIndex - 1 : this.searchedWordIndex + 1, this.listOfSearchedNodes.length - 1));
+            this.ignoreNextScroll = true;
+            this.scrollToNode(this.listOfSearchedNodes[this.searchedWordIndex].parentElement);
         }
     }
 

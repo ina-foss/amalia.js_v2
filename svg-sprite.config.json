@@ -3,7 +3,7 @@
   "shape": {
     "dimension": {
       "maxWidth": 50,
-      "precision": 2,
+      "precision": 1,
       "attributes": false
     },
     "spacing": {
