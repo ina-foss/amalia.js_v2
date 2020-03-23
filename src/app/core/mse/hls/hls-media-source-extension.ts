@@ -13,7 +13,9 @@ import {HlsCustomFLoader} from './hls-custom-f-loader';
  */
 export class HLSMediaSourceExtension implements MediaSourceExtension {
     private static DEFAULT_HEADER_BASE64 = 'data:application/vnd.apple.mpegurl;base64,';
+    private reverseMode = false;
     private mediaSrc: string;
+    private backwardsMediaSrc: string;
     private config: PlayerConfigData;
     private logger: DefaultLogger;
     private readonly mediaElement: HTMLVideoElement;
@@ -69,13 +71,10 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      * @param config media source configuration
      */
     public setSrc(config: PlayerConfigData) {
-        if (config && typeof config.src === 'string') {
-            this.mediaSrc = config.src;
-            if (!HLSMediaSourceExtension.isUrl(this.mediaSrc)) {
-                this.mediaSrc = `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${this.mediaSrc}`;
-                this.logger.debug('Hls string source', this.mediaSrc);
-            }
-
+        if (config && typeof config.src === 'string' && typeof config.backwardsSrc === 'string') {
+            this.mediaSrc = (!HLSMediaSourceExtension.isUrl(this.mediaSrc)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.src}` : config.src;
+            this.backwardsMediaSrc = (!HLSMediaSourceExtension.isUrl(this.mediaSrc)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
+            this.logger.debug('Hls string source', this.mediaSrc);
             // load source
             this.hlsPlayer.loadSource(this.mediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
@@ -87,6 +86,31 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.mediaSrc = null;
         }
     }
+
+    getBackwardsSrc(): string | MediaStream | MediaSource | Blob | null {
+        return this.backwardsMediaSrc;
+    }
+
+    switchToMainSrc(): Promise<void> {
+        return new Promise((resolve) => {
+            if (this.reverseMode !== false) {
+                this.hlsPlayer.loadSource(this.mediaSrc);
+                this.reverseMode = false;
+            }
+            resolve();
+        });
+    }
+
+    switchToBackwardsSrc(): Promise<void> {
+        return new Promise((resolve) => {
+            if (this.reverseMode !== true) {
+                this.hlsPlayer.loadSource(this.backwardsMediaSrc);
+                this.reverseMode = true;
+            }
+            resolve();
+        });
+    }
+
 
     public destroy() {
         this.hlsPlayer.detachMedia();

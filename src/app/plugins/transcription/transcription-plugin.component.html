@@ -45,7 +45,8 @@
                           [attr.data-tcin]="w.tcIn"
                           [attr.data-tcOut]="w.tcOut">{{w.text}}</span>
                 </ng-template>
-                <ng-template #wordBlock><span class="w">{{t.text}}</span></ng-template>
+                <ng-template #wordBlock><span class="w" [attr.data-tcin]="t.tcIn"
+                                              [attr.data-tcOut]="t.tcOut">{{t.text}}</span></ng-template>
             </div>
         </div>
     </div>

@@ -30,6 +30,7 @@ export class MediaPlayerElement {
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
 
+
     constructor(@Inject(DefaultLogger) logger: LoggerInterface) {
         this.logger = logger;
         this.preferenceStorageManager = new PreferenceStorageManager();

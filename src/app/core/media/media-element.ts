@@ -19,7 +19,10 @@ export class MediaElement {
     private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
-    private modelRewind = false;
+    /**
+     * play a video backwards
+     */
+    private reverseMode = false;
     private intervalRewind = null;
 
     /**
@@ -185,7 +188,7 @@ export class MediaElement {
      * Return current position in seconds
      */
     getCurrentTime(): number {
-        return this.mediaElement ? this.mediaElement.currentTime : 0;
+        return this.mediaElement && this.reverseMode ? Math.max(0, this.getDuration() - this.mediaElement.currentTime) : this.mediaElement.currentTime;
     }
 
     /**
@@ -194,7 +197,7 @@ export class MediaElement {
     public setCurrentTime(value: number): void {
         const currentTime = isNaN(value) ? 0 : value;
         if (this.mediaElement) {
-            this.mediaElement.currentTime = Math.max(0, currentTime);
+            this.mediaElement.currentTime = (this.reverseMode) ? Math.max(0, this.getDuration() - currentTime) : Math.max(0, currentTime);
         }
     }
 
@@ -212,27 +215,39 @@ export class MediaElement {
      * @returns the current playback speed of the audio/video.
      */
     private setPlaybackRate(speed: number) {
-        this.modelRewind = (this.playbackRate < 0);
-        // model rewind
-        if (this.modelRewind) {
-            clearInterval(this.intervalRewind);
-            this.intervalRewind = setInterval(() => {
-                this.mediaElement.playbackRate = 1;
-                let currentTime = this.getCurrentTime();
-                if (currentTime === 0) {
-                    clearInterval(this.intervalRewind);
-                    speed = 1;
-                    this.pause();
-                } else {
-                    currentTime += speed;
-                    this.setCurrentTime(currentTime);
-                }
-            }, 30);
-        } else {
-            if (this.isPaused()) {
-                this.play().then(() => this.logger.debug('played'));
+        const lastStateIsReverseMode = this.reverseMode;
+        const oldCurrentTime = this.getCurrentTime();
+        this.reverseMode = (speed < 0);
+        if (this.reverseMode) {
+            if (this.mse.getBackwardsSrc()) {
+                this.mse.switchToBackwardsSrc().then(() => {
+                    this.setCurrentTime(oldCurrentTime);
+                    if (this.mediaElement) {
+                        this.mediaElement.playbackRate = Math.abs(speed);
+                    }
+                });
+            } else {
+                clearInterval(this.intervalRewind);
+                this.intervalRewind = setInterval(() => {
+                    this.mediaElement.playbackRate = 1;
+                    let currentTime = this.getCurrentTime();
+                    if (currentTime === 0) {
+                        clearInterval(this.intervalRewind);
+                        speed = 1;
+                        this.pause();
+                    } else {
+                        currentTime += speed;
+                        this.setCurrentTime(currentTime);
+                    }
+                }, 30);
             }
-            if (this.mediaElement) {
+        } else {
+            if (lastStateIsReverseMode === true) {
+                this.mse.switchToMainSrc().then(() => {
+                    this.setCurrentTime(oldCurrentTime);
+                    this.mediaElement.playbackRate = speed;
+                });
+            } else if (this.mediaElement) {
                 this.mediaElement.playbackRate = speed;
             }
         }

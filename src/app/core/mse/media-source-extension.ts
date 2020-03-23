@@ -12,11 +12,25 @@ export interface MediaSourceExtension {
      */
     setSrc(config: PlayerConfigData);
 
-
     /**
      * Invoked to get source
      */
     getSrc(): string | MediaStream | MediaSource | Blob | null;
+
+    /**
+     * Invoked on reverse mode
+     */
+    getBackwardsSrc(): string | MediaStream | MediaSource | Blob | null;
+
+    /**
+     * Invoked to set main source
+     */
+    switchToMainSrc(): Promise<void>;
+
+    /**
+     * Invoked to set backward source
+     */
+    switchToBackwardsSrc(): Promise<void>;
 
     /**
      * Invoked for clean buffer

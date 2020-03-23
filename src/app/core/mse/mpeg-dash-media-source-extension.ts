@@ -26,6 +26,35 @@ export class MPEGDashMediaSourceExtension implements MediaSourceExtension {
 
     /**
      * Not implemented
+     * @param src media source
+     * @throws AmaliaException
+     */
+    getBackwardsSrc(): string | MediaStream | MediaSource | Blob | null {
+        throw new AmaliaException('Not implemented');
+    }
+
+    /**
+     * Invoked to set main source
+     */
+    switchToMainSrc(): Promise<void> {
+        return new Promise(() => {
+            throw new AmaliaException('Not implemented');
+        });
+    }
+
+    /**
+     * Invoked to set backward source
+     */
+    switchToBackwardsSrc(): Promise<void> {
+        return new Promise((resolve) => {
+            resolve();
+            throw new AmaliaException('Not implemented');
+        });
+    }
+
+
+    /**
+     * Not implemented
      * @throws AmaliaException
      */
     destroy(): void {
