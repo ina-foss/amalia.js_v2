@@ -15,16 +15,11 @@
   background-color: $amalia-player-bg-color;
 
   .media-player {
-    width: 100vw;
-    max-height: 100vh;
-    margin: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0; /* vertical center */
-    left: 0;
-    right: 0; /* horizontal center */
+    position: relative;
+    height: 0px;
     z-index: $amalia-default-z-index;
     background-color: white;
+    margin: 0 auto 0;
 
     &.aspect-ratio-16by9 {
       @include viewportRatio(16, 9);
@@ -35,7 +30,7 @@
     }
 
     video.player {
-      position: relative;
+      position:absolute;
       top: 0;
       left: 0;
       z-index: $amalia-default-z-index;

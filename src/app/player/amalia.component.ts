@@ -223,6 +223,7 @@ export class AmaliaComponent implements OnInit {
     private handleAspectRatioChange(event) {
         this.logger.debug('handleAspectRatioChange', event);
         this.aspectRatio = event;
+
     }
 
     /**
