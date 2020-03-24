@@ -14,7 +14,9 @@ import {HlsCustomFLoader} from './hls-custom-f-loader';
 export class HLSMediaSourceExtension implements MediaSourceExtension {
     private static DEFAULT_HEADER_BASE64 = 'data:application/vnd.apple.mpegurl;base64,';
     private reverseMode = false;
-    private mediaSrc: string;
+    private currentTime: number;
+    private duration: number;
+    private mainMediaSrc: string;
     private backwardsMediaSrc: string;
     private config: PlayerConfigData;
     private logger: DefaultLogger;
@@ -62,7 +64,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      * Return media source
      */
     public getSrc(): string | MediaStream | MediaSource | Blob | null {
-        return (this.hlsPlayer) ? this.mediaSrc : null;
+        return (this.hlsPlayer) ? this.mainMediaSrc : null;
     }
 
     /**
@@ -72,18 +74,21 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      */
     public setSrc(config: PlayerConfigData) {
         if (config && typeof config.src === 'string' && typeof config.backwardsSrc === 'string') {
-            this.mediaSrc = (!HLSMediaSourceExtension.isUrl(this.mediaSrc)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.src}` : config.src;
-            this.backwardsMediaSrc = (!HLSMediaSourceExtension.isUrl(this.mediaSrc)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
-            this.logger.debug('Hls string source', this.mediaSrc);
+            this.mainMediaSrc = (!HLSMediaSourceExtension.isUrl(config.src)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.src}` : config.src;
+            if (typeof config.backwardsSrc === 'string') {
+                this.backwardsMediaSrc = (!HLSMediaSourceExtension.isUrl(config.backwardsSrc))
+                    ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
+            }
+            this.logger.debug('Hls string source', this.mainMediaSrc);
             // load source
-            this.hlsPlayer.loadSource(this.mediaSrc);
+            this.hlsPlayer.loadSource(this.mainMediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
             // handle events
             this.hlsPlayer.on(Hls.Events.MANIFEST_LOADED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
         } else {
             this.logger.warn('Error to set source', config.src);
-            this.mediaSrc = null;
+            this.mainMediaSrc = null;
         }
     }
 
@@ -92,22 +97,28 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     }
 
     switchToMainSrc(): Promise<void> {
-        return new Promise((resolve) => {
-            if (this.reverseMode !== false) {
-                this.hlsPlayer.loadSource(this.mediaSrc);
-                this.reverseMode = false;
-            }
-            resolve();
-        });
+        return this.switchSrc(this.mainMediaSrc);
     }
 
     switchToBackwardsSrc(): Promise<void> {
+        return this.switchSrc(this.backwardsMediaSrc);
+    }
+
+    /**
+     * Media source
+     * @param src media source
+     */
+    private switchSrc(src: string): Promise<void> {
         return new Promise((resolve) => {
             if (this.reverseMode !== true) {
-                this.hlsPlayer.loadSource(this.backwardsMediaSrc);
+                this.currentTime = this.mediaElement.currentTime;
+                this.duration = this.mediaElement.duration;
+                this.destroy();
+                this.hlsPlayer.attachMedia(this.mediaElement);
+                this.hlsPlayer.loadSource(src);
                 this.reverseMode = true;
             }
-            resolve();
+            this.mediaElement.play().then(() => resolve());
         });
     }
 
@@ -125,6 +136,9 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         this.logger.info('Error to load hls file', event);
         if (event !== 'hlsError') {
             this.eventEmitter.emit(PlayerEventType.ERROR);
+        } else if (event.fatal === true && !this.reverseMode) {
+            this.hlsPlayer.destroy();
+            this.eventEmitter.emit(PlayerEventType.ERROR);
         }
     }
 
@@ -134,7 +148,9 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     @AutoBind
     private handleOnManifestLoaded() {
         this.logger.debug('Manifest loaded');
-
+        if (this.reverseMode) {
+            this.hlsPlayer.startLoad(this.duration - this.currentTime);
+        }
     }
 
     /**

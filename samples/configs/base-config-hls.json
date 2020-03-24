@@ -1,7 +1,7 @@
 {
   "player": {
     "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-    "backwardsSrc": "https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8",
+    "backwardsSrc": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
