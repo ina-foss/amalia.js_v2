@@ -1,0 +1,87 @@
+{
+  "player": {
+    "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    "crossOrigin": "allow"
+  },
+  "pluginsConfiguration": {
+    "CONTROL_BAR": {
+      "data": [
+        {
+          "label": "Barre de progression",
+          "control": "progressBar"
+        },
+        {
+          "label": "Capture Image",
+          "control": "download",
+          "icon": "screenshot",
+          "zone": 1,
+          "order": 2,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          }
+        },
+        {
+          "label": "Download",
+          "control": "download",
+          "icon": "download",
+          "zone": 1,
+          "order": 1,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          }
+        },
+        {
+          "label": "Playback Rate",
+          "control": "playbackRate",
+          "zone": 1,
+          "order": 3
+        },
+        {
+          "label": "backward-frame",
+          "icon": "backward-frame",
+          "control": "backward-frame",
+          "zone": 2
+        },
+        {
+          "label": "backward",
+          "icon": "backward",
+          "control": "backward",
+          "zone": 2
+        },
+        {
+          "label": "Play / Pause",
+          "control": "playPause",
+          "zone": 2
+        },
+        {
+          "label": "forward",
+          "icon": "forward",
+          "control": "forward",
+          "zone": 2
+        },
+        {
+          "label": "forward-frame",
+          "icon": "forward-frame",
+          "control": "forward-frame",
+          "zone": 2
+        },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 3
+        },
+        {
+          "label": "Fullscreen",
+          "control": "pause",
+          "icon": "fullscreen",
+          "zone": 3
+        },
+        {
+          "label": "Aspect ratio (a)",
+          "control": "aspectRatio",
+          "zone": 3
+        }
+      ]
+    }
+  }
+}
