@@ -9,13 +9,13 @@ $amalia-bg-color: var(--amalia-bg-color, rgba(34, 34, 34, 0.9));
 $amalia-player-bg-color: var(--amalia-player-bg-color, black);
 $amalia-player-bg-color1: var(--amalia-player-bg-color1, white);
 $amalia-player-bg-color2: var(--amalia-player-bg-color2, #E5E5E5);
-$amalia-default-z-index: var(--amalia-default-z-index, 2000);
-$amalia-volume-bar-z-index: var(--amalia-volume-bar-z-index, 2010);
-$amalia-context-menu-z-index: var(--amalia-volume-bar-z-index, 2999);
-$amalia-tooltip-z-index: var(--amalia-tooltip-z-index, 2100);
+$amalia-default-z-index: var(--amalia-default-z-index, 2);
+$amalia-volume-bar-z-index: var(--amalia-volume-bar-z-index, 3);
+$amalia-context-menu-z-index: var(--amalia-volume-bar-z-index, 5);
+$amalia-tooltip-z-index: var(--amalia-tooltip-z-index, 4);
 $amalia-tooltip-opacity: var(--amalia-tooltip-opacity, .9);
-$amalia-error-z-index: var(--amalia-error-z-index, 3000);
-
+$amalia-error-z-index: var(--amalia-error-z-index, 6);
+$amalia-volume-slider-bg: var(--amalia-volume-slider-bg, rgb(255, 255, 255,0.4));
 
 $amalia-plugin-transcription-bg: var(--amalia-plugin-transcription-bg, #555);
 $amalia-plugin-transcription-bg-hover: var(--amalia-plugin-transcription-bg-hover, rgba(85, 85, 85, 0.7));
@@ -30,12 +30,8 @@ $amalia-plugin-subtitle-color: var(--amalia-plugin-subtitle-color, rgb(255, 255,
 
 // Mixin for ratio dimensions
 @mixin viewportRatio($x, $y) {
-  /* height: 56.25vw; !* height:width ratio = 9/16 = .5625  *!
-     max-width: 177.78vh; !* 16/9 = 1.778 *!*/
-  /*  height: ($y/$x)*100vw;
-    max-width: $x /  $y *100vh;*/
-  width: calc(100% * (16 / 9 - 1));
-  height: calc(100% * 9 / 16);
+  padding-top: ($y / $x) * 100%;
+  position: relative;
 }
 
 // Control bar back
