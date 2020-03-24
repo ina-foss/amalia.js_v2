@@ -71,7 +71,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Selected aspectRatio
      */
-    public aspectRatio: '16by9' | '4by3' = '4by3';
+    public aspectRatio: '16:9' | '4:3' = '4:3';
 
     /**
      * return  current time
@@ -138,6 +138,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public controlClicked(control: string) {
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        let frames: number;
         switch (control) {
             case 'playPause':
                 mediaPlayer.playPause();
@@ -152,7 +153,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.prevPlaybackRate();
                 break;
             case 'backward-5seconds':
-                mediaPlayer.movePrevFrame(5);
+                frames = 5 * mediaPlayer.framerate ;
+                mediaPlayer.movePrevFrame(frames);
+                break;
+            case 'backward-10seconds':
+                frames = 10 * mediaPlayer.framerate ;
+                mediaPlayer.movePrevFrame(frames);
                 break;
             case 'backward-frame':
                 mediaPlayer.movePrevFrame(1);
@@ -164,7 +170,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.nextPlaybackRate();
                 break;
             case 'forward-5seconds':
-                mediaPlayer.moveNextFrame(5);
+                frames = 5 * mediaPlayer.framerate ;
+                mediaPlayer.moveNextFrame(frames);
+                break;
+            case 'forward-10seconds':
+                frames = 10 * mediaPlayer.framerate ;
+                mediaPlayer.moveNextFrame(frames);
                 break;
             case 'forward-frame':
                 mediaPlayer.moveNextFrame(1);
@@ -210,7 +221,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change aspect ratio
      */
     public changeAspectRatio() {
-        this.mediaPlayerElement.aspectRatio = (this.aspectRatio === '4by3') ? '16by9' : '4by3';
+        this.mediaPlayerElement.aspectRatio = (this.aspectRatio === '4:3') ? '16:9' : '4:3';
     }
 
     /**
