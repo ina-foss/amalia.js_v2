@@ -40,13 +40,13 @@ export class MediaPlayerElement {
     /**
      * Selected aspectRatio
      */
-    private _aspectRatio: '16by9' | '4by3' = '4by3';
+    private _aspectRatio: '16:9' | '4:3' = '4:3';
 
-    get aspectRatio(): '16by9' | '4by3' {
+    get aspectRatio(): '16:9' | '4:3' {
         return this._aspectRatio;
     }
 
-    set aspectRatio(value: '16by9' | '4by3') {
+    set aspectRatio(value: '16:9' | '4:3') {
         this._aspectRatio = value;
         this.eventEmitter.emit(PlayerEventType.ASPECT_RATIO_CHANGE, value);
     }
