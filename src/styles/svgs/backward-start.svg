@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generator: Gravit.io -->
 <svg xmlns="http://www.w3.org/2000/svg" style="isolation:isolate"
-     viewBox="0 0 100 100" width="100pt" height="100pt">
+     viewBox="0 0 100 100" width="24px" height="24px">
     <defs>
         <clipPath id="_clipPath_XD53Lqx9MZCbEPHncOgxKfcvWWo48ECo">
             <rect width="100" height="100"/>
@@ -22,7 +22,7 @@
                                 <path d=" M 88.734 4.88 L 88.734 95.455 C 88.734 96.071 88.485 96.628 88.081 97.032 C 87.677 97.436 87.12 97.685 86.504 97.685 C 86.059 97.685 85.624 97.552 85.255 97.303 L 15.943 50.476 C 15.489 50.169 15.195 49.704 15.204 49.115 C 15.216 48.342 15.608 47.481 16.326 46.537 L 85.313 2.994 C 85.834 2.665 86.439 2.578 86.996 2.704 C 87.553 2.83 88.061 3.169 88.734 4.88 Z "
                                       fill-rule="evenodd" fill="none"
                                       mask="url(#_mask_ypZTBI2lpB8X34XeUyT5Dq4I91cCcNPK)"
-                                      vector-effect="non-scaling-stroke" stroke-width="2.5" stroke="rgb(255,255,255)"
+                                      vector-effect="non-scaling-stroke" stroke-width="1" stroke="rgb(255,255,255)"
                                       stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4"/>
                                 <path d=" M 88.734 4.88 L 88.734 95.455 C 88.734 96.071 88.485 96.628 88.081 97.032 C 87.677 97.436 87.12 97.685 86.504 97.685 C 86.059 97.685 85.624 97.552 85.255 97.303 L 15.943 50.476 C 15.489 50.169 15.195 49.704 15.204 49.115 C 15.216 48.342 15.608 47.481 16.326 46.537 L 85.313 2.994 C 85.834 2.665 86.439 2.578 86.996 2.704 C 87.553 2.83 88.061 3.169 88.734 4.88 Z "
                                       fill-rule="evenodd" fill="none"/>
@@ -33,7 +33,7 @@
                                 </mask>
                                 <line x1="11.266" y1="1.25" x2="11.266" y2="99.391"
                                       mask="url(#_mask_hhLIRqZepDAAnydPVwEPEknhAgrLw8jU)"
-                                      vector-effect="non-scaling-stroke" stroke-width="2.5" stroke="rgb(255,255,255)"
+                                      vector-effect="non-scaling-stroke" stroke-width="1" stroke="rgb(255,255,255)"
                                       stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4"/>
                             </g>
                         </g>
