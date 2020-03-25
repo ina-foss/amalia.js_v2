@@ -197,7 +197,7 @@ export class MediaElement {
     public setCurrentTime(value: number): void {
         const currentTime = isNaN(value) ? 0 : value;
         if (this.mediaElement) {
-            this.mediaElement.currentTime = (this.reverseMode) ? Math.max(0, this.getDuration() - currentTime) : Math.max(0, currentTime);
+            this.mediaElement.currentTime = Math.max(0, currentTime);
         }
     }
 
@@ -219,9 +219,10 @@ export class MediaElement {
         const oldCurrentTime = this.getCurrentTime();
         this.reverseMode = (speed < 0);
         if (this.reverseMode) {
+            const oldDuration = this.getDuration();
             if (this.mse.getBackwardsSrc()) {
                 this.mse.switchToBackwardsSrc().then(() => {
-                    this.setCurrentTime(oldCurrentTime);
+                    this.setCurrentTime(Math.max(0, oldDuration - oldCurrentTime));
                     if (this.mediaElement) {
                         this.mediaElement.playbackRate = Math.abs(speed);
                     }

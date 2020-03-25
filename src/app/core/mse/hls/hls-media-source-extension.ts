@@ -41,6 +41,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             config.hls.config = Hls.DefaultConfig;
         }
         config.hls.config.fLoader = HlsCustomFLoader;
+        config.hls.config.debug = true;
         this.hlsPlayer = new Hls(config.hls.config);
         this.eventEmitter.on(PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
     }
@@ -80,9 +81,8 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
                     ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
             }
             this.logger.debug('Hls string source', this.mainMediaSrc);
-            // load source
-            this.hlsPlayer.loadSource(this.mainMediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
+            this.hlsPlayer.loadSource(this.mainMediaSrc);
             // handle events
             this.hlsPlayer.on(Hls.Events.MANIFEST_LOADED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
@@ -97,33 +97,32 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     }
 
     switchToMainSrc(): Promise<void> {
-        return this.switchSrc(this.mainMediaSrc);
+        return (this.reverseMode) ? this.switchSrc(this.mainMediaSrc, false) : Promise.resolve();
     }
 
     switchToBackwardsSrc(): Promise<void> {
-        return this.switchSrc(this.backwardsMediaSrc);
+        return (!this.reverseMode) ? this.switchSrc(this.backwardsMediaSrc, true) : Promise.resolve();
     }
 
     /**
      * Media source
      * @param src media source
      */
-    private switchSrc(src: string): Promise<void> {
+    private switchSrc(src: string, reverseMode: boolean): Promise<void> {
         return new Promise((resolve) => {
-            if (this.reverseMode !== true) {
-                this.currentTime = this.mediaElement.currentTime;
-                this.duration = this.mediaElement.duration;
-                this.destroy();
-                this.hlsPlayer.attachMedia(this.mediaElement);
-                this.hlsPlayer.loadSource(src);
-                this.reverseMode = true;
-            }
-            this.mediaElement.play().then(() => resolve());
+            this.logger.debug(`Switch src :${src}  ${reverseMode}`);
+            this.currentTime = this.mediaElement.currentTime;
+            this.duration = this.mediaElement.duration;
+            this.hlsPlayer.attachMedia(this.mediaElement);
+            this.hlsPlayer.loadSource(src);
+            this.reverseMode = reverseMode;
+            resolve();
         });
     }
 
 
     public destroy() {
+        this.hlsPlayer.stopLoad();
         this.hlsPlayer.detachMedia();
         this.hlsPlayer.destroy();
     }
@@ -149,7 +148,8 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     private handleOnManifestLoaded() {
         this.logger.debug('Manifest loaded');
         if (this.reverseMode) {
-            this.hlsPlayer.startLoad(this.duration - this.currentTime);
+            this.hlsPlayer.startLoad(Math.max(0, this.duration - this.currentTime));
+            this.mediaElement.play();
         }
     }
 
