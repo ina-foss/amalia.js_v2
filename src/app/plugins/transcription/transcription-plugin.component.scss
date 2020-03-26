@@ -42,6 +42,7 @@
       width: 45px;
       display: inline;
       cursor: pointer;
+
       &.selected,
       &:hover {
         --hover: #2196F3;
@@ -56,7 +57,6 @@
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 0;
-    scroll-behavior: smooth;
 
     .segment {
       display: block;
@@ -70,6 +70,7 @@
 
       .title {
         display: block;
+        font-weight: bold;
       }
 
       .timecode {
@@ -90,8 +91,13 @@
         .w {
           cursor: pointer;
 
+          &.search-text {
+            background-color: $amalia-plugin-transcription-search;
+          }
+
           &:hover {
             text-decoration: underline;
+            font-weight: bold;
           }
         }
 
@@ -105,6 +111,43 @@
         height: 2px;
         display: block;
         background-color: $amalia-plugin-transcription-progress-bar;
+      }
+    }
+  }
+
+  .search-block {
+    display: flex;
+    flex-direction: row;
+    background-color: $amalia_plugin-transcription-bg_hover;
+
+    div {
+      align-items: center;
+
+      &.search-text {
+        flex: 1;
+        widht: 100%;
+        padding: 8px;
+
+        input {
+          width: 100%;
+          height: 30px;
+          border: 1px solid $amalia-plugin-transcription-bg-hover;
+        }
+      }
+
+      &.up,
+      &.down {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        position: relative;
+
+        .icon {
+          height: 15px;
+          width: 100%;
+          top: 15px;
+          position: absolute;
+        }
       }
     }
   }

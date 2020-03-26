@@ -1,15 +1,17 @@
 {
   "player": {
-    "src": "http://localhost:4201/medias/jt.mp4",
-    "backwardsSrc": "http://localhost:4201/medias/jt-r.mp4",
-    "crossOrigin": "anonymous"
+    "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    "crossOrigin": "allow"
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/jt-d.json"
+      "url": "http://localhost:4201/metadata/amalia01-events.json"
     },
     {
-      "url": "http://localhost:4201/metadata/jt-t.json"
+      "url": "http://localhost:4201/metadata/amalia01-ball.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/amalia01-text.json"
     },
     {
       "url": "http://localhost:4201/metadata/sample-transcription.json"
@@ -21,10 +23,6 @@
         {
           "label": "Barre de progression",
           "control": "progressBar"
-        },
-        {
-          "label": "Playback rate custom steps",
-          "control": "playbackRateCustomSteps"
         },
         {
           "label": "Capture Image",
@@ -49,7 +47,8 @@
         {
           "label": "Playback Rate",
           "control": "playbackRate",
-          "zone": 1
+          "zone": 1,
+          "order": 3
         },
         {
           "label": "backward-start",
@@ -70,6 +69,12 @@
           "zone": 2
         },
         {
+          "label": "slow-backward",
+          "icon": "slow-backward",
+          "control": "slow-backward",
+          "zone": 2
+        },
+        {
           "label": "backward",
           "icon": "backward",
           "control": "backward",
@@ -84,6 +89,12 @@
           "label": "forward",
           "icon": "forward",
           "control": "forward",
+          "zone": 2
+        },
+        {
+          "label": "slow-forward",
+          "icon": "slow-forward",
+          "control": "slow-forward",
           "zone": 2
         },
         {

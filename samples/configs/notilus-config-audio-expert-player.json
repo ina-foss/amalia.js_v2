@@ -1,40 +1,14 @@
 {
   "player": {
-    "src": "http://localhost:4201/medias/jt.mp4",
-    "backwardsSrc": "http://localhost:4201/medias/jt-r.mp4",
-    "crossOrigin": "anonymous"
+    "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    "crossOrigin": "allow"
   },
-  "dataSources": [
-    {
-      "url": "http://localhost:4201/metadata/jt-d.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/jt-t.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/sample-transcription.json"
-    }
-  ],
   "pluginsConfiguration": {
     "CONTROL_BAR": {
       "data": [
         {
           "label": "Barre de progression",
           "control": "progressBar"
-        },
-        {
-          "label": "Playback rate custom steps",
-          "control": "playbackRateCustomSteps"
-        },
-        {
-          "label": "Capture Image",
-          "control": "download",
-          "icon": "screenshot",
-          "zone": 1,
-          "order": 2,
-          "data": {
-            "href": "http://localhost:4200/assets/logo.svg"
-          }
         },
         {
           "label": "Download",
@@ -49,7 +23,8 @@
         {
           "label": "Playback Rate",
           "control": "playbackRate",
-          "zone": 1
+          "zone": 1,
+          "order": 3
         },
         {
           "label": "backward-start",
@@ -58,15 +33,21 @@
           "zone": 2
         },
         {
-          "label": "backward-frame",
-          "icon": "backward-frame",
-          "control": "backward-frame",
+          "label": "backward-10seconds",
+          "icon": "backward-10seconds",
+          "control": "backward-10seconds",
           "zone": 2
         },
         {
-          "label": "backward-5seconds",
-          "icon": "backward-5seconds",
-          "control": "backward-5seconds",
+          "label": "backward-second",
+          "icon": "backward-second",
+          "control": "backward-second",
+          "zone": 2
+        },
+        {
+          "label": "slow-backward",
+          "icon": "slow-backward",
+          "control": "slow-backward",
           "zone": 2
         },
         {
@@ -87,15 +68,21 @@
           "zone": 2
         },
         {
-          "label": "forward-5seconds",
-          "icon": "forward-5seconds",
-          "control": "forward-5seconds",
+          "label": "forward-second",
+          "icon": "forward-second",
+          "control": "forward-second",
           "zone": 2
         },
         {
-          "label": "forward-frame",
-          "icon": "forward-frame",
-          "control": "forward-frame",
+          "label": "forward-10seconds",
+          "icon": "forward-10seconds",
+          "control": "forward-10seconds",
+          "zone": 2
+        },
+        {
+          "label": "slow-forward",
+          "icon": "slow-forward",
+          "control": "slow-forward",
           "zone": 2
         },
         {

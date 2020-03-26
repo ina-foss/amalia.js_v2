@@ -9,7 +9,9 @@ import {EventEmitter} from 'events';
  * In  charge to handle default media sources (Supported by browsers)
  */
 export class DefaultMediaSourceExtension implements MediaSourceExtension {
-    private mediaSrc: string;
+    private mediaSrc: string = null;
+    private backwardsMediaSrc: string = null;
+    private mainSource: HTMLSourceElement;
     private config: PlayerConfigData;
     private logger: DefaultLogger;
     private readonly eventEmitter: EventEmitter;
@@ -26,18 +28,39 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
         return this.mediaSrc;
     }
 
+    getBackwardsSrc(): string | null {
+        return this.backwardsMediaSrc;
+    }
+
     setSrc(config: PlayerConfigData) {
         this.mediaSrc = config.src as string;
-        if (typeof this.mediaSrc === 'string') {
-            const source = document.createElement('source');
-            source.src = this.mediaSrc;
+        this.backwardsMediaSrc = config.backwardsSrc as string;
+        if (this.mediaSrc) {
+            this.mainSource = document.createElement('source');
+            this.mainSource.src = this.mediaSrc;
             if (config.crossOrigin) {
-                source.setAttribute('crossorigin', config.crossOrigin);
+                this.mainSource.setAttribute('crossorigin', config.crossOrigin);
             }
             // Error handle
-            source.addEventListener('error', this.handleError);
-            this.mediaElement.append(source);
+            this.mainSource.addEventListener('error', this.handleError);
+            this.mediaElement.append(this.mainSource);
         }
+    }
+
+    switchToMainSrc(): Promise<void> {
+        return new Promise((resolve) => {
+            this.mainSource.src = this.mediaSrc;
+            this.mediaElement.load();
+            this.mediaElement.play().then(() => resolve());
+        });
+    }
+
+    switchToBackwardsSrc(): Promise<void> {
+        return new Promise((resolve) => {
+            this.mainSource.src = this.backwardsMediaSrc;
+            this.mediaElement.load();
+            this.mediaElement.play().then(() => resolve());
+        });
     }
 
     destroy(): void {

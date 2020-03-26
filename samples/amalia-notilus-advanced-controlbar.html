@@ -7,25 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="main.js" type="module"></script>
 </head>
 <body>
 
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Showcase Amalia</h5>
+    <h5 class="my-0 mr-md-auto font-weight-normal">Example of Notilus-Amalia advanced controlBar</h5>
 </div>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-6 p-2" style="height: 500px;">
-            <amalia-player config="http://localhost:4201/configs/base-config-hls.json">
-                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>
-                <amalia-time-bar></amalia-time-bar>
+        <div class="col-12 p-2" style="height: 500px;">
+            <amalia-time-bar></amalia-time-bar>
+            <amalia-player config="http://localhost:4201/configs/notilus-config-advanced-player.json">
                 <amalia-control-bar></amalia-control-bar>
             </amalia-player>
-        </div>
-        <div class="col-6 p-2" style="height: 700px">
-            <amalia-transcription
-                    plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>
         </div>
     </div>
 </div>

@@ -6,6 +6,27 @@
 </div>
 
 <div *ngIf="transcriptions && transcriptions.length>0; then transcriptionBlock; else emptyBlock"></div>
+<div class="search-block">
+    <div class="search-text">
+        <input type="text" value="" (change)="searchWord(searchText.value)" #searchText>
+        <div class="message" *ngIf="listOfSearchedNodes?.length; else elseBlock">{{listOfSearchedNodes?.length}} mot(s)
+            correspond aux terme recherché.
+        </div>
+        <ng-template #elseBlock><span
+                *ngIf="searchText.value!=''">Aucun mot ne correspond aux termes de recherche</span>
+        </ng-template>
+    </div>
+    <div class="up" (click)="scrollToSearchedWord('up')">
+        <svg class="amalia-svg-up-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#up'"></use>
+        </svg>
+    </div>
+    <div class="down" (click)="scrollToSearchedWord('down')">
+        <svg class="amalia-svg-up-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down'"></use>
+        </svg>
+    </div>
+</div>
 <ng-template #transcriptionBlock>
     <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
@@ -24,7 +45,8 @@
                           [attr.data-tcin]="w.tcIn"
                           [attr.data-tcOut]="w.tcOut">{{w.text}}</span>
                 </ng-template>
-                <ng-template #wordBlock><span class="w">{{t.text}}</span></ng-template>
+                <ng-template #wordBlock><span class="w" [attr.data-tcin]="t.tcIn"
+                                              [attr.data-tcOut]="t.tcOut">{{t.text}}</span></ng-template>
             </div>
         </div>
     </div>

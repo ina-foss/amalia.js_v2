@@ -2,7 +2,7 @@ import * as Hls from 'hls.js';
 
 export interface PlayerConfigData {
     src: string | MediaStream | MediaSource | Blob | null;
-    playedBackwardsSrc?: string | MediaStream | MediaSource | Blob | null;
+    backwardsSrc?: string | MediaStream | MediaSource | Blob | null;
     poster?: string;
     autoplay?: boolean;
     duration?: number;
