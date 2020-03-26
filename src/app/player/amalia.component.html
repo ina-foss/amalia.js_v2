@@ -1,4 +1,4 @@
-<div (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{aspectRatio}}" data-aspect-ratio="16:9">
+<div (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{aspectRatio}}">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
 </div>
 

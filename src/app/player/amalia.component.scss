@@ -16,25 +16,15 @@
 
   .media-player {
     position: relative;
-    height: 0px;
+    height: 100%;
     z-index: $amalia-default-z-index;
-    background-color: white;
     margin: 0 auto 0;
 
-    &.aspect-ratio-16by9 {
-      @include viewportRatio(16, 9);
-    }
-
-    &.aspect-ratio-4by3 {
-      @include viewportRatio(4, 3);
-    }
-
     video.player {
-      position:absolute;
+      position: absolute;
       top: 0;
       left: 0;
       z-index: $amalia-default-z-index;
-      object-fit: fill;
       width: 100%;
       height: 100%;
     }
@@ -63,7 +53,6 @@
         }
       }
     }
-
   }
 
   .loader {

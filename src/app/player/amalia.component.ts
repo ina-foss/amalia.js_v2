@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
 import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
 import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
@@ -36,7 +36,7 @@ export class AmaliaComponent implements OnInit {
     /**
      * Selected aspectRatio
      */
-    public aspectRatio: '16by9' | '4by3' = '4by3';
+    public aspectRatio;
 
     /**
      * True for shown context menu
@@ -118,7 +118,6 @@ export class AmaliaComponent implements OnInit {
      * true when player load content
      */
     public inError = false;
-
     /**
      * In charge to load resource
      */
@@ -127,12 +126,6 @@ export class AmaliaComponent implements OnInit {
      * Amalia player main manager
      */
     private readonly _mediaPlayerElement: MediaPlayerElement;
-
-    constructor(mediaPlayerElement: MediaPlayerElement, httpClient: HttpClient) {
-        this.httpClient = httpClient;
-        this._mediaPlayerElement = mediaPlayerElement;
-    }
-
     /**
      * Default loader
      */
@@ -149,16 +142,21 @@ export class AmaliaComponent implements OnInit {
         return this._mediaPlayerElement;
     }
 
+    constructor(mediaPlayerElement: MediaPlayerElement, httpClient: HttpClient) {
+        this.httpClient = httpClient;
+        this._mediaPlayerElement = mediaPlayerElement;
+    }
+
+
     /**setMediaPlayer
      * Invoked immediately after the  first time the component has initialised
      */
-    ngOnInit() {
+    public ngOnInit() {
         this.state = PlayerState.CREATED;
         this.inLoading = true;
         // init default manager (converter, metadata loader)
         this.initDefaultHandlers();
         this.playerConfig = this.config;
-
         if (this.configLoader && this.metadataConverter && this.metadataLoader) {
             // set media player in charge to player video or audio files
             this._mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
@@ -183,6 +181,42 @@ export class AmaliaComponent implements OnInit {
         this.contextMenu.nativeElement.style.left = `${event.clientX - defaultMouseMargin}px`;
         this.contextMenu.nativeElement.style.top = `${event.clientY - defaultMouseMargin}px`;
         return false;
+    }
+
+
+    /**
+     * In charge to update player size with aspect ratio
+     */
+    @HostListener('window:resize', ['$event'])
+    private updatePlayerSizeWithAspectRatio() {
+        const htmlElement = (this.mediaPlayer.nativeElement as HTMLVideoElement);
+        if (this.aspectRatio && this.aspectRatio !== '') {
+            const maxWidth = htmlElement.parentElement.offsetWidth;
+            const maxHeight = this.mediaPlayer.nativeElement.parentElement.offsetHeight;
+            const aspectRatio = this.aspectRatio ? parseFloat(this.aspectRatio.split(':')[0]) / parseFloat(this.aspectRatio.split(':')[1]) : 16 / 9;
+            let w = Math.max(maxHeight * aspectRatio, maxWidth);
+            let h = w / aspectRatio;
+            if (w > maxWidth) {
+                h = Math.floor(maxWidth * h / w);
+                w = maxWidth;
+            }
+            if (h > maxHeight) {
+                w = Math.floor(maxHeight * w / h);
+                w = maxHeight;
+            }
+            htmlElement.style.width = `${w}px`;
+            htmlElement.style.height = `${h}px`;
+            htmlElement.style.left = `${Math.max(0, (maxWidth - w) / 2)}px`;
+            htmlElement.style.top = `${Math.max(0, (maxHeight - h) / 2)}px`;
+            htmlElement.style['object-fit'] = 'fill';
+            console.log(`${maxWidth} ${maxHeight} resized ${w}/${h} aspectRatio: ${aspectRatio}`);
+        } else {
+            htmlElement.style.width = `100%`;
+            htmlElement.style.height = `100%`;
+            htmlElement.style.left = `0`;
+            htmlElement.style.top = `0`;
+            htmlElement.style['object-fit'] = 'none';
+        }
     }
 
     /**
@@ -223,7 +257,7 @@ export class AmaliaComponent implements OnInit {
     private handleAspectRatioChange(event) {
         this.logger.debug('handleAspectRatioChange', event);
         this.aspectRatio = event;
-
+        this.updatePlayerSizeWithAspectRatio();
     }
 
     /**
