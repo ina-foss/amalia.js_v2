@@ -1,1 +1,5 @@
-<div class="paused" style="background-image:url('https://picsum.photos/id/237/200/300')"></div>
+<div class="storyboard">
+    <div class="thumbnail" *ngFor="let t of listOfThumbnail">
+        <img src="{{baseUrl+t}}" title="{{t|tcFormat:displayFormat:fps}}"/>
+    </div>
+</div>

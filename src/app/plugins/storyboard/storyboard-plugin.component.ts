@@ -6,6 +6,7 @@ import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {StoryboardConfig} from '../../core/config/model/storyboard-config';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'amalia-storyboard',
@@ -15,14 +16,17 @@ import {StoryboardConfig} from '../../core/config/model/storyboard-config';
 })
 export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> implements OnInit {
     public static PLUGIN_NAME = 'THUMBNAIL';
+    public listOfThumbnail: Array<number>;
+    public baseUrl: string;
+
     /**
-     * Enable thumbnail on hover to scroll bar
+     * Display format specifier h|m|s|f|ms|mms
      */
-    public enableThumbnail: boolean;
+    public displayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' = 'f';
     /**
-     * Enable thumbnail preview
+     * Media fps
      */
-    public enableThumbnailPreview: boolean;
+    public fps: number;
 
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
@@ -38,33 +42,38 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         super.init();
         // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl === '') {
-            this.enableThumbnail = false;
-            this.enableThumbnailPreview = false;
-        } else {
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PAUSED, this.handlePaused);
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleMoveFrame);
+            this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
         }
     }
 
     /**
      * Return default config
      */
-    getDefaultConfig(): PluginConfigData<ThumbnailConfig> {
-        return {name: StoryboardPluginComponent.PLUGIN_NAME, data: {baseUrl: '', enableThumbnail: true, enableThumbnailPreview: false}};
+    getDefaultConfig(): PluginConfigData<StoryboardConfig> {
+        return {
+            name: StoryboardPluginComponent.PLUGIN_NAME, data: {
+                baseUrl: '',
+                nbCols: 2,
+                tcParam: 'tc',
+                tcDelta: 1,
+                displayFormat: 'f'
+            }
+        };
     }
 
     /**
-     * Invoked on paused
+     * Invoked on duration chage
      */
     @AutoBind
-    private handlePaused() {
-    }
-
-    /**
-     * Invoked on mode frame
-     */
-    @AutoBind
-    private handleMoveFrame() {
+    private handleDurationChange() {
+        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        if (isNaN(duration)) {
+            this.listOfThumbnail = _.range(0, duration, this.pluginConfiguration.data.tcDelta);
+        }
+        const baseUrl = this.pluginConfiguration.data.baseUrl;
+        const tcParam = this.pluginConfiguration.data.tcParam;
+        this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
     }
 
 }

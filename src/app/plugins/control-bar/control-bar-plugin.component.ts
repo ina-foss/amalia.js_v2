@@ -304,7 +304,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private updateThumbnail(event: MouseEvent) {
         const thumbnailSize = 150;
         const containerWidth = (event.target as HTMLElement).offsetWidth;
-        const tc = event.clientX * this.duration / containerWidth;
+        const tc = Math.round(event.clientX * this.duration / containerWidth);
         const baseUrl = this.mediaPlayerElement.getConfiguration().thumbnail.baseUrl;
         const tcParam = this.mediaPlayerElement.getConfiguration().thumbnail.tcParam ? this.mediaPlayerElement.getConfiguration().thumbnail.tcParam : 'tc';
         this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
