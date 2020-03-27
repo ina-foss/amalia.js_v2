@@ -1,0 +1,14 @@
+@import '../../core/styles/typo';
+@import '../../core/styles/variables';
+
+:host {
+  position: relative;
+  user-select: none;
+
+  .thumbnail {
+    width: 150px;
+    height: 75px;
+    border: solid 1px white;
+  }
+}
+

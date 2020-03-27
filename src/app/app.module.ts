@@ -11,6 +11,7 @@ import {TimeBarPluginComponent} from './plugins/time-bar/time-bar-plugin.compone
 import {ControlBarPluginComponent} from './plugins/control-bar/control-bar-plugin.component';
 import {TranscriptionPluginComponent} from './plugins/transcription/transcription-plugin.component';
 import {SubtitlesPluginComponent} from './plugins/subtitles/subtitles-plugin.component';
+import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.component';
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import {SubtitlesPluginComponent} from './plugins/subtitles/subtitles-plugin.com
         ControlBarPluginComponent,
         TimeBarPluginComponent,
         TranscriptionPluginComponent,
-        SubtitlesPluginComponent
+        SubtitlesPluginComponent,
+        StoryboardPluginComponent
     ],
     entryComponents: [AmaliaComponent],
     providers: [DefaultLogger, MediaPlayerElement],
@@ -55,5 +57,8 @@ export class AppModule {
 
         const subtitlesPluginComponent = createCustomElement(SubtitlesPluginComponent, {injector: this.injector});
         customElements.define('amalia-subtitles', subtitlesPluginComponent);
+
+        const storyboardPluginComponent = createCustomElement(StoryboardPluginComponent, {injector: this.injector});
+        customElements.define('amalia-storyboard', storyboardPluginComponent);
     }
 }

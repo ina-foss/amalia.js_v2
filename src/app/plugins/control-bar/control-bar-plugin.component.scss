@@ -13,6 +13,19 @@
   z-index: $amalia-default-z-index;
   background: $amalia-ctrl-bar-bg-color;
 
+  .thumbnail {
+    position: absolute;
+    width: 150px;
+    height: 75px;
+    border: solid 1px white;
+    top: -85px;
+    left: 0;
+    background-clip: padding-box;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+  }
+
   .control-bar {
     display: flex;
     flex-direction: row;
@@ -30,6 +43,7 @@
       flex-direction: row;
       flex: 1;
       align-items: center;
+
       &:nth-of-type(2) {
         .control {
           .volume-control {
@@ -101,6 +115,7 @@
           position: absolute;
           background: transparent;
           opacity: 1;
+
           &::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -137,18 +152,22 @@
           background-color: white;
           height: 3px;
           top: 4.5px;
+
           &:hover {
             height: 6px;
             top: 1.5px;
+
             .ui-slider-progress {
               height: 6px;
               top: 0;
             }
+
             .slider {
               &::-webkit-slider-thumb {
-                width:16px;
+                width: 16px;
                 height: 16px;
               }
+
               &::-moz-range-thumb {
                 width: 16px;
                 height: 16px;
@@ -156,6 +175,7 @@
             }
 
           }
+
           .ui-slider-progress {
             height: 3px;
             top: 0;
@@ -184,34 +204,39 @@
         display: inline;
         cursor: pointer;
 
-        &.amalia-svg-play-size , &.amalia-svg-pause-size{
+        &.amalia-svg-play-size, &.amalia-svg-pause-size {
           width: 20px;
           height: 26px;
         }
 
-        &.amalia-svg-forward-size , &.amalia-svg-backward-size {
+        &.amalia-svg-forward-size, &.amalia-svg-backward-size {
           width: 36px;
           height: 24px;
         }
-        &.amalia-svg-forward-frame , &.amalia-svg-backward-frame {
+
+        &.amalia-svg-forward-frame, &.amalia-svg-backward-frame {
           width: 22px;
           height: 24px;
         }
-        &.amalia-svg-forward-end-size , &.amalia-svg-backward-start-size {
+
+        &.amalia-svg-forward-end-size, &.amalia-svg-backward-start-size {
           width: 23px;
-          height:26px;
+          height: 26px;
         }
-        &.amalia-svg-forward-5seconds-size , &.amalia-svg-backward-5seconds-size {
+
+        &.amalia-svg-forward-5seconds-size, &.amalia-svg-backward-5seconds-size {
           width: 24px;
-          height:24px;
+          height: 24px;
         }
-        &.amalia-svg-forward-second-size , &.amalia-svg-backward-second-size {
+
+        &.amalia-svg-forward-second-size, &.amalia-svg-backward-second-size {
           width: 24px;
-          height:24px;
+          height: 24px;
         }
-        &.amalia-svg-forward-frame-size , &.amalia-svg-backward-frame-size {
+
+        &.amalia-svg-forward-frame-size, &.amalia-svg-backward-frame-size {
           width: 24px;
-          height:24px;
+          height: 24px;
         }
 
         &:hover {
@@ -283,35 +308,41 @@
               line-height: 20px;
               font-size: 11px;
             }
+
             .text-volume {
               margin-left: 10px;
-              color:white;
+              color: white;
               font-size: 14px;
               line-height: 30px;
             }
+
             .icon {
-              &.amalia-svg-padlock-close-size,&.amalia-svg-padlock-open-size {
+              &.amalia-svg-padlock-close-size, &.amalia-svg-padlock-open-size {
                 height: 17px;
               }
             }
+
             .ui-slider {
-              top:12px;
+              top: 12px;
               width: 77px;
               height: 3px;
               background: $amalia-volume-slider-bg;
+
               .ui-slider-progress {
-                  top: 0px;
+                top: 0px;
               }
+
               .slider {
                 &::-webkit-slider-thumb {
                   height: 11px;
                   width: 11px;
-                  background:white;
+                  background: white;
                 }
+
                 &::-moz-range-thumb {
                   height: 11px;
                   width: 11px;
-                  background:white;
+                  background: white;
                 }
               }
             }
@@ -461,7 +492,7 @@
         &:before {
           content: "";
           position: absolute;
-          top: 85px;
+          top: 91px;
           z-index: 2070;
           background-color: grey;
           display: block;
