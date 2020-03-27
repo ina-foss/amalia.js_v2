@@ -36,7 +36,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     public currentTime: number;
     public transcriptions: Array<TranscriptionLocalisation> = null;
-    private listOfSearchedNodes: Array<HTMLElement>;
+    public listOfSearchedNodes: Array<HTMLElement>;
     private searchedWordIndex = 0;
 
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
