@@ -67,7 +67,7 @@ export class AmaliaComponent implements OnInit {
             try {
                 value = JSON.parse(value);
             } catch (e) {
-                this.logger.warn(`Error to deserialize player configuration.`);
+                this.logger.debug(`Config not json ${value}`);
             }
         }
         this._config = value;

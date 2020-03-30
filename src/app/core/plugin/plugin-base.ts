@@ -58,7 +58,7 @@ export abstract class PluginBase<T> implements OnInit {
                 };
             }
         } catch (e) {
-            console.log(e);
+            this.logger.debug(`${this.pluginName} : init default configuration`);
         }
         if (!this.pluginConfiguration) {
             this.pluginConfiguration = defaultConfig;

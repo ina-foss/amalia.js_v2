@@ -23,10 +23,15 @@
                 <amalia-control-bar></amalia-control-bar>
             </amalia-player>
         </div>
-        <div class="col-6 p-2" style="height: 700px">
-            <amalia-storyboard></amalia-storyboard>
-            <amalia-transcription
-                    plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>
+        <div class="col-6 p-2">
+            <div style="height: 400px">
+                <amalia-storyboard
+                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>
+            </div>
+            <div style="height: 700px">
+                <amalia-transcription
+                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>
+            </div>
         </div>
     </div>
 </div>

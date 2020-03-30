@@ -15,7 +15,7 @@ import * as _ from 'lodash';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> implements OnInit {
-    public static PLUGIN_NAME = 'THUMBNAIL';
+    public static PLUGIN_NAME = 'STORYBOARD';
     public listOfThumbnail: Array<number>;
     public baseUrl: string;
 
@@ -40,8 +40,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     init() {
         super.init();
+        console.log(this.pluginConfiguration);
         // disable thumbnail when base url is empty
-        if (this.pluginConfiguration.data.baseUrl === '') {
+        if (this.pluginConfiguration.data.baseUrl !== '') {
             this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
         }
@@ -68,12 +69,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     private handleDurationChange() {
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        if (isNaN(duration)) {
+        if (!isNaN(duration)) {
             this.listOfThumbnail = _.range(0, duration, this.pluginConfiguration.data.tcDelta);
         }
         const baseUrl = this.pluginConfiguration.data.baseUrl;
         const tcParam = this.pluginConfiguration.data.tcParam;
         this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
+        this.logger.debug(`${this.baseUrl} : duration : ${duration}`);
     }
 
 }

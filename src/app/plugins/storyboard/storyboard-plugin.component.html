@@ -1,5 +1,5 @@
 <div class="storyboard">
-    <div class="thumbnail" *ngFor="let t of listOfThumbnail">
-        <img src="{{baseUrl+t}}" title="{{t|tcFormat:displayFormat:fps}}"/>
+    <div class="thumbnail" *ngFor="let t of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
+        <img src="{{baseUrl+t}}" title="{{t|tcFormat:displayFormat:fps}}" loading="lazy"/>
     </div>
 </div>
