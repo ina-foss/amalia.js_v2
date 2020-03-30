@@ -183,4 +183,14 @@ export class MediaPlayerElement {
         }
     }
 
+    /**
+     * Return thumbnail base url
+     * @param tc time code
+     */
+    public getThumbnailUrl(tc: number) {
+        const baseUrl = this.getConfiguration().thumbnail.baseUrl;
+        const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'tc';
+        return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
+    }
+
 }

@@ -53,9 +53,21 @@ export class AmaliaComponent implements OnInit {
      */
     public playerConfig: ConfigData;
 
+    /**
+     * In charge to show preview thumbnail
+     */
+    public enablePreviewThumbnail = false;
+    /**
+     * preview thumbnail url
+     */
+    public previewThumbnailUrl: string;
+    /**
+     * Preview thumbnail container
+     */
+    @ViewChild('previewThumbnail', {static: true})
+    public previewThumbnailElement: ElementRef<HTMLVideoElement>;
 
     private _config: any;
-
 
     get config(): any {
         return this._config;
@@ -217,6 +229,14 @@ export class AmaliaComponent implements OnInit {
             htmlElement.style.top = `0`;
             htmlElement.style['object-fit'] = 'none';
         }
+
+        if (this.previewThumbnailElement) {
+            const previewThumbnailElement = (this.previewThumbnailElement.nativeElement as HTMLElement);
+            previewThumbnailElement.style.width = htmlElement.style.width;
+            previewThumbnailElement.style.height = htmlElement.style.height;
+            previewThumbnailElement.style.left = htmlElement.style.left;
+            previewThumbnailElement.style.top = htmlElement.style.top;
+        }
     }
 
     /**
@@ -224,19 +244,19 @@ export class AmaliaComponent implements OnInit {
      */
     private bindEvents() {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlaying);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.IMAGE_CAPTURE, this.handleCaptureImage);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PAUSED, this.handleLoading);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
     }
 
     @AutoBind
     private handlePlaying() {
-        this.logger.info('player is player in the amalia component');
+        this.enablePreviewThumbnail = true;
     }
 
     @AutoBind
-    private handleCaptureImage(event: any) {
-        this.logger.info('Image captured', event);
+    private handleLoading() {
+        this.enablePreviewThumbnail = true;
     }
 
     /**

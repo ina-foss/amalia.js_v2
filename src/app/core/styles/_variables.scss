@@ -39,6 +39,13 @@ $amalia-ctrl-bar-pslider-bg-color-hover: var(--amalia-ctrl-bar-pslider-bg-color,
 $amalia-ctrl-bar-pslider-bg-selected: var(--amalia-ctrl-bar-pslider-bg-selected, #0086B1);
 
 
+$amalia-plugin-storyboard-thumbnail-sw: var(--amalia-plugin-storyboard-thumbnail-sw, 200px);
+$amalia-plugin-storyboard-thumbnail-sh: var(--amalia-plugin-storyboard-thumbnail-sh, 100px);
+$amalia-plugin-storyboard-thumbnail-mw: var(--amalia-plugin-storyboard-thumbnail-mw, 400px);
+$amalia-plugin-storyboard-thumbnail-mh: var(--amalia-plugin-storyboard-thumbnail-mh, 200px);
+$amalia-plugin-storyboard-thumbnail-lw: var(--amalia-plugin-storyboard-thumbnail-lw, 600px);
+$amalia-plugin-storyboard-thumbnail-lh: var(--amalia-plugin-storyboard-thumbnail-lh, 300px);
+$amalia-plugin-storyboard-label-bg: var(--amalia-plugin-storyboard-label-bg, rgba(34, 34, 34, 0.9));
 /**
  * global animation
  * $properties transition

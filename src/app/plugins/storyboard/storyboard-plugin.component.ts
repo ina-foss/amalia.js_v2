@@ -16,9 +16,12 @@ import * as _ from 'lodash';
 })
 export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> implements OnInit {
     public static PLUGIN_NAME = 'STORYBOARD';
-    public listOfThumbnail: Array<number>;
     public baseUrl: string;
-
+    public listOfThumbnail: Array<number>;
+    /**
+     * thumbnail size
+     */
+    public size: 'small' | 'medium' | 'large' = 'small';
     /**
      * Display format specifier h|m|s|f|ms|mms
      */
@@ -27,6 +30,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Media fps
      */
     public fps: number;
+    /**
+     * show time code label
+     */
+    public enableLabel: boolean;
 
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
@@ -40,7 +47,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     init() {
         super.init();
-        console.log(this.pluginConfiguration);
+        this.enableLabel = this.pluginConfiguration.data.enableLabel;
+        console.log(this.enableLabel, 't');
         // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl !== '') {
             this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
@@ -55,7 +63,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         return {
             name: StoryboardPluginComponent.PLUGIN_NAME, data: {
                 baseUrl: '',
-                nbCols: 2,
+                enableLabel: true,
                 tcParam: 'tc',
                 tcDelta: 1,
                 displayFormat: 'f'

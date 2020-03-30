@@ -1,5 +1,11 @@
+<div class="storyboard-size">
+    <div class="small" [ngClass]="{'selected':size == 'small'}" (click)="size = 'small'"></div>
+    <div class="medium" [ngClass]="{'selected':size == 'medium'}" (click)="size = 'medium'"></div>
+    <div class="large" [ngClass]="{'selected':size == 'large'}" (click)="size = 'large'"></div>
+</div>
 <div class="storyboard">
-    <div class="thumbnail" *ngFor="let t of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
+    <div class="thumbnail {{size}}" *ngFor="let t of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
         <img src="{{baseUrl+t}}" title="{{t|tcFormat:displayFormat:fps}}" loading="lazy"/>
+        <span *ngIf="enableLabel" class="label">{{t|tcFormat:displayFormat:fps}}</span>
     </div>
 </div>
