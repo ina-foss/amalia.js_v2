@@ -16,5 +16,11 @@ export interface ConfigData {
     pluginsConfiguration?: Map<string, PluginConfigData<any>>;
     dataSources?: Array<ConfigDataSource>;
     data?: any;
+    thumbnail?: {
+        baseUrl?: string,
+        tcParam?: string,
+        enableThumbnail?: boolean,
+        enableThumbnailPreview?: boolean
+    };
     debug?: boolean;
 }

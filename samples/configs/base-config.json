@@ -15,6 +15,10 @@
       "url": "http://localhost:4201/metadata/sample-transcription.json"
     }
   ],
+  "thumbnail": {
+    "baseUrl": "https://picsum.photos/id/237/200/300",
+    "enableThumbnail": true
+  },
   "pluginsConfiguration": {
     "CONTROL_BAR": {
       "data": [
@@ -24,7 +28,7 @@
         },
         {
           "label": "Playback rate custom steps",
-          "control": "playbackRateCustomSteps"
+          "control": "playbackRateSteps"
         },
         {
           "label": "Capture Image",

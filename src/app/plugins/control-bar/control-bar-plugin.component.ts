@@ -79,9 +79,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public currentTime = 0;
 
     /**
+     * Progress bar value
+     */
+    public progressBarValue = 0;
+    /**
      * Media duration
      */
     public duration = 0;
+
+    /**
+     * In sliding
+     */
+    public inSliding = false;
 
     /**
      * Player playback rate
@@ -98,6 +107,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public elements;
 
+    /**
+     * Handle thumbnail
+     */
+    public enableThumbnail = false;
+    public thumbnailHidden = true;
+    public thumbnailUrl: string;
+    public thumbnailPosition = 0;
+
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
@@ -108,6 +125,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         super.init();
         this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
+        // Enable thumbnail
+        const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
+        this.enableThumbnail = (thumbnailConfig && thumbnailConfig?.baseUrl !== '' && thumbnailConfig.enableThumbnail);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
@@ -153,11 +173,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.prevPlaybackRate();
                 break;
             case 'backward-5seconds':
-                frames = 5 * mediaPlayer.framerate ;
+                frames = 5 * mediaPlayer.framerate;
                 mediaPlayer.movePrevFrame(frames);
                 break;
             case 'backward-10seconds':
-                frames = 10 * mediaPlayer.framerate ;
+                frames = 10 * mediaPlayer.framerate;
                 mediaPlayer.movePrevFrame(frames);
                 break;
             case 'backward-frame':
@@ -170,11 +190,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.nextPlaybackRate();
                 break;
             case 'forward-5seconds':
-                frames = 5 * mediaPlayer.framerate ;
+                frames = 5 * mediaPlayer.framerate;
                 mediaPlayer.moveNextFrame(frames);
                 break;
             case 'forward-10seconds':
-                frames = 10 * mediaPlayer.framerate ;
+                frames = 10 * mediaPlayer.framerate;
                 mediaPlayer.moveNextFrame(frames);
                 break;
             case 'forward-frame':
@@ -213,6 +233,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public moveSliderCursor(value: any) {
         this.logger.info('moveSliderCursor ', value);
+        this.progressBarValue = value;
         this.currentTime = value * this.duration / 100;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
     }
@@ -252,6 +273,80 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             return _.filter(this.elements, {zone});
         }
         return null;
+    }
+
+    /**
+     * Handle mouse enter on progress bar
+     * @param event mouse enter
+     */
+    public progressBarMouseEnter(event: MouseEvent) {
+        if (this.enableThumbnail && !this.inSliding) {
+            this.thumbnailHidden = false;
+            this.updateThumbnail(event);
+        }
+    }
+
+    /**
+     * Handle mouse leave on progress bar
+     * @param event mouse leave
+     */
+    public progressBarMouseLeave(event: MouseEvent) {
+        if (this.enableThumbnail && !this.inSliding) {
+            this.thumbnailHidden = true;
+            this.updateThumbnail(event);
+        }
+    }
+
+    /**
+     * Handle mouse move on progress bar
+     * @param event mouse move
+     */
+    public progressBarMouseMove(event: MouseEvent) {
+        if (this.enableThumbnail && !this.inSliding) {
+            this.updateThumbnail(event);
+        }
+    }
+
+
+    /**
+     * Progress bar on mouse down
+     * @param event mouse event
+     */
+    public handleProgressBarMouseDown(value) {
+        this.inSliding = true;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
+    }
+
+    /**
+     * Progress bar on mouse up
+     * @param event mouse event
+     */
+    public handleProgressBarMouseUp(value) {
+        this.inSliding = false;
+        this.moveSliderCursor(value);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
+    }
+
+    /**
+     * Progress bar on mouse move
+     * @param event mouse event
+     */
+    public handleProgressBarMouseMove(value) {
+        if (this.inSliding) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
+        }
+    }
+
+    /**
+     * Handle thumbnail pos
+     * @param event mouse event
+     */
+    private updateThumbnail(event: MouseEvent) {
+        const thumbnailSize = 150;
+        const containerWidth = (event.target as HTMLElement).offsetWidth;
+        const tc = Math.round(event.clientX * this.duration / containerWidth);
+        this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
+        this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
     }
 
     /**
@@ -320,6 +415,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        if (!this.inSliding) {
+            this.progressBarValue = (this.currentTime / this.duration) * 100;
+        }
     }
 
     /**
@@ -359,5 +457,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handleAspectRatioChange(event) {
         this.aspectRatio = event;
     }
+
 
 }

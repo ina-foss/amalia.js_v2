@@ -14,6 +14,7 @@ import {environment} from '../../environments/environment';
 import {PlayerState} from '../core/constant/player-state';
 import {PlayerEventType} from '../core/constant/event-type';
 import {AutoBind} from '../core/decorator/auto-bind.decorator';
+
 import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 
 @Component({
@@ -53,9 +54,21 @@ export class AmaliaComponent implements OnInit {
      */
     public playerConfig: ConfigData;
 
+    /**
+     * In charge to show preview thumbnail
+     */
+    public enablePreviewThumbnail = false;
+    /**
+     * preview thumbnail url
+     */
+    public previewThumbnailUrl: string;
+    /**
+     * Preview thumbnail container
+     */
+    @ViewChild('previewThumbnail', {static: true})
+    public previewThumbnailElement: ElementRef<HTMLVideoElement>;
 
     private _config: any;
-
 
     get config(): any {
         return this._config;
@@ -67,7 +80,7 @@ export class AmaliaComponent implements OnInit {
             try {
                 value = JSON.parse(value);
             } catch (e) {
-                this.logger.warn(`Error to deserialize player configuration.`);
+                this.logger.debug(`Config not json ${value}`);
             }
         }
         this._config = value;
@@ -209,7 +222,6 @@ export class AmaliaComponent implements OnInit {
             htmlElement.style.left = `${Math.max(0, (maxWidth - w) / 2)}px`;
             htmlElement.style.top = `${Math.max(0, (maxHeight - h) / 2)}px`;
             htmlElement.style['object-fit'] = 'fill';
-            console.log(`${maxWidth} ${maxHeight} resized ${w}/${h} aspectRatio: ${aspectRatio}`);
         } else {
             htmlElement.style.width = `100%`;
             htmlElement.style.height = `100%`;
@@ -217,26 +229,35 @@ export class AmaliaComponent implements OnInit {
             htmlElement.style.top = `0`;
             htmlElement.style['object-fit'] = 'none';
         }
+
+        if (this.previewThumbnailElement) {
+            const previewThumbnailElement = (this.previewThumbnailElement.nativeElement as HTMLElement);
+            previewThumbnailElement.style.width = htmlElement.style.width;
+            previewThumbnailElement.style.height = htmlElement.style.height;
+            previewThumbnailElement.style.left = htmlElement.style.left;
+            previewThumbnailElement.style.top = htmlElement.style.top;
+        }
     }
 
     /**
      * In charge to bin events
      */
     private bindEvents() {
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlaying);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.IMAGE_CAPTURE, this.handleCaptureImage);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
     }
 
     @AutoBind
-    private handlePlaying() {
-        this.logger.info('player is player in the amalia component');
+    private handleSeeking(tc: number) {
+        this.setPreviewThumbnail(tc);
+        this.enablePreviewThumbnail = true;
     }
 
     @AutoBind
-    private handleCaptureImage(event: any) {
-        this.logger.info('Image captured', event);
+    private handleSeeked() {
+        this.enablePreviewThumbnail = false;
     }
 
     /**
@@ -284,13 +305,21 @@ export class AmaliaComponent implements OnInit {
     }
 
     /**
+     * In charge to update thumbnail
+     */
+    private setPreviewThumbnail(tc: number) {
+        if (!isNaN(tc)) {
+            this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
+        }
+    }
+
+    /**
      * Invoked on  init config
      * @param state player init state
      */
     private onInitConfig(state: PlayerState) {
         this.state = state;
         this.inLoading = false;
-
     }
 
     /**
@@ -303,4 +332,6 @@ export class AmaliaComponent implements OnInit {
         this.inError = true;
         this._logger.error(`Error to initialize player.`);
     }
+
+
 }

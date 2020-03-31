@@ -7,7 +7,6 @@ export class DefaultErrorLoggingStrategy {
 
     log(description: string, err: Error): Promise<any> {
         return new Promise((resolve) => {
-            console.log(`${DefaultErrorLoggingStrategy.LOGGER_NAME} - ${description} - ${err.message}\n`);
             resolve(err);
         });
     }
