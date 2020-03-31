@@ -48,7 +48,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     init() {
         super.init();
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
-        console.log(this.enableLabel, 't');
         // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl !== '') {
             this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;

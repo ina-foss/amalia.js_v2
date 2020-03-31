@@ -222,7 +222,6 @@ export class AmaliaComponent implements OnInit {
             htmlElement.style.left = `${Math.max(0, (maxWidth - w) / 2)}px`;
             htmlElement.style.top = `${Math.max(0, (maxHeight - h) / 2)}px`;
             htmlElement.style['object-fit'] = 'fill';
-            console.log(`${maxWidth} ${maxHeight} resized ${w}/${h} aspectRatio: ${aspectRatio}`);
         } else {
             htmlElement.style.width = `100%`;
             htmlElement.style.height = `100%`;
@@ -244,16 +243,10 @@ export class AmaliaComponent implements OnInit {
      * In charge to bin events
      */
     private bindEvents() {
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlaying);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
-    }
-
-    @AutoBind
-    private handlePlaying() {
-        this.enablePreviewThumbnail = true;
     }
 
     @AutoBind
@@ -327,7 +320,6 @@ export class AmaliaComponent implements OnInit {
     private onInitConfig(state: PlayerState) {
         this.state = state;
         this.inLoading = false;
-
     }
 
     /**
