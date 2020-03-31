@@ -79,9 +79,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public currentTime = 0;
 
     /**
+     * Progress bar value
+     */
+    public progressBarValue = 0;
+    /**
      * Media duration
      */
     public duration = 0;
+
+    /**
+     * In sliding
+     */
+    public inSliding = false;
 
     /**
      * Player playback rate
@@ -224,6 +233,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public moveSliderCursor(value: any) {
         this.logger.info('moveSliderCursor ', value);
+        this.progressBarValue = value;
         this.currentTime = value * this.duration / 100;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
     }
@@ -270,7 +280,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse enter
      */
     public progressBarMouseEnter(event: MouseEvent) {
-        if (this.enableThumbnail) {
+        if (this.enableThumbnail && !this.inSliding) {
             this.thumbnailHidden = false;
             this.updateThumbnail(event);
         }
@@ -281,7 +291,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse leave
      */
     public progressBarMouseLeave(event: MouseEvent) {
-        if (this.enableThumbnail) {
+        if (this.enableThumbnail && !this.inSliding) {
             this.thumbnailHidden = true;
             this.updateThumbnail(event);
         }
@@ -292,8 +302,38 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse move
      */
     public progressBarMouseMove(event: MouseEvent) {
-        if (this.enableThumbnail) {
+        if (this.enableThumbnail && !this.inSliding) {
             this.updateThumbnail(event);
+        }
+    }
+
+
+    /**
+     * Progress bar on mouse down
+     * @param event mouse event
+     */
+    public handleProgressBarMouseDown(value) {
+        this.inSliding = true;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
+    }
+
+    /**
+     * Progress bar on mouse up
+     * @param event mouse event
+     */
+    public handleProgressBarMouseUp(value) {
+        this.inSliding = false;
+        this.moveSliderCursor(value);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
+    }
+
+    /**
+     * Progress bar on mouse move
+     * @param event mouse event
+     */
+    public handleProgressBarMouseMove(value) {
+        if (this.inSliding) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
         }
     }
 
@@ -375,6 +415,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        if (!this.inSliding) {
+            this.progressBarValue = (this.currentTime / this.duration) * 100;
+        }
     }
 
     /**
@@ -414,5 +457,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handleAspectRatioChange(event) {
         this.aspectRatio = event;
     }
+
 
 }

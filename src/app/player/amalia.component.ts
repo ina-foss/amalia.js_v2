@@ -14,6 +14,7 @@ import {environment} from '../../environments/environment';
 import {PlayerState} from '../core/constant/player-state';
 import {PlayerEventType} from '../core/constant/event-type';
 import {AutoBind} from '../core/decorator/auto-bind.decorator';
+
 import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 
 @Component({
@@ -244,7 +245,8 @@ export class AmaliaComponent implements OnInit {
      */
     private bindEvents() {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlaying);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PAUSED, this.handleLoading);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
     }
@@ -255,8 +257,14 @@ export class AmaliaComponent implements OnInit {
     }
 
     @AutoBind
-    private handleLoading() {
+    private handleSeeking(tc: number) {
+        this.setPreviewThumbnail(tc);
         this.enablePreviewThumbnail = true;
+    }
+
+    @AutoBind
+    private handleSeeked() {
+        this.enablePreviewThumbnail = false;
     }
 
     /**
@@ -304,6 +312,15 @@ export class AmaliaComponent implements OnInit {
     }
 
     /**
+     * In charge to update thumbnail
+     */
+    private setPreviewThumbnail(tc: number) {
+        if (!isNaN(tc)) {
+            this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
+        }
+    }
+
+    /**
      * Invoked on  init config
      * @param state player init state
      */
@@ -323,4 +340,6 @@ export class AmaliaComponent implements OnInit {
         this.inError = true;
         this._logger.error(`Error to initialize player.`);
     }
+
+
 }
