@@ -43,6 +43,19 @@
     }
   }
 
+  .preview-thumbnail {
+    position: absolute;
+    z-index: 3;
+
+    img {
+      width: 100%;
+      height: 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+  }
+
   .context-menu {
     position: absolute;
     top: 0;
