@@ -1,11 +1,25 @@
 <div class="storyboard-size">
-    <div class="small" [ngClass]="{'selected':size == 'small'}" (click)="size = 'small'"></div>
-    <div class="medium" [ngClass]="{'selected':size == 'medium'}" (click)="size = 'medium'"></div>
-    <div class="large" [ngClass]="{'selected':size == 'large'}" (click)="size = 'large'"></div>
+    <div class="first"></div>
+    <div class="size small" [ngClass]="{'selected':size == 'small'}" (click)="size = 'small'"></div>
+    <div class="size medium" [ngClass]="{'selected':size == 'medium'}" (click)="size = 'medium'"></div>
+    <div class="size large" [ngClass]="{'selected':size == 'large'}" (click)="size = 'large'"></div>
+    <div class="interval" (click)="openIntervalList = true" (mouseleave)="openIntervalList = false">
+        <span class="label">Interval :{{selectedInterval[1]}} {{(selectedInterval[0] == 'tc' ? 'Secondes' : 'Images')}}</span>
+        <ul [hidden]="!openIntervalList">
+            <li class="label">Temps :</li>
+            <li class="tc" *ngFor="let tci of tcIntervals"
+                [ngClass]="{'selected':(selectedInterval[0]=='tc'&&selectedInterval[1]==tci)}"
+                (click)="selectedThumbnailSize('tc',tci)">{{tci}}</li>
+            <li class="label">Nombre d'image:</li>
+            <li class="frame" *ngFor="let fci of frameIntervals"
+                [ngClass]="{'selected':(selectedInterval[0]=='frame'&&selectedInterval[1]==fci)}"
+                (click)="selectedThumbnailSize('frame',fci)">{{fci}}</li>
+        </ul>
+    </div>
 </div>
 <div class="storyboard">
-    <div class="thumbnail {{size}}" *ngFor="let t of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
-        <img src="{{baseUrl+t}}" title="{{t|tcFormat:displayFormat:fps}}" loading="lazy"/>
-        <span *ngIf="enableLabel" class="label">{{t|tcFormat:displayFormat:fps}}</span>
+    <div class="thumbnail {{size}}" *ngFor="let tc of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
+        <img src="{{baseUrl+tc}}" title="{{tc|tcFormat:displayFormat:fps}}" loading="lazy" (click)="seekToTc(tc)"/>
+        <span *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</span>
     </div>
 </div>

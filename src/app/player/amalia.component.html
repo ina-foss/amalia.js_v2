@@ -1,7 +1,7 @@
 <div (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{aspectRatio}}">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
     <div #previewThumbnail class="preview-thumbnail" [hidden]="!enablePreviewThumbnail">
-        <img class="thumbnail" *ngIf="enablePreviewThumbnail && previewThumbnailUrl"
+        <img class="thumbnail"
              [ngStyle]="{'background-image':'url('+previewThumbnailUrl+')'}">
     </div>
 </div>
