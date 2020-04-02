@@ -269,8 +269,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
             });
         }
-        console.log('search word' + searchText, this.listOfSearchedNodes);
-
     }
 
 

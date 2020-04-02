@@ -1,9 +1,15 @@
+<div class="thumbnail" *ngIf="enableThumbnail" [hidden]="thumbnailHidden"
+     [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}"></div>
 <div class="control-bar" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
-    <div *ngIf="hasComponentWithoutZone('progressBar')" class="control progress-bar">
+    <div *ngIf="hasComponentWithoutZone('progressBar')"
+         class="control progress-bar" (mouseenter)="progressBarMouseEnter($event)"
+         (mouseleave)="progressBarMouseLeave($event)" (mousemove)="progressBarMouseMove($event)">
         <div class="ui-slider">
             <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
-            <input type="range" class="slider" min="0" [value]="(currentTime/duration)*100" #progressBar
-                   (change)="moveSliderCursor(progressBar.value)">
+            <input type="range" class="slider" min="0" [value]="progressBarValue" #progressBar
+                   (mousedown)="handleProgressBarMouseDown(progressBar.value)"
+                   (mousemove)="handleProgressBarMouseMove(progressBar.value)"
+                   (mouseup)="handleProgressBarMouseUp(progressBar.value)">
         </div>
     </div>
     <div *ngFor="let colId of [1,2,3]; index as i; last as isLast;" [ngClass]="{'last':isLast,'mid':i===1} "
