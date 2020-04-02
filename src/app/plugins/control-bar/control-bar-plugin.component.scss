@@ -203,7 +203,26 @@
         height: 50px;
         display: inline;
         cursor: pointer;
-
+        &.amalia-svg-pin-size {
+          height: 16px;
+          display: block;
+          width: 16px;
+          position: relative;
+          padding: 4px 12px;
+          right: -13px;
+          top: -11px;
+          border-left: 2px solid $amalia-border-buttons-bg-color;
+          border-bottom: 2px solid $amalia-border-buttons-bg-color;
+        }
+        &.amalia-svg-slider-size {
+          height: 16px;
+          display: block;
+          position: absolute;
+          border-left: 2px solid $amalia-border-buttons-bg-color;
+          width: 25px;
+          padding: 4px 8px;
+          left: -39px;
+        }
         &.amalia-svg-play-size, &.amalia-svg-pause-size {
           width: 20px;
           height: 26px;
@@ -278,7 +297,15 @@
               display: flex;
               flex-direction: row;
             }
-
+            .channel-volume-control-mid {
+              &.on {
+                width: 3px;
+                height: 25px;
+                background: white;
+                position: absolute;
+                top: 3px;
+              }
+            }
             .channel-volume-icon .icon {
               height: 16px;
               width: 16px;
@@ -308,41 +335,35 @@
               line-height: 20px;
               font-size: 11px;
             }
-
             .text-volume {
               margin-left: 10px;
-              color: white;
+              color:white;
               font-size: 14px;
               line-height: 30px;
             }
-
             .icon {
-              &.amalia-svg-padlock-close-size, &.amalia-svg-padlock-open-size {
+              &.amalia-svg-padlock-close-size,&.amalia-svg-padlock-open-size {
                 height: 17px;
               }
             }
-
             .ui-slider {
-              top: 12px;
+              top:12px;
               width: 77px;
               height: 3px;
               background: $amalia-volume-slider-bg;
-
               .ui-slider-progress {
                 top: 0px;
               }
-
               .slider {
                 &::-webkit-slider-thumb {
                   height: 11px;
                   width: 11px;
-                  background: white;
+                  background:white;
                 }
-
                 &::-moz-range-thumb {
                   height: 11px;
                   width: 11px;
-                  background: white;
+                  background:white;
                 }
               }
             }

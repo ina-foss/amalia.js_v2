@@ -116,7 +116,12 @@
         {
           "label": "Volume",
           "control": "volume",
-          "zone": 3
+          "zone": 3,
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
+          }
         },
         {
           "label": "Fullscreen",

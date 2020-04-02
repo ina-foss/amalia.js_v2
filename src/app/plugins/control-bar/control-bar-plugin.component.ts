@@ -458,5 +458,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.aspectRatio = event;
     }
 
+    /**
+     * Invoked on volume button hover
+     */
+    public setupAudioNodes(data: any){
+        this.mediaPlayerElement.getMediaPlayer().setupAudioNodes(data);
+    }
+
 
 }

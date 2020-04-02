@@ -36,6 +36,7 @@
                  [ngStyle]="{'order':c.order ? c.order:'0'}">
                 {{currentPlaybackRate}}x
             </div>
+            <!--Download-->
             <div *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                  [ngStyle]="{'order':c.order ? c.order:'0'}">
                 <a [href]="c.data?.href" [download]="c.label" target="_blank">
@@ -47,9 +48,16 @@
             <!--Volume-->
             <div *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
                  [ngStyle]="{'order':c.order ? c.order:'0'}"
-                 (mouseenter)="enableVolumeSlider=true">
-                <svg class="amalia-svg-volume-size icon">
+                 (mouseenter)="enableVolumeSlider=true"
+                 (click)="setupAudioNodes(c.data)"
+                 >
+                <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
+                    class="amalia-svg-volume-on-size icon" (click)="changeVolume(0 ? 100:0)">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+                </svg>
+                <svg *ngIf="volumeLeft == 0 && volumeRight == 0"
+                     class="amalia-svg-volume-off-size icon" (click)="changeVolume(0 ? 100:0)">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                 </svg>
                 <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
                      (mouseleave)="enableVolumeSlider=false">
@@ -58,31 +66,43 @@
                         <div class="channel-volume-control">
                             <div class="channel-volume-control-left">
                                 <div (click)="changeVolume( volumeLeft==0 ? 100:0,'l')" class="channel-volume-icon">
-                                    <svg class="amalia-svg-volume-on-size icon">
+                                    <svg *ngIf="volumeLeft > 0"
+                                         class="amalia-svg-volume-on-size icon">
                                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+                                    </svg>
+                                    <svg *ngIf="volumeLeft== 0"
+                                         class="amalia-svg-volume-off-size icon">
+                                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                                     </svg>
                                 </div>
                                 <div class="left-volume-slider ui-slider">
                                     <div [style]="{width:volumeLeft+'%'}" class="ui-slider-progress"></div>
-                                    <input #leftVolumeSlider (change)="changeVolume(leftVolumeSlider.value,'l')"
+                                    <input #leftVolumeSlider (input)="changeVolume(leftVolumeSlider.value,'l')"
                                            [(ngModel)]="volumeLeft" class="slider" max="100"
-                                           min="1" type="range"
+                                           min="0" type="range"
                                            value="50">
+                                    <div *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume" class="channel-volume-control-mid"></div>
+                                    <div [style]="{left:volumeLeft+'%'}" *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume" class="channel-volume-control-mid on"></div>
                                 </div>
                                 <div class="channel-volume-info"><span class="text-volume">G</span></div>
                             </div>
-                            <div class="channel-volume-control-mid on"></div>
+
                             <div class="channel-volume-control-right">
                                 <div (click)="changeVolume( volumeRight==0 ? 100:0,'r')" class="channel-volume-icon">
-                                    <svg class="amalia-svg-volume-on-size icon">
+                                    <svg *ngIf="volumeRight > 0"
+                                         class="amalia-svg-volume-on-size icon">
                                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+                                    </svg>
+                                    <svg *ngIf="volumeRight== 0"
+                                         class="amalia-svg-volume-off-size icon">
+                                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                                     </svg>
                                 </div>
                                 <div class="right-volume-slider ui-slider ">
                                     <div [style]="{width:volumeRight+'%'}" class="ui-slider-progress"></div>
-                                    <input #rightVolumeSlider (change)="changeVolume(rightVolumeSlider.value,'r')"
+                                    <input #rightVolumeSlider (input)="changeVolume(rightVolumeSlider.value,'r')"
                                            [(ngModel)]="volumeRight" class="slider" max="100"
-                                           min="1" type="range"
+                                           min="0" type="range"
                                            value="50">
                                 </div>
                                 <div class="channel-volume-info"><span class="text-volume">D</span></div>
@@ -112,7 +132,7 @@
         </ng-container>
     </div>
 </div>
-
+<!-- Slider -->
 <div class="playback-rate-slider" *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
     <div class="playback-rate-labels">
         <input type="range" list="playback-rate-list" #playbackRateCursor
@@ -131,6 +151,7 @@
         </datalist>
     </div>
 </div>
+<!-- Slider 2-->
 <div class="playback-rate-slider2" *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
     <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first:as isFirst; last as isLast;"
          [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"

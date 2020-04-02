@@ -19,6 +19,9 @@ export class MediaElement {
     private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
+    public audioContext: AudioContext;
+    public panLeft: GainNode;
+    public panRight: GainNode;
     /**
      * play a video backwards
      */
@@ -171,14 +174,20 @@ export class MediaElement {
         if (this._withMergeVolume) {
             this.volumeLeft = volume;
             this.volumeRight = volume;
+            this.panRight.gain.value = volume;
+            this.panLeft.gain.value = volume;
         } else {
             if (volumeSide === 'r') {
                 this.volumeRight = volume;
+                this.panRight.gain.value = volume;
             } else if (volumeSide === 'l') {
                 this.volumeLeft = volume;
+                this.panLeft.gain.value = volume;
             } else {
                 this.volumeRight = volume;
                 this.volumeLeft = volume;
+                this.panRight.gain.value = volume;
+                this.panLeft.gain.value = volume;
             }
         }
         this.mediaElement.volume = Math.min(volume / 100, 1);
@@ -496,6 +505,51 @@ export class MediaElement {
             this.logger.warn('Error to create image capture', error.stack);
         }
         return null;
+    }
+
+    /**
+     * Set Audio Nodes
+     */
+    public setupAudioNodes(data: any) {
+        this.logger.info('setupAudio');
+        const audioContext = window.AudioContext;
+        this.audioContext = new audioContext();
+        const source = this.audioContext.createMediaElementSource(this.mediaElement);
+        const splitter = this.audioContext.createChannelSplitter(2);
+        this.panLeft = this.audioContext.createGain();
+        this.panRight = this.audioContext.createGain();
+        // Connect the source to the splitter
+        source.connect(splitter, 0, 0);
+        // Connect splitter' outputs to each Gain Nodes
+        splitter.connect(this.panLeft, 0);
+        splitter.connect(this.panRight, 1);
+        // Documentation panner => https://developer.mozilla.org/en-US/docs/Web/API/PannerNode
+        const panner = this.audioContext.createPanner();
+        panner.coneOuterGain = 1;
+        panner.coneOuterAngle = 180;
+        panner.coneInnerAngle = 0;
+        if (data.channelMergerNode === 'l') {
+            panner.setPosition(-1, 0, 0);
+        } else if (data.channelMergerNode === 'r') {
+            panner.setPosition(1, 0, 0);
+        }
+        this.panLeft.connect(panner);
+        this.panRight.connect(panner);
+        panner.connect(this.audioContext.destination);
+        if (data.channelMerger === true) {
+            // Connect Left and Right Nodes to the output
+            // Assuming stereo as initial status
+            this.panLeft.connect(this.audioContext.destination, 0);
+            this.panRight.connect(this.audioContext.destination, 0);
+        } else {
+            // Create a merger node, to get both signals back together
+            const merger = this.audioContext.createChannelMerger(2);
+            // Connect both channels to the Merger
+            this.panLeft.connect(merger, 0, 0);
+            this.panRight.connect(merger, 0, 1);
+            // Connect the Merger Node to the final audio destination
+            merger.connect(this.audioContext.destination);
+        }
     }
 
 
