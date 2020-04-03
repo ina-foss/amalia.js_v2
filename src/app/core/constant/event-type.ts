@@ -137,5 +137,12 @@ export enum PlayerEventType {
      * Invoked when audio channel changed
      */
     ASPECT_RATIO_CHANGE = 'ina.player.aspectRatioChange',
-
+    /**
+     * Invoked when player is hovered
+     */
+    PLAYER_MOUSE_ENTER = 'ina.player.PLAYER_MOUSE_ENTER',
+    /**
+     * Invoked mouse leave player
+     */
+    PLAYER_MOUSE_LEAVE = 'ina.player.PLAYER_MOUSE_LEAVE',
 }

@@ -1,6 +1,6 @@
 <div class="thumbnail" *ngIf="enableThumbnail" [hidden]="thumbnailHidden"
      [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}"></div>
-<div class="control-bar" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
+<div class="control-bar" [ngClass]="{'activated' : activated}" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
     <div *ngIf="hasComponentWithoutZone('progressBar')"
          class="control progress-bar" (mouseenter)="progressBarMouseEnter($event)"
          (mouseleave)="progressBarMouseLeave($event)" (mousemove)="progressBarMouseMove($event)">

@@ -106,7 +106,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * List of control for Zone 1
      */
     public elements;
-
+    /**
+     * State of controlBar
+     */
+    public activated = true;
     /**
      * Handle thumbnail
      */
@@ -133,6 +136,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
     }
 
 
@@ -463,6 +468,22 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public setupAudioNodes(data: any){
         this.mediaPlayerElement.getMediaPlayer().setupAudioNodes(data);
+    }
+    /**
+     * Invoked player mouse enter event for :
+     * - animate controlBar
+     */
+    @AutoBind
+    private handlePlayerMouseenter() {
+        this.activated = true;
+    }
+    /**
+     * Invoked player mouse enter event for :
+     * - animate controlBar
+     */
+    @AutoBind
+    private handlePlayerMouseleave() {
+        this.activated = false;
     }
 
 

@@ -27,14 +27,16 @@
   }
 
   .control-bar {
-    display: flex;
-    flex-direction: row;
+    display: none;
     position: relative;
     top: 0;
     padding: 0;
     margin: 0;
     list-style: none;
-
+    &.activated,&:hover {
+      display: flex;
+      flex-direction: row;
+    }
     .column {
       min-width: 20px;
       min-height: 20px;
