@@ -6,7 +6,7 @@ import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {isArrayLike} from 'rxjs/internal-compatibility';
-import {TranscriptionLocalisation} from '../../core/config/model/transcription-localisation';
+import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {SubtitleConfig} from '../../core/config/model/subtitle-config';
 import * as _ from 'lodash';
 
@@ -34,6 +34,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     ngOnInit(): void {
         super.ngOnInit();
     }
+
     @AutoBind
     init(): void {
         super.init();
@@ -76,7 +77,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     private refreshMetadata() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
-        this.logger.info(`Metadata loaded transcription ${handleMetadataIds}`);
+        this.logger.info(`Metadata loaded subtitle handle metadata ids: ${handleMetadataIds}`);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
             this.transcriptions = new Array<TranscriptionLocalisation>();

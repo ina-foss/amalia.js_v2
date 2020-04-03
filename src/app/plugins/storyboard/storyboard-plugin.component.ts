@@ -19,6 +19,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public baseUrl: string;
     public listOfThumbnail: Array<number>;
     /**
+     * Media duration
+     */
+    public duration: number;
+    /**
      * thumbnail size
      */
     public size: 'small' | 'medium' | 'large' = 'small';
@@ -35,6 +39,25 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public enableLabel: boolean;
 
+    /**
+     * Time code interval
+     */
+    public tcIntervals = [10, 30, 60];
+    /**
+     * frame intervals
+     */
+    public frameIntervals = [6, 60, 360];
+
+    /**
+     * Selected interval
+     */
+    public selectedInterval: [string, number];
+
+    /**
+     * state list of interval
+     */
+    public openIntervalList: boolean;
+
     constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
         super(mediaPlayerElement, logger);
         this.pluginName = StoryboardPluginComponent.PLUGIN_NAME;
@@ -42,15 +65,17 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
     ngOnInit(): void {
         super.ngOnInit();
+        this.selectedInterval = ['tc', this.tcIntervals[0]];
     }
 
     @AutoBind
     init() {
         super.init();
+        this.selectedInterval = ['tc', this.tcIntervals[0]];
+        this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
         // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl !== '') {
-            this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
         }
     }
@@ -64,25 +89,57 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 baseUrl: '',
                 enableLabel: true,
                 tcParam: 'tc',
-                tcDelta: 1,
+                tcIntervals: this.tcIntervals,
+                frameIntervals: this.frameIntervals,
                 displayFormat: 'f'
             }
         };
     }
 
     /**
-     * Invoked on duration chage
+     * Handle to seek to time code
+     * @param tc time code
+     */
+    public seekToTc(tc: number) {
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
+    }
+
+    /**
+     * handle change thumbnail size
+     * @param type type interval
+     * @param tc time code
+     */
+    public selectedThumbnailSize(type: string, tc: number) {
+        this.selectedInterval = [type, tc];
+        this.updateThumbnailSize();
+    }
+
+    /**
+     * Invoked on duration change
      */
     @AutoBind
     private handleDurationChange() {
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         if (!isNaN(duration)) {
-            this.listOfThumbnail = _.range(0, duration, this.pluginConfiguration.data.tcDelta);
+            this.duration = duration;
         }
         const baseUrl = this.pluginConfiguration.data.baseUrl;
         const tcParam = this.pluginConfiguration.data.tcParam;
         this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
+        this.updateThumbnailSize();
         this.logger.debug(`${this.baseUrl} : duration : ${duration}`);
     }
+
+    /**
+     * Handle interval
+     */
+    private updateThumbnailSize() {
+        let interval: number = this.selectedInterval[1];
+        if (this.selectedInterval[0] === 'frame') {
+            interval = (1 / this.fps) * interval;
+        }
+        this.listOfThumbnail = _.range(0, this.duration, interval);
+    }
+
 
 }

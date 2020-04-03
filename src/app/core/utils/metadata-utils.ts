@@ -2,15 +2,17 @@
  * Utils for format
  */
 import {Metadata} from '@ina/amalia-model';
-import {TranscriptionLocalisation} from '../config/model/transcription-localisation';
+import {TranscriptionLocalisation} from '../metadata/model/transcription-localisation';
 import {isArrayLike} from 'rxjs/internal-compatibility';
 import {FormatUtils} from './format-utils';
+import {Histogram} from '../metadata/model/histogram';
 
 export class MetadataUtils {
     /**
      * Return list of transcription
      * @param metadata localisation
-     * @param maxParselevel max parse level
+     * @param parseLevel parse level
+     * @param withSubLocalisations true for parse sub localisation
      */
     public static getTranscriptionLocalisations(metadata: Metadata, parseLevel: number = 1, withSubLocalisations = false): Array<TranscriptionLocalisation> {
         const localisations: Array<TranscriptionLocalisation> = new Array<TranscriptionLocalisation>();
@@ -26,6 +28,8 @@ export class MetadataUtils {
      * In charge to parse transcription
      * @param l localisation
      * @param localisations transcription
+     * @param parseLevel parse level
+     * @param withSubLocalisations true for parse sub localisation
      */
     public static parseTranscriptionLocalisations(l: any, localisations: Array<TranscriptionLocalisation>, parseLevel: number, withSubLocalisations: boolean): void {
         if (l.tcin && l.tcout && l.data && l.data.text && l.tclevel === parseLevel) {
@@ -51,5 +55,21 @@ export class MetadataUtils {
         }
     }
 
-
+    /**
+     * Return list of histogram
+     * @param metadata metadata
+     */
+    public static getHistograms(metadata: Metadata): Array<Histogram> {
+        const histograms: Array<Histogram> = new Array<Histogram>();
+        if (metadata && metadata.localisation) {
+            metadata.localisation.forEach((l) => {
+                if (l?.data.hasOwnProperty('histogram') && l.data.histogram && isArrayLike(l.data.histogram)) {
+                    l.data.histogram.forEach((h) => {
+                        histograms.push(h as Histogram);
+                    });
+                }
+            });
+        }
+        return histograms;
+    }
 }

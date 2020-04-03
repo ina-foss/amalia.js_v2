@@ -13,6 +13,9 @@
     },
     {
       "url": "http://localhost:4201/metadata/sample-transcription.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/waveform.json"
     }
   ],
   "thumbnail": {
@@ -124,6 +127,12 @@
           "control": "aspectRatio",
           "zone": 3
         }
+      ]
+    },
+    "HISTOGRAM": {
+      "metadataIds": [
+        "waveform-MA00605_01-2048-0",
+        "waveform-MA00605_01-2048-1"
       ]
     }
   }

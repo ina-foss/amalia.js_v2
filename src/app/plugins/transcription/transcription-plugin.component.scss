@@ -35,8 +35,8 @@
 
   .auto-scroll {
     position: absolute;
-    right: 20px;
-    bottom: 0;
+    right: 24px;
+    bottom: 25px;
 
     .icon {
       width: 45px;
@@ -78,7 +78,7 @@
         cursor: pointer;
 
         div {
-          margin: 5px 5px 5px 0px;
+          margin: 5px 5px 5px 0;
         }
 
         .separator:before {
@@ -125,7 +125,7 @@
 
       &.search-text {
         flex: 1;
-        widht: 100%;
+        width: 100%;
         padding: 8px;
 
         input {

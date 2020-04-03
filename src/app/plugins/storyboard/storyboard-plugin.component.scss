@@ -17,13 +17,14 @@
     justify-content: center;
     margin-bottom: 10px;
 
-    div {
+    div.size {
       border: solid 1px #cacaca;
       margin-right: 10px;
 
       &:hover,
       &.selected {
         border: solid 1px #dfeef3;
+        background-color: #dfeef3;
       }
     }
 
@@ -47,6 +48,43 @@
       border: solid 1px #cacaca;
       cursor: pointer;
     }
+
+    .first {
+      flex: 1;
+    }
+
+    .interval {
+      flex: 1;
+
+      ul {
+        list-style: none;
+        position: absolute;
+        z-index: 100;
+        background-color: white;
+        text-align: right;
+        padding: 0;
+        margin: 0;
+
+        li {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+
+          &.label {
+            background-color: #6c6c6c;
+            line-height: 20px;
+          }
+
+          &:hover {
+            background-color: #6c6c6c;
+          }
+
+          &.selected {
+            font-weight: bold;
+          }
+        }
+      }
+    }
   }
 
   .storyboard {
@@ -60,6 +98,7 @@
     .thumbnail {
       position: relative;
       display: flex;
+      cursor: pointer;
 
       &.small {
         width: $amalia-plugin-storyboard-thumbnail-sw;
@@ -77,12 +116,7 @@
       }
 
       img {
-        width: 100%;;
-      }
-
-      &.last {
-        // There's no science in using "10" here. In all my testing, this delivered the best results.
-        flex-grow: 10;
+        width: 100%;
       }
 
       .label {
