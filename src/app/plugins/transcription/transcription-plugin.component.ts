@@ -7,7 +7,7 @@ import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {TranscriptionConfig} from '../../core/config/model/transcription-config';
 import {isArrayLike} from 'rxjs/internal-compatibility';
-import {TranscriptionLocalisation} from '../../core/config/model/transcription-localisation';
+import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {DEFAULT} from '../../core/constant/default';
 import {TextUtils} from '../../core/utils/text-utils';
 

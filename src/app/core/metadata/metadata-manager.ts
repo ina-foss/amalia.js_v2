@@ -6,7 +6,8 @@ import {ConfigDataSource} from '../config/model/config-data-source';
 import {Loader} from '../loader/loader';
 import {isArrayLike} from 'rxjs/internal-compatibility';
 import {MetadataUtils} from '../utils/metadata-utils';
-import {TranscriptionLocalisation} from '../config/model/transcription-localisation';
+import {TranscriptionLocalisation} from './model/transcription-localisation';
+import {Histogram} from './model/histogram';
 
 /**
  * In charge to handle metadata
@@ -99,6 +100,28 @@ export class MetadataManager {
             this.logger.warn(`Error to find metadata : ${metadataId}`);
         }
         return null;
+    }
+
+    /**
+     * Return all parsed histogram
+     * @param metadataIds ids
+     */
+    public getHistograms(metadataIds: Array<string>) {
+        const histograms = new Array<Histogram>();
+        metadataIds.forEach((id) => {
+            try {
+                const metadata = this.getMetadata(id);
+                if (metadata) {
+                    const list = MetadataUtils.getHistograms(metadata);
+                    if (list && list.length > 0) {
+                        histograms.push(...list);
+                    }
+                }
+            } catch (e) {
+                this.logger.warn(`Error to parse histogram [id: ${id}]`);
+            }
+        });
+        return histograms;
     }
 
     /**
