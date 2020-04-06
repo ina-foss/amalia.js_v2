@@ -1,12 +1,11 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, Input, ViewEncapsulation} from '@angular/core';
-import {MediaPlayerElement} from '../../core/media-player-element';
-import {DefaultLogger} from '../../core/logger/default-logger';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {ControlBarConfig} from '../../core/config/model/control-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
+import {MediaPlayerService} from '../../service/media-player-service';
 
 
 @Component({
@@ -40,13 +39,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @Input()
     public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10];
+
     /**
      * List of playback rate
      */
     @Input()
     public sliderListOfPlaybackRateCustomSteps: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 1.5, 2, 4, 6, 8, 10];
-
-    public sliderListOfPlaybackRateStepWidth: Array<number> = [];
 
     /**
      * list of backward playback step
@@ -114,10 +112,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public thumbnailHidden = true;
     public thumbnailUrl: string;
     public thumbnailPosition = 0;
+    public sliderListOfPlaybackRateStepWidth: Array<number> = [];
 
-    constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
-        super(mediaPlayerElement, logger);
-        this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
+
+    constructor(playerService: MediaPlayerService) {
+        super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
     }
 
     @AutoBind
@@ -310,7 +309,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse down
-     * @param event mouse event
+     * @param value mouse event
      */
     public handleProgressBarMouseDown(value) {
         this.inSliding = true;
@@ -319,7 +318,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse up
-     * @param event mouse event
+     * @param value mouse event
      */
     public handleProgressBarMouseUp(value) {
         this.inSliding = false;
@@ -329,7 +328,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse move
-     * @param event mouse event
+     * @param value mouse event
      */
     public handleProgressBarMouseMove(value) {
         if (this.inSliding) {

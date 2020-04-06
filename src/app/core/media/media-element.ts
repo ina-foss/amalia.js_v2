@@ -6,6 +6,7 @@ import {MediaSourceExtension} from '../mse/media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
+import {DefaultLogger} from '../logger/default-logger';
 
 
 /**
@@ -15,7 +16,7 @@ export class MediaElement {
     public static DEFAULT_FRAMERATE = 25;
     private readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
-    private readonly logger: LoggerInterface;
+    private logger: LoggerInterface;
     private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
@@ -31,10 +32,10 @@ export class MediaElement {
      * @param eventEmitter event emitter
      * @param logger logger
      */
-    constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, logger: LoggerInterface) {
+    constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
-        this.logger = logger;
+        this.logger = new DefaultLogger();
     }
 
     /**

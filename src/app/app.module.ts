@@ -3,8 +3,6 @@ import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule} from '@angular/core';
 import {AmaliaComponent} from './player/amalia.component';
 import {createCustomElement} from '@angular/elements';
 import {HttpClientModule} from '@angular/common/http';
-import {MediaPlayerElement} from './core/media-player-element';
-import {DefaultLogger} from './core/logger/default-logger';
 import {FormsModule} from '@angular/forms';
 import {TcFormatPipe} from './core/utils/tc-format.pipe';
 import {TimeBarPluginComponent} from './plugins/time-bar/time-bar-plugin.component';
@@ -13,6 +11,7 @@ import {TranscriptionPluginComponent} from './plugins/transcription/transcriptio
 import {SubtitlesPluginComponent} from './plugins/subtitles/subtitles-plugin.component';
 import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.component';
 import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.component';
+import {MediaPlayerService} from './service/media-player-service';
 
 @NgModule({
     imports: [
@@ -30,8 +29,10 @@ import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.com
         StoryboardPluginComponent,
         HistogramPluginComponent
     ],
+    providers: [
+        MediaPlayerService
+    ],
     entryComponents: [AmaliaComponent],
-    providers: [DefaultLogger, MediaPlayerElement],
     bootstrap: [],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA

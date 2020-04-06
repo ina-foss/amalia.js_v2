@@ -1,7 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {MediaPlayerElement} from '../../core/media-player-element';
-import {DefaultLogger} from '../../core/logger/default-logger';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
@@ -10,6 +8,7 @@ import {isArrayLike} from 'rxjs/internal-compatibility';
 import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {DEFAULT} from '../../core/constant/default';
 import {TextUtils} from '../../core/utils/text-utils';
+import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
     selector: 'amalia-transcription',
@@ -39,9 +38,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public listOfSearchedNodes: Array<HTMLElement>;
     private searchedWordIndex = 0;
 
-    constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
-        super(mediaPlayerElement, logger);
-        this.pluginName = TranscriptionPluginComponent.PLUGIN_NAME;
+    constructor(playerService: MediaPlayerService) {
+        super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
     }
 
     ngOnInit(): void {
