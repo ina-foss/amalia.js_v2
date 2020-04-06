@@ -4,6 +4,7 @@ import {DefaultLogger} from '../logger/default-logger';
 import {AutoBind} from '../decorator/auto-bind.decorator';
 import {PlayerEventType} from '../constant/event-type';
 import {EventEmitter} from 'events';
+import {LoggerInterface} from '../logger/logger-interface';
 
 /**
  * In  charge to handle default media sources (Supported by browsers)
@@ -13,11 +14,11 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
     private backwardsMediaSrc: string = null;
     private mainSource: HTMLSourceElement;
     private config: PlayerConfigData;
-    private logger: DefaultLogger;
+    private logger: LoggerInterface;
     private readonly eventEmitter: EventEmitter;
     private readonly mediaElement: HTMLVideoElement;
 
-    constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, config: PlayerConfigData, logger: DefaultLogger) {
+    constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, config: PlayerConfigData, logger: LoggerInterface) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
         this.config = config;

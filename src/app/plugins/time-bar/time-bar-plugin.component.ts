@@ -1,12 +1,11 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MediaPlayerElement} from '../../core/media-player-element';
-import {DefaultLogger} from '../../core/logger/default-logger';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {TimeBarConfig} from '../../core/config/model/ time-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {DEFAULT} from '../../core/constant/default';
+import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
     selector: 'amalia-time-bar',
@@ -44,9 +43,8 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      */
     public displayState: 'small' | 'large' = 'large';
 
-    constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
-        super(mediaPlayerElement, logger);
-        this.pluginName = TimeBarPluginComponent.PLUGIN_NAME;
+    constructor(playerService: MediaPlayerService) {
+        super(playerService, TimeBarPluginComponent.PLUGIN_NAME);
     }
 
     ngOnInit(): void {

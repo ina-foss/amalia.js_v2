@@ -7,6 +7,7 @@ import {AutoBind} from '../../decorator/auto-bind.decorator';
 import {PlayerEventType} from '../../constant/event-type';
 import {EventEmitter} from 'events';
 import {HlsCustomFLoader} from './hls-custom-f-loader';
+import {LoggerInterface} from '../../logger/logger-interface';
 
 /**
  * In  charge to handle HSL Media extension
@@ -19,13 +20,13 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     private mainMediaSrc: string;
     private backwardsMediaSrc: string;
     private config: PlayerConfigData;
-    private logger: DefaultLogger;
+    private logger: LoggerInterface;
     private readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
     private readonly hlsPlayer: Hls;
 
 
-    constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, config: PlayerConfigData, logger: DefaultLogger) {
+    constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, config: PlayerConfigData, logger: LoggerInterface) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
         this.config = config;

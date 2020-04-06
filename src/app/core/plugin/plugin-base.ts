@@ -4,14 +4,31 @@ import {DefaultLogger} from '../logger/default-logger';
 import {Input, OnInit} from '@angular/core';
 import {PlayerEventType} from '../constant/event-type';
 import {AutoBind} from '../decorator/auto-bind.decorator';
+import {MediaPlayerService} from '../../service/media-player-service';
+import {AmaliaException} from '../exception/amalia-exception';
 
 /**
  * Base class for create plugin
  */
 export abstract class PluginBase<T> implements OnInit {
+
+    @Input()
+    public playerId = null;
+
     /**
      * This plugin configuration
      */
+    private _player;
+
+    get player() {
+        return this._player;
+    }
+
+    @Input()
+    set player(value) {
+        console.log('Player : ', value);
+        this._player = value;
+    }
 
     private _pluginConfiguration: PluginConfigData<T>;
 
@@ -32,17 +49,27 @@ export abstract class PluginBase<T> implements OnInit {
         this._pluginConfiguration = value;
     }
 
-    public readonly mediaPlayerElement: MediaPlayerElement;
+    public playerService: MediaPlayerService;
+    public mediaPlayerElement: MediaPlayerElement;
     protected pluginName: string;
     protected readonly logger: DefaultLogger;
 
-    protected constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
-        this.mediaPlayerElement = mediaPlayerElement;
-        this.logger = logger;
+    /**
+     * Plugin base constructor
+     * @param playerService player service
+     * @param pluginName plugin name, user for get configuration
+     */
+    protected constructor(playerService: MediaPlayerService, pluginName) {
+        this.playerService = playerService;
+        this.pluginName = pluginName;
+        this.logger = new DefaultLogger(`${this.pluginName}`);
     }
 
     ngOnInit(): void {
-        // Init events
+        this.mediaPlayerElement = this.playerService.get(this.playerId);
+        if (!this.mediaPlayerElement) {
+            throw new AmaliaException(`Error to init plugin ${this.pluginName} (player id : ${this.playerId}).`);
+        }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init);
     }
 

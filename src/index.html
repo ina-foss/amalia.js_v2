@@ -18,21 +18,26 @@
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
             <amalia-player config="http://localhost:4201/configs/base-config.json">
-                <amalia-histogram></amalia-histogram>
-                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>
-                <amalia-control-bar></amalia-control-bar>
+                <!--                <amalia-histogram></amalia-histogram>-->
+                <!--                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>-->
+                <amalia-control-bar player=""></amalia-control-bar>
             </amalia-player>
-            <amalia-time-bar></amalia-time-bar>
+            <!--            <amalia-time-bar></amalia-time-bar>-->
         </div>
         <div class="col-6 p-2">
-            <div style="height: 400px">
-                <amalia-storyboard
-                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>
-            </div>
-            <div style="height: 700px">
-                <amalia-transcription
-                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>
-            </div>
+            <amalia-player player-id="hls" config="http://localhost:4201/configs/base-config-hls.json">
+                <!--                <amalia-histogram></amalia-histogram>-->
+                <!--                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>-->
+                <amalia-control-bar player-id="hls"></amalia-control-bar>
+            </amalia-player>
+            <!--            <div style="height: 400px">-->
+            <!--                <amalia-storyboard-->
+            <!--                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>-->
+            <!--            </div>-->
+            <!--            <div style="height: 700px">-->
+            <!--                <amalia-transcription-->
+            <!--                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>-->
+            <!--            </div>-->
         </div>
     </div>
 </div>
