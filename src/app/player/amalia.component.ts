@@ -16,6 +16,8 @@ import {PlayerEventType} from '../core/constant/event-type';
 import {AutoBind} from '../core/decorator/auto-bind.decorator';
 
 import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
+import {BaseUtils} from '../core/utils/base-utils';
+import {MediaPlayerService} from '../service/media-player-service';
 
 @Component({
     selector: 'amalia-player',
@@ -24,6 +26,7 @@ import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AmaliaComponent implements OnInit {
+
     /**
      * version of player
      */
@@ -61,7 +64,13 @@ export class AmaliaComponent implements OnInit {
     /**
      * preview thumbnail url
      */
-    public previewThumbnailUrl: string;
+    public previewThumbnailUrl: string = null;
+
+    /**
+     * Generate player base id
+     */
+    @Input()
+    public playerId = BaseUtils.getUniqueId();
     /**
      * Preview thumbnail container
      */
@@ -131,6 +140,16 @@ export class AmaliaComponent implements OnInit {
      * true when player load content
      */
     public inError = false;
+
+    /**
+     * Default loader
+     */
+    public logger = new DefaultLogger();
+
+    /**
+     * In charge to get instance of player
+     */
+    public playerService: MediaPlayerService;
     /**
      * In charge to load resource
      */
@@ -138,26 +157,11 @@ export class AmaliaComponent implements OnInit {
     /**
      * Amalia player main manager
      */
-    private readonly _mediaPlayerElement: MediaPlayerElement;
-    /**
-     * Default loader
-     */
-    private _logger = new DefaultLogger();
+    private mediaPlayerElement: MediaPlayerElement;
 
-    get logger(): DefaultLogger {
-        return this._logger;
-    }
-
-    /**
-     * In charge to return media element
-     */
-    get mediaPlayerElement(): MediaPlayerElement {
-        return this._mediaPlayerElement;
-    }
-
-    constructor(mediaPlayerElement: MediaPlayerElement, httpClient: HttpClient) {
+    constructor(playerService: MediaPlayerService, httpClient: HttpClient) {
         this.httpClient = httpClient;
-        this._mediaPlayerElement = mediaPlayerElement;
+        this.playerService = playerService;
     }
 
 
@@ -165,6 +169,8 @@ export class AmaliaComponent implements OnInit {
      * Invoked immediately after the  first time the component has initialised
      */
     public ngOnInit() {
+        // Init media player
+        this.mediaPlayerElement = this.playerService.get(this.playerId);
         this.state = PlayerState.CREATED;
         this.inLoading = true;
         // init default manager (converter, metadata loader)
@@ -172,14 +178,14 @@ export class AmaliaComponent implements OnInit {
         this.playerConfig = this.config;
         if (this.configLoader && this.metadataConverter && this.metadataLoader) {
             // set media player in charge to player video or audio files
-            this._mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
-            this._mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
+            this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
+            this.mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
                 .then((state) => this.onInitConfig(state))
                 .catch((state) => this.onErrorInitConfig(state));
             // bind events
             this.bindEvents();
         } else {
-            this._logger.error('Error to initialize media player element.');
+            this.logger.error('Error to initialize media player element.');
         }
     }
 
@@ -258,6 +264,7 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     private handleSeeked() {
         this.enablePreviewThumbnail = false;
+        this.previewThumbnailUrl = null;
     }
 
     /**
@@ -287,10 +294,10 @@ export class AmaliaComponent implements OnInit {
     private initDefaultHandlers() {
         if (!this.configLoader) {
             if (this.config && typeof this.config === 'string' && this.config.search('^http') !== -1) {
-                this.configLoader = new HttpConfigLoader(new DefaultConfigConverter(), this.httpClient, this._logger);
+                this.configLoader = new HttpConfigLoader(new DefaultConfigConverter(), this.httpClient, this.logger);
             } else {
                 // Default Config load this loader use input config parameter
-                this.configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), this._logger);
+                this.configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
             }
 
         }
@@ -300,7 +307,7 @@ export class AmaliaComponent implements OnInit {
         }
         if (!this.metadataLoader) {
             // Default use load source form http request
-            this.metadataLoader = new DefaultMetadataLoader(this.httpClient, this.metadataConverter, this._logger);
+            this.metadataLoader = new DefaultMetadataLoader(this.httpClient, this.metadataConverter, this.logger);
         }
     }
 
@@ -330,7 +337,7 @@ export class AmaliaComponent implements OnInit {
         this.state = state;
         this.inLoading = false;
         this.inError = true;
-        this._logger.error(`Error to initialize player.`);
+        this.logger.error(`Error to initialize player.`);
     }
 
 

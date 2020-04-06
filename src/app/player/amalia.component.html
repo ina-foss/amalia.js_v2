@@ -1,14 +1,14 @@
 <div (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{aspectRatio}}">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
-    <div #previewThumbnail class="preview-thumbnail" [hidden]="!enablePreviewThumbnail && previewThumbnailUrl">
-        <img class="thumbnail" alt="preview-thumbnail"
+    <div #previewThumbnail class="preview-thumbnail" [hidden]="!enablePreviewThumbnail && !previewThumbnailUrl">
+        <img class="thumbnail" alt="preview-thumbnail" *ngIf="previewThumbnailUrl"
              [ngStyle]="{'background-image':'url('+previewThumbnailUrl+')'}">
     </div>
 </div>
 <div *ngIf="inLoading" class="loader"></div>
 <div *ngIf="inError" class="error">
     <svg class="amalia-svg-error-size icon">
-        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#error'"></use>
+        <use [attr.xlink:href]="'Self()assets/svgs/symbol/svg/sprite.symbol.svg#error'"></use>
     </svg>
     <p>Une erreur technique est survenue.<br>Votre média n'a pas pu être chargé dans le player</p>
 </div>

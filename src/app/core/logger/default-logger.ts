@@ -6,9 +6,11 @@ import {Injectable} from '@angular/core';
 /**
  * In charge to outputs a message to the web console
  */
-@Injectable()
 export class DefaultLogger implements LoggerInterface {
-    constructor() {
+    public namespaces = 'root';
+
+    constructor(namespaces = 'root') {
+        this.namespaces = namespaces;
     }
 
     /**
@@ -16,9 +18,9 @@ export class DefaultLogger implements LoggerInterface {
      * @param level log level
      * @param log log message
      */
-    private static log(level: LoggerLevel, log: LoggerData): void {
+    private log(level: LoggerLevel, log: LoggerData): void {
         if (console) {
-            const msg = `[${LoggerLevel.valToString(level)}] - ${log.msg}`;
+            const msg = `[${this.namespaces}]-[${LoggerLevel.valToString(level)}] - ${log.msg}`;
             let logConsole = null;
             switch (level) {
                 case LoggerLevel.Trace:
@@ -58,28 +60,28 @@ export class DefaultLogger implements LoggerInterface {
     }
 
     debug(msg: string, data?: any): void {
-        DefaultLogger.log(LoggerLevel.Debug, {msg, data});
+        this.log(LoggerLevel.Debug, {msg, data});
     }
 
     error(msg: string, data?: any): void {
-        DefaultLogger.log(LoggerLevel.Error, {msg, data});
+        this.log(LoggerLevel.Error, {msg, data});
     }
 
     fatal(msg: string, data?: any): void {
-        DefaultLogger.log(LoggerLevel.Fatal, {msg, data});
+        this.log(LoggerLevel.Fatal, {msg, data});
     }
 
     info(msg: string, data?: any): void {
-        DefaultLogger.log(LoggerLevel.Info, {msg, data});
+        this.log(LoggerLevel.Info, {msg, data});
     }
 
 
     trace(msg: string, data?: any): void {
-        DefaultLogger.log(LoggerLevel.Trace, {msg, data});
+        this.log(LoggerLevel.Trace, {msg, data});
     }
 
     warn(msg: string, data?: any): void {
-        DefaultLogger.log(LoggerLevel.Warn, {msg, data});
+        this.log(LoggerLevel.Warn, {msg, data});
     }
 
 }

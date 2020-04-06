@@ -1,12 +1,11 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MediaPlayerElement} from '../../core/media-player-element';
-import {DefaultLogger} from '../../core/logger/default-logger';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {StoryboardConfig} from '../../core/config/model/storyboard-config';
 import * as _ from 'lodash';
+import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
     selector: 'amalia-storyboard',
@@ -58,9 +57,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public openIntervalList: boolean;
 
-    constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
-        super(mediaPlayerElement, logger);
-        this.pluginName = StoryboardPluginComponent.PLUGIN_NAME;
+    constructor(playerService: MediaPlayerService) {
+        super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
     }
 
     ngOnInit(): void {

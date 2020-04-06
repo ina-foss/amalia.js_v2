@@ -9,6 +9,7 @@ import {BaseUtils} from '../../core/utils/base-utils';
 import {HistogramConfig} from '../../core/config/model/histogram-config';
 import {isArrayLike} from 'rxjs/internal-compatibility';
 import {Histogram} from '../../core/metadata/model/histogram';
+import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
     selector: 'amalia-histogram',
@@ -18,9 +19,8 @@ import {Histogram} from '../../core/metadata/model/histogram';
 })
 export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit {
 
-    constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
-        super(mediaPlayerElement, logger);
-        this.pluginName = HistogramPluginComponent.PLUGIN_NAME;
+    constructor(playerService: MediaPlayerService) {
+        super(playerService, HistogramPluginComponent.PLUGIN_NAME);
     }
 
     public static PLUGIN_NAME = 'HISTOGRAM';
