@@ -1,13 +1,12 @@
 import {async, getTestBed, TestBed} from '@angular/core/testing';
 import {MediaElement} from './media-element';
 import {EventEmitter} from 'events';
-import {DefaultLogger} from '../logger/default-logger';
 import {PlayerConfigData} from '../config/model/player-config-data';
 
 describe('Test Media element', () => {
     let injector: TestBed;
     const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
-    const component = new MediaElement(document.createElement('video'), new EventEmitter(), new DefaultLogger());
+    const component = new MediaElement(document.createElement('video'), new EventEmitter());
     const config: PlayerConfigData = {
         autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
     };
