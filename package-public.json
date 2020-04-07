@@ -3,7 +3,5 @@
   "description": "Amalia is a extensible and versatile HTML5 multimedia player",
   "author": "INA",
   "version": "2.0.0-beta",
-  "main": "main-es2015.js",
-  "module": "main-es2015.js",
-  "es2015": "main-es2015.js"
+  "main": "amalia.min.js"
 }
