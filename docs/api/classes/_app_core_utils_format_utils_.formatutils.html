@@ -69,13 +69,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Utils for format</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -91,6 +84,8 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_app_core_utils_format_utils_.formatutils.html#converttctoseconds" class="tsd-kind-icon">convert<wbr>TcTo<wbr>Seconds</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_app_core_utils_format_utils_.formatutils.html#formatstring" class="tsd-kind-icon">format<wbr>String</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_app_core_utils_format_utils_.formatutils.html#formattime" class="tsd-kind-icon">format<wbr>Time</a></li>
 							</ul>
 						</section>
@@ -100,16 +95,76 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="formattime" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> format<wbr>Time</h3>
+					<a name="converttctoseconds" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> convert<wbr>TcTo<wbr>Seconds</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">format<wbr>Time<span class="tsd-signature-symbol">(</span>seconds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, defaultFps<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">convert<wbr>TcTo<wbr>Seconds<span class="tsd-signature-symbol">(</span>tc<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in src/app/core/utils/format-utils.ts:13</li>
+									<li>Defined in src/app/core/utils/format-utils.ts:56</li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tc: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="formatstring" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> format<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">format<wbr>String<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in src/app/core/utils/format-utils.ts:77</li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p> Formatting a string in java is using</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>str: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A format string</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>val: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Arguments referenced by the format specifiers in the format string</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="formattime" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> format<wbr>Time</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">format<wbr>Time<span class="tsd-signature-symbol">(</span>seconds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, format<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">"h"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"m"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"s"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"f"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"ms"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"mms"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"seconds"</span>, defaultFps<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in src/app/core/utils/format-utils.ts:15</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -131,7 +186,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> format: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = null</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> format: <span class="tsd-signature-type">"h"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"m"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"s"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"f"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"ms"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"mms"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"seconds"</span><span class="tsd-signature-symbol"> = &quot;s&quot;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Format specifier h/m/s/f/ms/mms</p>
 									</div>
@@ -168,6 +223,12 @@
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
 						<a href="_app_core_utils_format_utils_.formatutils.html" class="tsd-kind-icon">Format<wbr>Utils</a>
 						<ul>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_app_core_utils_format_utils_.formatutils.html#converttctoseconds" class="tsd-kind-icon">convert<wbr>TcTo<wbr>Seconds</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_app_core_utils_format_utils_.formatutils.html#formatstring" class="tsd-kind-icon">format<wbr>String</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_app_core_utils_format_utils_.formatutils.html#formattime" class="tsd-kind-icon">format<wbr>Time</a>
 							</li>

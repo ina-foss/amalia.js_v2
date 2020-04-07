@@ -75,6 +75,23 @@
 					<li>the unified metadata format</li>
 					<li>the visualization plugins</li>
 				</ul>
+				<a href="#quick-start" id="quick-start" style="color: inherit; text-decoration: none;">
+					<h2>Quick start</h2>
+				</a>
+				<p>The easiest way to integrate the amalia player in your application is to use the fully packaged version.
+				All the third party libraries are provided along with the player code in one simple file for javascript and css parts.</p>
+				<p>If you start your HTML page from scratch, add the following lines in the <header> section of your HTML page :</p>
+				<script type="text/javascript"  src="amalia.min.js" type="module"></script>
+				<p>In the <body> section of your HTML page, you can add <amalia> element to instantiate the player.
+				In our example,we add control bar plugin and we choose to limit the global height of the player.</p>
+				<div style="height: 350px;">
+					<amalia-player player-id="p1" config='{"player":{"src":"https://www.w3schools.com/html/mov_bbb.mp4"}}'>
+						<amalia-control-bar player-id="p1"></amalia-control-bar>
+					</amalia-player>
+				</div>
+				<p>Player source is only mandatory parameter. You can use any media format that is compatible with the targeted browsers of your application.
+					Typically, for videos, you have to encode your files with h.264 and use mp4 container.
+				For a complete list of initialization parameters of amalia.js, see the documentation below.</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -102,10 +119,19 @@
 						<a href="modules/_app_core_config_loader_http_config_loader_.html">&quot;app/core/config/loader/http-<wbr>config-<wbr>loader&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_config_model__time_bar_config_.html">&quot;app/core/config/model/ time-<wbr>bar-<wbr>config&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_config_model_config_data_.html">&quot;app/core/config/model/config-<wbr>data&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_config_model_config_data_source_.html">&quot;app/core/config/model/config-<wbr>data-<wbr>source&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_config_model_control_bar_config_.html">&quot;app/core/config/model/control-<wbr>bar-<wbr>config&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_config_model_histogram_config_.html">&quot;app/core/config/model/histogram-<wbr>config&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_config_model_player_config_data_.html">&quot;app/core/config/model/player-<wbr>config-<wbr>data&quot;</a>
@@ -114,22 +140,40 @@
 						<a href="modules/_app_core_config_model_plugin_config_data_.html">&quot;app/core/config/model/plugin-<wbr>config-<wbr>data&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_config_model_storyboard_config_.html">&quot;app/core/config/model/storyboard-<wbr>config&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_config_model_subtitle_config_.html">&quot;app/core/config/model/subtitle-<wbr>config&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_config_model_transcription_config_.html">&quot;app/core/config/model/transcription-<wbr>config&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_constant_default_.html">&quot;app/core/constant/default&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_constant_error_message_.html">&quot;app/core/constant/error-<wbr>message&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_constant_error_type_.html">&quot;app/core/constant/error-<wbr>type&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_app_core_constant_error_type_spec_.html">&quot;app/core/constant/error-<wbr>type.spec&quot;</a>
+						<a href="modules/_app_core_constant_error_spec_.html">&quot;app/core/constant/error.spec&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_constant_event_type_.html">&quot;app/core/constant/event-<wbr>type&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_constant_event_type_spec_.html">&quot;app/core/constant/event-<wbr>type.spec&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_constant_player_state_.html">&quot;app/core/constant/player-<wbr>state&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_converter_converter_.html">&quot;app/core/converter/converter&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_decorator_auto_bind_decorator_.html">&quot;app/core/decorator/auto-<wbr>bind.decorator&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_error_default_error_logging_strategy_.html">&quot;app/core/error/default-<wbr>error-<wbr>logging-<wbr>strategy&quot;</a>
@@ -139,6 +183,9 @@
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_error_error_logging_strategy_.html">&quot;app/core/error/error-<wbr>logging-<wbr>strategy&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_event_amalia_event_.html">&quot;app/core/event/amalia-<wbr>event&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_exception_amalia_exception_.html">&quot;app/core/exception/amalia-<wbr>exception&quot;</a>
@@ -168,6 +215,12 @@
 						<a href="modules/_app_core_media_player_element_spec_.html">&quot;app/core/media-<wbr>player-<wbr>element.spec&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_media_media_element_.html">&quot;app/core/media/media-<wbr>element&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_media_media_element_spec_.html">&quot;app/core/media/media-<wbr>element.spec&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_metadata_converter_data_lake_format_converter_.html">&quot;app/core/metadata/converter/data-<wbr>lake-<wbr>format-<wbr>converter&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -183,10 +236,22 @@
 						<a href="modules/_app_core_metadata_metadata_manager_spec_.html">&quot;app/core/metadata/metadata-<wbr>manager.spec&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_metadata_model_histogram_.html">&quot;app/core/metadata/model/histogram&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_metadata_model_transcription_localisation_.html">&quot;app/core/metadata/model/transcription-<wbr>localisation&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_mse_default_media_source_extension_.html">&quot;app/core/mse/default-<wbr>media-<wbr>source-<wbr>extension&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_app_core_mse_hsl_media_source_extension_.html">&quot;app/core/mse/hsl-<wbr>media-<wbr>source-<wbr>extension&quot;</a>
+						<a href="modules/_app_core_mse_hls_hls_custom_f_loader_.html">&quot;app/core/mse/hls/hls-<wbr>custom-<wbr>f-loader&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_mse_hls_hls_media_source_extension_.html">&quot;app/core/mse/hls/hls-<wbr>media-<wbr>source-<wbr>extension&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_mse_hls_hls_media_source_extension_spec_.html">&quot;app/core/mse/hls/hls-<wbr>media-<wbr>source-<wbr>extension.spec&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_mse_media_source_extension_.html">&quot;app/core/mse/media-<wbr>source-<wbr>extension&quot;</a>
@@ -195,10 +260,13 @@
 						<a href="modules/_app_core_mse_mpeg_dash_media_source_extension_.html">&quot;app/core/mse/mpeg-<wbr>dash-<wbr>media-<wbr>source-<wbr>extension&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_app_core_plugin_player_plugin_.html">&quot;app/core/plugin/player-<wbr>plugin&quot;</a>
+						<a href="modules/_app_core_plugin_amalia_plugin_.html">&quot;app/core/plugin/amalia-<wbr>plugin&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_app_core_plugin_pugin_spec_.html">&quot;app/core/plugin/pugin.spec&quot;</a>
+						<a href="modules/_app_core_plugin_amalia_plugin_config_.html">&quot;app/core/plugin/amalia-<wbr>plugin-<wbr>config&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_plugin_plugin_base_.html">&quot;app/core/plugin/plugin-<wbr>base&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_shortcut_shortcut_manager_.html">&quot;app/core/shortcut/shortcut-<wbr>manager&quot;</a>
@@ -207,13 +275,61 @@
 						<a href="modules/_app_core_shortcut_shortcut_manager_spec_.html">&quot;app/core/shortcut/shortcut-<wbr>manager.spec&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_storage_preference_storage_manager_.html">&quot;app/core/storage/preference-<wbr>storage-<wbr>manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_storage_preference_storage_manager_spec_.html">&quot;app/core/storage/preference-<wbr>storage-<wbr>manager.spec&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_utils_base_utils_.html">&quot;app/core/utils/base-<wbr>utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_utils_base_utils_spec_.html">&quot;app/core/utils/base-<wbr>utils.spec&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_utils_format_utils_.html">&quot;app/core/utils/format-<wbr>utils&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_core_utils_format_utils_spec_.html">&quot;app/core/utils/format-<wbr>utils.spec&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_utils_metadata_utils_.html">&quot;app/core/utils/metadata-<wbr>utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_utils_metadata_utils_spec_.html">&quot;app/core/utils/metadata-<wbr>utils.spec&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_utils_tc_format_pipe_.html">&quot;app/core/utils/tc-<wbr>format.pipe&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_utils_text_utils_.html">&quot;app/core/utils/text-<wbr>utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_core_utils_text_utils_spec_.html">&quot;app/core/utils/text-<wbr>utils.spec&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_app_player_amalia_component_.html">&quot;app/player/amalia.component&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_plugins_control_bar_control_bar_plugin_component_.html">&quot;app/plugins/control-<wbr>bar/control-<wbr>bar-<wbr>plugin.component&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_plugins_histogram_histogram_plugin_component_.html">&quot;app/plugins/histogram/histogram-<wbr>plugin.component&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_plugins_storyboard_storyboard_plugin_component_.html">&quot;app/plugins/storyboard/storyboard-<wbr>plugin.component&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_plugins_subtitles_subtitles_plugin_component_.html">&quot;app/plugins/subtitles/subtitles-<wbr>plugin.component&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_plugins_time_bar_time_bar_plugin_component_.html">&quot;app/plugins/time-<wbr>bar/time-<wbr>bar-<wbr>plugin.component&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_plugins_transcription_transcription_plugin_component_.html">&quot;app/plugins/transcription/transcription-<wbr>plugin.component&quot;</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_app_service_media_player_service_.html">&quot;app/service/media-<wbr>player-<wbr>service&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_environments_environment_.html">&quot;environments/environment&quot;</a>

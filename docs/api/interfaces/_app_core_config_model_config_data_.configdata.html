@@ -89,6 +89,8 @@
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_app_core_config_model_config_data_.configdata.html#debug" class="tsd-kind-icon">debug</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_app_core_config_model_config_data_.configdata.html#player" class="tsd-kind-icon">player</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_app_core_config_model_config_data_.configdata.html#pluginsconfiguration" class="tsd-kind-icon">plugins<wbr>Configuration</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_app_core_config_model_config_data_.configdata.html#tcoffset" class="tsd-kind-icon">tc<wbr>Offset</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_app_core_config_model_config_data_.configdata.html#thumbnail" class="tsd-kind-icon">thumbnail</a></li>
 							</ul>
 						</section>
 					</div>
@@ -102,17 +104,17 @@
 					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/config/model/config-data.ts:9</li>
+							<li>Defined in src/app/core/config/model/config-data.ts:18</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="datasources" class="tsd-anchor"></a>
-					<h3>data<wbr>Sources</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> data<wbr>Sources</h3>
 					<div class="tsd-signature tsd-kind-icon">data<wbr>Sources<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_app_core_config_model_config_data_source_.configdatasource.html" class="tsd-signature-type">ConfigDataSource</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/config/model/config-data.ts:8</li>
+							<li>Defined in src/app/core/config/model/config-data.ts:17</li>
 						</ul>
 					</aside>
 				</section>
@@ -122,7 +124,7 @@
 					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/config/model/config-data.ts:10</li>
+							<li>Defined in src/app/core/config/model/config-data.ts:25</li>
 						</ul>
 					</aside>
 				</section>
@@ -132,19 +134,61 @@
 					<div class="tsd-signature tsd-kind-icon">player<span class="tsd-signature-symbol">:</span> <a href="_app_core_config_model_player_config_data_.playerconfigdata.html" class="tsd-signature-type">PlayerConfigData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/config/model/config-data.ts:6</li>
+							<li>Defined in src/app/core/config/model/config-data.ts:15</li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="pluginsconfiguration" class="tsd-anchor"></a>
-					<h3>plugins<wbr>Configuration</h3>
-					<div class="tsd-signature tsd-kind-icon">plugins<wbr>Configuration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="_app_core_config_model_plugin_config_data_.pluginconfigdata.html" class="tsd-signature-type">PluginConfigData</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> plugins<wbr>Configuration</h3>
+					<div class="tsd-signature tsd-kind-icon">plugins<wbr>Configuration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="_app_core_config_model_plugin_config_data_.pluginconfigdata.html" class="tsd-signature-type">PluginConfigData</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in src/app/core/config/model/config-data.ts:7</li>
+							<li>Defined in src/app/core/config/model/config-data.ts:16</li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tcoffset" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tc<wbr>Offset</h3>
+					<div class="tsd-signature tsd-kind-icon">tc<wbr>Offset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in src/app/core/config/model/config-data.ts:14</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Time code offset handle metadata time code</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="thumbnail" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> thumbnail</h3>
+					<div class="tsd-signature tsd-kind-icon">thumbnail<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>baseUrl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>enableThumbnail<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>enableThumbnailPreview<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>tcParam<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in src/app/core/config/model/config-data.ts:19</li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> base<wbr>Url<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> enable<wbr>Thumbnail<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> enable<wbr>Thumbnail<wbr>Preview<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> tc<wbr>Param<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -181,10 +225,19 @@
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_app_core_config_model_config_data_.configdata.html#pluginsconfiguration" class="tsd-kind-icon">plugins<wbr>Configuration</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_app_core_config_model_config_data_.configdata.html#tcoffset" class="tsd-kind-icon">tc<wbr>Offset</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_app_core_config_model_config_data_.configdata.html#thumbnail" class="tsd-kind-icon">thumbnail</a>
+							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_app_core_config_model_config_data_.html#callbackhandler" class="tsd-kind-icon">Callback<wbr>Handler</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
