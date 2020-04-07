@@ -1,7 +1,6 @@
 import {LoggerInterface} from './logger-interface';
 import {LoggerLevel} from './logger-level';
 import {LoggerData} from './logger-data';
-import {Injectable} from '@angular/core';
 
 /**
  * In charge to outputs a message to the web console
