@@ -126,7 +126,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.buildSliderSteps();
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
-        this.enableThumbnail = (thumbnailConfig && thumbnailConfig?.baseUrl !== '' && thumbnailConfig.enableThumbnail);
+        this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);

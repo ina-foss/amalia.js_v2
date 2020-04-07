@@ -206,8 +206,8 @@ export class AmaliaComponent implements OnInit {
     /**
      * In charge to update player size with aspect ratio
      */
-    @HostListener('window:resize', ['$event'])
-    private updatePlayerSizeWithAspectRatio() {
+    @HostListener('window:resize', [])
+    public updatePlayerSizeWithAspectRatio() {
         const htmlElement = (this.mediaPlayer.nativeElement as HTMLVideoElement);
         if (this.aspectRatio && this.aspectRatio !== '') {
             const maxWidth = htmlElement.parentElement.offsetWidth;
