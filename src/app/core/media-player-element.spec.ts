@@ -35,7 +35,7 @@ describe('Test Media player element', () => {
         const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
         const metadataConverter = new DefaultMetadataConverter();
         const metadataLoader = new DefaultMetadataLoader(httpClient, metadataConverter, logger);
-        const mpe = new MediaPlayerElement();
+        const mpe = new MediaPlayerElement(logger);
         expect(mpe.getState()).toEqual(PlayerState.CREATED);
         mpe.init(configData, metadataLoader, configLoader)
             .then((state) => {
