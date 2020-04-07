@@ -56,7 +56,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.pluginConfiguration.data.fps) {
                 this.fps = this.pluginConfiguration.data.fps;
             }
-            if (this.pluginConfiguration.data.autoScroll) {
+            if (this.pluginConfiguration?.data.autoScroll) {
                 this.autoScroll = true;
                 this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
@@ -120,7 +120,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
-            const karaokeTcDelta = this.pluginConfiguration.data.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
+            const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             this.disableRemoveAllSelectedNodes();
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                 this.selectWords(karaokeTcDelta);

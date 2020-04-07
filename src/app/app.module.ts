@@ -32,12 +32,7 @@ import {MediaPlayerService} from './service/media-player-service';
     providers: [
         MediaPlayerService
     ],
-    entryComponents: [AmaliaComponent, ControlBarPluginComponent,
-        TimeBarPluginComponent,
-        TranscriptionPluginComponent,
-        SubtitlesPluginComponent,
-        StoryboardPluginComponent,
-        HistogramPluginComponent],
+    entryComponents: [AmaliaComponent],
     bootstrap: [],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA

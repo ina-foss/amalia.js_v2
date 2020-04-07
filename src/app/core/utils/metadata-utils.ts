@@ -63,7 +63,7 @@ export class MetadataUtils {
         const histograms: Array<Histogram> = new Array<Histogram>();
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
-                if (l.data.hasOwnProperty('histogram') && l.data.histogram && isArrayLike(l.data.histogram)) {
+                if (l?.data.hasOwnProperty('histogram') && l.data.histogram && isArrayLike(l.data.histogram)) {
                     l.data.histogram.forEach((h) => {
                         histograms.push(h as Histogram);
                     });

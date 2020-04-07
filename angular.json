@@ -26,7 +26,8 @@
             "assets": [
               "src/assets"
             ],
-            "styles": [],
+            "styles": [
+            ],
             "scripts": [
               {
                 "input": "node_modules/document-register-element/build/document-register-element.js"
@@ -94,7 +95,8 @@
               "src/assets",
               "src/tests/assets"
             ],
-            "styles": [],
+            "styles": [
+            ],
             "scripts": []
           }
         },

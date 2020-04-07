@@ -96,7 +96,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     private updateSubtitleContent(): void {
         if (this.transcriptions) {
             const currentTime = this.currentTime;
-            const tcDelta = this.pluginConfiguration.data.tcDelta || SubtitlesPluginComponent.TC_DELTA;
+            const tcDelta = this.pluginConfiguration.data?.tcDelta || SubtitlesPluginComponent.TC_DELTA;
             const listOfTranscription = _.filter(this.transcriptions, (l) => {
                 return currentTime >= l.tcIn - tcDelta
                     && currentTime < l.tcOut + tcDelta;
