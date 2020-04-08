@@ -24,6 +24,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     public currentTime: number;
     public subTitle: string;
     public transcriptions: Array<TranscriptionLocalisation> = null;
+    public posSubtitle: ['none', 'up', 'down'];
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, SubtitlesPluginComponent.PLUGIN_NAME);
@@ -38,6 +39,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
         super.init();
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.POSITION_SUBTITLE_CHANGE, this.changeSubtitlePosition);
     }
 
 
@@ -111,6 +113,14 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
         } else {
             this.subTitle = null;
         }
+    }
+    /**
+     * Invoked when user change subtitle position
+     */
+    @AutoBind
+    private changeSubtitlePosition(event) {
+        this.logger.debug('Change position subtitles', event);
+        this.posSubtitle = event;
     }
 
 }

@@ -264,7 +264,59 @@
           filter: $amalia-ctrl-bar-btn-hover
         }
       }
+      .list-positions {
+        display: none;
+        position: absolute;
+        z-index: $amalia-volume-bar-z-index;
+        background-color: $amalia-ctrl-bar-bg-color;
+        left: calc(50% - 80px);
+        top: -133px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        width: 180px;
+        &.on {
+          display: block;
+          & > li:not(:first-child) {
+            display: block;
+            font-size: 12px;
+            line-height: 31px;
+            cursor: pointer;
+            color: white;
+            padding-left: 36px;
+            position: relative;
+            > .amalia-svg-checked-size {
+              display: none;
+              height: 25px;
+              position: absolute;
+              width: 20px;
+              left: 5px;
+              top: 3px;
+            }
+            &:hover {
+              background-color:rgba(255,255,255,0.45);
+            }
+            &.selected {
+              font-weight: bold;
+              > .amalia-svg-checked-size {
+                display: inline;
+              }
 
+            }
+          }
+        }
+      }
+      .header-list {
+        color: #ffffff;
+        font-size: 14px;
+        line-height: 30px;
+        padding-left: 12px;
+        cursor: none;
+        border-bottom: 1px solid #1A0C0C;
+        height: 30px;
+        text-align: left;
+        margin-bottom: 5px;
+      }
 
       .volume-control {
         display: none;
@@ -279,19 +331,6 @@
         }
 
         .channel-volume-sliders {
-
-          .header-list {
-            color: #ffffff;
-            font-size: 14px;
-            line-height: 30px;
-            padding-left: 12px;
-            cursor: none;
-            border-bottom: 1px solid #1A0C0C;
-            height: 30px;
-            text-align: left;
-            margin-bottom: 5px;
-          }
-
           .channel-volume-control {
             .channel-volume-control-left,
             .channel-volume-control-mid,

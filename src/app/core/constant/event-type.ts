@@ -145,4 +145,8 @@ export enum PlayerEventType {
      * Invoked mouse leave player
      */
     PLAYER_MOUSE_LEAVE = 'ina.player.PLAYER_MOUSE_LEAVE',
+    /**
+     * Invoked when user change position of subtitles
+     */
+    POSITION_SUBTITLE_CHANGE = 'ina.player.POSITION_SUBTITLE_CHANGE'
 }

@@ -99,7 +99,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Volume slider state
      */
     public enableVolumeSlider = false;
-
+    /**
+     * position of subtitles
+     */
+    public position = 'none';
+    /**
+     * List positions subtitle state
+     */
+    public enableListPositionsSubtitle = false;
     /**
      * List of control for Zone 1
      */
@@ -477,12 +484,21 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.activated = true;
     }
     /**
-     * Invoked player mouse enter event for :
+     * Invoked player mouse leave event for :
      * - animate controlBar
      */
     @AutoBind
     private handlePlayerMouseleave() {
         this.activated = false;
+    }
+
+    /**
+     * update position subtitle onclick
+     * @param {string} position
+     */
+    public updateSubtitlePosition(position: string) {
+        this.position = position;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, position);
     }
 
 

@@ -124,6 +124,12 @@
           }
         },
         {
+          "label": "Sous titres",
+          "control": "subtitles",
+          "icon": "subtitle",
+          "zone": 3
+        },
+        {
           "label": "Fullscreen",
           "control": "pause",
           "icon": "fullscreen",

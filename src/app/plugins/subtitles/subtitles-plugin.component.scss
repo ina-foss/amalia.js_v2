@@ -2,20 +2,31 @@
 @import '../../core/styles/variables';
 
 :host {
-
-  display: block;
-  position: absolute;
-  width: 100%;
-  bottom: 115px;
-  text-align: center;
-  font-family: $amalia-font-family;
-  z-index: $amalia-default-z-index;
-  background: $amalia-ctrl-bar-bg-color;
-  color: $amalia-plugin-subtitle-color;
-
-  p {
+  z-index: $amalia-plugin-subtitle-z-index;
+  div {
+    z-index: $amalia-plugin-subtitle-z-index;
+    position: absolute;
     padding: 0;
     margin: 0;
+    text-align: center;
+    font-family: $amalia-font-family;
+    background: $amalia-plugin-subtitle-bg;
+    color: $amalia-plugin-subtitle-color;
+    font-size: $amalia-plugin-subtitle-font-size;
+    width: max-content;
+    transform: translate(-50%,0);
+    left: 50%;
+    &.none {
+      display: none;
+    }
+    &.up {
+      display: block;
+      top: 35px;
+    }
+    &.down {
+      display: block;
+      bottom: 115px;
+    }
   }
 }
 
