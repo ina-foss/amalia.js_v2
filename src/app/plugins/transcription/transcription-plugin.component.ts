@@ -56,7 +56,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.pluginConfiguration.data.fps) {
                 this.fps = this.pluginConfiguration.data.fps;
             }
-            if (this.pluginConfiguration?.data.autoScroll) {
+            if (this.pluginConfiguration.data.autoScroll) {
                 this.autoScroll = true;
                 this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
@@ -120,7 +120,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
-            const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
+            const karaokeTcDelta = this.pluginConfiguration.data.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             this.disableRemoveAllSelectedNodes();
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                 this.selectWords(karaokeTcDelta);
@@ -143,7 +143,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`div.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.progressBar) {
-                const progressBarNode = (node.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR) as HTMLElement);
+                const progressBarNode: HTMLElement = node.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
                 if (progressBarNode) {
                     progressBarNode.style.width = '0%';
                 }
@@ -179,12 +179,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
             if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
-                segmentFilteredNodes.forEach(n => {
-                    const tcIn = Math.round(parseFloat(n.getAttribute('data-tcin')));
-                    const tcOut = Math.round(parseFloat(n.getAttribute('data-tcout')));
+                segmentFilteredNodes.forEach(segmentNode => {
+                    const tcIn = Math.round(parseFloat(segmentNode.getAttribute('data-tcin')));
+                    const tcOut = Math.round(parseFloat(segmentNode.getAttribute('data-tcout')));
                     const percentWidth = ((Math.round(this.currentTime) - tcIn) * 100) / (tcOut - tcIn);
-                    n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                    (n.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR) as HTMLElement).style.width = percentWidth + '%';
+                    const progressBar: HTMLElement = segmentNode.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
+                    progressBar.style.width = percentWidth + '%';
+                    segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
                 this.scroll();
             }
@@ -195,8 +196,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
      */
     private scroll() {
-        const scrollNode = this.transcriptionElement.nativeElement
-            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`) as HTMLElement;
+        const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
+            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
             this.scrollToNode(scrollNode);
         }
