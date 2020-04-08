@@ -23,7 +23,7 @@
     "enableThumbnail": true
   },
   "pluginsConfiguration": {
-    "CONTROL_BAR": {
+    "CONTROL_BAR-p": {
       "data": [
         {
           "label": "Barre de progression",
