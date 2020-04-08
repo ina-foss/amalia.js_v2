@@ -98,6 +98,7 @@
     .thumbnail {
       position: relative;
       display: flex;
+      cursor: pointer;
 
       &.small {
         width: $amalia-plugin-storyboard-thumbnail-sw;
@@ -115,12 +116,7 @@
       }
 
       img {
-        width: 100%;;
-      }
-
-      &.last {
-        // There's no science in using "10" here. In all my testing, this delivered the best results.
-        flex-grow: 10;
+        width: 100%;
       }
 
       .label {

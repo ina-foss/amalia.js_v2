@@ -1,7 +1,7 @@
 version: '3'
 services:
   sonarqube:
-    image: hub.cr.ina/sonarqube
+    image: sonarqube
     ports:
       - "9001:9000"
     networks:
@@ -17,7 +17,7 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
 
   db:
-    image: hub.cr.ina/postgres
+    image: postgres
     networks:
       - sonarnet
     environment:

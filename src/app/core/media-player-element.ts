@@ -8,7 +8,7 @@ import {Loader} from './loader/loader';
 import {Metadata} from '@ina/amalia-model';
 import {ConfigData} from './config/model/config-data';
 import {PluginConfigData} from './config/model/plugin-config-data';
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {DefaultLogger} from './logger/default-logger';
 import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
@@ -19,7 +19,6 @@ import {PreferenceStorageManager} from './storage/preference-storage-manager';
 /**
  * In charge to create player
  */
-@Injectable()
 export class MediaPlayerElement {
     private configurationManager: ConfigurationManager;
     private _metadataManager: MetadataManager;
@@ -30,9 +29,8 @@ export class MediaPlayerElement {
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
 
-
-    constructor(@Inject(DefaultLogger) logger: LoggerInterface) {
-        this.logger = logger;
+    constructor() {
+        this.logger = new DefaultLogger('root-player');
         this.preferenceStorageManager = new PreferenceStorageManager();
         this._eventEmitter = new EventEmitter();
     }
@@ -118,7 +116,7 @@ export class MediaPlayerElement {
      * Set media element
      */
     public setMediaPlayer(mediaPlayer: HTMLVideoElement): void {
-        this.mediaPlayer = new MediaElement(mediaPlayer, this._eventEmitter, this.logger);
+        this.mediaPlayer = new MediaElement(mediaPlayer, this._eventEmitter);
         this.logger.debug('set media player', mediaPlayer);
     }
 

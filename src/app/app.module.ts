@@ -3,8 +3,6 @@ import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule} from '@angular/core';
 import {AmaliaComponent} from './player/amalia.component';
 import {createCustomElement} from '@angular/elements';
 import {HttpClientModule} from '@angular/common/http';
-import {MediaPlayerElement} from './core/media-player-element';
-import {DefaultLogger} from './core/logger/default-logger';
 import {FormsModule} from '@angular/forms';
 import {TcFormatPipe} from './core/utils/tc-format.pipe';
 import {TimeBarPluginComponent} from './plugins/time-bar/time-bar-plugin.component';
@@ -12,6 +10,8 @@ import {ControlBarPluginComponent} from './plugins/control-bar/control-bar-plugi
 import {TranscriptionPluginComponent} from './plugins/transcription/transcription-plugin.component';
 import {SubtitlesPluginComponent} from './plugins/subtitles/subtitles-plugin.component';
 import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.component';
+import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.component';
+import {MediaPlayerService} from './service/media-player-service';
 
 @NgModule({
     imports: [
@@ -26,10 +26,13 @@ import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.
         TimeBarPluginComponent,
         TranscriptionPluginComponent,
         SubtitlesPluginComponent,
-        StoryboardPluginComponent
+        StoryboardPluginComponent,
+        HistogramPluginComponent
+    ],
+    providers: [
+        MediaPlayerService
     ],
     entryComponents: [AmaliaComponent],
-    providers: [DefaultLogger, MediaPlayerElement],
     bootstrap: [],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
@@ -60,5 +63,8 @@ export class AppModule {
 
         const storyboardPluginComponent = createCustomElement(StoryboardPluginComponent, {injector: this.injector});
         customElements.define('amalia-storyboard', storyboardPluginComponent);
+
+        const histogramPluginComponent = createCustomElement(HistogramPluginComponent, {injector: this.injector});
+        customElements.define('amalia-histogram', histogramPluginComponent);
     }
 }

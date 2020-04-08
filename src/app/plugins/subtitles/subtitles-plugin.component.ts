@@ -1,14 +1,13 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MediaPlayerElement} from '../../core/media-player-element';
-import {DefaultLogger} from '../../core/logger/default-logger';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {isArrayLike} from 'rxjs/internal-compatibility';
-import {TranscriptionLocalisation} from '../../core/config/model/transcription-localisation';
+import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {SubtitleConfig} from '../../core/config/model/subtitle-config';
 import * as _ from 'lodash';
+import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
     selector: 'amalia-subtitles',
@@ -26,14 +25,14 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     public subTitle: string;
     public transcriptions: Array<TranscriptionLocalisation> = null;
 
-    constructor(mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger) {
-        super(mediaPlayerElement, logger);
-        this.pluginName = SubtitlesPluginComponent.PLUGIN_NAME;
+    constructor(playerService: MediaPlayerService) {
+        super(playerService, SubtitlesPluginComponent.PLUGIN_NAME);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
     }
+
     @AutoBind
     init(): void {
         super.init();
@@ -76,7 +75,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     private refreshMetadata() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
-        this.logger.info(`Metadata loaded transcription ${handleMetadataIds}`);
+        this.logger.info(`Metadata loaded subtitle handle metadata ids: ${handleMetadataIds}`);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
             this.transcriptions = new Array<TranscriptionLocalisation>();
