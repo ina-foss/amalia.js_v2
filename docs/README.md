@@ -35,4 +35,62 @@ Player source is only mandatory parameter. You can use any media format that is 
 Typically, for videos, you have to encode your files with h.264 and use mp4 container.
 For a complete list of initialization parameters of amalia.js, see the documentation below.
 
-## Angular
+## Install amalia player with angular
+In start you need to install amalia player dependency,see the [documentation](#npm-configuration)] below.
+
+Add the following lines in the your angular.json config, for use amalia assets in your application :
+
+```json
+      ...
+            "assets": [
+              ...
+              {
+                "glob": "amalia.min.js",
+                "input": "node_modules/@ina/amalia/",
+                "output": "./assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@ina/amalia/assets",
+                "output": "./assets"
+              }
+            ]
+      ...
+```
+
+
+Add the following lines in the <header> section of your HTML page :
+
+```html
+    <script src="assets/amalia.min.js" type="module"></script>
+```
+
+Allow your application to use custom html tag, add the following under @NgModule({})in 'app.module.ts' :
+
+```js
+import {CUSTOM_ELEMENTS_SCHEMA} from `@angular/core`;
+```
+
+and then
+```json
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ],
+```
+Follow amalia usage samples .
+
+## Install via package manager (Npm)
+Before install amalia player with Npm, you need to configure enterprise repository manager.
+
+### Set local repository
+   
+```sh
+   npm set strict-ssl false
+   npm config set @ina:registry https://repo.sas.ina/repository/npm-snapshots
+```
+
+### Install  Amalia player
+
+```sh
+npm install @ina/amalia --save
+```
