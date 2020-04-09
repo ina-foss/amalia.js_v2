@@ -208,7 +208,7 @@ export class AmaliaComponent implements OnInit {
      */
     @HostListener('window:resize', ['$event'])
     private updatePlayerSizeWithAspectRatio() {
-        const htmlElement = (this.mediaPlayer.nativeElement as HTMLVideoElement);
+        const htmlElement = this.mediaPlayer.nativeElement;
         if (this.aspectRatio && this.aspectRatio !== '') {
             const maxWidth = htmlElement.parentElement.offsetWidth;
             const maxHeight = this.mediaPlayer.nativeElement.parentElement.offsetHeight;
@@ -221,7 +221,7 @@ export class AmaliaComponent implements OnInit {
             }
             if (h > maxHeight) {
                 w = Math.floor(maxHeight * w / h);
-                w = maxHeight;
+                h = maxHeight;
             }
             htmlElement.style.width = `${w}px`;
             htmlElement.style.height = `${h}px`;
@@ -237,7 +237,7 @@ export class AmaliaComponent implements OnInit {
         }
 
         if (this.previewThumbnailElement) {
-            const previewThumbnailElement = (this.previewThumbnailElement.nativeElement as HTMLElement);
+            const previewThumbnailElement = this.previewThumbnailElement.nativeElement;
             previewThumbnailElement.style.width = htmlElement.style.width;
             previewThumbnailElement.style.height = htmlElement.style.height;
             previewThumbnailElement.style.left = htmlElement.style.left;
