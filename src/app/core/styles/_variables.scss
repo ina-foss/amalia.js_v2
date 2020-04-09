@@ -28,11 +28,14 @@ $amalia-plugin-transcription-auto-scroll: var(--amalia-plugin-transcription-auto
 $amalia-plugin-transcription-separator: var(--amalia-plugin-transcription-separator, '>');
 $amalia-plugin-subtitle-bg: var(--amalia-plugin-subtitle-bg, rgba(34, 34, 34, 0.8));
 $amalia-plugin-subtitle-color: var(--amalia-plugin-subtitle-color, rgb(255, 255, 255));
+$amalia-plugin-subtitle-font-size: var(--amalia-plugin-subtitle-font-size, 18px);
+$amalia-plugin-subtitle-z-index: var(--amalia-plugin-subtitle-z-index, 3);
 $amalia-plugin-thumbnail-z-index: var(--amalia-default-z-index, 3);
 // Control bar back
 $amalia-ctrl-bar-bg-color: var(--amalia-ctrl-bar-bg-color, rgba(34, 34, 34, 0.9));
 $amalia-ctrl-bar-btn-hover: var(--amalia-ctrl-bar-btn-hover, invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%));
 $backgroundColor: #2e2e2e;
+$amalia-border-buttons-bg-color : var(--amalia-border-buttons-bg-color,#1A0C0C);
 // Playback rate slider
 $amalia-ctrl-bar-pslider-bg-color: var(--amalia-ctrl-bar-pslider-bg-color, #6c6c6c);
 $amalia-ctrl-bar-pslider-bg-color-hover: var(--amalia-ctrl-bar-pslider-bg-color, #bebebe);

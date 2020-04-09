@@ -99,12 +99,22 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Volume slider state
      */
     public enableVolumeSlider = false;
-
+    /**
+     * position of subtitles
+     */
+    public position = 'none';
+    /**
+     * List positions subtitle state
+     */
+    public enableListPositionsSubtitle = false;
     /**
      * List of control for Zone 1
      */
     public elements;
-
+    /**
+     * State of controlBar
+     */
+    public activated = true;
     /**
      * Handle thumbnail
      */
@@ -132,6 +142,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
     }
 
 
@@ -455,6 +467,38 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handleAspectRatioChange(event) {
         this.aspectRatio = event;
+    }
+
+    /**
+     * Invoked on volume button hover
+     */
+    public setupAudioNodes(data: any){
+        this.mediaPlayerElement.getMediaPlayer().setupAudioNodes(data);
+    }
+    /**
+     * Invoked player mouse enter event for :
+     * - animate controlBar
+     */
+    @AutoBind
+    private handlePlayerMouseenter() {
+        this.activated = true;
+    }
+    /**
+     * Invoked player mouse leave event for :
+     * - animate controlBar
+     */
+    @AutoBind
+    private handlePlayerMouseleave() {
+        this.activated = false;
+    }
+
+    /**
+     * update position subtitle onclick
+     * @param {string} position
+     */
+    public updateSubtitlePosition(position: string) {
+        this.position = position;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, position);
     }
 
 

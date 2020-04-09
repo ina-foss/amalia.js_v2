@@ -116,6 +116,17 @@
         {
           "label": "Volume",
           "control": "volume",
+          "zone": 3,
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
+          }
+        },
+        {
+          "label": "Sous titres",
+          "control": "subtitles",
+          "icon": "subtitle",
           "zone": 3
         },
         {

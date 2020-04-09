@@ -339,6 +339,14 @@ export class AmaliaComponent implements OnInit {
         this.inError = true;
         this.logger.error(`Error to initialize player.`);
     }
-
-
+    /**
+     * Invoked on mouseenter and mouseleave events
+     */
+    public displayControlBar(_displayControlBar: boolean) {
+        if (_displayControlBar === true) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_ENTER);
+        } else if (_displayControlBar === false) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
+        }
+    }
 }

@@ -27,14 +27,16 @@
   }
 
   .control-bar {
-    display: flex;
-    flex-direction: row;
+    display: none;
     position: relative;
     top: 0;
     padding: 0;
     margin: 0;
     list-style: none;
-
+    &.activated,&:hover {
+      display: flex;
+      flex-direction: row;
+    }
     .column {
       min-width: 20px;
       min-height: 20px;
@@ -203,7 +205,26 @@
         height: 50px;
         display: inline;
         cursor: pointer;
-
+        &.amalia-svg-pin-size {
+          height: 16px;
+          display: block;
+          width: 16px;
+          position: relative;
+          padding: 4px 12px;
+          right: -13px;
+          top: -11px;
+          border-left: 2px solid $amalia-border-buttons-bg-color;
+          border-bottom: 2px solid $amalia-border-buttons-bg-color;
+        }
+        &.amalia-svg-slider-size {
+          height: 16px;
+          display: block;
+          position: absolute;
+          border-left: 2px solid $amalia-border-buttons-bg-color;
+          width: 25px;
+          padding: 4px 8px;
+          left: -39px;
+        }
         &.amalia-svg-play-size, &.amalia-svg-pause-size {
           width: 20px;
           height: 26px;
@@ -243,7 +264,59 @@
           filter: $amalia-ctrl-bar-btn-hover
         }
       }
+      .list-positions {
+        display: none;
+        position: absolute;
+        z-index: $amalia-volume-bar-z-index;
+        background-color: $amalia-ctrl-bar-bg-color;
+        left: calc(50% - 80px);
+        top: -133px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        width: 180px;
+        &.on {
+          display: block;
+          & > li:not(:first-child) {
+            display: block;
+            font-size: 12px;
+            line-height: 31px;
+            cursor: pointer;
+            color: white;
+            padding-left: 36px;
+            position: relative;
+            > .amalia-svg-checked-size {
+              display: none;
+              height: 25px;
+              position: absolute;
+              width: 20px;
+              left: 5px;
+              top: 3px;
+            }
+            &:hover {
+              background-color:rgba(255,255,255,0.45);
+            }
+            &.selected {
+              font-weight: bold;
+              > .amalia-svg-checked-size {
+                display: inline;
+              }
 
+            }
+          }
+        }
+      }
+      .header-list {
+        color: #ffffff;
+        font-size: 14px;
+        line-height: 30px;
+        padding-left: 12px;
+        cursor: none;
+        border-bottom: 1px solid #1A0C0C;
+        height: 30px;
+        text-align: left;
+        margin-bottom: 5px;
+      }
 
       .volume-control {
         display: none;
@@ -258,19 +331,6 @@
         }
 
         .channel-volume-sliders {
-
-          .header-list {
-            color: #ffffff;
-            font-size: 14px;
-            line-height: 30px;
-            padding-left: 12px;
-            cursor: none;
-            border-bottom: 1px solid #1A0C0C;
-            height: 30px;
-            text-align: left;
-            margin-bottom: 5px;
-          }
-
           .channel-volume-control {
             .channel-volume-control-left,
             .channel-volume-control-mid,
@@ -278,7 +338,15 @@
               display: flex;
               flex-direction: row;
             }
-
+            .channel-volume-control-mid {
+              &.on {
+                width: 3px;
+                height: 25px;
+                background: white;
+                position: absolute;
+                top: 3px;
+              }
+            }
             .channel-volume-icon .icon {
               height: 16px;
               width: 16px;
@@ -308,41 +376,35 @@
               line-height: 20px;
               font-size: 11px;
             }
-
             .text-volume {
               margin-left: 10px;
-              color: white;
+              color:white;
               font-size: 14px;
               line-height: 30px;
             }
-
             .icon {
-              &.amalia-svg-padlock-close-size, &.amalia-svg-padlock-open-size {
+              &.amalia-svg-padlock-close-size,&.amalia-svg-padlock-open-size {
                 height: 17px;
               }
             }
-
             .ui-slider {
-              top: 12px;
+              top:12px;
               width: 77px;
               height: 3px;
               background: $amalia-volume-slider-bg;
-
               .ui-slider-progress {
                 top: 0px;
               }
-
               .slider {
                 &::-webkit-slider-thumb {
                   height: 11px;
                   width: 11px;
-                  background: white;
+                  background:white;
                 }
-
                 &::-moz-range-thumb {
                   height: 11px;
                   width: 11px;
-                  background: white;
+                  background:white;
                 }
               }
             }
