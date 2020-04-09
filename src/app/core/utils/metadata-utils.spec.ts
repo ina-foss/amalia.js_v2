@@ -7,7 +7,7 @@ describe('test metadata utils', () => {
 
     it('Test Metadata: metadata manager transcription', () => {
         const tl1 = MetadataUtils.getTranscriptionLocalisations(transcriptionModel);
-        expect(tl1.length).toEqual(224);
+        expect(tl1.length).toEqual(1);
         expect(tl1[0].tcIn).toEqual(0.013);
         expect(tl1[0].tcOut).toEqual(14 * 60 + 59.009);
         expect(tl1[0].text.length).toEqual(13905);
