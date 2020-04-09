@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <g id="Style-guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-253.000000, -90.000000)">
+            <g id="picto32/play-btn-play" transform="translate(253.000000, 90.000000)">
+                <circle id="Oval-7" fill="#0086B1" cx="16" cy="16" r="16"></circle>
+                <path d="M11,6 L11,26 L12.3636364,25.0778098 L26,16 L12.3636364,6.9221902 L11,6 Z M12.7810761,9.37175793 L22.716141,16 L12.7810761,22.6282421 L12.7810761,9.37175793 Z"
+                      id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

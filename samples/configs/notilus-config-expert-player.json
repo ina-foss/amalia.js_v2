@@ -23,6 +23,10 @@
           "control": "progressBar"
         },
         {
+          "label": "Playback rate custom steps",
+          "control": "playbackRateCustomSteps"
+        },
+        {
           "label": "Capture Image",
           "control": "download",
           "icon": "screenshot",
@@ -138,6 +142,18 @@
         {
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
+          "zone": 3
+        },
+        {
+          "label": "Epingler slider",
+          "control": "pinControls",
+          "icon": "pin",
+          "zone": 3
+        },
+        {
+          "label": "Slider",
+          "control": "displaySlider",
+          "icon": "slider",
           "zone": 3
         }
       ]
