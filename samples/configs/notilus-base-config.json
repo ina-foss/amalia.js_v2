@@ -18,7 +18,7 @@
     }
   ],
   "pluginsConfiguration": {
-    "CONTROL_BAR": {
+    "CONTROL_BAR-PLAYER": {
       "data": [
         {
           "label": "Barre de progression",
