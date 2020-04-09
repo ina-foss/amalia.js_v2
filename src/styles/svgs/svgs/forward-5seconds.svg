@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="23px" viewBox="0 0 20 23" version="1.1" xmlns="http://www.w3.org/2000/svg"
+>
+    <g id="07---PLAYER-EXPERT" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="module-lecture-vidéo-1280-NEW-_7" transform="translate(-573.000000, -504.000000)" fill="#FFFFFF">
+            <g id="player_video_all" transform="translate(48.000000, 8.000000)">
+                <g id="Bitmap" transform="translate(0.000000, 39.000000)">
+                    <g id="player_video-audio" transform="translate(0.000000, 392.000000)">
+                        <g id="Group-6" transform="translate(212.000000, 65.000000)">
+                            <g id="picto24/advence_secondes-copy-3" transform="translate(313.000000, 0.000000)">
+                                <g id="Group-2">
+                                    <g id="ic_back-to" fill-rule="nonzero">
+                                        <path d="M4.36363636,0 L0,4.36363636 L4.36363636,8.72727273 L4.36363636,5.09090909 L11.2727273,5.09090909 C13.0760327,5.09090909 14.5454545,6.56033091 14.5454545,8.36363636 C14.5454545,10.1669418 13.0760327,11.6363636 11.2727273,11.6363636 L10.1818182,11.6363636 L10.1818182,13.0909091 L11.2727273,13.0909091 C13.8694218,13.0909091 16,10.9603309 16,8.36363636 C16,5.76694218 13.8694218,3.63636364 11.2727273,3.63636364 L4.36363636,3.63636364 L4.36363636,0 Z"
+                                              id="Shape"
+                                              transform="translate(8.000000, 6.545455) scale(-1, 1) translate(-8.000000, -6.545455) "></path>
+                                    </g>
+                                    <text id="5s" font-family="TrebuchetMS, Trebuchet MS" font-size="14"
+                                          font-weight="normal">
+                                        <tspan x="7.49560547" y="22">5s</tspan>
+                                    </text>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

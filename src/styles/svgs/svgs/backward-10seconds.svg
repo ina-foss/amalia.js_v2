@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="23px" height="22px" viewBox="0 0 23 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>picto24/back_secondes@x2</title>
+    <desc>Created with Sketch.</desc>
+    <g id="06---PLAYER" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-294.000000, -215.000000)" fill="#FFFFFF">
+            <g id="picto24/back_secondes" transform="translate(293.000000, 215.000000)">
+                <g id="Group-2">
+                    <g id="ic_back-to" transform="translate(8.000000, 0.000000)" fill-rule="nonzero">
+                        <path d="M4.36363636,0 L0,4.36363636 L4.36363636,8.72727273 L4.36363636,5.09090909 L11.2727273,5.09090909 C13.0760327,5.09090909 14.5454545,6.56033091 14.5454545,8.36363636 C14.5454545,10.1669418 13.0760327,11.6363636 11.2727273,11.6363636 L10.1818182,11.6363636 L10.1818182,13.0909091 L11.2727273,13.0909091 C13.8694218,13.0909091 16,10.9603309 16,8.36363636 C16,5.76694218 13.8694218,3.63636364 11.2727273,3.63636364 L4.36363636,3.63636364 L4.36363636,0 Z" id="Shape"></path>
+                    </g>
+                    <text id="10" font-family="TrebuchetMS, Trebuchet MS" font-size="14" font-weight="normal">
+                        <tspan x="0.158203125" y="21">10</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

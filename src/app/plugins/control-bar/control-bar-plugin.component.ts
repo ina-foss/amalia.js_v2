@@ -100,6 +100,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enableVolumeSlider = false;
     /**
+     * Menu list ratio state
+     */
+    public enableListRatio = false;
+    /**
      * position of subtitles
      */
     public position = 'none';
@@ -115,6 +119,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * State of controlBar
      */
     public activated = true;
+    /**
+     * Playbackrate slider state
+     */
+    public enablePlaybackSlider = false;
+    /**
+     * Pinned Controls state
+     */
+    public pinnedSlider = false;
     /**
      * Handle thumbnail
      */
@@ -213,6 +225,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'forward-end':
                 mediaPlayer.seekToEnd();
+                break;
+            case 'displaySlider':
+                this.displaySlider();
+                break;
+            case 'pinControls':
+                this.pinControls();
                 break;
             default:
                 this.logger.warn('Control not implemented', control);
@@ -501,5 +519,25 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, position);
     }
 
+    /**
+     * Toggle Display playbackslider
+     */
+    private displaySlider() {
+        this.enablePlaybackSlider = !this.enablePlaybackSlider;
+    }
+
+    /**
+     * Toggle Pinned class playbackslider
+     */
+    private pinControls() {
+        this.pinnedSlider = !this.pinnedSlider;
+    }
+
+    /**
+     * Set aspect Ratio
+     */
+    public setAspectRatio(ratio) {
+        this.mediaPlayerElement.aspectRatio = ratio;
+    }
 
 }
