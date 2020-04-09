@@ -8,6 +8,7 @@
     "start": "npm run build:icon && ng serve",
     "start-examples": "npm run build && cp -r dist/amalia/assets/ samples/ &&  cp -r dist/amalia/amalia.min.js samples/main.js && http-server samples/ -i --cors * '*' -z -f -p 4201 -d ",
     "gendoc": "typedoc --out docs/api src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md --theme docs/api-theme",
+    "gendoc-md": "typedoc --plugin typedoc-plugin-markdown --out docs/api-md src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md",
     "build:component": "ng build --prod --output-hashing none && node build-web-compoent.js",
     "build:icon": "svg-sprite -C svg-sprite.config.json src/styles/svgs/*.svg",
     "build": "npm run build:icon && npm run build:component",
@@ -40,7 +41,6 @@
     "ngx-build-plus": "^9.0.6",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
-    "typedoc": "^0.16.9",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -69,6 +69,8 @@
     "svg-sprite": "^1.5.0",
     "ts-node": "^8.8.1",
     "tslint": "~5.15.0",
+    "typedoc": "^0.16.11",
+    "typedoc-plugin-markdown": "^2.2.17",
     "typescript": "~3.7.5"
   }
 }

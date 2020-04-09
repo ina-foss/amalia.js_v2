@@ -8,7 +8,6 @@ import {Loader} from './loader/loader';
 import {Metadata} from '@ina/amalia-model';
 import {ConfigData} from './config/model/config-data';
 import {PluginConfigData} from './config/model/plugin-config-data';
-import {Injectable} from '@angular/core';
 import {DefaultLogger} from './logger/default-logger';
 import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';

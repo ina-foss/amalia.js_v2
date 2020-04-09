@@ -30,10 +30,6 @@
           "control": "progressBar"
         },
         {
-          "label": "Playback rate custom steps",
-          "control": "playbackRateSteps"
-        },
-        {
           "label": "Capture Image",
           "control": "download",
           "icon": "screenshot",
@@ -56,7 +52,8 @@
         {
           "label": "Playback Rate",
           "control": "playbackRate",
-          "zone": 1
+          "zone": 1,
+          "order": 3
         },
         {
           "label": "backward-start",
@@ -77,6 +74,12 @@
           "zone": 2
         },
         {
+          "label": "slow-backward",
+          "icon": "slow-backward",
+          "control": "slow-backward",
+          "zone": 2
+        },
+        {
           "label": "backward",
           "icon": "backward",
           "control": "backward",
@@ -91,6 +94,12 @@
           "label": "forward",
           "icon": "forward",
           "control": "forward",
+          "zone": 2
+        },
+        {
+          "label": "slow-forward",
+          "icon": "slow-forward",
+          "control": "slow-forward",
           "zone": 2
         },
         {
@@ -115,11 +124,16 @@
           "label": "Volume",
           "control": "volume",
           "zone": 3,
-          "data" : {
-            "channelMergeVolume" : true,
-            "channelMergerNode" : "l"
-
+          "data": {
+            "channelMergeVolume": true,
+            "channelMergerNode": "l"
           }
+        },
+        {
+          "label": "Sous titres",
+          "control": "subtitles",
+          "icon": "subtitle",
+          "zone": 3
         },
         {
           "label": "Fullscreen",
@@ -134,7 +148,7 @@
         }
       ]
     },
-    "HISTOGRAM": {
+    "HISTOGRAM-PLAYER": {
       "metadataIds": [
         "waveform-MA00605_01-2048-0",
         "waveform-MA00605_01-2048-1"

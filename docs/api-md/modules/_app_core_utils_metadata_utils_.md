@@ -1,0 +1,9 @@
+[Amalia](../README.md) › [Globals](../globals.md) › ["app/core/utils/metadata-utils"](_app_core_utils_metadata_utils_.md)
+
+# External module: "app/core/utils/metadata-utils"
+
+## Index
+
+### Classes
+
+* [MetadataUtils](../classes/_app_core_utils_metadata_utils_.metadatautils.md)
