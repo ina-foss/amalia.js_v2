@@ -575,13 +575,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param element html element
      * @param control control bar config
      */
-    public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
+    public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig, event: MouseEvent) {
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
         const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
-        element.click();
-
+        if (baseUrl !== '') {
+            element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
+        }
     }
 
     /**

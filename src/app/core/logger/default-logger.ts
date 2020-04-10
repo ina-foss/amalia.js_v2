@@ -7,9 +7,26 @@ import {LoggerData} from './logger-data';
  */
 export class DefaultLogger implements LoggerInterface {
     public namespaces = 'root';
+    private _logLevel: LoggerLevel;
+    private _enabled = true;
 
-    constructor(namespaces = 'root') {
+    constructor(namespaces = 'root', enabled: boolean = false, level: LoggerLevel = LoggerLevel.Error) {
         this.namespaces = namespaces;
+        this._logLevel = level || LoggerLevel.Error;
+        this._enabled = enabled || false;
+    }
+
+    public logLevel(level: string): void {
+        try {
+            this._logLevel = LoggerLevel.fromString(level);
+
+        } catch (e) {
+            this._logLevel = LoggerLevel.Error;
+        }
+    }
+
+    public state(state: boolean): void {
+        this._enabled = state || false;
     }
 
     /**
@@ -18,7 +35,7 @@ export class DefaultLogger implements LoggerInterface {
      * @param log log message
      */
     private log(level: LoggerLevel, log: LoggerData): void {
-        if (console) {
+        if (console && this.state) {
             const msg = `[${this.namespaces}]-[${LoggerLevel.valToString(level)}] - ${log.msg}`;
             let logConsole = null;
             switch (level) {
@@ -48,7 +65,7 @@ export class DefaultLogger implements LoggerInterface {
                     break;
             }
 
-            if (logConsole && log) {
+            if (logConsole && log && !(this._logLevel.toFixed() > level.toFixed())) {
                 if (log.data) {
                     logConsole(msg, log.data);
                 } else {

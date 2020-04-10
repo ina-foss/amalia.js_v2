@@ -4,6 +4,16 @@
 export interface LoggerInterface {
 
     /**
+     * Set log level
+     */
+    logLevel(level: string): void;
+
+    /**
+     * Set log state
+     */
+    state(state: boolean);
+
+    /**
      * In charge to call Log with log type
      * @param msg message
      * @param data log data
