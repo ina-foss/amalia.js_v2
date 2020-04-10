@@ -20,13 +20,13 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
-            <amalia-player player-id="PLAYER">
+            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/base-config.json">
                 <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
         </div>
         <div class="col-6 p-2" style="height: 500px">
-            <amalia-player player-id="PLAYER1">
+            <amalia-player player-id="PLAYER1" config="http://localhost:4201/configs/base-config.json">
                 <amalia-time-bar player-id="PLAYER1"></amalia-time-bar>
                 <amalia-control-bar player-id="PLAYER1"></amalia-control-bar>
             </amalia-player>
@@ -41,6 +41,10 @@
         </div>
     </div>
 </footer>
+<script>
+    const ctrlBar = document.querySelector('amalia-control-bar')
+    ctrlBar.addEventListener('callback', (e) => console.log("callback", e.detail))
+</script>
 </body>
 </html>
 

@@ -16,7 +16,7 @@ export class MediaElement {
     public static DEFAULT_FRAMERATE = 25;
     private readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
-    private logger: LoggerInterface;
+    private readonly logger: LoggerInterface;
     private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
