@@ -60,7 +60,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.autoScroll = true;
                 this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
-            this.displayProgressBar = this.pluginConfiguration.data.progressBar || false;
+            this.displayProgressBar = this.pluginConfiguration.data?.progressBar || false;
         }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
     }
@@ -120,7 +120,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
-            const karaokeTcDelta = this.pluginConfiguration.data.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
+            const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             this.disableRemoveAllSelectedNodes();
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                 this.selectWords(karaokeTcDelta);
