@@ -62,6 +62,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             this.displayProgressBar = this.pluginConfiguration.data?.progressBar || false;
         }
+        if (this.mediaPlayerElement.isMetadataLoaded) {
+            this.parseTranscription();
+        }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
     }
 
@@ -237,6 +240,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     @AutoBind
     private handleMetadataLoaded() {
+        this.parseTranscription();
+    }
+
+    /**
+     * In charge to load metadata
+     */
+    private parseTranscription() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
         this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`);

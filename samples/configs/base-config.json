@@ -1,4 +1,6 @@
 {
+  "debug": true,
+  "logLevel": "trace",
   "player": {
     "src": "http://localhost:4201/medias/jt.mp4",
     "backwardsSrc": "http://localhost:4201/medias/jt-r.mp4",

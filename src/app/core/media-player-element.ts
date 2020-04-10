@@ -27,6 +27,7 @@ export class MediaPlayerElement {
     private readonly preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
+    public isMetadataLoaded = false;
 
     constructor() {
         this.logger = new DefaultLogger('root-player');
@@ -84,7 +85,13 @@ export class MediaPlayerElement {
             // load configuration
             this.loadConfiguration(config).then(() => {
                     this.state = PlayerState.INITIALIZED;
-                    // set media source specified by config
+                    // Set logger states
+                    const loggerState = this.getConfiguration().debug;
+                    const loggerLevel = this.getConfiguration().logLevel;
+                    this.logger.state(loggerState);
+                    this.logger.logLevel(loggerLevel);
+                    this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
+                    // Set media source specified by config
                     this.setMediaSource();
                     this.loadDataSources().then(() => this.handleMetadataLoaded());
                     resolve(this.state);
@@ -166,6 +173,7 @@ export class MediaPlayerElement {
 
     private handleMetadataLoaded() {
         this.eventEmitter.emit(PlayerEventType.METADATA_LOADED);
+        this.isMetadataLoaded = true;
     }
 
     /**

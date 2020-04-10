@@ -38,7 +38,17 @@ export class MediaElement {
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
-        this.logger = new DefaultLogger();
+        this.logger = new DefaultLogger('media-element');
+    }
+
+    /**
+     * Init log level
+     * @param logEnable true for enable log
+     * @param logLevel log level
+     */
+    public initLoggerState(logEnable: boolean, logLevel: string) {
+        this.logger.state(logEnable);
+        this.logger.logLevel(logLevel);
     }
 
     /**

@@ -58,7 +58,7 @@
                 <!--Download-->
                 <div *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
-                    <a  target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
+                    <a target="_blank" (click)="buildUrlWithTc(ctl,c,$event)" #ctl>
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>

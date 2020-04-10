@@ -24,4 +24,5 @@ export interface ConfigData {
         debounceTime?: number,
     };
     debug?: boolean;
+    logLevel?: string;
 }
