@@ -74,7 +74,28 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
         // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl !== '') {
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
+            if (this.mediaPlayerElement.isMetadataLoaded) {
+                this.initStoryboard();
+            } else {
+                this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
+            }
+        }
+    }
+
+    /**
+     * Init storyboard
+     * @param duration media duration
+     */
+    initStoryboard() {
+        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        if (!isNaN(duration)) {
+            this.duration = duration;
+            const baseUrl = this.pluginConfiguration.data.baseUrl;
+            const tcParam = this.pluginConfiguration.data.tcParam;
+            this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
+            this.updateThumbnailSize();
+        } else {
+            this.logger.error('Error to init storyboard, please check media duration');
         }
     }
 
@@ -117,15 +138,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     @AutoBind
     private handleDurationChange() {
-        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        if (!isNaN(duration)) {
-            this.duration = duration;
-        }
-        const baseUrl = this.pluginConfiguration.data.baseUrl;
-        const tcParam = this.pluginConfiguration.data.tcParam;
-        this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
-        this.updateThumbnailSize();
-        this.logger.debug(`${this.baseUrl} : duration : ${duration}`);
+        this.initStoryboard();
+
     }
 
     /**
