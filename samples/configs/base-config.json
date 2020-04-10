@@ -2,7 +2,8 @@
   "player": {
     "src": "http://localhost:4201/medias/jt.mp4",
     "backwardsSrc": "http://localhost:4201/medias/jt-r.mp4",
-    "crossOrigin": "anonymous"
+    "crossOrigin": "anonymous",
+    "autoplay": false
   },
   "dataSources": [
     {
@@ -41,7 +42,7 @@
         },
         {
           "label": "Download",
-          "control": "download",
+          "control": "callback",
           "icon": "download",
           "zone": 1,
           "order": 1,

@@ -45,7 +45,8 @@
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
-                            16:9</li>
+                            16:9
+                        </li>
                     </ul>
 
                 </div>
@@ -57,20 +58,27 @@
                 <!--Download-->
                 <div *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
-                    <a [href]="c.data?.href" [download]="c.label" target="_blank">
+                    <a  target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </a>
+                </div>
+                <!--Callback-->
+                <div *ngSwitchCase="'callback'" class="control callback" title="{{c.label}}"
+                     [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
+                    <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                    </svg>
                 </div>
                 <!--Volume-->
                 <div *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableVolumeSlider=true"
                      (click)="setupAudioNodes(c.data)"
-                     >
+                >
                     <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
-                        class="amalia-svg-volume-on-size icon" (click)="changeVolume(0 ? 100:0)">
+                         class="amalia-svg-volume-on-size icon" (click)="changeVolume(0 ? 100:0)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                     </svg>
                     <svg *ngIf="volumeLeft == 0 && volumeRight == 0"
@@ -99,14 +107,18 @@
                                                [(ngModel)]="volumeLeft" class="slider" max="100"
                                                min="0" type="range"
                                                value="50">
-                                        <div *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume" class="channel-volume-control-mid"></div>
-                                        <div [style]="{left:volumeLeft+'%'}" *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume" class="channel-volume-control-mid on"></div>
+                                        <div *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume"
+                                             class="channel-volume-control-mid"></div>
+                                        <div [style]="{left:volumeLeft+'%'}"
+                                             *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
+                                             class="channel-volume-control-mid on"></div>
                                     </div>
                                     <div class="channel-volume-info"><span class="text-volume">G</span></div>
                                 </div>
 
                                 <div class="channel-volume-control-right">
-                                    <div (click)="changeVolume( volumeRight==0 ? 100:0,'r')" class="channel-volume-icon">
+                                    <div (click)="changeVolume( volumeRight==0 ? 100:0,'r')"
+                                         class="channel-volume-icon">
                                         <svg *ngIf="volumeRight > 0"
                                              class="amalia-svg-volume-on-size icon">
                                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
@@ -149,22 +161,27 @@
                     <ul class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}"
                         (mouseleave)="enableListPositionsSubtitle=false">
                         <li class="header-list">{{c.label}}</li>
-                        <li class="position" [ngClass]="{'selected': position =='down'}" (click)="updateSubtitlePosition('down')">
+                        <li class="position" [ngClass]="{'selected': position =='down'}"
+                            (click)="updateSubtitlePosition('down')">
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
                             Bas
                         </li>
-                        <li class="position" [ngClass]="{'selected': position =='up'}" (click)="updateSubtitlePosition('up')">
+                        <li class="position" [ngClass]="{'selected': position =='up'}"
+                            (click)="updateSubtitlePosition('up')">
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
-                            Haut</li>
-                        <li class="position" [ngClass]="{'selected': position =='none'}" (click)="updateSubtitlePosition('none')">
+                            Haut
+                        </li>
+                        <li class="position" [ngClass]="{'selected': position =='none'}"
+                            (click)="updateSubtitlePosition('none')">
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
-                            Aucun (original)</li>
+                            Aucun (original)
+                        </li>
                     </ul>
                 </div>
                 <!--Other controls-->
@@ -178,7 +195,8 @@
         </div>
     </div>
     <!-- Slider -->
-    <div class="playback-rate-slider" [ngClass]="{'activated' : enablePlaybackSlider}" *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
+    <div class="playback-rate-slider" [ngClass]="{'activated' : enablePlaybackSlider}"
+         *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
         <div class="playback-rate-labels">
             <input type="range" list="playback-rate-list" #playbackRateCursor
                    [min]="minPlaybackRateSlider"
@@ -197,7 +215,8 @@
         </div>
     </div>
     <!-- Slider 2-->
-    <div class="playback-rate-slider2" [ngClass]="{'activated' : enablePlaybackSlider}" *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
+    <div class="playback-rate-slider2" [ngClass]="{'activated' : enablePlaybackSlider}"
+         *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
         <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first:as isFirst; last as isLast;"
              [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
              (click)="onChangePlaybackRate(pr)">{{pr}}x

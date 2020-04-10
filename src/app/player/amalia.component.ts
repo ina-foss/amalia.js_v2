@@ -77,6 +77,11 @@ export class AmaliaComponent implements OnInit {
     @ViewChild('previewThumbnail', {static: true})
     public previewThumbnailElement: ElementRef<HTMLVideoElement>;
 
+    /**
+     * Set player autoplay state
+     */
+    public autoplay: boolean;
+
     private _config: any;
 
     get config(): any {
@@ -117,7 +122,7 @@ export class AmaliaComponent implements OnInit {
      * Amalia events
      */
     @Output()
-    public amaliaEvent = new EventEmitter();
+    public callback: EventEmitter<any> = new EventEmitter<any>();
 
     /**
      * get video html element
@@ -327,6 +332,7 @@ export class AmaliaComponent implements OnInit {
     private onInitConfig(state: PlayerState) {
         this.state = state;
         this.inLoading = false;
+        this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay;
     }
 
     /**
@@ -339,6 +345,7 @@ export class AmaliaComponent implements OnInit {
         this.inError = true;
         this.logger.error(`Error to initialize player.`);
     }
+
     /**
      * Invoked on mouseenter and mouseleave events
      */

@@ -1,5 +1,4 @@
 import {MediaSourceExtension} from '../media-source-extension';
-import {DefaultLogger} from '../../logger/default-logger';
 import * as Hls from 'hls.js';
 import {PlayerConfigData} from '../../config/model/player-config-data';
 import {AmaliaException} from '../../exception/amalia-exception';
@@ -87,6 +86,10 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             // handle events
             this.hlsPlayer.on(Hls.Events.MANIFEST_LOADED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
+
+            if (config.autoplay) {
+                this.mediaElement.play();
+            }
         } else {
             this.logger.warn('Error to set source', config.src);
             this.mainMediaSrc = null;
