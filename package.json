@@ -36,10 +36,12 @@
     "@angular/router": "~9.0.0",
     "@ina/amalia-model": "^0.2.5",
     "document-register-element": "^1.7.2",
+    "dompurify": "^2.0.8",
     "hls.js": "^0.13.2",
     "lodash": "^4.17.15",
     "ngx-build-plus": "^9.0.6",
     "rxjs": "~6.5.4",
+    "s": "^1.0.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

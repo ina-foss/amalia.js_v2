@@ -27,7 +27,7 @@
                     "annotation": null,
                     "attribute": null,
                     "text": [
-                      " Avis  aux  fans  au  plus  on  devrait  rester  honnête  à  monument  on  . "
+                      " <p>Avis</p> <b class='b'>  aux  fans </b> <b>au<b>  plus  on  devrait  rester  honnête  à  monument  on  . "
                     ],
                     "formated": null,
                     "score": null
@@ -41,7 +41,7 @@
                           "annotation": null,
                           "attribute": null,
                           "text": [
-                            " Avis "
+                            " <p>Avis</p> <div class='p'>too</p> "
                           ],
                           "formated": null,
                           "score": 0.411
