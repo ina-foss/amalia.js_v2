@@ -1,15 +1,15 @@
 import {Pipe, PipeTransform, SecurityContext} from '@angular/core';
 import {DomSanitizer, SafeHtml, SafeResourceUrl, SafeScript, SafeStyle, SafeUrl} from '@angular/platform-browser';
-import DOMPurify from 'dompurify';
 
 @Pipe({name: 'sanitizeHtml', pure: false})
 export class SanitizeHtmlPipe implements PipeTransform {
+    protected sanitizer: DomSanitizer;
 
-    constructor(protected sanitizer: DomSanitizer) {
+    constructor(sanitizer: DomSanitizer) {
+        this.sanitizer = sanitizer;
     }
 
     public transform(value: any, type: string): SafeHtml | SafeStyle | SafeScript | SafeUrl | SafeResourceUrl {
-        value = DOMPurify.sanitize(value);
         switch (type) {
             case 'html':
                 return this.sanitizer.sanitize(SecurityContext.HTML, this.sanitizer.bypassSecurityTrustHtml(value));
