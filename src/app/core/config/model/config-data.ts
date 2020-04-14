@@ -21,6 +21,8 @@ export interface ConfigData {
         tcParam?: string,
         enableThumbnail?: boolean,
         enableThumbnailPreview?: boolean
+        debounceTime?: number,
     };
     debug?: boolean;
+    logLevel?: string;
 }

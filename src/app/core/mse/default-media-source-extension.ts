@@ -1,6 +1,5 @@
 import {MediaSourceExtension} from './media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
-import {DefaultLogger} from '../logger/default-logger';
 import {AutoBind} from '../decorator/auto-bind.decorator';
 import {PlayerEventType} from '../constant/event-type';
 import {EventEmitter} from 'events';
@@ -45,6 +44,9 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
             // Error handle
             this.mainSource.addEventListener('error', this.handleError);
             this.mediaElement.append(this.mainSource);
+            if (config.autoplay) {
+                this.mediaElement.play();
+            }
         }
     }
 

@@ -60,7 +60,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.autoScroll = true;
                 this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
-            this.displayProgressBar = this.pluginConfiguration.data.progressBar || false;
+            this.displayProgressBar = this.pluginConfiguration.data?.progressBar || false;
+        }
+        if (this.mediaPlayerElement.isMetadataLoaded) {
+            this.parseTranscription();
         }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
     }
@@ -120,7 +123,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
-            const karaokeTcDelta = this.pluginConfiguration.data.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
+            const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             this.disableRemoveAllSelectedNodes();
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                 this.selectWords(karaokeTcDelta);
@@ -237,6 +240,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     @AutoBind
     private handleMetadataLoaded() {
+        this.parseTranscription();
+    }
+
+    /**
+     * In charge to load metadata
+     */
+    private parseTranscription() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
         this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`);

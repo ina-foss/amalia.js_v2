@@ -2,7 +2,8 @@
   "player": {
     "backwardsSrc": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
     "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
-    "crossOrigin": "anonymous"
+    "crossOrigin": "anonymous",
+    "autoplay": false
   },
   "dataSources": [
     {
@@ -108,10 +109,9 @@
           "label": "Volume",
           "control": "volume",
           "zone": 3,
-          "data" : {
-            "channelMergeVolume" : true,
-            "channelMergerNode" : "l"
-
+          "data": {
+            "channelMergeVolume": true,
+            "channelMergerNode": "l"
           }
         },
         {

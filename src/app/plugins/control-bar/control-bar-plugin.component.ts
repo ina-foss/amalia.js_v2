@@ -1,11 +1,13 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {ControlBarConfig} from '../../core/config/model/control-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
+import {Subject} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
 
 
 @Component({
@@ -14,8 +16,9 @@ import {MediaPlayerService} from '../../service/media-player-service';
     styleUrls: ['./control-bar-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> {
+export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 50;
     /**
      * Min playback rate
      */
@@ -56,6 +59,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @Input()
     public forwardPlaybackRateStep: Array<number> = [2, 6, 10];
+
+    /**
+     * In charge to notify download event
+     */
+    @Output()
+    public callback = new EventEmitter<any>();
+
     /**
      * Volume left side
      */
@@ -139,6 +149,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public thumbnailUrl: string;
     public thumbnailPosition = 0;
     public sliderListOfPlaybackRateStepWidth: Array<number> = [];
+    private thumbnailSeekingDebounceTime: Subject<number> = new Subject<number>();
+    private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
 
 
     constructor(playerService: MediaPlayerService) {
@@ -160,6 +172,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
+        // Handle to seek events with debounceTime
+        const _debounceTime = this.mediaPlayerElement.getConfiguration().thumbnail?.debounceTime || ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME;
+        this.thumbnailSeekingDebounceTime
+            .pipe(debounceTime(_debounceTime))
+            .subscribe((value) => this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value));
+        this.thumbnailPreviewDebounceTime
+            .pipe(debounceTime(_debounceTime))
+            .subscribe((e) => this.updateThumbnail(e));
     }
 
 
@@ -339,10 +359,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public progressBarMouseMove(event: MouseEvent) {
         if (this.enableThumbnail && !this.inSliding) {
-            this.updateThumbnail(event);
+            this.thumbnailPreviewDebounceTime.next(event);
         }
     }
-
 
     /**
      * Progress bar on mouse down
@@ -350,7 +369,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public handleProgressBarMouseDown(value) {
         this.inSliding = true;
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
+        this.thumbnailSeekingDebounceTime.next(value * this.duration / 100);
     }
 
     /**
@@ -369,8 +388,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public handleProgressBarMouseMove(value) {
         if (this.inSliding) {
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
+            this.thumbnailSeekingDebounceTime.next(value * this.duration / 100);
         }
+    }
+
+
+    /**
+     * Handle callback
+     */
+    public handleCallback(control: ControlBarConfig) {
+        this.callback.emit(control);
     }
 
     /**
@@ -497,9 +524,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Invoked on volume button hover
      */
-    public setupAudioNodes(data: any){
+    public setupAudioNodes(data: any) {
         this.mediaPlayerElement.getMediaPlayer().setupAudioNodes(data);
     }
+
     /**
      * Invoked player mouse enter event for :
      * - animate controlBar
@@ -508,6 +536,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handlePlayerMouseenter() {
         this.activated = true;
     }
+
     /**
      * Invoked player mouse leave event for :
      * - animate controlBar
@@ -519,7 +548,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * update position subtitle onclick
-     * @param {string} position
+     * @param position subtitle position
      */
     public updateSubtitlePosition(position: string) {
         this.position = position;
@@ -534,7 +563,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
-     * Toggle Pinned class playbackslider
+     * Toggle Pinned class playback slider
      */
     private pinControls() {
         this.pinnedSlider = !this.pinnedSlider;
@@ -553,6 +582,25 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private toggleFullScreen() {
         this.fullScreenMode = !this.fullScreenMode;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
+    }
+     /**
+      * Handle to download url
+     * @param element html element
+     * @param control control bar config
+     */
+    public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig, event: MouseEvent) {
+        const baseUrl = control.data.href;
+        const tcParam = control.data?.tcParam || 'tc';
+        const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        if (baseUrl !== '') {
+            element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
+        }
+    }
+
+    /**
+     * Handle on component destroy
+     */
+    ngOnDestroy() {
     }
 
 }

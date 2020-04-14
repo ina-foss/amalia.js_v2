@@ -3,7 +3,6 @@ import {PluginConfigData} from '../config/model/plugin-config-data';
 import {DefaultLogger} from '../logger/default-logger';
 import {Input, OnInit} from '@angular/core';
 import {PlayerEventType} from '../constant/event-type';
-import {AutoBind} from '../decorator/auto-bind.decorator';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {AmaliaException} from '../exception/amalia-exception';
 
@@ -70,11 +69,15 @@ export abstract class PluginBase<T> implements OnInit {
         if (!this.mediaPlayerElement) {
             throw new AmaliaException(`Error to init plugin ${this.pluginName} (player id : ${this.playerId}).`);
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init);
+        if (!this.mediaPlayerElement.isMetadataLoaded) {
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init.bind(this));
+        } else {
+            this.init();
+        }
     }
 
-    @AutoBind
     init() {
+        console.log('call');
         const defaultConfig = this.getDefaultConfig();
         try {
             const customConfig = this.mediaPlayerElement.getPluginConfiguration(`${this.pluginName}-${this.playerId}`);
