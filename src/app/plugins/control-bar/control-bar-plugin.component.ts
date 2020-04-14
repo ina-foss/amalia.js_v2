@@ -128,6 +128,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public pinnedSlider = false;
     /**
+     * FullScreenMode state
+     */
+    public fullScreenMode = false;
+    /**
      * Handle thumbnail
      */
     public enableThumbnail = false;
@@ -166,7 +170,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const listOfControls = new Array<ControlBarConfig>();
         listOfControls.push({label: 'Barre de progression', control: 'progressBar'});
         listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2});
-        listOfControls.push({label: 'Fullscreen', control: 'pause', icon: 'fullscreen', zone: 3});
+        listOfControls.push({label: 'Fullscreen', control: 'toggleFullScreen', icon: 'fullscreen', zone: 3});
         return {
             name: ControlBarPluginComponent.PLUGIN_NAME,
             data: listOfControls
@@ -231,6 +235,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'pinControls':
                 this.pinControls();
+                break;
+            case 'toggleFullScreen':
+                this.toggleFullScreen();
                 break;
             default:
                 this.logger.warn('Control not implemented', control);
@@ -538,6 +545,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public setAspectRatio(ratio) {
         this.mediaPlayerElement.aspectRatio = ratio;
+    }
+
+    /**
+     * Toggle fullscreen player
+     */
+    private toggleFullScreen() {
+        this.fullScreenMode = !this.fullScreenMode;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 
 }

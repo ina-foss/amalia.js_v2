@@ -8,7 +8,7 @@ import {Loader} from './loader/loader';
 import {Metadata} from '@ina/amalia-model';
 import {ConfigData} from './config/model/config-data';
 import {PluginConfigData} from './config/model/plugin-config-data';
-import {Injectable} from '@angular/core';
+import {ElementRef, Injectable} from '@angular/core';
 import {DefaultLogger} from './logger/default-logger';
 import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
@@ -128,26 +128,22 @@ export class MediaPlayerElement {
     }
 
     /**
-     * In charge to put element on full screen
+     * In charge to toggle fullscreen mode
      * @param element to put in fullscreen
      */
-    public openFullscreen(element: HTMLElement) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
+    public toggleFullscreen(element : HTMLElement) {
+        let isFullscreen =  document.fullscreenElement !== null;
+        if (isFullscreen === false) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen().then(() => this.logger.info(`fullscreen change`));
+            }
+        }
+        else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen().then(() => this.logger.debug('exitFullscreen mode'));
+            }
         }
     }
-
-    /**
-     * In charge to exit fullscreen
-     * @param document main document element
-     */
-    closeFullscreen() {
-        if (document.exitFullscreen) {
-            document.exitFullscreen().then(() => this.logger.debug('exitFullscreen mode'));
-        }
-    }
-
-
     /**
      * In charge to load configuration
      * @param config configuration parameter
