@@ -32,16 +32,17 @@
                     <amalia-control-bar player-id="hls"></amalia-control-bar>
                 </amalia-player>
             </div>-->
-            <div style="height: 700px">
-                <amalia-transcription
-                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>
-            </div>
+<!--            <div style="height: 700px"> -->
+<!--                <amalia-transcription-->
+<!--                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>-->
+<!--            </div>-->
             <div style="height: 700px" id="transcription">
                 <p id="addTranscription">Add transcription</p>
             </div>
-            <div style="height: 400px">
-                <amalia-storyboard
-                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>
+            <div style="height: 400px" id="storyboard">
+                <p id="addStoryboard">Add storyboard</p>
+                <!--                <amalia-storyboard-->
+                <!--                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>-->
             </div>
         </div>
     </div>
@@ -56,6 +57,7 @@
 </footer>
 <script>
     document.getElementById("addTranscription").addEventListener("click", addTranscription)
+    document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
 
     function addTranscription() {
         const transactionElement = document.createElement("amalia-transcription");
@@ -65,6 +67,15 @@
         content.innerHTML = '';
         content.append(transactionElement);
 
+    }
+
+    function addStoryboard() {
+        const transactionElement = document.createElement("amalia-storyboard");
+        transactionElement.setAttribute("player-id", "PLAYER")
+        transactionElement.setAttribute("plugin-configuration", '{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}')
+        const content = document.getElementById('storyboard');
+        content.innerHTML = '';
+        content.append(transactionElement);
     }
 </script>
 </body>

@@ -43,10 +43,12 @@
                     <span *ngFor="let w of t.subLocalisations"
                           class="w"
                           [attr.data-tcin]="w.tcIn"
-                          [attr.data-tcOut]="w.tcOut">{{w.text}}</span>
+                          [attr.data-tcOut]="w.tcOut"  [innerHTML]="w.text | sanitizeHtml: 'html'"></span>
                 </ng-template>
                 <ng-template #wordBlock><span class="w" [attr.data-tcin]="t.tcIn"
-                                              [attr.data-tcOut]="t.tcOut">{{t.text}}</span></ng-template>
+                                              [attr.data-tcOut]="t.tcOut"
+                                              [innerHTML]="t.text | sanitizeHtml: 'html'"></span>
+                </ng-template>
             </div>
         </div>
     </div>

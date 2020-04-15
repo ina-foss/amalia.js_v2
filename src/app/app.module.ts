@@ -12,6 +12,7 @@ import {SubtitlesPluginComponent} from './plugins/subtitles/subtitles-plugin.com
 import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.component';
 import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.component';
 import {MediaPlayerService} from './service/media-player-service';
+import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import {MediaPlayerService} from './service/media-player-service';
     declarations: [
         AmaliaComponent,
         TcFormatPipe,
+        SanitizeHtmlPipe,
         ControlBarPluginComponent,
         TimeBarPluginComponent,
         TranscriptionPluginComponent,
