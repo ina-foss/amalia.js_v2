@@ -115,7 +115,7 @@
         },
         {
           "label": "Fullscreen",
-          "control": "pause",
+          "control": "toggleFullScreen",
           "icon": "fullscreen",
           "zone": 3
         },
