@@ -1,4 +1,4 @@
-<div (mouseenter)="displayControlBar(true)" (mouseleave)="displayControlBar(false)" (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{aspectRatio}}">
+<div #mediaContainer (mouseenter)="displayControlBar(true)" (mouseleave)="displayControlBar(false)" (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{aspectRatio}}">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
     <div #previewThumbnail class="preview-thumbnail" [hidden]="!enablePreviewThumbnail && !previewThumbnailUrl">
         <img class="thumbnail" alt="preview-thumbnail" *ngIf="previewThumbnailUrl"

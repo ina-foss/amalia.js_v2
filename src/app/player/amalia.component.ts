@@ -150,7 +150,6 @@ export class AmaliaComponent implements OnInit {
      * Default loader
      */
     public logger = new DefaultLogger();
-
     /**
      * In charge to get instance of player
      */
@@ -159,6 +158,11 @@ export class AmaliaComponent implements OnInit {
      * In charge to load resource
      */
     private readonly httpClient: HttpClient;
+    /**
+     * Player html ELEMENT
+     */
+    @ViewChild('mediaContainer')
+    public mediaContainer: ElementRef<HTMLElement>;
     /**
      * Amalia player main manager
      */
@@ -258,6 +262,7 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
     }
 
     @AutoBind
@@ -355,5 +360,15 @@ export class AmaliaComponent implements OnInit {
         } else if (_displayControlBar === false) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
         }
+    }
+
+    /**
+     * Invoked on fullscreen change
+     */
+    @AutoBind
+    public handleFullScreenChange() {
+        let element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
+        let parent = element.offsetParent as HTMLElement;
+        this.mediaPlayerElement.toggleFullscreen(parent);
     }
 }
