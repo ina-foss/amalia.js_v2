@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule, NgZone} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule} from '@angular/core';
 import {AmaliaComponent} from './player/amalia.component';
 import {createCustomElement} from '@angular/elements';
 import {HttpClientModule} from '@angular/common/http';
@@ -43,9 +43,8 @@ import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 export class AppModule {
     private readonly injector: Injector;
 
-    constructor(injector: Injector, private ngZone: NgZone) {
+    constructor(injector: Injector) {
         this.injector = injector;
-        (window as any).amaliaNgZone = this.ngZone; // store ngZone reference on the window object
     }
 
 
