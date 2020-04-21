@@ -376,8 +376,8 @@ export class AmaliaComponent implements OnInit {
      */
     @AutoBind
     public handleFullScreenChange() {
-        let element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
-        let parent = element.offsetParent as HTMLElement;
+        const element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
+        const parent = element.offsetParent as HTMLElement;
         this.mediaPlayerElement.toggleFullscreen(parent);
     }
 }

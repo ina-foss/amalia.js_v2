@@ -68,7 +68,7 @@
                 <!--Download-->
                 <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
-                    <a target="_blank" (click)="buildUrlWithTc(ctl,c,$event)" #ctl>
+                    <a target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
@@ -85,8 +85,7 @@
                 <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
-                     (click)="setupAudioNodes(c.data)"
-                >
+                     (click)="setupAudioNodes(c.data)">
                     <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
                          class="amalia-svg-volume-on-size icon" (click)="changeVolume(0 ? 100:0)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
@@ -117,15 +116,17 @@
                                                [(ngModel)]="volumeLeft" class="slider" max="100"
                                                min="0" type="range"
                                                value="50">
-                                        <div *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume"
-                                             class="channel-volume-control-mid"></div>
-                                        <div [style]="{left:volumeLeft+'%'}"
-                                             *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
-                                             class="channel-volume-control-mid on"></div>
+
                                     </div>
                                     <div class="channel-volume-info"><span class="text-volume">G</span></div>
                                 </div>
+                                <div class="channel-volume-control-mid-container">
+                                    <div [style]="{left:volumeLeft+'%'}"
+                                         *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
+                                         class="channel-volume-control-mid on">
 
+                                    </div>
+                                </div>
                                 <div class="channel-volume-control-right">
                                     <div (click)="changeVolume( volumeRight==0 ? 100:0,'r')"
                                          class="channel-volume-icon">
@@ -280,7 +281,7 @@
         </li>
         <!--Download-->
         <li *ngSwitchCase="'download'" class="control download" [ngStyle]="{'order':c.order ? c.order:'0'}">
-            <a target="_blank" (click)="buildUrlWithTc(ctl,c,$event)" #ctl>
+            <a target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
                 <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                 </svg>

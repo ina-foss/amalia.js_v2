@@ -136,19 +136,19 @@ export class MediaPlayerElement {
      * In charge to toggle fullscreen mode
      * @param element to put in fullscreen
      */
-    public toggleFullscreen(element : HTMLElement) {
-        let isFullscreen =  document.fullscreenElement !== null;
+    public toggleFullscreen(element: HTMLElement) {
+        const isFullscreen = document.fullscreenElement !== null;
         if (isFullscreen === false) {
             if (element.requestFullscreen) {
                 element.requestFullscreen().then(() => this.logger.info(`fullscreen change`));
             }
-        }
-        else {
+        } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen().then(() => this.logger.debug('exitFullscreen mode'));
             }
         }
     }
+
     /**
      * In charge to load configuration
      * @param config configuration parameter
@@ -158,6 +158,7 @@ export class MediaPlayerElement {
             this.configurationManager.load(config).then(() => resolve(), () => reject());
         });
     }
+
     /**
      * In charge to load data sources
      */

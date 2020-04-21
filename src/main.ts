@@ -9,5 +9,5 @@ if (environment.production) {
     enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule, {ngZone: (window as any).amaliaNgZone})
+platformBrowserDynamic().bootstrapModule(AppModule)
     .catch(err => console.error(err));

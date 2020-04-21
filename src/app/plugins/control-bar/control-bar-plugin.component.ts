@@ -338,7 +338,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeSameVolumeState() {
         this.mediaPlayerElement.getMediaPlayer().withMergeVolume = !this.mediaPlayerElement.getMediaPlayer().withMergeVolume;
         if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
-            this.changeVolume(Math.min(this.volumeRight, this.volumeLeft));
+            const v = Math.min(this.volumeRight, this.volumeLeft);
+            this.changeVolume(v);
+            this.volumeLeft = v;
+            this.volumeRight = v;
         }
     }
 
@@ -624,12 +627,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.fullScreenMode = !this.fullScreenMode;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
-     /**
-      * Handle to download url
+
+    /**
+     * Handle to download url
      * @param element html element
      * @param control control bar config
      */
-    public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig, event: MouseEvent) {
+    public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
         const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();

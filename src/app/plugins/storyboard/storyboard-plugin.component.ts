@@ -76,9 +76,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         if (this.pluginConfiguration.data.baseUrl !== '') {
             if (this.mediaPlayerElement.isMetadataLoaded) {
                 this.initStoryboard();
-            } else {
-                this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             }
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
         }
     }
 
@@ -88,13 +87,14 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     initStoryboard() {
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        if (!isNaN(duration)) {
+        if (!isNaN(duration) && isFinite(duration)) {
             this.duration = duration;
             const baseUrl = this.pluginConfiguration.data.baseUrl;
             const tcParam = this.pluginConfiguration.data.tcParam;
             this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
             this.updateThumbnailSize();
         } else {
+            this.duration = null;
             this.logger.error('Error to init storyboard, please check media duration');
         }
     }
@@ -152,6 +152,4 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         }
         this.listOfThumbnail = _.range(0, this.duration, interval);
     }
-
-
 }
