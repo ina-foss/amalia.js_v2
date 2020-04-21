@@ -138,6 +138,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public pinnedSlider = false;
     /**
+     * FullScreenMode state
+     */
+    public fullScreenMode = false;
+    /**
      * Handle thumbnail
      */
     public enableThumbnail = false;
@@ -186,7 +190,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const listOfControls = new Array<ControlBarConfig>();
         listOfControls.push({label: 'Barre de progression', control: 'progressBar'});
         listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2});
-        listOfControls.push({label: 'Fullscreen', control: 'pause', icon: 'fullscreen', zone: 3});
+        listOfControls.push({label: 'Fullscreen', control: 'toggleFullScreen', icon: 'fullscreen', zone: 3});
         return {
             name: ControlBarPluginComponent.PLUGIN_NAME,
             data: listOfControls
@@ -252,6 +256,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             case 'pinControls':
                 this.pinControls();
                 break;
+            case 'toggleFullScreen':
+                this.toggleFullScreen();
+                break;
             default:
                 this.logger.warn('Control not implemented', control);
                 break;
@@ -309,7 +316,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeSameVolumeState() {
         this.mediaPlayerElement.getMediaPlayer().withMergeVolume = !this.mediaPlayerElement.getMediaPlayer().withMergeVolume;
         if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
-            this.changeVolume(Math.min(this.volumeRight, this.volumeLeft));
+            const v = Math.min(this.volumeRight, this.volumeLeft);
+            this.changeVolume(v);
+            this.volumeLeft = v;
+            this.volumeRight = v;
         }
     }
 
@@ -570,12 +580,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
+     * Toggle fullscreen player
+     */
+    private toggleFullScreen() {
+        this.fullScreenMode = !this.fullScreenMode;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
+    }
+
+    /**
      * Handle to download url
-     *
      * @param element html element
      * @param control control bar config
      */
-    public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig, event: MouseEvent) {
+    public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
         const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();

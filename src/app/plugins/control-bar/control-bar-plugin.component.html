@@ -17,6 +17,7 @@
              class="column">
             <!-- ngSwitch by controls-->
             <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
+                <!-- play pause mode-->
                 <div (click)="controlClicked(c.control)" *ngSwitchCase="'playPause'"
                      class="play-pause control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
@@ -26,11 +27,20 @@
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#pause'"></use>
                     </svg>
                 </div>
-                <!--Aspect Ratio-->
+                <!--FullScreen Button -->
+                <div (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
+                     class="toggleFullScreen control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
+                    <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
+                    </svg>
+                    <svg *ngIf="fullScreenMode === true" class="amalia-svg-compress-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#compress'"></use>
+                    </svg>
+                </div>
                 <!--Aspect Ratio-->
                 <div *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" title="{{c.label}}"
                      (click)="changeAspectRatio()" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                     (mouseenter)="enableListRatio=true">
+                     (mouseenter)="enableListRatio=true;enableVolumeSlider=false;enableListPositionsSubtitle=false">
                     {{aspectRatio}}
                     <ul class="list-options" [ngClass]="{'on':enableListRatio}"
                         (mouseleave)="enableListRatio=false">
@@ -58,7 +68,7 @@
                 <!--Download-->
                 <div *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
-                    <a target="_blank" (click)="buildUrlWithTc(ctl,c,$event)" #ctl>
+                    <a target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
@@ -74,9 +84,8 @@
                 <!--Volume-->
                 <div *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
-                     (mouseenter)="enableVolumeSlider=true"
-                     (click)="setupAudioNodes(c.data)"
-                >
+                     (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
+                     (click)="setupAudioNodes(c.data)">
                     <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
                          class="amalia-svg-volume-on-size icon" (click)="changeVolume(0 ? 100:0)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
@@ -107,15 +116,17 @@
                                                [(ngModel)]="volumeLeft" class="slider" max="100"
                                                min="0" type="range"
                                                value="50">
-                                        <div *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume"
-                                             class="channel-volume-control-mid"></div>
-                                        <div [style]="{left:volumeLeft+'%'}"
-                                             *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
-                                             class="channel-volume-control-mid on"></div>
+
                                     </div>
                                     <div class="channel-volume-info"><span class="text-volume">G</span></div>
                                 </div>
+                                <div class="channel-volume-control-mid-container">
+                                    <div [style]="{left:volumeLeft+'%'}"
+                                         *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
+                                         class="channel-volume-control-mid on">
 
+                                    </div>
+                                </div>
                                 <div class="channel-volume-control-right">
                                     <div (click)="changeVolume( volumeRight==0 ? 100:0,'r')"
                                          class="channel-volume-icon">
@@ -154,7 +165,7 @@
                 <!-- Button subtitles -->
                 <div *ngSwitchCase="'subtitles'" class="control subtitle" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
-                     (mouseenter)="enableListPositionsSubtitle=true">
+                     (mouseenter)="enableListPositionsSubtitle=true;enableVolumeSlider=false;enableListRatio=false">
                     <svg class="amalia-svg-subtitle-size icon">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"></use>
                     </svg>

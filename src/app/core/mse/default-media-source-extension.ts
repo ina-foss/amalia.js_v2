@@ -39,7 +39,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
             this.mainSource = document.createElement('source');
             this.mainSource.src = this.mediaSrc;
             if (config.crossOrigin) {
-                this.mainSource.setAttribute('crossorigin', config.crossOrigin);
+                this.mediaElement.setAttribute('crossorigin', config.crossOrigin);
             }
             // Error handle
             this.mainSource.addEventListener('error', this.handleError);

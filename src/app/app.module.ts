@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule, NgZone} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule} from '@angular/core';
 import {AmaliaComponent} from './player/amalia.component';
 import {createCustomElement} from '@angular/elements';
 import {HttpClientModule} from '@angular/common/http';
@@ -12,6 +12,7 @@ import {SubtitlesPluginComponent} from './plugins/subtitles/subtitles-plugin.com
 import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.component';
 import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.component';
 import {MediaPlayerService} from './service/media-player-service';
+import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import {MediaPlayerService} from './service/media-player-service';
     declarations: [
         AmaliaComponent,
         TcFormatPipe,
+        SanitizeHtmlPipe,
         ControlBarPluginComponent,
         TimeBarPluginComponent,
         TranscriptionPluginComponent,
@@ -41,9 +43,8 @@ import {MediaPlayerService} from './service/media-player-service';
 export class AppModule {
     private readonly injector: Injector;
 
-    constructor(injector: Injector, private ngZone: NgZone) {
+    constructor(injector: Injector) {
         this.injector = injector;
-        (window as any).amaliaNgZone = this.ngZone; // store ngZone reference on the window object
     }
 
 

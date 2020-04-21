@@ -10,12 +10,65 @@
   display: flex;
   flex-direction: column;
 
+  .interval {
+    flex: 1;
+    text-align: center;
+    color: $amalia-plugin-storyboard-label-color;
+
+    .selected {
+      font-weight: bold;
+      color: $amalia-plugin-storyboard-label-hover-color;
+      cursor: pointer;
+    }
+
+    .amalia-svg-down.icon {
+      width: 16px;
+      height: 10px;
+      margin-left: 10px;
+    }
+
+    ul {
+      list-style: none;
+      position: absolute;
+      z-index: 100;
+      background-color: white;
+      text-align: right;
+      padding: 0;
+      left: 50%;
+      margin-left: -50px;
+      top: 24px;
+
+
+      li {
+        list-style: none;
+        padding: 5px 20px 5px 20px;
+        margin: 0;
+
+        &.label {
+          background-color: #F3F3F3;
+          line-height: 20px;
+          color: #34495E;
+        }
+
+        &:hover {
+          background-color: #F2F5F9;
+        }
+
+        &.selected {
+          font-weight: bold;
+          color: #0086B1;
+        }
+      }
+    }
+  }
+
   .storyboard-size {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
-    margin-bottom: 10px;
+    background-color: $amalia-plugin-storyboard-bg-color;
+    padding-bottom: 5px;
 
     div.size {
       border: solid 1px #cacaca;
@@ -29,76 +82,59 @@
     }
 
     .small {
-      width: 30px;
-      height: 15px;
+      width: 20px;
+      height: 13px;
       cursor: pointer;
     }
 
     .medium {
-      width: 40px;
-      height: 20px;
+      width: 24px;
+      height: 16px;
       border: solid 1px #cacaca;
       margin-right: 10px;
       cursor: pointer;
     }
 
     .large {
-      width: 55px;
-      height: 27px;
+      width: 30px;
+      height: 21px;
       border: solid 1px #cacaca;
       cursor: pointer;
     }
 
-    .first {
+    .first,
+    .last {
       flex: 1;
     }
 
-    .interval {
-      flex: 1;
 
-      ul {
-        list-style: none;
-        position: absolute;
-        z-index: 100;
-        background-color: white;
-        text-align: right;
-        padding: 0;
-        margin: 0;
-
-        li {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-
-          &.label {
-            background-color: #6c6c6c;
-            line-height: 20px;
-          }
-
-          &:hover {
-            background-color: #6c6c6c;
-          }
-
-          &.selected {
-            font-weight: bold;
-          }
-        }
-      }
-    }
   }
 
+
   .storyboard {
+    background-color: $amalia-plugin-storyboard-bg-color;
+    margin: -5px -5px;
+    padding: 5px;
     display: flex;
     flex-wrap: wrap;
     height: inherit;
     width: inherit;
-    overflow-y: scroll;
-    justify-content: space-around;
+    overflow-y: auto;
+    justify-content: start;
+    align-items: start;
+    align-content: start;
 
     .thumbnail {
       position: relative;
       display: flex;
       cursor: pointer;
+      margin: 5px 5px;
+      border-radius: 5%;
+      overflow: hidden;
+
+      &:hover {
+        border: solid 1px $amalia-plugin-storyboard-bg-color-hover;
+      }
 
       &.small {
         width: $amalia-plugin-storyboard-thumbnail-sw;
@@ -123,13 +159,12 @@
         position: absolute;
         background-color: $amalia-plugin-storyboard-label-bg;
         height: 20px;
-        width: 60px;
-        bottom: 5px;
-        right: 5px;
-        font-size: 11px;
-        color: white;
-        line-height: 20px;
-        padding: 2px;
+        width: 100%;
+        bottom: 0px;
+        font-size: 12px;
+        color: black;
+        line-height: 14px;
+        text-align: center;
       }
     }
   }
