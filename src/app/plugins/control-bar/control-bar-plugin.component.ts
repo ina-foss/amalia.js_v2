@@ -1,5 +1,14 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter, HostListener,
+    Input,
+    OnDestroy,
+    Output,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
@@ -48,7 +57,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @Input()
     public sliderListOfPlaybackRateCustomSteps: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 1.5, 2, 4, 6, 8, 10];
-
+    /**
+     * Enable Menu
+     */
+    public enableMenu = false;
     /**
      * list of backward playback step
      */
@@ -138,6 +150,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public pinnedSlider = false;
     /**
+     * display state (s/m/l)
+     */
+    public displayState : String;
+    /**
      * FullScreenMode state
      */
     public fullScreenMode = false;
@@ -152,7 +168,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private thumbnailSeekingDebounceTime: Subject<number> = new Subject<number>();
     private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
 
-
     constructor(playerService: MediaPlayerService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
     }
@@ -160,6 +175,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     init() {
         super.init();
+        this.handleDisplayState();
         this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
         // Enable thumbnail
@@ -172,6 +188,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         // Handle to seek events with debounceTime
         const _debounceTime = this.mediaPlayerElement.getConfiguration().thumbnail?.debounceTime || ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME;
         this.thumbnailSeekingDebounceTime
@@ -182,21 +199,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             .subscribe((e) => this.updateThumbnail(e));
     }
 
-
     /**
      * Return plugin configuration
      */
     getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
         const listOfControls = new Array<ControlBarConfig>();
-        listOfControls.push({label: 'Barre de progression', control: 'progressBar'});
-        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2});
-        listOfControls.push({label: 'Fullscreen', control: 'toggleFullScreen', icon: 'fullscreen', zone: 3});
+        listOfControls.push({label: 'Barre de progression', control: 'progressBar',priority: 1});
+        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2,priority: 1});
+        listOfControls.push({label: 'Fullscreen', control: 'toggleFullScreen', icon: 'fullscreen', zone: 3,priority: 1});
         return {
             name: ControlBarPluginComponent.PLUGIN_NAME,
             data: listOfControls
         };
     }
-
 
     /**
      * Invoked player with specified control function name
@@ -295,6 +310,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
+     * switch container class based on width
+     */
+    @AutoBind
+    public handleDisplayState() {
+        this.displayState = this.mediaPlayerElement.getDisplayState();
+    }
+    /**
      * Invoked for change aspect ratio
      */
     public changeAspectRatio() {
@@ -329,6 +351,25 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             return _.filter(this.elements, {zone});
         }
         return null;
+    }
+
+    /**
+     * return list controls by priority
+     * @param priority : number
+     */
+    public getControlsByPriority(priority: number): Array<ControlBarConfig> {
+        if (this.elements) {
+            return _.filter(this.elements, {priority});
+        }
+        return null;
+    }
+
+    /**
+     * Update displayState on windowResize
+     */
+    @AutoBind
+    public handleWindowResize() {
+        this.handleDisplayState();
     }
 
     /**

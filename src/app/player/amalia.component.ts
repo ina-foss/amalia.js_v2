@@ -14,7 +14,6 @@ import {environment} from '../../environments/environment';
 import {PlayerState} from '../core/constant/player-state';
 import {PlayerEventType} from '../core/constant/event-type';
 import {AutoBind} from '../core/decorator/auto-bind.decorator';
-
 import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 import {BaseUtils} from '../core/utils/base-utils';
 import {MediaPlayerService} from '../service/media-player-service';
@@ -159,9 +158,9 @@ export class AmaliaComponent implements OnInit {
      */
     private readonly httpClient: HttpClient;
     /**
-     * Player html ELEMENT
+     * mediaContainer element
      */
-    @ViewChild('mediaContainer')
+    @ViewChild('mediaContainer', {static: true})
     public mediaContainer: ElementRef<HTMLElement>;
     /**
      * Amalia player main manager
@@ -193,11 +192,22 @@ export class AmaliaComponent implements OnInit {
                 .catch((state) => this.onErrorInitConfig(state));
             // bind events
             this.bindEvents();
+            //set mediaPlayer width for responsive grid
+            this.mediaPlayerElement.setMediaPlayerWidth(this.mediaContainer.nativeElement.offsetWidth);
         } else {
             this.logger.error('Error to initialize media player element.');
         }
     }
 
+    /**
+    /**
+     * update mediaPlayerWidth on window resize
+     */
+    @AutoBind
+    private handleWindowResize() {
+        let mediaContainer = this.mediaContainer.nativeElement;
+        this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.clientWidth);
+    }
     /**
      * Invoked on click context menu
      * @param event mouse event
@@ -210,8 +220,6 @@ export class AmaliaComponent implements OnInit {
         this.contextMenu.nativeElement.style.top = `${event.clientY - defaultMouseMargin}px`;
         return false;
     }
-
-
     /**
      * In charge to update player size with aspect ratio
      */
@@ -263,6 +271,7 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED,this.handleWindowResize);
     }
 
     @AutoBind

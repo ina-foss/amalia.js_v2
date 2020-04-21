@@ -1,6 +1,6 @@
 <div class="thumbnail" *ngIf="enableThumbnail" [hidden]="thumbnailHidden"
      [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}"></div>
-<div class="controls-container" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
+<div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
     <div class="control-bar" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
         <div *ngIf="hasComponentWithoutZone('progressBar')"
              class="control progress-bar" (mouseenter)="progressBarMouseEnter($event)"
@@ -18,7 +18,7 @@
             <!-- ngSwitch by controls-->
             <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
                 <!-- play pause mode-->
-                <div (click)="controlClicked(c.control)" *ngSwitchCase="'playPause'"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" (click)="controlClicked(c.control)" *ngSwitchCase="'playPause'"
                      class="play-pause control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
@@ -28,7 +28,7 @@
                     </svg>
                 </div>
                 <!--FullScreen Button -->
-                <div (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
                      class="toggleFullScreen control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
@@ -38,7 +38,7 @@
                     </svg>
                 </div>
                 <!--Aspect Ratio-->
-                <div *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" title="{{c.label}}"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" title="{{c.label}}"
                      (click)="changeAspectRatio()" [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableListRatio=true;enableVolumeSlider=false;enableListPositionsSubtitle=false">
                     {{aspectRatio}}
@@ -61,12 +61,12 @@
 
                 </div>
                 <!--Playback Rate-->
-                <div *ngSwitchCase="'playbackRate'" class="playback-rate control text" title="{{c.label}}"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'playbackRate'" class="playback-rate control text" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     {{currentPlaybackRate}}x
                 </div>
                 <!--Download-->
-                <div *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <a target="_blank" (click)="buildUrlWithTc(ctl,c,$event)" #ctl>
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -75,14 +75,14 @@
                     </a>
                 </div>
                 <!--Callback-->
-                <div *ngSwitchCase="'callback'" class="control callback" title="{{c.label}}"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'callback'" class="control callback" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
                     <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                     </svg>
                 </div>
                 <!--Volume-->
-                <div *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
                      (click)="setupAudioNodes(c.data)"
@@ -162,7 +162,7 @@
                     </div>
                 </div>
                 <!-- Button subtitles -->
-                <div *ngSwitchCase="'subtitles'" class="control subtitle" title="{{c.label}}"
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" *ngSwitchCase="'subtitles'" class="control subtitle" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableListPositionsSubtitle=true;enableVolumeSlider=false;enableListRatio=false">
                     <svg class="amalia-svg-subtitle-size icon">
@@ -194,8 +194,16 @@
                         </li>
                     </ul>
                 </div>
+                <!--Menu Button-->
+                <div [ngClass]="{'show':displayState ==='m'}" *ngSwitchCase="'menu'" class="control menu" title="{{c.label}}"
+                     (mouseenter)="enableMenu=true;enableVolumeSlider=false"
+                     [ngStyle]="{'order':c.order ? c.order:'0'}">
+                    <svg class="amalia-svg-dots-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#dots'"></use>
+                    </svg>
+                </div>
                 <!--Other controls-->
-                <div class="control" title="{{c.label}}" (click)="controlClicked(c.control)" *ngSwitchDefault
+                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" class="control" title="{{c.label}}" (click)="controlClicked(c.control)" *ngSwitchDefault
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -205,7 +213,7 @@
         </div>
     </div>
     <!-- Slider -->
-    <div class="playback-rate-slider" [ngClass]="{'activated' : enablePlaybackSlider}"
+    <div class="playback-rate-slider {{displayState}} " [ngClass]="{'activated' : enablePlaybackSlider}"
          *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
         <div class="playback-rate-labels">
             <input type="range" list="playback-rate-list" #playbackRateCursor
@@ -225,12 +233,123 @@
         </div>
     </div>
     <!-- Slider 2-->
-    <div class="playback-rate-slider2" [ngClass]="{'activated' : enablePlaybackSlider}"
+    <div class="playback-rate-slider2 {{displayState}}" [ngClass]="{'activated' : enablePlaybackSlider}"
          *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
         <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first:as isFirst; last as isLast;"
              [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
              (click)="onChangePlaybackRate(pr)">{{pr}}x
             <div class="line"></div>
         </div>
+    </div>
+</div>
+<!-- Menu of controls disolayed on "m" grid-->
+<div class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider}"
+     (mouseenter)="activated= true"
+     (mouseleave)="enableMenu=false">
+    <ul>
+    <ng-container *ngFor="let c of getControlsByPriority(2); " [ngSwitch]="c.control">
+        <!--FullScreen Button -->
+        <li (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
+             class="toggleFullScreen control" [ngStyle]="{'order':c.order ? c.order:'0'}">
+            <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+            </svg>
+            {{c.label}}
+        </li>
+        <!--Aspect Ratio-->
+        <li *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text"
+             (click)="enableListRatio= !enableListRatio" [ngStyle]="{'order':c.order ? c.order:'0'}">
+            <div class="ratio">{{aspectRatio}}</div>{{c.label}} <span>{{aspectRatio}}</span>
+            <svg class="amalia-svg-right-size icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
+            </svg>
+            <ul class="list-options" [ngClass]="{'on':enableListRatio}">
+                <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setAspectRatio('16:9')">
+                    <svg class="amalia-svg-checked-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                    </svg>
+                    4:3
+                </li>
+                <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setAspectRatio('4:3')">
+                    <svg class="amalia-svg-checked-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                    </svg>
+                    16:9
+                </li>
+            </ul>
+        </li>
+        <!--Download-->
+        <li *ngSwitchCase="'download'" class="control download" [ngStyle]="{'order':c.order ? c.order:'0'}">
+            <a target="_blank" (click)="buildUrlWithTc(ctl,c,$event)" #ctl>
+                <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                </svg>
+                {{c.label}}
+            </a>
+        </li>
+        <!--Callback-->
+        <li *ngSwitchCase="'callback'" class="control callback" [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
+            <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+            </svg>
+            {{c.label}}
+        </li>
+        <!-- Button subtitles -->
+        <li (click)="enableListPositionsSubtitle= !enableListPositionsSubtitle" *ngSwitchCase="'subtitles'" class="control subtitle" [ngStyle]="{'order':c.order ? c.order:'0'}">
+            <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+            </svg>
+            {{c.label}}<span>{{position}}</span>
+            <svg class="amalia-svg-right-size icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
+            </svg>
+            <ul class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}">
+                <li class="position" [ngClass]="{'selected': position =='down'}"
+                    (click)="updateSubtitlePosition('down')">
+                    <svg class="amalia-svg-checked-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                    </svg>
+                    Bas
+                </li>
+                <li class="position" [ngClass]="{'selected': position =='up'}"
+                    (click)="updateSubtitlePosition('up')">
+                    <svg class="amalia-svg-checked-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                    </svg>
+                    Haut
+                </li>
+                <li class="position" [ngClass]="{'selected': position =='none'}"
+                    (click)="updateSubtitlePosition('none')">
+                    <svg class="amalia-svg-checked-size icon">
+                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                    </svg>
+                    Aucun (original)
+                </li>
+            </ul>
+        </li>
+        <!--Other controls-->
+        <li class="control" (click)="controlClicked(c.control)" *ngSwitchDefault
+             [ngStyle]="{'order':c.order ? c.order:'0'}">
+            <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+            </svg>
+            {{c.label}}
+        </li>
+    </ng-container>
+    </ul>
+
+
+
+
+</div>
+<div class="controls-reduced-container {{displayState}}" [ngClass]="{'activated' : activated}">
+    <!-- play pause mode-->
+    <div (click)="controlClicked('playPause')" class="play-pause control">
+        <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-blue-play-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
+        </svg>
+        <svg *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-blue-pause-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#blue-pause'"></use>
+        </svg>
     </div>
 </div>

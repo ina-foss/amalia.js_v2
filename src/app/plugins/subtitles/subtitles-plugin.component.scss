@@ -16,7 +16,7 @@
     width: max-content;
     transform: translate(-50%,0);
     left: 50%;
-    &.none {
+    &.none,&.s {
       display: none;
     }
     &.up {

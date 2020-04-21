@@ -3,16 +3,6 @@
 
 :host {
   font-family: $amalia-font-family;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  user-select: none;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: $amalia-default-z-index;
-  background: $amalia-ctrl-bar-bg-color;
-
   .thumbnail {
     position: absolute;
     width: 150px;
@@ -26,6 +16,30 @@
     background-position: center;
   }
   .controls-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: $amalia-ctrl-bar-z-index;
+    background: $amalia-ctrl-bar-bg-color;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    user-select: none;
+    &.s {
+      display: none;
+    }
+    &.ms {
+      .column {
+        .control {
+          .amalia-svg-pin-size {
+            display: none;
+          }
+          .amalia-svg-slider-size {
+            display: none;
+          }
+        }
+      }
+    }
     &.activated,&:hover {
       .control-bar {
         display: flex;
@@ -85,14 +99,16 @@
 
 
     .control {
+      display: none;
       position: relative;
       padding: 0;
       margin: 0px 5px 0px 5px;
-
+      &.show {
+        display: unset;
+      }
       &.text {
         color: $amalia-player-bg-color1;
       }
-
       &.playback-rate {
         min-width: 25px;
         position: relative;
@@ -235,6 +251,10 @@
           top: -11px;
           border-left: 2px solid $amalia-border-buttons-bg-color;
           border-bottom: 2px solid $amalia-border-buttons-bg-color;
+        }
+        &.amalia-svg-dots-size {
+          height: 35px;
+          width: 6px;
         }
         &.amalia-svg-slider-size {
           height: 16px;
@@ -439,8 +459,9 @@
     width: 100%;
     height: 50px;
     display: none;
-
-
+    &.s,&.ms {
+      display: none;
+    }
     div {
       position: relative;
       flex-shrink: 0;
@@ -517,7 +538,9 @@
     display: none;
     width: 100%;
     height: 50px;
-
+    &.s,&.ms {
+      display: none;
+    }
     .playback-rate-labels {
       width: 100%;
       display: flex;
@@ -613,6 +636,115 @@
 
           &.last:before {
             left: 50%;
+          }
+        }
+      }
+    }
+  }
+  .controls-reduced-container {
+    &.s.activated {
+      height: 34px;
+      line-height: 34px;
+      position: absolute;
+      z-index: $amalia-ctrl-bar-z-index;
+      top: calc(50% - 17px);
+      left: calc(50% - 17px);
+      .icon {
+        height: 32px;
+        width: 32px;
+      }
+    }
+  }
+  .controls-menu {
+    &.m {
+      display: none;
+      position: absolute;
+      z-index: $amalia-volume-bar-z-index;
+      bottom: 70px;
+      background-color: $amalia-ctrl-bar-bg-color;
+      right: 10px;
+      &.pinned {
+        bottom: 110px;
+      }
+      &.on {
+        display: block;
+      }
+      ul {
+        list-style:none;
+        width: 180px;
+        padding: 0;
+        margin: 0;
+        li {
+          text-align: left;
+          display: block;
+          font-size: 14px;
+          line-height: 31px;
+          cursor: pointer;
+          color: white;
+          padding-left: 8px;
+          position: relative;
+          &:hover {
+            background-color:rgba(255,255,255,0.45);
+            ul {
+              background-color: $amalia-ctrl-bar-bg-color;
+            }
+          }
+          &.selected {
+            font-weight: bold;
+            > .amalia-svg-checked-size {
+              display: inline;
+            }
+          }
+          > .amalia-svg-checked-size {
+            display: none;
+            height: 25px;
+            position: absolute;
+            width: 20px;
+            left: 5px;
+            top: 3px;
+          }
+          ul {
+            display: none;
+            &.on {
+              display: block;
+              width: 100%;
+              background-color: $amalia-ctrl-bar-bg-color;
+              li {
+                padding-left: 31px;
+              }
+            }
+          }
+        }
+        span {
+          position: absolute;
+          right: 30px;
+        }
+        .ratio {
+          text-align: center;
+          border: 1px solid #fff;
+          padding: 1px 2px;
+          margin-right: 2px;
+          position: relative;
+          left: -2px;
+          top: 3px;
+          float: left;
+          line-height: 18px;
+          font-size: 12px;
+        }
+        .icon {
+          width: 16px;
+          height: 16px;
+          margin-right: 8px;
+          position: relative;
+          left: 3px;
+          top: 3px;
+          &.amalia-svg-right-size {
+            width: 9px;
+            height: 16px;
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            left: initial;
           }
         }
       }

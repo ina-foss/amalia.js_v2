@@ -148,5 +148,9 @@ export enum PlayerEventType {
     /**
      * Invoked when user change position of subtitles
      */
-    POSITION_SUBTITLE_CHANGE = 'ina.player.POSITION_SUBTITLE_CHANGE'
+    POSITION_SUBTITLE_CHANGE = 'ina.player.POSITION_SUBTITLE_CHANGE',
+    /**
+     * Invoked when window is resized
+     */
+    PLAYER_RESIZED = 'ina.player.PLAYER_RESIZED'
 }

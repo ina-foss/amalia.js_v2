@@ -14,7 +14,6 @@ import {EventEmitter} from 'events';
 import {PlayerEventType} from './constant/event-type';
 import {PreferenceStorageManager} from './storage/preference-storage-manager';
 
-
 /**
  * In charge to create player
  */
@@ -28,7 +27,7 @@ export class MediaPlayerElement {
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
     public isMetadataLoaded = false;
-
+    public width : Number;
     constructor() {
         this.logger = new DefaultLogger('root-player');
         this.preferenceStorageManager = new PreferenceStorageManager();
@@ -191,6 +190,36 @@ export class MediaPlayerElement {
         const baseUrl = this.getConfiguration().thumbnail.baseUrl;
         const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'tc';
         return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
+    }
+
+    /**
+     * Set mediaPlayer width for responsive grid
+     */
+    public setMediaPlayerWidth(width) {
+        this.width = width;
+    }
+    /**
+     * Return displayState (s/m/l)
+     */
+    public getDisplayState() {
+        let displayState;
+        let sWidth = 350;
+        let smWidth= 480;
+        let mWidth= 860;
+
+        if (this.width <= sWidth) {
+            displayState = "s";
+        }
+        else if (this.width > sWidth && this.width <= smWidth) {
+            displayState = "ms";
+        }
+        else if (this.width > smWidth && this.width <= mWidth) {
+            displayState = "m";
+        }
+        else {
+            displayState = "l";
+        }
+        return displayState;
     }
 
 }

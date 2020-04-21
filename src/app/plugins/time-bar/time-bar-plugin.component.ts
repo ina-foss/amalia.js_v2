@@ -1,5 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {TimeBarConfig} from '../../core/config/model/ time-bar-config';
@@ -41,8 +41,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * Plugin display state
      */
-    public displayState: 'small' | 'large' = 'large';
-
+    public displayState;
     constructor(playerService: MediaPlayerService) {
         super(playerService, TimeBarPluginComponent.PLUGIN_NAME);
     }
@@ -54,10 +53,18 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     @AutoBind
     init() {
         super.init();
+        this.handleDisplayState();
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
     }
 
+    /**
+     * switch container class based on width
+     */
+    @AutoBind
+    public handleDisplayState() {
+        this.displayState = this.mediaPlayerElement.getDisplayState();
+    }
     /**
      * Return default config
      */

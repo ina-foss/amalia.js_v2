@@ -25,6 +25,10 @@ export interface ControlBarConfig {
      */
     order?: number;
     /**
+     * Priority (1, 2 or 3)
+     */
+    priority: number;
+    /**
      * Custom data control
      */
     data?: any;
