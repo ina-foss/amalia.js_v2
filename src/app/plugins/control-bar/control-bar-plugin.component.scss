@@ -29,6 +29,17 @@
     &.s {
       display: none;
     }
+    &.m,&.ms {
+      .column {
+        flex: none;
+        &.mid {
+          flex: 1;
+        }
+        &.last {
+          flex: none;
+        }
+      }
+    }
     &.ms {
       .column {
         .control {
@@ -86,8 +97,6 @@
       flex-direction: row;
       flex: 1;
       align-items: center;
-      overflow:hidden;
-
       &:nth-of-type(2) {
         .control {
           .volume-control {
@@ -183,6 +192,7 @@
       }
 
       &.progress-bar {
+        display: block;
         position: absolute;
         top: -4.5px;
         width: 100%;
@@ -680,7 +690,9 @@
     }
   }
   .controls-reduced-container {
+    display: none;
     &.s.activated {
+      display: block;
       height: 34px;
       line-height: 34px;
       position: absolute;
@@ -694,6 +706,7 @@
     }
   }
   .controls-menu {
+    display: none;
     &.m {
       display: none;
       position: absolute;
