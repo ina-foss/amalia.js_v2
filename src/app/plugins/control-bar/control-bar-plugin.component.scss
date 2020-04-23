@@ -5,15 +5,23 @@
   font-family: $amalia-font-family;
   .thumbnail {
     position: absolute;
-    width: 150px;
-    height: 75px;
-    border: solid 1px white;
-    top: -85px;
+    width: 172px;
+    height: 120px;
+    border: 5px solid rgba(34,34,34,0.9);
+    background-color: #d8d8d8;
+    bottom: 65px;
     left: 0;
     background-clip: padding-box;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
+    z-index: $amalia-ctrl-bar-z-index;
+    &.ms,&.s {
+      display: none;
+    }
+    &.pinned {
+      bottom: 115px;
+    }
   }
 
   .controls-container {
