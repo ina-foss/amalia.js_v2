@@ -32,7 +32,8 @@
           "order": 2,
           "data": {
             "href": "http://localhost:4200/assets/logo.svg"
-          }
+          },
+          "priority": 1
         },
         {
           "label": "Download",
@@ -42,65 +43,76 @@
           "order": 1,
           "data": {
             "href": "http://localhost:4200/assets/logo.svg"
-          }
+          },
+          "priority": 1
         },
         {
           "label": "Playback Rate",
           "control": "playbackRate",
-          "zone": 1
+          "zone": 1,
+          "priority": 1
         },
         {
           "label": "backward-start",
           "icon": "backward-start",
           "control": "backward-start",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "backward-frame",
           "icon": "backward-frame",
           "control": "backward-frame",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "backward-5seconds",
           "icon": "backward-5seconds",
           "control": "backward-5seconds",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "backward",
           "icon": "backward",
           "control": "backward",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "Play / Pause",
           "control": "playPause",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "forward",
           "icon": "forward",
           "control": "forward",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "forward-5seconds",
           "icon": "forward-5seconds",
           "control": "forward-5seconds",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "forward-frame",
           "icon": "forward-frame",
           "control": "forward-frame",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "forward-end",
           "icon": "forward-end",
           "control": "forward-end",
-          "zone": 2
+          "zone": 2,
+          "priority": 1
         },
         {
           "label": "Volume",
@@ -110,18 +122,21 @@
             "channelMergeVolume" : true,
             "channelMergerNode" : "l"
 
-          }
+          },
+          "priority": 1
         },
         {
           "label": "Fullscreen",
           "control": "toggleFullScreen",
           "icon": "fullscreen",
-          "zone": 3
+          "zone": 3,
+          "priority": 1
         },
         {
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
-          "zone": 3
+          "zone": 3,
+          "priority": 1
         }
       ]
     }

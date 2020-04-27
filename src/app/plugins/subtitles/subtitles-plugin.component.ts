@@ -25,7 +25,10 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     public subTitle: string;
     public transcriptions: Array<TranscriptionLocalisation> = null;
     public posSubtitle: ['none', 'up', 'down'];
-
+    /**
+     * Plugin display state
+     */
+    public displayState;
     constructor(playerService: MediaPlayerService) {
         super(playerService, SubtitlesPluginComponent.PLUGIN_NAME);
     }
@@ -37,11 +40,18 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     @AutoBind
     init(): void {
         super.init();
+        this.handleDisplayState();
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.POSITION_SUBTITLE_CHANGE, this.changeSubtitlePosition);
     }
-
+    /**
+     * switch container class based on width
+     */
+    @AutoBind
+    public handleDisplayState() {
+        this.displayState = this.mediaPlayerElement.getDisplayState();
+    }
 
     /**
      * Return default config

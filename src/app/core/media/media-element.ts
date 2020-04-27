@@ -394,11 +394,9 @@ export class MediaElement {
         this.mediaElement.addEventListener('volumechange', this.handleVolumeChange);
         this.mediaElement.addEventListener('seeked', this.handleSeeked);
         this.mediaElement.addEventListener('seeking', this.handleSeeking);
-        this.mediaElement.addEventListener('resize', this.handleResize);
-
+        window.addEventListener('resize', this.handleResize);
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
-
         document.addEventListener('fullscreenchange ', this.handleFullscreenHandler);
     }
 
@@ -508,6 +506,7 @@ export class MediaElement {
     @AutoBind
     private handleResize() {
         this.logger.debug('Player resized !');
+        this.eventEmitter.emit(PlayerEventType.PLAYER_RESIZED);
     }
 
     /**
@@ -592,4 +591,5 @@ export class MediaElement {
 
         }
     }
+
 }
