@@ -17,7 +17,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/base-config.json">
+            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/base-config-hls.json">
                 <!--                <amalia-histogram></amalia-histogram>-->
                 <!--                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>-->
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
@@ -32,18 +32,18 @@
                     <amalia-control-bar player-id="hls"></amalia-control-bar>
                 </amalia-player>
             </div>-->
-<!--            <div style="height: 700px"> -->
-<!--                <amalia-transcription-->
-<!--                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>-->
-<!--            </div>-->
-<!--            <div style="height: 700px" id="transcription">-->
-<!--                <p id="addTranscription">Add transcription</p>-->
-<!--            </div>-->
-            <div style="height: 400px" id="storyboard">
-<!--                <p id="addStoryboard">Add storyboard</p>-->
-                                <amalia-storyboard
-                                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>
-            </div>
+            <!--            <div style="height: 700px"> -->
+            <!--                <amalia-transcription-->
+            <!--                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>-->
+            <!--            </div>-->
+            <!--            <div style="height: 700px" id="transcription">-->
+            <!--                <p id="addTranscription">Add transcription</p>-->
+            <!--            </div>-->
+            <!--            <div style="height: 400px" id="storyboard">-->
+            <!--                <p id="addStoryboard">Add storyboard</p>-->
+            <!--                                <amalia-storyboard-->
+            <!--                                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>-->
+            <!--            </div>-->
         </div>
     </div>
 </div>
@@ -66,7 +66,6 @@
         const content = document.getElementById('transcription');
         content.innerHTML = '';
         content.append(transactionElement);
-
     }
 
     function addStoryboard() {

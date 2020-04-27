@@ -13,6 +13,7 @@ import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from './constant/event-type';
 import {PreferenceStorageManager} from './storage/preference-storage-manager';
+import {ShortcutManager} from './shortcut/shortcut-manager';
 
 /**
  * In charge to create player
@@ -26,6 +27,7 @@ export class MediaPlayerElement {
     private readonly preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
+    private shortcutManager: ShortcutManager;
     public isMetadataLoaded = false;
     public width: number;
 
