@@ -124,16 +124,16 @@
           "priority": 1
         },
         {
-          "label": "forward-frame",
-          "icon": "forward-frame",
-          "control": "forward-frame",
-          "zone": 2,
-          "priority": 1
         },
         {
           "label": "forward-end",
           "icon": "forward-end",
           "control": "forward-end",
+          "zone": 2,
+          "priority": 1
+          "label": "forward-frame",
+          "icon": "forward-frame",
+          "control": "forward-frame",
           "zone": 2,
           "priority": 1
         },

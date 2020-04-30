@@ -10,7 +10,7 @@
   justify-content: space-between;
   height: 100%;
   width: 100%;
-  z-index: 3;
+  z-index: 2;
 
   .histograms {
     position: relative;
@@ -20,38 +20,20 @@
     justify-content: space-between;
     height: inherit;
     width: inherit;
-
-    .histogram {
-      background-color: #0f7595;
+    .svg {
       height: 100%;
-      position: relative;
-      display: block;
-      border-bottom: solid 1px black;
-
-      .svg {
-        height: 100%;
-        width: 100%;
-
-      }
-
-      .tc-cursor {
-        position: absolute;
-        background-color: white;
-        width: 1px;
-        height: 100%;
-        left: 50%;
-      }
-
-
+      width: 100%;
     }
     .slider {
       position: absolute;
-      border: solid 1px white;
-      height: 100%;
-      min-width: 30px;
-      background-color: rgba(114, 114, 114, 0.8);
+      border: solid 2px #0086B1;
+      height: calc(100% - 3px);
+      min-width: 1%;
+      max-width: 10%;
+      width: 10%;
+      background-color: rgba(255, 255, 255, 0.4);
       z-index: 10;
-      left: 19%;
+      left: 0;
       top: 0;
       display: block;
 
@@ -76,11 +58,30 @@
         background-color: white;
         width: 1px;
         height: 100%;
-        left: 50%;
+        left: 0%;
       }
     }
+    .zoomed-histogram {
+      height: 264px;
+      background-color: #B2DAE7;
+      position: relative;
+      display: block;
+      border-bottom: solid 1px white;
+    }
+    .histogram {
+      background-color: #80C2D8;
+      height: 140px;
+      position: relative;
+      display: block;
+      border-bottom: solid 1px white;
+    }
+    .cursor-zoom {
+      height: 100%;
+      width: 1px;
+      background: #ffffff;
+      position: absolute;
+      top: 0px;
+    }
   }
-
-
 }
 

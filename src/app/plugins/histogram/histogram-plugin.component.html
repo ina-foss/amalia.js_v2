@@ -1,36 +1,39 @@
-<div class="histograms" *ngIf="listOfHistograms && listOfHistograms.length>0">
+<div #histogramContainer>
+<div class="histograms"  *ngIf="listOfHistograms && listOfHistograms.length>0">
     <div class="histogram" *ngFor="let histogram of listOfHistograms; index as i;">
         <div class="svg">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                  width="100%" height="100%" [attr.viewBox]="'0 0 '+histogram.nbBins+' '+histogram.maxHeight*2">
-                <path [attr.d]="histogram.paths[0]" fill="#80c2d8" stroke-opacity="1" stroke="#80c2d8"
+                <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"
                       stroke-width="1"
                       transform="matrix(1,0,0,1,0,0)"></path>
-                <path [attr.d]="histogram.paths[1]" fill="#80c2d8" stroke-opacity="1"
-                      stroke="#80c2d8" stroke-width="1"
+                <path [attr.d]="histogram.paths[1]" fill="#34495E" stroke-opacity="1"
+                      stroke="#34495E" stroke-width="1"
                       transform="matrix(1,0,0,1,0,0)"></path>
             </svg>
         </div>
     </div>
-    <div class="tc-cursor"></div>
-    <div class="slider">
+    <div class="slider" (mousedown)="dragSlider($event)" [style]="{left:sliderPosition+'px'}" >
         <span class="drag-left"></span>
         <span class="drag-right"></span>
-        <div class="cursor"></div>
+        <div class="cursor" [style]="{left:cursorPosition+'%'}"></div>
     </div>
 </div>
-<div class="histograms" *ngIf="withFocus && listOfHistograms && listOfHistograms.length>0">
-    <div class="histogram" *ngFor="let histogram of listOfHistograms; index as i;">
+    <!-- Zoomed Histograms -->
+<div class="histograms" *ngIf="withFocus && listOfZoomedHistograms && listOfZoomedHistograms.length>0">
+    <div class="zoomed-histogram" *ngFor="let histogram of listOfZoomedHistograms; index as i;" [style]="{'margin-left':histogramPosition+'px'}">
         <div class="svg">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                  width="100%" height="100%">
-                <path [attr.d]="histogram.paths[0]" fill="#80c2d8" stroke-opacity="1" stroke="#80c2d8"
+                <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"
                       stroke-width="1"
                       transform="matrix(1,0,0,1,0,0)"></path>
-                <path [attr.d]="histogram.paths[1]" fill="#80c2d8" stroke-opacity="1"
-                      stroke="#80c2d8" stroke-width="1"
+                <path [attr.d]="histogram.paths[1]" fill="#34495E" stroke-opacity="1"
+                      stroke="#34495E" stroke-width="1"
                       transform="matrix(1,0,0,1,0,0)"></path>
             </svg>
         </div>
     </div>
+    <div class="cursor-zoom" [style]="{'margin-left':cursorZoomPosition+'%'}"></div>
+</div>
 </div>
