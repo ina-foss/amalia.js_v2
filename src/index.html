@@ -17,28 +17,30 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/base-config-hls.json">
-                <!--                <amalia-histogram></amalia-histogram>-->
+            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/base-config.json">
+                <!--                <amalia-histogram-->
+                <!--                        plugin-configuration='{"metadataIds":["waveform-MA00605_01-2048-0","waveform-MA00605_01-2048-1"]}'></amalia-histogram>-->
                 <!--                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>-->
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
             <!--            <amalia-time-bar></amalia-time-bar>-->
         </div>
-        <div class="col-6 p-2">
+        <div class="col-6 p-2" style="height: 400px">
+            <amalia-timeline plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-timeline>
             <!--<div style="height: 500px">
                 <amalia-player player-id="hls" config="http://localhost:4201/configs/base-config-hls.json">
-                    &lt;!&ndash;                <amalia-histogram plugin-configuration='{"metadataIds":["waseforme-&"]}'></amalia-histogram>&ndash;&gt;
+                    &lt;!&ndash;                <amalia-histogram plugin-configuration='{"metadataIds":["waveform-MA00605_01-2048-0"]}'></amalia-histogram>&ndash;&gt;
                     <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>
                     <amalia-control-bar player-id="hls"></amalia-control-bar>
                 </amalia-player>
             </div>-->
-            <!--            <div style="height: 700px"> -->
-            <!--                <amalia-transcription-->
-            <!--                        plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>-->
-            <!--            </div>-->
-            <!--            <div style="height: 700px" id="transcription">-->
-            <!--                <p id="addTranscription">Add transcription</p>-->
-            <!--            </div>-->
+            <div style="height: 700px">
+                <!--                <amalia-transcription-->
+                <!--                        plugin-configuration='{"metadataIds":["transcription_id"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": false}}'></amalia-transcription>-->
+            </div>
+            <!--                        <div style="height: 700px" id="transcription">-->
+            <!--                            <p id="addTranscription">Add transcription</p>-->
+            <!--                        </div>-->
             <!--            <div style="height: 400px" id="storyboard">-->
             <!--                <p id="addStoryboard">Add storyboard</p>-->
             <!--                                <amalia-storyboard-->
@@ -62,7 +64,7 @@
     function addTranscription() {
         const transactionElement = document.createElement("amalia-transcription");
         transactionElement.setAttribute("player-id", "PLAYER")
-        transactionElement.setAttribute("plugin-configuration", '{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 2,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}')
+        transactionElement.setAttribute("plugin-configuration", '{"metadataIds":["transcription_id"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}')
         const content = document.getElementById('transcription');
         content.innerHTML = '';
         content.append(transactionElement);

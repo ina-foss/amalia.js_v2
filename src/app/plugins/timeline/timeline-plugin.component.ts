@@ -1,0 +1,191 @@
+import {PluginBase} from '../../core/plugin/plugin-base';
+import {Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AutoBind} from '../../core/decorator/auto-bind.decorator';
+import {PluginConfigData} from '../../core/config/model/plugin-config-data';
+import {MediaPlayerService} from '../../service/media-player-service';
+import {TimelineConfig} from '../../core/config/model/timeline-config';
+import interact from 'interactjs';
+import {Options} from 'sortablejs';
+
+@Component({
+    selector: 'amalia-timeline',
+    templateUrl: './timeline-plugin.component.html',
+    styleUrls: ['./timeline-plugin.component.scss'],
+    encapsulation: ViewEncapsulation.ShadowDom
+})
+export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit {
+    public static PLUGIN_NAME = 'TIMELINE';
+    public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string }>;
+    public enableDragDrop = false;
+    public configIsOpen = false;
+    @Input()
+    public colors: Array<string> = [
+        '#1ABC9C', '#f1c40e', '#95A5A6', '#2ECC71',
+        '#E67E21', '#34495E', '#3498DB', '#D8D8D8',
+        '#E74C3C', '#F35CF2', '#8E44AD'
+    ];
+    private lastSelectedColorIdx = -1;
+
+    @ViewChild('focusContainer', {static: true})
+    public focusContainer: ElementRef<HTMLVideoElement>;
+    /**
+     * true for open all block
+     */
+    private blocksIsOpen = false;
+    public sortableOptions: Options = {
+        handle: '.drag',
+        filter: '.filtered',
+    };
+
+    constructor(playerService: MediaPlayerService) {
+        super(playerService, TimelinePluginComponent.PLUGIN_NAME);
+    }
+
+    ngOnInit(): void {
+        super.ngOnInit();
+
+    }
+
+    private generateData() {
+        this.listOfBlocks = new Array();
+        // this.listOfBlocks.push({label: '', expendable: false});
+        this.listOfBlocks.push({label: 'Plateau', expendable: false, defaultColor: this.getAvailableColor()});
+        this.listOfBlocks.push({label: 'Sujet', expendable: true, defaultColor: this.getAvailableColor()});
+        this.listOfBlocks.push({label: 'Reportage', expendable: true, defaultColor: this.getAvailableColor()});
+        this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
+        this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
+        this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
+    }
+
+
+    /**
+     * Return color color
+     */
+    private getAvailableColor() {
+        this.lastSelectedColorIdx = Math.min(this.colors.length - 1, this.lastSelectedColorIdx + 1);
+        return this.colors[this.lastSelectedColorIdx];
+    }
+
+    @AutoBind
+    init() {
+        super.init();
+        if (this.pluginConfiguration.data) {
+        }
+        this.generateData();
+        this.initFocusResizable(this.focusContainer.nativeElement);
+    }
+
+    /**
+     * handle call
+     * @param tc time code
+     */
+    public callSeek(tc) {
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
+    }
+
+    /**
+     * Return default config
+     */
+    public getDefaultConfig(): PluginConfigData<TimelineConfig> {
+        return {
+            name: TimelinePluginComponent.PLUGIN_NAME,
+            data: {
+                resizeable: true
+            }
+        };
+    }
+
+    public initFocusResizable(element: HTMLElement) {
+        const container = interact(element);
+        container.resizable({
+            // resize from all edges and corners
+            edges: {left: true, right: true, bottom: false, top: false},
+            listeners: {
+                move(event) {
+                    const target = event.target;
+                    let x = (parseFloat(target.getAttribute('data-x')) || 0);
+                    const y = (parseFloat(target.getAttribute('data-y')) || 0);
+                    // update the element's style
+                    target.style.width = event.rect.width + 'px';
+                    // translate when resizing from top or left edges
+                    x += event.deltaRect.left;
+                    target.style.transform =
+                        'translate(' + x + 'px,' + y + 'px)';
+                    target.setAttribute('data-x', x);
+                    target.setAttribute('data-y', y);
+                }
+            },
+            modifiers: [
+                // keep the edges inside the parent
+                interact.modifiers.restrictEdges({
+                    outer: 'parent'
+                }),
+
+                // minimum size
+                interact.modifiers.restrictSize({
+                    min: {width: 10, height: null}
+                })
+            ],
+
+            inertia: true
+        });
+        container.draggable({
+            listeners: {
+                move(event) {
+                    const target = event.target;
+                    // keep the dragged position in the data-x/data-y attributes
+                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                    const y = (parseFloat(target.getAttribute('data-y')) || 0);
+                    // translate the element
+                    target.style.transform =
+                        'translate(' + x + 'px, ' + y + 'px)';
+                    // update the posiion attributes
+                    target.setAttribute('data-x', x);
+                    target.setAttribute('data-y', y);
+                }
+            },
+            // keep the element within the area of it's parent
+            modifiers: [
+                interact.modifiers.restrictRect({
+                    restriction: 'parent'
+                })
+            ],
+        });
+    }
+
+    /**
+     * In charge to change display state
+     * @param mainElement parent element
+     */
+    toggleState(mainElement: HTMLElement) {
+        if (mainElement.classList.contains('small')) {
+            mainElement.classList.remove('small');
+        } else {
+            mainElement.classList.add('small');
+        }
+        console.log(mainElement.classList);
+    }
+
+    /**
+     * In charge to change display state for all blocks
+     * @param mainElement parent element
+     */
+    toggleAllBlocksState(mainElement: HTMLElement, stateControl) {
+        this.blocksIsOpen = !this.blocksIsOpen;
+        if (this.blocksIsOpen) {
+            stateControl.classList.add('close');
+        } else {
+            stateControl.classList.remove('close');
+        }
+        const elementNodes = mainElement.querySelectorAll('.block');
+        elementNodes.forEach((node) => {
+            if (this.blocksIsOpen) {
+                node.classList.add('small');
+            } else {
+                node.classList.remove('small');
+            }
+        });
+    }
+
+
+}
