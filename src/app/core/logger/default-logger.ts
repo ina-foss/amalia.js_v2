@@ -65,7 +65,7 @@ export class DefaultLogger implements LoggerInterface {
                     break;
             }
 
-            if (logConsole && log && !(this._logLevel.toFixed() > level.toFixed())) {
+            if (logConsole && log && (this._logLevel.toFixed() >= level.toFixed())) {
                 if (log.data) {
                     logConsole(msg, log.data);
                 } else {

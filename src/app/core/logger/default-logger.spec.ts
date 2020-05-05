@@ -6,7 +6,7 @@ import {AmaliaException} from '../exception/amalia-exception';
 
 describe('Test Logger', () => {
     let injector: TestBed;
-    const logger = new DefaultLogger();
+    const logger = new DefaultLogger('root', true, LoggerLevel.Trace);
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [],
