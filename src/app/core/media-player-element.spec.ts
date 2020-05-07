@@ -20,8 +20,8 @@ describe('Test Media player element', () => {
             declarations: [],
         }).compileComponents();
         injector = getTestBed();
-        httpTestingController = injector.get(HttpTestingController);
-        httpClient = injector.get(HttpClient);
+        httpTestingController = injector.inject(HttpTestingController);
+        httpClient = injector.inject(HttpClient);
 
     }));
 

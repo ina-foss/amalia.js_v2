@@ -32,8 +32,8 @@ describe('Test Metadata manager', () => {
             declarations: [],
         }).compileComponents();
         injector = getTestBed();
-        httpTestingController = injector.get(HttpTestingController);
-        httpClient = injector.get(HttpClient);
+        httpTestingController = injector.inject(HttpTestingController);
+        httpClient = injector.inject(HttpClient);
         const player: PlayerConfigData = {
             autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
         };

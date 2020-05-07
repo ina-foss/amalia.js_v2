@@ -27,8 +27,8 @@ describe('ConfigurationManager', () => {
             declarations: [],
         }).compileComponents();
         injector = getTestBed();
-        httpClient = injector.get(HttpClient);
-        httpTestingController = injector.get(HttpTestingController);
+        httpClient = injector.inject(HttpClient);
+        httpTestingController = injector.inject(HttpTestingController);
     }));
 
     afterEach(() => {
