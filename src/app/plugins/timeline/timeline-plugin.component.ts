@@ -6,6 +6,7 @@ import {MediaPlayerService} from '../../service/media-player-service';
 import {TimelineConfig} from '../../core/config/model/timeline-config';
 import interact from 'interactjs';
 import {Options} from 'sortablejs';
+import {PlayerEventType} from '../../core/constant/event-type';
 
 @Component({
     selector: 'amalia-timeline',
@@ -18,6 +19,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string }>;
     public enableDragDrop = false;
     public configIsOpen = false;
+    public currentTime = 0;
+    public duration = 0;
     @Input()
     public colors: Array<string> = [
         '#1ABC9C', '#f1c40e', '#95A5A6', '#2ECC71',
@@ -28,6 +31,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     @ViewChild('focusContainer', {static: true})
     public focusContainer: ElementRef<HTMLVideoElement>;
+    @ViewChild('mainBlockContainer', {static: true})
+    public mainBlockContainer: ElementRef<HTMLVideoElement>;
+    @ViewChild('listOfBlocksContainer', {static: true})
+    public listOfBlocksContainer: ElementRef<HTMLVideoElement>;
+
     /**
      * true for open all block
      */
@@ -43,7 +51,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     ngOnInit(): void {
         super.ngOnInit();
-
     }
 
     private generateData() {
@@ -52,8 +59,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.listOfBlocks.push({label: 'Plateau', expendable: false, defaultColor: this.getAvailableColor()});
         this.listOfBlocks.push({label: 'Sujet', expendable: true, defaultColor: this.getAvailableColor()});
         this.listOfBlocks.push({label: 'Reportage', expendable: true, defaultColor: this.getAvailableColor()});
-        this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
-        this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
         this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
     }
 
@@ -73,6 +78,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
         this.generateData();
         this.initFocusResizable(this.focusContainer.nativeElement);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
     }
 
     /**
@@ -105,12 +112,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                     const target = event.target;
                     let x = (parseFloat(target.getAttribute('data-x')) || 0);
                     const y = (parseFloat(target.getAttribute('data-y')) || 0);
+                    const parentElement = target.parentElement;
+                    const parentWidth = parentElement.clientWidth;
                     // update the element's style
-                    target.style.width = event.rect.width + 'px';
+                    target.style.width = (event.rect.width * 100 / parentWidth) + '%';
                     // translate when resizing from top or left edges
                     x += event.deltaRect.left;
-                    target.style.transform =
-                        'translate(' + x + 'px,' + y + 'px)';
+                    target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
                     target.setAttribute('data-x', x);
                     target.setAttribute('data-y', y);
                 }
@@ -120,13 +128,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 interact.modifiers.restrictEdges({
                     outer: 'parent'
                 }),
-
                 // minimum size
                 interact.modifiers.restrictSize({
                     min: {width: 10, height: null}
                 })
             ],
-
             inertia: true
         });
         container.draggable({
@@ -157,7 +163,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to change display state
      * @param mainElement parent element
      */
-    toggleState(mainElement: HTMLElement) {
+    public toggleState(mainElement: HTMLElement) {
         if (mainElement.classList.contains('small')) {
             mainElement.classList.remove('small');
         } else {
@@ -170,7 +176,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to change display state for all blocks
      * @param mainElement parent element
      */
-    toggleAllBlocksState(mainElement: HTMLElement, stateControl) {
+    public toggleAllBlocksState(mainElement: HTMLElement, stateControl) {
         this.blocksIsOpen = !this.blocksIsOpen;
         if (this.blocksIsOpen) {
             stateControl.classList.add('close');
@@ -188,4 +194,35 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
 
+    /**
+     * Invoked time change event for :
+     * - update progress bar
+     */
+    @AutoBind
+    private handleOnTimeChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        if (isFinite(this.currentTime) && isFinite(this.duration)) {
+            const leftPos = this.currentTime * 100 / this.duration;
+            const selector = '.tc-cursor';
+            (this.mainBlockContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${leftPos}px`;
+            (this.listOfBlocksContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${leftPos}px`;
+        }
+    }
+
+    /**
+     * Invoked on duration change
+     */
+    @AutoBind
+    private handleOnDurationChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+    }
+
+    /**
+     * In charge to unzoom
+     */
+    public unZoom() {
+        (this.focusContainer.nativeElement as HTMLElement).style.left = `0`;
+        (this.focusContainer.nativeElement as HTMLElement).style.width = `100%`;
+    }
 }

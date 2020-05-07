@@ -16,10 +16,20 @@
     width: 15px;
     position: relative;
     top: 5px;
+    color: #0086B1;
   }
 
   .amalia-svg-down-size {
     transition: all 0.5s ease-in-out;
+  }
+
+  .tc-cursor {
+    position: absolute;
+    z-index: 9;
+    box-sizing: border-box;
+    height: 100%;
+    width: 1px;
+    border: 2px solid #0086B1;
   }
 
   .header,
@@ -65,9 +75,18 @@
         line-height: 25px;
         top: 3px;
 
+        .icon {
+          top: 3px;
+          color: #C8C9CA;
+        }
+
         &.selected {
           background-color: #0087B2;
           color: white;
+
+          .icon {
+            color: white;
+          }
         }
       }
     }
@@ -79,6 +98,7 @@
     width: 0;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.8);
+    z-index: 10;
 
     &.open {
       width: 100%;
@@ -151,7 +171,6 @@
     }
   }
 
-
   .main-block,
   .list-blocks {
     position: relative;
@@ -174,6 +193,7 @@
 
       .drag {
         cursor: grab;
+        color: #0086B1;
       }
 
       &.small {
@@ -189,12 +209,14 @@
 
       .focus {
         position: absolute;
-        background-color: rgba(15, 117, 149, 0.43);
+        background-color: rgba(255, 255, 255, 0.8);
         border-radius: 5px;
         height: calc(100% - 10px);
         top: 5px;
-        width: 30%;
-        left: 40%;
+        width: 100%;
+        left: 0;
+        border: solid 1px #34495E;
+        z-index: 10;
       }
 
       .block-header {
@@ -242,6 +264,7 @@
           width: 10px;
           border-radius: 10px;
           left: 30%;
+          border: 1px solid #34495E;
         }
 
         .segment {
@@ -251,7 +274,8 @@
           height: 10px;
           left: 85%;
           background-color: #00b0e8;
-          border-radius: 10px;
+          border-radius: 2px;
+          border: 1px solid #34495E;
         }
 
       }
@@ -268,6 +292,7 @@
     height: 50px;
 
     .block.main {
+      background-color: #F2F5F9;
       height: 50px;
     }
   }
