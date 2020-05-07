@@ -92,7 +92,7 @@ export class ShortcutManager {
             if (!modifiersMatch) {
                 return false;
             }
-            return this.nameToCode(definition.key) === event.keyCode;
+            return this.nameToCode(definition.key) === Number(event.key);
         } catch (e) {
             return false;
         }
