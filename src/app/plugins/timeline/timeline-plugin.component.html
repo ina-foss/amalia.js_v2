@@ -13,9 +13,15 @@
     </div>
 </div>
 <div class="main-block" #mainBlockContainer>
-    <div class="tc-cursor" [ngStyle]="{left:'45%'}"></div>
+    <div class="tc-cursor"></div>
     <div class="block main">
-        <div class="focus" #focusContainer></div>
+        <div class="focus" #focusContainer>
+            <div class="time-code" *ngIf="focusTcOut">
+                <span class="start">{{focusTcIn|tcFormat:timeFormat:fps}}</span>
+                <span> - </span>
+                <span class="end ">{{focusTcOut + duration|tcFormat:timeFormat:fps}}</span>
+            </div>
+        </div>
         <div class="timeline">
             <div class="cue-point">
             </div>
@@ -24,7 +30,7 @@
     </div>
 </div>
 <div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions">
-    <div class="tc-cursor" [ngStyle]="{left:'75%'}"></div>
+    <div class="tc-cursor"></div>
     <div class="block" *ngFor="let block of listOfBlocks;" #mainBlock>
         <div class="block-header" *ngIf="block.label!=''">
             <div class="extend">
@@ -54,7 +60,7 @@
         </svg>
         Fermer toutes les timelines
     </div>
-    <div  (click)="unZoom()">
+    <div class="unzoom" (click)="unZoom()">
         <svg class="amalia-svg-unzoom-size icon">
             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#unzoom'"></use>
         </svg>

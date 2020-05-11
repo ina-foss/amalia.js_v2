@@ -21,6 +21,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public configIsOpen = false;
     public currentTime = 0;
     public duration = 0;
+    public tcOffset = 0;
+    public focusTcIn = 0;
+    public focusTcOut = 0;
+
     @Input()
     public colors: Array<string> = [
         '#1ABC9C', '#f1c40e', '#95A5A6', '#2ECC71',
@@ -30,11 +34,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private lastSelectedColorIdx = -1;
 
     @ViewChild('focusContainer', {static: true})
-    public focusContainer: ElementRef<HTMLVideoElement>;
+    public focusContainer: ElementRef<HTMLElement>;
     @ViewChild('mainBlockContainer', {static: true})
-    public mainBlockContainer: ElementRef<HTMLVideoElement>;
+    public mainBlockContainer: ElementRef<HTMLElement>;
     @ViewChild('listOfBlocksContainer', {static: true})
-    public listOfBlocksContainer: ElementRef<HTMLVideoElement>;
+    public listOfBlocksContainer: ElementRef<HTMLElement>;
 
     /**
      * true for open all block
@@ -54,7 +58,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     private generateData() {
-        this.listOfBlocks = new Array();
+        this.listOfBlocks = [];
         // this.listOfBlocks.push({label: '', expendable: false});
         this.listOfBlocks.push({label: 'Plateau', expendable: false, defaultColor: this.getAvailableColor()});
         this.listOfBlocks.push({label: 'Sujet', expendable: true, defaultColor: this.getAvailableColor()});
@@ -62,12 +66,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
     }
 
-
     /**
      * Return color color
      */
     private getAvailableColor() {
-        this.lastSelectedColorIdx = Math.min(this.colors.length - 1, this.lastSelectedColorIdx + 1);
+        this.lastSelectedColorIdx = this.lastSelectedColorIdx + 1 > this.colors.length - 1 ? 0 : this.lastSelectedColorIdx + 1;
         return this.colors[this.lastSelectedColorIdx];
     }
 
@@ -75,6 +78,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     init() {
         super.init();
         if (this.pluginConfiguration.data) {
+            this.timeFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
         }
         this.generateData();
         this.initFocusResizable(this.focusContainer.nativeElement);
@@ -97,6 +101,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return {
             name: TimelinePluginComponent.PLUGIN_NAME,
             data: {
+                timeFormat: 'mms',
                 resizeable: true
             }
         };
@@ -108,19 +113,20 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             // resize from all edges and corners
             edges: {left: true, right: true, bottom: false, top: false},
             listeners: {
-                move(event) {
+                move: (event) => {
                     const target = event.target;
                     let x = (parseFloat(target.getAttribute('data-x')) || 0);
+                    // translate when resizing from top or left edges
+                    x += event.deltaRect.left;
                     const y = (parseFloat(target.getAttribute('data-y')) || 0);
                     const parentElement = target.parentElement;
                     const parentWidth = parentElement.clientWidth;
+                    const leftPos = Math.min(x * 100 / parentWidth, 100);
                     // update the element's style
-                    target.style.width = (event.rect.width * 100 / parentWidth) + '%';
-                    // translate when resizing from top or left edges
-                    x += event.deltaRect.left;
-                    target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
-                    target.setAttribute('data-x', x);
-                    target.setAttribute('data-y', y);
+                    target.style.width = Math.min(100, event.rect.width * 100 / parentWidth) + '%';
+                    target.style.left = +leftPos + '%';
+                    target.setAttribute('data-x', x.toFixed(2));
+                    target.setAttribute('data-y', y.toFixed(2));
                 }
             },
             modifiers: [
@@ -140,14 +146,16 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 move(event) {
                     const target = event.target;
                     // keep the dragged position in the data-x/data-y attributes
-                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + parseFloat(event.dx);
                     const y = (parseFloat(target.getAttribute('data-y')) || 0);
+                    const parentWidth = target.parentElement.clientWidth;
+                    // update the element's style
+                    const leftPos = Math.min(x * 100 / parentWidth, 100);
                     // translate the element
-                    target.style.transform =
-                        'translate(' + x + 'px, ' + y + 'px)';
-                    // update the posiion attributes
-                    target.setAttribute('data-x', x);
-                    target.setAttribute('data-y', y);
+                    target.style.left = leftPos + '%';
+                    // update the position attributes
+                    target.setAttribute('data-x', x.toFixed(2));
+                    target.setAttribute('data-y', y.toFixed(2));
                 }
             },
             // keep the element within the area of it's parent
@@ -157,6 +165,16 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 })
             ],
         });
+        container.on('dragend resizeend', this.handleZoomRangeChange);
+    }
+
+    @AutoBind
+    public handleZoomRangeChange() {
+        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
+        const focusWidth = this.focusContainer.nativeElement.offsetWidth;
+        const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
+        this.focusTcIn = this.tcOffset + (leftPos * this.duration / mainContainerWidth);
+        this.focusTcOut = this.tcOffset + ((leftPos + focusWidth) * this.duration / mainContainerWidth);
     }
 
     /**
@@ -175,6 +193,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * In charge to change display state for all blocks
      * @param mainElement parent element
+     * @param stateControl old state
      */
     public toggleAllBlocksState(mainElement: HTMLElement, stateControl) {
         this.blocksIsOpen = !this.blocksIsOpen;
@@ -216,13 +235,19 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.focusTcIn = this.tcOffset + this.currentTime;
+        this.focusTcOut = this.tcOffset + this.duration;
     }
 
     /**
-     * In charge to unzoom
+     * In charge to un-zoom
      */
     public unZoom() {
+        const container = this.focusContainer.nativeElement;
         (this.focusContainer.nativeElement as HTMLElement).style.left = `0`;
         (this.focusContainer.nativeElement as HTMLElement).style.width = `100%`;
+        container.setAttribute('data-x', '0');
+        container.setAttribute('data-y', '0');
+        this.handleZoomRangeChange();
     }
 }
