@@ -80,6 +80,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (this.pluginConfiguration.data) {
             this.timeFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
         }
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.generateData();
         this.initFocusResizable(this.focusContainer.nativeElement);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -243,11 +244,18 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to un-zoom
      */
     public unZoom() {
-        const container = this.focusContainer.nativeElement;
-        (this.focusContainer.nativeElement as HTMLElement).style.left = `0`;
-        (this.focusContainer.nativeElement as HTMLElement).style.width = `100%`;
+        const container = (this.focusContainer.nativeElement as HTMLElement);
+        container.style.left = `0`;
+        container.style.width = `100%`;
         container.setAttribute('data-x', '0');
         container.setAttribute('data-y', '0');
         this.handleZoomRangeChange();
+    }
+
+    /**
+     * Called when metadata loaded
+     */
+    public handleMetadataLoaded() {
+
     }
 }
