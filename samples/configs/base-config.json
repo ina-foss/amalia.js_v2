@@ -9,10 +9,10 @@
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/jt-d.json"
+      "url": "http://localhost:4201/metadata/amalia-events.json"
     },
     {
-      "url": "http://localhost:4201/metadata/jt-t.json"
+      "url": "http://localhost:4201/metadata/amalia-text.json"
     },
     {
       "url": "http://localhost:4201/metadata/sample-transcription.json"
