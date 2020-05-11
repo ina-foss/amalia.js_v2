@@ -28,10 +28,8 @@ module.exports = function (config) {
         },
         htmlReporter: {
             outputFile: '.tests/units.html',
-
             // Optional
-            pageTitle: 'Unit Tests',
-            subPageTitle: 'A sample project description',
+            pageTitle: 'Unit Tests Amalia',
             groupSuites: true,
             useCompactStyle: true,
             useLegacyStyle: true,
