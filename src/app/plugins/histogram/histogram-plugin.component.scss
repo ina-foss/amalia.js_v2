@@ -12,7 +12,7 @@
   width: 100%;
   z-index: 2;
 
-  .histograms {
+  .histograms,.zoomed-histograms {
     position: relative;
     background-color: #6c6c6c;
     display: flex;
@@ -33,9 +33,10 @@
       width: 10%;
       background-color: rgba(255, 255, 255, 0.4);
       z-index: 10;
-      left: 0;
+      //left: 0;
       top: 0;
       display: block;
+      cursor: move;
 
       .drag-left,
       .drag-right {

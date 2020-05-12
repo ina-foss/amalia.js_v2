@@ -14,6 +14,7 @@ import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.com
 import {MediaPlayerService} from './service/media-player-service';
 import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 
+
 @NgModule({
     imports: [
         BrowserModule,
