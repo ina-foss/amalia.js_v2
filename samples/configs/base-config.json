@@ -2,20 +2,22 @@
   "debug": true,
   "logLevel": "trace",
   "player": {
-    "src": "http://localhost:4201/medias/outputlm.mp4",
-    "backwardsSrc": "http://localhost:4201/medias/jt-r.mp4",
+    "src": "http://localhost:4201/medias/F24_14301445_21032014_id_en.mp4",
     "crossOrigin": "anonymous",
     "autoplay": false
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/amalia-events.json"
+      "url": "http://localhost:4201/metadata/amalia01-ball.json"
     },
     {
-      "url": "http://localhost:4201/metadata/amalia-text.json"
+      "url": "http://localhost:4201/metadata/amalia01-events.json"
     },
     {
-      "url": "http://localhost:4201/metadata/sample-transcription.json"
+      "url": "http://localhost:4201/metadata/F24_14301445_21032014_id_en.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/F24_14301445_21032014_tr_en.json"
     },
     {
       "url": "http://localhost:4201/metadata/waveform.json"

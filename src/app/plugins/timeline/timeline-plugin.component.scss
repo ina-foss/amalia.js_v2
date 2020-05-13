@@ -47,6 +47,10 @@
       color: white;
     }
 
+    .amalia-svg-settings-size {
+      cursor: pointer;
+    }
+
     div {
       padding: 0 10px;
     }
@@ -183,6 +187,63 @@
         height: calc(100% - 110px);
         width: 100%;
         background-color: #F2F5F9;
+        overflow-y: auto;
+
+
+        ul {
+          list-style: none;
+
+          li {
+            font-family: "Trebuchet MS";
+            color: #222222;
+            font-size: 16px;
+            letter-spacing: 0;
+            height: 20px;
+            line-height: 20px;
+            position: relative;
+            padding: 0;
+            margin: 5px 0;
+
+
+            .color {
+              height: 15px;
+              width: 15px;
+              display: inline-block;
+              margin-right: 5px;
+              border-radius: 10px;
+            }
+
+            input[type=checkbox] {
+              transform: scale(1);
+            }
+
+            input[type=checkbox] {
+              box-sizing: border-box;
+              height: 16px;
+              width: 16px;
+              border: 1px solid #DDDDDD;
+              border-radius: 2px;
+              background-color: #FFFFFF;
+            }
+
+            input[type=checkbox]:after {
+              content: " ";
+              background-color: #fff;
+              display: inline-block;
+              color: #747474;
+              width: 15px;
+              height: 15px;
+              visibility: visible;
+              border: 1px solid #DDDDDD;
+              text-align: center;
+            }
+
+            input[type=checkbox]:checked:after {
+              content: "\2714";
+              font-weight: bold;
+            }
+          }
+        }
       }
     }
   }
@@ -291,6 +352,8 @@
           border-radius: 10px;
           left: 30%;
           border: 1px solid #34495E;
+          cursor: pointer;
+          transition: all 0.25s ease-in-out;
         }
 
         .segment {
@@ -302,6 +365,8 @@
           background-color: #00b0e8;
           border-radius: 2px;
           border: 1px solid #34495E;
+          cursor: pointer;
+          transition: all 0.25s ease-in-out;
         }
 
       }

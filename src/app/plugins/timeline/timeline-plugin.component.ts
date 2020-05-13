@@ -7,6 +7,8 @@ import {TimelineConfig} from '../../core/config/model/timeline-config';
 import interact from 'interactjs';
 import {Options} from 'sortablejs';
 import {PlayerEventType} from '../../core/constant/event-type';
+import {isArrayLike} from 'rxjs/internal-compatibility';
+import {TimelineLocalisation} from '../../core/metadata/model/timeline-localisation';
 
 @Component({
     selector: 'amalia-timeline',
@@ -16,7 +18,7 @@ import {PlayerEventType} from '../../core/constant/event-type';
 })
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit {
     public static PLUGIN_NAME = 'TIMELINE';
-    public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string }>;
+    public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string, displayState: boolean, data: Array<TimelineLocalisation> }>;
     public enableDragDrop = false;
     public configIsOpen = false;
     public currentTime = 0;
@@ -57,14 +59,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         super.ngOnInit();
     }
 
-    private generateData() {
-        this.listOfBlocks = [];
-        // this.listOfBlocks.push({label: '', expendable: false});
-        this.listOfBlocks.push({label: 'Plateau', expendable: false, defaultColor: this.getAvailableColor()});
-        this.listOfBlocks.push({label: 'Sujet', expendable: true, defaultColor: this.getAvailableColor()});
-        this.listOfBlocks.push({label: 'Reportage', expendable: true, defaultColor: this.getAvailableColor()});
-        this.listOfBlocks.push({label: 'Générique', expendable: true, defaultColor: this.getAvailableColor()});
-    }
 
     /**
      * Return color color
@@ -80,9 +74,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (this.pluginConfiguration.data) {
             this.timeFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.generateData();
         this.initFocusResizable(this.focusContainer.nativeElement);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
     }
@@ -91,7 +84,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * handle call
      * @param tc time code
      */
-    public callSeek(tc) {
+    public callSeek(tc: number) {
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 
@@ -103,6 +96,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             name: TimelinePluginComponent.PLUGIN_NAME,
             data: {
                 timeFormat: 'mms',
+                expendable: true,
                 resizeable: true
             }
         };
@@ -222,10 +216,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (isFinite(this.currentTime) && isFinite(this.duration)) {
-            const leftPos = this.currentTime * 100 / this.duration;
             const selector = '.tc-cursor';
-            (this.mainBlockContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${leftPos}px`;
-            (this.listOfBlocksContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${leftPos}px`;
+            const focusLeftPos = (this.currentTime - this.focusTcIn) * 100 / (this.focusTcOut - this.focusTcIn);
+            (this.mainBlockContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${this.currentTime * 100 / this.duration}%`;
+            (this.listOfBlocksContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${focusLeftPos}%`;
         }
     }
 
@@ -255,7 +249,38 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * Called when metadata loaded
      */
+    @AutoBind
     public handleMetadataLoaded() {
-
+        this.listOfBlocks = [];
+        const handleMetadataIds = this.pluginConfiguration.metadataIds;
+        const metadataManager = this.mediaPlayerElement.metadataManager;
+        this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`, this.pluginConfiguration);
+        // Check if metadata is initialized
+        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+            handleMetadataIds.forEach((metadataId) => {
+                let listOfLocalisations = null;
+                try {
+                    listOfLocalisations = metadataManager.getTimelineLocalisations(metadataId);
+                    console.log(listOfLocalisations);
+                } catch (e) {
+                    this.logger.warn('Error to parse metadata');
+                }
+                this.listOfBlocks.push({
+                    label: metadataId,
+                    expendable: this.pluginConfiguration.data.expendable,
+                    defaultColor: this.getAvailableColor(),
+                    displayState: true,
+                    data: listOfLocalisations
+                });
+            });
+        }
     }
+
+    /**
+     * In charge to change display state
+     */
+    public changeDisplayState(event: MouseEvent, block: any) {
+        block.displayState = (event.target as HTMLInputElement).checked;
+    }
+
 }

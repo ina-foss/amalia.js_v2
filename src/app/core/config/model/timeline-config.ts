@@ -4,6 +4,10 @@ export interface TimelineConfig {
      */
     resizeable: boolean;
     /**
+     * True for expend line
+     */
+    expendable: boolean;
+    /**
      * Time format
      */
     timeFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds';
