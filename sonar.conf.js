@@ -7,7 +7,7 @@ sonarqubeScanner({
         'sonar.typescript.lcov.reportPaths': './coverage/amalia/lcov.info',
         'sonar.sources': '.',
         'sonar.inclusions': 'src/**',
-        'sonar.exclusions': '**.spec.ts,**.mock.ts'
+        'sonar.exclusions': '**.spec.ts,**.mock.ts, index.html'
     }
 }, () => {
 });

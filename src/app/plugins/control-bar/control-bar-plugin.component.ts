@@ -1,14 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {
-    Component,
-    ElementRef,
-    EventEmitter, HostListener,
-    Input,
-    OnDestroy,
-    Output,
-    ViewChild,
-    ViewEncapsulation
-} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
@@ -155,7 +146,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * display state (s/m/l)
      */
-    public displayState : String;
+    public displayState: string;
     /**
      * FullScreenMode state
      */
@@ -207,9 +198,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
         const listOfControls = new Array<ControlBarConfig>();
-        listOfControls.push({label: 'Barre de progression', control: 'progressBar',priority: 1});
-        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2,priority: 1});
-        listOfControls.push({label: 'Fullscreen', control: 'toggleFullScreen', icon: 'fullscreen', zone: 3,priority: 1});
+        listOfControls.push({label: 'Barre de progression', control: 'progressBar', priority: 1});
+        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1});
+        listOfControls.push({label: 'Fullscreen', control: 'toggleFullScreen', icon: 'fullscreen', zone: 3, priority: 1});
         return {
             name: ControlBarPluginComponent.PLUGIN_NAME,
             data: listOfControls
@@ -333,6 +324,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
     }
+
     /**
      * Invoked for change aspect ratio
      */

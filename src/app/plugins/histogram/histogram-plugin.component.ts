@@ -16,11 +16,11 @@ import interact from 'interactjs';
     selector: 'amalia-histogram',
     templateUrl: './histogram-plugin.component.html',
     styleUrls: ['./histogram-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom,
+    encapsulation: ViewEncapsulation.ShadowDom
 })
 export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit {
+    public static PLUGIN_NAME = 'HISTOGRAM';
     private readonly httpClient: HttpClient;
-
     constructor(httpClient: HttpClient, playerService: MediaPlayerService) {
         super(playerService, HistogramPluginComponent.PLUGIN_NAME);
         this.httpClient = httpClient;
@@ -29,10 +29,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         }
         this.listOfZoomedHistograms = new Array<{ paths: [string, string], nbBins: number, maxHeight: number }>();
     }
-    public static PLUGIN_NAME = 'HISTOGRAM';
      /**
-     * state of video
-     */
+      * state of video
+      */
     public isplaying: boolean;
     /**
      * Return  current time
@@ -89,31 +88,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * Mouse Positions
      */
     public position: number;
-
-    ngOnInit(): void {
-        super.ngOnInit();
-    }
-
-    @AutoBind
-    init() {
-        super.init();
-        this.withFocus = this.pluginConfiguration.data.withFocus;
-        this.getZoomedHistogramData();
-        this.initSliderEvents();
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-
-    }
-    /**
-     * Return default config
-     */
-    getDefaultConfig(): PluginConfigData<HistogramConfig> {
-        return {
-            name: HistogramPluginComponent.PLUGIN_NAME,
-            data: {withFocus: true, enableMirror: true}
-        };
-    }
     /**
      * Handle draw histogram return tuple with positive bins and negative bins
      * In charge to create svg paths
@@ -146,7 +120,28 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         }
         return null;
     }
+    ngOnInit(): void {
+        super.ngOnInit();
+    }
 
+    @AutoBind
+    init() {
+        super.init();
+        this.withFocus = this.pluginConfiguration.data.withFocus;
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+
+    }
+    /**
+     * Return default config
+     */
+    getDefaultConfig(): PluginConfigData<HistogramConfig> {
+        return {
+            name: HistogramPluginComponent.PLUGIN_NAME,
+            data: {withFocus: true, enableMirror: true}
+        };
+    }
     /**
      * Handle draw histogram
      * @param histograms list of histogram metadata
@@ -224,7 +219,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         let zoomedWidth;
         if (document.fullscreenElement === null) {
             const containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
-            zoomedWidth = Math.round(this.getZoomedWidth(containerWidth,this.zoomSize));
+            zoomedWidth = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
         } else {
             const widthContainer = window.outerWidth;
             zoomedWidth = Math.round(this.getZoomedWidth(widthContainer, this.zoomSize));
@@ -267,6 +262,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     private handleOnDurationChange() {
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.initSliderEvents();
     }
     /**
      * Invoked on metadata loaded
@@ -279,6 +275,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
             this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
+            this.getDefaultZoomedHistogramData();
         }
     }
     /**
@@ -313,21 +310,20 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.isplaying = null;
     }
     /**
-     * get zoomed histogram data from api
+     * get default zoomed histogram data from api
      */
-    private getZoomedHistogramData(){
+    private getDefaultZoomedHistogramData() {
+        let containerWidth;
         const  url = this.pluginConfiguration.data.url;
         let format = this.pluginConfiguration.data.format;
 
         if (typeof(format) === 'undefined') {
             if (document.fullscreenElement === null) {
-                const containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
-                format = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
+                containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
             }  else {
-                const widthContainer = window.outerWidth;
-                format = Math.round(this.getZoomedWidth(widthContainer, this.zoomSize));
-
+                containerWidth = window.outerWidth;
             }
+            format = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
             format = Math.round(format / 3);
         }
         const urlHistogramL = url + '?format=' + format + '&canal=0';
@@ -336,16 +332,102 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.loadHistogram(urlHistogramR);
     }
     /**
+     * get default zoomed histogram data from api
+     */
+    private getZoomedHistogramData() {
+        let format;
+        let containerWidth;
+        const  url = this.pluginConfiguration.data.url;
+        if (document.fullscreenElement === null) {
+            containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
+        }  else {
+            containerWidth = window.outerWidth;
+        }
+        format = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
+        format = Math.round(format / 3);
+        const urlHistogramL = url + '?format=' + format + '&canal=0';
+        const urlHistogramR = url + '?format=' + format + '&canal=1';
+        this.loadHistogram(urlHistogramL);
+        this.loadHistogram(urlHistogramR);
+    }
+    /**
      * slider events
      */
-    private initSliderEvents() {
-        console.log(this.sliderElement);
-        const container = interact(this.sliderElement.nativeElement);
-        container.draggable({
-            onmove(event) {
-                console.log(event);
+    @AutoBind
+    public initSliderEvents() {
+        const position = { x: 0};
+        const self = this;
+        const duration = self.mediaPlayerElement.getMediaPlayer().getDuration();
+        const container = self.sliderElement.nativeElement;
+        interact(container).draggable({
+            modifiers: [
+                interact.modifiers.restrictRect({
+                    restriction: 'parent',
+                    endOnly: true
+                })
+            ],
+                listeners: {
+                start() {
+                    //  store the state of the player when  drag
+                    if (self.mediaPlayerElement.getMediaPlayer().isPaused() === false && typeof(self.isplaying) !== 'undefined') {
+                        self.isplaying = true;
+                        self.mediaPlayerElement.getMediaPlayer().pause();
+                    } else {
+                        self.isplaying = false;
+                    }
+                },
+                move(event) {
+                    position.x += event.dx;
+                    event.target.style.transform = 'translate(' + position.x + 'px)';
+                    // 4 = border width
+                    const left = position.x;
+                    const width = self.sliderElement.nativeElement.offsetWidth;
+                    const pos =  ((left + width /  2 + 4) / self.histogramContainerElement.nativeElement.offsetWidth) * 100;
+                    let currentTime =  (duration * pos) / 100;
+                    currentTime = parseFloat(currentTime.toFixed(2));
+                    self.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
+                    // self.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, currentTime);
+                },
+                end() {
+                    const left = position.x;
+                    const width = self.sliderElement.nativeElement.offsetWidth;
+                    const pos =  ((left + width /  2 + 4) / self.histogramContainerElement.nativeElement.offsetWidth) * 100;
+                    let currentTime =  (duration * pos) / 100;
+                    currentTime = parseFloat(currentTime.toFixed(2));
+                    self.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
+                    if (self.isplaying === true) {
+                        self.mediaPlayerElement.getMediaPlayer().play();
+                    }
+                    // reset
+                    self.isplaying = null;
+                }
             }
         });
+        interact(container).resizable({
+            edges: {
+                top: false,
+                bottom: false,
+                right: '.drag-right',
+                left: '.drag-left'
+            }
+        })
+    .on('resizemove', event => {
+        let { x, y } = event.target.dataset;
+        x = parseFloat(x) || 0;
+        y = parseFloat(y) || 0;
+        Object.assign(event.target.style, {
+            width: event.rect.width + 'px',
+            transform: 'translate(' + event.deltaRect.left + 'px)'
+        });
+        Object.assign(event.target.dataset, { x, y });
+    })
+     .on('resizeend', event => {
+         const containerWidth = self.histogramContainerElement.nativeElement.offsetWidth;
+         const zoomSize = (event.rect.width / containerWidth ) * 100;
+         self.zoomSize = Math.round(zoomSize);
+         self.getZoomedHistogramData();
+         // self.updateHistogramWidth(zoomedWidth);
+     });
     }
 
     /**
@@ -372,10 +454,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private addHistogram(data) {
        data = data.localisation[0];
-       for (let i = 0;
-            i < data.data.histogram.length;
-            i++) {
-                const hData = data.data.histogram[i];
+       for (const hData of data.data.histogram) {
                 const histogram = HistogramPluginComponent.drawHistogram(hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror);
                 if (histogram) {
                    this.listOfZoomedHistograms.push(histogram);

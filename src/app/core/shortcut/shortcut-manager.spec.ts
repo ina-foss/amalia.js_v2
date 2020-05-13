@@ -25,8 +25,8 @@ describe('Test Shortcut manager', () => {
             declarations: [],
         }).compileComponents();
         injector = getTestBed();
-        httpTestingController = injector.get(HttpTestingController);
-        httpClient = injector.get(HttpClient);
+        httpTestingController = injector.inject(HttpTestingController);
+        httpClient = injector.inject(HttpClient);
 
         const player: PlayerConfigData = {
             autoplay: false,

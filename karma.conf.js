@@ -9,6 +9,8 @@ module.exports = function (config) {
             require('karma-jasmine'),
             require('karma-chrome-launcher'),
             require('karma-jasmine-html-reporter'),
+            require('karma-junit-reporter'),
+            require('karma-htmlfile-reporter'),
             require('karma-coverage-istanbul-reporter'),
             require('@angular-devkit/build-angular/plugins/karma')
         ],
@@ -20,12 +22,25 @@ module.exports = function (config) {
             reports: ['html', 'lcovonly', 'text-summary'],
             fixWebpackSourcePaths: true
         },
-        reporters: ['progress', 'kjhtml'],
+        reporters: ['progress', 'junit', 'html', 'kjhtml'],
+        junitReporter: {
+            outputDir: '.tests/surefire-reports/'
+        },
+        htmlReporter: {
+            outputFile: '.tests/units.html',
+
+            // Optional
+            pageTitle: 'Unit Tests',
+            subPageTitle: 'A sample project description',
+            groupSuites: true,
+            useCompactStyle: true,
+            useLegacyStyle: true,
+            showOnlyFailed: false
+        },
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-
         customLaunchers: {
             ChromeHeadlessCI: {
                 base: 'ChromeHeadless',

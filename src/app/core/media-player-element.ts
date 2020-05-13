@@ -13,6 +13,7 @@ import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from './constant/event-type';
 import {PreferenceStorageManager} from './storage/preference-storage-manager';
+import {ShortcutManager} from './shortcut/shortcut-manager';
 
 /**
  * In charge to create player
@@ -26,8 +27,10 @@ export class MediaPlayerElement {
     private readonly preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
+    private shortcutManager: ShortcutManager;
     public isMetadataLoaded = false;
-    public width : Number;
+    public width: number;
+
     constructor() {
         this.logger = new DefaultLogger('root-player');
         this.preferenceStorageManager = new PreferenceStorageManager();
@@ -70,6 +73,7 @@ export class MediaPlayerElement {
     /**
      * In  charge to init config
      * @param config param
+     * @param defaultLoader default loader
      * @param configLoader configuration loader when empty we use default configuration loader
      */
     public async init(config: object, defaultLoader?: Loader<Array<Metadata>>, configLoader?: Loader<ConfigData>): Promise<PlayerState> {
@@ -199,26 +203,21 @@ export class MediaPlayerElement {
     public setMediaPlayerWidth(width) {
         this.width = width;
     }
+
     /**
      * Return displayState (s/m/l)
      */
     public getDisplayState() {
-        let displayState;
-        let sWidth = 350;
-        let smWidth= 480;
-        let mWidth= 860;
-
+        let displayState = 'l';
+        const sWidth = 350;
+        const smWidth = 480;
+        const mWidth = 860;
         if (this.width <= sWidth) {
-            displayState = "s";
-        }
-        else if (this.width > sWidth && this.width <= smWidth) {
-            displayState = "ms";
-        }
-        else if (this.width > smWidth && this.width <= mWidth) {
-            displayState = "m";
-        }
-        else {
-            displayState = "l";
+            displayState = 's';
+        } else if (this.width > sWidth && this.width <= smWidth) {
+            displayState = 'ms';
+        } else if (this.width > smWidth && this.width <= mWidth) {
+            displayState = 'm';
         }
         return displayState;
     }

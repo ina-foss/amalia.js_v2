@@ -34,7 +34,7 @@ $amalia-plugin-thumbnail-z-index: var(--amalia-plugin-thumbnail-z-index, 3);
 // Control bar back
 $amalia-ctrl-bar-z-index: var(--amalia-ctrl-bar-z-index, 2);
 $amalia-ctrl-bar-bg-color: var(--amalia-ctrl-bar-bg-color, rgba(34, 34, 34, 0.9));
-$amalia-ctrl-bar-btn-hover: var(--amalia-ctrl-bar-btn-hover, invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%));
+$amalia-ctrl-bar-btn-hover: var(--amalia-ctrl-bar-btn-hover, #0086B1);
 $backgroundColor: #2e2e2e;
 $amalia-border-buttons-bg-color: var(--amalia-border-buttons-bg-color, #1A0C0C);
 // Playback rate slider

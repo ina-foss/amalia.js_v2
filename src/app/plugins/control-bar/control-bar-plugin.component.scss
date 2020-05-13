@@ -3,6 +3,7 @@
 
 :host {
   font-family: $amalia-font-family;
+
   .thumbnail {
     position: absolute;
     width: 172px;
@@ -34,33 +35,40 @@
     left: 0;
     right: 0;
     user-select: none;
+
     &.s {
       display: none;
     }
-    &.m,&.ms {
+
+    &.m, &.ms {
       .column {
         flex: none;
+
         &.mid {
           flex: 1;
         }
+
         &.last {
           flex: none;
         }
       }
     }
+
     &.ms {
       .column {
         .control {
           .amalia-svg-pin-size {
             display: none;
           }
+
           .amalia-svg-slider-size {
             display: none;
           }
         }
       }
     }
-    &.activated,&:hover {
+
+    &.activated, &:hover {
       .control-bar {
         display: flex;
         flex-direction: row;
@@ -105,10 +113,11 @@
       flex-direction: row;
       flex: 1;
       align-items: center;
+
       &:nth-of-type(2) {
         .control {
           .volume-control {
-            left: 0px;
+            left: 0;
           }
         }
       }
@@ -127,13 +136,16 @@
       display: none;
       position: relative;
       padding: 0;
-      margin: 0px 5px 0px 5px;
+      margin: 0 5px 0 5px;
+
       &.show {
         display: unset;
       }
+
       &.text {
         color: $amalia-player-bg-color1;
       }
+
       &.playback-rate {
         min-width: 25px;
         position: relative;
@@ -174,7 +186,7 @@
           outline: none;
           padding: 0;
           margin: 0;
-          top: 0px;
+          top: 0;
           position: absolute;
           background: transparent;
           opacity: 1;
@@ -279,10 +291,12 @@
           border-left: 2px solid $amalia-border-buttons-bg-color;
           border-bottom: 2px solid $amalia-border-buttons-bg-color;
         }
+
         &.amalia-svg-dots-size {
           height: 35px;
           width: 6px;
         }
+
         &.amalia-svg-slider-size {
           height: 16px;
           display: block;
@@ -326,10 +340,6 @@
         &.amalia-svg-forward-frame-size, &.amalia-svg-backward-frame-size {
           width: 24px;
           height: 24px;
-        }
-
-        &:hover {
-          filter: $amalia-ctrl-bar-btn-hover
         }
       }
 
@@ -424,6 +434,7 @@
               top: 47px;
               margin-right: -76px;
               z-index: 0;
+
               .channel-volume-control-mid {
                 display: none;
 
@@ -488,7 +499,7 @@
               background: $amalia-volume-slider-bg;
 
               .ui-slider-progress {
-                top: 0px;
+                top: 0;
               }
 
               .slider {
@@ -515,9 +526,11 @@
     width: 100%;
     height: 50px;
     display: none;
-    &.s,&.ms {
+
+    &.s, &.ms {
       display: none;
     }
+
     div {
       position: relative;
       flex-shrink: 0;
@@ -594,9 +607,11 @@
     display: none;
     width: 100%;
     height: 50px;
-    &.s,&.ms {
+
+    &.s, &.ms {
       display: none;
     }
+
     .playback-rate-labels {
       width: 100%;
       display: flex;
@@ -697,8 +712,10 @@
       }
     }
   }
+
   .controls-reduced-container {
     display: none;
+
     &.s.activated {
       display: block;
       height: 34px;
@@ -707,14 +724,17 @@
       z-index: $amalia-ctrl-bar-z-index;
       top: calc(50% - 17px);
       left: calc(50% - 17px);
+
       .icon {
         height: 32px;
         width: 32px;
       }
     }
   }
+
   .controls-menu {
     display: none;
+
     &.m {
       display: none;
       position: absolute;
@@ -722,17 +742,21 @@
       bottom: 70px;
       background-color: $amalia-ctrl-bar-bg-color;
       right: 10px;
+
       &.pinned {
         bottom: 110px;
       }
+
       &.on {
         display: block;
       }
+
       ul {
-        list-style:none;
+        list-style: none;
         width: 180px;
         padding: 0;
         margin: 0;
+
         li {
           text-align: left;
           display: block;
@@ -742,18 +766,23 @@
           color: white;
           padding-left: 8px;
           position: relative;
+
           &:hover {
-            background-color:rgba(255,255,255,0.45);
+            background-color: rgba(255, 255, 255, 0.45);
+
             ul {
               background-color: $amalia-ctrl-bar-bg-color;
             }
           }
+
           &.selected {
             font-weight: bold;
+
             > .amalia-svg-checked-size {
               display: inline;
             }
           }
+
           > .amalia-svg-checked-size {
             display: none;
             height: 25px;
@@ -762,22 +791,27 @@
             left: 5px;
             top: 3px;
           }
+
           ul {
             display: none;
+
             &.on {
               display: block;
               width: 100%;
               background-color: $amalia-ctrl-bar-bg-color;
+
               li {
                 padding-left: 31px;
               }
             }
           }
         }
+
         span {
           position: absolute;
           right: 30px;
         }
+
         .ratio {
           text-align: center;
           border: 1px solid #fff;
@@ -790,6 +824,7 @@
           line-height: 18px;
           font-size: 12px;
         }
+
         .icon {
           width: 16px;
           height: 16px;
@@ -797,6 +832,7 @@
           position: relative;
           left: 3px;
           top: 3px;
+
           &.amalia-svg-right-size {
             width: 9px;
             height: 16px;

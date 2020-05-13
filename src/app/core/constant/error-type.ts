@@ -53,6 +53,6 @@ export class PlayerErrorCode {
             default :
                 return ErrorMessage.DEFAULT;
         }
-    };
+    }
 }
 

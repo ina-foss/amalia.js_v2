@@ -20,6 +20,23 @@ export class MediaElement {
     private mse: MediaSourceExtension;
     private volumeLeft: number;
     private volumeRight: number;
+    /**
+     * Selected audio channel
+     */
+    private _audioChannel = 1;
+    private _playbackRate = 1;
+    /**
+     * Video framerate used for foreword and backward
+     */
+    private _framerate = 25;
+    /**
+     * Media poster
+     */
+    private _poster: string;
+    /**
+     * To handle merge channel state
+     */
+    private _withMergeVolume = true;
     public audioContext: AudioContext = null;
     public audioContextSplitter = null;
     public panLeft: GainNode = null;
@@ -34,7 +51,6 @@ export class MediaElement {
      * Init media element for handle html video element
      * @param mediaElement html video element
      * @param eventEmitter event emitter
-     * @param logger logger
      */
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter) {
         this.mediaElement = mediaElement;
@@ -52,10 +68,6 @@ export class MediaElement {
         this.logger.logLevel(logLevel);
     }
 
-    /**
-     * Selected audio channel
-     */
-    private _audioChannel = 1;
 
     get audioChannel(): number {
         return this._audioChannel;
@@ -65,17 +77,12 @@ export class MediaElement {
         this._audioChannel = value;
     }
 
-    private _playbackRate = 1;
 
     set playbackRate(value: number) {
         this._playbackRate = value;
         this.setPlaybackRate(value);
     }
 
-    /**
-     * To handle merge channel state
-     */
-    private _withMergeVolume = true;
 
     get withMergeVolume(): boolean {
         return this._withMergeVolume;
@@ -85,11 +92,6 @@ export class MediaElement {
         this._withMergeVolume = value;
     }
 
-    /**
-     * Video framerate used for foreword and backward
-     */
-    private _framerate = 25;
-
     get framerate(): number {
         return this._framerate;
     }
@@ -97,11 +99,6 @@ export class MediaElement {
     set framerate(value: number) {
         this._framerate = value;
     }
-
-    /**
-     * Media poster
-     */
-    private _poster: string;
 
     get poster(): string {
         return this._poster;
@@ -548,6 +545,7 @@ export class MediaElement {
 
 
     }
+
     /**
      * Set Audio Nodes
      */
@@ -562,10 +560,12 @@ export class MediaElement {
                 panner.coneOuterAngle = 180;
                 panner.coneInnerAngle = 0;
                 if (data.channelMergerNode === 'l') {
-                    panner.setPosition(-1, 0, 0);
+                    panner.positionX.setValueAtTime(-1, this.audioContext.currentTime);
                 } else if (data.channelMergerNode === 'r') {
-                    panner.setPosition(1, 0, 0);
+                    panner.positionX.setValueAtTime(1, this.audioContext.currentTime);
                 }
+                panner.positionZ.setValueAtTime(0, this.audioContext.currentTime);
+                panner.positionY.setValueAtTime(0, this.audioContext.currentTime);
                 this.panLeft.connect(panner);
                 this.panRight.connect(panner);
                 panner.connect(this.audioContext.destination);
@@ -575,7 +575,7 @@ export class MediaElement {
                     // Assuming stereo as initial status
                     this.panLeft.connect(this.audioContext.destination, 0);
                     this.panRight.connect(this.audioContext.destination, 0);
-                } else if (data.channelMergerNode === null) {
+                } else {
                     // Create a merger node, to get both signals back together
                     const merger = this.audioContext.createChannelMerger(2);
 

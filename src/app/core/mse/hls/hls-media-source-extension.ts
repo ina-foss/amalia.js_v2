@@ -74,7 +74,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      * @param config media source configuration
      */
     public setSrc(config: PlayerConfigData) {
-        if (config && typeof config.src === 'string' && typeof config.backwardsSrc === 'string') {
+        if (config && typeof config.src === 'string') {
             this.mainMediaSrc = (!HLSMediaSourceExtension.isUrl(config.src)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.src}` : config.src;
             if (typeof config.backwardsSrc === 'string') {
                 this.backwardsMediaSrc = (!HLSMediaSourceExtension.isUrl(config.backwardsSrc))
