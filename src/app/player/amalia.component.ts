@@ -221,8 +221,8 @@ export class AmaliaComponent implements OnInit {
     public onContextMenu(event: MouseEvent) {
         this.contextMenuState = true;
         const defaultMouseMargin = 15;
-        this.contextMenu.nativeElement.style.left = `${event.clientX - defaultMouseMargin}px`;
-        this.contextMenu.nativeElement.style.top = `${event.clientY - defaultMouseMargin}px`;
+        this.contextMenu.nativeElement.style.left = `${event.offsetX - defaultMouseMargin}px`;
+        this.contextMenu.nativeElement.style.top = `${event.offsetY - defaultMouseMargin}px`;
         return false;
     }
 

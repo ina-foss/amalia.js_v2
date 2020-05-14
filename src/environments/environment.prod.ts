@@ -1,4 +1,6 @@
+import * as npm from '../../package.json';
+
 export const environment = {
-    production: true,
-    VERSION: '2.0.3',
+    production: false,
+    VERSION: npm.version
 };
