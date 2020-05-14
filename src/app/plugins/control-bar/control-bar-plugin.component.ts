@@ -461,8 +461,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const thumbnailSize = 150;
         const containerWidth = (event.target as HTMLElement).offsetWidth;
         const tc = Math.round(event.clientX * this.duration / containerWidth);
-        this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
-        this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+        if (isFinite(tc)) {
+            this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
+            this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+        }
     }
 
     /**
@@ -500,6 +502,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private nextPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
     }
+
     /**
      * Invoked for change slow playback rate
      */
@@ -513,6 +516,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private nextSlowPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardSlowPlaybackRateStep));
     }
+
     /**
      * Return playback step value
      * @param playbackRateStep list of steps
