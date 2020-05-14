@@ -63,7 +63,7 @@ export class AmaliaComponent implements OnInit {
     /**
      * preview thumbnail url
      */
-    public previewThumbnailUrl: string = null;
+    public previewThumbnailUrl = '';
 
     /**
      * Generate player base id
@@ -80,6 +80,11 @@ export class AmaliaComponent implements OnInit {
      * Set player autoplay state
      */
     public autoplay: boolean;
+
+    /**
+     * Enable thumbnail
+     */
+    private enableThumbnail: boolean;
 
     private _config: any;
 
@@ -277,14 +282,18 @@ export class AmaliaComponent implements OnInit {
 
     @AutoBind
     private handleSeeking(tc: number) {
-        this.setPreviewThumbnail(tc);
-        this.enablePreviewThumbnail = true;
+        if (this.enableThumbnail) {
+            this.setPreviewThumbnail(tc);
+            this.enablePreviewThumbnail = true;
+        }
     }
 
     @AutoBind
     private handleSeeked() {
-        this.enablePreviewThumbnail = false;
-        this.previewThumbnailUrl = null;
+        if (this.enableThumbnail) {
+            this.enablePreviewThumbnail = false;
+            this.previewThumbnailUrl = '';
+        }
     }
 
     /**
@@ -348,6 +357,7 @@ export class AmaliaComponent implements OnInit {
         this.state = state;
         this.inLoading = false;
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay;
+        this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
     }
 
     /**

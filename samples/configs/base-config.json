@@ -23,7 +23,8 @@
   ],
   "thumbnail": {
     "baseUrl": "https://picsum.photos/id/237/200/300",
-    "enableThumbnail": true
+    "enableThumbnail": true,
+    "tcParam": "start"
   },
   "pluginsConfiguration": {
     "CONTROL_BAR-PLAYER": {

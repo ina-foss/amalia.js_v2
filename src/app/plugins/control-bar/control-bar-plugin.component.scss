@@ -5,16 +5,18 @@
   font-family: $amalia-font-family;
 
   .thumbnail {
-    position: absolute;
+    position: relative;
     width: 150px;
     height: 75px;
     border: solid 1px white;
-    top: -85px;
+    top: -140px;
     left: 0;
     background-clip: padding-box;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
+    z-index: 15;
+    background-color: $amalia-ctrl-bar-bg-color;
   }
 
   .controls-container {
