@@ -1,5 +1,9 @@
 export interface TimelineConfig {
     /**
+     * Plugin title
+     */
+    title: string;
+    /**
      * True for enable resize plugin
      */
     resizeable: boolean;

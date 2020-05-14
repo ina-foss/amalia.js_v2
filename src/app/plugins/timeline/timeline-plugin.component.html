@@ -1,9 +1,6 @@
 <div class="header">
     <div class="title">
-        <svg class="amalia-svg-down-size icon">
-            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down'"></use>
-        </svg>
-        Timeline globale
+        {{title}}
     </div>
     <div (click)="configIsOpen=true">
         <svg class="amalia-svg-settings-size icon">
@@ -19,19 +16,18 @@
             <div class="time-code" *ngIf="focusTcOut">
                 <span class="start">{{focusTcIn|tcFormat:timeFormat:fps}}</span>
                 <span> - </span>
-                <span class="end ">{{focusTcOut + duration|tcFormat:timeFormat:fps}}</span>
+                <span class="end ">{{focusTcOut|tcFormat:timeFormat:fps}}</span>
             </div>
         </div>
         <div class="timeline">
-            <div class="cue-point">
-            </div>
+            <div class="cue-point"></div>
             <div class="segment"></div>
         </div>
     </div>
 </div>
 <div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions">
     <div class="tc-cursor"></div>
-    <div class="block" *ngFor="let block of listOfBlocks;" #mainBlock
+    <div class="block" #mainBlock *ngFor="let block of listOfBlocks;"
          [ngStyle]="{'display': block.displayState ? 'flex':'none'}">
         <div class="block-header" *ngIf="block.label!=''">
             <div class="extend">
@@ -98,8 +94,8 @@
             </ul>
         </div>
         <div class="footer">
-            <button class="btn cancel" (click)="configIsOpen=!configIsOpen">Annuler</button>
-            <button class="btn valid" (click)="configIsOpen=!configIsOpen">Valider</button>
+            <button class="btn cancel" (click)="handleDisplayBlocks(false)">Annuler</button>
+            <button class="btn valid" (click)="handleDisplayBlocks(true)">Valider</button>
         </div>
     </div>
 </div>

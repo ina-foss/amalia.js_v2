@@ -18,6 +18,7 @@ import {TimelineLocalisation} from '../../core/metadata/model/timeline-localisat
 })
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit {
     public static PLUGIN_NAME = 'TIMELINE';
+    public title: string;
     public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string, displayState: boolean, data: Array<TimelineLocalisation> }>;
     public enableDragDrop = false;
     public configIsOpen = false;
@@ -26,30 +27,28 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public tcOffset = 0;
     public focusTcIn = 0;
     public focusTcOut = 0;
-
     @Input()
     public colors: Array<string> = [
         '#1ABC9C', '#f1c40e', '#95A5A6', '#2ECC71',
         '#E67E21', '#34495E', '#3498DB', '#D8D8D8',
         '#E74C3C', '#F35CF2', '#8E44AD'
     ];
-    private lastSelectedColorIdx = -1;
-
     @ViewChild('focusContainer', {static: true})
     public focusContainer: ElementRef<HTMLElement>;
     @ViewChild('mainBlockContainer', {static: true})
     public mainBlockContainer: ElementRef<HTMLElement>;
     @ViewChild('listOfBlocksContainer', {static: true})
     public listOfBlocksContainer: ElementRef<HTMLElement>;
-
-    /**
-     * true for open all block
-     */
-    private blocksIsOpen = false;
     public sortableOptions: Options = {
         handle: '.drag',
         filter: '.filtered',
     };
+    /**
+     * true for open all block
+     */
+    private blocksIsOpen = false;
+    private lastSelectedColorIdx = -1;
+    private blocksDisplayStates: Map<string, boolean> = new Map<string, boolean>();
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, TimelinePluginComponent.PLUGIN_NAME);
@@ -58,7 +57,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     ngOnInit(): void {
         super.ngOnInit();
     }
-
 
     /**
      * Return color color
@@ -74,6 +72,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (this.pluginConfiguration.data) {
             this.timeFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
         }
+        this.title = this.pluginConfiguration.data.title;
         this.initFocusResizable(this.focusContainer.nativeElement);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -81,7 +80,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     /**
-     * handle call
+     * Handle call
      * @param tc time code
      */
     public callSeek(tc: number) {
@@ -95,6 +94,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return {
             name: TimelinePluginComponent.PLUGIN_NAME,
             data: {
+                title: 'Timeline globale',
                 timeFormat: 'mms',
                 expendable: true,
                 resizeable: true
@@ -102,6 +102,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         };
     }
 
+    /**
+     * Init focus
+     * @param element focus element
+     */
     public initFocusResizable(element: HTMLElement) {
         const container = interact(element);
         container.resizable({
@@ -163,14 +167,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         container.on('dragend resizeend', this.handleZoomRangeChange);
     }
 
-    @AutoBind
-    public handleZoomRangeChange() {
-        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
-        const focusWidth = this.focusContainer.nativeElement.offsetWidth;
-        const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
-        this.focusTcIn = this.tcOffset + (leftPos * this.duration / mainContainerWidth);
-        this.focusTcOut = this.tcOffset + ((leftPos + focusWidth) * this.duration / mainContainerWidth);
-    }
 
     /**
      * In charge to change display state
@@ -207,6 +203,32 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         });
     }
 
+    /**
+     * In charge to store display state change change display state
+     */
+    public changeDisplayState(event: MouseEvent, block: {
+        id?: string, label?: string, expendable: boolean,
+        defaultColor?: string, displayState: boolean, data: Array<TimelineLocalisation>
+    }) {
+        const displayState = (event.target as HTMLInputElement).checked;
+        this.blocksDisplayStates.set(block.id, displayState);
+    }
+
+    /**
+     * In charge of save or not display block states
+     * @param isValid true for save display block
+     */
+    public handleDisplayBlocks(isValid) {
+        if (isValid) {
+            this.listOfBlocks.forEach((block) => {
+                if (this.blocksDisplayStates && this.blocksDisplayStates.has(block.id)) {
+                    block.displayState = this.blocksDisplayStates.get(block.id);
+                }
+            });
+        }
+        this.blocksDisplayStates.clear();
+        this.configIsOpen = false;
+    }
 
     /**
      * Invoked time change event for :
@@ -215,12 +237,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (isFinite(this.currentTime) && isFinite(this.duration)) {
-            const selector = '.tc-cursor';
-            const focusLeftPos = (this.currentTime - this.focusTcIn) * 100 / (this.focusTcOut - this.focusTcIn);
-            (this.mainBlockContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${this.currentTime * 100 / this.duration}%`;
-            (this.listOfBlocksContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${focusLeftPos}%`;
-        }
+        this.refreshTimeCursor();
     }
 
     /**
@@ -232,6 +249,28 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         this.focusTcIn = this.tcOffset + this.currentTime;
         this.focusTcOut = this.tcOffset + this.duration;
+    }
+
+    @AutoBind
+    public handleZoomRangeChange() {
+        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
+        const focusWidth = this.focusContainer.nativeElement.offsetWidth;
+        const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
+        this.focusTcIn = this.tcOffset + (leftPos * this.duration / mainContainerWidth);
+        this.focusTcOut = this.tcOffset + ((leftPos + focusWidth) * this.duration / mainContainerWidth);
+        this.refreshTimeCursor();
+    }
+
+    /**
+     * In charge to refresh time cursor
+     */
+    public refreshTimeCursor() {
+        if (isFinite(this.currentTime) && isFinite(this.duration)) {
+            const selector = '.tc-cursor';
+            const focusLeftPos = (this.currentTime - this.focusTcIn) * 100 / (this.focusTcOut - this.focusTcIn);
+            (this.mainBlockContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${this.currentTime * 100 / this.duration}%`;
+            (this.listOfBlocksContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${focusLeftPos}%`;
+        }
     }
 
     /**
@@ -261,11 +300,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 let listOfLocalisations = null;
                 try {
                     listOfLocalisations = metadataManager.getTimelineLocalisations(metadataId);
-                    console.log(listOfLocalisations);
                 } catch (e) {
                     this.logger.warn('Error to parse metadata');
                 }
                 this.listOfBlocks.push({
+                    id: metadataId,
                     label: metadataId,
                     expendable: this.pluginConfiguration.data.expendable,
                     defaultColor: this.getAvailableColor(),
@@ -275,12 +314,4 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             });
         }
     }
-
-    /**
-     * In charge to change display state
-     */
-    public changeDisplayState(event: MouseEvent, block: any) {
-        block.displayState = (event.target as HTMLInputElement).checked;
-    }
-
 }
