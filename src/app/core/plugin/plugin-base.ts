@@ -13,7 +13,9 @@ export abstract class PluginBase<T> implements OnInit {
 
     @Input()
     public playerId = null;
-
+    public timeFormat;
+    public tcOffset;
+    public fps;
     /**
      * This plugin configuration
      */
@@ -77,7 +79,6 @@ export abstract class PluginBase<T> implements OnInit {
     }
 
     init() {
-        console.log('call');
         const defaultConfig = this.getDefaultConfig();
         try {
             const customConfig = this.mediaPlayerElement.getPluginConfiguration(`${this.pluginName}-${this.playerId}`);
@@ -106,6 +107,8 @@ export abstract class PluginBase<T> implements OnInit {
                 ...this.pluginConfiguration.data
             };
         }
+        this.tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset || 0;
+        this.fps = this.mediaPlayerElement.getConfiguration().player.framerate || 25;
     }
 
     abstract getDefaultConfig(): PluginConfigData<T>;

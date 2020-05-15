@@ -13,7 +13,7 @@ import {PluginConfigData} from '../config/model/plugin-config-data';
 import {ConfigDataSource} from '../config/model/config-data-source';
 import {ConfigData} from '../config/model/config-data';
 import {DefaultConfigLoader} from '../config/loader/default-config-loader';
-import {TimeBarConfig} from '../config/model/ time-bar-config';
+import {TimeBarConfig} from '../config/model/time-bar-config';
 import {TimeBarPluginComponent} from '../../plugins/time-bar/time-bar-plugin.component';
 
 describe('Test Metadata manager', () => {

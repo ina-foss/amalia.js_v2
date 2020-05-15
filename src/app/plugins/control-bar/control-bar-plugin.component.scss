@@ -4,11 +4,15 @@
 :host {
   font-family: $amalia-font-family;
 
+  .icon {
+    color: white;
+  }
+
   .thumbnail {
     position: absolute;
     width: 172px;
     height: 120px;
-    border: 5px solid rgba(34,34,34,0.9);
+    border: 5px solid rgba(34, 34, 34, 0.9);
     background-color: #d8d8d8;
     bottom: 65px;
     left: 0;
@@ -17,9 +21,11 @@
     background-size: contain;
     background-position: center;
     z-index: $amalia-ctrl-bar-z-index;
-    &.ms,&.s {
+
+    &.ms, &.s {
       display: none;
     }
+
     &.pinned {
       bottom: 115px;
     }

@@ -2,7 +2,7 @@ import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
-import {TimeBarConfig} from '../../core/config/model/ time-bar-config';
+import {TimeBarConfig} from '../../core/config/model/time-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {DEFAULT} from '../../core/constant/default';
 import {MediaPlayerService} from '../../service/media-player-service';

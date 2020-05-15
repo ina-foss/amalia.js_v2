@@ -1,40 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!-- Generator: Gravit.io -->
-<svg xmlns="http://www.w3.org/2000/svg" style="isolation:isolate"
-     viewBox="0 0 100 100" width="24px" height="24px">
-    <defs>
-        <clipPath id="_clipPath_XD53Lqx9MZCbEPHncOgxKfcvWWo48ECo">
-            <rect width="100" height="100"/>
-        </clipPath>
-    </defs>
-    <g clip-path="url(#_clipPath_XD53Lqx9MZCbEPHncOgxKfcvWWo48ECo)">
-        <g>
-            <g>
-                <g>
-                    <g>
-                        <g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="24px" viewBox="0 0 19 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-260.000000, -504.000000)" stroke="currentColor">
+            <g transform="translate(48.000000, 8.000000)">
+                <g transform="translate(0.000000, 39.000000)">
+                    <g transform="translate(0.000000, 392.000000)">
+                        <g transform="translate(212.000000, 65.000000)">
                             <g>
-                                <mask id="_mask_ypZTBI2lpB8X34XeUyT5Dq4I91cCcNPK" x="-200%" y="-200%" width="400%"
-                                      height="400%">
-                                    <rect x="-200%" y="-200%" width="400%" height="400%" style="fill:white;"/>
-                                    <path d=" M 88.734 4.88 L 88.734 95.455 C 88.734 96.071 88.485 96.628 88.081 97.032 C 87.677 97.436 87.12 97.685 86.504 97.685 C 86.059 97.685 85.624 97.552 85.255 97.303 L 15.943 50.476 C 15.489 50.169 15.195 49.704 15.204 49.115 C 15.216 48.342 15.608 47.481 16.326 46.537 L 85.313 2.994 C 85.834 2.665 86.439 2.578 86.996 2.704 C 87.553 2.83 88.061 3.169 88.734 4.88 Z "
-                                          fill-rule="evenodd" fill="black" stroke="none"/>
-                                </mask>
-                                <path d=" M 88.734 4.88 L 88.734 95.455 C 88.734 96.071 88.485 96.628 88.081 97.032 C 87.677 97.436 87.12 97.685 86.504 97.685 C 86.059 97.685 85.624 97.552 85.255 97.303 L 15.943 50.476 C 15.489 50.169 15.195 49.704 15.204 49.115 C 15.216 48.342 15.608 47.481 16.326 46.537 L 85.313 2.994 C 85.834 2.665 86.439 2.578 86.996 2.704 C 87.553 2.83 88.061 3.169 88.734 4.88 Z "
-                                      fill-rule="evenodd" fill="none"
-                                      mask="url(#_mask_ypZTBI2lpB8X34XeUyT5Dq4I91cCcNPK)"
-                                      vector-effect="non-scaling-stroke" stroke-width="1" stroke="rgb(255,255,255)"
-                                      stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4"/>
-                                <path d=" M 88.734 4.88 L 88.734 95.455 C 88.734 96.071 88.485 96.628 88.081 97.032 C 87.677 97.436 87.12 97.685 86.504 97.685 C 86.059 97.685 85.624 97.552 85.255 97.303 L 15.943 50.476 C 15.489 50.169 15.195 49.704 15.204 49.115 C 15.216 48.342 15.608 47.481 16.326 46.537 L 85.313 2.994 C 85.834 2.665 86.439 2.578 86.996 2.704 C 87.553 2.83 88.061 3.169 88.734 4.88 Z "
-                                      fill-rule="evenodd" fill="none"/>
-                                <mask id="_mask_hhLIRqZepDAAnydPVwEPEknhAgrLw8jU" x="-200%" y="-200%" width="400%"
-                                      height="400%">
-                                    <rect x="-200%" y="-200%" width="400%" height="400%" style="fill:white;"/>
-                                    <line x1="11.266" y1="1.25" x2="11.266" y2="99.391" fill="black" stroke="none"/>
-                                </mask>
-                                <line x1="11.266" y1="1.25" x2="11.266" y2="99.391"
-                                      mask="url(#_mask_hhLIRqZepDAAnydPVwEPEknhAgrLw8jU)"
-                                      vector-effect="non-scaling-stroke" stroke-width="1" stroke="rgb(255,255,255)"
-                                      stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4"/>
+                                <path d="M0.5,1.81370781 L0.5,22.1175842 C0.5,22.2556554 0.555964406,22.3806554 0.646446609,22.4711376 C0.736928813,22.5616198 0.861928813,22.6175842 1,22.6175842 C1.0997608,22.6175842 1.19724093,22.5877418 1.27990484,22.5318948 L16.8173887,12.0348982 C16.9192502,11.9660814 16.985175,11.8616997 16.9831196,11.7296507 C16.9804229,11.5564019 16.8925142,11.3634383 16.7316737,11.1518893 L1.26687455,1.39088636 C1.15011564,1.31719099 1.01453932,1.29779825 0.889728896,1.32601909 C0.764918469,1.35423993 0.650873929,1.43007434 0.5,1.81370781 Z"
+                                      transform="translate(9.182966, 12.000000) scale(-1, 1) translate(-9.182966, -12.000000) "></path>
+                                <line x1="0.5" y1="1" x2="0.5" y2="23" id="Path-2"></line>
                             </g>
                         </g>
                     </g>

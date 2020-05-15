@@ -1,7 +1,9 @@
 import {MetadataUtils} from './metadata-utils';
 
-describe('test metadata utils', () => {
+describe('Test metadata utils', () => {
 
+    const amaliaEventSample = require('tests/assets/metadata/amalia01-events.json');
+    const amaliaBallSample = require('tests/assets/metadata/amalia01-ball.json');
     const transcriptionModel = require('tests/assets/metadata/sample-transcription.json');
     const amaliaWaveForm = require('tests/assets/metadata/amalia-wave-form.json');
 
@@ -21,6 +23,19 @@ describe('test metadata utils', () => {
         expect(h[0].posmax).toEqual(81);
         expect(h[0].negmax).toEqual(72);
         expect(h[0].nbbins).toEqual(2047);
+    });
+
+    it('Test Metadata: metadata timeline', () => {
+        const ballSampleLocalisations = MetadataUtils.getTimelineLocalisations(amaliaBallSample);
+        const eventsSampleLocalisations = MetadataUtils.getTimelineLocalisations(amaliaEventSample);
+        expect(ballSampleLocalisations.length).toEqual(3);
+        expect(ballSampleLocalisations[0].tcIn).toEqual(1.68);
+        expect(ballSampleLocalisations[0].tcOut).toEqual(3.36);
+        expect(eventsSampleLocalisations.length).toEqual(7);
+        expect(eventsSampleLocalisations[0].label).toContain('Start');
+        expect(eventsSampleLocalisations[0].tc).toEqual(1.68);
+        expect(eventsSampleLocalisations[1].label).toContain('Ping');
+        expect(eventsSampleLocalisations[1].tc).toEqual(3.36);
     });
 });
 
