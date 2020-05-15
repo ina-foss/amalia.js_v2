@@ -150,6 +150,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
     }
     /**
      * Return default config
@@ -175,6 +176,18 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 }
             });
         }
+    }
+
+    /**
+     * Invoked on window resize
+     */
+    @AutoBind
+    public handleWindowResize() {
+        // init tabs
+        this.listOfHistograms.length = 0;
+        this.listOfZoomedHistograms.length = 0;
+        this.handleMetadataLoaded();
+        this.getDefaultZoomedHistogramData();
     }
     /**
      * Invoked time change event
