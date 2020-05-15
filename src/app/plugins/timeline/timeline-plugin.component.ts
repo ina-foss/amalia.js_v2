@@ -19,6 +19,7 @@ import {TimelineLocalisation} from '../../core/metadata/model/timeline-localisat
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit {
     public static PLUGIN_NAME = 'TIMELINE';
     public title: string;
+    public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string, displayState: boolean, data: Array<TimelineLocalisation> }>;
     public enableDragDrop = false;
     public configIsOpen = false;
@@ -97,6 +98,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 title: 'Timeline globale',
                 timeFormat: 'mms',
                 expendable: true,
+                mainMetadataIds: [],
                 resizeable: true
             }
         };
@@ -293,6 +295,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.listOfBlocks = [];
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
+        this.mainLocalisations = this.createMainMetadataIds(this.pluginConfiguration.data.mainMetadataIds, metadataManager);
         this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`, this.pluginConfiguration);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
@@ -313,5 +316,26 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 });
             });
         }
+    }
+
+    /**
+     * In charge to main timeline
+     */
+    public createMainMetadataIds(handleMetadataIds, metadataManager) {
+        const listOfLocalisations = new Array<TimelineLocalisation>();
+        if (handleMetadataIds) {
+            this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
+                let localisations = null;
+                try {
+                    localisations = metadataManager.getTimelineLocalisations(metadataId);
+                    if (localisations) {
+                        listOfLocalisations.push(...localisations);
+                    }
+                } catch (e) {
+                    this.logger.warn('Error to parse metadata');
+                }
+            });
+        }
+        return listOfLocalisations;
     }
 }

@@ -8,7 +8,10 @@
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/amalia01-ball.json"
+      "url": "http://localhost:4201/metadata/amalia01-ball.json",
+      "headers": [
+
+      ]
     },
     {
       "url": "http://localhost:4201/metadata/amalia01-events.json"
