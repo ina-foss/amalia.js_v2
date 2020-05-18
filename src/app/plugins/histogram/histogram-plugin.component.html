@@ -1,4 +1,4 @@
-<div #histogramContainer style="background: #34495E;height: 100%">
+<div #histogramContainer class="histogram-container {{displayState}}" >
 <div #histograms class="histograms">
     <div class="histogram" *ngFor="let histogram of listOfHistograms; index as i;">
         <div class="svg">
@@ -13,7 +13,7 @@
             </svg>
         </div>
     </div>
-     <div #slider class="slider" [style]="{'margin-left':sliderPosition+'%'}">
+     <div #slider class="slider" [style]="{'transform':style}">
         <span class="drag-left"></span>
         <span class="drag-right"></span>
         <div class="cursor" [style]="{left:cursorPosition+'%'}"></div>

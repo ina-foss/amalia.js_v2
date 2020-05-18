@@ -339,7 +339,7 @@ ___
 
 Defined in src/app/plugins/histogram/histogram-plugin.component.ts:59
 
-Max zoom size 10% of container width
+zoom size 10% of container width
 
 ___
 
