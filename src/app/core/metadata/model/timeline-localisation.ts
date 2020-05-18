@@ -4,4 +4,5 @@ export interface TimelineLocalisation {
     tc: number;
     tcIn: number;
     tcOut: number;
+    color?: string;
 }

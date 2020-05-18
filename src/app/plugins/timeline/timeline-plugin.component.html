@@ -22,16 +22,26 @@
         <div class="timeline">
             <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn>0 && loc.tcOut>0 ">
                 <div class="cue-point" *ngSwitchDefault
-                     [ngStyle]="{ left:((loc.tc*100)/duration)+'%' }"
+                     [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
                      [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
                 <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
-                     [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%' }"></div>
+                     [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%','background-color': loc.color ?loc.color:mainBlockColor }"></div>
             </ng-container>
         </div>
     </div>
 </div>
 <div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions">
     <div class="tc-cursor"></div>
+    <div class="tooltip" #selectedBlockElement>
+        <p *ngIf="selectedBlock?.thumb">{{selectedBlock.thumb}}</p>
+        <p *ngIf="selectedBlock?.label" class="label">{{selectedBlock.label}}</p>
+        <p *ngIf="selectedBlock?.tc" class="tc">Tc:{{selectedBlock.tc}}</p>
+        <p *ngIf="selectedBlock?.tcIn&&selectedBlock?.tcOut" class="tc">
+            <span class="start">Tc: {{selectedBlock.tcIn|tcFormat:timeFormat:fps}}</span>
+            <span> - </span>
+            <span class="end ">{{selectedBlock.tcOut|tcFormat:timeFormat:fps}}</span>
+        </p>
+    </div>
     <div class="block" #mainBlock *ngFor="let block of listOfBlocks;"
          [ngStyle]="{'display': block.displayState ? 'flex':'none'}">
         <div class="block-header" *ngIf="block.label!=''">
@@ -50,9 +60,11 @@
         <div class="timeline">
             <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn>0 && loc.tcOut>0 ">
                 <div class="cue-point" *ngSwitchDefault
+                     (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
                      [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"
                      [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
                 <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                     (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
                      [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn)+'%' }"></div>
             </ng-container>
         </div>
@@ -72,12 +84,12 @@
     </div>
     <div class="actions">
         <div>Actions :</div>
-        <div class="zoom">
-            <svg class="amalia-svg-zoom-size icon">
-                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#zoom'"></use>
-            </svg>
-            Zoom
-        </div>
+        <!--        <div class="zoom">-->
+        <!--            <svg class="amalia-svg-zoom-size icon">-->
+        <!--                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#zoom'"></use>-->
+        <!--            </svg>-->
+        <!--            Zoom-->
+        <!--        </div>-->
         <div class="drag-drop" [ngClass]="{'selected':enableDragDrop}" (click)="enableDragDrop=!enableDragDrop">
             <svg class="amalia-svg-hand-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#hand'"></use>

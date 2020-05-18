@@ -8,7 +8,7 @@
     "ng": "ng",
     "start": "npm run build:icon && ng serve",
     "start-examples": "npm run build && cp -r dist/amalia/assets/ samples/ &&  cp -r dist/amalia/amalia.min.js samples/main.js && http-server samples/ -i --cors * '*' -z -f -p 4201 -d ",
-    "gendoc": "typedoc --out docs/api src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md --theme docs/api-theme",
+    "gendoc": "typedoc --out docs/api src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md",
     "gendoc-md": "typedoc --plugin typedoc-plugin-markdown --out docs/api-md src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md",
     "build:component": "ng build --prod --output-hashing none && node build-web-component.js",
     "build:icon": "svg-sprite -C svg-sprite.config.json src/styles/svgs/*.svg",

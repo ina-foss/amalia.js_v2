@@ -108,8 +108,8 @@ export class MetadataManager {
      * @param metadataId metadata id
      * @throws AmaliaException
      */
-    public getTimelineLocalisations(metadataId: string): Array<TimelineLocalisation> {
-        return MetadataUtils.getTimelineLocalisations(this.getMetadata(metadataId));
+    public getTimelineLocalisations(metadata: Metadata): Array<TimelineLocalisation> {
+        return MetadataUtils.getTimelineLocalisations(metadata);
     }
 
     /**

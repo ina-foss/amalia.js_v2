@@ -19,4 +19,8 @@ export interface TimelineConfig {
      * Main metadata ids
      */
     mainMetadataIds: Array<string>;
+    /**
+     * Main block color
+     */
+    mainBlockColor: string;
 }
