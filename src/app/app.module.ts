@@ -16,6 +16,7 @@ import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.component';
 import {SortablejsModule} from 'ngx-sortablejs';
 
+
 @NgModule({
     imports: [
         BrowserModule,
