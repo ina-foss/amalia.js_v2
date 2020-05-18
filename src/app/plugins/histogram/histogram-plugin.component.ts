@@ -84,6 +84,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     public histogramContainerElement: ElementRef<HTMLElement>;
     @ViewChild('slider')
     public sliderElement: ElementRef<HTMLElement>;
+    @ViewChild('histograms')
+    public histograms: ElementRef<HTMLElement>;
+    @ViewChild('zoomedHistograms')
+    public zoomedHistograms: ElementRef<HTMLElement>;
     /**
      * Mouse Positions
      */
@@ -122,11 +126,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 }
             }
             let containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
-            let height = 70;
+            // 50% of the svg height
+            let height = this.histograms.nativeElement.offsetHeight / 4;
             if (zoomed === true) {
                 containerWidth = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
                 this.zoomedWidth = containerWidth;
-                height = 132;
+                // 50% of the svg height
+                height = this.zoomedHistograms.nativeElement.offsetHeight / 4;
             }
             const scaleX = containerWidth / nbBins;
             // 70 = 50% of the svg height

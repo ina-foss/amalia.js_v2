@@ -11,14 +11,19 @@
   height: 100%;
   width: 100%;
   z-index: 2;
-
+  .histograms {
+    height: 34%;
+  }
+  .zoomed-histograms {
+    height: 66%;
+  }
   .histograms,.zoomed-histograms {
     position: relative;
     background-color: #6c6c6c;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: inherit;
+    //height: inherit;
     width: inherit;
     .svg {
       height: 100%;
@@ -65,7 +70,8 @@
       }
     }
     .zoomed-histogram {
-      height: 264px;
+      //height: 264px;
+      height: 50%;
       background-color: #B2DAE7;
       position: relative;
       display: block;
@@ -73,7 +79,8 @@
     }
     .histogram {
       background-color: #80C2D8;
-      height: 140px;
+      height: 50%;
+      //height: 140px;
       position: relative;
       display: block;
       border-bottom: solid 1px white;
