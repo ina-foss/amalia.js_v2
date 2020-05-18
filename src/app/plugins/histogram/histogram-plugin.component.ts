@@ -54,7 +54,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     public histogramPosition = 0;
     /**
-     * Max zoom size 10% of container width
+     * zoom size 10% of container width
      */
     public zoomSize = 10;
     /**
