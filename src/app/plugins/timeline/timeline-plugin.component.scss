@@ -273,16 +273,17 @@
       font-size: 8px;
 
       .label {
+        font-family: "Trebuchet MS";
         padding: 5px 10px;
         border-radius: 13px;
         background-color: #34495E;
         color: #FFFFFF;
-        font-family: "Trebuchet MS";
         font-size: 12px;
         font-style: italic;
         font-weight: bold;
         letter-spacing: 0.17px;
         line-height: 19px;
+        width: fit-content;
       }
 
       .tc {
@@ -293,8 +294,6 @@
         line-height: 12px;
         color: #727070;
       }
-
-
     }
 
     &:hover::-webkit-scrollbar {
