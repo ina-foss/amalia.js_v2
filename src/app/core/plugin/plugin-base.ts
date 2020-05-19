@@ -27,7 +27,6 @@ export abstract class PluginBase<T> implements OnInit {
 
     @Input()
     set player(value) {
-        console.log('Player : ', value);
         this._player = value;
     }
 

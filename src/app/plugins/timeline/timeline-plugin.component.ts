@@ -363,7 +363,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         selectedBlockElement.style.left = `${currentTarget.offsetLeft}px`;
         selectedBlockElement.style.top = `${currentTarget.parentElement.parentElement.offsetTop + defaultMouseMargin}px`;
         selectedBlockElement.style.display = 'block';
-        console.log(currentTarget, currentTarget.parentElement.parentElement.offsetTop);
         this.selectedBlock = localisation;
     }
 
@@ -373,6 +372,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     public handleMouseLeaveOnTc($event) {
         this.selectedBlockElement.nativeElement.style.display = 'none';
-        //this.selectedBlock = null;
+        this.selectedBlock = null;
     }
 }

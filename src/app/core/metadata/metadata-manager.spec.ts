@@ -59,7 +59,7 @@ describe('Test Metadata manager', () => {
     it('Test Metadata: loader', fakeAsync(() => {
         const converter = new DefaultMetadataConverter();
         const loader = new DefaultMetadataLoader(httpClient, converter, logger);
-        const metadataPromise = loader.load(testMetadata);
+        const metadataPromise = loader.load(testMetadata, null);
         // .load('./tests/assets/metadata/sample-transcription.json');
         metadataPromise.then((data) => {
             const m: Metadata = data[0];
