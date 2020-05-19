@@ -11,79 +11,107 @@
   height: 100%;
   width: 100%;
   z-index: 2;
-
-  .histograms,.zoomed-histograms {
-    position: relative;
-    background-color: #6c6c6c;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: inherit;
-    width: inherit;
-    .svg {
-      height: 100%;
-      width: 100%;
-    }
-    .slider {
-      touch-action: none;
-      user-select: none;
-      position: absolute;
-      border: solid 2px #0086B1;
-      height: calc(100% - 3px);
-      min-width: 1%;
-      max-width: 10%;
-      width: 10%;
-      background-color: rgba(255, 255, 255, 0.4);
-      z-index: 10;
-      //left: 0;
-      top: 0;
-      display: block;
-      cursor: move;
-
-      .drag-left,
-      .drag-right {
-        position: absolute;
-        display: block;
-        width: 15px;
-        height: 30px;
-        background-color: white;
-        top: 50%;
-        margin-top: -15px;
-        margin-left: -7px;
+  .histogram-container {
+    background: #34495E;
+    height: 100%;
+    &.m {
+      .zoomed-histograms {
+        display: none;
       }
-
-      .drag-right {
-        left: 100%;
-      }
-
-      .cursor {
-        position: absolute;
-        background-color: white;
-        width: 1px;
+      .histograms {
         height: 100%;
-        left: 0%;
+        .slider{
+          display: none;
+        }
       }
     }
-    .zoomed-histogram {
-      height: 264px;
-      background-color: #B2DAE7;
-      position: relative;
-      display: block;
-      border-bottom: solid 1px white;
+    &.s {
+      .zoomed-histograms,.histograms {
+        display: none;
+      }
     }
-    .histogram {
-      background-color: #80C2D8;
-      height: 140px;
-      position: relative;
-      display: block;
-      border-bottom: solid 1px white;
+
+    .histograms {
+      height: 34%;
     }
-    .cursor-zoom {
-      height: 100%;
-      width: 1px;
-      background: #ffffff;
-      position: absolute;
-      top: 0px;
+    .zoomed-histograms {
+      height: 66%;
+    }
+    .histograms, .zoomed-histograms {
+      position: relative;
+      background-color: #6c6c6c;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      //height: inherit;
+      width: inherit;
+      .svg {
+        height: 100%;
+        width: 100%;
+      }
+      .slider {
+        touch-action: none;
+        user-select: none;
+        position: absolute;
+        border: solid 2px #0086B1;
+        height: calc(100% - 3px);
+        min-width: 1%;
+        max-width: 100%;
+        width: 10%;
+        background-color: rgba(255, 255, 255, 0.4);
+        z-index: 10;
+        //left: 0;
+        top: 0;
+        display: block;
+        cursor: move;
+
+        .drag-left,
+        .drag-right {
+          position: absolute;
+          display: block;
+          width: 15px;
+          height: 30px;
+          background-color: white;
+          top: 50%;
+          margin-top: -15px;
+          margin-left: -7px;
+        }
+
+        .drag-right {
+          left: 100%;
+        }
+
+        .cursor {
+          position: absolute;
+          background-color: white;
+          width: 1px;
+          height: 100%;
+          left: 0%;
+        }
+      }
+      .zoomed-histogram {
+        //height: 264px;
+        height: 50%;
+        background-color: #B2DAE7;
+        position: relative;
+        display: block;
+        border-bottom: solid 1px white;
+      }
+      .histogram {
+        background-color: #80C2D8;
+        height: 50%;
+        //height: 140px;
+        position: relative;
+        display: block;
+        border-bottom: solid 1px white;
+      }
+      .cursor-zoom {
+        height: 100%;
+        width: 1px;
+        background: #ffffff;
+        position: absolute;
+        top: 0px;
+      }
     }
   }
 }
