@@ -8,6 +8,7 @@ import {isArrayLike} from 'rxjs/internal-compatibility';
 import {MetadataUtils} from '../utils/metadata-utils';
 import {TranscriptionLocalisation} from './model/transcription-localisation';
 import {Histogram} from './model/histogram';
+import {TimelineLocalisation} from './model/timeline-localisation';
 
 /**
  * In charge to handle metadata
@@ -103,6 +104,15 @@ export class MetadataManager {
     }
 
     /**
+     * Get timeline metadata block
+     * @param metadataId metadata id
+     * @throws AmaliaException
+     */
+    public getTimelineLocalisations(metadata: Metadata): Array<TimelineLocalisation> {
+        return MetadataUtils.getTimelineLocalisations(metadata);
+    }
+
+    /**
      * Return all parsed histogram
      * @param metadataIds ids
      */
@@ -132,7 +142,7 @@ export class MetadataManager {
         if (loadData && loadData.url) {
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
-                .load(loadData.url)
+                .load(loadData.url, loadData.headers)
                 .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata, completed))
                 .catch(() => this.errorToLoadMetadata(loadData.url, completed));
         } else {

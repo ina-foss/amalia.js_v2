@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="26px" height="12px" viewBox="0 0 26 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: sketchtool 63 (101010) - https://sketch.com -->
-    <title>6D169A6C-10C6-4CD4-B449-F33AF9432282</title>
-    <desc>Created with sketchtool.</desc>
-    <g id="07---PLAYER-EXPERT" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="module-lecture-vidéo-selon-ratio" transform="translate(-1232.000000, -1301.000000)" stroke="#FFFFFF">
-            <g id="player_video_all" transform="translate(413.000000, 1000.000000)">
-                <g id="Bitmap" transform="translate(0.000000, 40.000000)">
-                    <g id="player_video-audio" transform="translate(0.000000, 176.000000)">
-                        <g id="Group-3" transform="translate(699.000000, 50.000000)">
-                            <g id="Group-5" transform="translate(121.000000, 36.000000)">
-                                <g id="picto16/moving">
+<svg width="26px" height="12px" viewBox="0 0 26 12" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="module-lecture-vidéo-selon-ratio" transform="translate(-1232.000000, -1301.000000)"
+           stroke="currentColor">
+            <g transform="translate(413.000000, 1000.000000)">
+                <g transform="translate(0.000000, 40.000000)">
+                    <g transform="translate(0.000000, 176.000000)">
+                        <g transform="translate(699.000000, 50.000000)">
+                            <g transform="translate(121.000000, 36.000000)">
+                                <g>
                                     <rect id="Rectangle" x="7" y="0" width="8" height="5" rx="2.5"></rect>
                                     <line x1="0" y1="2.5" x2="7" y2="2.5" id="Line-3" stroke-linecap="square"></line>
-                                    <line x1="15.5" y1="2.5" x2="24" y2="2.5" id="Line-3-Copy" stroke-linecap="square"></line>
+                                    <line x1="15.5" y1="2.5" x2="24" y2="2.5" id="Line-3-Copy"
+                                          stroke-linecap="square"></line>
                                 </g>
-                                <g id="Group-4" transform="translate(0.000000, 9.000000)" stroke-linecap="square">
-                                    <path d="M0,0 C1.01453063e-16,0.828427125 0.671572875,1.5 1.5,1.5 L22.5,1.5 C23.3284271,1.5 24,0.828427125 24,0 L24,0 L24,0" id="Line"></path>
+                                <g transform="translate(0.000000, 9.000000)" stroke-linecap="square">
+                                    <path d="M0,0 C1.01453063e-16,0.828427125 0.671572875,1.5 1.5,1.5 L22.5,1.5 C23.3284271,1.5 24,0.828427125 24,0 L24,0 L24,0"
+                                          id="Line"></path>
                                     <line x1="4" y1="0" x2="4" y2="1.5" id="Line-2-Copy-7"></line>
                                     <line x1="8" y1="0" x2="8" y2="1.5" id="Line-2-Copy-4"></line>
                                     <line x1="12" y1="0" x2="12" y2="1.5" id="Line-2-Copy-2"></line>

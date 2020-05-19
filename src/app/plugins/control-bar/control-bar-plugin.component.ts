@@ -56,13 +56,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list of backward playback step
      */
     @Input()
+    public backwardSlowPlaybackRateStep: Array<number> = [-0.25, -0.5];
+    @Input()
     public backwardPlaybackRateStep: Array<number> = [-1, -2, -6, -10];
     /**
      * list of forward playback step
      */
     @Input()
     public forwardPlaybackRateStep: Array<number> = [2, 6, 10];
-
+    @Input()
+    public forwardSlowPlaybackRateStep: Array<number> = [0.25, 0.5];
     /**
      * In charge to notify download event
      */
@@ -171,7 +174,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.buildSliderSteps();
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
-        this.enableThumbnail = (thumbnailConfig && thumbnailConfig?.baseUrl !== '' && thumbnailConfig.enableThumbnail);
+        this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
@@ -225,8 +228,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             case 'backward':
                 this.prevPlaybackRate();
                 break;
+            case 'slow-backward':
+                this.prevSlowPlaybackRate();
+                break;
             case 'backward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
+                mediaPlayer.movePrevFrame(frames);
+                break;
+            case 'backward-second':
+                frames = mediaPlayer.framerate;
                 mediaPlayer.movePrevFrame(frames);
                 break;
             case 'backward-10seconds':
@@ -242,12 +252,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             case 'forward':
                 this.nextPlaybackRate();
                 break;
+            case 'slow-forward':
+                this.nextSlowPlaybackRate();
+                break;
             case 'forward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
                 mediaPlayer.moveNextFrame(frames);
                 break;
             case 'forward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
+                mediaPlayer.moveNextFrame(frames);
+                break;
+            case 'forward-second':
+                frames = mediaPlayer.framerate;
                 mediaPlayer.moveNextFrame(frames);
                 break;
             case 'forward-frame':
@@ -444,8 +461,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const thumbnailSize = 150;
         const containerWidth = (event.target as HTMLElement).offsetWidth;
         const tc = Math.round(event.clientX * this.duration / containerWidth);
-        this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
-        this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+        if (isFinite(tc)) {
+            this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
+            this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+        }
     }
 
     /**
@@ -482,6 +501,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private nextPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
+    }
+
+    /**
+     * Invoked for change slow playback rate
+     */
+    private prevSlowPlaybackRate() {
+        this.changePlaybackRate(this.getPlaybackStepValue(this.backwardSlowPlaybackRateStep));
+    }
+
+    /**
+     * Invoked for change slow playback rate
+     */
+    private nextSlowPlaybackRate() {
+        this.changePlaybackRate(this.getPlaybackStepValue(this.forwardSlowPlaybackRateStep));
     }
 
     /**

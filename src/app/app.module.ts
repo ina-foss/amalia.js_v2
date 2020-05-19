@@ -13,12 +13,18 @@ import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.
 import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.component';
 import {MediaPlayerService} from './service/media-player-service';
 import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
+import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.component';
+import {SortablejsModule} from 'ngx-sortablejs';
+
 
 @NgModule({
     imports: [
         BrowserModule,
         HttpClientModule,
-        FormsModule
+        FormsModule,
+        SortablejsModule.forRoot({
+            animation: 150
+        }),
     ],
     declarations: [
         AmaliaComponent,
@@ -29,7 +35,8 @@ import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
         TranscriptionPluginComponent,
         SubtitlesPluginComponent,
         StoryboardPluginComponent,
-        HistogramPluginComponent
+        HistogramPluginComponent,
+        TimelinePluginComponent
     ],
     providers: [
         MediaPlayerService
@@ -69,5 +76,9 @@ export class AppModule {
 
         const histogramPluginComponent = createCustomElement(HistogramPluginComponent, {injector: this.injector});
         customElements.define('amalia-histogram', histogramPluginComponent);
+
+        const timelinePluginComponent = createCustomElement(TimelinePluginComponent, {injector: this.injector});
+        customElements.define('amalia-timeline', timelinePluginComponent);
+
     }
 }

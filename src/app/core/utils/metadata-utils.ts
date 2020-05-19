@@ -6,6 +6,7 @@ import {TranscriptionLocalisation} from '../metadata/model/transcription-localis
 import {isArrayLike} from 'rxjs/internal-compatibility';
 import {FormatUtils} from './format-utils';
 import {Histogram} from '../metadata/model/histogram';
+import {TimelineLocalisation} from '../metadata/model/timeline-localisation';
 
 export class MetadataUtils {
     /**
@@ -71,5 +72,44 @@ export class MetadataUtils {
             });
         }
         return histograms;
+    }
+
+    /**
+     * Parse timeline localisation
+     * @param metadata amalia model
+     */
+    public static getTimelineLocalisations(metadata: Metadata): Array<TimelineLocalisation> {
+        const timelineLocalisations = new Array<TimelineLocalisation>();
+        if (metadata && metadata.localisation) {
+            metadata.localisation.forEach((localisation) => {
+                MetadataUtils.parseTimelineLocalisation(localisation, timelineLocalisations);
+            });
+        }
+        return timelineLocalisations;
+    }
+
+    /**
+     * Convert metadata localisation to timeline localisation
+     */
+    private static parseTimelineLocalisation(localisation: any, timelineLocalisations: Array<TimelineLocalisation>) {
+        if (localisation) {
+            const tl: TimelineLocalisation = {
+                label: localisation.label || null,
+                thumb: localisation.thumb || null,
+                tc: (typeof localisation.tc === 'string') ? FormatUtils.convertTcToSeconds(localisation.tc) : localisation.tc || null,
+                tcIn: (typeof localisation.tcin === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcin) : localisation.tcin || null,
+                tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
+            };
+            // add to list if tc or tcin not empty
+            if (tl.tc || tl.tcIn) {
+                timelineLocalisations.push(tl);
+            }
+            // parse sub localisation
+            if (localisation.sublocalisations && localisation.sublocalisations.localisation && localisation.sublocalisations.localisation.length) {
+                localisation.sublocalisations.localisation.forEach((subLocalisation) => {
+                    MetadataUtils.parseTimelineLocalisation(subLocalisation, timelineLocalisations);
+                });
+            }
+        }
     }
 }

@@ -1,0 +1,118 @@
+<div class="header">
+    <div class="title">
+        {{title}}
+    </div>
+    <div (click)="configIsOpen=true">
+        <svg class="amalia-svg-settings-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#settings'"></use>
+        </svg>
+        Choisir les segments à afficher
+    </div>
+</div>
+<div class="main-block" #mainBlockContainer>
+    <div class="tc-cursor"></div>
+    <div class="block main">
+        <div class="focus" #focusContainer>
+            <div class="time-code" *ngIf="focusTcOut">
+                <span class="start">{{focusTcIn|tcFormat:timeFormat:fps}}</span>
+                <span> - </span>
+                <span class="end ">{{focusTcOut|tcFormat:timeFormat:fps}}</span>
+            </div>
+        </div>
+        <div class="timeline">
+            <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn>=0 && loc.tcOut>=0 ">
+                <div class="cue-point" *ngSwitchDefault
+                     [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
+                     [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
+                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                     [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%','background-color': loc.color ?loc.color:mainBlockColor }"></div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions">
+    <div class="tc-cursor"></div>
+    <div class="tooltip" #selectedBlockElement>
+        <p *ngIf="selectedBlock?.thumb">{{selectedBlock.thumb}}</p>
+        <p *ngIf="selectedBlock?.label" class="label">{{selectedBlock.label}}</p>
+        <p *ngIf="selectedBlock?.tc" class="tc">Tc:{{selectedBlock.tc}}</p>
+        <p *ngIf="selectedBlock?.tcIn&&selectedBlock?.tcOut" class="tc">
+            <span class="start">Tc: {{selectedBlock.tcIn|tcFormat:timeFormat:fps}}</span>
+            <span> - </span>
+            <span class="end ">{{selectedBlock.tcOut|tcFormat:timeFormat:fps}}</span>
+        </p>
+    </div>
+    <div class="block" #mainBlock *ngFor="let block of listOfBlocks;"
+         [ngStyle]="{'display': block.displayState ? 'flex':'none'}">
+        <div class="block-header" *ngIf="block.label!=''">
+            <div class="extend">
+                <svg class="amalia-svg-down-size icon" *ngIf="block.expendable" (click)="toggleState(mainBlock)">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down'"></use>
+                </svg>
+                {{block.label}}
+            </div>
+            <div class="drag" [hidden]="!enableDragDrop">
+                <svg class="amalia-svg-drag-drop-size icon">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
+                </svg>
+            </div>
+        </div>
+        <div class="timeline">
+            <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn>=0 && loc.tcOut>=0 ">
+                <div class="cue-point" *ngSwitchDefault
+                     (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
+                     [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"
+                     [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
+                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                     (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
+                     [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn)+'%' }"></div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="state-control" #stateControl (click)="toggleAllBlocksState(listOfBlocksContainer, stateControl)">
+        <svg class="amalia-svg-down-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down'"></use>
+        </svg>
+        Fermer toutes les timelines
+    </div>
+    <div class="unzoom" (click)="unZoom()">
+        <svg class="amalia-svg-unzoom-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#unzoom'"></use>
+        </svg>
+    </div>
+    <div class="actions">
+        <div>Actions :</div>
+        <!--        <div class="zoom">-->
+        <!--            <svg class="amalia-svg-zoom-size icon">-->
+        <!--                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#zoom'"></use>-->
+        <!--            </svg>-->
+        <!--            Zoom-->
+        <!--        </div>-->
+        <div class="drag-drop" [ngClass]="{'selected':enableDragDrop}" (click)="enableDragDrop=!enableDragDrop">
+            <svg class="amalia-svg-hand-size icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#hand'"></use>
+            </svg>
+            Déplacer
+        </div>
+    </div>
+</div>
+<div class="menu" [ngClass]="{'open':configIsOpen}">
+    <div class="content">
+        <div class="header">Gérer les segments à afficher</div>
+        <div class="main">
+            <ul>
+                <li *ngFor="let block of listOfBlocks">
+                    <input type="checkbox" class="check" [checked]="block.displayState"
+                           (click)="changeDisplayState($event,block)"/>
+                    <span class="color" [ngStyle]="{'background-color':block.defaultColor}"></span>{{block.label}}
+                </li>
+            </ul>
+        </div>
+        <div class="footer">
+            <button class="btn cancel" (click)="handleDisplayBlocks(false)">Annuler</button>
+            <button class="btn valid" (click)="handleDisplayBlocks(true)">Valider</button>
+        </div>
+    </div>
+</div>

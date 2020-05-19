@@ -1,8 +1,7 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Metadata} from '@ina/amalia-model';
 import {AmaliaException} from '../../exception/amalia-exception';
 import {LoggerInterface} from '../../logger/logger-interface';
-import {isArray} from 'util';
 import {PlayerErrorCode} from '../../constant/error-type';
 import {Loader} from '../../loader/loader';
 import {Converter} from '../../converter/converter';
@@ -29,9 +28,20 @@ export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
      * In charge to load metadata
      * @param url for load metadata
      */
-    load(url: string): Promise<Array<Metadata>> {
+    load(url: string, headers: Array<string>): Promise<Array<Metadata>> {
         return new Promise<Array<Metadata>>((resolve, reject) => {
-            this.httpClient.get(url)
+            const httpHeaders = {};
+            if (headers) {
+                headers.forEach((h) => {
+                    if (h.indexOf(':') !== -1) {
+                        const header = h.split(':');
+                        httpHeaders[header[0]] = header[1];
+                    } else {
+                        httpHeaders[h] = '';
+                    }
+                });
+            }
+            this.httpClient.get(url, {headers: new HttpHeaders(httpHeaders)})
                 .toPromise()
                 .then(
                     res => {

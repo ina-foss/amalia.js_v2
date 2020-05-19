@@ -13,7 +13,7 @@ import {PluginConfigData} from '../config/model/plugin-config-data';
 import {ConfigDataSource} from '../config/model/config-data-source';
 import {ConfigData} from '../config/model/config-data';
 import {DefaultConfigLoader} from '../config/loader/default-config-loader';
-import {TimeBarConfig} from '../config/model/ time-bar-config';
+import {TimeBarConfig} from '../config/model/time-bar-config';
 import {TimeBarPluginComponent} from '../../plugins/time-bar/time-bar-plugin.component';
 
 describe('Test Metadata manager', () => {
@@ -59,7 +59,7 @@ describe('Test Metadata manager', () => {
     it('Test Metadata: loader', fakeAsync(() => {
         const converter = new DefaultMetadataConverter();
         const loader = new DefaultMetadataLoader(httpClient, converter, logger);
-        const metadataPromise = loader.load(testMetadata);
+        const metadataPromise = loader.load(testMetadata, null);
         // .load('./tests/assets/metadata/sample-transcription.json');
         metadataPromise.then((data) => {
             const m: Metadata = data[0];

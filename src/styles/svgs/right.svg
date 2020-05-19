@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="9px" height="16px" viewBox="0 0 9 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: sketchtool 63 (101010) - https://sketch.com -->
-    <title>D6825173-A7D1-47D0-B37D-8A4C80FC783D@x2</title>
-    <desc>Created with sketchtool.</desc>
-    <g id="07---PLAYER-EXPERT" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="module-lecture-vidéo-Breakpoints" transform="translate(-1185.000000, -536.000000)" fill="#FFFFFF" fill-rule="nonzero">
-            <g id="player_video_minimize-2" transform="translate(570.000000, 365.000000)">
-                <g id="player_video_minimize">
-                    <g id="Bitmap" transform="translate(0.000000, 40.000000)">
-                        <g id="player_video-audio" transform="translate(0.000000, 91.000000)">
-                            <g id="Group-Copy" transform="translate(419.000000, 0.000000)">
-                                <g id="picto16//arrow/right_ghost-copy-11" transform="translate(196.000000, 40.000000)">
-                                    <g id="icons8-expand_arrow" transform="translate(4.500000, 8.000000) rotate(-90.000000) translate(-4.500000, -8.000000) translate(-3.500000, 3.500000)">
-                                        <polygon id="Shape" points="1.18327974 0 0 1.16292135 7.40836013 8.44382022 8 9 8.59163987 8.44382022 16 1.16292135 14.8167203 0 8 6.6994382"></polygon>
+<svg width="9px" height="16px" viewBox="0 0 9 16" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1185.000000, -536.000000)" fill="currentColor" fill-rule="nonzero">
+            <g transform="translate(570.000000, 365.000000)">
+                <g>
+                    <g transform="translate(0.000000, 40.000000)">
+                        <g transform="translate(0.000000, 91.000000)">
+                            <g transform="translate(419.000000, 0.000000)">
+                                <g transform="translate(196.000000, 40.000000)">
+                                    <g transform="translate(4.500000, 8.000000) rotate(-90.000000) translate(-4.500000, -8.000000) translate(-3.500000, 3.500000)">
+                                        <polygon
+                                                points="1.18327974 0 0 1.16292135 7.40836013 8.44382022 8 9 8.59163987 8.44382022 16 1.16292135 14.8167203 0 8 6.6994382"></polygon>
                                     </g>
                                 </g>
                             </g>

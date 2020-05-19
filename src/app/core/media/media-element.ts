@@ -404,6 +404,7 @@ export class MediaElement {
     private handleLoadstart() {
         this.logger.debug('onLoadstart');
         this.eventEmitter.emit(PlayerEventType.INIT);
+        this.mediaElement.removeEventListener('loadstart', this.handleLoadstart);
     }
 
     /**
