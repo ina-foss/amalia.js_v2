@@ -6,8 +6,31 @@
           {
             "data": {
               "text": [
-                "",
                 "This is a demonstration video"
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "This is a"
+                    ]
+                  },
+                  "tcin": "00:00:00.0000",
+                  "tcout": "00:00:00.5000",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "demonstration video"
+                    ]
+                  },
+                  "tcin": "00:00:00.5000",
+                  "tcout": "00:00:01.6800",
+                  "tclevel": 2
+                }
               ]
             },
             "tcin": "00:00:00.0000",

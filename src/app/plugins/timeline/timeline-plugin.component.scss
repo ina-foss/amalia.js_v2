@@ -252,9 +252,86 @@
   .list-blocks {
     position: relative;
     height: calc(100% - 120px);
-    overflow-y: auto;
+    overflow-y: overlay;
     padding-bottom: 5px;
     min-height: 30px;
+
+    .tooltip {
+      min-height: 30px;
+      min-width: 150px;
+      border: 1px solid #DDDDDD;
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
+      color: black;
+      display: none;
+      position: absolute;
+      top: 30px;
+      left: 225px;
+      z-index: 5;
+      padding: 0 5px;
+      font-size: 8px;
+
+      .label {
+        padding: 5px 10px;
+        border-radius: 13px;
+        background-color: #34495E;
+        color: #FFFFFF;
+        font-family: "Trebuchet MS";
+        font-size: 12px;
+        font-style: italic;
+        font-weight: bold;
+        letter-spacing: 0.17px;
+        line-height: 19px;
+      }
+
+      .tc {
+        font-family: "Trebuchet MS";
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 0;
+        line-height: 12px;
+        color: #727070;
+      }
+
+
+    }
+
+    &:hover::-webkit-scrollbar {
+      display: initial;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #F2F5F9;
+      border-width: 0;
+      border-radius: 100px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: #0086B1;
+      border-style: solid;
+      border-color: transparent;
+      border-width: 3px;
+      background-clip: padding-box;
+    }
+
+    /* hidden elements */
+    &::-webkit-scrollbar-button,
+    &::-webkit-scrollbar-track-piece,
+    &::-webkit-scrollbar-corner,
+    &::-webkit-resizer {
+      display: none;
+    }
+
 
     .block {
       position: relative;
@@ -269,8 +346,10 @@
       }
 
       .drag {
+        right: 15px;
         cursor: grab;
         color: #0086B1;
+        position: relative;
       }
 
       &.small {

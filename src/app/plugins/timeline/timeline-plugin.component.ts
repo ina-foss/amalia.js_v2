@@ -19,6 +19,8 @@ import {TimelineLocalisation} from '../../core/metadata/model/timeline-localisat
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit {
     public static PLUGIN_NAME = 'TIMELINE';
     public title: string;
+    public mainBlockColor: string;
+    public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string, displayState: boolean, data: Array<TimelineLocalisation> }>;
     public enableDragDrop = false;
     public configIsOpen = false;
@@ -39,6 +41,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainBlockContainer: ElementRef<HTMLElement>;
     @ViewChild('listOfBlocksContainer', {static: true})
     public listOfBlocksContainer: ElementRef<HTMLElement>;
+    @ViewChild('selectedBlockElement', {static: true})
+    public selectedBlockElement: any = null;
+    public selectedBlock: TimelineLocalisation = null;
     public sortableOptions: Options = {
         handle: '.drag',
         filter: '.filtered',
@@ -73,6 +78,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.timeFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
         }
         this.title = this.pluginConfiguration.data.title;
+        this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         this.initFocusResizable(this.focusContainer.nativeElement);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -95,8 +101,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             name: TimelinePluginComponent.PLUGIN_NAME,
             data: {
                 title: 'Timeline globale',
+                mainBlockColor: this.getAvailableColor(),
                 timeFormat: 'mms',
                 expendable: true,
+                mainMetadataIds: [],
                 resizeable: true
             }
         };
@@ -256,8 +264,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
         const focusWidth = this.focusContainer.nativeElement.offsetWidth;
         const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
-        this.focusTcIn = this.tcOffset + (leftPos * this.duration / mainContainerWidth);
-        this.focusTcOut = this.tcOffset + ((leftPos + focusWidth) * this.duration / mainContainerWidth);
+        this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / mainContainerWidth), 0);
+        this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / mainContainerWidth), this.duration);
         this.refreshTimeCursor();
     }
 
@@ -293,25 +301,78 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.listOfBlocks = [];
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
+        this.mainLocalisations = this.createMainMetadataIds(this.pluginConfiguration.data.mainMetadataIds, metadataManager);
         this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`, this.pluginConfiguration);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
             handleMetadataIds.forEach((metadataId) => {
+                const metadata = metadataManager.getMetadata(metadataId);
                 let listOfLocalisations = null;
                 try {
-                    listOfLocalisations = metadataManager.getTimelineLocalisations(metadataId);
+                    listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
                 } catch (e) {
                     this.logger.warn('Error to parse metadata');
                 }
                 this.listOfBlocks.push({
                     id: metadataId,
-                    label: metadataId,
+                    label: (metadata?.label) ? metadata.label : metadataId,
                     expendable: this.pluginConfiguration.data.expendable,
-                    defaultColor: this.getAvailableColor(),
+                    defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
                     displayState: true,
                     data: listOfLocalisations
                 });
             });
         }
+    }
+
+    /**
+     * In charge to main timeline
+     */
+    public createMainMetadataIds(handleMetadataIds, metadataManager) {
+        const listOfLocalisations = new Array<TimelineLocalisation>();
+        if (handleMetadataIds) {
+            this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
+                const metadata = metadataManager.getMetadata(metadataId);
+                let localisations = null;
+                try {
+                    localisations = metadataManager.getTimelineLocalisations(metadata);
+                    if (localisations) {
+                        localisations.forEach((l) => {
+                            if (metadata.viewControl?.color) {
+                                l.color = metadata.viewControl.color;
+                            }
+                            listOfLocalisations.push(l);
+                        });
+                    }
+                } catch (e) {
+                    this.logger.warn('Error to parse metadata');
+                }
+            });
+        }
+        return listOfLocalisations;
+    }
+
+    /**
+     * On mouse enter on tc bloc
+     * @param $event event
+     */
+    public handleMouseEnterOnTc(event: MouseEvent, localisation: TimelineLocalisation) {
+        const defaultMouseMargin = 50;
+        const selectedBlockElement = this.selectedBlockElement.nativeElement;
+        const currentTarget = event.target as HTMLElement;
+        selectedBlockElement.style.left = `${currentTarget.offsetLeft}px`;
+        selectedBlockElement.style.top = `${currentTarget.parentElement.parentElement.offsetTop + defaultMouseMargin}px`;
+        selectedBlockElement.style.display = 'block';
+        console.log(currentTarget, currentTarget.parentElement.parentElement.offsetTop);
+        this.selectedBlock = localisation;
+    }
+
+    /**
+     * On mouse enter on tc bloc
+     * @param $event event
+     */
+    public handleMouseLeaveOnTc($event) {
+        this.selectedBlockElement.nativeElement.style.display = 'none';
+        //this.selectedBlock = null;
     }
 }

@@ -108,8 +108,8 @@ export class MetadataManager {
      * @param metadataId metadata id
      * @throws AmaliaException
      */
-    public getTimelineLocalisations(metadataId: string): Array<TimelineLocalisation> {
-        return MetadataUtils.getTimelineLocalisations(this.getMetadata(metadataId));
+    public getTimelineLocalisations(metadata: Metadata): Array<TimelineLocalisation> {
+        return MetadataUtils.getTimelineLocalisations(metadata);
     }
 
     /**
@@ -142,7 +142,7 @@ export class MetadataManager {
         if (loadData && loadData.url) {
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
-                .load(loadData.url)
+                .load(loadData.url, loadData.headers)
                 .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata, completed))
                 .catch(() => this.errorToLoadMetadata(loadData.url, completed));
         } else {

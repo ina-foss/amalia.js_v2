@@ -15,4 +15,12 @@ export interface TimelineConfig {
      * Time format
      */
     timeFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds';
+    /**
+     * Main metadata ids
+     */
+    mainMetadataIds: Array<string>;
+    /**
+     * Main block color
+     */
+    mainBlockColor: string;
 }
