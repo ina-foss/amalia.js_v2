@@ -466,7 +466,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         y = parseFloat(y) || 0;
         Object.assign(event.target.style, {
             width: event.rect.width + 'px',
-            transform: 'translate(' + event.deltaRect.left + 'px)'
+            // transform: 'translate(' + event.deltaRect.left + 'px)'
         });
         Object.assign(event.target.dataset, { x, y });
     })
