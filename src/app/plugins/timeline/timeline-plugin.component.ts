@@ -373,6 +373,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     public handleMouseLeaveOnTc($event) {
         this.selectedBlockElement.nativeElement.style.display = 'none';
-        //this.selectedBlock = null;
+        // this.selectedBlock = null;
     }
 }

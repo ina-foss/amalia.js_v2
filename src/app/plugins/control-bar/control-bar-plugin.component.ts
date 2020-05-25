@@ -641,7 +641,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Set aspect Ratio
      */
-    public setAspectRatio(ratio) {
+    public setVideoAspectRatio(ratio) {
         this.mediaPlayerElement.aspectRatio = ratio;
     }
 
