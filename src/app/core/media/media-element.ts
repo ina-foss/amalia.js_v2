@@ -394,7 +394,7 @@ export class MediaElement {
         window.addEventListener('resize', this.handleResize);
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
-        document.addEventListener('fullscreenchange ', this.handleFullscreenHandler);
+        document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
     }
 
     /**
@@ -483,8 +483,8 @@ export class MediaElement {
      * Invoked when the fullscreen state changed.
      */
     @AutoBind
-    private handleFullscreenHandler() {
-        this.logger.debug('handleFullscreenHandler');
+    private handleFullscreenChange() {
+        this.logger.debug('handleFullscreenChange');
         this.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 

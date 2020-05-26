@@ -382,6 +382,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     public handleWindowResize() {
         this.handleDisplayState();
+        // handle full screen on esc press
+        if (document.fullscreenElement === null) {
+            this.fullScreenMode = false;
+        } else {
+            this.fullScreenMode = true;
+        }
     }
 
     /**
@@ -649,7 +655,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Toggle fullscreen player
      */
     private toggleFullScreen() {
-        this.fullScreenMode = !this.fullScreenMode;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 
