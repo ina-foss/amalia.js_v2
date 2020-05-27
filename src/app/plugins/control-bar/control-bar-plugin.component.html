@@ -64,7 +64,7 @@
 
                 </div>
                 <!--Playback Rate-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':(c.priority==1 ||(c.priority==2 && displayState ==='l'))  && currentPlaybackRate > 1}"
                      *ngSwitchCase="'playbackRate'" class="playback-rate control text" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     {{currentPlaybackRate}}x
@@ -252,7 +252,7 @@
         </div>
     </div>
 </div>
-<!-- Menu of controls disolayed on "m" grid-->
+<!-- Menu of controls displayed on "m" grid-->
 <div class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider}"
      (mouseenter)="activated= true"
      (mouseleave)="enableMenu=false">
@@ -353,6 +353,7 @@
 
 
 </div>
+<!-- Menu of controls displayed on "s" grid-->
 <div class="controls-reduced-container {{displayState}}" [ngClass]="{'activated' : activated}">
     <!-- play pause mode-->
     <div (click)="controlClicked('playPause')" class="play-pause control">
