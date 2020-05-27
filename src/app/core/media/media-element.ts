@@ -18,8 +18,8 @@ export class MediaElement {
     private readonly eventEmitter: EventEmitter;
     private readonly logger: LoggerInterface;
     private mse: MediaSourceExtension;
-    private volumeLeft: number;
-    private volumeRight: number;
+    public volumeLeft: number;
+    public volumeRight: number;
     /**
      * Selected audio channel
      */
@@ -180,7 +180,7 @@ export class MediaElement {
      */
     setVolume(volumePercent: number, volumeSide?: string) {
         this.logger.debug(`setVolume change side :${volumeSide} volume: ${volumePercent} with same volume ${this._withMergeVolume}`);
-        if (this._withMergeVolume) {
+        if (this._withMergeVolume === true) {
             this.volumeLeft = volumePercent;
             this.volumeRight = volumePercent;
         } else {

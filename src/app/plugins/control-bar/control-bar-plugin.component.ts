@@ -177,7 +177,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
@@ -295,6 +294,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public changeVolume(value: string | number, volumeSide?: string) {
         this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
+        this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+        this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
     }
 
     /**
@@ -557,17 +558,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.progressBarValue = (this.currentTime / this.duration) * 100;
         }
     }
-
-    /**
-     * Invoked on volume change :
-     * - change left volume
-     */
-    @AutoBind
-    private handleOnVolumeChange() {
-        this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
-        this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
-    }
-
     /**
      * Invoked on duration change
      */
