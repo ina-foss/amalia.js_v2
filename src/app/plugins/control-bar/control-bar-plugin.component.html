@@ -94,11 +94,11 @@
                      (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
                      (click)="setupAudioNodes(c.data)">
                     <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
-                         class="amalia-svg-volume-on-size icon" (click)="changeVolume(0 ? 100:0)">
+                         class="amalia-svg-volume-on-size icon" (click)="changeVolume(0)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                     </svg>
                     <svg *ngIf="volumeLeft == 0 && volumeRight == 0"
-                         class="amalia-svg-volume-off-size icon" (click)="changeVolume(0 ? 100:0)">
+                         class="amalia-svg-volume-off-size icon" (click)="changeVolume(100)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                     </svg>
                     <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
