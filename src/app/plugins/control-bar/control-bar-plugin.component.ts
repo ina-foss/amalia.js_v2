@@ -247,6 +247,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.movePrevFrame(1);
                 break;
             case 'backward-start':
+                this.changePlaybackRate(1);
                 mediaPlayer.seekToBegin();
                 break;
             case 'forward':
@@ -271,6 +272,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.moveNextFrame(1);
                 break;
             case 'forward-end':
+                this.changePlaybackRate(1);
                 mediaPlayer.seekToEnd();
                 break;
             case 'displaySlider':
