@@ -21,6 +21,19 @@
     background-size: contain;
     background-position: center;
     z-index: $amalia-ctrl-bar-z-index;
+    .tc-thumbnail {
+      font-size: 14px;
+      background: rgba(34, 34, 34, 0.9);
+      border-radius: 2px 2px 0 0;
+      top: 97px;
+      position: relative;
+      height: 23px;
+      line-height: 23px;
+      width: 50%;
+      margin: 0 auto 0;
+      color: #fff;
+      text-align: center;
+    }
 
     &.ms, &.s {
       display: none;

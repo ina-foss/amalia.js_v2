@@ -154,6 +154,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Handle thumbnail
      */
+    public tcThumbnail;
     public enableThumbnail = false;
     public thumbnailHidden = true;
     public thumbnailUrl: string;
@@ -471,6 +472,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (isFinite(tc)) {
             this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
             this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+            this.tcThumbnail = tc;
         }
     }
 

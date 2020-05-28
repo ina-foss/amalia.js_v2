@@ -1,5 +1,7 @@
 <div class="thumbnail {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}" *ngIf="enableThumbnail" [hidden]="thumbnailHidden"
-     [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}"></div>
+     [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}">
+    <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
+</div>
 <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
     <div class="control-bar" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
         <div *ngIf="hasComponentWithoutZone('progressBar')"
