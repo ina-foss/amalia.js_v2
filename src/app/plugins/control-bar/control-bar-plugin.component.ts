@@ -58,7 +58,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @Input()
     public backwardSlowPlaybackRateStep: Array<number> = [-0.25, -0.5];
     @Input()
-    public backwardPlaybackRateStep: Array<number> = [-1, -2, -6, -10];
+    public backwardPlaybackRateStep: Array<number> = [-2, -6, -10];
     /**
      * list of forward playback step
      */
@@ -537,7 +537,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         let playbackRate = 1;
         let indexOfCurrentPlaybackRate = playbackRateStep.indexOf(this.currentPlaybackRate);
         if (indexOfCurrentPlaybackRate !== -1 || this.currentPlaybackRate === 1) {
-            indexOfCurrentPlaybackRate = Math.min(indexOfCurrentPlaybackRate + 1, playbackRateStep.length - 1);
+            // indexOfCurrentPlaybackRate = Math.min(indexOfCurrentPlaybackRate + 1, playbackRateStep.length - 1);
+            indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
+            if (indexOfCurrentPlaybackRate > playbackRateStep.length - 1) {
+                indexOfCurrentPlaybackRate = 0;
+            }
             playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
         }
         return playbackRate;

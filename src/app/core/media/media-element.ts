@@ -109,6 +109,12 @@ export class MediaElement {
     }
 
     play(): Promise<void> {
+        // switch to main src if reverse mode equal to true
+        if (this.reverseMode === true) {
+            this.reverseMode = !this.reverseMode;
+            this.mse.switchToMainSrc();
+            this.setCurrentTime(Math.max(0, this.getDuration() - this.getCurrentTime()));
+        }
         return this.mediaElement.play();
     }
 
