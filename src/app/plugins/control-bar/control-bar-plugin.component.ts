@@ -154,6 +154,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Handle thumbnail
      */
+    public tcThumbnail;
     public enableThumbnail = false;
     public thumbnailHidden = true;
     public thumbnailUrl: string;
@@ -177,7 +178,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.VOLUME_CHANGE, this.handleOnVolumeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
@@ -247,6 +247,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.movePrevFrame(1);
                 break;
             case 'backward-start':
+                this.changePlaybackRate(1);
                 mediaPlayer.seekToBegin();
                 break;
             case 'forward':
@@ -271,6 +272,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.moveNextFrame(1);
                 break;
             case 'forward-end':
+                this.changePlaybackRate(1);
                 mediaPlayer.seekToEnd();
                 break;
             case 'displaySlider':
@@ -295,6 +297,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public changeVolume(value: string | number, volumeSide?: string) {
         this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
+        this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+        this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
     }
 
     /**
@@ -382,6 +386,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     public handleWindowResize() {
         this.handleDisplayState();
+        // handle full screen on esc press
+        if (document.fullscreenElement === null) {
+            this.fullScreenMode = false;
+        } else {
+            this.fullScreenMode = true;
+        }
     }
 
     /**
@@ -464,6 +474,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (isFinite(tc)) {
             this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
             this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+            this.tcThumbnail = tc;
         }
     }
 
@@ -551,17 +562,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.progressBarValue = (this.currentTime / this.duration) * 100;
         }
     }
-
-    /**
-     * Invoked on volume change :
-     * - change left volume
-     */
-    @AutoBind
-    private handleOnVolumeChange() {
-        this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
-        this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
-    }
-
     /**
      * Invoked on duration change
      */
@@ -641,7 +641,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Set aspect Ratio
      */
-    public setAspectRatio(ratio) {
+    public setVideoAspectRatio(ratio) {
         this.mediaPlayerElement.aspectRatio = ratio;
     }
 
@@ -649,7 +649,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Toggle fullscreen player
      */
     private toggleFullScreen() {
-        this.fullScreenMode = !this.fullScreenMode;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 

@@ -1,5 +1,7 @@
 <div class="thumbnail {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}" *ngIf="enableThumbnail" [hidden]="thumbnailHidden"
-     [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}"></div>
+     [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}">
+    <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
+</div>
 <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
     <div class="control-bar" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
         <div *ngIf="hasComponentWithoutZone('progressBar')"
@@ -48,13 +50,13 @@
                     <ul class="list-options" [ngClass]="{'on':enableListRatio}"
                         (mouseleave)="enableListRatio=false">
                         <li class="header-list">{{c.label}}</li>
-                        <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setAspectRatio('16:9')">
+                        <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setVideoAspectRatio('16:9')">
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
                             4:3
                         </li>
-                        <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setAspectRatio('4:3')">
+                        <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')">
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
@@ -64,7 +66,7 @@
 
                 </div>
                 <!--Playback Rate-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':(c.priority==1 ||(c.priority==2 && displayState ==='l'))  && currentPlaybackRate > 1}"
                      *ngSwitchCase="'playbackRate'" class="playback-rate control text" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     {{currentPlaybackRate}}x
@@ -94,11 +96,11 @@
                      (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
                      (click)="setupAudioNodes(c.data)">
                     <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
-                         class="amalia-svg-volume-on-size icon" (click)="changeVolume(0 ? 100:0)">
+                         class="amalia-svg-volume-on-size icon" (click)="changeVolume(0)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                     </svg>
                     <svg *ngIf="volumeLeft == 0 && volumeRight == 0"
-                         class="amalia-svg-volume-off-size icon" (click)="changeVolume(0 ? 100:0)">
+                         class="amalia-svg-volume-off-size icon" (click)="changeVolume(100)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                     </svg>
                     <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
@@ -252,7 +254,7 @@
         </div>
     </div>
 </div>
-<!-- Menu of controls disolayed on "m" grid-->
+<!-- Menu of controls displayed on "m" grid-->
 <div class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider}"
      (mouseenter)="activated= true"
      (mouseleave)="enableMenu=false">
@@ -275,13 +277,13 @@
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
                 </svg>
                 <ul class="list-options" [ngClass]="{'on':enableListRatio}">
-                    <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setAspectRatio('16:9')">
+                    <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setVideoAspectRatio('16:9')">
                         <svg class="amalia-svg-checked-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                         </svg>
                         4:3
                     </li>
-                    <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setAspectRatio('4:3')">
+                    <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')">
                         <svg class="amalia-svg-checked-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                         </svg>
@@ -353,6 +355,7 @@
 
 
 </div>
+<!-- Menu of controls displayed on "s" grid-->
 <div class="controls-reduced-container {{displayState}}" [ngClass]="{'activated' : activated}">
     <!-- play pause mode-->
     <div (click)="controlClicked('playPause')" class="play-pause control">
