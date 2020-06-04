@@ -387,11 +387,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleWindowResize() {
         this.handleDisplayState();
         // handle full screen on esc press
-        if (document.fullscreenElement === null) {
-            this.fullScreenMode = false;
-        } else {
-            this.fullScreenMode = true;
-        }
+        this.fullScreenMode = document.fullscreenElement !== null;
     }
 
     /**
