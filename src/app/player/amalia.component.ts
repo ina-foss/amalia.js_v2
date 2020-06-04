@@ -168,6 +168,12 @@ export class AmaliaComponent implements OnInit {
     @ViewChild('mediaContainer', {static: true})
     public mediaContainer: ElementRef<HTMLElement>;
     /**
+     * Return player interface
+     */
+    @Output()
+    public initApi: EventEmitter<MediaPlayerElement> = new EventEmitter<MediaPlayerElement>();
+
+    /**
      * Amalia player main manager
      */
     private mediaPlayerElement: MediaPlayerElement;
@@ -177,8 +183,7 @@ export class AmaliaComponent implements OnInit {
         this.playerService = playerService;
     }
 
-
-    /**setMediaPlayer
+    /**
      * Invoked immediately after the  first time the component has initialised
      */
     public ngOnInit() {
@@ -199,6 +204,7 @@ export class AmaliaComponent implements OnInit {
             this.bindEvents();
             // set mediaPlayer width for responsive grid
             this.mediaPlayerElement.setMediaPlayerWidth(this.mediaContainer.nativeElement.offsetWidth);
+            this.initApi.emit(this.mediaPlayerElement);
         } else {
             this.logger.error('Error to initialize media player element.');
         }

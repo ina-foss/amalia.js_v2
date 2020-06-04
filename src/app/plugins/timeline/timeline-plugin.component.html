@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="timeline">
-            <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn>0 && loc.tcOut>0 ">
+            <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn>=0 && loc.tcOut>=0 ">
                 <div class="cue-point" *ngSwitchDefault
                      [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
                      [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="timeline">
-            <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn>0 && loc.tcOut>0 ">
+            <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn>=0 && loc.tcOut>=0 ">
                 <div class="cue-point" *ngSwitchDefault
                      (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
                      [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"

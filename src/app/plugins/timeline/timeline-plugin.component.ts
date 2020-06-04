@@ -276,8 +276,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (isFinite(this.currentTime) && isFinite(this.duration)) {
             const selector = '.tc-cursor';
             const focusLeftPos = (this.currentTime - this.focusTcIn) * 100 / (this.focusTcOut - this.focusTcIn);
-            (this.mainBlockContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${this.currentTime * 100 / this.duration}%`;
-            (this.listOfBlocksContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${focusLeftPos}%`;
+            const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
+            const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
+            mainBlock.style.left = `${this.currentTime * 100 / this.duration}%`;
+            listBlock.style.left = `${focusLeftPos}%`;
         }
     }
 
@@ -285,7 +287,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to un-zoom
      */
     public unZoom() {
-        const container = (this.focusContainer.nativeElement as HTMLElement);
+        const container: HTMLElement = this.focusContainer.nativeElement;
         container.style.left = `0`;
         container.style.width = `100%`;
         container.setAttribute('data-x', '0');
@@ -363,7 +365,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         selectedBlockElement.style.left = `${currentTarget.offsetLeft}px`;
         selectedBlockElement.style.top = `${currentTarget.parentElement.parentElement.offsetTop + defaultMouseMargin}px`;
         selectedBlockElement.style.display = 'block';
-        console.log(currentTarget, currentTarget.parentElement.parentElement.offsetTop);
         this.selectedBlock = localisation;
     }
 
@@ -373,6 +374,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     public handleMouseLeaveOnTc($event) {
         this.selectedBlockElement.nativeElement.style.display = 'none';
-        // this.selectedBlock = null;
+        this.selectedBlock = null;
     }
 }
