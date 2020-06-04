@@ -57,6 +57,7 @@
 * [sliderListOfPlaybackRateStepWidth](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#sliderlistofplaybackratestepwidth)
 * [stepPlaybackRateSlider](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#stepplaybackrateslider)
 * [tcOffset](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#tcoffset)
+* [tcThumbnail](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#tcthumbnail)
 * [thumbnailHidden](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#thumbnailhidden)
 * [thumbnailPosition](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#thumbnailposition)
 * [thumbnailPreviewDebounceTime](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-thumbnailpreviewdebouncetime)
@@ -92,7 +93,6 @@
 * [handleDisplayState](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#handledisplaystate)
 * [handleOnDurationChange](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-handleondurationchange)
 * [handleOnTimeChange](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-handleontimechange)
-* [handleOnVolumeChange](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-handleonvolumechange)
 * [handlePlaybackRateChange](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-handleplaybackratechange)
 * [handlePlayerMouseenter](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-handleplayermouseenter)
 * [handlePlayerMouseleave](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-handleplayermouseleave)
@@ -114,7 +114,7 @@
 * [progressBarMouseEnter](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#progressbarmouseenter)
 * [progressBarMouseLeave](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#progressbarmouseleave)
 * [progressBarMouseMove](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#progressbarmousemove)
-* [setAspectRatio](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#setaspectratio)
+* [setVideoAspectRatio](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#setvideoaspectratio)
 * [setupAudioNodes](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#setupaudionodes)
 * [toggleFullScreen](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-togglefullscreen)
 * [updateSubtitlePosition](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#updatesubtitleposition)
@@ -128,7 +128,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:163
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:164
 
 **Parameters:**
 
@@ -282,9 +282,7 @@ ___
 
 • **enableThumbnail**: *boolean* = false
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:157
-
-Handle thumbnail
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:158
 
 ___
 
@@ -352,7 +350,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[logger](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-logger)*
 
-Defined in src/app/core/plugin/plugin-base.ts:56
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -372,7 +370,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:53
 
 ___
 
@@ -412,7 +410,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[playerService](_src_app_core_plugin_plugin_base_.pluginbase.md#playerservice)*
 
-Defined in src/app/core/plugin/plugin-base.ts:53
+Defined in src/app/core/plugin/plugin-base.ts:52
 
 ___
 
@@ -422,7 +420,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginName](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-pluginname)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:54
 
 ___
 
@@ -470,7 +468,7 @@ ___
 
 • **sliderListOfPlaybackRateStepWidth**: *Array‹number›* = []
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:161
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:162
 
 ___
 
@@ -494,11 +492,21 @@ Defined in src/app/core/plugin/plugin-base.ts:17
 
 ___
 
+###  tcThumbnail
+
+• **tcThumbnail**: *any*
+
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:157
+
+Handle thumbnail
+
+___
+
 ###  thumbnailHidden
 
 • **thumbnailHidden**: *boolean* = true
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:158
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:159
 
 ___
 
@@ -506,7 +514,7 @@ ___
 
 • **thumbnailPosition**: *number* = 0
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:160
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:161
 
 ___
 
@@ -514,7 +522,7 @@ ___
 
 • **thumbnailPreviewDebounceTime**: *Subject‹MouseEvent›* = new Subject<MouseEvent>()
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:163
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:164
 
 ___
 
@@ -522,7 +530,7 @@ ___
 
 • **thumbnailSeekingDebounceTime**: *Subject‹number›* = new Subject<number>()
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:162
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:163
 
 ___
 
@@ -530,7 +538,7 @@ ___
 
 • **thumbnailUrl**: *string*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:159
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:160
 
 ___
 
@@ -612,7 +620,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:36
+Defined in src/app/core/plugin/plugin-base.ts:35
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹Array‹[ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)››*
 
@@ -620,7 +628,7 @@ Defined in src/app/core/plugin/plugin-base.ts:36
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:41
+Defined in src/app/core/plugin/plugin-base.ts:40
 
 **Parameters:**
 
@@ -636,7 +644,7 @@ Name | Type |
 
 ▸ **buildSliderSteps**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:473
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:484
 
 In charge to build step width size
 
@@ -648,7 +656,7 @@ ___
 
 ▸ **buildUrlWithTc**(`element`: HTMLElement, `control`: [ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:661
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:660
 
 Handle to download url
 
@@ -667,7 +675,7 @@ ___
 
 ▸ **changeAspectRatio**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:331
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:335
 
 Invoked for change aspect ratio
 
@@ -679,7 +687,7 @@ ___
 
 ▸ **changePlaybackRate**(`value`: number): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:538
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:549
 
 Invoked for change playback rate
 
@@ -697,7 +705,7 @@ ___
 
 ▸ **changeSameVolumeState**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:347
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:351
 
 Change volume state
 
@@ -709,7 +717,7 @@ ___
 
 ▸ **changeVolume**(`value`: string | number, `volumeSide?`: string): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:296
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:298
 
 Change volume
 
@@ -758,7 +766,7 @@ ___
 
 ▸ **getControlsByPriority**(`priority`: number): *Array‹[ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)›*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:372
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:376
 
 return list controls by priority
 
@@ -776,7 +784,7 @@ ___
 
 ▸ **getControlsByZone**(`zone`: number): *Array‹[ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)›*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:361
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:365
 
 Return list controls by zone id
 
@@ -808,7 +816,7 @@ ___
 
 ▸ **getPlaybackStepValue**(`playbackRateStep`: Array‹number›): *number*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:525
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:536
 
 Return playback step value
 
@@ -846,7 +854,7 @@ ___
 
 ▸ **handleCallback**(`control`: [ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:452
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:462
 
 Handle callback
 
@@ -864,7 +872,7 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:324
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:328
 
 switch container class based on width
 
@@ -888,23 +896,10 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:548
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:559
 
 Invoked time change event for :
 - update progress bar
-
-**Returns:** *void*
-
-___
-
-### `Private` handleOnVolumeChange
-
-▸ **handleOnVolumeChange**(): *void*
-
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:560
-
-Invoked on volume change :
-- change left volume
 
 **Returns:** *void*
 
@@ -958,7 +953,7 @@ ___
 
 ▸ **handleProgressBarMouseDown**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:423
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:433
 
 Progress bar on mouse down
 
@@ -976,7 +971,7 @@ ___
 
 ▸ **handleProgressBarMouseMove**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:442
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:452
 
 Progress bar on mouse move
 
@@ -994,7 +989,7 @@ ___
 
 ▸ **handleProgressBarMouseUp**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:432
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:442
 
 Progress bar on mouse up
 
@@ -1012,7 +1007,7 @@ ___
 
 ▸ **handleWindowResize**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:383
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:387
 
 Update displayState on windowResize
 
@@ -1024,7 +1019,7 @@ ___
 
 ▸ **hasComponentWithoutZone**(`componentName`: string): *boolean*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:304
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:308
 
 Return true if the component is in ths configuration without zone
 
@@ -1044,7 +1039,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:170
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:171
 
 **Returns:** *void*
 
@@ -1054,7 +1049,7 @@ ___
 
 ▸ **moveSliderCursor**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:313
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:317
 
 Invoked on mouse move
 
@@ -1072,7 +1067,7 @@ ___
 
 ▸ **nextPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:502
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:513
 
 Invoked for change playback rate
 
@@ -1084,7 +1079,7 @@ ___
 
 ▸ **nextSlowPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:516
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:527
 
 Invoked for change slow playback rate
 
@@ -1096,7 +1091,7 @@ ___
 
 ▸ **ngOnDestroy**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:673
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:672
 
 Handle on component destroy
 
@@ -1110,7 +1105,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/core/plugin/plugin-base.ts:69
+Defined in src/app/core/plugin/plugin-base.ts:68
 
 **Returns:** *void*
 
@@ -1120,7 +1115,7 @@ ___
 
 ▸ **onChangePlaybackRate**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:338
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:342
 
 Invoked on change playback rate
 
@@ -1150,7 +1145,7 @@ ___
 
 ▸ **prevPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:495
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:506
 
 Invoked for change playback rate
 
@@ -1162,7 +1157,7 @@ ___
 
 ▸ **prevSlowPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:509
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:520
 
 Invoked for change slow playback rate
 
@@ -1174,7 +1169,7 @@ ___
 
 ▸ **progressBarMouseEnter**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:391
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:401
 
 Handle mouse enter on progress bar
 
@@ -1192,7 +1187,7 @@ ___
 
 ▸ **progressBarMouseLeave**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:402
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:412
 
 Handle mouse leave on progress bar
 
@@ -1210,7 +1205,7 @@ ___
 
 ▸ **progressBarMouseMove**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:413
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:423
 
 Handle mouse move on progress bar
 
@@ -1224,9 +1219,9 @@ Name | Type | Description |
 
 ___
 
-###  setAspectRatio
+###  setVideoAspectRatio
 
-▸ **setAspectRatio**(`ratio`: any): *void*
+▸ **setVideoAspectRatio**(`ratio`: any): *void*
 
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:644
 
@@ -1294,7 +1289,7 @@ ___
 
 ▸ **updateThumbnail**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:460
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:470
 
 Handle thumbnail pos
 

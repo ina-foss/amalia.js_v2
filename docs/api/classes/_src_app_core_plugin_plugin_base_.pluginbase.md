@@ -66,7 +66,7 @@ Base class for create plugin
 
 \+ **new PluginBase**(`playerService`: [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md), `pluginName`: any): *[PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md)*
 
-Defined in src/app/core/plugin/plugin-base.ts:56
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 Plugin base constructor
 
@@ -95,7 +95,7 @@ ___
 
 • **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
-Defined in src/app/core/plugin/plugin-base.ts:34
+Defined in src/app/core/plugin/plugin-base.ts:33
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 • **logger**: *[DefaultLogger](_src_app_core_logger_default_logger_.defaultlogger.md)*
 
-Defined in src/app/core/plugin/plugin-base.ts:56
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 • **mediaPlayerElement**: *[MediaPlayerElement](_src_app_core_media_player_element_.mediaplayerelement.md)*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:53
 
 ___
 
@@ -135,7 +135,7 @@ ___
 
 • **playerService**: *[MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md)*
 
-Defined in src/app/core/plugin/plugin-base.ts:53
+Defined in src/app/core/plugin/plugin-base.ts:52
 
 ___
 
@@ -143,7 +143,7 @@ ___
 
 • **pluginName**: *string*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:54
 
 ___
 
@@ -189,13 +189,13 @@ ___
 
 • **get pluginConfiguration**(): *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
-Defined in src/app/core/plugin/plugin-base.ts:36
+Defined in src/app/core/plugin/plugin-base.ts:35
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
 • **set pluginConfiguration**(`value`: [PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:41
+Defined in src/app/core/plugin/plugin-base.ts:40
 
 **Parameters:**
 
@@ -211,7 +211,7 @@ Name | Type |
 
 ▸ **getDefaultConfig**(): *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
-Defined in src/app/core/plugin/plugin-base.ts:114
+Defined in src/app/core/plugin/plugin-base.ts:113
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
@@ -221,7 +221,7 @@ ___
 
 ▸ **init**(): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:81
+Defined in src/app/core/plugin/plugin-base.ts:80
 
 **Returns:** *void*
 
@@ -231,6 +231,6 @@ ___
 
 ▸ **ngOnInit**(): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:69
+Defined in src/app/core/plugin/plugin-base.ts:68
 
 **Returns:** *void*

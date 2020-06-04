@@ -35,8 +35,8 @@ Media element
 * [panLeft](_src_app_core_media_media_element_.mediaelement.md#panleft)
 * [panRight](_src_app_core_media_media_element_.mediaelement.md#panright)
 * [reverseMode](_src_app_core_media_media_element_.mediaelement.md#private-reversemode)
-* [volumeLeft](_src_app_core_media_media_element_.mediaelement.md#private-volumeleft)
-* [volumeRight](_src_app_core_media_media_element_.mediaelement.md#private-volumeright)
+* [volumeLeft](_src_app_core_media_media_element_.mediaelement.md#volumeleft)
+* [volumeRight](_src_app_core_media_media_element_.mediaelement.md#volumeright)
 * [DEFAULT_FRAMERATE](_src_app_core_media_media_element_.mediaelement.md#static-default_framerate)
 
 ### Accessors
@@ -57,7 +57,7 @@ Media element
 * [getVolume](_src_app_core_media_media_element_.mediaelement.md#getvolume)
 * [handleDurationchange](_src_app_core_media_media_element_.mediaelement.md#private-handledurationchange)
 * [handleEnd](_src_app_core_media_media_element_.mediaelement.md#private-handleend)
-* [handleFullscreenHandler](_src_app_core_media_media_element_.mediaelement.md#private-handlefullscreenhandler)
+* [handleFullscreenChange](_src_app_core_media_media_element_.mediaelement.md#private-handlefullscreenchange)
 * [handleLoadstart](_src_app_core_media_media_element_.mediaelement.md#private-handleloadstart)
 * [handlePause](_src_app_core_media_media_element_.mediaelement.md#private-handlepause)
 * [handlePlay](_src_app_core_media_media_element_.mediaelement.md#private-handleplay)
@@ -253,7 +253,7 @@ play a video backwards
 
 ___
 
-### `Private` volumeLeft
+###  volumeLeft
 
 • **volumeLeft**: *number*
 
@@ -261,7 +261,7 @@ Defined in src/app/core/media/media-element.ts:21
 
 ___
 
-### `Private` volumeRight
+###  volumeRight
 
 • **volumeRight**: *number*
 
@@ -502,9 +502,9 @@ Invoked when playback has stopped because the end of the media was reached.
 
 ___
 
-### `Private` handleFullscreenHandler
+### `Private` handleFullscreenChange
 
-▸ **handleFullscreenHandler**(): *void*
+▸ **handleFullscreenChange**(): *void*
 
 Defined in src/app/core/media/media-element.ts:487
 
