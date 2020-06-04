@@ -536,14 +536,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private getPlaybackStepValue(playbackRateStep: Array<number>): number {
         let playbackRate = 1;
         let indexOfCurrentPlaybackRate = playbackRateStep.indexOf(this.currentPlaybackRate);
-        if (indexOfCurrentPlaybackRate !== -1 || this.currentPlaybackRate === 1) {
-            // indexOfCurrentPlaybackRate = Math.min(indexOfCurrentPlaybackRate + 1, playbackRateStep.length - 1);
-            indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
-            if (indexOfCurrentPlaybackRate > playbackRateStep.length - 1) {
-                indexOfCurrentPlaybackRate = 0;
-            }
-            playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
+        indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
+        if (indexOfCurrentPlaybackRate > playbackRateStep.length - 1) {
+            indexOfCurrentPlaybackRate = 0;
         }
+        playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
         return playbackRate;
     }
 
