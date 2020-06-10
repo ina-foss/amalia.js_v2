@@ -71,7 +71,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * list of histograms
      */
-    public listOfHistograms: Array<{ paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] }>;
+    public listOfHistograms: Array< { paths: [string, string], nbBins: number, posMax: number, negMax: number, scale: [string, string] } > ;
     /**
      * html element histogramContainer
      */
@@ -103,7 +103,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param mirror true for enable mirror histogram
      */
     public drawHistogram(nbBins: number , posBins: string, negBins: string, posMax: number, negMax: number, mirror = false):
-        { paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] } {
+        { paths: [string, string], nbBins: number,  posMax: number, negMax: number, scale: [string, string] } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
         if (positiveValues !== null) {
@@ -141,7 +141,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const positiveScale = 'matrix(' + scaleX + ',0,0,' + posScaleY + ',0,0)';
             const negativeScale = 'matrix(' + scaleX + ',0,0,' + negScaleY + ',0,0)';
 
-            return {paths: [positivePath, negativePath], nbBins, maxHeight: Math.max(posMax, negMax), scale: [positiveScale, negativeScale]};
+            return {paths: [positivePath, negativePath], nbBins, posMax, negMax, scale: [positiveScale, negativeScale]};
         }
         return null;
     }
@@ -173,7 +173,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private drawHistograms(histograms: Array<Histogram>) {
         if (histograms && histograms.length > 0) {
-            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] }>();
+            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, posMax: number, negMax: number, scale: [string, string] }>();
             histograms.forEach((hData) => {
                 const nbbins = Number(hData.nbbins);
                 const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror);
@@ -286,7 +286,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private getZoomedWidth(width, zoom) {
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        console.log(duration);
         const zoomValue = (duration * zoom) / 100;
         const zoomedWidth =  width * (duration / zoomValue);
         return zoomedWidth;
@@ -423,7 +422,36 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
          const containerWidth = self.histogramContainerElement.nativeElement.offsetWidth;
          const zoomSize = (event.rect.width / containerWidth ) * 100;
          self.zoomSize = Math.round(zoomSize);
+         console.log(self.zoomSize);
+         self.zoomedWidth = self.getZoomedWidth(containerWidth, self.zoomSize);
+         this.updateZoomedSvg();
      });
+    }
+
+    /**
+     * update scale of zoomed svg on zoom resize
+     */
+    @AutoBind
+    public updateZoomedSvg() {
+        // resize only zoomed SVG
+        const scaleX = this.zoomedWidth / this.listOfHistograms[2].nbBins;
+        const height = this.zoomedHistograms.nativeElement.offsetHeight / 4;
+        const posScaleY  = height / this.listOfHistograms[2].posMax;
+        const negScaleY = height / this.listOfHistograms[2].negMax;
+        const positiveScale = 'matrix(' + scaleX + ',0,0,' + posScaleY + ',0,0)';
+        const negativeScale = 'matrix(' + scaleX + ',0,0,' + negScaleY + ',0,0)';
+        if (this.listOfHistograms[2].posMax === this.listOfHistograms[3].posMax) {
+            this.listOfHistograms[2].scale = [positiveScale, negativeScale];
+            this.listOfHistograms[3].scale = [positiveScale, negativeScale];
+        } else {
+            const scaleX2 = this.zoomedWidth / this.listOfHistograms[3].nbBins;
+            const posScaleY2  = height / this.listOfHistograms[3].posMax;
+            const negScaleY2 = height / this.listOfHistograms[3].negMax;
+            const positiveScale2 = 'matrix(' + scaleX2 + ',0,0,' + posScaleY2 + ',0,0)';
+            const negativeScale2 = 'matrix(' + scaleX2 + ',0,0,' + negScaleY2 + ',0,0)';
+            this.listOfHistograms[2].scale = [positiveScale, negativeScale];
+            this.listOfHistograms[3].scale = [positiveScale2, negativeScale2];
+        }
     }
     /**
      * switch container class based on width
