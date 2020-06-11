@@ -54,13 +54,13 @@
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
-                            4:3
+                            4:3 <span *ngIf="defaultRatio =='4:3'">(original)</span>
                         </li>
                         <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')">
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
-                            16:9
+                            16:9 <span *ngIf="defaultRatio =='16:9'">(original)</span>
                         </li>
                     </ul>
 
@@ -281,13 +281,13 @@
                         <svg class="amalia-svg-checked-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                         </svg>
-                        4:3
+                        4:3 <span *ngIf="defaultRatio =='4:3'">(original)</span>
                     </li>
                     <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')">
                         <svg class="amalia-svg-checked-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                         </svg>
-                        16:9
+                        16:9 <span *ngIf="defaultRatio =='16:9'">(original)</span>
                     </li>
                 </ul>
             </li>
