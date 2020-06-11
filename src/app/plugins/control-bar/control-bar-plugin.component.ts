@@ -86,7 +86,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Selected aspectRatio
      */
     public aspectRatio: '16:9' | '4:3' = '4:3';
-
+    /**
+     * Default aspect ratio
+     */
+    public defaultRatio;
     /**
      * return  current time
      */
@@ -191,6 +194,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.thumbnailPreviewDebounceTime
             .pipe(debounceTime(_debounceTime))
             .subscribe((e) => this.updateThumbnail(e));
+        this.getDefaultAspectRatio();
     }
 
     /**
@@ -667,6 +671,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
+    /**
+     * get default aspect ratio
+     */
+    @AutoBind
+    public getDefaultAspectRatio() {
+        this.defaultRatio = this.mediaPlayerElement.aspectRatio;
+        this.aspectRatio = this.defaultRatio;
+    }
     /**
      * Handle on component destroy
      */
