@@ -75,6 +75,7 @@
 * [stopDragging](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#stopdragging)
 * [updateCursors](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#updatecursors)
 * [updateTimeCursors](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#updatetimecursors)
+* [updateZoomedSvg](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#updatezoomedsvg)
 
 ## Constructors
 
@@ -447,11 +448,13 @@ Name | Type | Default | Description |
 
 **Returns:** *object*
 
-* **maxHeight**: *number*
-
 * **nbBins**: *number*
 
+* **negMax**: *number*
+
 * **paths**: *[string, string]*
+
+* **posMax**: *number*
 
 * **scale**: *[string, string]*
 
@@ -512,7 +515,7 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:432
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:460
 
 switch container class based on width
 
@@ -540,7 +543,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:313
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:312
 
 Invoked on metadata loaded
 
@@ -552,7 +555,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:298
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:297
 
 Invoked on duration change
 
@@ -588,7 +591,7 @@ ___
 
 ▸ **initSliderEvents**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:357
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:356
 
 slider events
 
@@ -624,7 +627,7 @@ ___
 
 ▸ **startDragging**(`event`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:325
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:324
 
 Called on start dragging element
 
@@ -642,7 +645,7 @@ ___
 
 ▸ **stopDragging**(`event`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:338
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:337
 
 Called on stop dragging element
 
@@ -689,5 +692,17 @@ Name | Type |
 `currentTime` | any |
 `ratio` | any |
 `start` | any |
+
+**Returns:** *void*
+
+___
+
+###  updateZoomedSvg
+
+▸ **updateZoomedSvg**(): *void*
+
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:435
+
+update scale of zoomed svg on zoom resize
 
 **Returns:** *void*

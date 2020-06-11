@@ -157,6 +157,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
     }
     /**
      * Return default config
@@ -424,7 +425,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
          self.zoomSize = Math.round(zoomSize);
          console.log(self.zoomSize);
          self.zoomedWidth = self.getZoomedWidth(containerWidth, self.zoomSize);
-         this.updateZoomedSvg();
+         this.updateZoomedSvg(true);
      });
     }
 
@@ -432,10 +433,34 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * update scale of zoomed svg on zoom resize
      */
     @AutoBind
-    public updateZoomedSvg() {
+    public updateZoomedSvg(onlyResized) {
+        let height;
+        // resize all SVG
+        if (onlyResized === false) {
+            const containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
+            this.zoomedWidth =  this.getZoomedWidth(containerWidth, this.zoomSize);
+            const scX = containerWidth / this.listOfHistograms[0].nbBins;
+            height = this.histograms.nativeElement.offsetHeight / 4;
+            const posScY  = height / this.listOfHistograms[0].posMax;
+            const negScY = height / this.listOfHistograms[0].negMax;
+            const posScale = 'matrix(' + scX + ',0,0,' + posScY + ',0,0)';
+            const negScale = 'matrix(' + scX + ',0,0,' + negScY + ',0,0)';
+            if (this.listOfHistograms[0].posMax === this.listOfHistograms[1].posMax) {
+                this.listOfHistograms[0].scale = [posScale, negScale];
+                this.listOfHistograms[1].scale = [posScale, negScale];
+            } else {
+                const scX2 = containerWidth / this.listOfHistograms[1].nbBins;
+                const posSc2  = height / this.listOfHistograms[1].posMax;
+                const negSc2 = height / this.listOfHistograms[1].negMax;
+                const posScale2 = 'matrix(' + scX2 + ',0,0,' + posSc2 + ',0,0)';
+                const negScale2 = 'matrix(' + scX2 + ',0,0,' + negSc2 + ',0,0)';
+                this.listOfHistograms[0].scale = [posScale, negScale];
+                this.listOfHistograms[1].scale = [posScale2, negScale2];
+            }
+        }
         // resize only zoomed SVG
         const scaleX = this.zoomedWidth / this.listOfHistograms[2].nbBins;
-        const height = this.zoomedHistograms.nativeElement.offsetHeight / 4;
+        height = this.zoomedHistograms.nativeElement.offsetHeight / 4;
         const posScaleY  = height / this.listOfHistograms[2].posMax;
         const negScaleY = height / this.listOfHistograms[2].negMax;
         const positiveScale = 'matrix(' + scaleX + ',0,0,' + posScaleY + ',0,0)';
@@ -459,5 +484,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
+    }
+
+    /**
+     * update all scales on window resize
+     */
+    @AutoBind
+    public handleWindowResize() {
+        this.updateZoomedSvg(false);
     }
 }
