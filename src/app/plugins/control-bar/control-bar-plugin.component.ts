@@ -147,6 +147,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public pinnedSlider = false;
     /**
+     * Pinned slider state
+     */
+    public enablePinnedSlider = false;
+    /**
      * display state (s/m/l)
      */
     public displayState: string;
@@ -154,6 +158,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * FullScreenMode state
      */
     public fullScreenMode = false;
+    /**
+     * slider displayed
+     */
+    public selectedSlider = 'slider1';
+    /**
+     * show menu slider
+     */
+    public enableMenuSlider = false;
     /**
      * Handle thumbnail
      */
@@ -648,6 +660,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private pinControls() {
         this.pinnedSlider = !this.pinnedSlider;
+        this.enablePinnedSlider = !this.enablePinnedSlider;
     }
 
     /**
@@ -678,6 +691,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
+    /**
+     * change slider displayed
+     */
+    @AutoBind
+    public changeSlider() {
+        if (this.selectedSlider === 'slider1') {
+            this.selectedSlider = 'slider2';
+        } else {
+            this.selectedSlider = 'slider1';
+        }
+    }
     /**
      * Handle on component destroy
      */

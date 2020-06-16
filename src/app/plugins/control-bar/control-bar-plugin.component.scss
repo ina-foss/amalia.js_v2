@@ -87,7 +87,7 @@
       }
     }
 
-    &.activated, &:hover {
+    &.activated, &:hover,&.pinned {
       .control-bar {
         display: flex;
         flex-direction: row;
@@ -97,22 +97,41 @@
         &.activated {
           display: flex;
           flex-flow: wrap;
+          width: 98%;
         }
       }
-    }
-
-    &.pinned {
-      display: block;
-
-      .control-bar {
-        display: flex;
-        flex-direction: row;
+      .menu-slider {
+        &.activated {
+          display: block;
+        }
+        .menu {
+          display: none;
+          &.on {
+            display: block;
+            position:absolute;
+            background: white;
+            width: 140px;
+            height: 55px;
+            bottom: 45px;
+            right: 0;
+            > div {
+              padding-left: 15px;
+              cursor: pointer;
+              font-size: 14px;
+              line-height: 20px;
+              padding-top: 5px;
+              &.selected {
+                color: #00b0e8;
+              }
+            }
+          }
+        }
+        .amalia-svg-switch-size {
+          width: 25px;
+          height: 16px;
+        }
       }
 
-      .playback-rate-slider2, .playback-rate-slider {
-        display: flex;
-        flex-flow: wrap;
-      }
     }
   }
 
@@ -733,7 +752,12 @@
       }
     }
   }
-
+  .menu-slider {
+    display: none;
+    position: absolute;
+    bottom: 12px;
+    right: 9px;
+  }
   .controls-reduced-container {
     display: none;
 

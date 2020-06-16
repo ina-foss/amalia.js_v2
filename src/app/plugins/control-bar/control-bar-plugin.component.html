@@ -225,7 +225,8 @@
         </div>
     </div>
     <!-- Slider -->
-    <div class="playback-rate-slider {{displayState}} " [ngClass]="{'activated' : enablePlaybackSlider}"
+    <div class="playback-rate-slider {{displayState}} "
+         [ngClass]="{'activated' : (selectedSlider === 'slider1' && enablePlaybackSlider) || (selectedSlider === 'slider1' && enablePinnedSlider)}"
          *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
         <div class="playback-rate-labels">
             <input type="range" list="playback-rate-list" #playbackRateCursor
@@ -245,14 +246,28 @@
         </div>
     </div>
     <!-- Slider 2-->
-    <div class="playback-rate-slider2 {{displayState}}" [ngClass]="{'activated' : enablePlaybackSlider}"
+    <div class="playback-rate-slider2 {{displayState}}"
+         [ngClass]="{'activated' : (selectedSlider === 'slider2' && enablePlaybackSlider) || (selectedSlider === 'slider2' && enablePinnedSlider)}"
          *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
         <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first:as isFirst; last as isLast;"
              [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
-             (click)="onChangePlaybackRate(pr)">{{pr}}x
+              >{{pr}}x
             <div class="line"></div>
         </div>
     </div>
+    <div class="menu-slider" [ngClass]="{'activated' : enablePlaybackSlider || enablePinnedSlider}" (mouseenter)="enableMenuSlider = true">
+        <svg class="amalia-svg-switch-size icon">
+            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#switch'"></use>
+        </svg>
+        <div class="menu" [ngClass]="{'on' : enableMenuSlider}"
+            (mouseleave)="enableMenuSlider = false">
+             <div [ngClass]="{'selected' : selectedSlider === 'slider1'}"
+                  (click)="changeSlider()">Mode lecture 01</div>
+             <div [ngClass]="{'selected' : selectedSlider === 'slider2'}"
+                 (click)="changeSlider()">Mode lecture 02</div>
+        </div>
+    </div>
+
 </div>
 <!-- Menu of controls displayed on "m" grid-->
 <div class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider}"
