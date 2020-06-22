@@ -10,6 +10,7 @@
   box-sizing: border-box;
   border: 1px solid #DDDDDD;
   align-items: stretch;
+  overflow: hidden;
 
   .icon {
     height: 20px;
@@ -250,6 +251,7 @@
     position: relative;
     height: calc(100% - 120px);
     overflow-y: overlay;
+    overflow-x: hidden;
     padding-bottom: 5px;
     min-height: 30px;
     user-select: none;

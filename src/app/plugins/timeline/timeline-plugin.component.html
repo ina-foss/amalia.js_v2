@@ -86,12 +86,12 @@
     </div>
     <div class="actions">
         <div>Actions :</div>
-        <!--        <div class="zoom">-->
-        <!--            <svg class="amalia-svg-zoom-size icon">-->
-        <!--                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#zoom'"></use>-->
-        <!--            </svg>-->
-        <!--            Zoom-->
-        <!--        </div>-->
+        <div class="zoom" [ngClass]="{'selected':enableZoom}" (click)="handleEnableZoom()">
+            <svg class="amalia-svg-zoom-size icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#zoom'"></use>
+            </svg>
+            Zoom
+        </div>
         <div class="drag-drop" [ngClass]="{'selected':enableDragDrop}" (click)="enableDragDrop=!enableDragDrop">
             <svg class="amalia-svg-hand-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#hand'"></use>

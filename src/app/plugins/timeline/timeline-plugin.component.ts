@@ -57,6 +57,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         handle: '.drag',
         filter: '.filtered',
     };
+    public enableZoom = false;
     /**
      * true for open all block
      */
@@ -397,28 +398,42 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     @AutoBind
     handleClickToDrawRect(event) {
-        this.isDrawingRectangle = (event.type === 'mousedown');
-        if (this.isDrawingRectangle) {
-            const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
-            const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
-            this.selectionPosition.startX = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
-            this.selectionPosition.startY = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
-            this.updateMouseEvent(event);
-            this.selectionContainer.nativeElement.style.cursor = 'crosshair';
-            this.selectionContainer.nativeElement.style.display = 'block';
-            this.selectionContainer.nativeElement.style.left = this.selectionPosition.startX + 'px';
-            this.selectionContainer.nativeElement.style.top = this.selectionPosition.startY + 'px';
-        } else {
-            console.log(this.selectionContainer.nativeElement.offsetWidth);
-            this.updateFocusContainerOnSelection(this.selectionContainer.nativeElement.offsetWidth, this.selectionContainer.nativeElement.offsetLeft);
-            this.selectionContainer.nativeElement.style.cursor = 'default';
-            this.selectionContainer.nativeElement.style.display = 'none';
-            this.selectionPosition = {
-                x: 0,
-                y: 0,
-                startX: 0,
-                startY: 0
-            };
+        if (this.enableZoom) {
+            this.isDrawingRectangle = (event.type === 'mousedown');
+            if (event.type === 'mouseup') {
+                this.enableZoom = false;
+            }
+            if (this.isDrawingRectangle) {
+                const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
+                const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
+                this.selectionPosition.startX = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
+                this.selectionPosition.startY = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
+                this.updateMouseEvent(event);
+                this.selectionContainer.nativeElement.style.cursor = 'crosshair';
+                this.selectionContainer.nativeElement.style.display = 'block';
+                this.selectionContainer.nativeElement.style.left = this.selectionPosition.startX + 'px';
+                this.selectionContainer.nativeElement.style.top = this.selectionPosition.startY + 'px';
+            } else {
+                this.updateFocusContainerOnSelection(this.selectionContainer.nativeElement.offsetWidth, this.selectionContainer.nativeElement.offsetLeft);
+                this.selectionContainer.nativeElement.style.cursor = 'default';
+                this.selectionContainer.nativeElement.style.display = 'none';
+                this.selectionPosition = {
+                    x: 0,
+                    y: 0,
+                    startX: 0,
+                    startY: 0
+                };
+            }
+        }
+    }
+
+    /**
+     * Enable zoom
+     */
+    public handleEnableZoom() {
+        this.enableZoom = !this.enableZoom;
+        if (this.enableZoom) {
+            this.unZoom();
         }
     }
 
@@ -437,8 +452,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         focusContainer.style.width = `${focusContainerWidth}%`;
         // focusContainer.setAttribute('data-x', this.selectionPosition.x.toString(4));
         leftPos = Math.abs(leftPos);
-        this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / selectionContainerWidth), 0);
-        this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / selectionContainerWidth), this.duration);
+
+        this.focusTcIn = this.tcOffset + Math.max((leftPosFocusContainer * this.duration / 100), 0);
+        this.focusTcOut = this.tcOffset + Math.min(((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100, this.duration);
+        console.log((leftPosFocusContainer * this.duration / 100), ((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100);
+        console.log(this.focusTcIn, this.focusTcOut);
     }
 
     /**
