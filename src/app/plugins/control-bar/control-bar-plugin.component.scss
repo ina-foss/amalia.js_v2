@@ -35,7 +35,7 @@
       text-align: center;
     }
 
-    &.ms, &.s {
+    &.sm, &.s {
       display: none;
     }
 
@@ -59,7 +59,7 @@
       display: none;
     }
 
-    &.m, &.ms {
+    &.m, &.sm {
       .column {
         flex: none;
 
@@ -73,7 +73,7 @@
       }
     }
 
-    &.ms {
+    &.sm {
       .column {
         .control {
           .amalia-svg-pin-size {
@@ -788,15 +788,13 @@
 
   .controls-menu {
     display: none;
-
-    &.m {
+    &.m,&.sm {
       display: none;
       position: absolute;
       z-index: $amalia-volume-bar-z-index;
       bottom: 70px;
       background-color: $amalia-ctrl-bar-bg-color;
       right: 10px;
-
       &.pinned {
         bottom: 110px;
       }

@@ -482,7 +482,7 @@ ___
 
 ###  selectedSlider
 
-• **selectedSlider**: *string* = "slider1"
+• **selectedSlider**: *string* = "slider2"
 
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:164
 
