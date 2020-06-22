@@ -161,7 +161,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * slider displayed
      */
-    public selectedSlider = 'slider1';
+    public selectedSlider = 'slider2';
     /**
      * show menu slider
      */

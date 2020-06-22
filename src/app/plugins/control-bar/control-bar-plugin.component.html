@@ -237,8 +237,8 @@
                    (change)="onChangePlaybackRate(playbackRateCursor.value)">
             <datalist id="playback-rate-list">
                 <option class="label"
-                        *ngFor="let pr of sliderListOfPlaybackRateStep;index as i; first:as isFirst; last as isLast;"
-                        [ngStyle]="{width:this.sliderListOfPlaybackRateStepWidth[i]+'%' }"
+                        *ngFor="let pr of sliderListOfPlaybackRateStep;index as i; first as isFirst; last as isLast;"
+                        [ngStyle]=" !isLast && {width:this.sliderListOfPlaybackRateStepWidth[i]+'%' }"
                         [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
                         (click)="onChangePlaybackRate(pr)" [selected]="pr ==currentPlaybackRate">{{pr}}x
                 </option>
@@ -249,8 +249,9 @@
     <div class="playback-rate-slider2 {{displayState}}"
          [ngClass]="{'activated' : (selectedSlider === 'slider2' && enablePlaybackSlider) || (selectedSlider === 'slider2' && enablePinnedSlider)}"
          *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
-        <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first:as isFirst; last as isLast;"
+        <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
              [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
+             (click)="onChangePlaybackRate(pr)"
               >{{pr}}x
             <div class="line"></div>
         </div>
