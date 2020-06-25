@@ -139,7 +139,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     private handleDurationChange() {
         this.initStoryboard();
-
     }
 
     /**
