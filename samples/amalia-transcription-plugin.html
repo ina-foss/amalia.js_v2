@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Amalia</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="main.js" type="module"></script>
+</head>
+<body>
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Storyboard Plugin</h5>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 p-2" style="height: 500px;">
+           <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
+            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-expert-player.json">
+                <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
+            </amalia-player>
+        </div>
+        <div class="col-6 p-2" style="height: 500px;">
+            <div style="width: 400px;height: 500px" id="transcription">
+                <amalia-transcription plugin-configuration='{"metadataIds":["transcription_test"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": false}}'>
+                    </amalia-transcription>
+               </div>
+        </div>
+    </div>
+</div>
+<footer class="border-top">
+    <div class="row pt-3 pl-3">
+        <div class="col-12 col-md">
+            <img class="mb-2 d-inline" src="assets/logo.svg" alt="" width="40" height="40">
+            <small class="d-block mb-3 text-muted">&copy; 2020</small>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

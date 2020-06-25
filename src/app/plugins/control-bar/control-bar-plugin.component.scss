@@ -87,7 +87,7 @@
       }
     }
 
-    &.activated, &:hover,&.pinned {
+    &.activated, &:hover, &.pinned {
       .control-bar {
         display: flex;
         flex-direction: row;
@@ -108,7 +108,7 @@
           display: none;
           &.on {
             display: block;
-            position:absolute;
+            position: absolute;
             background: white;
             width: 140px;
             height: 55px;
@@ -171,7 +171,6 @@
         justify-content: flex-end;
       }
     }
-
 
     .control {
       display: none;
@@ -764,8 +763,8 @@
     right: 0px;
     width: 42px;
     height: 50px;
-    border-left: 2px solid var(--amalia-border-buttons-bg-color,#1a0c0c);
-    border-top: 2px solid var(--amalia-border-buttons-bg-color,#1a0c0c);
+    border-left: 2px solid var(--amalia-border-buttons-bg-color, #1a0c0c);
+    border-top: 2px solid var(--amalia-border-buttons-bg-color, #1a0c0c);
   }
   .controls-reduced-container {
     display: none;
@@ -788,7 +787,7 @@
 
   .controls-menu {
     display: none;
-    &.m,&.sm {
+    &.m, &.sm {
       display: none;
       position: absolute;
       z-index: $amalia-volume-bar-z-index;
@@ -894,6 +893,33 @@
             left: initial;
           }
         }
+      }
+    }
+  }
+  .time-label {
+    position: absolute;
+    height: 25px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 57.88%, rgba(0, 0, 0, 0.6) 100%);
+    & > span {
+      display: inline-block;
+    }
+    &.activated {
+      text-align: right;
+      height: 25px;
+      width: 100%;
+      display: block;
+      position: absolute;
+      cursor: pointer;
+      color: white;
+      z-index: 2;
+      font-size: 12px;
+      bottom: 60px;
+      line-height: 25px;
+      .time-duration {
+        margin-right: 18px;
+      }
+      .time-current {
+        margin-right: 3px;
       }
     }
   }
