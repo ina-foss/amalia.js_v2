@@ -86,7 +86,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Selected aspectRatio
      */
     public aspectRatio: '16:9' | '4:3' = '4:3';
-
+    /**
+     * Default aspect ratio
+     */
+    public defaultRatio;
     /**
      * return  current time
      */
@@ -144,6 +147,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public pinnedSlider = false;
     /**
+     * Pinned slider state
+     */
+    public enablePinnedSlider = false;
+    /**
      * display state (s/m/l)
      */
     public displayState: string;
@@ -151,6 +158,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * FullScreenMode state
      */
     public fullScreenMode = false;
+    /**
+     * slider displayed
+     */
+    public selectedSlider = 'slider2';
+    /**
+     * show menu slider
+     */
+    public enableMenuSlider = false;
     /**
      * Handle thumbnail
      */
@@ -191,6 +206,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.thumbnailPreviewDebounceTime
             .pipe(debounceTime(_debounceTime))
             .subscribe((e) => this.updateThumbnail(e));
+        this.getDefaultAspectRatio();
     }
 
     /**
@@ -335,7 +351,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeAspectRatio() {
         this.mediaPlayerElement.aspectRatio = (this.aspectRatio === '4:3') ? '16:9' : '4:3';
     }
-
+    /**
+     * get default aspect ratio
+     */
+    @AutoBind
+    public getDefaultAspectRatio() {
+        this.defaultRatio = this.mediaPlayerElement.aspectRatio;
+        this.aspectRatio = this.defaultRatio;
+    }
     /**
      * Invoked on change playback rate
      */
@@ -532,14 +555,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private getPlaybackStepValue(playbackRateStep: Array<number>): number {
         let playbackRate = 1;
         let indexOfCurrentPlaybackRate = playbackRateStep.indexOf(this.currentPlaybackRate);
-        if (indexOfCurrentPlaybackRate !== -1 || this.currentPlaybackRate === 1) {
-            // indexOfCurrentPlaybackRate = Math.min(indexOfCurrentPlaybackRate + 1, playbackRateStep.length - 1);
-            indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
-            if (indexOfCurrentPlaybackRate > playbackRateStep.length - 1) {
-                indexOfCurrentPlaybackRate = 0;
-            }
-            playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
+        indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
+        if (indexOfCurrentPlaybackRate > playbackRateStep.length - 1) {
+            indexOfCurrentPlaybackRate = 0;
         }
+        playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
         return playbackRate;
     }
 
@@ -636,6 +656,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private pinControls() {
         this.pinnedSlider = !this.pinnedSlider;
+        this.enablePinnedSlider = !this.enablePinnedSlider;
     }
 
     /**
@@ -666,6 +687,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
+    /**
+     * change slider displayed
+     */
+    @AutoBind
+    public changeSlider() {
+        if (this.selectedSlider === 'slider1') {
+            this.selectedSlider = 'slider2';
+        } else {
+            this.selectedSlider = 'slider1';
+        }
+    }
     /**
      * Handle on component destroy
      */

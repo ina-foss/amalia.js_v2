@@ -12,4 +12,5 @@ export interface PlayerConfigData {
     framerate?: number;
     hls?: { enable: boolean, config?: Hls.Config };
     mpegDash?: { enable: boolean, config?: any };
+    ratio?: '16:9' | '4:3';
 }

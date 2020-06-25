@@ -227,6 +227,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             this.cursorZoomPosition = 50;
         }
     }
+    @AutoBind
+    public handleHistogramsClick(event) {
+        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        const currentTime =  ((event.clientX / this.histograms.nativeElement.offsetWidth) * duration);
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
+    }
     /**
      * Initialize cursors
      */
