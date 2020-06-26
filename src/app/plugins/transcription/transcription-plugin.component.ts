@@ -26,6 +26,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public tcDisplayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's';
     public fps = DEFAULT.FPS;
     public autoScroll = false;
+    public active = false;
     public ignoreNextScroll = false;
     @ViewChild('transcriptionElement', {static: false})
     public transcriptionElement: ElementRef<HTMLElement>;
@@ -268,7 +269,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public searchWord(searchText: string) {
         this.listOfSearchedNodes = new Array<HTMLElement>();
         const SEARCH_SELECTOR = 'search-text';
-        if (searchText !== '') {
+        if (searchText !== '' && searchText !== 'Rechercher') {
             Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
                 node.classList.remove(SEARCH_SELECTOR);
                 if (TextUtils.hasSearchText(node.textContent, searchText)) {

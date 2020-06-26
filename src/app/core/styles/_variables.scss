@@ -23,7 +23,10 @@ $amalia-plugin-transcription-header: var(--amalia-plugin-transcription-header, #
 $amalia-plugin-transcription-progress-bar: var(--amalia-plugin-transcription-progress-bar, #0086B1);
 $amalia-plugin-transcription-tc: var(--amalia-plugin-transcription-tc, #727070);
 $amalia-plugin-transcription-tc-hover: var(--amalia-plugin-transcription-tc-hover, #0086B1);
-$amalia-plugin-transcription-search: var(--amalia-plugin-transcription-search, #dddddd);
+$amalia-plugin-transcription-search: var(--amalia-plugin-transcription-search, #DDDDDD);
+$amalia-plugin-transcription-bg-search: var(--amalia-plugin-transcription-bg-search, #F2F5F9);
+$amalia-plugin-transcription-input-border: var(--amalia-plugin-transcription-input-border, #DDDDDD);
+$amalia-plugin-transcription-search-icons: var(--amalia-plugin-transcription-search-icons, #0085B1);
 $amalia-plugin-transcription-auto-scroll: var(--amalia-plugin-transcription-auto-scroll, #0086B1);
 $amalia-plugin-transcription-separator: var(--amalia-plugin-transcription-separator, '>');
 $amalia-plugin-subtitle-bg: var(--amalia-plugin-subtitle-bg, rgba(34, 34, 34, 0.8));
@@ -51,9 +54,10 @@ $amalia-plugin-storyboard-thumbnail-lw: var(--amalia-plugin-storyboard-thumbnail
 $amalia-plugin-storyboard-thumbnail-lh: var(--amalia-plugin-storyboard-thumbnail-lh, 206px);
 $amalia-plugin-storyboard-label-bg: var(--amalia-plugin-storyboard-label-bg, white);
 $amalia-plugin-storyboard-label-color: var(amalia-plugin-storyboard-label-color, #34495E);
-$amalia-plugin-storyboard-label-hover-color: var(--amalia-plugin-storyboard-label-hover-color, #0086B1);
+$amalia-plugin-storyboard-label-hover-color: var(--amalia-plugin-storyboard-label-hover-color, rgba(0,0,0,0.2));
+$amalia-plugin-storyboard-box-color: var(--amalia-plugin-storyboard-box-color, #0086B1);
+$amalia-plugin-storyboard-box-border-color: var(--amalia-plugin-storyboard-box-border-color, #dddddd);
 $amalia-plugin-storyboard-bg-color: var(--amalia-plugin-storyboard-bg-color, #F2F5F9);
-$amalia-plugin-storyboard-bg-color-hover: var(--amalia-plugin-storyboard-bg-color, #34495E);
 
 /**
  * global animation

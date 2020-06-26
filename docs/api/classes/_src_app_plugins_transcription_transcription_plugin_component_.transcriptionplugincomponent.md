@@ -21,6 +21,7 @@
 
 ### Properties
 
+* [active](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#active)
 * [autoScroll](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#autoscroll)
 * [currentTime](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#currenttime)
 * [displayProgressBar](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#displayprogressbar)
@@ -78,7 +79,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:39
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:40
 
 **Parameters:**
 
@@ -89,6 +90,14 @@ Name | Type |
 **Returns:** *[TranscriptionPluginComponent](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md)*
 
 ## Properties
+
+###  active
+
+• **active**: *boolean* = false
+
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:29
+
+___
 
 ###  autoScroll
 
@@ -102,7 +111,7 @@ ___
 
 • **currentTime**: *number*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:36
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:37
 
 Return  current time
 
@@ -112,7 +121,7 @@ ___
 
 • **displayProgressBar**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:32
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:33
 
 ___
 
@@ -130,7 +139,7 @@ ___
 
 • **ignoreNextScroll**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:29
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:30
 
 ___
 
@@ -138,7 +147,7 @@ ___
 
 • **listOfSearchedNodes**: *Array‹HTMLElement›*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:38
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:39
 
 ___
 
@@ -196,7 +205,7 @@ ___
 
 • **searchedWordIndex**: *number* = 0
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:39
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:40
 
 ___
 
@@ -232,7 +241,7 @@ ___
 
 • **transcriptionElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:31
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:32
 
 ___
 
@@ -240,7 +249,7 @@ ___
 
 • **transcriptions**: *Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)›* = null
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:37
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:38
 
 ___
 
@@ -348,7 +357,7 @@ Name | Type |
 
 ▸ **callSeek**(`tc`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:75
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:76
 
 handle call
 
@@ -366,7 +375,7 @@ ___
 
 ▸ **disableRemoveAllSelectedNodes**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:138
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:139
 
  In charge to remove selected elements and disable progress bar
 
@@ -380,7 +389,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:82
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:83
 
 Return default config
 
@@ -392,7 +401,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:242
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:243
 
 Invoked on metadata loaded
 
@@ -404,7 +413,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:123
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:124
 
 Invoked time change event for :
 - update current time
@@ -417,7 +426,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:234
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:235
 
 handle scroll event
 
@@ -437,7 +446,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:50
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:51
 
 **Returns:** *void*
 
@@ -449,7 +458,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:45
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:46
 
 **Returns:** *void*
 
@@ -459,7 +468,7 @@ ___
 
 ▸ **parseTranscription**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:249
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:250
 
 In charge to load metadata
 
@@ -471,7 +480,7 @@ ___
 
 ▸ **scroll**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:201
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:202
 
 In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
 
@@ -483,7 +492,7 @@ ___
 
 ▸ **scrollToNode**(`scrollNode`: HTMLElement): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:213
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:214
 
 Invoked to scroll to node
 
@@ -501,7 +510,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:284
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:285
 
 **Parameters:**
 
@@ -517,7 +526,7 @@ ___
 
 ▸ **searchWord**(`searchText`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:268
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:269
 
 **Parameters:**
 
@@ -533,7 +542,7 @@ ___
 
 ▸ **seekToWord**(`e`: MouseEvent): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:101
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:102
 
 handle to seek work with defined tc delta
 
@@ -551,7 +560,7 @@ ___
 
 ▸ **selectSegment**(`karaokeTcDelta`: number): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:178
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:179
 
 In charge to select segment
 
@@ -569,7 +578,7 @@ ___
 
 ▸ **selectWords**(`karaokeTcDelta`: number): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:161
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:162
 
 In charge to select word in time range
 
@@ -587,7 +596,7 @@ ___
 
 ▸ **toggleAutoScroll**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:114
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:115
 
 Invoked for change auto scroll state
 

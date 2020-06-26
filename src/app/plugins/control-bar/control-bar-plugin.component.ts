@@ -94,6 +94,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * return  current time
      */
     public currentTime = 0;
+    public time = 0;
+    /**
+     * inverse display currentime
+     */
+    public inverse = false;
 
     /**
      * Progress bar value
@@ -581,6 +586,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (!this.inSliding) {
             this.progressBarValue = (this.currentTime / this.duration) * 100;
         }
+        if (this.inverse === false) {
+            this.time = this.currentTime;
+        } else {
+            this.time = this.duration - this.currentTime;
+        }
     }
     /**
      * Invoked on duration change
@@ -588,6 +598,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.time = this.currentTime;
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 
@@ -702,6 +713,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Handle on component destroy
      */
     ngOnDestroy() {
+    }
+
+    /**
+     * switch timecode display onclick
+     */
+    @AutoBind
+    public switchDisplayCurrentTime() {
+        if (this.inverse === true) {
+            this.inverse = false;
+            this.time = this.currentTime;
+        } else {
+            this.inverse = true;
+            this.time = this.duration - this.currentTime;
+        }
     }
 
 }
