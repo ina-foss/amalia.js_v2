@@ -35,17 +35,18 @@
 
   .auto-scroll {
     position: absolute;
-    right: 24px;
-    bottom: 25px;
+    right: 25px;
+    bottom: 90px;
 
     .icon {
-      width: 45px;
+      width: 32px;
+      height: 32px;
       display: inline;
       cursor: pointer;
 
       &.selected,
       &:hover {
-        --hover: #2196F3;
+        --hover: #0086B1;
       }
     }
   }
@@ -71,11 +72,19 @@
       .title {
         display: block;
         font-weight: bold;
+        font-size: 14px;
+        line-height: 20px;
+        color: #222222;
       }
 
       .timecode {
         display: flex;
         cursor: pointer;
+        .tcin , .tcout {
+          font-size: 14px;
+          font-weight: bold;
+          color: #727070;
+        }
 
         div {
           margin: 5px 5px 5px 0;
@@ -116,40 +125,96 @@
   }
 
   .search-block {
-    display: flex;
-    flex-direction: row;
-    background-color: $amalia_plugin-transcription-bg_hover;
-
+    background-color: $amalia_plugin-transcription-bg-search;
     div {
-      align-items: center;
-
       &.search-text {
-        flex: 1;
-        width: 100%;
-        padding: 8px;
-
+        width: 75%;
+        padding: 15px;
+        position: relative;
+        z-index: 1;
+        float: left;
         input {
           width: 100%;
-          height: 30px;
-          border: 1px solid $amalia-plugin-transcription-bg-hover;
+          height: 40px;
+          border: 1px solid $amalia-plugin-transcription-input-border;
+          border-radius: 4px;
+          line-height: 16px;
+          font-size: 14px;
+          font-style: italic;
+          color: #A6A8A9;
+          padding-left: 10px;
+          z-index: 1;
+          &.active {
+            font-style: normal;
+            color: #222222;
+
+          }
         }
-      }
-
-      &.up,
-      &.down {
-        width: 50px;
-        height: 50px;
-        cursor: pointer;
-        position: relative;
-
-        .icon {
-          height: 15px;
-          width: 100%;
-          top: 15px;
+        .search-icon {
+          height: 24px;
+          width: 24px;
+          top: 25px;
           position: absolute;
+          left: 90%;
+          cursor: pointer;
+          z-index: 2;
+          .icon {
+            height: 24px;
+            width: 24px;
+            color: $amalia-plugin-transcription-search-icons;
+          }
         }
       }
+      &.message {
+        display: block;
+        width: 100%;
+        overflow: hidden;
+        line-height: 16px;
+        height: 16px;
+        position: relative;
+        left: 15px;
+        top: -10px;
+      }
+      &.controls {
+        height: 24px;
+        width: 51px;
+        border-radius: 3px;
+        background-color: #FFFFFF;
+        box-shadow: 0 0 2px 0 rgba(0,0,0,0.2);
+        margin-top: 24px;
+        margin-left: 9px;
+        display: none;
+        float: left;
+        &.show {
+          display: block;
+        }
+        .up {
+          border-right:  1px solid $amalia-plugin-transcription-input-border;
+        }
+        .down {
+          border-left: 1px solid $amalia-plugin-transcription-input-border;
+        }
+        .up,
+        .down {
+          width: 24px;
+          height: 24px;
+          cursor: pointer;
+          position: relative;
+          display: inline-block;
+
+          .icon {
+            height: 9px;
+            width: 9px;
+            top: 8px;
+            left: 9px;
+            position: absolute;
+            color: $amalia-plugin-transcription-search-icons;
+          }
+        }
+      }
+
     }
   }
 }
+
 

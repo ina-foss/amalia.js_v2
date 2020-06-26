@@ -14,17 +14,6 @@
   .histogram-container {
     background: #34495E;
     height: 100%;
-    &.m {
-      .zoomed-histograms {
-        display: none;
-      }
-      .histograms {
-        height: 100%;
-        .slider{
-          display: none;
-        }
-      }
-    }
     &.s {
       .zoomed-histograms,.histograms {
         display: none;

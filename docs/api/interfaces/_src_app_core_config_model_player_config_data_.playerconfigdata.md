@@ -20,6 +20,7 @@
 * [hls](_src_app_core_config_model_player_config_data_.playerconfigdata.md#optional-hls)
 * [mpegDash](_src_app_core_config_model_player_config_data_.playerconfigdata.md#optional-mpegdash)
 * [poster](_src_app_core_config_model_player_config_data_.playerconfigdata.md#optional-poster)
+* [ratio](_src_app_core_config_model_player_config_data_.playerconfigdata.md#optional-ratio)
 * [src](_src_app_core_config_model_player_config_data_.playerconfigdata.md#src)
 
 ## Properties
@@ -113,6 +114,14 @@ ___
 • **poster**? : *string*
 
 Defined in src/app/core/config/model/player-config-data.ts:6
+
+___
+
+### `Optional` ratio
+
+• **ratio**? : *"16:9" | "4:3"*
+
+Defined in src/app/core/config/model/player-config-data.ts:15
 
 ___
 

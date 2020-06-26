@@ -42,7 +42,8 @@ export class MediaPlayerElement {
      */
     private _aspectRatio: '16:9' | '4:3' = '4:3';
 
-    get aspectRatio(): '16:9' | '4:3' {
+    get aspectRatio() {
+        this._aspectRatio =  this.getConfiguration().player.ratio;
         return this._aspectRatio;
     }
 
@@ -210,12 +211,12 @@ export class MediaPlayerElement {
     public getDisplayState() {
         let displayState = 'l';
         const sWidth = 350;
-        const smWidth = 480;
-        const mWidth = 860;
+        const smWidth = 640;
+        const mWidth = 820;
         if (this.width <= sWidth) {
             displayState = 's';
         } else if (this.width > sWidth && this.width <= smWidth) {
-            displayState = 'ms';
+            displayState = 'sm';
         } else if (this.width > smWidth && this.width <= mWidth) {
             displayState = 'm';
         }

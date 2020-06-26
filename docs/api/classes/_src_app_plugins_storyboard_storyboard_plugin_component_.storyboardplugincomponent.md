@@ -151,7 +151,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[logger](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-logger)*
 
-Defined in src/app/core/plugin/plugin-base.ts:56
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -161,7 +161,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:53
 
 ___
 
@@ -191,7 +191,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[playerService](_src_app_core_plugin_plugin_base_.pluginbase.md#playerservice)*
 
-Defined in src/app/core/plugin/plugin-base.ts:53
+Defined in src/app/core/plugin/plugin-base.ts:52
 
 ___
 
@@ -201,7 +201,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginName](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-pluginname)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:54
 
 ___
 
@@ -295,7 +295,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:36
+Defined in src/app/core/plugin/plugin-base.ts:35
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[StoryboardConfig](../interfaces/_src_app_core_config_model_storyboard_config_.storyboardconfig.md)›*
 
@@ -303,7 +303,7 @@ Defined in src/app/core/plugin/plugin-base.ts:36
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:41
+Defined in src/app/core/plugin/plugin-base.ts:40
 
 **Parameters:**
 

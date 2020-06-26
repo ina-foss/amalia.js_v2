@@ -18,8 +18,8 @@ export class MediaElement {
     private readonly eventEmitter: EventEmitter;
     private readonly logger: LoggerInterface;
     private mse: MediaSourceExtension;
-    private volumeLeft: number;
-    private volumeRight: number;
+    public volumeLeft: number;
+    public volumeRight: number;
     /**
      * Selected audio channel
      */
@@ -109,6 +109,12 @@ export class MediaElement {
     }
 
     play(): Promise<void> {
+        // switch to main src if reverse mode equal to true
+        if (this.reverseMode === true) {
+            this.reverseMode = !this.reverseMode;
+            this.mse.switchToMainSrc();
+            this.setCurrentTime(Math.max(0, this.getDuration() - this.getCurrentTime()));
+        }
         return this.mediaElement.play();
     }
 
@@ -180,7 +186,7 @@ export class MediaElement {
      */
     setVolume(volumePercent: number, volumeSide?: string) {
         this.logger.debug(`setVolume change side :${volumeSide} volume: ${volumePercent} with same volume ${this._withMergeVolume}`);
-        if (this._withMergeVolume) {
+        if (this._withMergeVolume === true) {
             this.volumeLeft = volumePercent;
             this.volumeRight = volumePercent;
         } else {
@@ -394,7 +400,7 @@ export class MediaElement {
         window.addEventListener('resize', this.handleResize);
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
-        document.addEventListener('fullscreenchange ', this.handleFullscreenHandler);
+        document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
     }
 
     /**
@@ -484,8 +490,8 @@ export class MediaElement {
      * Invoked when the fullscreen state changed.
      */
     @AutoBind
-    private handleFullscreenHandler() {
-        this.logger.debug('handleFullscreenHandler');
+    private handleFullscreenChange() {
+        this.logger.debug('handleFullscreenChange');
         this.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 

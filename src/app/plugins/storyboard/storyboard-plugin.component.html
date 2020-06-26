@@ -26,6 +26,6 @@
 <div class="storyboard">
     <div class="thumbnail {{size}}" *ngFor="let tc of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
         <img src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy" (click)="seekToTc(tc)"/>
-        <span *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</span>
+        <div *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</div>
     </div>
 </div>

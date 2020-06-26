@@ -29,6 +29,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public tcOffset = 0;
     public focusTcIn = 0;
     public focusTcOut = 0;
+    public selectionPosition = {
+        x: 0,
+        y: 0,
+        startX: 0,
+        startY: 0
+    };
+    public isDrawingRectangle = false;
     @Input()
     public colors: Array<string> = [
         '#1ABC9C', '#f1c40e', '#95A5A6', '#2ECC71',
@@ -43,11 +50,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public listOfBlocksContainer: ElementRef<HTMLElement>;
     @ViewChild('selectedBlockElement', {static: true})
     public selectedBlockElement: any = null;
+    @ViewChild('selectionContainer', {static: true})
+    public selectionContainer: ElementRef<HTMLElement>;
     public selectedBlock: TimelineLocalisation = null;
     public sortableOptions: Options = {
         handle: '.drag',
         filter: '.filtered',
     };
+    public enableZoom = false;
     /**
      * true for open all block
      */
@@ -80,6 +90,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.title = this.pluginConfiguration.data.title;
         this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         this.initFocusResizable(this.focusContainer.nativeElement);
+        this.listOfBlocksContainer.nativeElement.addEventListener('mousedown', this.handleClickToDrawRect);
+        this.listOfBlocksContainer.nativeElement.addEventListener('mouseup', this.handleClickToDrawRect);
+        this.listOfBlocksContainer.nativeElement.addEventListener('mousemove', this.handleMouseMoveToDrawRect);
+
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
@@ -259,11 +273,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.focusTcOut = this.tcOffset + this.duration;
     }
 
+
+    /**
+     * In charge to change focus container
+     */
     @AutoBind
     public handleZoomRangeChange() {
-        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
         const focusWidth = this.focusContainer.nativeElement.offsetWidth;
         const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
+        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
         this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / mainContainerWidth), 0);
         this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / mainContainerWidth), this.duration);
         this.refreshTimeCursor();
@@ -276,8 +294,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (isFinite(this.currentTime) && isFinite(this.duration)) {
             const selector = '.tc-cursor';
             const focusLeftPos = (this.currentTime - this.focusTcIn) * 100 / (this.focusTcOut - this.focusTcIn);
-            (this.mainBlockContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${this.currentTime * 100 / this.duration}%`;
-            (this.listOfBlocksContainer.nativeElement.querySelector(selector) as HTMLElement).style.left = `${focusLeftPos}%`;
+            const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
+            const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
+            mainBlock.style.left = `${this.currentTime * 100 / this.duration}%`;
+            listBlock.style.left = `${focusLeftPos}%`;
         }
     }
 
@@ -285,7 +305,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to un-zoom
      */
     public unZoom() {
-        const container = (this.focusContainer.nativeElement as HTMLElement);
+        const container: HTMLElement = this.focusContainer.nativeElement;
         container.style.left = `0`;
         container.style.width = `100%`;
         container.setAttribute('data-x', '0');
@@ -354,7 +374,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     /**
      * On mouse enter on tc bloc
-     * @param $event event
+     * @param event event
+     * @param localisation localisation
      */
     public handleMouseEnterOnTc(event: MouseEvent, localisation: TimelineLocalisation) {
         const defaultMouseMargin = 50;
@@ -374,4 +395,92 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.selectedBlockElement.nativeElement.style.display = 'none';
         this.selectedBlock = null;
     }
+
+    @AutoBind
+    handleClickToDrawRect(event) {
+        if (this.enableZoom) {
+            this.isDrawingRectangle = (event.type === 'mousedown');
+            if (event.type === 'mouseup') {
+                this.enableZoom = false;
+            }
+            if (this.isDrawingRectangle) {
+                const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
+                const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
+                this.selectionPosition.startX = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
+                this.selectionPosition.startY = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
+                this.updateMouseEvent(event);
+                this.selectionContainer.nativeElement.style.cursor = 'crosshair';
+                this.selectionContainer.nativeElement.style.display = 'block';
+                this.selectionContainer.nativeElement.style.left = this.selectionPosition.startX + 'px';
+                this.selectionContainer.nativeElement.style.top = this.selectionPosition.startY + 'px';
+            } else {
+                this.updateFocusContainerOnSelection(this.selectionContainer.nativeElement.offsetWidth, this.selectionContainer.nativeElement.offsetLeft);
+                this.selectionContainer.nativeElement.style.cursor = 'default';
+                this.selectionContainer.nativeElement.style.display = 'none';
+                this.selectionPosition = {
+                    x: 0,
+                    y: 0,
+                    startX: 0,
+                    startY: 0
+                };
+            }
+        }
+    }
+
+    /**
+     * Enable zoom
+     */
+    public handleEnableZoom() {
+        this.enableZoom = !this.enableZoom;
+        if (this.enableZoom) {
+            this.unZoom();
+        }
+    }
+
+    /**
+     * In charge to change focus container
+     */
+    public updateFocusContainerOnSelection(focusWidth, leftPos) {
+        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
+        const selectionContainer = this.selectionContainer.nativeElement;
+        const selectionContainerWidth = selectionContainer.clientWidth;
+        const focusContainer: HTMLElement = this.focusContainer.nativeElement;
+        const leftPosFocusContainer = Math.min(leftPos * 100 / mainContainerWidth, 100);
+        const focusContainerWidth = Math.min(100, selectionContainerWidth * 100 / mainContainerWidth);
+        // update the element's style
+        focusContainer.style.left = `${leftPosFocusContainer}%`;
+        focusContainer.style.width = `${focusContainerWidth}%`;
+        // focusContainer.setAttribute('data-x', this.selectionPosition.x.toString(4));
+        leftPos = Math.abs(leftPos);
+
+        this.focusTcIn = this.tcOffset + Math.max((leftPosFocusContainer * this.duration / 100), 0);
+        this.focusTcOut = this.tcOffset + Math.min(((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100, this.duration);
+        console.log((leftPosFocusContainer * this.duration / 100), ((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100);
+        console.log(this.focusTcIn, this.focusTcOut);
+    }
+
+    /**
+     * handle mouse to draw
+     * @param event mouse event
+     */
+    @AutoBind
+    handleMouseMoveToDrawRect(event: MouseEvent) {
+        if (this.isDrawingRectangle) {
+            this.updateMouseEvent(event);
+            this.selectionContainer.nativeElement.style.width = Math.abs(this.selectionPosition.startX - this.selectionPosition.x) + 'px';
+            this.selectionContainer.nativeElement.style.height = Math.abs(this.selectionPosition.startY - this.selectionPosition.y) + 'px';
+        }
+    }
+
+    /**
+     * Update mouse position
+     * @param event mouse event
+     */
+    updateMouseEvent(event) {
+        const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
+        const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
+        this.selectionPosition.x = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
+        this.selectionPosition.y = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
+    }
+
 }

@@ -67,6 +67,7 @@
 * [getZoomedHistogramData](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-getzoomedhistogramdata)
 * [getZoomedWidth](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-getzoomedwidth)
 * [handleDisplayState](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#handledisplaystate)
+* [handleHistogramsClick](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#handlehistogramsclick)
 * [handleMetadataLoaded](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-handlemetadataloaded)
 * [handleOnDurationChange](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-handleondurationchange)
 * [handleOnTimeChange](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-handleontimechange)
@@ -234,7 +235,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[logger](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-logger)*
 
-Defined in src/app/core/plugin/plugin-base.ts:56
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -244,7 +245,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:53
 
 ___
 
@@ -274,7 +275,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[playerService](_src_app_core_plugin_plugin_base_.pluginbase.md#playerservice)*
 
-Defined in src/app/core/plugin/plugin-base.ts:53
+Defined in src/app/core/plugin/plugin-base.ts:52
 
 ___
 
@@ -284,7 +285,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginName](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-pluginname)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:54
 
 ___
 
@@ -420,7 +421,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:36
+Defined in src/app/core/plugin/plugin-base.ts:35
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[HistogramConfig](../interfaces/_src_app_core_config_model_histogram_config_.histogramconfig.md)›*
 
@@ -428,7 +429,7 @@ Defined in src/app/core/plugin/plugin-base.ts:36
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:41
+Defined in src/app/core/plugin/plugin-base.ts:40
 
 **Parameters:**
 
@@ -444,7 +445,7 @@ Name | Type |
 
 ▸ **addHistogram**(`data`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:505
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:511
 
 add histogram to list of zoomed histograms
 
@@ -527,7 +528,7 @@ ___
 
 ▸ **getDefaultZoomedHistogramData**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:364
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:370
 
 get default zoomed histogram data from api
 
@@ -539,7 +540,7 @@ ___
 
 ▸ **getZoomedHistogramData**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:386
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:392
 
 get default zoomed histogram data from api
 
@@ -551,7 +552,7 @@ ___
 
 ▸ **getZoomedWidth**(`width`: any, `zoom`: any): *number*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:302
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:308
 
 return zoomed svg Width
 
@@ -570,9 +571,25 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:519
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:525
 
 switch container class based on width
+
+**Returns:** *void*
+
+___
+
+###  handleHistogramsClick
+
+▸ **handleHistogramsClick**(`event`: any): *void*
+
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:231
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`event` | any |
 
 **Returns:** *void*
 
@@ -582,7 +599,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:321
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:327
 
 Invoked on metadata loaded
 
@@ -594,7 +611,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:312
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:318
 
 Invoked on duration change
 
@@ -642,7 +659,7 @@ ___
 
 ▸ **initSliderEvents**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:408
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:414
 
 slider events
 
@@ -654,7 +671,7 @@ ___
 
 ▸ **initializeCursors**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:234
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:240
 
 Initialize cursors
 
@@ -666,7 +683,7 @@ ___
 
 ▸ **loadHistogram**(`url`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:486
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:492
 
 call api to get histogram data
 
@@ -696,7 +713,7 @@ ___
 
 ▸ **startDragging**(`event`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:333
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:339
 
 Called on start dragging element
 
@@ -714,7 +731,7 @@ ___
 
 ▸ **stopDragging**(`event`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:346
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:352
 
 Called on stop dragging element
 
@@ -732,7 +749,7 @@ ___
 
 ▸ **updateCursors**(`currentTime`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:265
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:271
 
 update slider position
 
@@ -750,7 +767,7 @@ ___
 
 ▸ **updateTimeCursors**(`currentTime`: any, `ratio`: any, `start`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:244
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:250
 
 update time cursor
 

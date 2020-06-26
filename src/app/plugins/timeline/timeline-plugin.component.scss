@@ -10,6 +10,7 @@
   box-sizing: border-box;
   border: 1px solid #DDDDDD;
   align-items: stretch;
+  overflow: hidden;
 
   .icon {
     height: 20px;
@@ -171,7 +172,7 @@
 
       .header {
         color: #222222;
-        font-family: "Trebuchet MS";
+        font-family: $amalia-font-family;
         font-size: 20px;
         font-weight: bold;
         letter-spacing: 0;
@@ -194,7 +195,7 @@
           list-style: none;
 
           li {
-            font-family: "Trebuchet MS";
+            font-family: $amalia-font-family;
             color: #222222;
             font-size: 16px;
             letter-spacing: 0;
@@ -213,11 +214,8 @@
               border-radius: 10px;
             }
 
-            input[type=checkbox] {
+            .check {
               transform: scale(1);
-            }
-
-            input[type=checkbox] {
               box-sizing: border-box;
               height: 16px;
               width: 16px;
@@ -226,7 +224,7 @@
               background-color: #FFFFFF;
             }
 
-            input[type=checkbox]:after {
+            .check:after {
               content: " ";
               background-color: #fff;
               display: inline-block;
@@ -238,7 +236,7 @@
               text-align: center;
             }
 
-            input[type=checkbox]:checked:after {
+            .check:checked:after {
               content: "\2714";
               font-weight: bold;
             }
@@ -253,8 +251,16 @@
     position: relative;
     height: calc(100% - 120px);
     overflow-y: overlay;
+    overflow-x: hidden;
     padding-bottom: 5px;
     min-height: 30px;
+    user-select: none;
+
+    .rectangle {
+      border: 1px solid #FF0000;
+      position: absolute;
+      z-index: 1;
+    }
 
     .tooltip {
       min-height: 30px;
@@ -273,7 +279,7 @@
       font-size: 8px;
 
       .label {
-        font-family: "Trebuchet MS";
+        font-family: $amalia-font-family;
         padding: 5px 10px;
         border-radius: 13px;
         background-color: #34495E;
@@ -287,7 +293,7 @@
       }
 
       .tc {
-        font-family: "Trebuchet MS";
+        font-family: $amalia-font-family;
         font-size: 12px;
         font-weight: bold;
         letter-spacing: 0;
@@ -302,9 +308,6 @@
 
     &::-webkit-scrollbar {
       display: none;
-    }
-
-    &::-webkit-scrollbar {
       width: 10px;
     }
 
@@ -339,6 +342,8 @@
       overflow: hidden;
       height: 60px;
       transition: height 0.5s ease-in-out;
+      user-select: none;
+
 
       &.sortable-chosen {
         border: solid #34495E 1px;
@@ -392,13 +397,14 @@
         border: 1px solid #DDDDDD;
         background-color: #F2F5F9;
         min-height: 30px;
+        user-select: none;
 
         .extend .icon {
           cursor: pointer;
         }
 
         div {
-          padding: 0px 10px;
+          padding: 0 10px;
         }
       }
 
@@ -409,6 +415,7 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
+        user-select: none;
 
         &:before {
           content: "";
