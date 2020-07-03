@@ -281,6 +281,7 @@
      (mouseenter)="activated= true"
      (mouseleave)="enableMenu=false">
     <ul>
+
         <ng-container *ngFor="let c of getControlsByPriority(3); " [ngSwitch]="c.control">
             <!--FullScreen Button -->
             <li (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"

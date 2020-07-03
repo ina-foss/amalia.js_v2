@@ -668,6 +668,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private pinControls() {
         this.pinnedSlider = !this.pinnedSlider;
         this.enablePinnedSlider = !this.enablePinnedSlider;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
     }
 
     /**

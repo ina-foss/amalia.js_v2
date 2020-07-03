@@ -13,12 +13,18 @@
   padding: 0;
   margin: 0;
   background-color: $amalia-player-bg-color;
-
   .media-player {
     position: relative;
     height: 100%;
     z-index: $amalia-default-z-index;
     margin: 0 auto 0;
+    &.pinned {
+      height: calc(100% - 106px);
+      position: inherit;
+      video.player {
+        position: relative;
+      }
+    }
 
     video.player {
       position: absolute;
@@ -91,9 +97,12 @@
     z-index: $amalia-error-z-index;
     text-align: center;
     font-family: $amalia-font-family;
+    .amalia-svg-error-size {
+        color: $amalia-primary-color;
+    }
 
     svg {
-      margin-top: 5%;
+      margin-top: 10%;
     }
   }
 

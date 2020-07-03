@@ -159,6 +159,10 @@ export class AmaliaComponent implements OnInit {
      */
     public playerService: MediaPlayerService;
     /**
+     * Pinned ControlBar state
+     */
+    public pinned = false;
+    /**
      * In charge to load resource
      */
     private readonly httpClient: HttpClient;
@@ -284,8 +288,12 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
     }
-
+    @AutoBind
+    public handlePinnedControlbarChange(event) {
+        this.pinned = event;
+    }
     @AutoBind
     private handleSeeking(tc: number) {
         if (this.enableThumbnail) {

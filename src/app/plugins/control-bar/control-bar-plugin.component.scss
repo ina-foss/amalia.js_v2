@@ -86,7 +86,11 @@
         }
       }
     }
-
+    &.pinned {
+      .amalia-svg-pin-size {
+        background: black;
+      }
+    }
     &.activated, &:hover, &.pinned {
       .control-bar {
         display: flex;
@@ -903,7 +907,7 @@
     & > span {
       display: inline-block;
     }
-    &.activated {
+    &.activated,&.pinned {
       text-align: right;
       height: 25px;
       width: 100%;
@@ -921,6 +925,9 @@
       .time-current {
         margin-right: 3px;
       }
+    }
+    &.pinned {
+      bottom: 106px;
     }
   }
 }
