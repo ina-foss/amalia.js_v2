@@ -418,7 +418,7 @@ ___
 
 ▸ **updateThumbnailSize**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:148
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:147
 
 Handle interval
 

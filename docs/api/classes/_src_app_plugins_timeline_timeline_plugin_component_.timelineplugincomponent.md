@@ -28,10 +28,12 @@
 * [currentTime](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#currenttime)
 * [duration](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#duration)
 * [enableDragDrop](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#enabledragdrop)
+* [enableZoom](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#enablezoom)
 * [focusContainer](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#focuscontainer)
 * [focusTcIn](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#focustcin)
 * [focusTcOut](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#focustcout)
 * [fps](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#fps)
+* [isDrawingRectangle](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#isdrawingrectangle)
 * [lastSelectedColorIdx](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#private-lastselectedcoloridx)
 * [listOfBlocks](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#listofblocks)
 * [listOfBlocksContainer](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#listofblockscontainer)
@@ -45,6 +47,7 @@
 * [pluginName](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#protected-pluginname)
 * [selectedBlock](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#selectedblock)
 * [selectedBlockElement](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#selectedblockelement)
+* [selectionContainer](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#selectioncontainer)
 * [tcOffset](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#tcoffset)
 * [timeFormat](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#timeformat)
 * [title](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#title)
@@ -62,10 +65,13 @@
 * [createMainMetadataIds](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#createmainmetadataids)
 * [getAvailableColor](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#private-getavailablecolor)
 * [getDefaultConfig](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#getdefaultconfig)
+* [handleClickToDrawRect](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handleclicktodrawrect)
 * [handleDisplayBlocks](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handledisplayblocks)
+* [handleEnableZoom](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handleenablezoom)
 * [handleMetadataLoaded](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handlemetadataloaded)
 * [handleMouseEnterOnTc](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handlemouseenterontc)
 * [handleMouseLeaveOnTc](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handlemouseleaveontc)
+* [handleMouseMoveToDrawRect](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handlemousemovetodrawrect)
 * [handleOnDurationChange](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#private-handleondurationchange)
 * [handleOnTimeChange](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#private-handleontimechange)
 * [handleZoomRangeChange](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#handlezoomrangechange)
@@ -76,9 +82,12 @@
 * [toggleAllBlocksState](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#toggleallblocksstate)
 * [toggleState](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#togglestate)
 * [unZoom](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#unzoom)
+* [updateFocusContainerOnSelection](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#updatefocuscontaineronselection)
+* [updateMouseEvent](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#updatemouseevent)
 
 ### Object literals
 
+* [selectionPosition](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#selectionposition)
 * [sortableOptions](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#sortableoptions)
 
 ## Constructors
@@ -89,7 +98,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:56
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:66
 
 **Parameters:**
 
@@ -105,7 +114,7 @@ Name | Type |
 
 • **blocksDisplayStates**: *Map‹string, boolean›* = new Map<string, boolean>()
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:56
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:66
 
 ___
 
@@ -113,7 +122,7 @@ ___
 
 • **blocksIsOpen**: *boolean* = false
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:54
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:64
 
 true for open all block
 
@@ -127,7 +136,7 @@ ___
         '#E74C3C', '#F35CF2', '#8E44AD'
     ]
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:33
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:40
 
 ___
 
@@ -163,11 +172,19 @@ Defined in src/app/plugins/timeline/timeline-plugin.component.ts:25
 
 ___
 
+###  enableZoom
+
+• **enableZoom**: *boolean* = false
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:60
+
+___
+
 ###  focusContainer
 
 • **focusContainer**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:39
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:46
 
 ___
 
@@ -197,11 +214,19 @@ Defined in src/app/core/plugin/plugin-base.ts:18
 
 ___
 
+###  isDrawingRectangle
+
+• **isDrawingRectangle**: *boolean* = false
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:38
+
+___
+
 ### `Private` lastSelectedColorIdx
 
 • **lastSelectedColorIdx**: *number* = -1
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:55
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:65
 
 ___
 
@@ -217,7 +242,7 @@ ___
 
 • **listOfBlocksContainer**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:43
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:50
 
 ___
 
@@ -243,7 +268,7 @@ ___
 
 • **mainBlockContainer**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:41
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:48
 
 ___
 
@@ -299,7 +324,7 @@ ___
 
 • **selectedBlock**: *[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)* = null
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:46
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:55
 
 ___
 
@@ -307,7 +332,15 @@ ___
 
 • **selectedBlockElement**: *any* = null
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:45
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:52
+
+___
+
+###  selectionContainer
+
+• **selectionContainer**: *ElementRef‹HTMLElement›*
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:54
 
 ___
 
@@ -403,7 +436,7 @@ Name | Type |
 
 ▸ **callSeek**(`tc`: number): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:92
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:106
 
 Handle call
 
@@ -421,7 +454,7 @@ ___
 
 ▸ **changeDisplayState**(`event`: MouseEvent, `block`: object): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:217
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:231
 
 In charge to store display state change change display state
 
@@ -448,7 +481,7 @@ ___
 
 ▸ **createMainMetadataIds**(`handleMetadataIds`: any, `metadataManager`: any): *[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)[]*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:333
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:351
 
 In charge to main timeline
 
@@ -467,7 +500,7 @@ ___
 
 ▸ **getAvailableColor**(): *string*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:69
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:79
 
 Return color color
 
@@ -481,7 +514,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:99
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:113
 
 Return default config
 
@@ -489,11 +522,27 @@ Return default config
 
 ___
 
+###  handleClickToDrawRect
+
+▸ **handleClickToDrawRect**(`event`: any): *void*
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:400
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`event` | any |
+
+**Returns:** *void*
+
+___
+
 ###  handleDisplayBlocks
 
 ▸ **handleDisplayBlocks**(`isValid`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:229
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:243
 
 In charge of save or not display block states
 
@@ -507,11 +556,23 @@ Name | Type | Description |
 
 ___
 
+###  handleEnableZoom
+
+▸ **handleEnableZoom**(): *void*
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:433
+
+Enable zoom
+
+**Returns:** *void*
+
+___
+
 ###  handleMetadataLoaded
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:302
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:320
 
 Called when metadata loaded
 
@@ -523,16 +584,16 @@ ___
 
 ▸ **handleMouseEnterOnTc**(`event`: MouseEvent, `localisation`: [TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:361
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:380
 
 On mouse enter on tc bloc
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`event` | MouseEvent |
-`localisation` | [TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md) |
+Name | Type | Description |
+------ | ------ | ------ |
+`event` | MouseEvent | event |
+`localisation` | [TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md) | localisation  |
 
 **Returns:** *void*
 
@@ -542,7 +603,7 @@ ___
 
 ▸ **handleMouseLeaveOnTc**(`$event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:375
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:394
 
 On mouse enter on tc bloc
 
@@ -556,11 +617,29 @@ Name | Type | Description |
 
 ___
 
+###  handleMouseMoveToDrawRect
+
+▸ **handleMouseMoveToDrawRect**(`event`: MouseEvent): *void*
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:467
+
+handle mouse to draw
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`event` | MouseEvent | mouse event  |
+
+**Returns:** *void*
+
+___
+
 ### `Private` handleOnDurationChange
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:255
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:269
 
 Invoked on duration change
 
@@ -572,7 +651,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:246
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:260
 
 Invoked time change event for :
 - update progress bar
@@ -585,7 +664,9 @@ ___
 
 ▸ **handleZoomRangeChange**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:263
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:281
+
+In charge to change focus container
 
 **Returns:** *void*
 
@@ -597,7 +678,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:75
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:85
 
 **Returns:** *void*
 
@@ -607,7 +688,7 @@ ___
 
 ▸ **initFocusResizable**(`element`: HTMLElement): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:117
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:131
 
 Init focus
 
@@ -627,7 +708,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:62
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:72
 
 **Returns:** *void*
 
@@ -637,7 +718,7 @@ ___
 
 ▸ **refreshTimeCursor**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:275
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:293
 
 In charge to refresh time cursor
 
@@ -649,7 +730,7 @@ ___
 
 ▸ **toggleAllBlocksState**(`mainElement`: HTMLElement, `stateControl`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:197
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:211
 
 In charge to change display state for all blocks
 
@@ -668,7 +749,7 @@ ___
 
 ▸ **toggleState**(`mainElement`: HTMLElement): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:183
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:197
 
 In charge to change display state
 
@@ -686,28 +767,97 @@ ___
 
 ▸ **unZoom**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:289
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:307
 
 In charge to un-zoom
 
 **Returns:** *void*
 
+___
+
+###  updateFocusContainerOnSelection
+
+▸ **updateFocusContainerOnSelection**(`focusWidth`: any, `leftPos`: any): *void*
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:443
+
+In charge to change focus container
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`focusWidth` | any |
+`leftPos` | any |
+
+**Returns:** *void*
+
+___
+
+###  updateMouseEvent
+
+▸ **updateMouseEvent**(`event`: any): *void*
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:479
+
+Update mouse position
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`event` | any | mouse event  |
+
+**Returns:** *void*
+
 ## Object literals
+
+###  selectionPosition
+
+### ▪ **selectionPosition**: *object*
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:32
+
+###  startX
+
+• **startX**: *number* = 0
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:35
+
+###  startY
+
+• **startY**: *number* = 0
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:36
+
+###  x
+
+• **x**: *number* = 0
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:33
+
+###  y
+
+• **y**: *number* = 0
+
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:34
+
+___
 
 ###  sortableOptions
 
 ### ▪ **sortableOptions**: *object*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:47
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:56
 
 ###  filter
 
 • **filter**: *string* = ".filtered"
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:49
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:58
 
 ###  handle
 
 • **handle**: *string* = ".drag"
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:48
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:57

@@ -25,6 +25,7 @@ Player event type
 * [METADATA_LOADED](_src_app_core_constant_event_type_.playereventtype.md#metadata_loaded)
 * [MUTE](_src_app_core_constant_event_type_.playereventtype.md#mute)
 * [PAUSED](_src_app_core_constant_event_type_.playereventtype.md#paused)
+* [PINNED_CONTROLBAR_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#pinned_controlbar_change)
 * [PLAYBACK_RATE_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#playback_rate_change)
 * [PLAYER_MOUSE_ENTER](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_enter)
 * [PLAYER_MOUSE_LEAVE](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_leave)
@@ -214,6 +215,16 @@ ___
 Defined in src/app/core/constant/event-type.ts:28
 
 Invoked the paused/resumed
+
+___
+
+###  PINNED_CONTROLBAR_CHANGE
+
+• **PINNED_CONTROLBAR_CHANGE**: = "ina.player.PINNED_CONTROLBAR_CHANGE"
+
+Defined in src/app/core/constant/event-type.ts:159
+
+Invocked when click on pin controlbar
 
 ___
 

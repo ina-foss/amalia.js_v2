@@ -711,7 +711,7 @@ Name | Type |
 
 ▸ **buildSliderSteps**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:512
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:508
 
 In charge to build step width size
 
@@ -723,7 +723,7 @@ ___
 
 ▸ **buildUrlWithTc**(`element`: HTMLElement, `control`: [ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:696
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:693
 
 Handle to download url
 
@@ -754,7 +754,7 @@ ___
 
 ▸ **changePlaybackRate**(`value`: number): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:578
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:574
 
 Invoked for change playback rate
 
@@ -784,7 +784,7 @@ ___
 
 ▸ **changeSlider**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:709
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:706
 
 change slider displayed
 
@@ -833,7 +833,7 @@ ___
 
 ▸ **displaySlider**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:665
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:661
 
 Toggle Display playbackslider
 
@@ -907,7 +907,7 @@ ___
 
 ▸ **getPlaybackStepValue**(`playbackRateStep`: Array‹number›): *number*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:564
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:560
 
 Return playback step value
 
@@ -927,7 +927,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:624
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:620
 
 Invoked on aspect ratio change
 
@@ -945,7 +945,7 @@ ___
 
 ▸ **handleCallback**(`control`: [ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:490
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:486
 
 Handle callback
 
@@ -975,7 +975,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:603
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:599
 
 Invoked on duration change
 
@@ -987,7 +987,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:588
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:584
 
 Invoked time change event for :
 - update progress bar
@@ -1000,7 +1000,7 @@ ___
 
 ▸ **handlePlaybackRateChange**(`playbackRate`: number): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:614
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:610
 
 Invoked on playback change
 
@@ -1018,7 +1018,7 @@ ___
 
 ▸ **handlePlayerMouseenter**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:640
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:636
 
 Invoked player mouse enter event for :
 - animate controlBar
@@ -1031,7 +1031,7 @@ ___
 
 ▸ **handlePlayerMouseleave**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:649
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:645
 
 Invoked player mouse leave event for :
 - animate controlBar
@@ -1044,7 +1044,7 @@ ___
 
 ▸ **handleProgressBarMouseDown**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:461
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:457
 
 Progress bar on mouse down
 
@@ -1062,7 +1062,7 @@ ___
 
 ▸ **handleProgressBarMouseMove**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:480
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:476
 
 Progress bar on mouse move
 
@@ -1080,7 +1080,7 @@ ___
 
 ▸ **handleProgressBarMouseUp**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:470
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:466
 
 Progress bar on mouse up
 
@@ -1158,7 +1158,7 @@ ___
 
 ▸ **nextPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:541
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:537
 
 Invoked for change playback rate
 
@@ -1170,7 +1170,7 @@ ___
 
 ▸ **nextSlowPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:555
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:551
 
 Invoked for change slow playback rate
 
@@ -1182,7 +1182,7 @@ ___
 
 ▸ **ngOnDestroy**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:719
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:716
 
 Handle on component destroy
 
@@ -1224,7 +1224,7 @@ ___
 
 ▸ **pinControls**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:672
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:668
 
 Toggle Pinned class playback slider
 
@@ -1236,7 +1236,7 @@ ___
 
 ▸ **prevPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:534
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:530
 
 Invoked for change playback rate
 
@@ -1248,7 +1248,7 @@ ___
 
 ▸ **prevSlowPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:548
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:544
 
 Invoked for change slow playback rate
 
@@ -1260,7 +1260,7 @@ ___
 
 ▸ **progressBarMouseEnter**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:429
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:425
 
 Handle mouse enter on progress bar
 
@@ -1278,7 +1278,7 @@ ___
 
 ▸ **progressBarMouseLeave**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:440
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:436
 
 Handle mouse leave on progress bar
 
@@ -1296,7 +1296,7 @@ ___
 
 ▸ **progressBarMouseMove**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:451
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:447
 
 Handle mouse move on progress bar
 
@@ -1314,7 +1314,7 @@ ___
 
 ▸ **setVideoAspectRatio**(`ratio`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:680
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:677
 
 Set aspect Ratio
 
@@ -1332,7 +1332,7 @@ ___
 
 ▸ **setupAudioNodes**(`data`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:631
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:627
 
 Invoked on volume button hover
 
@@ -1350,7 +1350,7 @@ ___
 
 ▸ **switchDisplayCurrentTime**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:726
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:723
 
 switch timecode display onclick
 
@@ -1362,7 +1362,7 @@ ___
 
 ▸ **toggleFullScreen**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:687
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:684
 
 Toggle fullscreen player
 
@@ -1374,7 +1374,7 @@ ___
 
 ▸ **updateSubtitlePosition**(`position`: string): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:657
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:653
 
 update position subtitle onclick
 
@@ -1392,7 +1392,7 @@ ___
 
 ▸ **updateThumbnail**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:498
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:494
 
 Handle thumbnail pos
 

@@ -155,6 +155,10 @@ export class AmaliaComponent implements OnInit {
      */
     public logger = new DefaultLogger();
     /**
+     * default aspect ratio
+     */
+    public ratio = '16-9';
+    /**
      * In charge to get instance of player
      */
     public playerService: MediaPlayerService;
@@ -372,6 +376,8 @@ export class AmaliaComponent implements OnInit {
         this.inLoading = false;
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
+        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio;
+        this.ratio = this.aspectRatio.replace(':' , '-');
     }
 
     /**
