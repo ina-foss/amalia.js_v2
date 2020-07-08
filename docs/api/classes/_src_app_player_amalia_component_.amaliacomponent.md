@@ -44,6 +44,7 @@
 * [playerService](_src_app_player_amalia_component_.amaliacomponent.md#playerservice)
 * [previewThumbnailElement](_src_app_player_amalia_component_.amaliacomponent.md#previewthumbnailelement)
 * [previewThumbnailUrl](_src_app_player_amalia_component_.amaliacomponent.md#previewthumbnailurl)
+* [ratio](_src_app_player_amalia_component_.amaliacomponent.md#ratio)
 * [state](_src_app_player_amalia_component_.amaliacomponent.md#state)
 * [version](_src_app_player_amalia_component_.amaliacomponent.md#version)
 
@@ -76,7 +77,7 @@
 
 \+ **new AmaliaComponent**(`playerService`: [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md), `httpClient`: HttpClient): *[AmaliaComponent](_src_app_player_amalia_component_.amaliacomponent.md)*
 
-Defined in src/app/player/amalia.component.ts:183
+Defined in src/app/player/amalia.component.ts:187
 
 **Parameters:**
 
@@ -191,7 +192,7 @@ ___
 
 • **httpClient**: *HttpClient*
 
-Defined in src/app/player/amalia.component.ts:168
+Defined in src/app/player/amalia.component.ts:172
 
 In charge to load resource
 
@@ -221,7 +222,7 @@ ___
 
 • **initApi**: *EventEmitter‹[MediaPlayerElement](_src_app_core_media_player_element_.mediaplayerelement.md)›* = new EventEmitter<MediaPlayerElement>()
 
-Defined in src/app/player/amalia.component.ts:178
+Defined in src/app/player/amalia.component.ts:182
 
 Return player interface
 
@@ -241,7 +242,7 @@ ___
 
 • **mediaContainer**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/player/amalia.component.ts:173
+Defined in src/app/player/amalia.component.ts:177
 
 mediaContainer element
 
@@ -261,7 +262,7 @@ ___
 
 • **mediaPlayerElement**: *[MediaPlayerElement](_src_app_core_media_player_element_.mediaplayerelement.md)*
 
-Defined in src/app/player/amalia.component.ts:183
+Defined in src/app/player/amalia.component.ts:187
 
 Amalia player main manager
 
@@ -291,7 +292,7 @@ ___
 
 • **pinned**: *boolean* = false
 
-Defined in src/app/player/amalia.component.ts:164
+Defined in src/app/player/amalia.component.ts:168
 
 Pinned ControlBar state
 
@@ -321,7 +322,7 @@ ___
 
 • **playerService**: *[MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md)*
 
-Defined in src/app/player/amalia.component.ts:160
+Defined in src/app/player/amalia.component.ts:164
 
 In charge to get instance of player
 
@@ -344,6 +345,16 @@ ___
 Defined in src/app/player/amalia.component.ts:66
 
 preview thumbnail url
+
+___
+
+###  ratio
+
+• **ratio**: *string* = "16-9"
+
+Defined in src/app/player/amalia.component.ts:160
+
+default aspect ratio
 
 ___
 
@@ -393,7 +404,7 @@ Name | Type |
 
 ▸ **bindEvents**(): *void*
 
-Defined in src/app/player/amalia.component.ts:284
+Defined in src/app/player/amalia.component.ts:288
 
 In charge to bin events
 
@@ -405,7 +416,7 @@ ___
 
 ▸ **displayControlBar**(`_displayControlBar`: boolean): *void*
 
-Defined in src/app/player/amalia.component.ts:391
+Defined in src/app/player/amalia.component.ts:397
 
 Invoked on mouseenter and mouseleave events
 
@@ -423,7 +434,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:328
+Defined in src/app/player/amalia.component.ts:332
 
 Invoked on aspect ratio change
 
@@ -441,7 +452,7 @@ ___
 
 ▸ **handleError**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:318
+Defined in src/app/player/amalia.component.ts:322
 
 Invoked when error event
 
@@ -459,7 +470,7 @@ ___
 
 ▸ **handleFullScreenChange**(): *void*
 
-Defined in src/app/player/amalia.component.ts:403
+Defined in src/app/player/amalia.component.ts:409
 
 Invoked on fullscreen change
 
@@ -471,7 +482,7 @@ ___
 
 ▸ **handlePinnedControlbarChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:294
+Defined in src/app/player/amalia.component.ts:298
 
 **Parameters:**
 
@@ -487,7 +498,7 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/player/amalia.component.ts:306
+Defined in src/app/player/amalia.component.ts:310
 
 **Returns:** *void*
 
@@ -497,7 +508,7 @@ ___
 
 ▸ **handleSeeking**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:298
+Defined in src/app/player/amalia.component.ts:302
 
 **Parameters:**
 
@@ -513,7 +524,7 @@ ___
 
 ▸ **handleWindowResize**(): *void*
 
-Defined in src/app/player/amalia.component.ts:221
+Defined in src/app/player/amalia.component.ts:225
 
 update mediaPlayerWidth on window resize
 
@@ -525,7 +536,7 @@ ___
 
 ▸ **initDefaultHandlers**(): *void*
 
-Defined in src/app/player/amalia.component.ts:337
+Defined in src/app/player/amalia.component.ts:341
 
 In charge to init default handlers when input not specified
 
@@ -537,7 +548,7 @@ ___
 
 ▸ **ngOnInit**(): *void*
 
-Defined in src/app/player/amalia.component.ts:193
+Defined in src/app/player/amalia.component.ts:197
 
 Invoked immediately after the  first time the component has initialised
 
@@ -549,7 +560,7 @@ ___
 
 ▸ **onContextMenu**(`event`: MouseEvent): *boolean*
 
-Defined in src/app/player/amalia.component.ts:231
+Defined in src/app/player/amalia.component.ts:235
 
 Invoked on click context menu
 
@@ -569,7 +580,7 @@ ___
 
 ▸ **onErrorInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:381
+Defined in src/app/player/amalia.component.ts:387
 
 Invoked on error to init config
 
@@ -587,7 +598,7 @@ ___
 
 ▸ **onInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:370
+Defined in src/app/player/amalia.component.ts:374
 
 Invoked on  init config
 
@@ -605,7 +616,7 @@ ___
 
 ▸ **setPreviewThumbnail**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:360
+Defined in src/app/player/amalia.component.ts:364
 
 In charge to update thumbnail
 
@@ -623,7 +634,7 @@ ___
 
 ▸ **updatePlayerSizeWithAspectRatio**(): *void*
 
-Defined in src/app/player/amalia.component.ts:243
+Defined in src/app/player/amalia.component.ts:247
 
 In charge to update player size with aspect ratio
 

@@ -14,6 +14,13 @@
     },
     {
       "url": "http://localhost:4201/metadata/sample-transcription.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/subtitles-lac.json"
+    }
+    ,
+    {
+      "url": "http://localhost:4201/metadata/transcription.json"
     }
   ],
   "thumbnail": {

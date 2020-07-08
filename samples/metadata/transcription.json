@@ -1,0 +1,125 @@
+{
+  "localisation": [
+    {
+      "sublocalisations": {
+        "localisation": [
+          {
+            "data": {
+              "text": [
+                "Pas de quoi toutefois sauver l' ensemble d' un secteur fragilis� depuis le d�but de l' ann�e 2020 ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                    "data": {
+                      "text": [
+                        "Pas"
+                      ]
+                    },
+                    "tcin": "00:28:48.0740",
+                    "tcout": "00:28:48.0850",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "de"
+                      ]
+                    },
+                    "tcin": "00:28:48.0860",
+                    "tcout": "00:28:48.0980",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "quoi"
+                      ]
+                    },
+                    "tcin": "00:28:48.0980",
+                    "tcout": "00:28:49.0190",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "toutefois"
+                      ]
+                    },
+                    "tcin": "00:28:49.0280",
+                    "tcout": "00:28:49.0660",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "sauver"
+                      ]
+                    },
+                    "tcin": "00:28:49.0660",
+                    "tcout": "00:28:49.0940",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "l'"
+                      ]
+                    },
+                    "tcin": "00:28:50.0020",
+                    "tcout": "00:28:50.0080",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "ensemble"
+                      ]
+                    },
+                    "tcin": "00:28:50.0080",
+                    "tcout": "00:28:50.0500",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "d'"
+                      ]
+                    },
+                    "tcin": "00:28:50.0500",
+                    "tcout": "00:28:50.0550",
+                    "tclevel": 2
+                },
+                {
+                    "data": {
+                      "text": [
+                        "un"
+                      ]
+                    },
+                    "tcin": "00:28:50.0550",
+                    "tcout": "00:28:50.0640",
+                    "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:28:48.0650",
+            "tcout": "00:28:53.0390",
+            "tclevel": 1
+          }
+        ]
+      },
+      "type": "text",
+      "tcin": "00:04:12.0660",
+      "tcout": "00:35:35.0710",
+      "tclevel": 0
+    }
+  ],
+  "type": "text",
+  "algorithm": "vrbs_part 2.6",
+  "processor": "vrbs_trans.fre 6.2",
+  "processed": 1593778795,
+  "id": "test",
+  "version": 1
+}

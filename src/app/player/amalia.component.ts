@@ -247,6 +247,7 @@ export class AmaliaComponent implements OnInit {
     private updatePlayerSizeWithAspectRatio() {
         const htmlElement = this.mediaPlayer.nativeElement;
         if (this.aspectRatio && this.aspectRatio !== '') {
+            this.ratio = this.aspectRatio.replace(':' , '-');
             const maxWidth = htmlElement.parentElement.offsetWidth;
             const maxHeight = this.mediaPlayer.nativeElement.parentElement.offsetHeight;
             const aspectRatio = this.aspectRatio ? parseFloat(this.aspectRatio.split(':')[0]) / parseFloat(this.aspectRatio.split(':')[1]) : 16 / 9;
