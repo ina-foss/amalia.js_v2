@@ -404,7 +404,7 @@ Name | Type |
 
 ▸ **bindEvents**(): *void*
 
-Defined in src/app/player/amalia.component.ts:288
+Defined in src/app/player/amalia.component.ts:289
 
 In charge to bin events
 
@@ -416,7 +416,7 @@ ___
 
 ▸ **displayControlBar**(`_displayControlBar`: boolean): *void*
 
-Defined in src/app/player/amalia.component.ts:397
+Defined in src/app/player/amalia.component.ts:398
 
 Invoked on mouseenter and mouseleave events
 
@@ -434,7 +434,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:332
+Defined in src/app/player/amalia.component.ts:333
 
 Invoked on aspect ratio change
 
@@ -452,7 +452,7 @@ ___
 
 ▸ **handleError**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:322
+Defined in src/app/player/amalia.component.ts:323
 
 Invoked when error event
 
@@ -470,7 +470,7 @@ ___
 
 ▸ **handleFullScreenChange**(): *void*
 
-Defined in src/app/player/amalia.component.ts:409
+Defined in src/app/player/amalia.component.ts:410
 
 Invoked on fullscreen change
 
@@ -482,7 +482,7 @@ ___
 
 ▸ **handlePinnedControlbarChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:298
+Defined in src/app/player/amalia.component.ts:299
 
 **Parameters:**
 
@@ -498,7 +498,7 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/player/amalia.component.ts:310
+Defined in src/app/player/amalia.component.ts:311
 
 **Returns:** *void*
 
@@ -508,7 +508,7 @@ ___
 
 ▸ **handleSeeking**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:302
+Defined in src/app/player/amalia.component.ts:303
 
 **Parameters:**
 
@@ -536,7 +536,7 @@ ___
 
 ▸ **initDefaultHandlers**(): *void*
 
-Defined in src/app/player/amalia.component.ts:341
+Defined in src/app/player/amalia.component.ts:342
 
 In charge to init default handlers when input not specified
 
@@ -580,7 +580,7 @@ ___
 
 ▸ **onErrorInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:387
+Defined in src/app/player/amalia.component.ts:388
 
 Invoked on error to init config
 
@@ -598,7 +598,7 @@ ___
 
 ▸ **onInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:374
+Defined in src/app/player/amalia.component.ts:375
 
 Invoked on  init config
 
@@ -616,7 +616,7 @@ ___
 
 ▸ **setPreviewThumbnail**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:364
+Defined in src/app/player/amalia.component.ts:365
 
 In charge to update thumbnail
 
