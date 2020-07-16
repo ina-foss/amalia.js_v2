@@ -1,4 +1,4 @@
-<div class="time-label" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
+<div class="time-label {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
     <div class="time-display" (click)="switchDisplayCurrentTime()">
         <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
         <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>

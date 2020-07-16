@@ -114,11 +114,22 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      */
     private switchSrc(src: string, reverseMode: boolean): Promise<void> {
         return new Promise((resolve) => {
+            let tc;
             this.logger.debug(`Switch src :${src}  ${reverseMode}`);
             this.currentTime = this.mediaElement.currentTime;
             this.duration = this.mediaElement.duration;
-            this.hlsPlayer.attachMedia(this.mediaElement);
+            if (reverseMode === true) {
+                tc = this.duration - this.currentTime;
+                console.log('2' + tc);
+            } else {
+                tc = this.currentTime;
+            }
             this.hlsPlayer.loadSource(src);
+            this.hlsPlayer.attachMedia(this.mediaElement);
+            /*this.hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function() {
+                this.hlsPlayer.startLoad(tc);
+                this.hlsPlayer.play();
+            });*/
             this.reverseMode = reverseMode;
             resolve();
         });

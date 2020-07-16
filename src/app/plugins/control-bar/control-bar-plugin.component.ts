@@ -9,7 +9,6 @@ import {MediaPlayerService} from '../../service/media-player-service';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 
-
 @Component({
     selector: 'amalia-control-bar',
     templateUrl: './control-bar-plugin.component.html',
@@ -18,7 +17,7 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 50;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 1;
     /**
      * Min playback rate
      */

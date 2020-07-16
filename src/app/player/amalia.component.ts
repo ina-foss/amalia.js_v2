@@ -379,6 +379,7 @@ export class AmaliaComponent implements OnInit {
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
         this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio;
         this.ratio = this.aspectRatio.replace(':' , '-');
+        this.updatePlayerSizeWithAspectRatio();
     }
 
     /**
