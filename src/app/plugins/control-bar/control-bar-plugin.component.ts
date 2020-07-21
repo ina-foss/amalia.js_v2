@@ -582,7 +582,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (!this.inSliding) {
+        if (!this.inSliding && !isNaN(this.currentTime)) {
             this.progressBarValue = (this.currentTime / this.duration) * 100;
         }
         if (this.inverse === false) {

@@ -161,7 +161,7 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:15
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:128
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:139
 
 **Returns:** *void*
 
@@ -197,7 +197,7 @@ ___
 
 ▸ **handleAudioChannelChange**(`event`: any): *void*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:165
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:176
 
 Invoked on channel change
 
@@ -217,7 +217,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:138
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:149
 
 Invoked when error events
 
@@ -235,7 +235,7 @@ ___
 
 ▸ **handleOnManifestLoaded**(): *void*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:152
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:163
 
 Invoked when manifest loaded
 
