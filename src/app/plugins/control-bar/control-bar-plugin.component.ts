@@ -1,5 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
@@ -17,7 +17,7 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 1;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 10;
     /**
      * Min playback rate
      */
@@ -181,6 +181,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public sliderListOfPlaybackRateStepWidth: Array<number> = [];
     private thumbnailSeekingDebounceTime: Subject<number> = new Subject<number>();
     private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
+    @ViewChild('thumbnail')
+    public thumbnailElement: ElementRef<HTMLElement>;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -491,12 +493,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     private updateThumbnail(event: MouseEvent) {
-        const thumbnailSize = 150;
+        const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
         const containerWidth = (event.target as HTMLElement).offsetWidth;
         const tc = Math.round(event.clientX * this.duration / containerWidth);
         if (isFinite(tc)) {
-            this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
             this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+            this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
+            const style = 'background-image: url(' + this.thumbnailUrl + ')' + ';left: ' + this.thumbnailPosition + 'px';
+            this.thumbnailElement.nativeElement.setAttribute('style' , style);
             this.tcThumbnail = tc;
         }
     }
