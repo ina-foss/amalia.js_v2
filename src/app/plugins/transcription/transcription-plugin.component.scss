@@ -98,9 +98,6 @@
       .text {
         .w {
           cursor: pointer;
-          padding-right: 2px;
-          padding-left: 2px;
-
           &.search-text {
             background-color: $amalia-plugin-transcription-search;
           }
