@@ -210,14 +210,15 @@ export class MediaPlayerElement {
      */
     public getDisplayState() {
         let displayState = 'l';
+        const lWidth = 1020;
         const sWidth = 350;
         const smWidth = 640;
         const mWidth = 820;
-        if (this.width <= sWidth) {
+        if (this.width < sWidth) {
             displayState = 's';
-        } else if (this.width > sWidth && this.width <= smWidth) {
+        } else if (this.width >= sWidth && this.width < mWidth) {
             displayState = 'sm';
-        } else if (this.width > smWidth && this.width <= mWidth) {
+        } else if (this.width >= mWidth && this.width <= lWidth) {
             displayState = 'm';
         }
         return displayState;

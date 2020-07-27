@@ -9,6 +9,7 @@ import {TranscriptionLocalisation} from '../../core/metadata/model/transcription
 import {DEFAULT} from '../../core/constant/default';
 import {TextUtils} from '../../core/utils/text-utils';
 import {MediaPlayerService} from '../../service/media-player-service';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'amalia-transcription',
@@ -262,6 +263,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     this.transcriptions = this.transcriptions.concat(transcriptionLocalisations);
                 }
             });
+            // Add sort by tcin
+            if (this.transcriptions) {
+                _.sortBy(this.transcriptions, ['tcIn']);
+            }
         }
     }
 
