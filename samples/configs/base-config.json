@@ -24,6 +24,9 @@
     },
     {
       "url": "http://localhost:4201/metadata/waveform.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/sample-transcription.json"
     }
   ],
   "thumbnail": {

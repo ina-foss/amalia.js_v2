@@ -32,15 +32,13 @@
         </div>
     </div>
     <div class="message">
-        <span  *ngIf="listOfSearchedNodes?.length > 0; else elseBlock">{{listOfSearchedNodes?.length}} mot(s)
+        <span *ngIf="listOfSearchedNodes?.length > 0; else elseBlock">{{listOfSearchedNodes?.length}} mot(s)
         correspond aux terme recherché.
     </span>
         <ng-template #elseBlock><span
                 *ngIf="listOfSearchedNodes?.length === 0">Aucun mot ne correspond aux termes de recherche</span>
         </ng-template>
     </div>
-
-
 </div>
 <ng-template #transcriptionBlock>
     <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
@@ -58,7 +56,7 @@
                     <span *ngFor="let w of t.subLocalisations"
                           class="w"
                           [attr.data-tcin]="w.tcIn"
-                          [attr.data-tcOut]="w.tcOut"  [innerHTML]="w.text | sanitizeHtml: 'html'"></span>
+                          [attr.data-tcOut]="w.tcOut" [innerHTML]="w.text+' ' | sanitizeHtml: 'html'"></span>
                 </ng-template>
                 <ng-template #wordBlock><span class="w" [attr.data-tcin]="t.tcIn"
                                               [attr.data-tcOut]="t.tcOut"

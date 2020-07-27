@@ -1,0 +1,1312 @@
+[
+    {
+        "_id": "215cc435-de6d-4adc-9ae4-f0b3c09b4386",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:14:13.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:13:35.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.689Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.689Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "homme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 815.36,
+                    "end": 852.6,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "215cc435-de6d-4adc-9ae4-f0b3c09b4386",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 38,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:14:13.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:13:35.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "343ffc63-dc02-49bd-a473-b8570f0ee61b",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:08:41.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:07:41.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.685Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.685Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "homme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 460.68,
+                    "end": 521.48,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "343ffc63-dc02-49bd-a473-b8570f0ee61b",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 60,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:08:41.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:07:41.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "414ea43c-f6fc-4f5c-abd3-06d15b694644",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:00:05.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.681Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.681Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "musique"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 0,
+                    "end": 4.92,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "414ea43c-f6fc-4f5c-abd3-06d15b694644",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 5,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:00:05.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:00:00.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "4424203a-107c-4a1f-81ee-4df27fb6f52f",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:07:39.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:07:31.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.684Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.684Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "femme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 451.32,
+                    "end": 459.08,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "4424203a-107c-4a1f-81ee-4df27fb6f52f",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 8,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:07:39.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:07:31.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "4a0cc1d5-04fe-4da1-811c-3286a5bc22d8",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:12:48.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:12:30.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.688Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.688Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "femme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 749.7,
+                    "end": 768.34,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "4a0cc1d5-04fe-4da1-811c-3286a5bc22d8",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 18,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:12:48.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:12:30.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "55247e4e-da99-43c9-8d5a-d829ff98df17",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:07:31.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:07:30.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.684Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.684Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "musique"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 449.98,
+                    "end": 451.32,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "55247e4e-da99-43c9-8d5a-d829ff98df17",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 1,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:07:31.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:07:30.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "5c6c7917-334c-409c-b088-cad4b5a527e7",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:02:26.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:00:53.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.682Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.682Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "homme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 52.56,
+                    "end": 145.58,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "5c6c7917-334c-409c-b088-cad4b5a527e7",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 93,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:02:26.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:00:53.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "612ab8f6-f9e3-4edc-94c2-335ea1dd4830",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:13:35.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:13:24.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.689Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.689Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "femme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 803.52,
+                    "end": 814.78,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "612ab8f6-f9e3-4edc-94c2-335ea1dd4830",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 11,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:13:35.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:13:24.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "6337ba35-0ce7-4ad4-beee-ebc5f0e5e9c7",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:08:46.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:08:45.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.685Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.685Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "femme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 524.68,
+                    "end": 526.02,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "6337ba35-0ce7-4ad4-beee-ebc5f0e5e9c7",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 1,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:08:46.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:08:45.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "_id": "6999968a-e07a-420c-92b9-fbe83c0c8295",
+        "type": "flux",
+        "activityIdentifier": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+        "channel": "FIF",
+        "segmentEndDate": {
+            "$date": "1995-01-10T07:11:52.000Z"
+        },
+        "segmentStartDate": {
+            "$date": "1995-01-10T07:11:23.000Z"
+        },
+        "parentEndDate": {
+            "$date": "1995-01-10T08:00:00.000Z"
+        },
+        "parentStartDate": {
+            "$date": "1995-01-10T07:00:00.000Z"
+        },
+        "segment": {
+            "activity": [
+                {
+                    "agent": [
+                        {
+                            "name": "inaSpeechSegmenter"
+                        }
+                    ],
+                    "endDate": {
+                        "$date": "2020-05-29T19:31:33.688Z"
+                    },
+                    "id": "235f0dc0-03b3-44bf-823d-73e8c0d85a38",
+                    "type": "Cr�ation",
+                    "startDate": {
+                        "$date": "2020-05-29T19:31:33.688Z"
+                    }
+                }
+            ],
+            "concepts": [
+                {
+                    "provenance": "InaSpeechSegmenter",
+                    "concept": {
+                        "conceptScheme": {
+                            "text": {
+                                "provenance": "InaSpeechSegmenter",
+                                "lang": "fre",
+                                "type": "Titre",
+                                "value": "Type de son"
+                            }
+                        },
+                        "text": {
+                            "provenance": "OGP",
+                            "lang": "fre",
+                            "type": "Terme pr�f�rentiel",
+                            "value": "femme"
+                        }
+                    },
+                    "type": "Type de son"
+                }
+            ],
+            "selector": [
+                {
+                    "item": {
+                        "identifier": [
+                            {
+                                "type": "URL",
+                                "value": "http://collgate.ina.fr:81/collgate.dlweb/get/tv/FIF/19950110T070000/3600?download"
+                            }
+                        ]
+                    },
+                    "start": 683.1,
+                    "end": 711.92,
+                    "type": "Localisation physique"
+                }
+            ],
+            "id": "6999968a-e07a-420c-92b9-fbe83c0c8295",
+            "segmentType": "Segment de son",
+            "event": [
+                {
+                    "duration": 29,
+                    "actor": [
+                        {
+                            "agent": {
+                                "identifier": {
+                                    "value": "FIF",
+                                    "type": "code"
+                                }
+                            },
+                            "role": "Cha�ne"
+                        }
+                    ],
+                    "provenance": "GTM",
+                    "endDate": {
+                        "$date": "1995-01-10T07:11:52.000Z"
+                    },
+                    "type": "Ev�nement de diffusion",
+                    "startDate": {
+                        "$date": "1995-01-10T07:11:23.000Z"
+                    }
+                }
+            ],
+            "segments": [
+                {
+                    "type": "parent",
+                    "segment": {
+                        "event": [
+                            {
+                                "duration": 3600,
+                                "actor": [
+                                    {
+                                        "agent": {
+                                            "identifier": {
+                                                "value": "FIF",
+                                                "type": "code"
+                                            }
+                                        },
+                                        "role": "Cha�ne"
+                                    }
+                                ],
+                                "provenance": "GTM",
+                                "endDate": {
+                                    "$date": "1995-01-10T08:00:00.000Z"
+                                },
+                                "type": "Ev�nement de diffusion",
+                                "startDate": {
+                                    "$date": "1995-01-10T07:00:00.000Z"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+]
