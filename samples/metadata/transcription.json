@@ -1,0 +1,1800 @@
+{
+  "localisation" : [ {
+    "sublocalisations" : {
+      "localisation" : [ {
+        "data" : {
+          "text" : [ "Pour une fois ce qui ont pour mission de faire voyager les autres ont fait de même pourquoi il y a , en effet , venant de 36 nations différentes , les experts en tourisme à tous le congrès annuel du boîte à ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Pour" ]
+            },
+            "tcin" : "00:02:57.0910",
+            "tcout" : "00:02:58.0080",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "une" ]
+            },
+            "tcin" : "00:02:58.0120",
+            "tcout" : "00:02:58.0250",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "fois" ]
+            },
+            "tcin" : "00:02:58.0310",
+            "tcout" : "00:02:58.0540",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ce" ]
+            },
+            "tcin" : "00:02:58.0730",
+            "tcout" : "00:02:58.0920",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "qui" ]
+            },
+            "tcin" : "00:02:58.0990",
+            "tcout" : "00:02:59.0100",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ont" ]
+            },
+            "tcin" : "00:02:59.0100",
+            "tcout" : "00:02:59.0170",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pour" ]
+            },
+            "tcin" : "00:02:59.0200",
+            "tcout" : "00:02:59.0320",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "mission" ]
+            },
+            "tcin" : "00:02:59.0320",
+            "tcout" : "00:02:59.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:02:59.0600",
+            "tcout" : "00:02:59.0690",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "faire" ]
+            },
+            "tcin" : "00:02:59.0690",
+            "tcout" : "00:02:59.0820",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "voyager" ]
+            },
+            "tcin" : "00:03:00.0040",
+            "tcout" : "00:03:00.0170",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les" ]
+            },
+            "tcin" : "00:03:00.0170",
+            "tcout" : "00:03:00.0360",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "autres" ]
+            },
+            "tcin" : "00:03:00.0360",
+            "tcout" : "00:03:00.0770",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ont" ]
+            },
+            "tcin" : "00:03:00.0800",
+            "tcout" : "00:03:00.0990",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "fait" ]
+            },
+            "tcin" : "00:03:00.0990",
+            "tcout" : "00:03:01.0110",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:03:01.0140",
+            "tcout" : "00:03:01.0260",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "même" ]
+            },
+            "tcin" : "00:03:01.0290",
+            "tcout" : "00:03:01.0550",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pourquoi" ]
+            },
+            "tcin" : "00:03:01.0940",
+            "tcout" : "00:03:02.0130",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "il" ]
+            },
+            "tcin" : "00:03:02.0200",
+            "tcout" : "00:03:02.0250",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "y" ]
+            },
+            "tcin" : "00:03:02.0250",
+            "tcout" : "00:03:02.0320",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "a" ]
+            },
+            "tcin" : "00:03:02.0320",
+            "tcout" : "00:03:02.0460",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:03:02.0460",
+            "tcout" : "00:03:03.0440",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "en" ]
+            },
+            "tcin" : "00:03:03.0440",
+            "tcout" : "00:03:03.0680",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "effet" ]
+            },
+            "tcin" : "00:03:03.0680",
+            "tcout" : "00:03:03.0950",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:03:03.0950",
+            "tcout" : "00:03:04.0170",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "venant" ]
+            },
+            "tcin" : "00:03:04.0170",
+            "tcout" : "00:03:04.0280",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:03:04.0280",
+            "tcout" : "00:03:04.0380",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "36" ]
+            },
+            "tcin" : "00:03:04.0380",
+            "tcout" : "00:03:04.0650",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "nations" ]
+            },
+            "tcin" : "00:03:04.0650",
+            "tcout" : "00:03:04.0920",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "différentes" ]
+            },
+            "tcin" : "00:03:04.0920",
+            "tcout" : "00:03:05.0530",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:03:05.0530",
+            "tcout" : "00:03:05.0830",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les" ]
+            },
+            "tcin" : "00:03:05.0830",
+            "tcout" : "00:03:06.0050",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "experts" ]
+            },
+            "tcin" : "00:03:06.0050",
+            "tcout" : "00:03:06.0380",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "en" ]
+            },
+            "tcin" : "00:03:06.0380",
+            "tcout" : "00:03:06.0450",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "tourisme" ]
+            },
+            "tcin" : "00:03:06.0450",
+            "tcout" : "00:03:06.0830",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "à" ]
+            },
+            "tcin" : "00:03:07.0410",
+            "tcout" : "00:03:07.0460",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "tous" ]
+            },
+            "tcin" : "00:03:07.0510",
+            "tcout" : "00:03:07.0700",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "le" ]
+            },
+            "tcin" : "00:03:07.0980",
+            "tcout" : "00:03:08.0150",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "congrès" ]
+            },
+            "tcin" : "00:03:08.0190",
+            "tcout" : "00:03:08.0480",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "annuel" ]
+            },
+            "tcin" : "00:03:08.0480",
+            "tcout" : "00:03:08.0750",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "du" ]
+            },
+            "tcin" : "00:03:09.0030",
+            "tcout" : "00:03:09.0190",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "boîte" ]
+            },
+            "tcin" : "00:03:09.0190",
+            "tcout" : "00:03:09.0410",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "à" ]
+            },
+            "tcin" : "00:03:09.0470",
+            "tcout" : "00:03:09.0550",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:03:09.0550",
+            "tcout" : "00:03:09.0550",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:02:57.0610",
+        "tcout" : "00:03:09.0590",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Peut-être il la ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Peut-être" ]
+            },
+            "tcin" : "00:09:59.0540",
+            "tcout" : "00:09:59.0970",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "il" ]
+            },
+            "tcin" : "00:10:00.0870",
+            "tcout" : "00:10:00.0920",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:10:02.0650",
+            "tcout" : "00:10:02.0750",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:10:02.0750",
+            "tcout" : "00:10:02.0750",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:09:59.0240",
+        "tcout" : "00:10:03.0050",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "4 drapeaux : 4 hommes unis naguère dans la souffrance et le combat aujourd'hui dans la victoire ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "4" ]
+            },
+            "tcin" : "00:05:20.0480",
+            "tcout" : "00:05:20.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "drapeaux" ]
+            },
+            "tcin" : "00:05:20.0740",
+            "tcout" : "00:05:20.0980",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ ":" ]
+            },
+            "tcin" : "00:05:20.0980",
+            "tcout" : "00:05:21.0330",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "4" ]
+            },
+            "tcin" : "00:05:21.0330",
+            "tcout" : "00:05:21.0510",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "hommes" ]
+            },
+            "tcin" : "00:05:21.0580",
+            "tcout" : "00:05:21.0900",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "unis" ]
+            },
+            "tcin" : "00:05:21.0960",
+            "tcout" : "00:05:22.0160",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "naguère" ]
+            },
+            "tcin" : "00:05:22.0310",
+            "tcout" : "00:05:22.0480",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans" ]
+            },
+            "tcin" : "00:05:22.0570",
+            "tcout" : "00:05:22.0650",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:05:22.0650",
+            "tcout" : "00:05:22.0770",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "souffrance" ]
+            },
+            "tcin" : "00:05:22.0770",
+            "tcout" : "00:05:23.0170",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "et" ]
+            },
+            "tcin" : "00:05:23.0290",
+            "tcout" : "00:05:23.0340",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "le" ]
+            },
+            "tcin" : "00:05:23.0340",
+            "tcout" : "00:05:23.0450",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "combat" ]
+            },
+            "tcin" : "00:05:23.0450",
+            "tcout" : "00:05:23.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "aujourd'hui" ]
+            },
+            "tcin" : "00:05:24.0360",
+            "tcout" : "00:05:24.0870",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans" ]
+            },
+            "tcin" : "00:05:24.0990",
+            "tcout" : "00:05:25.0140",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:05:25.0140",
+            "tcout" : "00:05:25.0250",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "victoire" ]
+            },
+            "tcin" : "00:05:25.0250",
+            "tcout" : "00:05:26.0020",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:05:26.0020",
+            "tcout" : "00:05:26.0020",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:05:20.0300",
+        "tcout" : "00:05:26.0090",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Sous les arbres du bois de Vincennes , on a jamais vu tant de monde à la fois dans les 2 villages de stand dressé par la fête de l' humanité , des foules se presser , mais dans les tribunes , remarqué , Marcel Cachin Maurice-Thorez Jacques Duclos et les punis par enfin des prix ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Sous" ]
+            },
+            "tcin" : "00:04:21.0590",
+            "tcout" : "00:04:21.0670",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les" ]
+            },
+            "tcin" : "00:04:21.0670",
+            "tcout" : "00:04:21.0870",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "arbres" ]
+            },
+            "tcin" : "00:04:21.0870",
+            "tcout" : "00:04:22.0090",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "du" ]
+            },
+            "tcin" : "00:04:22.0160",
+            "tcout" : "00:04:22.0230",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "bois" ]
+            },
+            "tcin" : "00:04:22.0230",
+            "tcout" : "00:04:22.0370",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:04:22.0370",
+            "tcout" : "00:04:22.0430",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Vincennes" ]
+            },
+            "tcin" : "00:04:22.0430",
+            "tcout" : "00:04:22.0990",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:04:22.0990",
+            "tcout" : "00:04:23.0060",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "on" ]
+            },
+            "tcin" : "00:04:23.0060",
+            "tcout" : "00:04:23.0150",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "a" ]
+            },
+            "tcin" : "00:04:23.0240",
+            "tcout" : "00:04:23.0310",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "jamais" ]
+            },
+            "tcin" : "00:04:23.0370",
+            "tcout" : "00:04:23.0610",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "vu" ]
+            },
+            "tcin" : "00:04:23.0610",
+            "tcout" : "00:04:23.0760",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "tant" ]
+            },
+            "tcin" : "00:04:23.0760",
+            "tcout" : "00:04:23.0900",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:04:23.0900",
+            "tcout" : "00:04:23.0980",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "monde" ]
+            },
+            "tcin" : "00:04:23.0980",
+            "tcout" : "00:04:24.0140",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "à" ]
+            },
+            "tcin" : "00:04:24.0140",
+            "tcout" : "00:04:24.0170",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:04:24.0170",
+            "tcout" : "00:04:24.0280",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "fois" ]
+            },
+            "tcin" : "00:04:24.0280",
+            "tcout" : "00:04:24.0540",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans" ]
+            },
+            "tcin" : "00:04:25.0010",
+            "tcout" : "00:04:25.0150",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les" ]
+            },
+            "tcin" : "00:04:25.0150",
+            "tcout" : "00:04:25.0260",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "2" ]
+            },
+            "tcin" : "00:04:25.0260",
+            "tcout" : "00:04:25.0430",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "villages" ]
+            },
+            "tcin" : "00:04:25.0490",
+            "tcout" : "00:04:25.0680",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:04:25.0730",
+            "tcout" : "00:04:25.0840",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "stand" ]
+            },
+            "tcin" : "00:04:25.0840",
+            "tcout" : "00:04:26.0280",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dressé" ]
+            },
+            "tcin" : "00:04:26.0360",
+            "tcout" : "00:04:26.0710",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "par" ]
+            },
+            "tcin" : "00:04:26.0710",
+            "tcout" : "00:04:26.0870",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:04:26.0890",
+            "tcout" : "00:04:26.0970",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "fête" ]
+            },
+            "tcin" : "00:04:26.0970",
+            "tcout" : "00:04:27.0190",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:04:27.0240",
+            "tcout" : "00:04:27.0330",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "l'" ]
+            },
+            "tcin" : "00:04:27.0330",
+            "tcout" : "00:04:27.0370",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "humanité" ]
+            },
+            "tcin" : "00:04:27.0370",
+            "tcout" : "00:04:27.0750",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:04:27.0750",
+            "tcout" : "00:04:28.0070",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "des" ]
+            },
+            "tcin" : "00:04:28.0070",
+            "tcout" : "00:04:28.0220",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "foules" ]
+            },
+            "tcin" : "00:04:28.0220",
+            "tcout" : "00:04:28.0460",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "se" ]
+            },
+            "tcin" : "00:04:28.0590",
+            "tcout" : "00:04:28.0720",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "presser" ]
+            },
+            "tcin" : "00:04:28.0720",
+            "tcout" : "00:04:29.0110",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:04:29.0110",
+            "tcout" : "00:04:30.0350",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "mais" ]
+            },
+            "tcin" : "00:04:30.0350",
+            "tcout" : "00:04:30.0460",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans" ]
+            },
+            "tcin" : "00:04:30.0490",
+            "tcout" : "00:04:30.0590",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les" ]
+            },
+            "tcin" : "00:04:30.0590",
+            "tcout" : "00:04:30.0710",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "tribunes" ]
+            },
+            "tcin" : "00:04:30.0710",
+            "tcout" : "00:04:31.0110",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:04:31.0110",
+            "tcout" : "00:04:31.0140",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "remarqué" ]
+            },
+            "tcin" : "00:04:31.0140",
+            "tcout" : "00:04:31.0500",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:04:31.0500",
+            "tcout" : "00:04:31.0580",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Marcel" ]
+            },
+            "tcin" : "00:04:31.0580",
+            "tcout" : "00:04:31.0890",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Cachin" ]
+            },
+            "tcin" : "00:04:31.0970",
+            "tcout" : "00:04:32.0320",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Maurice-Thorez" ]
+            },
+            "tcin" : "00:04:33.0960",
+            "tcout" : "00:04:34.0480",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Jacques" ]
+            },
+            "tcin" : "00:04:34.0960",
+            "tcout" : "00:04:35.0270",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Duclos" ]
+            },
+            "tcin" : "00:04:35.0270",
+            "tcout" : "00:04:35.0690",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "et" ]
+            },
+            "tcin" : "00:04:35.0890",
+            "tcout" : "00:04:36.0010",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les" ]
+            },
+            "tcin" : "00:04:36.0010",
+            "tcout" : "00:04:36.0090",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "punis" ]
+            },
+            "tcin" : "00:04:36.0170",
+            "tcout" : "00:04:36.0290",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "par" ]
+            },
+            "tcin" : "00:04:36.0330",
+            "tcout" : "00:04:36.0490",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "enfin" ]
+            },
+            "tcin" : "00:04:36.0570",
+            "tcout" : "00:04:36.0670",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "des" ]
+            },
+            "tcin" : "00:04:36.0720",
+            "tcout" : "00:04:36.0800",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "prix" ]
+            },
+            "tcin" : "00:04:36.0820",
+            "tcout" : "00:04:36.0970",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:04:36.0970",
+            "tcout" : "00:04:36.0970",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:21.0290",
+        "tcout" : "00:04:37.0010",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Et ce ne sont pas les garanties équipés ont ils serviront à remonter jusqu' au chef , ce mandataire indélicats , il s'était arrêté la main dans le sac ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Et" ]
+            },
+            "tcin" : "00:02:33.0220",
+            "tcout" : "00:02:33.0330",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ce" ]
+            },
+            "tcin" : "00:02:33.0350",
+            "tcout" : "00:02:33.0480",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ne" ]
+            },
+            "tcin" : "00:02:33.0480",
+            "tcout" : "00:02:33.0580",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "sont" ]
+            },
+            "tcin" : "00:02:33.0580",
+            "tcout" : "00:02:33.0750",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pas" ]
+            },
+            "tcin" : "00:02:33.0790",
+            "tcout" : "00:02:33.0950",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les" ]
+            },
+            "tcin" : "00:02:33.0990",
+            "tcout" : "00:02:34.0100",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "garanties" ]
+            },
+            "tcin" : "00:02:34.0220",
+            "tcout" : "00:02:34.0580",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "équipés" ]
+            },
+            "tcin" : "00:02:34.0840",
+            "tcout" : "00:02:35.0120",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ont" ]
+            },
+            "tcin" : "00:02:35.0200",
+            "tcout" : "00:02:35.0330",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ils" ]
+            },
+            "tcin" : "00:02:35.0810",
+            "tcout" : "00:02:36.0060",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "serviront" ]
+            },
+            "tcin" : "00:02:36.0060",
+            "tcout" : "00:02:36.0370",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "à" ]
+            },
+            "tcin" : "00:02:36.0600",
+            "tcout" : "00:02:36.0640",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "remonter" ]
+            },
+            "tcin" : "00:02:36.0640",
+            "tcout" : "00:02:37.0050",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "jusqu'" ]
+            },
+            "tcin" : "00:02:37.0050",
+            "tcout" : "00:02:37.0250",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "au" ]
+            },
+            "tcin" : "00:02:37.0250",
+            "tcout" : "00:02:37.0380",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "chef" ]
+            },
+            "tcin" : "00:02:37.0380",
+            "tcout" : "00:02:37.0650",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:02:37.0650",
+            "tcout" : "00:02:38.0780",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ce" ]
+            },
+            "tcin" : "00:02:38.0780",
+            "tcout" : "00:02:38.0900",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "mandataire" ]
+            },
+            "tcin" : "00:02:39.0030",
+            "tcout" : "00:02:39.0390",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "indélicats" ]
+            },
+            "tcin" : "00:02:39.0730",
+            "tcout" : "00:02:40.0220",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:02:40.0220",
+            "tcout" : "00:02:40.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "il" ]
+            },
+            "tcin" : "00:02:40.0600",
+            "tcout" : "00:02:40.0700",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "s'était" ]
+            },
+            "tcin" : "00:02:40.0790",
+            "tcout" : "00:02:40.0940",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "arrêté" ]
+            },
+            "tcin" : "00:02:41.0000",
+            "tcout" : "00:02:41.0250",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:02:41.0330",
+            "tcout" : "00:02:41.0430",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "main" ]
+            },
+            "tcin" : "00:02:41.0430",
+            "tcout" : "00:02:41.0530",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans" ]
+            },
+            "tcin" : "00:02:41.0550",
+            "tcout" : "00:02:41.0650",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "le" ]
+            },
+            "tcin" : "00:02:41.0650",
+            "tcout" : "00:02:41.0780",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "sac" ]
+            },
+            "tcin" : "00:02:41.0830",
+            "tcout" : "00:02:42.0100",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:02:42.0100",
+            "tcout" : "00:02:42.0100",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:02:33.0220",
+        "tcout" : "00:02:42.0400",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Il fallait bien sacrifier le reste ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Il" ]
+            },
+            "tcin" : "00:03:46.0920",
+            "tcout" : "00:03:47.0060",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "fallait" ]
+            },
+            "tcin" : "00:03:47.0100",
+            "tcout" : "00:03:47.0320",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "bien" ]
+            },
+            "tcin" : "00:03:47.0320",
+            "tcout" : "00:03:47.0570",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "sacrifier" ]
+            },
+            "tcin" : "00:03:47.0570",
+            "tcout" : "00:03:48.0010",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "le" ]
+            },
+            "tcin" : "00:03:48.0010",
+            "tcout" : "00:03:48.0060",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "reste" ]
+            },
+            "tcin" : "00:03:48.0060",
+            "tcout" : "00:03:48.0250",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:03:48.0250",
+            "tcout" : "00:03:48.0250",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:03:46.0800",
+        "tcout" : "00:03:48.0360",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Qui ne pense que le marché noir , petits et gros disparaisse pour que la pour manger à sa faim ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Qui" ]
+            },
+            "tcin" : "00:03:03.0280",
+            "tcout" : "00:03:03.0360",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ne" ]
+            },
+            "tcin" : "00:03:03.0370",
+            "tcout" : "00:03:03.0490",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pense" ]
+            },
+            "tcin" : "00:03:03.0530",
+            "tcout" : "00:03:03.0650",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "que" ]
+            },
+            "tcin" : "00:03:03.0720",
+            "tcout" : "00:03:03.0830",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "le" ]
+            },
+            "tcin" : "00:03:03.0830",
+            "tcout" : "00:03:03.0930",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "marché" ]
+            },
+            "tcin" : "00:03:03.0930",
+            "tcout" : "00:03:04.0230",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "noir" ]
+            },
+            "tcin" : "00:03:04.0230",
+            "tcout" : "00:03:04.0590",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:03:04.0590",
+            "tcout" : "00:03:04.0730",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "petits" ]
+            },
+            "tcin" : "00:03:04.0730",
+            "tcout" : "00:03:04.0940",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "et" ]
+            },
+            "tcin" : "00:03:05.0070",
+            "tcout" : "00:03:05.0120",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "gros" ]
+            },
+            "tcin" : "00:03:05.0130",
+            "tcout" : "00:03:05.0410",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "disparaisse" ]
+            },
+            "tcin" : "00:03:05.0480",
+            "tcout" : "00:03:06.0190",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pour" ]
+            },
+            "tcin" : "00:03:06.0780",
+            "tcout" : "00:03:06.0950",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "que" ]
+            },
+            "tcin" : "00:03:06.0950",
+            "tcout" : "00:03:07.0060",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:03:07.0060",
+            "tcout" : "00:03:07.0160",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pour" ]
+            },
+            "tcin" : "00:03:07.0180",
+            "tcout" : "00:03:07.0350",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "manger" ]
+            },
+            "tcin" : "00:03:07.0930",
+            "tcout" : "00:03:08.0390",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "à" ]
+            },
+            "tcin" : "00:03:08.0390",
+            "tcout" : "00:03:08.0430",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "sa" ]
+            },
+            "tcin" : "00:03:08.0430",
+            "tcout" : "00:03:08.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "faim" ]
+            },
+            "tcin" : "00:03:08.0600",
+            "tcout" : "00:03:08.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:03:08.0880",
+            "tcout" : "00:03:08.0880",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:03:03.0280",
+        "tcout" : "00:03:08.0930",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Il y a là Montgomery pour la Grande-Bretagne ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Il" ]
+            },
+            "tcin" : "00:05:01.0110",
+            "tcout" : "00:05:01.0210",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "y" ]
+            },
+            "tcin" : "00:05:01.0210",
+            "tcout" : "00:05:01.0280",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "a" ]
+            },
+            "tcin" : "00:05:01.0280",
+            "tcout" : "00:05:01.0320",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "là" ]
+            },
+            "tcin" : "00:05:01.0340",
+            "tcout" : "00:05:01.0420",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Montgomery" ]
+            },
+            "tcin" : "00:05:01.0420",
+            "tcout" : "00:05:01.0820",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pour" ]
+            },
+            "tcin" : "00:05:01.0930",
+            "tcout" : "00:05:02.0060",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:05:02.0060",
+            "tcout" : "00:05:02.0140",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Grande-Bretagne" ]
+            },
+            "tcin" : "00:05:02.0260",
+            "tcout" : "00:05:02.0700",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:05:02.0700",
+            "tcout" : "00:05:02.0700",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:05:01.0080",
+        "tcout" : "00:05:02.0740",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Légère ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Légère" ]
+            },
+            "tcin" : "00:08:26.0820",
+            "tcout" : "00:08:26.0960",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:08:26.0960",
+            "tcout" : "00:08:26.0960",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:08:26.0520",
+        "tcout" : "00:08:27.0260",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "La guerre est finie sous le signe de la paix commence dans un le général de Gaulle , accueilli à son arrivée par Monsieur Henri Bonnet , ambassadeur de France et Monsieur Pearl , secrétaire d' État aux affaires étrangères , donc sur la terre américaine ." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "La" ]
+            },
+            "tcin" : "00:05:45.0140",
+            "tcout" : "00:05:45.0260",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "guerre" ]
+            },
+            "tcin" : "00:05:45.0260",
+            "tcout" : "00:05:45.0720",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "est" ]
+            },
+            "tcin" : "00:05:45.0720",
+            "tcout" : "00:05:45.0790",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "finie" ]
+            },
+            "tcin" : "00:05:45.0790",
+            "tcout" : "00:05:46.0160",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "sous" ]
+            },
+            "tcin" : "00:05:46.0920",
+            "tcout" : "00:05:47.0070",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "le" ]
+            },
+            "tcin" : "00:05:47.0070",
+            "tcout" : "00:05:47.0190",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "signe" ]
+            },
+            "tcin" : "00:05:47.0190",
+            "tcout" : "00:05:47.0550",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:05:47.0640",
+            "tcout" : "00:05:47.0740",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:05:47.0740",
+            "tcout" : "00:05:47.0850",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "paix" ]
+            },
+            "tcin" : "00:05:47.0850",
+            "tcout" : "00:05:47.0990",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "commence" ]
+            },
+            "tcin" : "00:05:48.0030",
+            "tcout" : "00:05:48.0400",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans" ]
+            },
+            "tcin" : "00:05:48.0460",
+            "tcout" : "00:05:48.0720",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "un" ]
+            },
+            "tcin" : "00:05:48.0810",
+            "tcout" : "00:05:48.0870",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "le" ]
+            },
+            "tcin" : "00:05:49.0230",
+            "tcout" : "00:05:49.0350",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "général" ]
+            },
+            "tcin" : "00:05:49.0350",
+            "tcout" : "00:05:49.0740",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:05:49.0740",
+            "tcout" : "00:05:49.0850",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Gaulle" ]
+            },
+            "tcin" : "00:05:49.0850",
+            "tcout" : "00:05:50.0210",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:05:50.0210",
+            "tcout" : "00:05:50.0380",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "accueilli" ]
+            },
+            "tcin" : "00:05:50.0380",
+            "tcout" : "00:05:50.0740",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "à" ]
+            },
+            "tcin" : "00:05:50.0740",
+            "tcout" : "00:05:50.0810",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "son" ]
+            },
+            "tcin" : "00:05:50.0850",
+            "tcout" : "00:05:51.0010",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "arrivée" ]
+            },
+            "tcin" : "00:05:51.0010",
+            "tcout" : "00:05:51.0300",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "par" ]
+            },
+            "tcin" : "00:05:51.0370",
+            "tcout" : "00:05:51.0530",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Monsieur" ]
+            },
+            "tcin" : "00:05:51.0530",
+            "tcout" : "00:05:51.0790",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Henri" ]
+            },
+            "tcin" : "00:05:51.0850",
+            "tcout" : "00:05:51.0960",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Bonnet" ]
+            },
+            "tcin" : "00:05:52.0090",
+            "tcout" : "00:05:52.0350",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:05:52.0350",
+            "tcout" : "00:05:52.0350",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ambassadeur" ]
+            },
+            "tcin" : "00:05:52.0350",
+            "tcout" : "00:05:52.0840",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de" ]
+            },
+            "tcin" : "00:05:52.0840",
+            "tcout" : "00:05:52.0950",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "France" ]
+            },
+            "tcin" : "00:05:53.0020",
+            "tcout" : "00:05:53.0310",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "et" ]
+            },
+            "tcin" : "00:05:53.0660",
+            "tcout" : "00:05:53.0790",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Monsieur" ]
+            },
+            "tcin" : "00:05:53.0790",
+            "tcout" : "00:05:54.0060",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Pearl" ]
+            },
+            "tcin" : "00:05:54.0060",
+            "tcout" : "00:05:54.0330",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:05:54.0330",
+            "tcout" : "00:05:54.0650",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "secrétaire" ]
+            },
+            "tcin" : "00:05:54.0650",
+            "tcout" : "00:05:55.0140",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "d'" ]
+            },
+            "tcin" : "00:05:55.0140",
+            "tcout" : "00:05:55.0200",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "État" ]
+            },
+            "tcin" : "00:05:55.0200",
+            "tcout" : "00:05:55.0420",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "aux" ]
+            },
+            "tcin" : "00:05:55.0420",
+            "tcout" : "00:05:55.0560",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "affaires" ]
+            },
+            "tcin" : "00:05:55.0590",
+            "tcout" : "00:05:55.0800",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "étrangères" ]
+            },
+            "tcin" : "00:05:55.0850",
+            "tcout" : "00:05:56.0390",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "," ]
+            },
+            "tcin" : "00:05:56.0390",
+            "tcout" : "00:05:56.0780",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "donc" ]
+            },
+            "tcin" : "00:05:56.0780",
+            "tcout" : "00:05:56.0980",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "sur" ]
+            },
+            "tcin" : "00:05:57.0110",
+            "tcout" : "00:05:57.0210",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la" ]
+            },
+            "tcin" : "00:05:57.0210",
+            "tcout" : "00:05:57.0340",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "terre" ]
+            },
+            "tcin" : "00:05:57.0340",
+            "tcout" : "00:05:57.0710",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "américaine" ]
+            },
+            "tcin" : "00:05:57.0710",
+            "tcout" : "00:05:58.0220",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "." ]
+            },
+            "tcin" : "00:05:58.0220",
+            "tcout" : "00:05:58.0220",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:05:45.0100",
+        "tcout" : "00:05:58.0410",
+        "tclevel" : 1
+      } ]
+    },
+    "type" : "text",
+    "tcin" : "00:02:33.0220",
+    "tcout" : "00:10:03.0050",
+    "tclevel" : 0
+  } ],
+  "type" : "text",
+  "algorithm" : "vrbs_part 2.3",
+  "processor" : "vrbs_trans.fre 5.1",
+  "id" : "test",
+  "processed" : 1595341727,
+  "version" : 1
+}

@@ -152,5 +152,9 @@ export enum PlayerEventType {
     /**
      * Invoked when window is resized
      */
-    PLAYER_RESIZED = 'ina.player.PLAYER_RESIZED'
+    PLAYER_RESIZED = 'ina.player.PLAYER_RESIZED',
+    /**
+     * Invocked when click on pin controlbar
+     */
+    PINNED_CONTROLBAR_CHANGE = 'ina.player.PINNED_CONTROLBAR_CHANGE'
 }

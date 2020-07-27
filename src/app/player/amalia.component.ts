@@ -155,9 +155,17 @@ export class AmaliaComponent implements OnInit {
      */
     public logger = new DefaultLogger();
     /**
+     * default aspect ratio
+     */
+    public ratio = '16-9';
+    /**
      * In charge to get instance of player
      */
     public playerService: MediaPlayerService;
+    /**
+     * Pinned ControlBar state
+     */
+    public pinned = false;
     /**
      * In charge to load resource
      */
@@ -239,6 +247,7 @@ export class AmaliaComponent implements OnInit {
     private updatePlayerSizeWithAspectRatio() {
         const htmlElement = this.mediaPlayer.nativeElement;
         if (this.aspectRatio && this.aspectRatio !== '') {
+            this.ratio = this.aspectRatio.replace(':' , '-');
             const maxWidth = htmlElement.parentElement.offsetWidth;
             const maxHeight = this.mediaPlayer.nativeElement.parentElement.offsetHeight;
             const aspectRatio = this.aspectRatio ? parseFloat(this.aspectRatio.split(':')[0]) / parseFloat(this.aspectRatio.split(':')[1]) : 16 / 9;
@@ -284,8 +293,12 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
     }
-
+    @AutoBind
+    public handlePinnedControlbarChange(event) {
+        this.pinned = event;
+    }
     @AutoBind
     private handleSeeking(tc: number) {
         if (this.enableThumbnail) {
@@ -364,6 +377,9 @@ export class AmaliaComponent implements OnInit {
         this.inLoading = false;
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
+        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio;
+        this.ratio = this.aspectRatio.replace(':' , '-');
+        this.updatePlayerSizeWithAspectRatio();
     }
 
     /**

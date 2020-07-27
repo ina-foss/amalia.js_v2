@@ -86,7 +86,11 @@
         }
       }
     }
-
+    &.pinned {
+      .amalia-svg-pin-size {
+        background: black;
+      }
+    }
     &.activated, &:hover, &.pinned {
       .control-bar {
         display: flex;
@@ -777,10 +781,10 @@
       z-index: $amalia-ctrl-bar-z-index;
       top: calc(50% - 17px);
       left: calc(50% - 17px);
-
       .icon {
         height: 32px;
         width: 32px;
+        color: $amalia-primary-color;
       }
     }
   }
@@ -903,7 +907,13 @@
     & > span {
       display: inline-block;
     }
-    &.activated {
+    &.s {
+      display: none;
+      &.activated,&.pinned {
+        display: none;
+      }
+    }
+    &.activated,&.pinned {
       text-align: right;
       height: 25px;
       width: 100%;
@@ -921,6 +931,9 @@
       .time-current {
         margin-right: 3px;
       }
+    }
+    &.pinned {
+      bottom: 106px;
     }
   }
 }

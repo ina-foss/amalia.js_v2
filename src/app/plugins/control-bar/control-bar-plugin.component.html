@@ -1,11 +1,11 @@
-<div class="time-label" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
+<div class="time-label {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
     <div class="time-display" (click)="switchDisplayCurrentTime()">
         <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
         <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>
     </div>
 </div>
-<div class="thumbnail {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}" *ngIf="enableThumbnail" [hidden]="thumbnailHidden"
-     [ngStyle]="{'background-image':'url('+thumbnailUrl+')', left:thumbnailPosition+'px'}">
+<div #thumbnail class="thumbnail {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}" *ngIf="enableThumbnail"
+     [hidden]="thumbnailHidden">
     <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
 </div>
 <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
@@ -26,7 +26,7 @@
             <!-- ngSwitch by controls-->
             <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
                 <!-- play pause mode-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}"
                      (click)="controlClicked(c.control)" *ngSwitchCase="'playPause'"
                      class="play-pause control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
@@ -37,7 +37,7 @@
                     </svg>
                 </div>
                 <!--FullScreen Button -->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}"
                      (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
                      class="toggleFullScreen control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
@@ -48,7 +48,7 @@
                     </svg>
                 </div>
                 <!--Aspect Ratio-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}"
                      *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" title="{{c.label}}"
                      (click)="changeAspectRatio()" [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableListRatio=true;enableVolumeSlider=false;enableListPositionsSubtitle=false">
@@ -72,13 +72,13 @@
 
                 </div>
                 <!--Playback Rate-->
-                <div [ngClass]="{'show':(c.priority==1 ||(c.priority==2 && displayState ==='l'))  && currentPlaybackRate !== 1}"
+                <div [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l'))  && currentPlaybackRate !== 1}"
                      *ngSwitchCase="'playbackRate'" class="playback-rate control text" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     {{currentPlaybackRate}}x
                 </div>
                 <!--Download-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}"
                      *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <a target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
@@ -88,7 +88,7 @@
                     </a>
                 </div>
                 <!--Callback-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}"
                      *ngSwitchCase="'callback'" class="control callback" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
                     <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -96,7 +96,7 @@
                     </svg>
                 </div>
                 <!--Volume-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}"
                      *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
@@ -177,7 +177,7 @@
                     </div>
                 </div>
                 <!-- Button subtitles -->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}"
                      *ngSwitchCase="'subtitles'" class="control subtitle" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
                      (mouseenter)="enableListPositionsSubtitle=true;enableVolumeSlider=false;enableListRatio=false">
@@ -220,7 +220,7 @@
                     </svg>
                 </div>
                 <!--Other controls-->
-                <div [ngClass]="{'show':c.priority==1 ||(c.priority==2 && displayState ==='l')}" class="control"
+                <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')}" class="control"
                      title="{{c.label}}" (click)="controlClicked(c.control)" *ngSwitchDefault
                      [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -467,9 +467,7 @@
                 </li>
             </ng-container>
         </ng-container>
-
     </ul>
-
 </div>
 <!-- Menu of controls displayed on "s" grid-->
 <div class="controls-reduced-container {{displayState}}" [ngClass]="{'activated' : activated}">
