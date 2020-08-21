@@ -37,6 +37,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * show time code label
      */
     public enableLabel: boolean;
+    /**
+     * orientation of the plugin (horizontal|vertical)
+     */
+    public theme: 'v' | 'h' = 'v';
 
     /**
      * Time code interval
@@ -92,6 +96,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             const baseUrl = this.pluginConfiguration.data.baseUrl;
             const tcParam = this.pluginConfiguration.data.tcParam;
             this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
+            this.theme = this.pluginConfiguration.data.theme;
             this.updateThumbnailSize();
         } else {
             this.duration = null;
@@ -110,7 +115,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 tcParam: 'tc',
                 tcIntervals: this.tcIntervals,
                 frameIntervals: this.frameIntervals,
-                displayFormat: 'f'
+                displayFormat: 'f',
+                theme: 'v'
             }
         };
     }

@@ -8,6 +8,7 @@ import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
+import ArrayBufferView = NodeJS.ArrayBufferView;
 
 @Component({
     selector: 'amalia-control-bar',
@@ -107,7 +108,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Media duration
      */
     public duration = 0;
-
+    /**
+     * List of Controls
+     */
+    public controls = [];
     /**
      * In sliding
      */
@@ -349,6 +353,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
+        if (this.displayState === 'm') {
+            this.controls = this.getControlsByPriority(3);
+        } else if (this.displayState === 'sm') {
+            this.controls = this.getControlsByPriority(3).concat(this.getControlsByPriority(2));
+        }
     }
 
     /**

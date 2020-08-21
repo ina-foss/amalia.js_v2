@@ -5,4 +5,5 @@ export interface StoryboardConfig {
     tcIntervals?: Array<number>;
     frameIntervals?: Array<number>;
     displayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms';
+    theme: 'h'|'v';
 }
