@@ -117,7 +117,7 @@
   .storyboard {
     background-color: $amalia-plugin-storyboard-bg-color;
     margin: -5px -5px;
-    padding: 5px;
+    padding-left: 5px;
     display: flex;
     flex-wrap: wrap;
     height: inherit;
@@ -126,7 +126,11 @@
     justify-content: start;
     align-items: start;
     align-content: start;
-
+    &::-webkit-scrollbar-thumb {
+      width: 10px !important;
+      background-color: #0086B1;
+      border-radius: 5px;
+    }
     .thumbnail {
       position: relative;
       cursor: pointer;
@@ -135,7 +139,7 @@
       overflow: hidden;
       border: solid 1px $amalia-plugin-storyboard-bg-color;
 
-      &:hover {
+      &:hover,&.active {
         border-color: $amalia-plugin-storyboard-box-color;
         .label {
           background-color: $amalia-plugin-storyboard-label-hover-color;

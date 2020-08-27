@@ -1,11 +1,12 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {StoryboardConfig} from '../../core/config/model/storyboard-config';
 import * as _ from 'lodash';
 import {MediaPlayerService} from '../../service/media-player-service';
+import {TranscriptionPluginComponent} from '../transcription/transcription-plugin.component';
 
 @Component({
     selector: 'amalia-storyboard',
@@ -17,6 +18,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public static PLUGIN_NAME = 'STORYBOARD';
     public baseUrl: string;
     public listOfThumbnail: Array<number>;
+    @ViewChild('storyboardElement', {static: false})
+    public storyboardElement: ElementRef<HTMLElement>;
+    public currentTime: number;
     /**
      * Media duration
      */
@@ -82,9 +86,20 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.initStoryboard();
             }
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
         }
     }
 
+    /**
+     * Handle time change
+     */
+    @AutoBind
+    public handleTimeChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        if (this.storyboardElement) {
+            this.selectThumbnail(this.currentTime);
+        }
+    }
     /**
      * Init storyboard
      * @param duration media duration
@@ -156,5 +171,40 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             interval = (1 / this.fps) * interval;
         }
         this.listOfThumbnail = _.range(0, this.duration, interval);
+    }
+
+    /**
+     * Select Thumbnail
+     */
+    @AutoBind
+    public selectThumbnail(tc: number) {
+        const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
+        if (thumbnailElementNodes) {
+            const thumbnailFilteredNodes = thumbnailElementNodes
+                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
+            if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
+                thumbnailFilteredNodes.forEach(thumbnailNode => {
+                    const activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
+                    if (activeThumbnail) {
+                        activeThumbnail.classList.remove('active');
+                    }
+                    thumbnailNode.classList.add('active');
+                    this.scrollToThumbnail(thumbnailNode);
+                });
+            }
+        }
+    }
+    /**
+     * Invoked to scroll to thumbnail
+     * @param thumbnailNode element to scroll
+     */
+    private scrollToThumbnail(thumbnailNode: HTMLElement) {
+        const scrollPos = thumbnailNode.offsetTop
+            - this.storyboardElement.nativeElement.offsetTop;
+        if ((scrollPos - this.storyboardElement.nativeElement.scrollTop) > thumbnailNode.parentElement.clientHeight / 1.4) {
+            this.storyboardElement.nativeElement.scrollTop = scrollPos;
+        }
+
+
     }
 }

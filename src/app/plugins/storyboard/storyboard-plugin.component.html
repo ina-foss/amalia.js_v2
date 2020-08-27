@@ -24,9 +24,9 @@
         <div class="size large" [ngClass]="{'selected':size == 'large'}" (click)="size = 'large'"></div>
         <div class="last"></div>
     </div>
-    <div class="storyboard">
-        <div class="thumbnail {{size}}" *ngFor="let tc of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
-            <img src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy" (click)="seekToTc(tc)"/>
+    <div class="storyboard" #storyboardElement>
+        <div class="thumbnail {{size}}" *ngFor="let tc of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}" [attr.data-tc]="tc">
+            <img src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy"  (click)="seekToTc(tc)"/>
             <div *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</div>
         </div>
     </div>
