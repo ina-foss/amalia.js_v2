@@ -15,6 +15,7 @@ import {MediaPlayerService} from './service/media-player-service';
 import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.component';
 import {SortablejsModule} from 'ngx-sortablejs';
+import {TooltipModule} from 'ng2-tooltip-directive';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import {SortablejsModule} from 'ngx-sortablejs';
         SortablejsModule.forRoot({
             animation: 150
         }),
+        TooltipModule
     ],
     declarations: [
         AmaliaComponent,
