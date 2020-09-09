@@ -22,6 +22,7 @@ Player event type
 * [FULLSCREEN_STATE_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#fullscreen_state_change)
 * [IMAGE_CAPTURE](_src_app_core_constant_event_type_.playereventtype.md#image_capture)
 * [INIT](_src_app_core_constant_event_type_.playereventtype.md#init)
+* [KEYDOWN](_src_app_core_constant_event_type_.playereventtype.md#keydown)
 * [METADATA_LOADED](_src_app_core_constant_event_type_.playereventtype.md#metadata_loaded)
 * [MUTE](_src_app_core_constant_event_type_.playereventtype.md#mute)
 * [PAUSED](_src_app_core_constant_event_type_.playereventtype.md#paused)
@@ -185,6 +186,16 @@ ___
 Defined in src/app/core/constant/event-type.ts:8
 
 Invoked when the player has initialized.
+
+___
+
+###  KEYDOWN
+
+• **KEYDOWN**: = "ina.player.KEYDOWN"
+
+Defined in src/app/core/constant/event-type.ts:163
+
+Invocked on keydown when the mouse is over the player
 
 ___
 
