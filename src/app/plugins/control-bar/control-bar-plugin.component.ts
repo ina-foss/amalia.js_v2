@@ -187,6 +187,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
     @ViewChild('thumbnail')
     public thumbnailElement: ElementRef<HTMLElement>;
+    /**
+     * list of shortcuts
+     */
+    public listOfShortcuts;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -198,6 +202,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.handleDisplayState();
         this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
+        this.listOfShortcuts = this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
@@ -208,6 +213,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
         // Handle to seek events with debounceTime
         const _debounceTime = this.mediaPlayerElement.getConfiguration().thumbnail?.debounceTime || ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME;
         this.thumbnailSeekingDebounceTime
@@ -217,8 +223,40 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             .pipe(debounceTime(_debounceTime))
             .subscribe((e) => this.updateThumbnail(e));
         this.getDefaultAspectRatio();
+
     }
 
+    /**
+     * init array of shortcuts
+     */
+    public initShortcuts(data) {
+        const listOfShortcuts = [];
+        for (const i in data) {
+            if (typeof data[i] === 'object') {
+                const control = data[i];
+                if (typeof control.key !== 'undefined' && typeof control.control !== 'undefined') {
+                    listOfShortcuts.push({key: control.key, control: control.control});
+                }
+            }
+        }
+        return listOfShortcuts;
+    }
+
+    /**
+     *
+     */
+    @AutoBind
+    public handleShortcuts(event) {
+        this.applyShortcut(event);
+    }
+    public applyShortcut(key) {
+        for (const shortcut of this.listOfShortcuts) {
+             if (key === shortcut.key) {
+                 this.controlClicked(shortcut.control);
+            }
+        }
+
+    }
     /**
      * Return plugin configuration
      */
