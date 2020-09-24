@@ -18,7 +18,7 @@ import ArrayBufferView = NodeJS.ArrayBufferView;
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 10;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 0;
     /**
      * Min playback rate
      */

@@ -96,6 +96,8 @@
 
 
       .text {
+        color : #727070;
+        letter-spacing: 0;
         .w {
           cursor: pointer;
           &.search-text {
@@ -104,12 +106,11 @@
 
           &:hover {
             text-decoration: underline;
-            font-weight: bold;
+            color: #34495E;
           }
         }
 
         span.selected {
-          font-weight: $amalia-font-weight-bold;
           color: $amalia-plugin-transcription-tc-hover;
         }
       }

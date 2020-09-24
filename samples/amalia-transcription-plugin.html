@@ -19,13 +19,13 @@
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
            <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-expert-player.json">
+            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
         </div>
         <div class="col-6 p-2" style="height: 500px;">
             <div style="width: 700px;height: 500px" id="transcription">
-                <amalia-transcription plugin-configuration='{"metadataIds":["test"],"data":{"title":"254","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'>
+                <amalia-transcription plugin-configuration='{"metadataIds":["254"],"data":{"title":"254","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'>
                     </amalia-transcription>
                </div>
         </div>

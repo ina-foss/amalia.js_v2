@@ -162,7 +162,6 @@ export class MediaElement {
         } else {
             this.mse = new DefaultMediaSourceExtension(this.mediaElement, this.eventEmitter, config, this.logger);
         }
-
         this.mse.setSrc(config);
         this._framerate = config.framerate ? config.framerate : MediaElement.DEFAULT_FRAMERATE;
         // Init handle events
