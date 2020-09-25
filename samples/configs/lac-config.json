@@ -2,7 +2,7 @@
   "debug": true,
   "logLevel": "trace",
   "player": {
-    "src": "http://localhost:4201/medias/F24_14301445_21032014_id_en.mp4",
+    "src": "http://localhost:4201/medias/av_flux_radio_rcl_20200503T1110_600.mp3",
     "crossOrigin": "anonymous",
     "autoplay": false
   },

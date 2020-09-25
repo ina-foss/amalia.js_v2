@@ -450,9 +450,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         // update the element's style
         focusContainer.style.left = `${leftPosFocusContainer}%`;
         focusContainer.style.width = `${focusContainerWidth}%`;
-        // focusContainer.setAttribute('data-x', this.selectionPosition.x.toString(4));
-        leftPos = Math.abs(leftPos);
-
         this.focusTcIn = this.tcOffset + Math.max((leftPosFocusContainer * this.duration / 100), 0);
         this.focusTcOut = this.tcOffset + Math.min(((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100, this.duration);
         console.log((leftPosFocusContainer * this.duration / 100), ((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100);
