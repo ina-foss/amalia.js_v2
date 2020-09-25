@@ -187,6 +187,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
     @ViewChild('thumbnail')
     public thumbnailElement: ElementRef<HTMLElement>;
+    @ViewChild('thumbnailContainer')
+    public thumbnailContainer: ElementRef<HTMLElement>;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -505,11 +507,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
         const containerWidth = (event.target as HTMLElement).offsetWidth;
         const tc = Math.round(event.clientX * this.duration / containerWidth);
+        console.log('tc' + tc);
         if (isFinite(tc)) {
             this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
             this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
-            const style = 'background-image: url(' + this.thumbnailUrl + ')' + ';left: ' + this.thumbnailPosition + 'px';
-            this.thumbnailElement.nativeElement.setAttribute('style' , style);
+            this.thumbnailElement.nativeElement.setAttribute('src' , this.thumbnailUrl );
+            const style = 'left: ' + this.thumbnailPosition + 'px';
+            this.thumbnailContainer.nativeElement.setAttribute('style' , style);
             this.tcThumbnail = tc;
         }
     }

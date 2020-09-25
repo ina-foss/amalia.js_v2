@@ -4,8 +4,9 @@
         <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>
     </div>
 </div>
-<div #thumbnail class="thumbnail {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}" *ngIf="enableThumbnail"
-     [hidden]="thumbnailHidden">
+<div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}"
+     *ngIf="enableThumbnail" [hidden]="thumbnailHidden">
+    <img #thumbnail class="thumbnail"/>
     <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
 </div>
 <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
