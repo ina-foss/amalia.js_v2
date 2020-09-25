@@ -661,7 +661,7 @@ ___
 
 ### `Static` DEFAULT_THUMBNAIL_DEBOUNCE_TIME
 
-▪ **DEFAULT_THUMBNAIL_DEBOUNCE_TIME**: *number* = 10
+▪ **DEFAULT_THUMBNAIL_DEBOUNCE_TIME**: *number* = 0
 
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:21
 

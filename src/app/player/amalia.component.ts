@@ -376,7 +376,7 @@ export class AmaliaComponent implements OnInit {
         this.inLoading = false;
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
-        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || "16:8";
+        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || '16:8';
         this.ratio = this.aspectRatio.replace(':' , '-');
         this.updatePlayerSizeWithAspectRatio();
     }

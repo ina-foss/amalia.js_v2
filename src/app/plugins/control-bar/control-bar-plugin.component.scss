@@ -8,7 +8,7 @@
     color: white;
   }
 
-  .thumbnail {
+  .thumbnail-container {
     position: absolute;
     width: 172px;
     height: 120px;
@@ -21,15 +21,19 @@
     background-size: contain;
     background-position: center;
     z-index: $amalia-ctrl-bar-z-index;
+    .thumbnail {
+      height: 100%;
+      width: 100%;
+    }
     .tc-thumbnail {
       font-size: 14px;
       background: rgba(34, 34, 34, 0.9);
       border-radius: 2px 2px 0 0;
-      top: 97px;
+      top: -27px;
       position: relative;
       height: 23px;
       line-height: 23px;
-      width: 50%;
+      width: 100%;
       margin: 0 auto 0;
       color: #fff;
       text-align: center;
