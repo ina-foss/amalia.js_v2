@@ -1,7 +1,7 @@
 {
   "player": {
-    "backwardsSrc": "http://localhost:4201/medias/list-inverse.m3u8",
-    "src" : "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
+    "backwardsSrc": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
     "crossOrigin": "anonymous",
     "ratio": "16:9"
   },
@@ -14,18 +14,6 @@
     },
     {
       "url": "http://localhost:4201/metadata/sample-transcription.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/subtitles-lac.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/transcription.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/transcription-stock.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/subtitles-flux.json"
     }
   ],
   "thumbnail": {
@@ -42,10 +30,6 @@
         {
           "label": "Playback rate custom steps",
           "control": "playbackRateCustomSteps"
-        },
-        {
-          "label": "Playback rate steps",
-          "control": "playbackRateSteps"
         },
         {
           "label": "Capture Image",
@@ -168,7 +152,7 @@
           "control": "subtitles",
           "icon": "subtitle",
           "zone": 3,
-          "priority": 3
+          "priority": 2
         },
         {
           "label": "Fullscreen",
@@ -181,7 +165,7 @@
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
           "zone": 3,
-          "priority": 3
+          "priority": 2
         },
         {
           "label": "Menu",

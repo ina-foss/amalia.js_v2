@@ -1,5 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
@@ -9,6 +9,7 @@ import {MediaPlayerService} from '../../service/media-player-service';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 
+
 @Component({
     selector: 'amalia-control-bar',
     templateUrl: './control-bar-plugin.component.html',
@@ -17,7 +18,7 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 10;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 50;
     /**
      * Min playback rate
      */
@@ -93,11 +94,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * return  current time
      */
     public currentTime = 0;
-    public time = 0;
-    /**
-     * inverse display currentime
-     */
-    public inverse = false;
 
     /**
      * Progress bar value
@@ -151,10 +147,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public pinnedSlider = false;
     /**
-     * Pinned slider state
-     */
-    public enablePinnedSlider = false;
-    /**
      * display state (s/m/l)
      */
     public displayState: string;
@@ -162,14 +154,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * FullScreenMode state
      */
     public fullScreenMode = false;
-    /**
-     * slider displayed
-     */
-    public selectedSlider = 'slider2';
-    /**
-     * show menu slider
-     */
-    public enableMenuSlider = false;
     /**
      * Handle thumbnail
      */
@@ -181,8 +165,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public sliderListOfPlaybackRateStepWidth: Array<number> = [];
     private thumbnailSeekingDebounceTime: Subject<number> = new Subject<number>();
     private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
-    @ViewChild('thumbnail')
-    public thumbnailElement: ElementRef<HTMLElement>;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -357,14 +339,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeAspectRatio() {
         this.mediaPlayerElement.aspectRatio = (this.aspectRatio === '4:3') ? '16:9' : '4:3';
     }
-    /**
-     * get default aspect ratio
-     */
-    @AutoBind
-    public getDefaultAspectRatio() {
-        this.defaultRatio = this.mediaPlayerElement.aspectRatio;
-        this.aspectRatio = this.defaultRatio;
-    }
+
     /**
      * Invoked on change playback rate
      */
@@ -416,7 +391,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleWindowResize() {
         this.handleDisplayState();
         // handle full screen on esc press
-        this.fullScreenMode = document.fullscreenElement !== null;
+        if (document.fullscreenElement === null) {
+            this.fullScreenMode = false;
+        } else {
+            this.fullScreenMode = true;
+        }
     }
 
     /**
@@ -493,14 +472,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     private updateThumbnail(event: MouseEvent) {
-        const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
+        const thumbnailSize = 150;
         const containerWidth = (event.target as HTMLElement).offsetWidth;
         const tc = Math.round(event.clientX * this.duration / containerWidth);
         if (isFinite(tc)) {
-            this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
             this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
-            const style = 'background-image: url(' + this.thumbnailUrl + ')' + ';left: ' + this.thumbnailPosition + 'px';
-            this.thumbnailElement.nativeElement.setAttribute('style' , style);
+            this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
             this.tcThumbnail = tc;
         }
     }
@@ -586,13 +563,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (!this.inSliding && !isNaN(this.currentTime)) {
+        if (!this.inSliding) {
             this.progressBarValue = (this.currentTime / this.duration) * 100;
-        }
-        if (this.inverse === false) {
-            this.time = this.currentTime;
-        } else {
-            this.time = this.duration - this.currentTime;
         }
     }
     /**
@@ -601,7 +573,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.time = this.currentTime;
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 
@@ -670,8 +641,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private pinControls() {
         this.pinnedSlider = !this.pinnedSlider;
-        this.enablePinnedSlider = !this.enablePinnedSlider;
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
     }
 
     /**
@@ -703,34 +672,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
-     * change slider displayed
+     * get default aspect ratio
      */
     @AutoBind
-    public changeSlider() {
-        if (this.selectedSlider === 'slider1') {
-            this.selectedSlider = 'slider2';
-        } else {
-            this.selectedSlider = 'slider1';
-        }
+    public getDefaultAspectRatio() {
+        this.defaultRatio = this.mediaPlayerElement.aspectRatio;
+        this.aspectRatio = this.defaultRatio;
     }
     /**
      * Handle on component destroy
      */
     ngOnDestroy() {
-    }
-
-    /**
-     * switch timecode display onclick
-     */
-    @AutoBind
-    public switchDisplayCurrentTime() {
-        if (this.inverse === true) {
-            this.inverse = false;
-            this.time = this.currentTime;
-        } else {
-            this.inverse = true;
-            this.time = this.duration - this.currentTime;
-        }
     }
 
 }
