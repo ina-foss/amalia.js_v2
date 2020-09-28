@@ -175,6 +175,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enableMenuSlider = false;
     /**
+     * progressBar element
+     */
+    @ViewChild('progressBar')
+    public progressBarElement: ElementRef<HTMLElement>;
+    /**
      * Handle thumbnail
      */
     public tcThumbnail;
@@ -505,9 +510,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private updateThumbnail(event: MouseEvent) {
         const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
-        const containerWidth = (event.target as HTMLElement).offsetWidth;
-        const tc = Math.round(event.clientX * this.duration / containerWidth);
-        console.log('tc' + tc);
+        const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
+        const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         if (isFinite(tc)) {
             this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
             this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
