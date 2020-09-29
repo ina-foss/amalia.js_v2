@@ -364,6 +364,7 @@ export class AmaliaComponent implements OnInit {
     private setPreviewThumbnail(tc: number) {
         if (!isNaN(tc)) {
             this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
+            this.previewThumbnailElement.nativeElement.setAttribute('src' , this.previewThumbnailUrl);
         }
     }
 

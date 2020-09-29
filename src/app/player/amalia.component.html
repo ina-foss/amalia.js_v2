@@ -2,10 +2,8 @@
      (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{ratio}}"
      [ngClass]="{'pinned' : pinned}">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
-    <div #previewThumbnail class="preview-thumbnail"
-         [hidden]="!enablePreviewThumbnail &&!previewThumbnailUrl &&previewThumbnailUrl==''"
-         [ngStyle]="{'background-image':'url('+previewThumbnailUrl+')'}">
-    </div>
+    <img #previewThumbnail class="preview-thumbnail"
+         [hidden]="!enablePreviewThumbnail &&!previewThumbnailUrl &&previewThumbnailUrl==''"/>
 </div>
 <div *ngIf="inLoading" class="loader"></div>
 <div *ngIf="inError" class="error">
