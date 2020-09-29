@@ -11,8 +11,6 @@
 ### Properties
 
 * [enableMirror](_src_app_core_config_model_histogram_config_.histogramconfig.md#enablemirror)
-* [format](_src_app_core_config_model_histogram_config_.histogramconfig.md#optional-format)
-* [url](_src_app_core_config_model_histogram_config_.histogramconfig.md#optional-url)
 * [withFocus](_src_app_core_config_model_histogram_config_.histogramconfig.md#withfocus)
 
 ## Properties
@@ -22,22 +20,6 @@
 • **enableMirror**: *boolean*
 
 Defined in src/app/core/config/model/histogram-config.ts:3
-
-___
-
-### `Optional` format
-
-• **format**? : *number*
-
-Defined in src/app/core/config/model/histogram-config.ts:5
-
-___
-
-### `Optional` url
-
-• **url**? : *string*
-
-Defined in src/app/core/config/model/histogram-config.ts:4
 
 ___
 

@@ -96,6 +96,7 @@ export class MetadataUtils {
             const tl: TimelineLocalisation = {
                 label: localisation.label || null,
                 thumb: localisation.thumb || null,
+                type: localisation.type || null,
                 tc: (typeof localisation.tc === 'string') ? FormatUtils.convertTcToSeconds(localisation.tc) : localisation.tc || null,
                 tcIn: (typeof localisation.tcin === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcin) : localisation.tcin || null,
                 tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
