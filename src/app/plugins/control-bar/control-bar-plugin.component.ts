@@ -360,10 +360,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
+        // Controls priority 3
+        let controlsP3 = this.getControlsByPriority(3);
+        // Controls priority 2
+        let controlsP2 = this.getControlsByPriority(2);
+        if (controlsP3 === null) {
+            controlsP3 = [];
+        }
+        if (controlsP2 === null) {
+            controlsP2 = [];
+        }
         if (this.displayState === 'm') {
-            this.controls = this.getControlsByPriority(3);
+            this.controls =  controlsP3;
         } else if (this.displayState === 'sm') {
-            this.controls = this.getControlsByPriority(3).concat(this.getControlsByPriority(2));
+            this.controls =  controlsP3.concat(controlsP2);
         }
     }
 

@@ -212,7 +212,7 @@
                     </ul>
                 </div>
                 <!--Menu Button-->
-                <div tooltip="{{c.label}}" [ngClass]="{'show':displayState ==='m' || displayState === 'sm'}" *ngSwitchCase="'menu'" class="control menu"
+                <div  tooltip="{{c.label}}" [ngClass]="{'show':(displayState ==='m' || displayState === 'sm') && controls.length > 0}" *ngSwitchCase="'menu'" class="control menu"
                      title="{{c.label}}"
                      (mouseenter)="enableMenu=true;enableVolumeSlider=false"
                      [ngStyle]="{'order':c.order ? c.order:'0'}">

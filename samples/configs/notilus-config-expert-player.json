@@ -171,7 +171,7 @@
           "control": "subtitles",
           "icon": "subtitle",
           "zone": 3,
-          "priority": 3
+          "priority": 2
         },
         {
           "label": "Fullscreen",
@@ -184,7 +184,7 @@
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
           "zone": 3,
-          "priority": 3
+          "priority": 2
         },
         {
           "label": "Menu",
