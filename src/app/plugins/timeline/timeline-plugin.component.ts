@@ -9,6 +9,7 @@ import {Options} from 'sortablejs';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {isArrayLike} from 'rxjs/internal-compatibility';
 import {TimelineLocalisation} from '../../core/metadata/model/timeline-localisation';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'amalia-timeline',
@@ -88,15 +89,51 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.timeFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
         }
         this.title = this.pluginConfiguration.data.title;
-        this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
+        if (this.pluginConfiguration.data.mainBlockColor) {
+            this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
+        }
         this.initFocusResizable(this.focusContainer.nativeElement);
         this.listOfBlocksContainer.nativeElement.addEventListener('mousedown', this.handleClickToDrawRect);
         this.listOfBlocksContainer.nativeElement.addEventListener('mouseup', this.handleClickToDrawRect);
         this.listOfBlocksContainer.nativeElement.addEventListener('mousemove', this.handleMouseMoveToDrawRect);
-
+        if (this.mediaPlayerElement.isMetadataLoaded) {
+            this.parseTimelineMetadata();
+        }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+    }
+
+    /**
+     * In charge to parse metadata
+     */
+    private parseTimelineMetadata() {
+        this.listOfBlocks = [];
+        const handleMetadataIds = this.pluginConfiguration.metadataIds;
+        const metadataManager = this.mediaPlayerElement.metadataManager;
+
+        this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`, this.pluginConfiguration);
+        // Check if metadata is initialized
+        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+            handleMetadataIds.forEach((metadataId) => {
+                const metadata = metadataManager.getMetadata(metadataId);
+                let listOfLocalisations = null;
+                try {
+                    listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
+                } catch (e) {
+                    this.logger.warn('Error to parse metadata');
+                }
+                this.listOfBlocks.push({
+                    id: metadataId,
+                    label: (metadata?.label) ? metadata.label : metadataId,
+                    expendable: this.pluginConfiguration.data.expendable,
+                    defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
+                    displayState: true,
+                    data: listOfLocalisations
+                });
+            });
+        }
+        this.mainLocalisations = this.createMainMetadataIds(this.pluginConfiguration.data.mainMetadataIds, metadataManager);
     }
 
     /**
@@ -115,8 +152,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             name: TimelinePluginComponent.PLUGIN_NAME,
             data: {
                 title: 'Timeline globale',
-                mainBlockColor: this.getAvailableColor(),
-                timeFormat: 'mms',
+                mainBlockColor: null,
+                timeFormat: 's',
                 expendable: true,
                 mainMetadataIds: [],
                 resizeable: true
@@ -318,31 +355,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     @AutoBind
     public handleMetadataLoaded() {
-        this.listOfBlocks = [];
-        const handleMetadataIds = this.pluginConfiguration.metadataIds;
-        const metadataManager = this.mediaPlayerElement.metadataManager;
-        this.mainLocalisations = this.createMainMetadataIds(this.pluginConfiguration.data.mainMetadataIds, metadataManager);
-        this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`, this.pluginConfiguration);
-        // Check if metadata is initialized
-        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
-            handleMetadataIds.forEach((metadataId) => {
-                const metadata = metadataManager.getMetadata(metadataId);
-                let listOfLocalisations = null;
-                try {
-                    listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
-                } catch (e) {
-                    this.logger.warn('Error to parse metadata');
-                }
-                this.listOfBlocks.push({
-                    id: metadataId,
-                    label: (metadata?.label) ? metadata.label : metadataId,
-                    expendable: this.pluginConfiguration.data.expendable,
-                    defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
-                    displayState: true,
-                    data: listOfLocalisations
-                });
-            });
-        }
+        this.parseTimelineMetadata();
     }
 
     /**
@@ -353,14 +366,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (handleMetadataIds) {
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
                 const metadata = metadataManager.getMetadata(metadataId);
+                const blockMetadata: any = _.find(this.listOfBlocks, {id: metadataId});
+                const baseColor = (metadata?.viewControl?.color) ? metadata.viewControl.color : blockMetadata.defaultColor;
                 let localisations = null;
                 try {
                     localisations = metadataManager.getTimelineLocalisations(metadata);
                     if (localisations) {
                         localisations.forEach((l) => {
-                            if (metadata.viewControl?.color) {
-                                l.color = metadata.viewControl.color;
-                            }
+                            l.color = baseColor;
                             listOfLocalisations.push(l);
                         });
                     }
@@ -479,5 +492,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.selectionPosition.x = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
         this.selectionPosition.y = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
     }
+
 
 }

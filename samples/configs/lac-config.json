@@ -2,7 +2,7 @@
   "debug": true,
   "logLevel": "trace",
   "player": {
-    "src": "http://localhost:4201/medias/av_flux_radio_rcl_20200503T1110_600.mp3",
+    "src": "http://ws-media-vm.ina.fr:3001/medias/timeline.mp3",
     "crossOrigin": "anonymous",
     "autoplay": false
   },
@@ -11,7 +11,7 @@
       "url": "http://localhost:4201/metadata/lac-subtitles.json"
     },
     {
-      "url": "http://localhost:4201/metadata/lac-timeline.json"
+      "url": "http://localhost:4201/metadata/lac-timeline1.json"
     },
     {
       "url": "http://localhost:4201/metadata/lac-transcription.json"
