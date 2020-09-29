@@ -217,7 +217,6 @@ export class AmaliaComponent implements OnInit {
             this.logger.error('Error to initialize media player element.');
         }
     }
-
     /**
      * update mediaPlayerWidth on window resize
      */
@@ -375,9 +374,9 @@ export class AmaliaComponent implements OnInit {
     private onInitConfig(state: PlayerState) {
         this.state = state;
         this.inLoading = false;
-        this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay;
+        this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
-        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio;
+        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || '16:8';
         this.ratio = this.aspectRatio.replace(':' , '-');
         this.updatePlayerSizeWithAspectRatio();
     }

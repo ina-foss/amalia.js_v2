@@ -96,23 +96,21 @@
 
 
       .text {
+        color : #727070;
+        letter-spacing: 0;
         .w {
           cursor: pointer;
-          padding-right: 2px;
-          padding-left: 2px;
-
           &.search-text {
             background-color: $amalia-plugin-transcription-search;
           }
 
           &:hover {
             text-decoration: underline;
-            font-weight: bold;
+            color: #34495E;
           }
         }
 
         span.selected {
-          font-weight: $amalia-font-weight-bold;
           color: $amalia-plugin-transcription-tc-hover;
         }
       }
@@ -148,7 +146,6 @@
           &.active {
             font-style: normal;
             color: #222222;
-
           }
         }
         .search-icon {
