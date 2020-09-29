@@ -16,6 +16,7 @@
 * [tcIn](_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md#tcin)
 * [tcOut](_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md#tcout)
 * [thumb](_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md#thumb)
+* [type](_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md#type)
 
 ## Properties
 
@@ -23,7 +24,7 @@
 
 • **color**? : *string*
 
-Defined in src/app/core/metadata/model/timeline-localisation.ts:7
+Defined in src/app/core/metadata/model/timeline-localisation.ts:8
 
 ___
 
@@ -39,7 +40,7 @@ ___
 
 • **tc**: *number*
 
-Defined in src/app/core/metadata/model/timeline-localisation.ts:4
+Defined in src/app/core/metadata/model/timeline-localisation.ts:5
 
 ___
 
@@ -47,7 +48,7 @@ ___
 
 • **tcIn**: *number*
 
-Defined in src/app/core/metadata/model/timeline-localisation.ts:5
+Defined in src/app/core/metadata/model/timeline-localisation.ts:6
 
 ___
 
@@ -55,12 +56,20 @@ ___
 
 • **tcOut**: *number*
 
-Defined in src/app/core/metadata/model/timeline-localisation.ts:6
+Defined in src/app/core/metadata/model/timeline-localisation.ts:7
 
 ___
 
 ###  thumb
 
 • **thumb**: *string*
+
+Defined in src/app/core/metadata/model/timeline-localisation.ts:4
+
+___
+
+###  type
+
+• **type**: *string*
 
 Defined in src/app/core/metadata/model/timeline-localisation.ts:3

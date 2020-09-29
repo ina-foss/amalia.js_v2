@@ -621,7 +621,7 @@ ___
 
 ▸ **handleMouseMoveToDrawRect**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:467
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:464
 
 handle mouse to draw
 
@@ -798,7 +798,7 @@ ___
 
 ▸ **updateMouseEvent**(`event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:479
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:476
 
 Update mouse position
 
