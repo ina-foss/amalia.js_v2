@@ -52,8 +52,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     init() {
         super.init();
         if (this.pluginConfiguration.data) {
-            if (this.pluginConfiguration.data.timeFormat) {
-                this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat;
+            if (this.pluginConfiguration.data) {
+                this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
             }
             if (this.pluginConfiguration.data.fps) {
                 this.fps = this.pluginConfiguration.data.fps;
