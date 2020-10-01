@@ -5,7 +5,7 @@
     </div>
 </div>
 <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}"
-     *ngIf="enableThumbnail" [hidden]="thumbnailHidden">
+     *ngIf="enableThumbnail" [hidden]="thumbnailHidden" [ngStyle]="{'left':thumbnailPosition + 'px'}">
     <img #thumbnail class="thumbnail"/>
     <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
 </div>
@@ -103,11 +103,11 @@
                      (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
                      (click)="setupAudioNodes(c.data)">
                     <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
-                         class="amalia-svg-volume-on-size icon" (click)="changeVolume(0)">
+                         class="amalia-svg-volume-on-size icon" (click)="mute();changeVolume(0)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                     </svg>
                     <svg *ngIf="volumeLeft == 0 && volumeRight == 0"
-                         class="amalia-svg-volume-off-size icon" (click)="changeVolume(100)">
+                         class="amalia-svg-volume-off-size icon" (click)="unmute();changeVolume(100)">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                     </svg>
                     <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"

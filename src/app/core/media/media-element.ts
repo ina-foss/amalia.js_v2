@@ -174,6 +174,8 @@ export class MediaElement {
      */
     getVolume(side?: 'r' | 'l'): number {
         if (side) {
+            console.log(this.volumeLeft);
+            console.log(this.volumeRight);
             return (side === 'l') ? this.volumeLeft : this.volumeRight;
         } else {
             return this.mediaElement ? this.mediaElement.volume * 100 : 0;

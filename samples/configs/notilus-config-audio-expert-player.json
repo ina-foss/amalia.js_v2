@@ -19,6 +19,9 @@
       "url": "http://localhost:4201/metadata/waveform.json"
     },
     {
+      "url": "http://localhost:4201/metadata/waveform-flux-0.json"
+    },
+    {
       "url": "http://localhost:4201/metadata/zoomed-waveform.json"
     }
   ],
@@ -148,7 +151,7 @@
     },
     "HISTOGRAM-PLAYER": {
       "metadataIds": [
-        "waveform-MA00605_01-2048-0",
+        "waveform-46fa5221c551c1f96d63f0a357678c10-15000-0",
         "waveform-MA00605_01-2048-1",
         "1591607938077",
         "1591608575408"

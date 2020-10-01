@@ -18,7 +18,7 @@ import ArrayBufferView = NodeJS.ArrayBufferView;
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 0;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 1;
     /**
      * Min playback rate
      */
@@ -205,6 +205,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.handleDisplayState();
         this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
+        // init volume
+        this.mediaPlayerElement.getMediaPlayer().setVolume(100);
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
@@ -332,6 +334,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
         this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
         this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
+        console.log(this.volumeRight);
+        console.log(this.volumeLeft);
     }
 
     /**
@@ -473,6 +477,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public progressBarMouseMove(event: MouseEvent) {
         if (this.enableThumbnail && !this.inSliding) {
+            const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
+            const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
+            const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
+            if (isFinite(tc)) {
+                this.tcThumbnail = tc;
+                this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
+            }
             this.thumbnailPreviewDebounceTime.next(event);
         }
     }
@@ -519,16 +530,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     private updateThumbnail(event: MouseEvent) {
-        const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         if (isFinite(tc)) {
-            this.thumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
-            this.thumbnailPosition = Math.min(Math.max(0, event.clientX - thumbnailSize / 2), containerWidth - thumbnailSize);
-            this.thumbnailElement.nativeElement.setAttribute('src' , this.thumbnailUrl );
-            const style = 'left: ' + this.thumbnailPosition + 'px';
-            this.thumbnailContainer.nativeElement.setAttribute('style' , style);
-            this.tcThumbnail = tc;
+            this.thumbnailElement.nativeElement.setAttribute('src' , this.mediaPlayerElement.getThumbnailUrl(tc) );
         }
     }
 
@@ -758,6 +763,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.inverse = true;
             this.time = this.duration - this.currentTime;
         }
+    }
+    /**
+     * Mute sound
+     */
+    public mute() {
+        return this.mediaPlayerElement.getMediaPlayer().mute();
+    }
+    /**
+     * unmute sound
+     */
+    public unmute() {
+        return this.mediaPlayerElement.getMediaPlayer().unmute();
     }
 
 }
