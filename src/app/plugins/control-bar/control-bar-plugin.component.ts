@@ -334,8 +334,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
         this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
         this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
-        console.log(this.volumeRight);
-        console.log(this.volumeLeft);
     }
 
     /**
