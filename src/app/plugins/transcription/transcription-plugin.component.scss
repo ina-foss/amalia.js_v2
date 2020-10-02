@@ -102,6 +102,13 @@
           cursor: pointer;
           &.search-text {
             background-color: $amalia-plugin-transcription-search;
+            &.selected {
+              background-color: $amalia-plugin-transcription-tc-hover;
+              color : #fff;
+              &:hover {
+                color : #fff;
+              }
+            }
           }
 
           &:hover {

@@ -111,13 +111,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     /**
-     * Invoked for change auto scroll state
-     */
-    public toggleAutoScroll() {
-        this.autoScroll = !this.autoScroll;
-    }
-
-    /**
      * Invoked time change event for :
      * - update current time
      */
@@ -169,6 +162,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (filteredNodes && filteredNodes.length > 0) {
                 filteredNodes.forEach(n => {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    // add active to parent segment
+                    n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
             }
         }
@@ -200,7 +195,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
      */
-    private scroll() {
+   private scroll() {
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
@@ -285,15 +280,27 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             });
         }
     }
-
-
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
+            this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
             this.searchedWordIndex = Math.max(0, Math.min(
                 (direction === 'up') ? this.searchedWordIndex - 1 : this.searchedWordIndex + 1, this.listOfSearchedNodes.length - 1));
             this.ignoreNextScroll = true;
+            this.listOfSearchedNodes[this.searchedWordIndex].classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
             this.scrollToNode(this.listOfSearchedNodes[this.searchedWordIndex].parentElement);
         }
     }
 
+    /**
+     * Invocked on click scroll button
+     */
+    public scrollToSelectedSegment() {
+        const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
+            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+        if (scrollNode) {
+            const scrollPos = scrollNode.offsetTop
+                - this.transcriptionElement.nativeElement.offsetTop;
+            this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+        }
+    }
 }

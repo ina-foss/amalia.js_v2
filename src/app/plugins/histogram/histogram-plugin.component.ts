@@ -8,7 +8,6 @@ import {HistogramConfig} from '../../core/config/model/histogram-config';
 import {isArrayLike} from 'rxjs/internal-compatibility';
 import {Histogram} from '../../core/metadata/model/histogram';
 import {MediaPlayerService} from '../../service/media-player-service';
-import {AmaliaComponent} from '../../player/amalia.component';
 import {HttpClient} from '@angular/common/http';
 import {AmaliaException} from '../../core/exception/amalia-exception';
 import interact from 'interactjs';
@@ -94,7 +93,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * Plugin display state
      */
     public displayState;
-    public amaliaComponent = AmaliaComponent;
     /**
      * Handle draw histogram return tuple with positive bins and negative bins
      * In charge to create svg paths
@@ -506,6 +504,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @return return false for disable browser context menu
      */
     public onContextMenu(event: MouseEvent) {
-
+        this.mediaPlayerElement.eventEmitter.emit('contextmenu', event);
     }
 }
