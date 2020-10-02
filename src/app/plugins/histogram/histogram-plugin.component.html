@@ -1,4 +1,4 @@
-<div #histogramContainer class="histogram-container {{displayState}}" >
+<div #histogramContainer class="histogram-container {{displayState}}" (contextmenu)="onContextMenu($event)">
     <div #histograms class="histograms" (click)="handleHistogramsClick($event)">
         <div class="histogram" *ngFor="let histogram of listOfHistograms | slice:0:2">
             <div class="svg">

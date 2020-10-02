@@ -231,6 +231,7 @@ export class AmaliaComponent implements OnInit {
      * @param event mouse event
      * @return return false for disable browser context menu
      */
+    @AutoBind
     public onContextMenu(event: MouseEvent) {
         this.contextMenuState = true;
         const defaultMouseMargin = 15;
@@ -293,6 +294,7 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
     }
     @AutoBind
     public handlePinnedControlbarChange(event) {

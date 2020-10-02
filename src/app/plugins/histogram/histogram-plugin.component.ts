@@ -102,7 +102,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param negMax max negative bin
      * @param mirror true for enable mirror histogram
      */
-    public drawHistogram(nbBins: number , posBins: string, negBins: string, posMax: number, negMax: number, mirror = false):
+    public drawHistogram(nbBins: number , posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoomed):
         { paths: [string, string], nbBins: number,  posMax: number, negMax: number, scale: [string, string] } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
@@ -128,7 +128,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             let containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
             // 50% of the svg height
             let height = this.histograms.nativeElement.offsetHeight / 4;
-            if (nbBins > 2500) {
+            if (zoomed === true) {
                 containerWidth = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
                 this.zoomedWidth = containerWidth;
                 // 50% of the svg height
@@ -140,7 +140,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const negScaleY = height / negMax;
             const positiveScale = 'matrix(' + scaleX + ',0,0,' + posScaleY + ',0,0)';
             const negativeScale = 'matrix(' + scaleX + ',0,0,' + negScaleY + ',0,0)';
-
             return {paths: [positivePath, negativePath], nbBins, posMax, negMax, scale: [positiveScale, negativeScale]};
         }
         return null;
@@ -173,13 +172,19 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param histograms list of histogram metadata
      */
     private drawHistograms(histograms: Array<Histogram>) {
+        let zoomed = false;
         if (histograms && histograms.length > 0) {
-            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, posMax: number, negMax: number, scale: [string, string] }>();
+            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, posMax: number, negMax: number, scale: [string, string]}>();
+            let index = 0;
             histograms.forEach((hData) => {
                 const nbbins = Number(hData.nbbins);
-                const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror);
+                if (index > 1) {
+                    zoomed = true;
+                }
+                const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror, zoomed);
                 if (histogram) {
                     this.listOfHistograms.push(histogram);
+                    index++;
                 }
             });
         }
@@ -219,6 +224,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public initializeCursors() {
         this.sliderPosition = 0;
+        this.style = 'translate('  + this.sliderPosition + 'px)';
         this.cursorPosition = 0;
         this.cursorZoomPosition = 0;
         this.histogramPosition = 0;
@@ -423,7 +429,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
          const containerWidth = self.histogramContainerElement.nativeElement.offsetWidth;
          const zoomSize = (event.rect.width / containerWidth ) * 100;
          self.zoomSize = Math.round(zoomSize);
-         console.log(self.zoomSize);
          self.zoomedWidth = self.getZoomedWidth(containerWidth, self.zoomSize);
          this.updateZoomedSvg(true);
      });
@@ -492,5 +497,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public handleWindowResize() {
         this.updateZoomedSvg(false);
+    }
+    /**
+     * Invoked on click context menu
+     * @param event mouse event
+     * @return return false for disable browser context menu
+     */
+    public onContextMenu(event: MouseEvent) {
+        this.mediaPlayerElement.eventEmitter.emit('contextmenu', event);
     }
 }
