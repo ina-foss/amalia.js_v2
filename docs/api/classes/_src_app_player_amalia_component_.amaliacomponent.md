@@ -404,7 +404,7 @@ Name | Type |
 
 ▸ **bindEvents**(): *void*
 
-Defined in src/app/player/amalia.component.ts:289
+Defined in src/app/player/amalia.component.ts:288
 
 In charge to bin events
 
@@ -434,7 +434,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:333
+Defined in src/app/player/amalia.component.ts:332
 
 Invoked on aspect ratio change
 
@@ -452,7 +452,7 @@ ___
 
 ▸ **handleError**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:323
+Defined in src/app/player/amalia.component.ts:322
 
 Invoked when error event
 
@@ -482,7 +482,7 @@ ___
 
 ▸ **handlePinnedControlbarChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:299
+Defined in src/app/player/amalia.component.ts:298
 
 **Parameters:**
 
@@ -498,7 +498,7 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/player/amalia.component.ts:311
+Defined in src/app/player/amalia.component.ts:310
 
 **Returns:** *void*
 
@@ -508,7 +508,7 @@ ___
 
 ▸ **handleSeeking**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:303
+Defined in src/app/player/amalia.component.ts:302
 
 **Parameters:**
 
@@ -524,7 +524,7 @@ ___
 
 ▸ **handleWindowResize**(): *void*
 
-Defined in src/app/player/amalia.component.ts:225
+Defined in src/app/player/amalia.component.ts:224
 
 update mediaPlayerWidth on window resize
 
@@ -536,7 +536,7 @@ ___
 
 ▸ **initDefaultHandlers**(): *void*
 
-Defined in src/app/player/amalia.component.ts:342
+Defined in src/app/player/amalia.component.ts:341
 
 In charge to init default handlers when input not specified
 
@@ -560,7 +560,7 @@ ___
 
 ▸ **onContextMenu**(`event`: MouseEvent): *boolean*
 
-Defined in src/app/player/amalia.component.ts:235
+Defined in src/app/player/amalia.component.ts:234
 
 Invoked on click context menu
 
@@ -616,7 +616,7 @@ ___
 
 ▸ **setPreviewThumbnail**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:365
+Defined in src/app/player/amalia.component.ts:364
 
 In charge to update thumbnail
 
@@ -634,7 +634,7 @@ ___
 
 ▸ **updatePlayerSizeWithAspectRatio**(): *void*
 
-Defined in src/app/player/amalia.component.ts:247
+Defined in src/app/player/amalia.component.ts:246
 
 In charge to update player size with aspect ratio
 

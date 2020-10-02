@@ -27,7 +27,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         if (!this.httpClient) {
             throw new AmaliaException('Error to implement http config loader');
         }
-        this.listOfZoomedHistograms = new Array<{ paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] }>();
     }
      /**
       * state of video
@@ -72,11 +71,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * list of histograms
      */
-    public listOfHistograms: Array<{ paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] }>;
-    /**
-     * list of zoomed histograms
-     */
-    public listOfZoomedHistograms: Array<{ paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] }>;
+    public listOfHistograms: Array< { paths: [string, string], nbBins: number, posMax: number, negMax: number, scale: [string, string] } > ;
     /**
      * html element histogramContainer
      */
@@ -107,8 +102,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param negMax max negative bin
      * @param mirror true for enable mirror histogram
      */
-    public drawHistogram(nbBins: number , posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoomed = false):
-        { paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] } {
+    public drawHistogram(nbBins: number , posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoomed):
+        { paths: [string, string], nbBins: number,  posMax: number, negMax: number, scale: [string, string] } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
         if (positiveValues !== null) {
@@ -145,8 +140,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const negScaleY = height / negMax;
             const positiveScale = 'matrix(' + scaleX + ',0,0,' + posScaleY + ',0,0)';
             const negativeScale = 'matrix(' + scaleX + ',0,0,' + negScaleY + ',0,0)';
-
-            return {paths: [positivePath, negativePath], nbBins, maxHeight: Math.max(posMax, negMax), scale: [positiveScale, negativeScale]};
+            return {paths: [positivePath, negativePath], nbBins, posMax, negMax, scale: [positiveScale, negativeScale]};
         }
         return null;
     }
@@ -178,30 +172,21 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param histograms list of histogram metadata
      */
     private drawHistograms(histograms: Array<Histogram>) {
+        let zoomed = false;
         if (histograms && histograms.length > 0) {
-            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, maxHeight: number, scale: [string, string] }>();
+            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, posMax: number, negMax: number, scale: [string, string]}>();
+            let index = 0;
             histograms.forEach((hData) => {
                 const nbbins = Number(hData.nbbins);
-                const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror, false);
+                if (index > 1) {
+                    zoomed = true;
+                }
+                const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror, zoomed);
                 if (histogram) {
                     this.listOfHistograms.push(histogram);
+                    index++;
                 }
             });
-        }
-    }
-
-    /**
-     * Invoked on window resize
-     */
-    @AutoBind
-    public handleWindowResize() {
-        this.handleDisplayState();
-        // init tabs
-        this.listOfHistograms.length = 0;
-        this.handleMetadataLoaded();
-        if (this.displayState === 'l') {
-            this.listOfZoomedHistograms.length = 0;
-            this.getDefaultZoomedHistogramData();
         }
     }
     /**
@@ -239,6 +224,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public initializeCursors() {
         this.sliderPosition = 0;
+        this.style = 'translate('  + this.sliderPosition + 'px)';
         this.cursorPosition = 0;
         this.cursorZoomPosition = 0;
         this.histogramPosition = 0;
@@ -318,13 +304,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     private handleOnDurationChange() {
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         this.initSliderEvents();
-        this.getDefaultZoomedHistogramData();
-    }
-    /**
-     * Invoked on metadata loaded
-     */
-    @AutoBind
-    private handleMetadataLoaded() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
         this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds}`);
@@ -332,6 +311,19 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
             this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
         }
+    }
+    /**
+     * Invoked on metadata loaded
+     */
+    @AutoBind
+    private handleMetadataLoaded() {
+        /*const handleMetadataIds = this.pluginConfiguration.metadataIds;
+        const metadataManager = this.mediaPlayerElement.metadataManager;
+        this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds}`);
+        // Check if metadata is initialized
+        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+            this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
+        }*/
     }
     /**
      * Called on start dragging element
@@ -363,49 +355,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         }
         // reset
         this.isplaying = null;
-    }
-    /**
-     * get default zoomed histogram data from api
-     */
-    private getDefaultZoomedHistogramData() {
-        let containerWidth;
-        const  url = this.pluginConfiguration.data.url;
-        let format = this.pluginConfiguration.data.format;
-
-        if (typeof(format) === 'undefined') {
-            if (document.fullscreenElement === null) {
-                containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
-            }  else {
-                containerWidth = window.outerWidth;
-            }
-            format = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
-            format = Math.round(format / 3);
-        }
-        const urlHistogramL = url + '?format=' + format + '&canal=0';
-        const urlHistogramR = url + '?format=' + format + '&canal=1';
-        this.loadHistogram(urlHistogramL);
-        this.loadHistogram(urlHistogramR);
-    }
-    /**
-     * get default zoomed histogram data from api
-     */
-    private getZoomedHistogramData() {
-        let format;
-        let containerWidth;
-        const  url = this.pluginConfiguration.data.url;
-        if (document.fullscreenElement === null) {
-            containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
-        }  else {
-            containerWidth = window.outerWidth;
-        }
-        format = Math.round(this.getZoomedWidth(containerWidth, this.zoomSize));
-        format = Math.round(format / 3);
-        const urlHistogramL = url + '?format=' + format + '&canal=0';
-        const urlHistogramR = url + '?format=' + format + '&canal=1';
-        // empty existing array
-        this.listOfZoomedHistograms.length = 0;
-        this.loadHistogram(urlHistogramL);
-        this.loadHistogram(urlHistogramR);
     }
     /**
      * slider events
@@ -480,43 +429,59 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
          const containerWidth = self.histogramContainerElement.nativeElement.offsetWidth;
          const zoomSize = (event.rect.width / containerWidth ) * 100;
          self.zoomSize = Math.round(zoomSize);
-         self.getZoomedHistogramData();
-         // self.updateHistogramWidth(zoomedWidth);
+         self.zoomedWidth = self.getZoomedWidth(containerWidth, self.zoomSize);
+         this.updateZoomedSvg(true);
      });
     }
 
     /**
-     * call api to get histogram data
-     */
-
-    private loadHistogram(url) {
-       const self = this;
-       this.httpClient.get(url).toPromise()
-            .then(
-                res => {
-                    this.logger.info('Histogram data loaded ...');
-                    if (res) {
-                        self.addHistogram(res);
-                    }
-                },
-                error => {
-                    this.logger.error('Error to load histogram data ...', error);
-                }
-            );
-    }
-    /**
-     * add histogram to list of zoomed histograms
+     * update scale of zoomed svg on zoom resize
      */
     @AutoBind
-    public addHistogram(data) {
-       data = data.localisation[0];
-       for (const hData of data.data.histogram) {
-           const nbBins = Number(hData.nbbins);
-           const histogram = this.drawHistogram(nbBins , hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror, true);
-           if (histogram) {
-               this.listOfZoomedHistograms.push(histogram);
-           }
-       }
+    public updateZoomedSvg(onlyResized) {
+        let height;
+        // resize all SVG
+        if (onlyResized === false) {
+            const containerWidth = this.histogramContainerElement.nativeElement.offsetWidth;
+            this.zoomedWidth =  this.getZoomedWidth(containerWidth, this.zoomSize);
+            const scX = containerWidth / this.listOfHistograms[0].nbBins;
+            height = this.histograms.nativeElement.offsetHeight / 4;
+            const posScY  = height / this.listOfHistograms[0].posMax;
+            const negScY = height / this.listOfHistograms[0].negMax;
+            const posScale = 'matrix(' + scX + ',0,0,' + posScY + ',0,0)';
+            const negScale = 'matrix(' + scX + ',0,0,' + negScY + ',0,0)';
+            if (this.listOfHistograms[0].posMax === this.listOfHistograms[1].posMax) {
+                this.listOfHistograms[0].scale = [posScale, negScale];
+                this.listOfHistograms[1].scale = [posScale, negScale];
+            } else {
+                const scX2 = containerWidth / this.listOfHistograms[1].nbBins;
+                const posSc2  = height / this.listOfHistograms[1].posMax;
+                const negSc2 = height / this.listOfHistograms[1].negMax;
+                const posScale2 = 'matrix(' + scX2 + ',0,0,' + posSc2 + ',0,0)';
+                const negScale2 = 'matrix(' + scX2 + ',0,0,' + negSc2 + ',0,0)';
+                this.listOfHistograms[0].scale = [posScale, negScale];
+                this.listOfHistograms[1].scale = [posScale2, negScale2];
+            }
+        }
+        // resize only zoomed SVG
+        const scaleX = this.zoomedWidth / this.listOfHistograms[2].nbBins;
+        height = this.zoomedHistograms.nativeElement.offsetHeight / 4;
+        const posScaleY  = height / this.listOfHistograms[2].posMax;
+        const negScaleY = height / this.listOfHistograms[2].negMax;
+        const positiveScale = 'matrix(' + scaleX + ',0,0,' + posScaleY + ',0,0)';
+        const negativeScale = 'matrix(' + scaleX + ',0,0,' + negScaleY + ',0,0)';
+        if (this.listOfHistograms[2].posMax === this.listOfHistograms[3].posMax) {
+            this.listOfHistograms[2].scale = [positiveScale, negativeScale];
+            this.listOfHistograms[3].scale = [positiveScale, negativeScale];
+        } else {
+            const scaleX2 = this.zoomedWidth / this.listOfHistograms[3].nbBins;
+            const posScaleY2  = height / this.listOfHistograms[3].posMax;
+            const negScaleY2 = height / this.listOfHistograms[3].negMax;
+            const positiveScale2 = 'matrix(' + scaleX2 + ',0,0,' + posScaleY2 + ',0,0)';
+            const negativeScale2 = 'matrix(' + scaleX2 + ',0,0,' + negScaleY2 + ',0,0)';
+            this.listOfHistograms[2].scale = [positiveScale, negativeScale];
+            this.listOfHistograms[3].scale = [positiveScale2, negativeScale2];
+        }
     }
     /**
      * switch container class based on width
@@ -524,5 +489,21 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
+    }
+
+    /**
+     * update all scales on window resize
+     */
+    @AutoBind
+    public handleWindowResize() {
+        this.updateZoomedSvg(false);
+    }
+    /**
+     * Invoked on click context menu
+     * @param event mouse event
+     * @return return false for disable browser context menu
+     */
+    public onContextMenu(event: MouseEvent) {
+        this.mediaPlayerElement.eventEmitter.emit('contextmenu', event);
     }
 }

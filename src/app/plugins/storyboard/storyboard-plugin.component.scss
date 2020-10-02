@@ -43,7 +43,6 @@
       margin-left: -50px;
       top: 24px;
 
-
       li {
         list-style: none;
         padding: 5px 20px 5px 20px;
@@ -113,14 +112,12 @@
       flex: 1;
     }
 
-
   }
-
 
   .storyboard {
     background-color: $amalia-plugin-storyboard-bg-color;
     margin: -5px -5px;
-    padding: 5px;
+    padding-left: 5px;
     display: flex;
     flex-wrap: wrap;
     height: inherit;
@@ -129,7 +126,11 @@
     justify-content: start;
     align-items: start;
     align-content: start;
-
+    &::-webkit-scrollbar-thumb {
+      width: 10px !important;
+      background-color: #0086B1;
+      border-radius: 5px;
+    }
     .thumbnail {
       position: relative;
       cursor: pointer;
@@ -138,11 +139,11 @@
       overflow: hidden;
       border: solid 1px $amalia-plugin-storyboard-bg-color;
 
-      &:hover {
+      &:hover,&.active {
         border-color: $amalia-plugin-storyboard-box-color;
         .label {
-         background-color: $amalia-plugin-storyboard-label-hover-color ;
-       }
+          background-color: $amalia-plugin-storyboard-label-hover-color;
+        }
       }
 
       &.small {
@@ -175,8 +176,8 @@
       img {
         width: 100%;
         height: 75%;
-        display:block;
-        overflow:hidden;
+        display: block;
+        overflow: hidden;
       }
 
       .label {
@@ -186,6 +187,121 @@
         font-size: 12px;
         color: black;
         text-align: center;
+      }
+    }
+  }
+  .storyboard-container {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    .horizontal-storyboard {
+      width: max-content;
+      display: flex;
+      flex-direction: row;
+      background : #F2F5F9;
+      border-top : 24px solid #F2F5F9;
+      border-bottom : 24px solid #F2F5F9;
+      .thumbnail {
+        width: 225px;
+        height: 126px;
+        border-radius: 4px;
+        margin-right: 85px;
+        > img {
+          width: 225px;
+          height: 126px;
+          cursor: pointer;
+        }
+      }
+    }
+    .horizontal-interval {
+      width: max-content;
+      height: 40px;
+      background-color: #80C2D8;
+      display: flex;
+      flex-direction: row;
+      .label {
+        text-align: center;
+        position: relative;
+        color: #34495E;
+        font-size: 12px;
+        line-height: 20px;
+        width: 225px;
+        margin-right: 85px;
+        .unity {
+          width: 1px;
+          height: 12px;
+          background-color: #0086B1;
+          margin: 0 auto 0;
+        }
+      }
+    }
+  }
+  //scrollBar style
+  ::-webkit-scrollbar  {
+    height: 10px;
+    bakground-color: #DDD;
+    border: 1px solid #fff;
+  }
+  ::-webkit-scrollbar-thumb {
+    height: 6px;
+    background-color: #0086B1;
+    border-radius: 5px;
+  }
+  .interval-h {
+    font-size: 14px;
+    height: 60px;
+    background: #fff;
+    width: 100%;
+    .selected {
+      font-weight: bold;
+      color: $amalia-plugin-storyboard-box-color;
+      cursor: pointer;
+    }
+    .tc {
+      font-size: 14px;
+    }
+
+    .amalia-svg-down.icon {
+      width: 16px;
+      height: 10px;
+      margin-left: 10px;
+    }
+    .label {
+      position: absolute;
+      margin: 0;
+      line-height: 16px;
+      right: 15px;
+    }
+    > ul {
+      list-style: none;
+      position: absolute;
+      z-index: 100;
+      background-color: white;
+      text-align: right;
+      padding: 0;
+      top: 10px;
+      right: 13px;
+      li {
+        list-style: none;
+        padding: 5px 20px 5px 20px;
+        margin: 0;
+
+        &.text {
+          background-color: #F3F3F3;
+          line-height: 20px;
+          color: #34495E;
+          font-weight: bold;
+          right: 0px;
+        }
+
+        &:hover {
+          background-color: #F2F5F9;
+        }
+
+        &.selected {
+          font-weight: bold;
+          color: #0086B1;
+        }
       }
     }
   }

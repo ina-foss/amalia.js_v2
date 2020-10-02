@@ -22,10 +22,11 @@
         </div>
         <div class="timeline">
             <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn>=0 && loc.tcOut>=0 ">
-                <div class="cue-point" *ngSwitchDefault
+                <div class="cue-point" *ngSwitchDefault [attr.data-color]="loc.color"
                      [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
                      [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
                 <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                     [attr.data-color]="loc.color"
                      [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%','background-color': loc.color ?loc.color:mainBlockColor }"></div>
             </ng-container>
         </div>
@@ -64,8 +65,9 @@
                 <div class="cue-point" *ngSwitchDefault
                      (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
                      [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"
-                     [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
-                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                     [attr.data-tc]="loc.tc" [attr.data-type]="loc.type" (click)="callSeek(loc.tc)"></div>
+                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" [attr.data-type]="loc.type"
+                     (click)="callSeek(loc.tcIn)"
                      (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
                      [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn)+'%' }"></div>
             </ng-container>

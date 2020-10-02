@@ -217,7 +217,6 @@ export class AmaliaComponent implements OnInit {
             this.logger.error('Error to initialize media player element.');
         }
     }
-
     /**
      * update mediaPlayerWidth on window resize
      */
@@ -232,6 +231,7 @@ export class AmaliaComponent implements OnInit {
      * @param event mouse event
      * @return return false for disable browser context menu
      */
+    @AutoBind
     public onContextMenu(event: MouseEvent) {
         this.contextMenuState = true;
         const defaultMouseMargin = 15;
@@ -294,6 +294,7 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
     }
     @AutoBind
     public handlePinnedControlbarChange(event) {
@@ -365,6 +366,7 @@ export class AmaliaComponent implements OnInit {
     private setPreviewThumbnail(tc: number) {
         if (!isNaN(tc)) {
             this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
+            this.previewThumbnailElement.nativeElement.setAttribute('src' , this.previewThumbnailUrl);
         }
     }
 
@@ -375,9 +377,9 @@ export class AmaliaComponent implements OnInit {
     private onInitConfig(state: PlayerState) {
         this.state = state;
         this.inLoading = false;
-        this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay;
+        this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
-        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio;
+        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || '16:8';
         this.ratio = this.aspectRatio.replace(':' , '-');
         this.updatePlayerSizeWithAspectRatio();
     }

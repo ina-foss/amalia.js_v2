@@ -1,0 +1,875 @@
+[
+  {
+    "localisation": [
+      {
+        "sublocalisations": {
+          "localisation": [
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:00:00.000",
+              "tcout": "00:00:17.940",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:00:31.880",
+              "tcout": "00:03:17.920",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:03:19.620",
+              "tcout": "00:03:24.040",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:03:25.600",
+              "tcout": "00:03:31.640",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:03:32.400",
+              "tcout": "00:03:35.740",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:03:36.460",
+              "tcout": "00:03:43.700",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:03:44.140",
+              "tcout": "00:03:53.520",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:03:54.060",
+              "tcout": "00:04:09.900",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:04:11.560",
+              "tcout": "00:09:20.400",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:09:30.340",
+              "tcout": "00:12:50.100",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:12:55.540",
+              "tcout": "00:13:50.300",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:14:51.900",
+              "tcout": "00:16:08.220",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:16:29.760",
+              "tcout": "00:18:31.540",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:18:40.440",
+              "tcout": "00:22:41.600",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:22:54.340",
+              "tcout": "00:25:22.100",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:25:43.520",
+              "tcout": "00:26:33.740",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:26:34.180",
+              "tcout": "00:29:42.120",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:30:13.960",
+              "tcout": "00:30:17.760",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:30:20.260",
+              "tcout": "00:31:26.440",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:31:29.640",
+              "tcout": "00:33:20.420",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:33:25.640",
+              "tcout": "00:37:33.720",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "homme"
+                ],
+                "attribute": [
+                  {
+                    "value": "homme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "homme",
+              "tcin": "00:37:49.640",
+              "tcout": "00:41:21.680",
+              "tclevel": 1
+            }
+          ]
+        },
+        "type": "musique",
+        "tcin": "00:00:00.0000",
+        "tcout": "00:20:40.0680",
+        "tclevel": 0
+      }
+    ],
+    "type": "musique",
+    "algorithm": "inaSpeechSegmenter null",
+    "processor": "null null",
+    "processed": 1599842701,
+    "version": 1,
+    "id": "l-254",
+    "label": "Homme"
+  },
+  {
+    "localisation": [
+      {
+        "sublocalisations": {
+          "localisation": [
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:00:17.960",
+              "tcout": "00:00:31.880",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:09:20.420",
+              "tcout": "00:09:23.500",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:09:27.660",
+              "tcout": "00:09:30.340",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:12:50.120",
+              "tcout": "00:12:55.540",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:16:08.240",
+              "tcout": "00:16:11.580",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:16:26.440",
+              "tcout": "00:16:29.760",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:18:31.560",
+              "tcout": "00:18:37.820",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:22:42.060",
+              "tcout": "00:22:54.340",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:25:23.740",
+              "tcout": "00:25:28.120",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:25:30.300",
+              "tcout": "00:25:35.680",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:25:38.120",
+              "tcout": "00:25:43.520",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:29:57.740",
+              "tcout": "00:30:13.960",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:30:17.780",
+              "tcout": "00:30:20.260",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:31:26.460",
+              "tcout": "00:31:29.640",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:33:20.440",
+              "tcout": "00:33:25.640",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "musique"
+                ],
+                "attribute": [
+                  {
+                    "value": "musique",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "musique",
+              "tcin": "00:37:34.420",
+              "tcout": "00:37:49.640",
+              "tclevel": 1
+            }
+          ]
+        },
+        "type": "musique",
+        "tcin": "00:00:00.0000",
+        "tcout": "00:20:40.0680",
+        "tclevel": 0
+      }
+    ],
+    "type": "musique",
+    "algorithm": "inaSpeechSegmenter null",
+    "processor": "null null",
+    "processed": 1599842701,
+    "version": 1,
+    "label": "Musique",
+    "id": "l-255"
+  },
+  {
+    "localisation": [
+      {
+        "sublocalisations": {
+          "localisation": [
+            {
+              "data": {
+                "text": [
+                  "femme"
+                ],
+                "attribute": [
+                  {
+                    "value": "femme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "text",
+              "tcin": "00:09:23.500",
+              "tcout": "00:09:27.640",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "femme"
+                ],
+                "attribute": [
+                  {
+                    "value": "femme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "text",
+              "tcin": "00:13:50.300",
+              "tcout": "00:14:51.900",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "femme"
+                ],
+                "attribute": [
+                  {
+                    "value": "femme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "text",
+              "tcin": "00:16:11.580",
+              "tcout": "00:16:26.420",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "femme"
+                ],
+                "attribute": [
+                  {
+                    "value": "femme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "text",
+              "tcin": "00:18:37.820",
+              "tcout": "00:18:40.440",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "femme"
+                ],
+                "attribute": [
+                  {
+                    "value": "femme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "text",
+              "tcin": "00:25:28.120",
+              "tcout": "00:25:30.280",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "femme"
+                ],
+                "attribute": [
+                  {
+                    "value": "femme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "text",
+              "tcin": "00:25:35.680",
+              "tcout": "00:25:38.100",
+              "tclevel": 1
+            },
+            {
+              "data": {
+                "text": [
+                  "femme"
+                ],
+                "attribute": [
+                  {
+                    "value": "femme",
+                    "name": "label",
+                    "score": 1.0
+                  }
+                ]
+              },
+              "type": "text",
+              "tcin": "00:29:42.120",
+              "tcout": "00:29:57.720",
+              "tclevel": 1
+            }
+          ]
+        },
+        "type": "text",
+        "tcin": "00:00:00.0000",
+        "tcout": "00:20:40.0680",
+        "tclevel": 0
+      }
+    ],
+    "type": "text",
+    "algorithm": "inaSpeechSegmenter null",
+    "processor": "null null",
+    "processed": 1599842701,
+    "version": 1,
+    "label": "Femme",
+    "id": "l-256"
+  }
+]

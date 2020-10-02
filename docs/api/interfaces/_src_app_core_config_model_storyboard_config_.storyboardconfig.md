@@ -16,6 +16,7 @@
 * [frameIntervals](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-frameintervals)
 * [tcIntervals](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-tcintervals)
 * [tcParam](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-tcparam)
+* [theme](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#theme)
 
 ## Properties
 
@@ -64,3 +65,11 @@ ___
 • **tcParam**? : *string*
 
 Defined in src/app/core/config/model/storyboard-config.ts:4
+
+___
+
+###  theme
+
+• **theme**: *"h" | "v"*
+
+Defined in src/app/core/config/model/storyboard-config.ts:8

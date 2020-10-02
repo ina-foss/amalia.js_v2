@@ -65,8 +65,8 @@
             </div>
         </div>
     </div>
-    <div class="auto-scroll" (click)="toggleAutoScroll()">
-        <svg class="amalia-svg-auto-scroll-size icon" [ngClass]="{'selected':autoScroll && !ignoreNextScroll}">
+    <div class="auto-scroll" (click)="scrollToSelectedSegment()">
+        <svg class="amalia-svg-auto-scroll-size icon">
             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#refresh'"></use>
         </svg>
     </div>

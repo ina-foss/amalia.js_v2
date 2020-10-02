@@ -17,6 +17,12 @@
     },
     {
       "url": "http://localhost:4201/metadata/waveform.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/waveform-flux-0.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/zoomed-waveform.json"
     }
   ],
   "thumbnail": {
@@ -145,13 +151,11 @@
     },
     "HISTOGRAM-PLAYER": {
       "metadataIds": [
-        "waveform-MA00605_01-2048-0",
-        "waveform-MA00605_01-2048-1"
-      ],
-      "data": {
-        "url": "https://ws-media-cpu.ina.fr/waveform/0Tfskzrnucos7X0Oa97MScwj8lob+H3wl8Hw3rhMk/z4zeIL08pNh/Sq8k3DriRYeIZBMhm0YZzPZTBq9GapTKF6UVqjDxD2hWzp7WP0JpmYy4HF2/bDe3I5na7F1K+9eaN9xjY+Ve8uR9s3TbxAGarxmcQeqX27DJ+7saGAYhDB71CLKZSlYEVkGDFUYsfsf4H2qRqPoDZTvQD7HvX1JGym2k3xuAz/zar1Cl3nLsjoGhtBjrjp4hh2tWilHSG4RqmYkxeuohOHppJI6zHOyQvvOoRhqKjhBvFfNd7TeOW/HaNrGYCcqDI14FSI4UklR8HTGsq3Ma6uej73gc5X2fZ5neq8kM9srx8dbrSl/+30sfK86dpIuDfe/lRMSuvyjkdJVdCn1H7KJXi+C2s3iIp+ZIhXI7yNhEv8ozUZzQCWdOlR23h7L3J3L1YUxherR1Zc38H0BJzAlvBqWm0V6Ukj/KHNesn2TL5xiLdQDe1OyaS75HIBGkfaQLrjo/JhII0mnhfGrKEOP22YBGLnIOg+c06ZNKQSM6EnHaVXdjtiJPl1+63nObk+wrqld/scfT+L/Lt+tIgrdlL7ytSNp2oqzklWnPpRKnZ2vtsJK4gBDkFmPho2FpQX0/5KRp4K8KujNN1Rb+5puwEdme0Klw==/sl_iv/VP0jEhDVOBjIhlAQE6sfuA==/sl_hm/",
-        "format": "13000"
-      }
+        "waveform-46fa5221c551c1f96d63f0a357678c10-15000-0",
+        "waveform-MA00605_01-2048-1",
+        "1591607938077",
+        "1591608575408"
+      ]
     }
   }
 }
