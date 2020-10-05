@@ -260,7 +260,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             });
             // Add sort by tcin
             if (this.transcriptions) {
-                _.sortBy(this.transcriptions, ['tcIn']);
+                this.transcriptions = _.sortBy(this.transcriptions, ['tcIn']);
             }
         }
     }
