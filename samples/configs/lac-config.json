@@ -2,7 +2,7 @@
   "debug": true,
   "logLevel": "trace",
   "player": {
-    "src": "http://ws-media-vm.ina.fr:3001/medias/timeline.mp3",
+    "src": "http://localhost:4201/medias/F24_14301445_21032014_id_en.mp4",
     "crossOrigin": "anonymous",
     "autoplay": false
   },
@@ -14,7 +14,7 @@
       "url": "http://localhost:4201/metadata/lac-timeline1.json"
     },
     {
-      "url": "http://localhost:4201/metadata/lac-transcription.json"
+      "url": "http://localhost:4201/metadata/lac-transcription-1.json"
     }
   ],
   "thumbnail": {
