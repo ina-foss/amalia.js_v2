@@ -112,7 +112,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
 
-        this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`, this.pluginConfiguration);
+        this.logger.info(` Metadata loaded timeline ${handleMetadataIds}`, this.pluginConfiguration);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
             handleMetadataIds.forEach((metadataId) => {
