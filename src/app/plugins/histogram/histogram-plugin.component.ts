@@ -302,15 +302,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     @AutoBind
     private handleOnDurationChange() {
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        this.initSliderEvents();
-        const handleMetadataIds = this.pluginConfiguration.metadataIds;
-        const metadataManager = this.mediaPlayerElement.metadataManager;
-        this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds}`);
-        // Check if metadata is initialized
-        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
-            this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
-        }
+        this.handleMetadataLoaded();
     }
     /**
      * Invoked on metadata loaded
