@@ -412,7 +412,7 @@ ___
 
 ▸ **clearSearchList**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:328
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:335
 
 clear seach list onclick
 
@@ -559,7 +559,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:290
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:294
 
 **Parameters:**
 
@@ -575,7 +575,7 @@ ___
 
 ▸ **scrollToSelectedSegment**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:316
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:323
 
 Invocked on click scroll button
 
