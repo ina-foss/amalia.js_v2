@@ -279,29 +279,36 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 if (TextUtils.hasSearchText(node.textContent, searchText)) {
                     // node.classList.add(SEARCH_SELECTOR);
                     this.listOfSearchedNodes.push(node as HTMLElement);
+                    // add active class to first element
+                    this.index = this.searchedWordIndex + 1;
+                    this.listOfSearchedNodes[0].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
+                    const scrollNode: HTMLElement =  this.listOfSearchedNodes[0].parentElement.parentElement;
+                    if (scrollNode) {
+                        const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
+                        this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                    }
                 }
             });
-            // add active class to first element
-            this.index = this.searchedWordIndex + 1;
-            this.listOfSearchedNodes[0].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
-            this.scrollToNode(this.listOfSearchedNodes[0].parentElement);
         }
     }
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
             this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
-            this.searchedWordIndex = Math.max(0, Math.min(
-                (direction === 'down') ? this.searchedWordIndex - 1 : this.searchedWordIndex + 1, this.listOfSearchedNodes.length - 1));
-            if (this.searchedWordIndex === this.listOfSearchedNodes.length - 1 && direction === 'up') {
+            if (direction === 'down') {
+                this.searchedWordIndex = this.searchedWordIndex - 1;
+            } else {
+                this.searchedWordIndex = this.searchedWordIndex + 1;
+            }
+            if (this.searchedWordIndex > this.listOfSearchedNodes.length - 1 && direction === 'up') {
                 this.searchedWordIndex = 0;
-            } else if  (this.searchedWordIndex === 0 && direction === 'down') {
+            } else if (this.searchedWordIndex < 0 && direction === 'down') {
                 this.searchedWordIndex = this.listOfSearchedNodes.length - 1;
             }
+            this.index = this.searchedWordIndex + 1;
             this.ignoreNextScroll = true;
             this.autoScroll = false;
             this.listOfSearchedNodes[this.searchedWordIndex].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
             // this.scrollToNode(this.listOfSearchedNodes[this.searchedWordIndex].parentElement);
-            this.index = this.searchedWordIndex + 1;
             const scrollNode: HTMLElement =  this.listOfSearchedNodes[this.searchedWordIndex].parentElement.parentElement;
             if (scrollNode) {
                 const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
@@ -327,6 +334,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     @AutoBind
     public clearSearchList() {
         this.autoScroll = true;
+        this.index = 0;
         this.listOfSearchedNodes = null;
         this.searching = false;
         this.searchText.nativeElement.value = 'Rechercher';

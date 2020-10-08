@@ -11,8 +11,9 @@ export class TextUtils {
      */
     public static hasSearchText(text: string, searchText: string): boolean {
         if (typeof text === 'string' && typeof searchText === 'string') {
-            const normalizeText = _.deburr(text.normalize('NFC').trim().toLocaleLowerCase());
-            const searchRegexp = new RegExp(searchText.normalize('NFC').toLocaleLowerCase(), 'ig');
+            const normalizeText = text.normalize('NFC').trim().toLocaleLowerCase();
+            const searchRegexp = new RegExp('(^' + searchText.normalize('NFC').toLocaleLowerCase() + '$)', 'i');
+            // const searchRegexp = new RegExp(searchText.normalize('NFC').toLocaleLowerCase(), 'i');
             return normalizeText.search(searchRegexp) !== -1;
         }
         return false;
