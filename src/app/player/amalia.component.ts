@@ -434,6 +434,7 @@ export class AmaliaComponent implements OnInit {
        if (key === ' ') {
            key = 'espace';
        }
+
        if (this.playerHover === true) {
            this.listKeys.push(key);
            if (this.listKeys.length > 1) {
