@@ -476,7 +476,7 @@ ___
 
 ▸ **emitKeyUpEvent**(): *void*
 
-Defined in src/app/player/amalia.component.ts:448
+Defined in src/app/player/amalia.component.ts:449
 
 **Returns:** *void*
 

@@ -175,6 +175,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enableMenuSlider = false;
     /**
+     * list position subtitles
+     */
+    public listOfSubtitles = [ {position : 'Bas', key : 'down'} , {position : 'Haut', key : 'up'} , {position : 'Aucun (original)', key : 'none'} ];
+    /**
      * progressBar element
      */
     @ViewChild('progressBar')
@@ -355,6 +359,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'toggleFullScreen':
                 this.toggleFullScreen();
+                break;
+            case 'aspectRatio':
+                this.changeAspectRatio();
+                break;
+            case 'subtitles':
+                this.updateSubtitlePosition();
                 break;
             default:
                 this.logger.warn('Control not implemented', control);
@@ -720,7 +730,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * update position subtitle onclick
      * @param position subtitle position
      */
-    public updateSubtitlePosition(position: string) {
+    public updateSubtitlePosition(position?: string) {
+        let j;
+        if (typeof(position) === 'undefined') {
+            for (let i = 0; i < this.listOfSubtitles.length ; i++) {
+                if (this.position === this.listOfSubtitles[i].key) {
+                    if (i === this.listOfSubtitles.length - 1) {
+                        j = 0;
+                    } else {
+                        j = i + 1;
+                    }
+                    position = this.listOfSubtitles[j].key;
+                }
+            }
+        }
         this.position = position;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, position);
     }
