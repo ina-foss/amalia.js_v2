@@ -6,9 +6,9 @@ import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {ControlBarConfig} from '../../core/config/model/control-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
+import {ThumbnailService} from '../../service/thumbnail-service';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
-import ArrayBufferView = NodeJS.ArrayBufferView;
 
 @Component({
     selector: 'amalia-control-bar',
@@ -18,7 +18,7 @@ import ArrayBufferView = NodeJS.ArrayBufferView;
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 1;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 10;
     /**
      * Min playback rate
      */
@@ -186,6 +186,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Handle thumbnail
      */
+    private readonly thumbnailService: ThumbnailService;
     public tcThumbnail;
     public enableThumbnail = false;
     public thumbnailHidden = true;
@@ -193,7 +194,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public thumbnailPosition = 0;
     public sliderListOfPlaybackRateStepWidth: Array<number> = [];
     private thumbnailSeekingDebounceTime: Subject<number> = new Subject<number>();
-    private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
+    // private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
     @ViewChild('thumbnail')
     public thumbnailElement: ElementRef<HTMLElement>;
     @ViewChild('thumbnailContainer')
@@ -202,8 +203,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list of shortcuts
      */
     public listOfShortcuts;
-    constructor(playerService: MediaPlayerService) {
+    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
+        this.thumbnailService = thumbnailService;
     }
 
     @AutoBind
@@ -231,9 +233,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.thumbnailSeekingDebounceTime
             .pipe(debounceTime(_debounceTime))
             .subscribe((value) => this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value));
-        this.thumbnailPreviewDebounceTime
+        /*this.thumbnailPreviewDebounceTime
             .pipe(debounceTime(_debounceTime))
-            .subscribe((e) => this.updateThumbnail(e));
+            .subscribe((e) => this.updateThumbnail(e));*/
         this.getDefaultAspectRatio();
 
     }
@@ -529,7 +531,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
-            this.thumbnailPreviewDebounceTime.next(event);
+            this.updateThumbnail(event);
+            // this.thumbnailPreviewDebounceTime.next(event);
         }
     }
 
@@ -539,7 +542,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public handleProgressBarMouseDown(value) {
         this.inSliding = true;
-        this.thumbnailSeekingDebounceTime.next(value * this.duration / 100);
+        // this.thumbnailSeekingDebounceTime.next(value * this.duration / 100);
     }
 
     /**
@@ -574,11 +577,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Handle thumbnail pos
      * @param event mouse event
      */
-    private updateThumbnail(event: MouseEvent) {
+    public updateThumbnail(event: MouseEvent) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
+        const url = this.mediaPlayerElement.getThumbnailUrl(tc);
         if (isFinite(tc)) {
-            this.thumbnailElement.nativeElement.setAttribute('src' , this.mediaPlayerElement.getThumbnailUrl(tc) );
+            const blob = this.thumbnailService.getThumbnail(url, tc);
+            if (typeof (blob) !== 'undefined') {
+                this.thumbnailElement.nativeElement.setAttribute('src', blob);
+            }
+
         }
     }
 
@@ -834,5 +842,4 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public unmute() {
         return this.mediaPlayerElement.getMediaPlayer().unmute();
     }
-
 }

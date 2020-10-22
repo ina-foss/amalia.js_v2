@@ -12,6 +12,7 @@ import {SubtitlesPluginComponent} from './plugins/subtitles/subtitles-plugin.com
 import {StoryboardPluginComponent} from './plugins/storyboard/storyboard-plugin.component';
 import {HistogramPluginComponent} from './plugins/histogram/histogram-plugin.component';
 import {MediaPlayerService} from './service/media-player-service';
+import {ThumbnailService} from './service/thumbnail-service';
 import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.component';
 import {SortablejsModule} from 'ngx-sortablejs';
@@ -41,7 +42,8 @@ import {TooltipModule} from 'ng2-tooltip-directive';
         TimelinePluginComponent
     ],
     providers: [
-        MediaPlayerService
+        MediaPlayerService,
+        ThumbnailService
     ],
     entryComponents: [AmaliaComponent],
     bootstrap: [],
