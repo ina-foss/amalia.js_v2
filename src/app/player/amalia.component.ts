@@ -17,6 +17,7 @@ import {AutoBind} from '../core/decorator/auto-bind.decorator';
 import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 import {BaseUtils} from '../core/utils/base-utils';
 import {MediaPlayerService} from '../service/media-player-service';
+import {ThumbnailService} from '../service/thumbnail-service';
 
 @Component({
     selector: 'amalia-player',
@@ -113,7 +114,10 @@ export class AmaliaComponent implements OnInit {
      */
     @Input()
     public configLoader: Loader<ConfigData>;
-
+    /**
+     * Thumbnail service
+     */
+    private readonly thumbnailService: ThumbnailService;
     /**
      * Metadata converter, converter metadata parameter
      */
@@ -195,9 +199,10 @@ export class AmaliaComponent implements OnInit {
      */
     public listKeys = [];
 
-    constructor(playerService: MediaPlayerService, httpClient: HttpClient) {
+    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService) {
         this.httpClient = httpClient;
         this.playerService = playerService;
+        this.thumbnailService = thumbnailService;
     }
 
     /**
@@ -375,7 +380,8 @@ export class AmaliaComponent implements OnInit {
     private setPreviewThumbnail(tc: number) {
         if (!isNaN(tc)) {
             this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
-            this.previewThumbnailElement.nativeElement.setAttribute('src' , this.previewThumbnailUrl);
+            const blob = this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc);
+            this.previewThumbnailElement.nativeElement.setAttribute('src' , blob);
         }
     }
 

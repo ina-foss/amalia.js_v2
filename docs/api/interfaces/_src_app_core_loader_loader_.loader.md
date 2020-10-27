@@ -17,6 +17,7 @@ Loader interface
 * [DefaultConfigLoader](../classes/_src_app_core_config_loader_default_config_loader_.defaultconfigloader.md)
 * [DefaultMetadataLoader](../classes/_src_app_core_metadata_loader_default_metadata_loader_.defaultmetadataloader.md)
 * [HttpConfigLoader](../classes/_src_app_core_config_loader_http_config_loader_.httpconfigloader.md)
+* [ThumbnailLoader](../classes/_src_app_core_loader_thumbnail_loader_.thumbnailloader.md)
 
 ## Index
 

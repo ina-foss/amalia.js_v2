@@ -18,7 +18,7 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 10;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 200;
     /**
      * Min playback rate
      */
@@ -190,11 +190,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public tcThumbnail;
     public enableThumbnail = false;
     public thumbnailHidden = true;
-    public thumbnailUrl: string;
     public thumbnailPosition = 0;
     public sliderListOfPlaybackRateStepWidth: Array<number> = [];
     private thumbnailSeekingDebounceTime: Subject<number> = new Subject<number>();
-    // private thumbnailPreviewDebounceTime: Subject<MouseEvent> = new Subject<MouseEvent>();
     @ViewChild('thumbnail')
     public thumbnailElement: ElementRef<HTMLElement>;
     @ViewChild('thumbnailContainer')
@@ -233,9 +231,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.thumbnailSeekingDebounceTime
             .pipe(debounceTime(_debounceTime))
             .subscribe((value) => this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value));
-        /*this.thumbnailPreviewDebounceTime
-            .pipe(debounceTime(_debounceTime))
-            .subscribe((e) => this.updateThumbnail(e));*/
         this.getDefaultAspectRatio();
 
     }
@@ -532,7 +527,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
             this.updateThumbnail(event);
-            // this.thumbnailPreviewDebounceTime.next(event);
         }
     }
 
@@ -542,7 +536,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public handleProgressBarMouseDown(value) {
         this.inSliding = true;
-        // this.thumbnailSeekingDebounceTime.next(value * this.duration / 100);
     }
 
     /**
@@ -599,7 +592,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         for (let i = 0; i < maxStep; i++) {
             const startStep = this.sliderListOfPlaybackRateStep[i];
             const endStep = this.sliderListOfPlaybackRateStep[(i === maxStep - 1) ? i - 1 : i + 1];
-            // maxStepAbs = Math.max(Math.abs(this.sliderListOfPlaybackRateStep[i]), maxStepAbs);
             if (i === maxStep - 1) {
                 this.sliderListOfPlaybackRateStepWidth[i] = 1;
             } else {
