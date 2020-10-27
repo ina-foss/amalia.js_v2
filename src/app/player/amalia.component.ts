@@ -1,4 +1,14 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
 import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
 import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
@@ -18,6 +28,7 @@ import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 import {BaseUtils} from '../core/utils/base-utils';
 import {MediaPlayerService} from '../service/media-player-service';
 import {ThumbnailService} from '../service/thumbnail-service';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'amalia-player',
@@ -26,7 +37,7 @@ import {ThumbnailService} from '../service/thumbnail-service';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AmaliaComponent implements OnInit {
-
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 250;
     /**
      * version of player
      */
@@ -198,13 +209,20 @@ export class AmaliaComponent implements OnInit {
      * List of pressed keys
      */
     public listKeys = [];
+    /**
+     * thumbnail blob preview on seeking
+     */
+    public thumbnailBlobVideo: string;
 
+
+    public debounceFunction;
     constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService) {
         this.httpClient = httpClient;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
-    }
+        this.debounceFunction = _.debounce(this.setPreviewThumbnail, 150, {maxWait: AmaliaComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
 
+    }
     /**
      * Invoked immediately after the  first time the component has initialised
      */
@@ -231,6 +249,7 @@ export class AmaliaComponent implements OnInit {
             this.logger.error('Error to initialize media player element.');
         }
     }
+
     /**
      * update mediaPlayerWidth on window resize
      */
@@ -261,7 +280,7 @@ export class AmaliaComponent implements OnInit {
     private updatePlayerSizeWithAspectRatio() {
         const htmlElement = this.mediaPlayer.nativeElement;
         if (this.aspectRatio && this.aspectRatio !== '') {
-            this.ratio = this.aspectRatio.replace(':' , '-');
+            this.ratio = this.aspectRatio.replace(':', '-');
             const maxWidth = htmlElement.parentElement.offsetWidth;
             const maxHeight = this.mediaPlayer.nativeElement.parentElement.offsetHeight;
             const aspectRatio = this.aspectRatio ? parseFloat(this.aspectRatio.split(':')[0]) / parseFloat(this.aspectRatio.split(':')[1]) : 16 / 9;
@@ -310,14 +329,16 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
     }
+
     @AutoBind
     public handlePinnedControlbarChange(event) {
         this.pinned = event;
     }
+
     @AutoBind
     private handleSeeking(tc: number) {
         if (this.enableThumbnail) {
-            this.setPreviewThumbnail(tc);
+            this.debounceFunction(tc);
             this.enablePreviewThumbnail = true;
         }
     }
@@ -380,8 +401,13 @@ export class AmaliaComponent implements OnInit {
     private setPreviewThumbnail(tc: number) {
         if (!isNaN(tc)) {
             this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
-            const blob = this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc);
-            this.previewThumbnailElement.nativeElement.setAttribute('src' , blob);
+            console.log(this.previewThumbnailUrl);
+            this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
+                if (typeof (blob) !== 'undefined') {
+                    console.log(this.thumbnailBlobVideo);
+                    this.thumbnailBlobVideo = blob;
+                }
+            });
         }
     }
 
@@ -395,7 +421,7 @@ export class AmaliaComponent implements OnInit {
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
         this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || '16:8';
-        this.ratio = this.aspectRatio.replace(':' , '-');
+        this.ratio = this.aspectRatio.replace(':', '-');
         this.updatePlayerSizeWithAspectRatio();
     }
 
@@ -436,23 +462,24 @@ export class AmaliaComponent implements OnInit {
      */
     @AutoBind
     public emitKeyDownEvent($event) {
-       let key = $event.key;
-       if (key === ' ') {
-           key = 'espace';
-       }
+        let key = $event.key;
+        if (key === ' ') {
+            key = 'espace';
+        }
 
-       if (this.playerHover === true) {
-           this.listKeys.push(key);
-           if (this.listKeys.length > 1) {
-               if (this.listKeys[0] !== key) {
-                   key = this.listKeys[0]  + ' + ' + key;
-               }
-           }
-           this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, key);
-       }
+        if (this.playerHover === true) {
+            this.listKeys.push(key);
+            if (this.listKeys.length > 1) {
+                if (this.listKeys[0] !== key) {
+                    key = this.listKeys[0] + ' + ' + key;
+                }
+            }
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, key);
+        }
     }
+
     @AutoBind
     public emitKeyUpEvent() {
-       this.listKeys = [];
+        this.listKeys = [];
     }
 }

@@ -1,5 +1,14 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    Output,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
@@ -7,8 +16,6 @@ import {ControlBarConfig} from '../../core/config/model/control-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ThumbnailService} from '../../service/thumbnail-service';
-import {Subject} from 'rxjs';
-import {debounceTime} from 'rxjs/operators';
 
 @Component({
     selector: 'amalia-control-bar',
@@ -18,7 +25,7 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 200;
+    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 250;
     /**
      * Min playback rate
      */
@@ -177,7 +184,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list position subtitles
      */
-    public listOfSubtitles = [ {position : 'Bas', key : 'down'} , {position : 'Haut', key : 'up'} , {position : 'Aucun (original)', key : 'none'} ];
+    public listOfSubtitles = [{position: 'Bas', key: 'down'}, {
+        position: 'Haut',
+        key: 'up'
+    }, {position: 'Aucun (original)', key: 'none'}];
     /**
      * progressBar element
      */
@@ -187,12 +197,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Handle thumbnail
      */
     private readonly thumbnailService: ThumbnailService;
-    public tcThumbnail;
+    public tcThumbnail = 0;
     public enableThumbnail = false;
     public thumbnailHidden = true;
     public thumbnailPosition = 0;
     public sliderListOfPlaybackRateStepWidth: Array<number> = [];
-    private thumbnailSeekingDebounceTime: Subject<number> = new Subject<number>();
+    public thumbnailBlob: string;
     @ViewChild('thumbnail')
     public thumbnailElement: ElementRef<HTMLElement>;
     @ViewChild('thumbnailContainer')
@@ -201,9 +211,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list of shortcuts
      */
     public listOfShortcuts;
+    public debounceFunction;
+
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
         this.thumbnailService = thumbnailService;
+        this.debounceFunction = _.debounce(this.updateThumbnail, 150, {maxWaitKey: ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
     }
 
     @AutoBind
@@ -214,10 +227,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.buildSliderSteps();
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(100);
+        // init shortcuts
         this.listOfShortcuts = this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
+        // Init Events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
@@ -226,15 +241,28 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
-        // Handle to seek events with debounceTime
-        const _debounceTime = this.mediaPlayerElement.getConfiguration().thumbnail?.debounceTime || ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME;
-        this.thumbnailSeekingDebounceTime
-            .pipe(debounceTime(_debounceTime))
-            .subscribe((value) => this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value));
+        // Set default aspect ratio
         this.getDefaultAspectRatio();
-
     }
-
+    /**
+     * Return plugin configuration
+     */
+    getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
+        const listOfControls = new Array<ControlBarConfig>();
+        listOfControls.push({label: 'Barre de progression', control: 'progressBar', priority: 1});
+        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1});
+        listOfControls.push({
+            label: 'Fullscreen',
+            control: 'toggleFullScreen',
+            icon: 'fullscreen',
+            zone: 3,
+            priority: 1
+        });
+        return {
+            name: ControlBarPluginComponent.PLUGIN_NAME,
+            data: listOfControls
+        };
+    }
     /**
      * init array of shortcuts
      */
@@ -250,36 +278,23 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         return listOfShortcuts;
     }
-
     /**
-     *
+     * Apply shortcut if exists on keydown
      */
     @AutoBind
     public handleShortcuts(event) {
         this.applyShortcut(event);
     }
+    /**
+     * If key is declared in config apply control
+     */
     public applyShortcut(key) {
         for (const shortcut of this.listOfShortcuts) {
-             if (key === shortcut.key) {
-                 this.controlClicked(shortcut.control);
+            if (key === shortcut.key) {
+                this.controlClicked(shortcut.control);
             }
         }
-
     }
-    /**
-     * Return plugin configuration
-     */
-    getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
-        const listOfControls = new Array<ControlBarConfig>();
-        listOfControls.push({label: 'Barre de progression', control: 'progressBar', priority: 1});
-        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1});
-        listOfControls.push({label: 'Fullscreen', control: 'toggleFullScreen', icon: 'fullscreen', zone: 3, priority: 1});
-        return {
-            name: ControlBarPluginComponent.PLUGIN_NAME,
-            data: listOfControls
-        };
-    }
-
     /**
      * Invoked player with specified control function name
      * @param control control name
@@ -368,7 +383,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
         }
     }
-
     /**
      * Change volume
      * @param value volume percentage
@@ -379,7 +393,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
         this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
     }
-
     /**
      * Return true if the component is in ths configuration without zone
      * @param componentName compoent name
@@ -388,7 +401,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const control = _.find(this.pluginConfiguration.data, {control: componentName});
         return (control);
     }
-
     /**
      * Invoked on mouse move
      * @param value change value
@@ -399,7 +411,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.currentTime = value * this.duration / 100;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
     }
-
     /**
      * switch container class based on width
      */
@@ -417,12 +428,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             controlsP2 = [];
         }
         if (this.displayState === 'm') {
-            this.controls =  controlsP3;
+            this.controls = controlsP3;
         } else if (this.displayState === 'sm') {
-            this.controls =  controlsP3.concat(controlsP2);
+            this.controls = controlsP3.concat(controlsP2);
         }
     }
-
     /**
      * Invoked for change aspect ratio
      */
@@ -444,8 +454,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
     }
-
-
     /**
      * Change volume state
      */
@@ -458,7 +466,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.volumeRight = v;
         }
     }
-
     /**
      * Return list controls by zone id
      * @param zone zone id
@@ -469,7 +476,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         return null;
     }
-
     /**
      * return list controls by priority
      * @param priority : number
@@ -480,7 +486,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         return null;
     }
-
     /**
      * Update displayState on windowResize
      */
@@ -498,7 +503,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public progressBarMouseEnter(event: MouseEvent) {
         if (this.enableThumbnail && !this.inSliding) {
             this.thumbnailHidden = false;
-            this.updateThumbnail(event);
         }
     }
 
@@ -509,10 +513,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public progressBarMouseLeave(event: MouseEvent) {
         if (this.enableThumbnail && !this.inSliding) {
             this.thumbnailHidden = true;
-            this.updateThumbnail(event);
         }
     }
-
     /**
      * Handle mouse move on progress bar
      * @param event mouse move
@@ -526,18 +528,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
-            this.updateThumbnail(event);
+            this.debounceFunction(event);
         }
     }
-
     /**
      * Progress bar on mouse down
      * @param value mouse event
      */
     public handleProgressBarMouseDown(value) {
         this.inSliding = true;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
     }
-
     /**
      * Progress bar on mouse up
      * @param value mouse event
@@ -547,42 +548,37 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.moveSliderCursor(value);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
     }
-
     /**
      * Progress bar on mouse move
      * @param value mouse event
      */
     public handleProgressBarMouseMove(value) {
         if (this.inSliding) {
-            this.thumbnailSeekingDebounceTime.next(value * this.duration / 100);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
         }
     }
-
-
     /**
      * Handle callback
      */
     public handleCallback(control: ControlBarConfig) {
         this.callback.emit(control);
     }
-
     /**
      * Handle thumbnail pos
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-        const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
+        const tc = parseFloat((event.clientX * this.duration / containerWidth).toFixed(2));
         const url = this.mediaPlayerElement.getThumbnailUrl(tc);
         if (isFinite(tc)) {
-            const blob = this.thumbnailService.getThumbnail(url, tc);
-            if (typeof (blob) !== 'undefined') {
-                this.thumbnailElement.nativeElement.setAttribute('src', blob);
-            }
-
+            this.thumbnailService.getThumbnail(url, tc).then((blob) => {
+                if (typeof (blob) !== 'undefined') {
+                    this.thumbnailBlob = blob;
+                }
+            });
         }
     }
-
     /**
      * In charge to build step width size
      */
@@ -603,42 +599,37 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.sliderListOfPlaybackRateStepWidth[i] = (this.sliderListOfPlaybackRateStepWidth[i] * 100 / sumOfGap);
         }
     }
-
     /**
      * Invoked for change playback rate
      */
     private prevPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
     }
-
     /**
      * Invoked for change playback rate
      */
     private nextPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
     }
-
     /**
      * Invoked for change slow playback rate
      */
     private prevSlowPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardSlowPlaybackRateStep));
     }
-
     /**
      * Invoked for change slow playback rate
      */
     private nextSlowPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardSlowPlaybackRateStep));
     }
-
     /**
      * Return playback step value
      * @param playbackRateStep list of steps
      * @return return playback step
      */
     private getPlaybackStepValue(playbackRateStep: Array<number>): number {
-        let playbackRate = 1;
+        let playbackRate;
         let indexOfCurrentPlaybackRate = playbackRateStep.indexOf(this.currentPlaybackRate);
         indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
         if (indexOfCurrentPlaybackRate > playbackRateStep.length - 1) {
@@ -672,6 +663,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.time = this.duration - this.currentTime;
         }
     }
+
     /**
      * Invoked on duration change
      */
@@ -700,7 +692,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handleAspectRatioChange(event) {
         this.aspectRatio = event;
     }
-
     /**
      * Invoked on volume button hover
      */
@@ -733,7 +724,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public updateSubtitlePosition(position?: string) {
         let j;
         if (typeof(position) === 'undefined') {
-            for (let i = 0; i < this.listOfSubtitles.length ; i++) {
+            for (let i = 0; i < this.listOfSubtitles.length; i++) {
                 if (this.position === this.listOfSubtitles[i].key) {
                     if (i === this.listOfSubtitles.length - 1) {
                         j = 0;
@@ -804,13 +795,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
     /**
-     * Handle on component destroy
-     */
-    ngOnDestroy() {
-    }
-
-    /**
-     * switch timecode display onclick
+     * switch timeCode display onclick
      */
     @AutoBind
     public switchDisplayCurrentTime() {
@@ -822,16 +807,23 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.time = this.duration - this.currentTime;
         }
     }
+
     /**
      * Mute sound
      */
     public mute() {
         return this.mediaPlayerElement.getMediaPlayer().mute();
     }
+
     /**
      * unmute sound
      */
     public unmute() {
         return this.mediaPlayerElement.getMediaPlayer().unmute();
+    }
+    /**
+     * Handle on component destroy
+     */
+    ngOnDestroy() {
     }
 }

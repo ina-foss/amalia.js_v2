@@ -1,47 +1,48 @@
 import {ThumbnailLoader} from '../core/loader/thumbnail-loader';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {_} from 'lodash';
+
 /**
  * Service contain all instance of players
  */
 @Injectable()
 export class ThumbnailService {
-    private httpClient: HttpClient;
+    public static key = 'blob';
+    private readonly httpClient: HttpClient;
     private loader: ThumbnailLoader;
-    public listThumbnails: Array<object>;
-    public image;
+    public listThumbnails: Array<{ 'url': string, 'blob': string }> = [];
 
     constructor(httpClient: HttpClient) {
         this.httpClient = httpClient;
         this.loader = new ThumbnailLoader(this.httpClient);
-        this.listThumbnails = new Array<Array<{'url': string, 'blob': string}>>();
     }
-    getThumbnail(url, tc) {
+    /**
+     * If tc exist in listThumbnails return blob else call api to get blob
+     */
+    getThumbnail(url, tc): Promise<string> {
         if (typeof (this.listThumbnails[tc]) === 'undefined') {
-            this.getImage(url, tc);
-            } else {
-                const key = 'blob';
-                this.image = this.listThumbnails[tc][key];
-            }
-        return(this.image);
-
+            return this.loadThumbnail(url, tc);
+        } else {
+            return new Promise((resolve) => {
+                resolve(this.listThumbnails[tc][ThumbnailService.key]);
+            });
+        }
     }
-    async loadThumbnail(url, tc) {
-        return await new Promise((resolve, reject) => {
+    /**
+     * Call loader to get blob
+     */
+    loadThumbnail(url, tc): Promise<string> {
+        return new Promise((resolve, reject) => {
             this.loader
                 .load(url)
                 .then(blob => {
                     this.listThumbnails[tc] = {url, blob};
-                    resolve(blob);
+                    resolve(blob.toString());
                 })
                 .catch(error => {
                     reject(error);
                 });
-        });
-    }
-    public async getImage(url, tc) {
-        this.loadThumbnail(url, tc).then(blob => {
-            this.image = blob;
         });
     }
 }
