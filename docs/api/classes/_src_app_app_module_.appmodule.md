@@ -26,7 +26,7 @@
 
 \+ **new AppModule**(`injector`: Injector): *[AppModule](_src_app_app_module_.appmodule.md)*
 
-Defined in src/app/app.module.ts:53
+Defined in src/app/app.module.ts:55
 
 **Parameters:**
 
@@ -42,7 +42,7 @@ Name | Type |
 
 • **injector**: *Injector*
 
-Defined in src/app/app.module.ts:53
+Defined in src/app/app.module.ts:55
 
 ## Methods
 
@@ -50,6 +50,6 @@ Defined in src/app/app.module.ts:53
 
 ▸ **ngDoBootstrap**(): *void*
 
-Defined in src/app/app.module.ts:60
+Defined in src/app/app.module.ts:62
 
 **Returns:** *void*

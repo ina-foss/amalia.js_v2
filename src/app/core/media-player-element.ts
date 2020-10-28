@@ -212,7 +212,6 @@ export class MediaPlayerElement {
         let displayState = 'l';
         const lWidth = 1020;
         const sWidth = 350;
-        const smWidth = 640;
         const mWidth = 820;
         if (this.width < sWidth) {
             displayState = 's';
