@@ -22,6 +22,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public static KARAOKE_TC_DELTA = 0.250;
     public static SELECTOR_SEGMENT = 'segment';
     public static SELECTOR_WORD = 'w';
+    public static SEARCH_SELECTOR = 'selected-text';
     public static SELECTOR_SELECTED = 'selected';
     public static SELECTOR_PROGRESS_BAR = '.progress-bar';
     public tcDisplayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's';
@@ -31,7 +32,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public ignoreNextScroll = false;
     @ViewChild('transcriptionElement', {static: false})
     public transcriptionElement: ElementRef<HTMLElement>;
+    @ViewChild('searchText')
+    public searchText: ElementRef;
     public displayProgressBar = false;
+    public searching = false;
+    public index = 0;
     /**
      * Return  current time
      */
@@ -268,27 +273,48 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public searchWord(searchText: string) {
         this.listOfSearchedNodes = new Array<HTMLElement>();
-        const SEARCH_SELECTOR = 'search-text';
         if (searchText !== '' && searchText !== 'Rechercher') {
             Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
-                node.classList.remove(SEARCH_SELECTOR);
+                node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
                 if (TextUtils.hasSearchText(node.textContent, searchText)) {
-                    node.classList.add(SEARCH_SELECTOR);
+                    // node.classList.add(SEARCH_SELECTOR);
                     this.listOfSearchedNodes.push(node as HTMLElement);
+                    // add active class to first element
+                    this.index = this.searchedWordIndex + 1;
+                    this.listOfSearchedNodes[0].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
+                    const scrollNode: HTMLElement =  this.listOfSearchedNodes[0].parentElement.parentElement;
+                    if (scrollNode) {
+                        const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
+                        this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                    }
                 }
-
             });
         }
     }
 
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
-            this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            this.searchedWordIndex = Math.max(0, Math.min(
-                (direction === 'up') ? this.searchedWordIndex - 1 : this.searchedWordIndex + 1, this.listOfSearchedNodes.length - 1));
+            this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
+            if (direction === 'down') {
+                this.searchedWordIndex = this.searchedWordIndex - 1;
+            } else {
+                this.searchedWordIndex = this.searchedWordIndex + 1;
+            }
+            if (this.searchedWordIndex > this.listOfSearchedNodes.length - 1 && direction === 'up') {
+                this.searchedWordIndex = 0;
+            } else if (this.searchedWordIndex < 0 && direction === 'down') {
+                this.searchedWordIndex = this.listOfSearchedNodes.length - 1;
+            }
+            this.index = this.searchedWordIndex + 1;
             this.ignoreNextScroll = true;
-            this.listOfSearchedNodes[this.searchedWordIndex].classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            this.scrollToNode(this.listOfSearchedNodes[this.searchedWordIndex].parentElement);
+            this.autoScroll = false;
+            this.listOfSearchedNodes[this.searchedWordIndex].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
+            // this.scrollToNode(this.listOfSearchedNodes[this.searchedWordIndex].parentElement);
+            const scrollNode: HTMLElement =  this.listOfSearchedNodes[this.searchedWordIndex].parentElement.parentElement;
+            if (scrollNode) {
+                const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
+                this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+            }
         }
     }
 
@@ -299,9 +325,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
-            const scrollPos = scrollNode.offsetTop
-                - this.transcriptionElement.nativeElement.offsetTop;
+            const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             this.transcriptionElement.nativeElement.scrollTop = scrollPos;
         }
+    }
+    /**
+     * clear seach list onclick
+     */
+    @AutoBind
+    public clearSearchList() {
+        this.autoScroll = true;
+        this.index = 0;
+        this.listOfSearchedNodes = null;
+        this.searching = false;
+        this.searchText.nativeElement.value = 'Rechercher';
     }
 }
