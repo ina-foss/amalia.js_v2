@@ -302,7 +302,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     @AutoBind
     private handleOnDurationChange() {
-        this.handleMetadataLoaded();
+        if (this.mediaPlayerElement.isMetadataLoaded) {
+            this.handleMetadataLoaded();
+        }
     }
     /**
      * Invoked on metadata loaded

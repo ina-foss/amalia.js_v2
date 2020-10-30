@@ -181,34 +181,21 @@
                 <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                      *ngSwitchCase="'subtitles'" class="control subtitle" title="{{c.label}}"
                      [ngStyle]="{'order':c.order ? c.order:'0'}"
-                     (mouseenter)="enableListPositionsSubtitle=true;enableVolumeSlider=false;enableListRatio=false">
+                     (mouseenter)="enableListPositionsSubtitle=true;enableVolumeSlider=false;enableListRatio=false"
+                        (click)="updateSubtitlePosition()">
                     <svg class="amalia-svg-subtitle-size icon">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"></use>
                     </svg>
                     <ul class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}"
                         (mouseleave)="enableListPositionsSubtitle=false">
                         <li class="header-list">{{c.label}}</li>
-                        <li class="position" [ngClass]="{'selected': position =='down'}"
-                            (click)="updateSubtitlePosition('down')">
+                        <li *ngFor="let pos of listOfSubtitles" class="position"
+                        [ngClass]="{'selected': position == pos.key}"
+                        (click)="updateSubtitlePosition(pos.key)">
                             <svg class="amalia-svg-checked-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                             </svg>
-                            Bas
-                        </li>
-                        <li class="position" [ngClass]="{'selected': position =='up'}"
-                            (click)="updateSubtitlePosition('up')">
-                            <svg class="amalia-svg-checked-size icon">
-                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
-                            </svg>
-                            Haut
-                        </li>
-                        <li class="position" [ngClass]="{'selected': position =='none'}"
-                            (click)="updateSubtitlePosition('none')">
-                            <svg class="amalia-svg-checked-size icon">
-                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
-                            </svg>
-                            Aucun (original)
-                        </li>
+                            {{pos.position}}</li>
                     </ul>
                 </div>
                 <!--Menu Button-->

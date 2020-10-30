@@ -85,6 +85,10 @@ export class AmaliaComponent implements OnInit {
      * Enable thumbnail
      */
     private enableThumbnail: boolean;
+    /**
+     * true when the mouse in over the player
+     */
+    public playerHover = false;
 
     private _config: any;
 
@@ -185,6 +189,11 @@ export class AmaliaComponent implements OnInit {
      * Amalia player main manager
      */
     private mediaPlayerElement: MediaPlayerElement;
+
+    /**
+     * List of pressed keys
+     */
+    public listKeys = [];
 
     constructor(playerService: MediaPlayerService, httpClient: HttpClient) {
         this.httpClient = httpClient;
@@ -414,5 +423,30 @@ export class AmaliaComponent implements OnInit {
         const element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
         const parent = element.offsetParent as HTMLElement;
         this.mediaPlayerElement.toggleFullscreen(parent);
+    }
+
+    /**
+     * invoked on mouseover
+     */
+    @AutoBind
+    public emitKeyDownEvent($event) {
+       let key = $event.key;
+       if (key === ' ') {
+           key = 'espace';
+       }
+
+       if (this.playerHover === true) {
+           this.listKeys.push(key);
+           if (this.listKeys.length > 1) {
+               if (this.listKeys[0] !== key) {
+                   key = this.listKeys[0]  + ' + ' + key;
+               }
+           }
+           this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, key);
+       }
+    }
+    @AutoBind
+    public emitKeyUpEvent() {
+       this.listKeys = [];
     }
 }

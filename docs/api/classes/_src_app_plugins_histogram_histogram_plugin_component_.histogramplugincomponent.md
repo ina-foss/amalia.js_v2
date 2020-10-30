@@ -518,7 +518,7 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:492
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:486
 
 switch container class based on width
 
@@ -546,7 +546,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:319
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:313
 
 Invoked on metadata loaded
 
@@ -582,7 +582,7 @@ ___
 
 ▸ **handleWindowResize**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:500
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:494
 
 update all scales on window resize
 
@@ -606,7 +606,7 @@ ___
 
 ▸ **initSliderEvents**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:365
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:359
 
 slider events
 
@@ -642,7 +642,7 @@ ___
 
 ▸ **onContextMenu**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:508
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:502
 
 Invoked on click context menu
 
@@ -662,7 +662,7 @@ ___
 
 ▸ **startDragging**(`event`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:333
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:327
 
 Called on start dragging element
 
@@ -680,7 +680,7 @@ ___
 
 ▸ **stopDragging**(`event`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:346
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:340
 
 Called on stop dragging element
 
@@ -736,7 +736,7 @@ ___
 
 ▸ **updateZoomedSvg**(`onlyResized`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:443
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:437
 
 update scale of zoomed svg on zoom resize
 

@@ -175,6 +175,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enableMenuSlider = false;
     /**
+     * list position subtitles
+     */
+    public listOfSubtitles = [ {position : 'Bas', key : 'down'} , {position : 'Haut', key : 'up'} , {position : 'Aucun (original)', key : 'none'} ];
+    /**
      * progressBar element
      */
     @ViewChild('progressBar')
@@ -194,7 +198,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public thumbnailElement: ElementRef<HTMLElement>;
     @ViewChild('thumbnailContainer')
     public thumbnailContainer: ElementRef<HTMLElement>;
-
+    /**
+     * list of shortcuts
+     */
+    public listOfShortcuts;
     constructor(playerService: MediaPlayerService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
     }
@@ -207,6 +214,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.buildSliderSteps();
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(100);
+        this.listOfShortcuts = this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
@@ -217,6 +225,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
         // Handle to seek events with debounceTime
         const _debounceTime = this.mediaPlayerElement.getConfiguration().thumbnail?.debounceTime || ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME;
         this.thumbnailSeekingDebounceTime
@@ -226,8 +235,40 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             .pipe(debounceTime(_debounceTime))
             .subscribe((e) => this.updateThumbnail(e));
         this.getDefaultAspectRatio();
+
     }
 
+    /**
+     * init array of shortcuts
+     */
+    public initShortcuts(data) {
+        const listOfShortcuts = [];
+        for (const i in data) {
+            if (typeof data[i] === 'object') {
+                const control = data[i];
+                if (typeof control.key !== 'undefined' && typeof control.control !== 'undefined') {
+                    listOfShortcuts.push({key: control.key, control: control.control});
+                }
+            }
+        }
+        return listOfShortcuts;
+    }
+
+    /**
+     *
+     */
+    @AutoBind
+    public handleShortcuts(event) {
+        this.applyShortcut(event);
+    }
+    public applyShortcut(key) {
+        for (const shortcut of this.listOfShortcuts) {
+             if (key === shortcut.key) {
+                 this.controlClicked(shortcut.control);
+            }
+        }
+
+    }
     /**
      * Return plugin configuration
      */
@@ -318,6 +359,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'toggleFullScreen':
                 this.toggleFullScreen();
+                break;
+            case 'aspectRatio':
+                this.changeAspectRatio();
+                break;
+            case 'subtitles':
+                this.updateSubtitlePosition();
                 break;
             default:
                 this.logger.warn('Control not implemented', control);
@@ -683,7 +730,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * update position subtitle onclick
      * @param position subtitle position
      */
-    public updateSubtitlePosition(position: string) {
+    public updateSubtitlePosition(position?: string) {
+        let j;
+        if (typeof(position) === 'undefined') {
+            for (let i = 0; i < this.listOfSubtitles.length ; i++) {
+                if (this.position === this.listOfSubtitles[i].key) {
+                    if (i === this.listOfSubtitles.length - 1) {
+                        j = 0;
+                    } else {
+                        j = i + 1;
+                    }
+                    position = this.listOfSubtitles[j].key;
+                }
+            }
+        }
         this.position = position;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, position);
     }
