@@ -1,29 +1,27 @@
 {
-  "debug": true,
-  "logLevel": "trace",
   "player": {
-    "src": "http://localhost:4201/medias/F24_14301445_21032014_id_en.mp4",
-    "crossOrigin": "anonymous",
-    "ratio": "16:8",
-    "hls": {
-      "enable": true
-    }
+    "backwardsSrc": "http://localhost:4201/medias/list-inverse.m3u8",
+    "src" : "http://localhost:4201/medias/flux.mp3",
+    "crossOrigin": "anonymous"
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/lac-subtitles.json"
+      "url": "http://localhost:4201/metadata/jt-d.json"
     },
     {
-      "url": "http://localhost:4201/metadata/lac-timeline1.json"
+      "url": "http://localhost:4201/metadata/jt-t.json"
     },
     {
-      "url": "http://localhost:4201/metadata/lac-transcription-1.json"
+      "url": "http://localhost:4201/metadata/transcription-bug.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/timeline-type.json"
     }
+
   ],
   "thumbnail": {
-    "baseUrl": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/eiyAOeoaAjbO5RrLK8U0dLg+qXCIYjjz2atGAajal7seT06kejUxvEUecBrNbpSuSeBgJ+9JPh4+KgypaA6hQzYxMfQ3Yd+M9Uk6/zlBovvz/DxRXvOvg+IT5rrozBzjNnRLb4aLhXd7leU2gFLgNsmCGwuLbPZTX2oqSuFC7PSjINk8SpHdiiy7FOm3ve3vk4VM0wzMDpPX8VodrpED7gmm29KblQCHJAigOBBgC7U3ua0mA3/kJOfellGqwkIrHrFMmVNVWW48Craa8p4WB14OoVdRoli1pwp+jmnNa/Jiae7paNsn7S+qv6I5ELR6UuceMdp2FGo8lmWmhxxq43jnKUfS51aOuSBDmLNzBWjpKjI86jpEB9SLlRTLyTYF4CUkUoDnqnUIEwHQ7pCK+f9zUGO4WQUn+w5ZdEAzij/yVOhx28zCDNvG5QoHAHakXFH3FwUk4Sj2taTLXDVJdtoeMOdm4R0oXiMutXbR6kZtDP6GcWYuHXXuaP1XzwXRI3xSB13oOm4GtAnUoX6aOAyfmmxtWFjSabsiaVEjZoeYYvQnktReOO+NelQKpzc+iJowXCsqAVYH/BnToC56DtpXATBAQbImtmrthWXmX06LsEe/grSNFltJ5P1WMVZJre+fPU0ZPWM3s6nxC9j8QbOPEvp8CUjyG9KNcL0A6nmZX6mECtpTszEZ+QJj1/WcfSw9qkcagKDTIKxyru6SGI43F9VO4QkTwvxHaa6jmfbTMJs77ZDFNViEQpx+7PgNUqBuXW8X518zpk/CYY4U6l9BQMD1vNQevQ5Cay51BMtM/w/ww6N4yGe/ajgPqU2f9EElgA9pOO5bUOZFZSle5hqr3nSCIfS/5AqYDTJb6fGArQwNkE8caTGzJVXexNtWy3dkbC3LW+v62mBzPMK7hliyFBwcXV11I8VLllFNFts=/sl_iv/eNov/3yzXO3VpajexHiPNA==/sl_hm/",
-    "enableThumbnail": true,
-    "tcParam": "start"
+    "baseUrl": "https://picsum.photos/id/237/200/300",
+    "enableThumbnail": true
   },
   "pluginsConfiguration": {
     "CONTROL_BAR-PLAYER": {
@@ -35,6 +33,10 @@
         {
           "label": "Playback rate custom steps",
           "control": "playbackRateCustomSteps"
+        },
+        {
+          "label": "Playback rate steps",
+          "control": "playbackRateSteps"
         },
         {
           "label": "Capture Image",
@@ -146,9 +148,10 @@
           "control": "volume",
           "zone": 3,
           "priority": 1,
-          "data": {
-            "channelMergeVolume": true,
-            "channelMergerNode": "l"
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
           }
         },
         {
@@ -156,7 +159,7 @@
           "control": "subtitles",
           "icon": "subtitle",
           "zone": 3,
-          "priority": 2
+          "priority": 3
         },
         {
           "label": "Fullscreen",
@@ -169,7 +172,7 @@
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
           "zone": 3,
-          "priority": 2
+          "priority": 3
         },
         {
           "label": "Menu",
@@ -191,12 +194,6 @@
           "zone": 3,
           "priority": 1
         }
-      ]
-    },
-    "HISTOGRAM-PLAYER": {
-      "metadataIds": [
-        "waveform-MA00605_01-2048-0",
-        "waveform-MA00605_01-2048-1"
       ]
     }
   }
