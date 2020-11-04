@@ -200,7 +200,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
      */
-   private scroll() {
+    private scroll() {
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
@@ -291,6 +291,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             });
         }
     }
+
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
             this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
