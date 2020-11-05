@@ -31,6 +31,7 @@
 * ["src/app/core/constant/event-type"](modules/_src_app_core_constant_event_type_.md)
 * ["src/app/core/constant/event-type.spec"](modules/_src_app_core_constant_event_type_spec_.md)
 * ["src/app/core/constant/player-state"](modules/_src_app_core_constant_player_state_.md)
+* ["src/app/core/constant/plugins-name"](modules/_src_app_core_constant_plugins_name_.md)
 * ["src/app/core/converter/converter"](modules/_src_app_core_converter_converter_.md)
 * ["src/app/core/decorator/auto-bind.decorator"](modules/_src_app_core_decorator_auto_bind_decorator_.md)
 * ["src/app/core/error/default-error-logging-strategy"](modules/_src_app_core_error_default_error_logging_strategy_.md)

@@ -6,15 +6,6 @@
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/jt-d.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/jt-t.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/transcription-bug.json"
-    },
-    {
       "url": "http://localhost:4201/metadata/timeline-type.json"
     }
 

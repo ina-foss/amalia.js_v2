@@ -50,6 +50,8 @@ export abstract class PluginBase<T> implements OnInit {
     }
 
     public playerService: MediaPlayerService;
+    @Input()
+    public pluginInstance: string;
     public mediaPlayerElement: MediaPlayerElement;
     protected pluginName: string;
     protected readonly logger: DefaultLogger;
@@ -59,9 +61,10 @@ export abstract class PluginBase<T> implements OnInit {
      * @param playerService player service
      * @param pluginName plugin name, user for get configuration
      */
-    protected constructor(playerService: MediaPlayerService, pluginName) {
+    protected constructor(playerService: MediaPlayerService, pluginName, pluginInstance?) {
         this.playerService = playerService;
         this.pluginName = pluginName;
+        this.pluginInstance = pluginInstance;
         this.logger = new DefaultLogger(`${this.pluginName}`);
     }
 

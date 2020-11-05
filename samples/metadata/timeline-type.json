@@ -1470,7 +1470,7 @@
                 "tclevel": 0
             }
         ],
-        "type": "timeline-1",
+        "type": "TIMELINE-SEGMENTATION-P1",
         "label": "homme",
         "algorithm": "inaSpeechSegmenter null",
         "processor": "null null",
@@ -2516,7 +2516,7 @@
                 "tclevel": 0
             }
         ],
-        "type": "timeline-1",
+        "type": "TIMELINE-SEGMENTATION-P1",
         "label": "musique",
         "algorithm": "inaSpeechSegmenter null",
         "processor": "null null",
@@ -3130,7 +3130,7 @@
                 "tclevel": 0
             }
         ],
-        "type": "timeline-1",
+        "type": "TIMELINE-SEGMENTATION-P1",
         "label": "femme",
         "algorithm": "inaSpeechSegmenter null",
         "processor": "null null",

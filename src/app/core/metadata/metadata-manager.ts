@@ -66,6 +66,8 @@ export class MetadataManager {
     public addMetadata(metadata: Metadata) {
         if (metadata && metadata.id) {
             this.listOfMetadata.set(metadata.id, metadata);
+        } else  if (metadata && metadata.type) {
+            this.listOfMetadata.set(metadata.type, metadata);
         } else {
             throw new AmaliaException('Error to add Metadata');
         }
@@ -79,6 +81,8 @@ export class MetadataManager {
     public removeMetadata(metadata: Metadata) {
         if (metadata && metadata.id && this.listOfMetadata.has(metadata.id)) {
             this.listOfMetadata.delete(metadata.id);
+        } else if (metadata && metadata.type && this.listOfMetadata.has(metadata.type)) {
+            this.listOfMetadata.delete(metadata.type);
         } else {
             throw new AmaliaException('Error to found metadata');
         }
@@ -183,5 +187,16 @@ export class MetadataManager {
             completed();
         }
         this.logger.warn(`Error to load data source : ${url}`);
+    }
+
+    /**
+     * Get list of types
+     */
+    private getMetadataTypes() {
+        const listOfTypes = [];
+        this.listOfMetadata.forEach((metadata) => {
+            listOfTypes.push(metadata.type);
+        });
+        return listOfTypes;
     }
 }
