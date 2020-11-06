@@ -66,7 +66,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private blocksIsOpen = false;
     private lastSelectedColorIdx = -1;
     private blocksDisplayStates: Map<string, boolean> = new Map<string, boolean>();
-    private managedDataTypes = [DataType.SEGMENTATION];
+    private managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION];
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, TimelinePluginComponent.PLUGIN_NAME);
@@ -121,20 +121,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
                 handleMetadataIds.forEach((metadataId) => {
                     const metadata = metadataManager.getMetadata(metadataId);
-                    let listOfLocalisations = null;
-                    try {
-                        listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
-                    } catch (e) {
-                        this.logger.warn('Error to parse metadata');
-                    }
-                    this.listOfBlocks.push({
-                        id: metadataId,
-                        label: (metadata?.label) ? metadata.label : metadataId,
-                        expendable: this.pluginConfiguration.data.expendable,
-                        defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
-                        displayState: true,
-                        data: listOfLocalisations
-                    });
+                    this.getListLocalisation(metadataManager, metadata, metadataId);
                 });
             }
             this.mainLocalisations = this.createMainMetadataIds(this.pluginConfiguration.data.mainMetadataIds, metadataManager);
@@ -142,40 +129,51 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     /**
+     * get list of localisations
+     */
+    public getListLocalisation(metadataManager, metadata, metadataId) {
+        let listOfLocalisations = null;
+        try {
+            listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
+        } catch (e) {
+            this.logger.warn('Error to parse metadata');
+        }
+        this.listOfBlocks.push({
+            id: metadataId,
+            label: (metadata?.label) ? metadata.label : metadataId,
+            expendable: this.pluginConfiguration.data.expendable,
+            defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
+            displayState: true,
+            data: listOfLocalisations
+        });
+    }
+    /**
      * in charge to parse metadatas by type
      */
     public parseTimelineMetadataByType(metadataManager) {
         const handleMetadataType: Array<string> = [];
+        const managedIds: Array<string> = [];
+        const metadataTypes: Array<string> = [];
+        const allMetadataTypes = metadataManager.getAllMetadataTypes();
         this.managedDataTypes.forEach((type) => {
             handleMetadataType.push(this.pluginName + '-' + type + '-' + this.pluginInstance);
         });
-        if (metadataManager) {
-            handleMetadataType.forEach((metadataType) => {
-               const metadata = metadataManager.getMetadata(metadataType);
-               let listOfLocalisations = null;
-               try {
-                    listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
-               } catch (e) {
-                    this.logger.warn('Error to parse metadata');
-               }
-               this.listOfBlocks.push({
-                    id: metadataType,
-                    label: (metadata?.label) ? metadata.label : metadataType,
-                    expendable: this.pluginConfiguration.data.expendable,
-                    defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
-                    displayState: true,
-                    data: listOfLocalisations
-               });
+        // get managed data types found in metadatas
+        allMetadataTypes.forEach((metadataType) => {
+            if (handleMetadataType.includes(metadataType) && !metadataTypes.includes(metadataType)) {
+                metadataTypes.push(metadataType);
+            }
+        });
+        // get localisations
+        metadataTypes.forEach((metadataType) => {
+            // get list metadatas
+            const metadatas = metadataManager.getMetadataByType(metadataType);
+            metadatas.forEach((metadata) => {
+                this.getListLocalisation(metadataManager, metadata, metadata.id);
+                managedIds.push(metadata.id);
             });
-            const types = metadataManager.getMetadataTypes();
-            const managedTypes: Array<string> = [];
-            types.forEach((type) => {
-                if (handleMetadataType.includes(type)) {
-                    managedTypes.push(type);
-                }
-            });
-            this.mainLocalisations = this.createMainMetadataByType(managedTypes, metadataManager);
-        }
+        });
+        this.mainLocalisations = this.createMainMetadataByType(managedIds, metadataManager);
     }
 
     /**

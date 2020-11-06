@@ -61,10 +61,9 @@ export abstract class PluginBase<T> implements OnInit {
      * @param playerService player service
      * @param pluginName plugin name, user for get configuration
      */
-    protected constructor(playerService: MediaPlayerService, pluginName, pluginInstance?) {
+    protected constructor(playerService: MediaPlayerService, pluginName) {
         this.playerService = playerService;
         this.pluginName = pluginName;
-        this.pluginInstance = pluginInstance;
         this.logger = new DefaultLogger(`${this.pluginName}`);
     }
 

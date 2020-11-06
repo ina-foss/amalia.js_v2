@@ -59,6 +59,38 @@ export class MetadataManager {
     }
 
     /**
+     * Return list of metadata By Id
+     * @param metadataType  type of metadata
+     * @returns listOfMetadataById
+     */
+    public getMetadataByType(metadataType: string): Array<Metadata> {
+        const listOfMetadataById: Array<Metadata> = [];
+        this.listOfMetadata.forEach((metadata) => {
+            if (metadata.type === metadataType) {
+                listOfMetadataById.push(metadata);
+            }
+        });
+        if (listOfMetadataById.length === 0) {
+            console.warn(`Error to get metadata by type ` + metadataType);
+        } else {
+            return listOfMetadataById;
+        }
+    }
+    /**
+     * Return list of metadata By Id
+     * @param  metadataType typ of metadata
+     * @returns listOfMetadata
+     */
+    public getAllMetadataTypes(): Array<string> {
+        const listOfMetadataType: Array<string> = [];
+        this.listOfMetadata.forEach((metadata) => {
+            if (metadata.type) {
+                listOfMetadataType.push(metadata.type);
+            }
+        });
+        return listOfMetadataType;
+    }
+    /**
      * Add Metadata block
      * @param metadata metadata
      * @throws AmaliaException
@@ -66,8 +98,6 @@ export class MetadataManager {
     public addMetadata(metadata: Metadata) {
         if (metadata && metadata.id) {
             this.listOfMetadata.set(metadata.id, metadata);
-        } else  if (metadata && metadata.type) {
-            this.listOfMetadata.set(metadata.type, metadata);
         } else {
             throw new AmaliaException('Error to add Metadata');
         }
@@ -81,8 +111,6 @@ export class MetadataManager {
     public removeMetadata(metadata: Metadata) {
         if (metadata && metadata.id && this.listOfMetadata.has(metadata.id)) {
             this.listOfMetadata.delete(metadata.id);
-        } else if (metadata && metadata.type && this.listOfMetadata.has(metadata.type)) {
-            this.listOfMetadata.delete(metadata.type);
         } else {
             throw new AmaliaException('Error to found metadata');
         }
@@ -187,16 +215,5 @@ export class MetadataManager {
             completed();
         }
         this.logger.warn(`Error to load data source : ${url}`);
-    }
-
-    /**
-     * Get list of types
-     */
-    private getMetadataTypes() {
-        const listOfTypes = [];
-        this.listOfMetadata.forEach((metadata) => {
-            listOfTypes.push(metadata.type);
-        });
-        return listOfTypes;
     }
 }
