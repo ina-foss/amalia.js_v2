@@ -59,6 +59,38 @@ export class MetadataManager {
     }
 
     /**
+     * Return list of metadata By Id
+     * @param metadataType  type of metadata
+     * @returns listOfMetadataById
+     */
+    public getMetadataByType(metadataType: string): Array<Metadata> {
+        const listOfMetadataById: Array<Metadata> = [];
+        this.listOfMetadata.forEach((metadata) => {
+            if (metadata.type === metadataType) {
+                listOfMetadataById.push(metadata);
+            }
+        });
+        if (listOfMetadataById.length === 0) {
+            console.warn(`Error to get metadata by type ` + metadataType);
+        } else {
+            return listOfMetadataById;
+        }
+    }
+    /**
+     * Return list of metadata By Id
+     * @param  metadataType typ of metadata
+     * @returns listOfMetadata
+     */
+    public getAllMetadataTypes(): Array<string> {
+        const listOfMetadataType: Array<string> = [];
+        this.listOfMetadata.forEach((metadata) => {
+            if (metadata.type) {
+                listOfMetadataType.push(metadata.type);
+            }
+        });
+        return listOfMetadataType;
+    }
+    /**
      * Add Metadata block
      * @param metadata metadata
      * @throws AmaliaException

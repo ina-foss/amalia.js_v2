@@ -28,6 +28,7 @@ In charge to handle metadata
 * [errorToLoadMetadata](_src_app_core_metadata_metadata_manager_.metadatamanager.md#private-errortoloadmetadata)
 * [getHistograms](_src_app_core_metadata_metadata_manager_.metadatamanager.md#gethistograms)
 * [getMetadata](_src_app_core_metadata_metadata_manager_.metadatamanager.md#getmetadata)
+* [getMetadataTypes](_src_app_core_metadata_metadata_manager_.metadatamanager.md#private-getmetadatatypes)
 * [getTimelineLocalisations](_src_app_core_metadata_metadata_manager_.metadatamanager.md#gettimelinelocalisations)
 * [getTranscriptionLocalisations](_src_app_core_metadata_metadata_manager_.metadatamanager.md#gettranscriptionlocalisations)
 * [init](_src_app_core_metadata_metadata_manager_.metadatamanager.md#init)
@@ -119,7 +120,7 @@ ___
 
 ▸ **errorToLoadMetadata**(`url`: any, `completed`: any): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:180
+Defined in src/app/core/metadata/metadata-manager.ts:184
 
 Error to load data
 
@@ -138,7 +139,7 @@ ___
 
 ▸ **getHistograms**(`metadataIds`: Array‹string›): *[Histogram](../interfaces/_src_app_core_metadata_model_histogram_.histogram.md)[]*
 
-Defined in src/app/core/metadata/metadata-manager.ts:119
+Defined in src/app/core/metadata/metadata-manager.ts:123
 
 Return all parsed histogram
 
@@ -172,11 +173,23 @@ Name | Type | Description |
 
 ___
 
+### `Private` getMetadataTypes
+
+▸ **getMetadataTypes**(): *any[]*
+
+Defined in src/app/core/metadata/metadata-manager.ts:195
+
+Get list of types
+
+**Returns:** *any[]*
+
+___
+
 ###  getTimelineLocalisations
 
 ▸ **getTimelineLocalisations**(`metadata`: Metadata): *Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›*
 
-Defined in src/app/core/metadata/metadata-manager.ts:111
+Defined in src/app/core/metadata/metadata-manager.ts:115
 
 Get timeline metadata block
 
@@ -196,7 +209,7 @@ ___
 
 ▸ **getTranscriptionLocalisations**(`metadataId`: string, `parseLevel`: number, `withSubLocalisations`: boolean): *Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)› | null*
 
-Defined in src/app/core/metadata/metadata-manager.ts:94
+Defined in src/app/core/metadata/metadata-manager.ts:98
 
 Return transcription metadata
 
@@ -228,7 +241,7 @@ ___
 
 ▸ **loadDataSource**(`loadData`: [ConfigDataSource](../interfaces/_src_app_core_config_model_config_data_source_.configdatasource.md), `completed`: any): *Promise‹void›*
 
-Defined in src/app/core/metadata/metadata-manager.ts:141
+Defined in src/app/core/metadata/metadata-manager.ts:145
 
 In charge to load data
 
@@ -247,7 +260,7 @@ ___
 
 ▸ **onMetadataLoaded**(`listOfMetadata`: Array‹Metadata›, `completed`: any): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:157
+Defined in src/app/core/metadata/metadata-manager.ts:161
 
 Called on metadata loaded
 
@@ -266,7 +279,7 @@ ___
 
 ▸ **removeMetadata**(`metadata`: Metadata): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:79
+Defined in src/app/core/metadata/metadata-manager.ts:81
 
 Remove Metadata block by metadata id
 
