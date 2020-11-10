@@ -1,14 +1,4 @@
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostListener,
-    Input,
-    OnInit,
-    Output,
-    ViewChild,
-    ViewEncapsulation
-} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
 import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
 import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
@@ -194,16 +184,12 @@ export class AmaliaComponent implements OnInit {
      */
     @ViewChild('mediaContainer', {static: true})
     public mediaContainer: ElementRef<HTMLElement>;
-    /**
-     * Return player interface
-     */
-    @Output()
-    public initApi: EventEmitter<MediaPlayerElement> = new EventEmitter<MediaPlayerElement>();
 
     /**
      * Amalia player main manager
      */
-    private mediaPlayerElement: MediaPlayerElement;
+    @Input()
+    public mediaPlayerElement: MediaPlayerElement;
 
     /**
      * List of pressed keys
@@ -214,8 +200,8 @@ export class AmaliaComponent implements OnInit {
      */
     public thumbnailBlobVideo: string;
 
-
     public debounceFunction;
+
     constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService) {
         this.httpClient = httpClient;
         this.playerService = playerService;
@@ -223,6 +209,7 @@ export class AmaliaComponent implements OnInit {
         this.debounceFunction = _.debounce(this.setPreviewThumbnail, 150, {maxWait: AmaliaComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
 
     }
+
     /**
      * Invoked immediately after the  first time the component has initialised
      */
@@ -244,10 +231,10 @@ export class AmaliaComponent implements OnInit {
             this.bindEvents();
             // set mediaPlayer width for responsive grid
             this.mediaPlayerElement.setMediaPlayerWidth(this.mediaContainer.nativeElement.offsetWidth);
-            this.initApi.emit(this.mediaPlayerElement);
         } else {
             this.logger.error('Error to initialize media player element.');
         }
+        this.callback.emit(this.mediaPlayerElement);
     }
 
     /**
