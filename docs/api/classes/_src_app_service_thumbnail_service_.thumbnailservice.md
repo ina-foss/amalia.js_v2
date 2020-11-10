@@ -17,13 +17,12 @@ Service contain all instance of players
 ### Properties
 
 * [httpClient](_src_app_service_thumbnail_service_.thumbnailservice.md#private-httpclient)
-* [image](_src_app_service_thumbnail_service_.thumbnailservice.md#image)
 * [listThumbnails](_src_app_service_thumbnail_service_.thumbnailservice.md#listthumbnails)
 * [loader](_src_app_service_thumbnail_service_.thumbnailservice.md#private-loader)
+* [key](_src_app_service_thumbnail_service_.thumbnailservice.md#static-key)
 
 ### Methods
 
-* [getImage](_src_app_service_thumbnail_service_.thumbnailservice.md#getimage)
 * [getThumbnail](_src_app_service_thumbnail_service_.thumbnailservice.md#getthumbnail)
 * [loadThumbnail](_src_app_service_thumbnail_service_.thumbnailservice.md#loadthumbnail)
 
@@ -33,7 +32,7 @@ Service contain all instance of players
 
 \+ **new ThumbnailService**(`httpClient`: HttpClient): *[ThumbnailService](_src_app_service_thumbnail_service_.thumbnailservice.md)*
 
-Defined in src/app/service/thumbnail-service.ts:12
+Defined in src/app/service/thumbnail-service.ts:14
 
 **Parameters:**
 
@@ -49,23 +48,15 @@ Name | Type |
 
 • **httpClient**: *HttpClient*
 
-Defined in src/app/service/thumbnail-service.ts:9
-
-___
-
-###  image
-
-• **image**: *any*
-
 Defined in src/app/service/thumbnail-service.ts:12
 
 ___
 
 ###  listThumbnails
 
-• **listThumbnails**: *Array‹object›*
+• **listThumbnails**: *Array‹object›* = []
 
-Defined in src/app/service/thumbnail-service.ts:11
+Defined in src/app/service/thumbnail-service.ts:14
 
 ___
 
@@ -73,32 +64,25 @@ ___
 
 • **loader**: *[ThumbnailLoader](_src_app_core_loader_thumbnail_loader_.thumbnailloader.md)*
 
-Defined in src/app/service/thumbnail-service.ts:10
-
-## Methods
-
-###  getImage
-
-▸ **getImage**(`url`: any, `tc`: any): *Promise‹void›*
-
-Defined in src/app/service/thumbnail-service.ts:42
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`url` | any |
-`tc` | any |
-
-**Returns:** *Promise‹void›*
+Defined in src/app/service/thumbnail-service.ts:13
 
 ___
 
+### `Static` key
+
+▪ **key**: *string* = "blob"
+
+Defined in src/app/service/thumbnail-service.ts:11
+
+## Methods
+
 ###  getThumbnail
 
-▸ **getThumbnail**(`url`: any, `tc`: any): *any*
+▸ **getThumbnail**(`url`: any, `tc`: any): *Promise‹string›*
 
-Defined in src/app/service/thumbnail-service.ts:19
+Defined in src/app/service/thumbnail-service.ts:23
+
+If tc exist in listThumbnails return blob else call api to get blob
 
 **Parameters:**
 
@@ -107,15 +91,17 @@ Name | Type |
 `url` | any |
 `tc` | any |
 
-**Returns:** *any*
+**Returns:** *Promise‹string›*
 
 ___
 
 ###  loadThumbnail
 
-▸ **loadThumbnail**(`url`: any, `tc`: any): *Promise‹unknown›*
+▸ **loadThumbnail**(`url`: any, `tc`: any): *Promise‹string›*
 
-Defined in src/app/service/thumbnail-service.ts:29
+Defined in src/app/service/thumbnail-service.ts:35
+
+Call loader to get blob
 
 **Parameters:**
 
@@ -124,4 +110,4 @@ Name | Type |
 `url` | any |
 `tc` | any |
 
-**Returns:** *Promise‹unknown›*
+**Returns:** *Promise‹string›*

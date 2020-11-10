@@ -2,7 +2,7 @@
   "debug": true,
   "logLevel": "trace",
   "player": {
-    "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
+    "src": "http://localhost:4201/medias/F24_14301445_21032014_id_en.mp4",
     "crossOrigin": "anonymous",
     "ratio": "16:8",
     "hls": {
@@ -17,7 +17,7 @@
       "url": "http://localhost:4201/metadata/lac-timeline1.json"
     },
     {
-      "url": "http://localhost:4201/metadata/lac-transcription.json"
+      "url": "http://localhost:4201/metadata/lac-transcription-1.json"
     }
   ],
   "thumbnail": {

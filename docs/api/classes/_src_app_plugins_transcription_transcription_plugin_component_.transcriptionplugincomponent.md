@@ -33,6 +33,7 @@
 * [mediaPlayerElement](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#mediaplayerelement)
 * [playerId](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#playerid)
 * [playerService](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#playerservice)
+* [pluginInstance](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#plugininstance)
 * [pluginName](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#protected-pluginname)
 * [searchText](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#searchtext)
 * [searchedWordIndex](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-searchedwordindex)
@@ -170,7 +171,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[logger](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-logger)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:57
 
 ___
 
@@ -180,7 +181,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)*
 
-Defined in src/app/core/plugin/plugin-base.ts:53
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -204,13 +205,23 @@ Defined in src/app/core/plugin/plugin-base.ts:52
 
 ___
 
+###  pluginInstance
+
+• **pluginInstance**: *string*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginInstance](_src_app_core_plugin_plugin_base_.pluginbase.md#plugininstance)*
+
+Defined in src/app/core/plugin/plugin-base.ts:54
+
+___
+
 ### `Protected` pluginName
 
 • **pluginName**: *string*
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginName](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-pluginname)*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:56
 
 ___
 

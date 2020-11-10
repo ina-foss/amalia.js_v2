@@ -34,6 +34,7 @@
 * [openIntervalList](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#openintervallist)
 * [playerId](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#playerid)
 * [playerService](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#playerservice)
+* [pluginInstance](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#plugininstance)
 * [pluginName](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#protected-pluginname)
 * [selectedInterval](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#selectedinterval)
 * [size](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#size)
@@ -165,7 +166,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[logger](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-logger)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:57
 
 ___
 
@@ -175,7 +176,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)*
 
-Defined in src/app/core/plugin/plugin-base.ts:53
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -209,13 +210,23 @@ Defined in src/app/core/plugin/plugin-base.ts:52
 
 ___
 
+###  pluginInstance
+
+• **pluginInstance**: *string*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginInstance](_src_app_core_plugin_plugin_base_.pluginbase.md#plugininstance)*
+
+Defined in src/app/core/plugin/plugin-base.ts:54
+
+___
+
 ### `Protected` pluginName
 
 • **pluginName**: *string*
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginName](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-pluginname)*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:56
 
 ___
 

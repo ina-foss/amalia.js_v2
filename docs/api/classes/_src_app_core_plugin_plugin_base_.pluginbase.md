@@ -45,6 +45,7 @@ Base class for create plugin
 * [mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)
 * [playerId](_src_app_core_plugin_plugin_base_.pluginbase.md#playerid)
 * [playerService](_src_app_core_plugin_plugin_base_.pluginbase.md#playerservice)
+* [pluginInstance](_src_app_core_plugin_plugin_base_.pluginbase.md#plugininstance)
 * [pluginName](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-pluginname)
 * [tcOffset](_src_app_core_plugin_plugin_base_.pluginbase.md#tcoffset)
 * [timeFormat](_src_app_core_plugin_plugin_base_.pluginbase.md#timeformat)
@@ -64,9 +65,9 @@ Base class for create plugin
 
 ### `Protected` constructor
 
-\+ **new PluginBase**(`playerService`: [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md), `pluginName`: any): *[PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md)*
+\+ **new PluginBase**(`playerService`: [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md), `pluginName`: any, `pluginInstance?`: any): *[PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:57
 
 Plugin base constructor
 
@@ -76,6 +77,7 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `playerService` | [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md) | player service |
 `pluginName` | any | plugin name, user for get configuration  |
+`pluginInstance?` | any | - |
 
 **Returns:** *[PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md)*
 
@@ -111,7 +113,7 @@ ___
 
 • **logger**: *[DefaultLogger](_src_app_core_logger_default_logger_.defaultlogger.md)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:57
 
 ___
 
@@ -119,7 +121,7 @@ ___
 
 • **mediaPlayerElement**: *[MediaPlayerElement](_src_app_core_media_player_element_.mediaplayerelement.md)*
 
-Defined in src/app/core/plugin/plugin-base.ts:53
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -139,11 +141,19 @@ Defined in src/app/core/plugin/plugin-base.ts:52
 
 ___
 
+###  pluginInstance
+
+• **pluginInstance**: *string*
+
+Defined in src/app/core/plugin/plugin-base.ts:54
+
+___
+
 ### `Protected` pluginName
 
 • **pluginName**: *string*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:56
 
 ___
 
@@ -211,7 +221,7 @@ Name | Type |
 
 ▸ **getDefaultConfig**(): *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
-Defined in src/app/core/plugin/plugin-base.ts:113
+Defined in src/app/core/plugin/plugin-base.ts:116
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
@@ -221,7 +231,7 @@ ___
 
 ▸ **init**(): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:80
+Defined in src/app/core/plugin/plugin-base.ts:83
 
 **Returns:** *void*
 
@@ -231,6 +241,6 @@ ___
 
 ▸ **ngOnInit**(): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:68
+Defined in src/app/core/plugin/plugin-base.ts:71
 
 **Returns:** *void*

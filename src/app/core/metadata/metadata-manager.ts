@@ -9,6 +9,7 @@ import {MetadataUtils} from '../utils/metadata-utils';
 import {TranscriptionLocalisation} from './model/transcription-localisation';
 import {Histogram} from './model/histogram';
 import {TimelineLocalisation} from './model/timeline-localisation';
+import * as _ from 'lodash';
 
 /**
  * In charge to handle metadata
@@ -56,6 +57,15 @@ export class MetadataManager {
         } else {
             throw new AmaliaException(`Error to get metadata`);
         }
+    }
+
+    /**
+     * Return list of metadata By Id
+     * @param metadataType  type of metadata
+     * @returns listOfMetadataById
+     */
+    public getMetadataByType(metadataType: string): Array<Metadata> {
+        return _.filter([...this.listOfMetadata.values()], {type: metadataType});
     }
 
     /**

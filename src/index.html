@@ -17,87 +17,102 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/lac-config.json">
-                <!--                <amalia-histogram-->
-                <!--                        plugin-configuration='{"metadataIds":["waveform-MA00605_01-2048-0","waveform-MA00605_01-2048-1"]}'></amalia-histogram>-->
-                <!--                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>-->
+            <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
+            <amalia-player player-id="PLAYER"
+                           config="http://localhost:4201/configs/notilus-config-timeline-player.json">
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
-            <!--            <amalia-time-bar plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-time-bar>-->
         </div>
-        <div class="col-6 p-2" style="height: 700px">
-            <div id="timeline">
-                <p id="addTimeline">Add Timeline</p>
-                                <amalia-timeline
-                                        plugin-configuration='{"metadataIds":["l-254","l-255","l-256"],"data":{"mainMetadataIds":["l-254","l-255","l-256"]}}'></amalia-timeline>
+        <div class="col-6 p-2" style="height: 500px;">
+            <div style="width: 700px;height: 500px" id="transcription">
+                <amalia-timeline
+                        plugin-instance="P1">
+                </amalia-timeline>
             </div>
-
-            <!--                        <amalia-timeline-->
-            <!--                                plugin-configuration='{"metadataIds":["S194","S40","unk-4","S340","S374","S267","S230","unk-9","unk-10","unk-11","unk-12","unk-13","unk-14","unk-15","unk-16"],"data":{"mainMetadataIds":["S194","S40"]}}'></amalia-timeline>-->
-            <!--<div style="height: 500px">
-                <amalia-player player-id="hls" config="http://localhost:4201/configs/base-config-hls.json">
-                    &lt;!&ndash;                <amalia-histogram plugin-configuration='{"metadataIds":["waveform-MA00605_01-2048-0"]}'></amalia-histogram>&ndash;&gt;
-                    <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>
-                    <amalia-control-bar player-id="hls"></amalia-control-bar>
-                </amalia-player>
-            </div>-->
-            <!--            <div style="height: 700px">-->
-            <!--            <amalia-transcription-->
-            <!--                    plugin-configuration='{"metadataIds":["254"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>-->
-
-            <!--            <amalia-transcription-->
-            <!--                    plugin-configuration='{"metadataIds":["subtitle_id"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>-->
-            <!--            </div>-->
-            <!--                        <div style="height: 700px" id="transcription">-->
-            <!--                            <p id="addTranscription">Add transcription</p>-->
-            <!--                        </div>-->
-            <!--            <div style="height: 400px" id="storyboard">-->
-            <!--                <p id="addStoryboard">Add storyboard</p>-->
-            <!--                                <amalia-storyboard-->
-            <!--                                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>-->
-            <!--            </div>-->
         </div>
+<!--        <div class="row">-->
+<!--            <div class="col-6 p-2" style="height: 500px;">-->
+<!--                <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/lac-config.json">-->
+<!--                    &lt;!&ndash;                <amalia-histogram&ndash;&gt;-->
+<!--                    &lt;!&ndash;                        plugin-configuration='{"metadataIds":["waveform-MA00605_01-2048-0","waveform-MA00605_01-2048-1"]}'></amalia-histogram>&ndash;&gt;-->
+<!--                    &lt;!&ndash;                <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>&ndash;&gt;-->
+<!--                    <amalia-control-bar player-id="PLAYER"></amalia-control-bar>-->
+<!--                </amalia-player>-->
+<!--                &lt;!&ndash;            <amalia-time-bar plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-time-bar>&ndash;&gt;-->
+<!--            </div>-->
+<!--            <div class="col-6 p-2" style="height: 700px">-->
+<!--                <div id="timeline">-->
+<!--                    <p id="addTimeline">Add Timeline</p>-->
+<!--                    <amalia-timeline-->
+<!--                            plugin-configuration='{"metadataIds":["l-254","l-255","l-256"],"data":{"mainMetadataIds":["l-254","l-255","l-256"]}}'></amalia-timeline>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash;                        <amalia-timeline&ndash;&gt;-->
+<!--                &lt;!&ndash;                                plugin-configuration='{"metadataIds":["S194","S40","unk-4","S340","S374","S267","S230","unk-9","unk-10","unk-11","unk-12","unk-13","unk-14","unk-15","unk-16"],"data":{"mainMetadataIds":["S194","S40"]}}'></amalia-timeline>&ndash;&gt;-->
+<!--                &lt;!&ndash;<div style="height: 500px">-->
+<!--                    <amalia-player player-id="hls" config="http://localhost:4201/configs/base-config-hls.json">-->
+<!--                        &lt;!&ndash;                <amalia-histogram plugin-configuration='{"metadataIds":["waveform-MA00605_01-2048-0"]}'></amalia-histogram>&ndash;&gt;-->
+<!--                        <amalia-subtitles plugin-configuration='{"metadataIds":["transcription_test"]}'></amalia-subtitles>-->
+<!--                        <amalia-control-bar player-id="hls"></amalia-control-bar>-->
+<!--                    </amalia-player>-->
+<!--                </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;            <div style="height: 700px">&ndash;&gt;-->
+<!--                &lt;!&ndash;            <amalia-transcription&ndash;&gt;-->
+<!--                &lt;!&ndash;                    plugin-configuration='{"metadataIds":["254"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>&ndash;&gt;-->
+
+<!--                &lt;!&ndash;            <amalia-transcription&ndash;&gt;-->
+<!--                &lt;!&ndash;                    plugin-configuration='{"metadataIds":["subtitle_id"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'></amalia-transcription>&ndash;&gt;-->
+<!--                &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        <div style="height: 700px" id="transcription">&ndash;&gt;-->
+<!--                &lt;!&ndash;                            <p id="addTranscription">Add transcription</p>&ndash;&gt;-->
+<!--                &lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--                &lt;!&ndash;            <div style="height: 400px" id="storyboard">&ndash;&gt;-->
+<!--                &lt;!&ndash;                <p id="addStoryboard">Add storyboard</p>&ndash;&gt;-->
+<!--                &lt;!&ndash;                                <amalia-storyboard&ndash;&gt;-->
+<!--                &lt;!&ndash;                                        plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}'></amalia-storyboard>&ndash;&gt;-->
+<!--                &lt;!&ndash;            </div>&ndash;&gt;-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
-</div>
-<footer class="border-top">
-    <div class="row pt-3 pl-3">
-        <div class="col-12 col-md">
-            <img class="mb-2 d-inline" src="assets/logo.svg" alt="" width="40" height="40">
-            <small class="d-block mb-3 text-muted">&copy; 2020</small>
+    <footer class="border-top">
+        <div class="row pt-3 pl-3">
+            <div class="col-12 col-md">
+                <img class="mb-2 d-inline" src="assets/logo.svg" alt="" width="40" height="40">
+                <small class="d-block mb-3 text-muted">&copy; 2020</small>
+            </div>
         </div>
-    </div>
-</footer>
-<script>
-    // document.getElementById("addTranscription").addEventListener("click", addTranscription)
-    // document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
-    document.getElementById("addTimeline").addEventListener("click", addTimeline)
+    </footer>
+    <script>
+        // document.getElementById("addTranscription").addEventListener("click", addTranscription)
+        // document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
+        document.getElementById("addTimeline").addEventListener("click", addTimeline)
 
-    function addTranscription() {
-        const transactionElement = document.createElement("amalia-transcription");
-        transactionElement.setAttribute("player-id", "PLAYER")
-        transactionElement.setAttribute("plugin-configuration", '{"metadataIds":["transcription_id"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}')
-        const content = document.getElementById('transcription');
-        content.innerHTML = '';
-        content.append(transactionElement);
-    }
+        function addTranscription() {
+            const transactionElement = document.createElement("amalia-transcription");
+            transactionElement.setAttribute("player-id", "PLAYER")
+            transactionElement.setAttribute("plugin-configuration", '{"metadataIds":["transcription_id"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}')
+            const content = document.getElementById('transcription');
+            content.innerHTML = '';
+            content.append(transactionElement);
+        }
 
-    function addTimeline() {
-        const timelineElement = document.createElement("amalia-timeline");
-        timelineElement.setAttribute("player-id", "PLAYER")
-        timelineElement.setAttribute("plugin-configuration", '{"metadataIds":["l-254","l-255","l-256"],"data":{"mainMetadataIds":["l-254","l-255","l-256"]}}')
-        const content = document.getElementById('timeline');
-        content.innerHTML = '';
-        content.append(timelineElement);
-    }
+        function addTimeline() {
+            const timelineElement = document.createElement("amalia-timeline");
+            timelineElement.setAttribute("player-id", "PLAYER")
+            timelineElement.setAttribute("plugin-configuration", '{"metadataIds":["l-254","l-255","l-256"],"data":{"mainMetadataIds":["l-254","l-255","l-256"]}}')
+            const content = document.getElementById('timeline');
+            content.innerHTML = '';
+            content.append(timelineElement);
+        }
 
-    function addStoryboard() {
-        const transactionElement = document.createElement("amalia-storyboard");
-        transactionElement.setAttribute("player-id", "PLAYER")
-        transactionElement.setAttribute("plugin-configuration", '{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}')
-        const content = document.getElementById('storyboard');
-        content.innerHTML = '';
-        content.append(transactionElement);
-    }
-</script>
+        function addStoryboard() {
+            const transactionElement = document.createElement("amalia-storyboard");
+            transactionElement.setAttribute("player-id", "PLAYER")
+            transactionElement.setAttribute("plugin-configuration", '{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}')
+            const content = document.getElementById('storyboard');
+            content.innerHTML = '';
+            content.append(transactionElement);
+        }
+    </script>
 </body>
 </html>

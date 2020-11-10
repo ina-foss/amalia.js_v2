@@ -1,19 +1,10 @@
 {
   "player": {
-    "backwardsSrc": "http://localhost:4201/medias/list-inverse.m3u8",
-    "src" : "http://localhost:4201/medias/flux.mp3",
+    "backwardsSrc": "http://localhost:4201/medias/jt.mp4",
+    "src" : "http://localhost:4201/medias/jt.mp4",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
-    {
-      "url": "http://localhost:4201/metadata/jt-d.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/jt-t.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/transcription-bug.json"
-    },
     {
       "url": "http://localhost:4201/metadata/timeline-type.json"
     }
