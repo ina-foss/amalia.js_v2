@@ -449,11 +449,12 @@ export class AmaliaComponent implements OnInit {
      */
     @AutoBind
     public emitKeyDownEvent($event) {
+        console.log($event);
+        console.log(this.playerHover);
         let key = $event.key;
         if (key === ' ') {
             key = 'espace';
         }
-
         if (this.playerHover === true) {
             this.listKeys.push(key);
             if (this.listKeys.length > 1) {

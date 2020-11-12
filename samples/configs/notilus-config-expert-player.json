@@ -68,7 +68,7 @@
           "icon": "download",
           "zone": 1,
           "order": 1,
-          "key": "b",
+          "key": "",
           "priority": 2,
           "data": {
             "href": "http://localhost:4200/assets/logo.svg"
@@ -194,7 +194,7 @@
           "icon": "fullscreen",
           "zone": 3,
           "priority": 1,
-          "key": "Alt + p"
+          "key": "p"
         },
         {
           "label": "Aspect ratio (a)",

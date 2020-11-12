@@ -290,6 +290,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public applyShortcut(key) {
         for (const shortcut of this.listOfShortcuts) {
+            console.log(shortcut.key);
+            console.log(key);
             if (key === shortcut.key) {
                 this.controlClicked(shortcut.control);
             }
