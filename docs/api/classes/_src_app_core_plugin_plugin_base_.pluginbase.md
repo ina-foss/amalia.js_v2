@@ -65,7 +65,7 @@ Base class for create plugin
 
 ### `Protected` constructor
 
-\+ **new PluginBase**(`playerService`: [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md), `pluginName`: any, `pluginInstance?`: any): *[PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md)*
+\+ **new PluginBase**(`playerService`: [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md), `pluginName`: any): *[PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md)*
 
 Defined in src/app/core/plugin/plugin-base.ts:57
 
@@ -77,7 +77,6 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `playerService` | [MediaPlayerService](_src_app_service_media_player_service_.mediaplayerservice.md) | player service |
 `pluginName` | any | plugin name, user for get configuration  |
-`pluginInstance?` | any | - |
 
 **Returns:** *[PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md)*
 
@@ -221,7 +220,7 @@ Name | Type |
 
 ▸ **getDefaultConfig**(): *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
-Defined in src/app/core/plugin/plugin-base.ts:116
+Defined in src/app/core/plugin/plugin-base.ts:115
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
@@ -231,7 +230,7 @@ ___
 
 ▸ **init**(): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:83
+Defined in src/app/core/plugin/plugin-base.ts:82
 
 **Returns:** *void*
 
@@ -241,6 +240,6 @@ ___
 
 ▸ **ngOnInit**(): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:71
+Defined in src/app/core/plugin/plugin-base.ts:70
 
 **Returns:** *void*

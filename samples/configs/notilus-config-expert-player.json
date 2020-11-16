@@ -4,7 +4,8 @@
     "crossOrigin": "anonymous",
     "ratio": "16:8",
     "hls": {
-      "enable": true
+      "enable": true,
+      "config": {"maxBufferLength": 12}
     }
   },
   "dataSources": [
