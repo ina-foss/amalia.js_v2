@@ -1,20 +1,32 @@
 {
   "player": {
-    "backwardsSrc": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
     "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
-    "crossOrigin": "anonymous"
+    "crossOrigin": "anonymous",
+    "ratio": "16:8",
+    "hls": {
+      "enable": true,
+      "config": {"maxBufferLength": 12}
+    }
   },
   "dataSources": [
+
     {
-      "url": "http://localhost:4201/metadata/jt-d.json"
+      "url": "http://localhost:4201/metadata/waveform-timeline0.json"
     },
     {
-      "url": "http://localhost:4201/metadata/jt-t.json"
+      "url": "http://localhost:4201/metadata/waveform-timeline1.json"
     },
     {
-      "url": "http://localhost:4201/metadata/sample-transcription.json"
+      "url": "http://localhost:4201/metadata/waveform-timeline0-zoom.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/waveform-timeline1-zoom.json"
     }
+
   ],
+  "thumbnail": {
+    "enableThumbnail": false
+  },
   "pluginsConfiguration": {
     "CONTROL_BAR-PLAYER": {
       "data": [
@@ -92,6 +104,14 @@
           "zone": 3,
           "priority": 1
         }
+      ]
+    },
+    "HISTOGRAM-PLAYER": {
+      "metadataIds": [
+        "1600693803925339-4096-0",
+        "1600693803925339-4096-1",
+        "waveform-a763c8ec165a441fac80088c3b486929-15000-0",
+        "waveform-a763c8ec165a441fac80088c3b486929-15000-1"
       ]
     }
   }

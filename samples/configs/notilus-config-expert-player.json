@@ -176,8 +176,8 @@
           "priority": 1,
           "key": "n",
           "data" : {
-            "channelMergeVolume" : true,
-            "channelMergerNode" : "l"
+            "channelMergeVolume" : false,
+            "channelMergerNode" : "r"
 
           }
         },

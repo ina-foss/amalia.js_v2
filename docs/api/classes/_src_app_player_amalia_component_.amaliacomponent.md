@@ -470,7 +470,7 @@ ___
 
 ▸ **displayControlBar**(`_displayControlBar`: boolean): *void*
 
-Defined in src/app/player/amalia.component.ts:429
+Defined in src/app/player/amalia.component.ts:427
 
 Invoked on mouseenter and mouseleave events
 
@@ -488,9 +488,9 @@ ___
 
 ▸ **emitKeyDownEvent**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:451
+Defined in src/app/player/amalia.component.ts:449
 
-invoked on mouseover
+invoked on keydown
 
 **Parameters:**
 
@@ -506,7 +506,7 @@ ___
 
 ▸ **emitKeyUpEvent**(): *void*
 
-Defined in src/app/player/amalia.component.ts:470
+Defined in src/app/player/amalia.component.ts:466
 
 **Returns:** *void*
 
@@ -552,7 +552,7 @@ ___
 
 ▸ **handleFullScreenChange**(): *void*
 
-Defined in src/app/player/amalia.component.ts:441
+Defined in src/app/player/amalia.component.ts:439
 
 Invoked on fullscreen change
 
@@ -662,7 +662,7 @@ ___
 
 ▸ **onErrorInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:419
+Defined in src/app/player/amalia.component.ts:417
 
 Invoked on error to init config
 
@@ -680,7 +680,7 @@ ___
 
 ▸ **onInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:405
+Defined in src/app/player/amalia.component.ts:403
 
 Invoked on  init config
 
