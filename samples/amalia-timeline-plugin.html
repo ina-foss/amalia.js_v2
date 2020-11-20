@@ -19,14 +19,14 @@
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
            <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
+            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-timeline-player.json">
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
         </div>
         <div class="col-6 p-2" style="height: 500px;">
             <div style="width: 700px;height: 500px" id="transcription">
                 <amalia-timeline
-                        plugin-configuration='{"type":"timeline-1"}'>
+                        plugin-instance="P1">
                 </amalia-timeline>
                </div>
         </div>

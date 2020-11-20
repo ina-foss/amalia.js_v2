@@ -4,7 +4,8 @@
     "crossOrigin": "anonymous",
     "ratio": "16:8",
     "hls": {
-      "enable": true
+      "enable": true,
+      "config": {"maxBufferLength": 12}
     }
   },
   "dataSources": [
@@ -68,7 +69,7 @@
           "icon": "download",
           "zone": 1,
           "order": 1,
-          "key": "b",
+          "key": "",
           "priority": 2,
           "data": {
             "href": "http://localhost:4200/assets/logo.svg"
@@ -175,8 +176,8 @@
           "priority": 1,
           "key": "n",
           "data" : {
-            "channelMergeVolume" : true,
-            "channelMergerNode" : "l"
+            "channelMergeVolume" : false,
+            "channelMergerNode" : "r"
 
           }
         },
@@ -194,7 +195,7 @@
           "icon": "fullscreen",
           "zone": 3,
           "priority": 1,
-          "key": "Alt + p"
+          "key": "p"
         },
         {
           "label": "Aspect ratio (a)",

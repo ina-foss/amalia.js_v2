@@ -5,6 +5,7 @@
     "duration": 5000,
     "defaultVolume": 100,
     "crossOrigin": "*.ina",
-    "data": null
+    "data": null,
+    "ratio": "16:9"
   }
 }

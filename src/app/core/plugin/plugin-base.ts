@@ -50,6 +50,8 @@ export abstract class PluginBase<T> implements OnInit {
     }
 
     public playerService: MediaPlayerService;
+    @Input()
+    public pluginInstance: string;
     public mediaPlayerElement: MediaPlayerElement;
     protected pluginName: string;
     protected readonly logger: DefaultLogger;

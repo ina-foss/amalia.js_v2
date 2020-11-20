@@ -28,6 +28,7 @@ In charge to handle metadata
 * [errorToLoadMetadata](_src_app_core_metadata_metadata_manager_.metadatamanager.md#private-errortoloadmetadata)
 * [getHistograms](_src_app_core_metadata_metadata_manager_.metadatamanager.md#gethistograms)
 * [getMetadata](_src_app_core_metadata_metadata_manager_.metadatamanager.md#getmetadata)
+* [getMetadataByType](_src_app_core_metadata_metadata_manager_.metadatamanager.md#getmetadatabytype)
 * [getTimelineLocalisations](_src_app_core_metadata_metadata_manager_.metadatamanager.md#gettimelinelocalisations)
 * [getTranscriptionLocalisations](_src_app_core_metadata_metadata_manager_.metadatamanager.md#gettranscriptionlocalisations)
 * [init](_src_app_core_metadata_metadata_manager_.metadatamanager.md#init)
@@ -41,7 +42,7 @@ In charge to handle metadata
 
 \+ **new MetadataManager**(`configurationManager`: [ConfigurationManager](_src_app_core_config_configuration_manager_.configurationmanager.md), `defaultLoader`: [Loader](../interfaces/_src_app_core_loader_loader_.loader.md)‹Array‹Metadata››, `logger`: [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)): *[MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)*
 
-Defined in src/app/core/metadata/metadata-manager.ts:21
+Defined in src/app/core/metadata/metadata-manager.ts:22
 
 **Parameters:**
 
@@ -59,7 +60,7 @@ Name | Type |
 
 • **configurationManager**: *[ConfigurationManager](_src_app_core_config_configuration_manager_.configurationmanager.md)*
 
-Defined in src/app/core/metadata/metadata-manager.ts:18
+Defined in src/app/core/metadata/metadata-manager.ts:19
 
 ___
 
@@ -67,7 +68,7 @@ ___
 
 • **defaultLoader**: *[Loader](../interfaces/_src_app_core_loader_loader_.loader.md)‹Array‹Metadata››*
 
-Defined in src/app/core/metadata/metadata-manager.ts:21
+Defined in src/app/core/metadata/metadata-manager.ts:22
 
 ___
 
@@ -75,7 +76,7 @@ ___
 
 • **listOfMetadata**: *Map‹string, Metadata›* = new Map<string, Metadata>()
 
-Defined in src/app/core/metadata/metadata-manager.ts:19
+Defined in src/app/core/metadata/metadata-manager.ts:20
 
 ___
 
@@ -83,7 +84,7 @@ ___
 
 • **logger**: *[LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/metadata/metadata-manager.ts:17
+Defined in src/app/core/metadata/metadata-manager.ts:18
 
 ___
 
@@ -91,7 +92,7 @@ ___
 
 • **toLoadData**: *number* = 0
 
-Defined in src/app/core/metadata/metadata-manager.ts:20
+Defined in src/app/core/metadata/metadata-manager.ts:21
 
 ## Methods
 
@@ -99,7 +100,7 @@ Defined in src/app/core/metadata/metadata-manager.ts:20
 
 ▸ **addMetadata**(`metadata`: Metadata): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:66
+Defined in src/app/core/metadata/metadata-manager.ts:76
 
 Add Metadata block
 
@@ -119,7 +120,7 @@ ___
 
 ▸ **errorToLoadMetadata**(`url`: any, `completed`: any): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:180
+Defined in src/app/core/metadata/metadata-manager.ts:190
 
 Error to load data
 
@@ -138,7 +139,7 @@ ___
 
 ▸ **getHistograms**(`metadataIds`: Array‹string›): *[Histogram](../interfaces/_src_app_core_metadata_model_histogram_.histogram.md)[]*
 
-Defined in src/app/core/metadata/metadata-manager.ts:119
+Defined in src/app/core/metadata/metadata-manager.ts:129
 
 Return all parsed histogram
 
@@ -156,7 +157,7 @@ ___
 
 ▸ **getMetadata**(`metadataId`: string): *Metadata*
 
-Defined in src/app/core/metadata/metadata-manager.ts:53
+Defined in src/app/core/metadata/metadata-manager.ts:54
 
 Get Metadata block
 
@@ -172,11 +173,31 @@ Name | Type | Description |
 
 ___
 
+###  getMetadataByType
+
+▸ **getMetadataByType**(`metadataType`: string): *Array‹Metadata›*
+
+Defined in src/app/core/metadata/metadata-manager.ts:67
+
+Return list of metadata By Id
+
+**Parameters:**
+
+Name | Type | Description |
+------ | ------ | ------ |
+`metadataType` | string | type of metadata |
+
+**Returns:** *Array‹Metadata›*
+
+listOfMetadataById
+
+___
+
 ###  getTimelineLocalisations
 
 ▸ **getTimelineLocalisations**(`metadata`: Metadata): *Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›*
 
-Defined in src/app/core/metadata/metadata-manager.ts:111
+Defined in src/app/core/metadata/metadata-manager.ts:121
 
 Get timeline metadata block
 
@@ -196,7 +217,7 @@ ___
 
 ▸ **getTranscriptionLocalisations**(`metadataId`: string, `parseLevel`: number, `withSubLocalisations`: boolean): *Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)› | null*
 
-Defined in src/app/core/metadata/metadata-manager.ts:94
+Defined in src/app/core/metadata/metadata-manager.ts:104
 
 Return transcription metadata
 
@@ -216,7 +237,7 @@ ___
 
 ▸ **init**(): *Promise‹void›*
 
-Defined in src/app/core/metadata/metadata-manager.ts:32
+Defined in src/app/core/metadata/metadata-manager.ts:33
 
 In charge to load data source
 
@@ -228,7 +249,7 @@ ___
 
 ▸ **loadDataSource**(`loadData`: [ConfigDataSource](../interfaces/_src_app_core_config_model_config_data_source_.configdatasource.md), `completed`: any): *Promise‹void›*
 
-Defined in src/app/core/metadata/metadata-manager.ts:141
+Defined in src/app/core/metadata/metadata-manager.ts:151
 
 In charge to load data
 
@@ -247,7 +268,7 @@ ___
 
 ▸ **onMetadataLoaded**(`listOfMetadata`: Array‹Metadata›, `completed`: any): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:157
+Defined in src/app/core/metadata/metadata-manager.ts:167
 
 Called on metadata loaded
 
@@ -266,7 +287,7 @@ ___
 
 ▸ **removeMetadata**(`metadata`: Metadata): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:79
+Defined in src/app/core/metadata/metadata-manager.ts:89
 
 Remove Metadata block by metadata id
 
