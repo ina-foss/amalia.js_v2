@@ -1344,7 +1344,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/core/plugin/plugin-base.ts:71
+Defined in src/app/core/plugin/plugin-base.ts:70
 
 **Returns:** *void*
 

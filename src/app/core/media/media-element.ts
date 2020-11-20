@@ -546,6 +546,8 @@ export class MediaElement {
         // Connect the source to the splitter
         source.connect(this.audioContextSplitter, 0, 0);
         // Connect splitter' outputs to each Gain Nodes
+        console.log(this.panLeft);
+        console.log(this.panRight);
         this.audioContextSplitter.connect(this.panLeft, 0);
         this.audioContextSplitter.connect(this.panRight, 1);
 

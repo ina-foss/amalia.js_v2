@@ -388,10 +388,8 @@ export class AmaliaComponent implements OnInit {
     private setPreviewThumbnail(tc: number) {
         if (!isNaN(tc)) {
             this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
-            console.log(this.previewThumbnailUrl);
             this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
-                    console.log(this.thumbnailBlobVideo);
                     this.thumbnailBlobVideo = blob;
                 }
             });
@@ -445,7 +443,7 @@ export class AmaliaComponent implements OnInit {
     }
 
     /**
-     * invoked on mouseover
+     * invoked on keydown
      */
     @AutoBind
     public emitKeyDownEvent($event) {
@@ -453,7 +451,6 @@ export class AmaliaComponent implements OnInit {
         if (key === ' ') {
             key = 'espace';
         }
-
         if (this.playerHover === true) {
             this.listKeys.push(key);
             if (this.listKeys.length > 1) {
