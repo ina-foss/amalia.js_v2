@@ -222,7 +222,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     init() {
         super.init();
-        this.handleDisplayState();
         this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
         // init volume
@@ -669,6 +668,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     private handleOnDurationChange() {
+        this.handleDisplayState();
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.time = this.currentTime;
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
