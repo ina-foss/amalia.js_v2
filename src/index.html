@@ -18,10 +18,11 @@
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
             <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
-            <amalia-player id="ajs-poc" player-id="PLAYER"
+            <amalia-player id="PLAYER" player-id="PLAYER"
                            config="http://localhost:4201/configs/notilus-config-timeline-player.json">
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
+
         </div>
         <div class="col-6 p-2" style="height: 500px;">
             <div style="width: 700px;height: 500px" id="transcription">
@@ -81,9 +82,48 @@
                 <small class="d-block mb-3 text-muted">&copy; 2020</small>
             </div>
         </div>
+        <button onclick="window.dispatchEvent(new Event('resize'))">Resize</button>
+        <button onclick="emetEvent()"> Changer configuration controlBar</button>,
+        <!--config))">-->
     </footer>
     <script>
-        window.ajsp = document.getElementById("ajs-poc")
+        function emetEvent() {
+            let firstPlayer = document.getElementById('PLAYER');
+            let config = {
+                "data": [
+                    {
+                        "label": "Barre de progression",
+                        "control": "progressBar"
+                    },
+                    {
+                        "label": "Play / Pause",
+                        "control": "playPause",
+                        "zone": 1,
+                        "priority": 1
+                    },
+                    {
+                        "label": "Volume",
+                        "control": "volume",
+                        "zone": 1,
+                        "data" : {
+                            "channelMergeVolume" : true,
+                            "channelMergerNode" : "l"
+
+                        },
+                        "priority": 1
+                    },
+                    {
+                        "label": "Fullscreen",
+                        "control": "toggleFullScreen",
+                        "icon": "fullscreen",
+                        "zone": 3,
+                        "priority": 1
+                    }
+                ]
+            };
+            firstPlayer.mediaPlayerElement.eventEmitter.emit("ina.player.CONFIG_CHANGE", config)
+        }
+        /*window.ajsp = document.getElementById("ajs-poc")
         window.ajsp.addEventListener("callback", handleEvent)
         window.ajsp.addEventListener("oncallback", handleEvent)
         // document.getElementById("addTranscription").addEventListener("click", addTranscription)
@@ -91,10 +131,10 @@
 
         function handleEvent() {
             console.info("handleEvent")
-        }
+        }*/
 
         // document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
-        document.getElementById("addTimeline").addEventListener("click", addTimeline)
+        /*document.getElementById("addTimeline").addEventListener("click", addTimeline)
 
         function addTranscription() {
             const transactionElement = document.createElement("amalia-transcription");
@@ -121,7 +161,7 @@
             const content = document.getElementById('storyboard');
             content.innerHTML = '';
             content.append(transactionElement);
-        }
+        }*/
     </script>
 </body>
 </html>
