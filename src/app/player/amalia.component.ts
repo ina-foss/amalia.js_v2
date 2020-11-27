@@ -243,7 +243,8 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     private handleWindowResize() {
         const mediaContainer = this.mediaContainer.nativeElement;
-        this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.clientWidth);
+        this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.offsetWidth);
+        this.logger.info(`Player resized !`);
     }
 
     /**

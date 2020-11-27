@@ -14,6 +14,7 @@ Player event type
 * [BIND_METADATA](_src_app_core_constant_event_type_.playereventtype.md#bind_metadata)
 * [CAST_PAUSED](_src_app_core_constant_event_type_.playereventtype.md#cast_paused)
 * [CAST_PLAYING](_src_app_core_constant_event_type_.playereventtype.md#cast_playing)
+* [CONFIG_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#config_change)
 * [DATA_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#data_change)
 * [DURATION_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#duration_change)
 * [ENDED](_src_app_core_constant_event_type_.playereventtype.md#ended)
@@ -106,6 +107,16 @@ ___
 Defined in src/app/core/constant/event-type.ts:16
 
 Invoked when playing event.
+
+___
+
+###  CONFIG_CHANGE
+
+• **CONFIG_CHANGE**: = "ina.player.CONFIG_CHANGE"
+
+Defined in src/app/core/constant/event-type.ts:167
+
+Invocked config change
 
 ___
 
