@@ -232,7 +232,7 @@ ___
 
 ▸ **getDisplayState**(): *string*
 
-Defined in src/app/core/media-player-element.ts:211
+Defined in src/app/core/media-player-element.ts:212
 
 Return displayState (s/m/l)
 

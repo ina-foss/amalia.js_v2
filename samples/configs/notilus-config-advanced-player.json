@@ -20,12 +20,107 @@
     }
   ],
   "thumbnail": {
-    "baseUrl": "http://ws-media-vm.ina.fr:3001/thumbs/2GAW3x1oFxVc3d/5ocPzcN8HOagZhH+HmV7pHEOkFNU4/HHjQHHXr3YDqBxNaceQu0eHZv2r9iGwJeV5rsWUYUtS1aACrcVmppcVByQX1vPOYpUqDdDQIPMNYbFph8ALIOcZN5982y4UZds6uVVMnLQ3I3bQgG/mmZntqyw0QwZCfWWO9HpOpRZfj8ZRsadU7DUwDVeBjcJtnN1Zx7quLO0X5BXaZhXv42pU7rWFXOcm6ZqCVzbC/8BgyV6tA6ebv+igmXXfxELB/VsNJcF4jNeWzPraHbkhUwZhxH4Wa7sbQiGCR1YtJaWi/93GOwg1g+P+BrhNS8TNJI/E75wklOTxN/S10gU4rcaux7sjigt94zVMdV53S8WU2+Nlvi6Ftsuh9VrT0ZeQjL6ovEtIAcVQovTZ0i1Fmsta6l4mIHVMhrhCYYMMKdsdkgmskfv/HWE7izujNDXMUxMttgdXfoFFt1k9gE8g4LJsJdXQRXOwTswf6ZP5nKXsbu0FGWt/HGUcSAqOfWumT/dZ6HFmFxTi2Ii21OZZtGIr06uNjlkwbqOIcdcFWV70voiRtR0X98EGU3liqietoeaDCaYPZKz1Z+84Ya5hqqCNK4GILu6jmJ3PzCNDogifx3Ez93gShcOUFkxbjRzLxdzPvd8WgeagCVKbBzVJLfR98LnDFgeeZmD2+7+D7p1Pq1zWOsVDAn4MqxQlYcJiadtpYmkeKTnUfMLw0rW4jWMNbYB/ABUedvXqtG+rmvMhqoBmDUM8UF3Gzq2ACa95887ogQMog8QG0w0kdHY8S64LI/6Y6EqwHEPasMBcycr/qrQ8VtTZuFY5bAGoUAyRGzqUDCLhOdZfOIlGQria6gdYov+arxKdA+8Beaw5aUa65qpXgvgH/sl_iv/UxNYxbC85G1K7BD32z1XwQ==/sl_hm/",
-    "enableThumbnail": true,
-    "tcParam": "start"
-  },
+  "baseUrl": "http://ws-media-vm.ina.fr:3001/thumbs/2GAW3x1oFxVc3d/5ocPzcN8HOagZhH+HmV7pHEOkFNU4/HHjQHHXr3YDqBxNaceQu0eHZv2r9iGwJeV5rsWUYUtS1aACrcVmppcVByQX1vPOYpUqDdDQIPMNYbFph8ALIOcZN5982y4UZds6uVVMnLQ3I3bQgG/mmZntqyw0QwZCfWWO9HpOpRZfj8ZRsadU7DUwDVeBjcJtnN1Zx7quLO0X5BXaZhXv42pU7rWFXOcm6ZqCVzbC/8BgyV6tA6ebv+igmXXfxELB/VsNJcF4jNeWzPraHbkhUwZhxH4Wa7sbQiGCR1YtJaWi/93GOwg1g+P+BrhNS8TNJI/E75wklOTxN/S10gU4rcaux7sjigt94zVMdV53S8WU2+Nlvi6Ftsuh9VrT0ZeQjL6ovEtIAcVQovTZ0i1Fmsta6l4mIHVMhrhCYYMMKdsdkgmskfv/HWE7izujNDXMUxMttgdXfoFFt1k9gE8g4LJsJdXQRXOwTswf6ZP5nKXsbu0FGWt/HGUcSAqOfWumT/dZ6HFmFxTi2Ii21OZZtGIr06uNjlkwbqOIcdcFWV70voiRtR0X98EGU3liqietoeaDCaYPZKz1Z+84Ya5hqqCNK4GILu6jmJ3PzCNDogifx3Ez93gShcOUFkxbjRzLxdzPvd8WgeagCVKbBzVJLfR98LnDFgeeZmD2+7+D7p1Pq1zWOsVDAn4MqxQlYcJiadtpYmkeKTnUfMLw0rW4jWMNbYB/ABUedvXqtG+rmvMhqoBmDUM8UF3Gzq2ACa95887ogQMog8QG0w0kdHY8S64LI/6Y6EqwHEPasMBcycr/qrQ8VtTZuFY5bAGoUAyRGzqUDCLhOdZfOIlGQria6gdYov+arxKdA+8Beaw5aUa65qpXgvgH/sl_iv/UxNYxbC85G1K7BD32z1XwQ==/sl_hm/",
+  "enableThumbnail": true,
+  "tcParam": "start"
+},
   "pluginsConfiguration": {
     "CONTROL_BAR-PLAYER": {
+      "data": [
+        {
+          "label": "Barre de progression",
+          "control": "progressBar"
+        },
+        {
+          "label": "Capture Image",
+          "control": "download",
+          "icon": "screenshot",
+          "zone": 1,
+          "order": 2,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          },
+          "priority": 1
+        },
+        {
+          "label": "Download",
+          "control": "download",
+          "icon": "download",
+          "zone": 1,
+          "order": 1,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          },
+          "priority": 1
+        },
+        {
+          "label": "Playback Rate",
+          "control": "playbackRate",
+          "zone": 1,
+          "order": 3,
+          "priority": 1
+        },
+        {
+          "label": "backward-frame",
+          "icon": "backward-frame",
+          "control": "backward-frame",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "backward",
+          "icon": "backward",
+          "control": "backward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "Play / Pause",
+          "control": "playPause",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "forward",
+          "icon": "forward",
+          "control": "forward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "forward-frame",
+          "icon": "forward-frame",
+          "control": "forward-frame",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 3,
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
+          },
+          "priority": 1
+        },
+        {
+          "label": "Fullscreen",
+          "control": "toggleFullScreen",
+          "icon": "fullscreen",
+          "zone": 3,
+          "priority": 1
+        },
+        {
+          "label": "Aspect ratio (a)",
+          "control": "aspectRatio",
+          "zone": 3,
+          "priority": 1
+        }
+      ]
+    },
+    "CONTROL_BAR-PLAYER_1": {
       "data": [
         {
           "label": "Barre de progression",

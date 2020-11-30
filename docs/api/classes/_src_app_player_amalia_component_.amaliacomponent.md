@@ -458,7 +458,7 @@ Name | Type |
 
 ▸ **bindEvents**(): *void*
 
-Defined in src/app/player/amalia.component.ts:309
+Defined in src/app/player/amalia.component.ts:310
 
 In charge to bin events
 
@@ -470,7 +470,7 @@ ___
 
 ▸ **displayControlBar**(`_displayControlBar`: boolean): *void*
 
-Defined in src/app/player/amalia.component.ts:427
+Defined in src/app/player/amalia.component.ts:428
 
 Invoked on mouseenter and mouseleave events
 
@@ -488,7 +488,7 @@ ___
 
 ▸ **emitKeyDownEvent**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:449
+Defined in src/app/player/amalia.component.ts:450
 
 invoked on keydown
 
@@ -506,7 +506,7 @@ ___
 
 ▸ **emitKeyUpEvent**(): *void*
 
-Defined in src/app/player/amalia.component.ts:466
+Defined in src/app/player/amalia.component.ts:467
 
 **Returns:** *void*
 
@@ -516,7 +516,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:356
+Defined in src/app/player/amalia.component.ts:357
 
 Invoked on aspect ratio change
 
@@ -534,7 +534,7 @@ ___
 
 ▸ **handleError**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:346
+Defined in src/app/player/amalia.component.ts:347
 
 Invoked when error event
 
@@ -552,7 +552,7 @@ ___
 
 ▸ **handleFullScreenChange**(): *void*
 
-Defined in src/app/player/amalia.component.ts:439
+Defined in src/app/player/amalia.component.ts:440
 
 Invoked on fullscreen change
 
@@ -564,7 +564,7 @@ ___
 
 ▸ **handlePinnedControlbarChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:321
+Defined in src/app/player/amalia.component.ts:322
 
 **Parameters:**
 
@@ -580,7 +580,7 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/player/amalia.component.ts:334
+Defined in src/app/player/amalia.component.ts:335
 
 **Returns:** *void*
 
@@ -590,7 +590,7 @@ ___
 
 ▸ **handleSeeking**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:326
+Defined in src/app/player/amalia.component.ts:327
 
 **Parameters:**
 
@@ -618,7 +618,7 @@ ___
 
 ▸ **initDefaultHandlers**(): *void*
 
-Defined in src/app/player/amalia.component.ts:365
+Defined in src/app/player/amalia.component.ts:366
 
 In charge to init default handlers when input not specified
 
@@ -642,7 +642,7 @@ ___
 
 ▸ **onContextMenu**(`event`: MouseEvent): *boolean*
 
-Defined in src/app/player/amalia.component.ts:255
+Defined in src/app/player/amalia.component.ts:256
 
 Invoked on click context menu
 
@@ -662,7 +662,7 @@ ___
 
 ▸ **onErrorInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:417
+Defined in src/app/player/amalia.component.ts:418
 
 Invoked on error to init config
 
@@ -680,7 +680,7 @@ ___
 
 ▸ **onInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:403
+Defined in src/app/player/amalia.component.ts:404
 
 Invoked on  init config
 
@@ -698,7 +698,7 @@ ___
 
 ▸ **setPreviewThumbnail**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:388
+Defined in src/app/player/amalia.component.ts:389
 
 In charge to update thumbnail
 
@@ -716,7 +716,7 @@ ___
 
 ▸ **updatePlayerSizeWithAspectRatio**(): *void*
 
-Defined in src/app/player/amalia.component.ts:267
+Defined in src/app/player/amalia.component.ts:268
 
 In charge to update player size with aspect ratio
 
