@@ -203,6 +203,7 @@ export class MediaPlayerElement {
      */
     public setMediaPlayerWidth(width) {
         this.width = width;
+        this.logger.info('Player width : ' + this.width);
     }
 
     /**
@@ -222,5 +223,4 @@ export class MediaPlayerElement {
         }
         return displayState;
     }
-
 }

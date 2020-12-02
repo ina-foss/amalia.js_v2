@@ -82,7 +82,7 @@ export abstract class PluginBase<T> implements OnInit {
     init() {
         const defaultConfig = this.getDefaultConfig();
         try {
-            const customConfig = this.mediaPlayerElement.getPluginConfiguration(`${this.pluginName}-${this.playerId}`);
+            const customConfig = this.mediaPlayerElement.getPluginConfiguration(`${this.pluginName}-${this.playerId}-${this.pluginInstance}`);
             if (customConfig) {
                 if (this.pluginConfiguration) {
                     this.pluginConfiguration = {

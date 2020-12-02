@@ -222,7 +222,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     init() {
         super.init();
-        this.handleDisplayState();
         this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
         // init volume
@@ -243,6 +242,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
+        this.handleDisplayState();
     }
     /**
      * Return plugin configuration
@@ -707,7 +707,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handlePlayerMouseenter() {
         this.activated = true;
     }
-
     /**
      * Invoked player mouse leave event for :
      * - animate controlBar
@@ -716,7 +715,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handlePlayerMouseleave() {
         this.activated = false;
     }
-
     /**
      * update position subtitle onclick
      * @param position subtitle position

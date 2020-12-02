@@ -823,7 +823,7 @@ ___
 
 ▸ **buildUrlWithTc**(`element`: HTMLElement, `control`: [ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:777
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:775
 
 Handle to download url
 
@@ -884,7 +884,7 @@ ___
 
 ▸ **changeSlider**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:790
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:788
 
 change slider displayed
 
@@ -933,7 +933,7 @@ ___
 
 ▸ **displaySlider**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:745
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:743
 
 Toggle Display playbackslider
 
@@ -1131,7 +1131,7 @@ ___
 
 ▸ **handlePlayerMouseleave**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:716
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:715
 
 Invoked player mouse leave event for :
 - animate controlBar
@@ -1294,7 +1294,7 @@ ___
 
 ▸ **mute**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:814
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:812
 
 Mute sound
 
@@ -1330,7 +1330,7 @@ ___
 
 ▸ **ngOnDestroy**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:827
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:825
 
 Handle on component destroy
 
@@ -1372,7 +1372,7 @@ ___
 
 ▸ **pinControls**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:752
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:750
 
 Toggle Pinned class playback slider
 
@@ -1462,7 +1462,7 @@ ___
 
 ▸ **setVideoAspectRatio**(`ratio`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:761
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:759
 
 Set aspect Ratio
 
@@ -1498,7 +1498,7 @@ ___
 
 ▸ **switchDisplayCurrentTime**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:801
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:799
 
 switch timeCode display onclick
 
@@ -1510,7 +1510,7 @@ ___
 
 ▸ **toggleFullScreen**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:768
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:766
 
 Toggle fullscreen player
 
@@ -1522,7 +1522,7 @@ ___
 
 ▸ **unmute**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:821
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:819
 
 unmute sound
 
@@ -1534,7 +1534,7 @@ ___
 
 ▸ **updateSubtitlePosition**(`position?`: string): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:724
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:722
 
 update position subtitle onclick
 
