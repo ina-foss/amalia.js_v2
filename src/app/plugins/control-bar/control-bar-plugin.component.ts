@@ -240,7 +240,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.CONFIG_CHANGE, this.handleConfigChange);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
@@ -707,17 +706,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     private handlePlayerMouseenter() {
         this.activated = true;
-    }
-
-    /**
-     * Invoked on config change :
-     * - change config controlBar
-     */
-    @AutoBind
-    private handleConfigChange(event) {
-        this.pluginConfiguration.data = [];
-        this.pluginConfiguration = event;
-        this.elements = this.pluginConfiguration.data;
     }
     /**
      * Invoked player mouse leave event for :

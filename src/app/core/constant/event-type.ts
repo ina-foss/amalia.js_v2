@@ -160,9 +160,5 @@ export enum PlayerEventType {
     /**
      * Invocked on keydown when the mouse is over the player
      */
-    KEYDOWN = 'ina.player.KEYDOWN',
-    /**
-     * Invocked config change
-     */
-    CONFIG_CHANGE= 'ina.player.CONFIG_CHANGE'
+    KEYDOWN = 'ina.player.KEYDOWN'
 }
