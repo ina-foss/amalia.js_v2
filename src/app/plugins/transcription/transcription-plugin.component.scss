@@ -137,6 +137,7 @@
 
   .search-block {
     background-color: $amalia_plugin-transcription-bg-search;
+    position: relative;
     div {
       &.search-text {
         width: 75%;
@@ -194,15 +195,16 @@
         }
       }
       &.message {
-        display: block;
-        width: 50%;
+        bottom: 8px;
         overflow: hidden;
-        line-height: 16px;
-        height: 16px;
+        width: 100%;
         position: relative;
-        left: 20px;
-        top: -10px;
-        font-size: 14px;
+        height: 16px;
+        line-height: 16px;
+        > span {
+          font-size: 14px;
+          margin-left: 20px;
+        }
       }
       &.controls {
         height: 24px;
