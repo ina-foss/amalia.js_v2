@@ -2,7 +2,7 @@
   "debug": true,
   "logLevel": "trace",
   "player": {
-    "src": "http://localhost:4201/medias/F24_14301445_21032014_id_en.mp4",
+    "src": "http://localhost:4201/medias/outputlm.mp4",
     "crossOrigin": "anonymous",
     "autoplay": false
   },
@@ -10,7 +10,6 @@
     {
       "url": "http://localhost:4201/metadata/amalia01-ball.json",
       "headers": [
-
       ]
     },
     {
@@ -35,7 +34,37 @@
     "tcParam": "start"
   },
   "pluginsConfiguration": {
-    "CONTROL_BAR-PLAYER": {
+    "CONTROL_BAR-PLAYER2": {
+      "data": [
+        {
+          "label": "Barre de progression",
+          "control": "progressBar"
+        },
+        {
+          "label": "Play / Pause",
+          "control": "playPause",
+          "zone": 1,
+          "priority": 1
+        },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 1,
+          "data": {
+            "channelMergeVolume": true
+          },
+          "priority": 1
+        },
+        {
+          "label": "Fullscreen",
+          "control": "toggleFullScreen",
+          "icon": "fullscreen",
+          "zone": 3,
+          "priority": 1
+        }
+      ]
+    },
+    "CONTROL_BAR-PLAYER1": {
       "data": [
         {
           "label": "Barre de progression",
@@ -157,7 +186,7 @@
           "priority": 1,
           "data": {
             "channelMergeVolume": true,
-            "channelMergerNode": "l"
+            "channelMergerNode": ""
           }
         },
         {
@@ -199,7 +228,6 @@
           "icon": "slider",
           "zone": 3,
           "priority": 1
-
         }
       ]
     },
