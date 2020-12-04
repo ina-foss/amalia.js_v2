@@ -15,13 +15,17 @@
 </div>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-6 p-2" style="height: 500px;">
-            <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
-            <amalia-player id="ajs-poc" player-id="PLAYER"
-                           config="http://localhost:4201/configs/notilus-config-expert-player.json">
-                <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
+    <div class="row" style="height: 500px;width: 90%">
+        <div class="col-6 p-2" style="height: 500px;width: 90%;float: left">
+            <amalia-time-bar player-id="PLAYER" id="controlbar1"></amalia-time-bar>
+            <amalia-player id="PLAYER" player-id="PLAYER"
+                           config="http://localhost:4201/configs/base-config.json">
+                <amalia-control-bar style="display: block" id="controlbar" plugin-instance="1"
+                                    player-id="PLAYER"></amalia-control-bar>
+                <amalia-control-bar style="display: none;" id="controlbar2" plugin-instance="2"
+                                    player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
+
         </div>
         <div class="col-6 p-2" style="height: 500px;">
             <div style="width: 700px;height: 500px" id="transcription">
@@ -81,9 +85,26 @@
                 <small class="d-block mb-3 text-muted">&copy; 2020</small>
             </div>
         </div>
+        <button onclick="window.dispatchEvent(new Event('resize'))">Resize</button>
+        <button onclick="switchControlBar()"> Changer configuration controlBar</button>
+        ,
+        <!--config))">-->
     </footer>
     <script>
-        window.ajsp = document.getElementById("ajs-poc")
+        function switchControlBar() {
+            var player = document.getElementById('PLAYER');
+            var firstControlbar = player.shadowRoot.querySelector('#controlbar');
+            var secondControlbar = player.shadowRoot.querySelector('#controlbar2');
+            if (firstControlbar.style.display === 'block') {
+                firstControlbar.style.display = 'none';
+                secondControlbar.style.display = 'block';
+            } else if (secondControlbar.style.display === 'block') {
+                secondControlbar.style.display = 'none';
+                firstControlbar.style.display = 'block';
+            }
+        }
+
+        /*window.ajsp = document.getElementById("ajs-poc")
         window.ajsp.addEventListener("callback", handleEvent)
         window.ajsp.addEventListener("oncallback", handleEvent)
         // document.getElementById("addTranscription").addEventListener("click", addTranscription)
@@ -91,10 +112,10 @@
 
         function handleEvent() {
             console.info("handleEvent")
-        }
+        }*/
 
         // document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
-        document.getElementById("addTimeline").addEventListener("click", addTimeline)
+        /*document.getElementById("addTimeline").addEventListener("click", addTimeline)
 
         function addTranscription() {
             const transactionElement = document.createElement("amalia-transcription");
@@ -121,7 +142,7 @@
             const content = document.getElementById('storyboard');
             content.innerHTML = '';
             content.append(transactionElement);
-        }
+        }*/
     </script>
 </body>
 </html>

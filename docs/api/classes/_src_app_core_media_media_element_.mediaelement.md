@@ -882,7 +882,7 @@ ___
 
 ▸ **setupAudioNodes**(`data`: any): *void*
 
-Defined in src/app/core/media/media-element.ts:558
+Defined in src/app/core/media/media-element.ts:556
 
 Set Audio Nodes
 

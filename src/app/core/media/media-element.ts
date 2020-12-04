@@ -546,12 +546,8 @@ export class MediaElement {
         // Connect the source to the splitter
         source.connect(this.audioContextSplitter, 0, 0);
         // Connect splitter' outputs to each Gain Nodes
-        console.log(this.panLeft);
-        console.log(this.panRight);
         this.audioContextSplitter.connect(this.panLeft, 0);
         this.audioContextSplitter.connect(this.panRight, 1);
-
-
     }
 
     /**
@@ -564,7 +560,7 @@ export class MediaElement {
         if (this.audioContext) {
             if (data.channelMergerNode !== null) {
                 const panner = this.audioContext.createPanner();
-                panner.coneOuterGain = 1;
+                panner.coneOuterGain = 0.9;
                 panner.coneOuterAngle = 180;
                 panner.coneInnerAngle = 0;
                 if (data.channelMergerNode === 'l') {
@@ -586,7 +582,6 @@ export class MediaElement {
                 } else {
                     // Create a merger node, to get both signals back together
                     const merger = this.audioContext.createChannelMerger(2);
-
                     // Connect both channels to the Merger
                     this.panLeft.connect(merger, 0, 0);
                     this.panRight.connect(merger, 0, 1);
