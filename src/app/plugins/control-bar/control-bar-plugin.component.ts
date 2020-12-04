@@ -526,6 +526,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
             if (isFinite(tc)) {
                 this.tcThumbnail = tc;
+                console.log('hover');
+                console.log(tc);
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
             this.debounceFunction(event);
@@ -546,6 +548,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleProgressBarMouseUp(value) {
         this.inSliding = false;
         this.moveSliderCursor(value);
+        console.log(value * this.duration / 100);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
     }
     /**
