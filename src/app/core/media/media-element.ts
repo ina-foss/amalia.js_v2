@@ -560,7 +560,7 @@ export class MediaElement {
         if (this.audioContext) {
             if (data.channelMergerNode !== null) {
                 const panner = this.audioContext.createPanner();
-                panner.coneOuterGain = 1;
+                panner.coneOuterGain = 0.9;
                 panner.coneOuterAngle = 180;
                 panner.coneInnerAngle = 0;
                 if (data.channelMergerNode === 'l') {
