@@ -19,4 +19,6 @@ export interface TranscriptionConfig {
     withSubLocalisations: boolean;
     progressBar?: boolean;
     mode?: number;
+    label: string;
+    key?: string;
 }

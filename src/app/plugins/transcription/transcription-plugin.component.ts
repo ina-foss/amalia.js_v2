@@ -97,7 +97,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 withSubLocalisations: false,
                 karaokeTcDelta: TranscriptionPluginComponent.KARAOKE_TC_DELTA,
                 progressBar: false,
-                mode: 2
+                mode: 2,
+                label: 'Rechercher dans la transcription',
+                key: 'Enter'
             }
         };
     }
@@ -296,7 +298,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public searchWord(searchText: string) {
         this.listOfSearchedNodes = new Array<HTMLElement>();
-        if (searchText !== '' && searchText !== 'Rechercher') {
+        if (searchText !== '' && searchText !== this.pluginConfiguration.data.label) {
             Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
                 node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
                 if (TextUtils.hasSearchText(node.textContent, searchText)) {
@@ -318,14 +320,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
             this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
-            if (direction === 'down') {
+            if (direction === 'up') {
                 this.searchedWordIndex = this.searchedWordIndex - 1;
             } else {
                 this.searchedWordIndex = this.searchedWordIndex + 1;
             }
-            if (this.searchedWordIndex > this.listOfSearchedNodes.length - 1 && direction === 'up') {
+            if (this.searchedWordIndex > this.listOfSearchedNodes.length - 1 && direction === 'down') {
                 this.searchedWordIndex = 0;
-            } else if (this.searchedWordIndex < 0 && direction === 'down') {
+            } else if (this.searchedWordIndex < 0 && direction === 'up') {
                 this.searchedWordIndex = this.listOfSearchedNodes.length - 1;
             }
             this.index = this.searchedWordIndex + 1;
@@ -361,6 +363,16 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.index = 0;
         this.listOfSearchedNodes = null;
         this.searching = false;
-        this.searchText.nativeElement.value = 'Rechercher';
+        this.searchText.nativeElement.value = this.pluginConfiguration.data.label;
+    }
+
+    /***
+     * handleShortcut
+     * */
+    public handleShortcut(event) {
+        if (event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== '' ) {
+            this.searchWord(this.searchText.nativeElement.value);
+            this.searching = true;
+        }
     }
 }

@@ -14,6 +14,7 @@
 * [description](_src_app_core_config_model_transcription_config_.transcriptionconfig.md#optional-description)
 * [fps](_src_app_core_config_model_transcription_config_.transcriptionconfig.md#fps)
 * [karaokeTcDelta](_src_app_core_config_model_transcription_config_.transcriptionconfig.md#optional-karaoketcdelta)
+* [mode](_src_app_core_config_model_transcription_config_.transcriptionconfig.md#optional-mode)
 * [parseLevel](_src_app_core_config_model_transcription_config_.transcriptionconfig.md#parselevel)
 * [progressBar](_src_app_core_config_model_transcription_config_.transcriptionconfig.md#optional-progressbar)
 * [tcDelta](_src_app_core_config_model_transcription_config_.transcriptionconfig.md#optional-tcdelta)
@@ -54,6 +55,14 @@ ___
 • **karaokeTcDelta**? : *number*
 
 Defined in src/app/core/config/model/transcription-config.ts:16
+
+___
+
+### `Optional` mode
+
+• **mode**? : *number*
+
+Defined in src/app/core/config/model/transcription-config.ts:21
 
 ___
 
