@@ -18,4 +18,5 @@ export interface TranscriptionConfig {
     parseLevel: number;
     withSubLocalisations: boolean;
     progressBar?: boolean;
+    mode?: number;
 }

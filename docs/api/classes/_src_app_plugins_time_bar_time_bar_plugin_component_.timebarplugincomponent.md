@@ -165,7 +165,7 @@ ___
 
 ###  pluginInstance
 
-• **pluginInstance**: *string*
+• **pluginInstance**: *string* = ""
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginInstance](_src_app_core_plugin_plugin_base_.pluginbase.md#plugininstance)*
 

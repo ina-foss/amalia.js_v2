@@ -523,11 +523,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enableThumbnail && !this.inSliding) {
             const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
             const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-            const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
+            const tc = parseFloat((((event.offsetX - 4) * this.duration) / containerWidth).toFixed(2));
             if (isFinite(tc)) {
                 this.tcThumbnail = tc;
-                console.log('hover');
-                console.log(tc);
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
             this.debounceFunction(event);
@@ -548,7 +546,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleProgressBarMouseUp(value) {
         this.inSliding = false;
         this.moveSliderCursor(value);
-        console.log(value * this.duration / 100);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
     }
     /**
@@ -572,7 +569,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public updateThumbnail(event: MouseEvent) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-        const tc = parseFloat((event.clientX * this.duration / containerWidth).toFixed(2));
+        const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         const url = this.mediaPlayerElement.getThumbnailUrl(tc);
         if (isFinite(tc)) {
             this.thumbnailService.getThumbnail(url, tc).then((blob) => {

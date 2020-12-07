@@ -96,7 +96,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 parseLevel: 1,
                 withSubLocalisations: false,
                 karaokeTcDelta: TranscriptionPluginComponent.KARAOKE_TC_DELTA,
-                progressBar: false
+                progressBar: false,
+                mode: 2
             }
         };
     }
@@ -124,14 +125,26 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
-            this.disableRemoveAllSelectedNodes();
+            if (this.pluginConfiguration.data.mode === 1) {
+                this.disableRemoveAllSelectedNodes();
+            } else {
+                this.disableRemoveSelectedSegment();
+            }
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                 this.selectWords(karaokeTcDelta);
             }
             this.selectSegment(karaokeTcDelta);
         }
     }
-
+    /**
+     *  In charge to remove selected parent
+     */
+    private disableRemoveSelectedSegment() {
+        // remove selected segment
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`div.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+        });
+    }
     /**
      *  In charge to remove selected elements and disable progress bar
      */
@@ -160,15 +173,24 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private selectWords(karaokeTcDelta: number) {
         const elementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.w'));
+        let filteredNodes;
         if (elementNodes) {
-            const filteredNodes = elementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+            if (this.pluginConfiguration.data.mode === 1) {
+                filteredNodes = elementNodes
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                        && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+            } else {
+                 filteredNodes = elementNodes
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
+            }
             if (filteredNodes && filteredNodes.length > 0) {
                 filteredNodes.forEach(n => {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     // add active to parent segment
-                    n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    if ( this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
+                        n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    }
                 });
             }
         }
@@ -190,6 +212,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     const percentWidth = ((Math.round(this.currentTime) - tcIn) * 100) / (tcOut - tcIn);
                     const progressBar: HTMLElement = segmentNode.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
                     progressBar.style.width = percentWidth + '%';
+
                     segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
                 this.scroll();
