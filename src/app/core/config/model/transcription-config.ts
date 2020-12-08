@@ -20,5 +20,6 @@ export interface TranscriptionConfig {
     progressBar?: boolean;
     mode?: number;
     label: string;
+    labelSynchro: string;
     key?: string;
 }

@@ -1,4 +1,4 @@
-<div class="header" *ngIf="pluginConfiguration && pluginConfiguration.data.title" #headerBlock>
+<div class="header" #header *ngIf="pluginConfiguration && pluginConfiguration.data.title" #headerBlock>
     <div class="resume">
         <h3 class="heading">{{pluginConfiguration.data?.title}}</h3>
         <p *ngIf="pluginConfiguration.data?.description">{{pluginConfiguration.data?.description}}</p>
@@ -71,7 +71,7 @@
             </div>
         </div>
     </div>
-    <div class="auto-scroll" (click)="scrollToSelectedSegment()">
+    <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}"(click)="scrollToSelectedSegment()">
         <svg class="amalia-svg-auto-scroll-size icon">
             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#refresh'"></use>
         </svg>

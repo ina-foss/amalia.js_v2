@@ -32,6 +32,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public ignoreNextScroll = false;
     @ViewChild('transcriptionElement', {static: false})
     public transcriptionElement: ElementRef<HTMLElement>;
+    @ViewChild('header', {static: false})
+    public headerElement: ElementRef<HTMLElement>;
     @ViewChild('searchText')
     public searchText: ElementRef;
     public displayProgressBar = false;
@@ -44,6 +46,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public transcriptions: Array<TranscriptionLocalisation> = null;
     public listOfSearchedNodes: Array<HTMLElement>;
     private searchedWordIndex = 0;
+    public displaySynchro = false;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
@@ -99,7 +102,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 progressBar: false,
                 mode: 2,
                 label: 'Rechercher dans la transcription',
-                key: 'Enter'
+                key: 'Enter',
+                labelSynchro: 'Synchronisation de la transcription'
             }
         };
     }
@@ -260,6 +264,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     public handleScroll(ignoreNextScroll?: boolean) {
         this.ignoreNextScroll = ignoreNextScroll && ignoreNextScroll === true ? ignoreNextScroll : false;
+        this.updateSynchro();
     }
 
     /**
@@ -367,12 +372,36 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     /***
-     * handleShortcut
+     * handleShortcut on search button
      * */
     public handleShortcut(event) {
         if (event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== '' ) {
             this.searchWord(this.searchText.nativeElement.value);
             this.searching = true;
+        }
+    }
+    /**
+     * if scrolling and active segment is not visible add synchro button
+     */
+    @AutoBind
+    public updateSynchro() {
+        let top;
+        const activeNode: HTMLElement = this.transcriptionElement.nativeElement
+            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+        if (activeNode) {
+            if (this.headerElement) {
+                top = activeNode.offsetTop - this.headerElement.nativeElement.clientHeight;
+            } else {
+                top = activeNode.offsetTop;
+            }
+            // display button synchro if active node is not visible
+            if (this.transcriptionElement.nativeElement.scrollTop >= (activeNode.clientHeight + top)) {
+                this.displaySynchro = true;
+            } else {
+                this.displaySynchro = false;
+            }
+        } else {
+            this.displaySynchro = false;
         }
     }
 }
