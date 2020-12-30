@@ -24,6 +24,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public static SELECTOR_WORD = 'w';
     public static SEARCH_SELECTOR = 'selected-text';
     public static SELECTOR_SELECTED = 'selected';
+    public static SELECTOR_ACTIVATED = 'activated';
     public static SELECTOR_PROGRESS_BAR = '.progress-bar';
     public tcDisplayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's';
     public fps = DEFAULT.FPS;
@@ -134,6 +135,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.pluginConfiguration.data.mode === 1) {
                 this.disableRemoveAllSelectedNodes();
             } else {
+                this.disableSelectedWords();
                 this.disableRemoveSelectedSegment();
             }
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
@@ -142,6 +144,17 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.selectSegment(karaokeTcDelta);
         }
     }
+
+    /**
+     *  disabled selected words on rewinding
+     */
+    private disableSelectedWords() {
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`span.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+            if (this.currentTime < parseFloat(node.getAttribute('data-tcin'))) {
+                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+            }
+        });
+    }
     /**
      *  In charge to remove selected parent
      */
@@ -149,6 +162,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         // remove selected segment
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`div.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+        });
+        // Remove activated span
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`span.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`)).forEach(node => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
         });
     }
     /**
@@ -192,6 +209,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (filteredNodes && filteredNodes.length > 0) {
                 filteredNodes.forEach(n => {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
                     // add active to parent segment
                     if ( this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
@@ -242,22 +260,29 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * @param scrollNode scroll node element
      */
     private scrollToNode(scrollNode: HTMLElement) {
-        const scrollPos = scrollNode.offsetTop
-            - this.transcriptionElement.nativeElement.offsetTop;
-        const scrollWin = this.transcriptionElement.nativeElement.scrollTop;
-        // in charge of modifying the status of the scroll when reading segment is display area
-        if (this.ignoreNextScroll && scrollWin < scrollPos) {
-            this.ignoreNextScroll = false;
-        }
-        if (this.autoScroll && !this.ignoreNextScroll) {
-            // Sliding window
-            if ((scrollPos - this.transcriptionElement.nativeElement.scrollTop) > scrollNode.parentElement.clientHeight / 1.4) {
-                this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+        let top;
+        let visible;
+        if (scrollNode) {
+            if (this.headerElement) {
+                top = scrollNode.offsetTop - this.headerElement.nativeElement.clientHeight;
+            } else {
+                top = scrollNode.offsetTop;
+            }
+            if (this.transcriptionElement.nativeElement.scrollTop >= (scrollNode.clientHeight + top)) {
+                visible = false;
+            }
+            // in charge of modifying the status of the scroll when reading segment is display area
+            if (this.ignoreNextScroll && visible) {
+                this.ignoreNextScroll = false;
+            }
+            // scroll to node if he's not visible
+            if (this.autoScroll && !this.ignoreNextScroll) {
+                if (!visible) {
+                    this.transcriptionElement.nativeElement.scrollTop = top;
+                }
             }
         }
-
     }
-
 
     /**
      * handle scroll event
@@ -300,7 +325,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         }
     }
 
-
+    /**
+     * Search word ans scroll to first result
+     */
     public searchWord(searchText: string) {
         this.listOfSearchedNodes = new Array<HTMLElement>();
         if (searchText !== '' && searchText !== this.pluginConfiguration.data.label) {
@@ -322,6 +349,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         }
     }
 
+    /**
+     * Scroll to next or previous searched word
+     */
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
             this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
@@ -349,7 +379,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     /**
-     * Invocked on click scroll button
+     * Invocked on click SYNCHRO button
      */
     public scrollToSelectedSegment() {
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
@@ -386,16 +416,20 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     @AutoBind
     public updateSynchro() {
         let top;
+        let visible;
         const activeNode: HTMLElement = this.transcriptionElement.nativeElement
-            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`);
         if (activeNode) {
             if (this.headerElement) {
                 top = activeNode.offsetTop - this.headerElement.nativeElement.clientHeight;
             } else {
                 top = activeNode.offsetTop;
             }
-            // display button synchro if active node is not visible
             if (this.transcriptionElement.nativeElement.scrollTop >= (activeNode.clientHeight + top)) {
+                visible = false;
+            }
+            // display button synchro if active node is not visible
+            if (!visible) {
                 this.displaySynchro = true;
             } else {
                 this.displaySynchro = false;

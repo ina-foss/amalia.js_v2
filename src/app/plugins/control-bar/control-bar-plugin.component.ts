@@ -636,6 +636,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             indexOfCurrentPlaybackRate = 0;
         }
         playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
+        this.mediaPlayerElement.getMediaPlayer().playbackRate = playbackRate;
         return playbackRate;
     }
 
