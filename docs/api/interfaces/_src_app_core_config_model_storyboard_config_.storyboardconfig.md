@@ -14,6 +14,7 @@
 * [displayFormat](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#displayformat)
 * [enableLabel](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#enablelabel)
 * [frameIntervals](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-frameintervals)
+* [labelSynchro](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-labelsynchro)
 * [tcIntervals](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-tcintervals)
 * [tcParam](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-tcparam)
 * [theme](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#theme)
@@ -30,7 +31,7 @@ ___
 
 ###  displayFormat
 
-• **displayFormat**: *"h" | "m" | "s" | "f" | "ms" | "mms"*
+• **displayFormat**: *"h" | "m" | "s" | "f" | "ms" | "mms" | "minutes"*
 
 Defined in src/app/core/config/model/storyboard-config.ts:7
 
@@ -49,6 +50,14 @@ ___
 • **frameIntervals**? : *Array‹number›*
 
 Defined in src/app/core/config/model/storyboard-config.ts:6
+
+___
+
+### `Optional` labelSynchro
+
+• **labelSynchro**? : *string*
+
+Defined in src/app/core/config/model/storyboard-config.ts:9
 
 ___
 

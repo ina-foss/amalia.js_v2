@@ -107,6 +107,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.sizeThumbnail = this.getWindowWidth();
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
         }
     }
 
@@ -283,10 +284,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     private getWindowWidth() {
         const width = window.innerWidth;
         let size;
-        if (width >= 1920) {
-            size = 'l';
-        } else {
+        if (width <= 1280) {
             size = 'm';
+        } else {
+            size = 'l';
         }
         return size;
     }

@@ -161,6 +161,11 @@
       &.small {
         width: $amalia-plugin-storyboard-thumbnail-sw;
         height: $amalia-plugin-storyboard-thumbnail-sh;
+        &.m {
+          .label {
+            font-size: 10px;
+          }
+        }
         &.l {
           width: $amalia-plugin-storyboard-thumbnail-sw-l;
           height: $amalia-plugin-storyboard-thumbnail-sh-l;

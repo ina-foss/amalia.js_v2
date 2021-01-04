@@ -20,7 +20,7 @@
 
 ▸ **convertTcToSeconds**(`tc`: string): *number*
 
-Defined in src/app/core/utils/format-utils.ts:56
+Defined in src/app/core/utils/format-utils.ts:59
 
 **Parameters:**
 
@@ -36,7 +36,7 @@ ___
 
 ▸ **formatString**(`str`: string, ...`val`: string[]): *string*
 
-Defined in src/app/core/utils/format-utils.ts:77
+Defined in src/app/core/utils/format-utils.ts:80
 
  Formatting a string in java is using
 
@@ -53,7 +53,7 @@ ___
 
 ### `Static` formatTime
 
-▸ **formatTime**(`seconds`: number, `format`: "h" | "m" | "s" | "f" | "ms" | "mms" | "seconds", `defaultFps`: number): *string*
+▸ **formatTime**(`seconds`: number, `format`: "h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "seconds", `defaultFps`: number): *string*
 
 Defined in src/app/core/utils/format-utils.ts:15
 
@@ -66,7 +66,7 @@ Method in charge to format time
 Name | Type | Default | Description |
 ------ | ------ | ------ | ------ |
 `seconds` | number | - | seconds |
-`format` | "h" &#124; "m" &#124; "s" &#124; "f" &#124; "ms" &#124; "mms" &#124; "seconds" | "s" | Format specifier h/m/s/f/ms/mms |
+`format` | "h" &#124; "m" &#124; "s" &#124; "minutes" &#124; "f" &#124; "ms" &#124; "mms" &#124; "seconds" | "s" | Format specifier h/m/s/f/ms/mms |
 `defaultFps` | number | 25 | frames per second |
 
 **Returns:** *string*

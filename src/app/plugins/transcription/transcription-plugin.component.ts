@@ -77,6 +77,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.parseTranscription();
         }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleOnTimeChange);
     }
 
     /**
@@ -236,7 +237,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     const percentWidth = ((Math.round(this.currentTime) - tcIn) * 100) / (tcOut - tcIn);
                     const progressBar: HTMLElement = segmentNode.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
                     progressBar.style.width = percentWidth + '%';
-
                     segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
                 this.scroll();
@@ -260,25 +260,30 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * @param scrollNode scroll node element
      */
     private scrollToNode(scrollNode: HTMLElement) {
-        let top;
-        let visible;
         if (scrollNode) {
-            if (this.headerElement) {
-                top = scrollNode.offsetTop - this.headerElement.nativeElement.clientHeight;
-            } else {
-                top = scrollNode.offsetTop;
-            }
-            if (this.transcriptionElement.nativeElement.scrollTop >= (scrollNode.clientHeight + top)) {
-                visible = false;
-            }
+            const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
+            const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+            const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
+            const positionB = scrollNode.getBoundingClientRect();
+            // check if active element is not visible
+            const visible = (positionB.top + scrollNode.clientHeight) >= positionA.top &&
+                (positionB.top + scrollNode.clientHeight) <= this.transcriptionElement.nativeElement.clientHeight;
             // in charge of modifying the status of the scroll when reading segment is display area
-            if (this.ignoreNextScroll && visible) {
+            if (this.ignoreNextScroll && !visible) {
                 this.ignoreNextScroll = false;
             }
             // scroll to node if he's not visible
             if (this.autoScroll && !this.ignoreNextScroll) {
-                if (!visible) {
-                    this.transcriptionElement.nativeElement.scrollTop = top;
+                if (!(visible)) {
+                    if (!reverseMode) {
+                        this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                    } else {
+                        if (scrollPos > scrollNode.clientHeight) {
+                            this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
+                        } else {
+                            this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                        }
+                    }
                 }
             }
         }
@@ -400,7 +405,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.searching = false;
         this.searchText.nativeElement.value = this.pluginConfiguration.data.label;
     }
-
     /***
      * handleShortcut on search button
      * */
@@ -415,17 +419,16 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     @AutoBind
     public updateSynchro() {
-        let top;
         let visible;
         const activeNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`);
         if (activeNode) {
-            if (this.headerElement) {
-                top = activeNode.offsetTop - this.headerElement.nativeElement.clientHeight;
-            } else {
-                top = activeNode.offsetTop;
-            }
-            if (this.transcriptionElement.nativeElement.scrollTop >= (activeNode.clientHeight + top)) {
+            const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
+            const positionB = activeNode.getBoundingClientRect();
+            // check if active element is visible
+            const top = (positionB.top + activeNode.clientHeight) >= positionA.top;
+            const bottom = (positionB.top - activeNode.clientHeight) < this.transcriptionElement.nativeElement.clientHeight;
+            if (!(top && bottom)) {
                 visible = false;
             }
             // display button synchro if active node is not visible
