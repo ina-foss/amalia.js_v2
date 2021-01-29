@@ -211,6 +211,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list of shortcuts
      */
     public listOfShortcuts;
+    // Menu of controls
+    @ViewChild('controlsMenu')
+    public controlsMenu: ElementRef<HTMLElement>;
     public debounceFunction;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
@@ -240,6 +243,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
@@ -303,6 +307,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
         let frames: number;
+        if (this.enableMenu) {
+            this.enableMenu = !this.enableMenu;
+        }
         switch (control) {
             case 'playPause':
                 mediaPlayer.playPause();
@@ -806,7 +813,33 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.time = this.duration - this.currentTime;
         }
     }
-
+    @AutoBind
+    public hideControlsMenuOnClickDocument($event) {
+        $event.stopPropagation();
+        // click outside the player
+        if (this.enableMenu) {
+            this.enableMenu = !this.enableMenu;
+        }
+    }
+    @AutoBind
+    public hideControlsMenuOnClick($event) {
+        $event.stopPropagation();
+    }
+    @AutoBind
+    public hideAll() {
+        if (this.enableMenu) {
+            this.enableMenu = !this.enableMenu;
+        }
+        if (this.enableVolumeSlider) {
+            this.enableVolumeSlider = !this.enableVolumeSlider;
+        }
+        if (this.enableListPositionsSubtitle) {
+            this.enableListPositionsSubtitle = !this.enableListPositionsSubtitle;
+        }
+        if (this.enableListRatio) {
+            this.enableListRatio = !this.enableListRatio;
+        }
+    }
     /**
      * Mute sound
      */

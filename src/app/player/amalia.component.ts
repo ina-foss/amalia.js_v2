@@ -316,6 +316,7 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
+        document.addEventListener('click', this.hideControlsMenuOnClickDocument);
     }
 
     @AutoBind
@@ -466,5 +467,9 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     public emitKeyUpEvent() {
         this.listKeys = [];
+    }
+    @AutoBind
+    public hideControlsMenuOnClickDocument($event) {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.DOCUMENT_CLICK, $event);
     }
 }

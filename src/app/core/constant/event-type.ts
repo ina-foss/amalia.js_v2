@@ -160,5 +160,9 @@ export enum PlayerEventType {
     /**
      * Invocked on keydown when the mouse is over the player
      */
-    KEYDOWN = 'ina.player.KEYDOWN'
+    KEYDOWN = 'ina.player.KEYDOWN',
+    /**
+     * Invocked on click outside the player
+     */
+    DOCUMENT_CLICK = 'ina.player.DOCUMENT_CLICK'
 }
