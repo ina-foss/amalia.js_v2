@@ -60,7 +60,7 @@
                 </svg>
             </div>
         </div>
-        <div class="timeline">ss
+        <div class="timeline">
             <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
                 <div class="cue-point" *ngSwitchDefault
                      (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
