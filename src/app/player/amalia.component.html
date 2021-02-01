@@ -1,5 +1,7 @@
-<div #mediaContainer (mouseenter)="displayControlBar(true)" (mouseover)="playerHover= true" (mouseleave)="displayControlBar(false);playerHover= false"
-     (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{ratio}}"
+<div #mediaContainer (mouseenter)="displayControlBar(true);resetTimer()" (mouseover)="playerHover= true"
+     (mouseleave)="displayControlBar(false);playerHover= false"
+     (mousemove)="resetTimer();displayControlBar(true);" (load)="startTimer()" (contextmenu)="onContextMenu($event)"
+     class="media-player aspect-ratio-{{ratio}}"
      (keydown)="emitKeyDownEvent($event)" (keyup)="emitKeyUpEvent()"
      [ngClass]="{'pinned' : pinned}" tabindex="0">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>

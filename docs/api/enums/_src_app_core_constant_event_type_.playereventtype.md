@@ -15,6 +15,7 @@ Player event type
 * [CAST_PAUSED](_src_app_core_constant_event_type_.playereventtype.md#cast_paused)
 * [CAST_PLAYING](_src_app_core_constant_event_type_.playereventtype.md#cast_playing)
 * [DATA_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#data_change)
+* [DOCUMENT_CLICK](_src_app_core_constant_event_type_.playereventtype.md#document_click)
 * [DURATION_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#duration_change)
 * [ENDED](_src_app_core_constant_event_type_.playereventtype.md#ended)
 * [END_DATA_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#end_data_change)
@@ -116,6 +117,16 @@ ___
 Defined in src/app/core/constant/event-type.ts:72
 
 Invoked when data change
+
+___
+
+###  DOCUMENT_CLICK
+
+• **DOCUMENT_CLICK**: = "ina.player.DOCUMENT_CLICK"
+
+Defined in src/app/core/constant/event-type.ts:167
+
+Invocked on click outside the player
 
 ___
 

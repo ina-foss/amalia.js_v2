@@ -32,7 +32,7 @@ export class AmaliaComponent implements OnInit {
      * version of player
      */
     public version = environment.VERSION;
-
+    public chrono;
     /**
      * player state
      */
@@ -471,5 +471,21 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     public hideControlsMenuOnClickDocument($event) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.DOCUMENT_CLICK, $event);
+    }
+    // hide controlBar after 3 seconds of mouse inactive
+    public startTimer() {
+        this.chrono = setTimeout(this.hideControls , 1800);
+    }
+    // reset 3 seconds mouse inactive and start timer again
+    public resetTimer() {
+        // reset
+        clearTimeout(this.chrono);
+        this.startTimer();
+    }
+    // hide controls if mouse in inactive since 3 seconds
+    @AutoBind
+    public hideControls() {
+        this.playerHover = false;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
     }
 }

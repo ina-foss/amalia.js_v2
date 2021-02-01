@@ -21,7 +21,7 @@ describe('TimeBar plugin test', () => {
     const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
     const configurationManager = new ConfigurationManager(loader, logger);
-    const configPlugin: PluginConfigData<TimeBarConfig> = {name: 'TIME_BAR', data: {timeFormat: 'f'}};
+    const configPlugin: PluginConfigData<TimeBarConfig> = {name: 'TIME_BAR', data: {timeFormat: 'f', theme : 'outside'}};
     const component = new MediaElement(document.createElement('video'), new EventEmitter());
     const config: PlayerConfigData = {
         autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: 5000, poster: '', src: mediaSrc
