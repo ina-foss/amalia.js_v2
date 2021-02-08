@@ -23,6 +23,7 @@
 * [aspectRatio](_src_app_player_amalia_component_.amaliacomponent.md#aspectratio)
 * [autoplay](_src_app_player_amalia_component_.amaliacomponent.md#autoplay)
 * [callback](_src_app_player_amalia_component_.amaliacomponent.md#callback)
+* [chrono](_src_app_player_amalia_component_.amaliacomponent.md#chrono)
 * [configLoader](_src_app_player_amalia_component_.amaliacomponent.md#configloader)
 * [contextMenu](_src_app_player_amalia_component_.amaliacomponent.md#contextmenu)
 * [contextMenuState](_src_app_player_amalia_component_.amaliacomponent.md#contextmenustate)
@@ -70,13 +71,16 @@
 * [handleSeeked](_src_app_player_amalia_component_.amaliacomponent.md#private-handleseeked)
 * [handleSeeking](_src_app_player_amalia_component_.amaliacomponent.md#private-handleseeking)
 * [handleWindowResize](_src_app_player_amalia_component_.amaliacomponent.md#private-handlewindowresize)
+* [hideControls](_src_app_player_amalia_component_.amaliacomponent.md#hidecontrols)
 * [hideControlsMenuOnClickDocument](_src_app_player_amalia_component_.amaliacomponent.md#hidecontrolsmenuonclickdocument)
 * [initDefaultHandlers](_src_app_player_amalia_component_.amaliacomponent.md#private-initdefaulthandlers)
 * [ngOnInit](_src_app_player_amalia_component_.amaliacomponent.md#ngoninit)
 * [onContextMenu](_src_app_player_amalia_component_.amaliacomponent.md#oncontextmenu)
 * [onErrorInitConfig](_src_app_player_amalia_component_.amaliacomponent.md#private-onerrorinitconfig)
 * [onInitConfig](_src_app_player_amalia_component_.amaliacomponent.md#private-oninitconfig)
+* [resetTimer](_src_app_player_amalia_component_.amaliacomponent.md#resettimer)
 * [setPreviewThumbnail](_src_app_player_amalia_component_.amaliacomponent.md#private-setpreviewthumbnail)
+* [startTimer](_src_app_player_amalia_component_.amaliacomponent.md#starttimer)
 * [updatePlayerSizeWithAspectRatio](_src_app_player_amalia_component_.amaliacomponent.md#private-updateplayersizewithaspectratio)
 
 ## Constructors
@@ -144,6 +148,14 @@ ___
 Defined in src/app/player/amalia.component.ts:138
 
 Amalia events
+
+___
+
+###  chrono
+
+• **chrono**: *any*
+
+Defined in src/app/player/amalia.component.ts:35
 
 ___
 
@@ -615,6 +627,16 @@ update mediaPlayerWidth on window resize
 
 ___
 
+###  hideControls
+
+▸ **hideControls**(): *void*
+
+Defined in src/app/player/amalia.component.ts:487
+
+**Returns:** *void*
+
+___
+
 ###  hideControlsMenuOnClickDocument
 
 ▸ **hideControlsMenuOnClickDocument**(`$event`: any): *void*
@@ -711,6 +733,16 @@ Name | Type | Description |
 
 ___
 
+###  resetTimer
+
+▸ **resetTimer**(): *void*
+
+Defined in src/app/player/amalia.component.ts:480
+
+**Returns:** *void*
+
+___
+
 ### `Private` setPreviewThumbnail
 
 ▸ **setPreviewThumbnail**(`tc`: number): *void*
@@ -724,6 +756,16 @@ In charge to update thumbnail
 Name | Type |
 ------ | ------ |
 `tc` | number |
+
+**Returns:** *void*
+
+___
+
+###  startTimer
+
+▸ **startTimer**(): *void*
+
+Defined in src/app/player/amalia.component.ts:476
 
 **Returns:** *void*
 

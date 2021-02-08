@@ -6,7 +6,7 @@
             <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>
         </div>
     </div>
-    <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}"
+    <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinned}"
          *ngIf="enableThumbnail" [hidden]="thumbnailHidden" [ngStyle]="{'left':thumbnailPosition + 'px'}">
         <div #thumbnail class="thumbnail" [ngStyle]="{'background-image':'url('+thumbnailBlob+')'}"></div>
         <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
@@ -259,9 +259,9 @@
             <div class="menu" [ngClass]="{'on' : enableMenuSlider}"
                 (mouseleave)="enableMenuSlider = false">
                  <div [ngClass]="{'selected' : selectedSlider === 'slider1'}"
-                      (click)="changeSlider()">Mode lecture 01</div>
+                      (click)="changeSlider()">Mode lecture 1</div>
                  <div [ngClass]="{'selected' : selectedSlider === 'slider2'}"
-                     (click)="changeSlider()">Mode lecture 02</div>
+                     (click)="changeSlider()">Mode lecture 2</div>
             </div>
         </div>
 

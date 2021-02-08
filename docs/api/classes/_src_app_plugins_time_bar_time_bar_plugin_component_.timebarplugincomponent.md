@@ -21,6 +21,7 @@
 
 ### Properties
 
+* [active](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#active)
 * [currentTime](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#currenttime)
 * [displayFormat](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#displayformat)
 * [displayState](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#displaystate)
@@ -34,6 +35,7 @@
 * [pluginName](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#protected-pluginname)
 * [startTc](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#starttc)
 * [tcOffset](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#tcoffset)
+* [theme](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#theme)
 * [timeFormat](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#timeformat)
 * [PLUGIN_NAME](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#static-plugin_name)
 
@@ -48,8 +50,10 @@
 * [handleDisplayState](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#handledisplaystate)
 * [handleOnDurationChange](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#private-handleondurationchange)
 * [handleOnTimeChange](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#private-handleontimechange)
+* [hideTimeBar](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#hidetimebar)
 * [init](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#init)
 * [ngOnInit](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#ngoninit)
+* [showTimeBar](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#showtimebar)
 
 ## Constructors
 
@@ -59,7 +63,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:44
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:53
 
 **Parameters:**
 
@@ -70,6 +74,16 @@ Name | Type |
 **Returns:** *[TimeBarPluginComponent](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md)*
 
 ## Properties
+
+###  active
+
+• **active**: *boolean* = true
+
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:48
+
+Show timeBar
+
+___
 
 ###  currentTime
 
@@ -203,6 +217,16 @@ Defined in src/app/core/plugin/plugin-base.ts:17
 
 ___
 
+###  theme
+
+• **theme**: *"inside" | "outside"*
+
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:53
+
+theme
+
+___
+
 ###  timeFormat
 
 • **timeFormat**: *any*
@@ -279,7 +303,7 @@ Name | Type |
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:73
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:99
 
 Return default config
 
@@ -291,7 +315,7 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:66
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:79
 
 switch container class based on width
 
@@ -303,7 +327,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:90
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:116
 
 Invoked on duration change
 
@@ -315,10 +339,20 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:82
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:108
 
 Invoked time change event for :
 - update current time
+
+**Returns:** *void*
+
+___
+
+###  hideTimeBar
+
+▸ **hideTimeBar**(): *void*
+
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:83
 
 **Returns:** *void*
 
@@ -330,7 +364,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:55
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:63
 
 **Returns:** *void*
 
@@ -342,6 +376,16 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:50
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:58
+
+**Returns:** *void*
+
+___
+
+###  showTimeBar
+
+▸ **showTimeBar**(): *void*
+
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:87
 
 **Returns:** *void*

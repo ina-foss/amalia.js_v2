@@ -166,6 +166,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enablePinnedSlider = false;
     /**
+     *  Pinned slider and ControlBar
+     */
+    public pinned = false;
+    /**
      * display state (s/m/l)
      */
     public displayState: string;
@@ -176,7 +180,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * slider displayed
      */
-    public selectedSlider = 'slider2';
+    public selectedSlider = 'slider1';
     /**
      * show menu slider
      */
@@ -750,6 +754,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private displaySlider() {
         this.enablePlaybackSlider = !this.enablePlaybackSlider;
+        if (this.enablePlaybackSlider && this.pinnedSlider) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
+        } else {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+        }
+        this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
     }
 
     /**
@@ -758,7 +768,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private pinControls() {
         this.pinnedSlider = !this.pinnedSlider;
         this.enablePinnedSlider = !this.enablePinnedSlider;
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+        if (this.enablePlaybackSlider && this.pinnedSlider) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
+        } else {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+        }
+        this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
     }
 
     /**

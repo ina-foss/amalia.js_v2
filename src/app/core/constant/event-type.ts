@@ -158,6 +158,10 @@ export enum PlayerEventType {
      */
     PINNED_CONTROLBAR_CHANGE = 'ina.player.PINNED_CONTROLBAR_CHANGE',
     /**
+     * Invocked when click on pin controlbar and slider is active
+     */
+    PINNED_SLIDER_CHANGE = 'ina.player.PINNED_SLIDER_CHANGE',
+    /**
      * Invocked on keydown when the mouse is over the player
      */
     KEYDOWN = 'ina.player.KEYDOWN',

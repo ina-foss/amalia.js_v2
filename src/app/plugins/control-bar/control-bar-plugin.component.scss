@@ -616,7 +616,10 @@
         margin-left: -3px;
         left: 50%;
       }
-
+      &.selected {
+        font-weight: bold;
+        color: white;
+      }
       &.selected:after {
         content: "";
         position: absolute;
@@ -628,6 +631,7 @@
         left: 50%;
         margin-left: -7px;
         top: 30px;
+        pointer: grab;
       }
 
       &.first {
@@ -689,7 +693,7 @@
           width: 25px;
           height: 10px;
           background: $amalia-primary-color;
-          cursor: pointer;
+          cursor: grab;
           top: 10px;
           left: -13px;
         }
@@ -700,7 +704,7 @@
           width: 25px;
           height: 10px;
           background: $amalia-primary-color;
-          cursor: pointer;
+          cursor: grab;
           top: 10px;
         }
       }
@@ -740,6 +744,8 @@
 
           &.selected {
             //color: $amalia-ctrl-bar-pslider-bg-color-hover;
+            color:white;
+            font-weight: bold;
           }
 
           &:before {

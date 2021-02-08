@@ -176,6 +176,10 @@ export class AmaliaComponent implements OnInit {
      */
     public pinned = false;
     /**
+     * Pinned Slider state
+     */
+    public pinnedControlbar = false;
+    /**
      * In charge to load resource
      */
     private readonly httpClient: HttpClient;
@@ -315,13 +319,20 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
         document.addEventListener('click', this.hideControlsMenuOnClickDocument);
     }
 
     @AutoBind
     public handlePinnedControlbarChange(event) {
+        this.pinnedControlbar = event;
+        this.pinned = false;
+    }
+    @AutoBind
+    public handlePinnedSliderChange(event) {
         this.pinned = event;
+        this.pinnedControlbar = false;
     }
 
     @AutoBind
