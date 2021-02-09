@@ -48,7 +48,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list playback rate step (2/6/8)
      */
     @Input()
-    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0,  1, 2, 4, 6, 8, 10];
 
     /**
      * List of playback rate

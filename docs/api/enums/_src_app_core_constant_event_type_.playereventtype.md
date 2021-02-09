@@ -28,6 +28,7 @@ Player event type
 * [MUTE](_src_app_core_constant_event_type_.playereventtype.md#mute)
 * [PAUSED](_src_app_core_constant_event_type_.playereventtype.md#paused)
 * [PINNED_CONTROLBAR_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#pinned_controlbar_change)
+* [PINNED_SLIDER_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#pinned_slider_change)
 * [PLAYBACK_RATE_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#playback_rate_change)
 * [PLAYER_MOUSE_ENTER](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_enter)
 * [PLAYER_MOUSE_LEAVE](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_leave)
@@ -124,7 +125,7 @@ ___
 
 • **DOCUMENT_CLICK**: = "ina.player.DOCUMENT_CLICK"
 
-Defined in src/app/core/constant/event-type.ts:167
+Defined in src/app/core/constant/event-type.ts:171
 
 Invocked on click outside the player
 
@@ -204,7 +205,7 @@ ___
 
 • **KEYDOWN**: = "ina.player.KEYDOWN"
 
-Defined in src/app/core/constant/event-type.ts:163
+Defined in src/app/core/constant/event-type.ts:167
 
 Invocked on keydown when the mouse is over the player
 
@@ -247,6 +248,16 @@ ___
 Defined in src/app/core/constant/event-type.ts:159
 
 Invocked when click on pin controlbar
+
+___
+
+###  PINNED_SLIDER_CHANGE
+
+• **PINNED_SLIDER_CHANGE**: = "ina.player.PINNED_SLIDER_CHANGE"
+
+Defined in src/app/core/constant/event-type.ts:163
+
+Invocked when click on pin controlbar and slider is active
 
 ___
 
