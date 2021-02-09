@@ -502,7 +502,7 @@ ___
 
 ▸ **createMainMetadataIds**(`handleMetadataIds`: any, `metadataManager`: any): *[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)[]*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:381
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:384
 
 In charge to main timeline
 
@@ -547,7 +547,7 @@ ___
 
 ▸ **handleClickToDrawRect**(`event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:431
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:434
 
 **Parameters:**
 
@@ -581,7 +581,7 @@ ___
 
 ▸ **handleEnableZoom**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:464
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:467
 
 Enable zoom
 
@@ -605,7 +605,7 @@ ___
 
 ▸ **handleMouseEnterOnTc**(`event`: MouseEvent, `localisation`: [TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:411
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:414
 
 On mouse enter on tc bloc
 
@@ -624,7 +624,7 @@ ___
 
 ▸ **handleMouseLeaveOnTc**(`$event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:425
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:428
 
 On mouse enter on tc bloc
 
@@ -642,7 +642,7 @@ ___
 
 ▸ **handleMouseMoveToDrawRect**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:493
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:496
 
 handle mouse to draw
 
@@ -812,7 +812,7 @@ ___
 
 ▸ **updateFocusContainerOnSelection**(`focusWidth`: any, `leftPos`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:474
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:477
 
 In charge to change focus container
 
@@ -831,7 +831,7 @@ ___
 
 ▸ **updateMouseEvent**(`event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:505
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:508
 
 Update mouse position
 
