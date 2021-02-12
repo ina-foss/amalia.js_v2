@@ -10,13 +10,13 @@ import {DefaultMetadataConverter} from './metadata/converter/default-metadata-co
 import {DefaultMetadataLoader} from './metadata/loader/default-metadata-loader';
 
 describe('Test Media player element', () => {
-    /*let injector: TestBed;
+    let injector: TestBed;
+    let httpClient: HttpClient;
     let httpTestingController: HttpTestingController;
     const configData = require('tests/assets/config-mpe.json');
     const logger =  new DefaultLogger('root-player');
     const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     const metadataConverter = new DefaultMetadataConverter();
-    const metadataLoader = new DefaultMetadataLoader(HttpClient, metadataConverter, logger);
     const mpe = new MediaPlayerElement();
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -27,6 +27,7 @@ describe('Test Media player element', () => {
         httpTestingController = injector.inject(HttpTestingController);
         httpClient = injector.inject(HttpClient);
 
+
     }));
     afterEach(() => {
         // After every test, assert that there are no more pending requests.
@@ -34,6 +35,7 @@ describe('Test Media player element', () => {
     });
 
     it('Init Media player element ', () => {
+        /*const metadataLoader = new DefaultMetadataLoader(httpClient, metadataConverter, logger);
         expect(mpe.getState()).toEqual(PlayerState.CREATED);
         mpe.init(configData, metadataLoader, configLoader)
             .then((state) => {
@@ -41,11 +43,11 @@ describe('Test Media player element', () => {
             })
             .catch(() => {
                 fail('Error to init player');
-            });
+            });*/
     });
     it('test get aspect ratio', () => {
-        expect(mpe.aspectRatio).toEqual('16:9');
-    });*/
+        // expect(mpe.aspectRatio).toEqual('16:9');
+    });
 });
 
 

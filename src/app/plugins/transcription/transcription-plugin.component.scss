@@ -36,7 +36,10 @@
     position: absolute;
     right: 25px;
     bottom: 90px;
-
+    display: none;
+    &.active {
+      display: block;
+    }
     .icon {
       width: 32px;
       height: 32px;

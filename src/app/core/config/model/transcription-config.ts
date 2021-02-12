@@ -18,4 +18,8 @@ export interface TranscriptionConfig {
     parseLevel: number;
     withSubLocalisations: boolean;
     progressBar?: boolean;
+    mode?: number;
+    label: string;
+    labelSynchro: string;
+    key?: string;
 }

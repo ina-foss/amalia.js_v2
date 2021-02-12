@@ -1,12 +1,12 @@
 
-<div class="controlbar">
-    <div class="time-label {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
-        <div class="time-display" (click)="switchDisplayCurrentTime()">
+<div class="controlbar" (click)="hideControlsMenuOnClick($event)">
+    <div class="time-label {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider && enablePlaybackSlider}">
+        <div class="time-display" (click)="switchDisplayCurrentTime();hideAll()">
             <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
             <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>
         </div>
     </div>
-    <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinnedSlider}"
+    <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinned}"
          *ngIf="enableThumbnail" [hidden]="thumbnailHidden" [ngStyle]="{'left':thumbnailPosition + 'px'}">
         <div #thumbnail class="thumbnail" [ngStyle]="{'background-image':'url('+thumbnailBlob+')'}"></div>
         <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
@@ -30,7 +30,7 @@
                 <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
                     <!-- play pause mode-->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         (click)="controlClicked(c.control)" *ngSwitchCase="'playPause'"
+                         (click)="controlClicked(c.control);hideAll()" *ngSwitchCase="'playPause'"
                          class="play-pause control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
@@ -54,7 +54,7 @@
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" title="{{c.label}}"
                          (click)="changeAspectRatio()" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                         (mouseenter)="enableListRatio=true;enableVolumeSlider=false;enableListPositionsSubtitle=false">
+                         (mouseenter)="hideAll();enableListRatio=true;">
                         {{aspectRatio}}
                         <ul class="list-options" [ngClass]="{'on':enableListRatio}"
                             (mouseleave)="enableListRatio=false">
@@ -84,7 +84,7 @@
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
                          [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <a target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
+                        <a target="_blank" (click)="buildUrlWithTc(ctl,c);hideAll()" #ctl>
                             <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                             </svg>
@@ -102,7 +102,7 @@
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
                          [ngStyle]="{'order':c.order ? c.order:'0'}"
-                         (mouseenter)="enableVolumeSlider=true;enableListPositionsSubtitle=false;enableListRatio=false"
+                         (mouseenter)="hideAll();enableVolumeSlider=true;"
                          (click)="setupAudioNodes(c.data)">
                         <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
                              class="amalia-svg-volume-on-size icon" (click)="mute();changeVolume(0)">
@@ -183,7 +183,7 @@
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          *ngSwitchCase="'subtitles'" class="control subtitle" title="{{c.label}}"
                          [ngStyle]="{'order':c.order ? c.order:'0'}"
-                         (mouseenter)="enableListPositionsSubtitle=true;enableVolumeSlider=false;enableListRatio=false"
+                         (mouseenter)="hideAll();enableListPositionsSubtitle=true;"
                             (click)="updateSubtitlePosition()">
                         <svg class="amalia-svg-subtitle-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"></use>
@@ -203,7 +203,7 @@
                     <!--Menu Button-->
                     <div  tooltip="{{c.label}}" [ngClass]="{'show':(displayState ==='m' || displayState === 'sm') && controls.length > 0}" *ngSwitchCase="'menu'" class="control menu"
                          title="{{c.label}}"
-                         (mouseenter)="enableMenu=true;enableVolumeSlider=false"
+                         (click)="hideAll();enableMenu = !enableMenu"
                          [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-dots-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#dots'"></use>
@@ -222,7 +222,7 @@
         </div>
         <!-- Slider -->
         <div class="playback-rate-slider {{displayState}} "
-             [ngClass]="{'activated' : (selectedSlider === 'slider1' && enablePlaybackSlider) || (selectedSlider === 'slider1' && enablePinnedSlider)}"
+             [ngClass]="{'activated' : (selectedSlider === 'slider1' && enablePlaybackSlider)}"
              *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
             <div class="playback-rate-labels">
                 <input type="range" list="playback-rate-list" #playbackRateCursor
@@ -243,7 +243,7 @@
         </div>
         <!-- Slider 2-->
         <div class="playback-rate-slider2 {{displayState}}"
-             [ngClass]="{'activated' : (selectedSlider === 'slider2' && enablePlaybackSlider) || (selectedSlider === 'slider2' && enablePinnedSlider)}"
+             [ngClass]="{'activated' : (selectedSlider === 'slider2' && enablePlaybackSlider)}"
              *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
             <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
                  [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
@@ -252,24 +252,23 @@
                 <div class="line"></div>
             </div>
         </div>
-        <div class="menu-slider" [ngClass]="{'activated' : enablePlaybackSlider || enablePinnedSlider}" (mouseenter)="enableMenuSlider = true">
+        <div class="menu-slider" [ngClass]="{'activated' : enablePlaybackSlider}" (mouseenter)="enableMenuSlider = true">
             <svg class="amalia-svg-switch-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#switch'"></use>
             </svg>
             <div class="menu" [ngClass]="{'on' : enableMenuSlider}"
                 (mouseleave)="enableMenuSlider = false">
                  <div [ngClass]="{'selected' : selectedSlider === 'slider1'}"
-                      (click)="changeSlider()">Mode lecture 01</div>
+                      (click)="changeSlider()">Mode lecture 1</div>
                  <div [ngClass]="{'selected' : selectedSlider === 'slider2'}"
-                     (click)="changeSlider()">Mode lecture 02</div>
+                     (click)="changeSlider()">Mode lecture 2</div>
             </div>
         </div>
 
     </div>
     <!-- Menu of controls displayed on "m" grid-->
-    <div class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider}"
-         (mouseenter)="activated= true"
-         (mouseleave)="enableMenu=false">
+    <div #controlsMenu class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider && enablePlaybackSlider}"
+         (mouseenter)="activated= true">
         <ul>
             <ng-container *ngFor="let c of controls; " [ngSwitch]="c.control">
                 <!--FullScreen Button -->
@@ -355,7 +354,7 @@
                     </ul>
                 </li>
                 <!--Other controls-->
-                <li class="control" (click)="controlClicked(c.control)" *ngSwitchDefault
+                <li class="control" (click)="controlClicked(c.control);hideAll()" *ngSwitchDefault
                     [ngStyle]="{'order':c.order ? c.order:'0'}">
                     <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>

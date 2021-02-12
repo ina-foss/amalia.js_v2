@@ -48,7 +48,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list playback rate step (2/6/8)
      */
     @Input()
-    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0,  1, 2, 4, 6, 8, 10];
 
     /**
      * List of playback rate
@@ -166,6 +166,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enablePinnedSlider = false;
     /**
+     *  Pinned slider and ControlBar
+     */
+    public pinned = false;
+    /**
      * display state (s/m/l)
      */
     public displayState: string;
@@ -176,7 +180,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * slider displayed
      */
-    public selectedSlider = 'slider2';
+    public selectedSlider = 'slider1';
     /**
      * show menu slider
      */
@@ -211,6 +215,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list of shortcuts
      */
     public listOfShortcuts;
+    // Menu of controls
+    @ViewChild('controlsMenu')
+    public controlsMenu: ElementRef<HTMLElement>;
     public debounceFunction;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
@@ -240,6 +247,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
@@ -303,6 +311,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
         let frames: number;
+        if (this.enableMenu) {
+            this.enableMenu = !this.enableMenu;
+        }
         switch (control) {
             case 'playPause':
                 mediaPlayer.playPause();
@@ -523,7 +534,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enableThumbnail && !this.inSliding) {
             const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
             const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-            const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
+            const tc = parseFloat((((event.offsetX - 4) * this.duration) / containerWidth).toFixed(2));
             if (isFinite(tc)) {
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
@@ -569,7 +580,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public updateThumbnail(event: MouseEvent) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-        const tc = parseFloat((event.clientX * this.duration / containerWidth).toFixed(2));
+        const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         const url = this.mediaPlayerElement.getThumbnailUrl(tc);
         if (isFinite(tc)) {
             this.thumbnailService.getThumbnail(url, tc).then((blob) => {
@@ -636,6 +647,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             indexOfCurrentPlaybackRate = 0;
         }
         playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
+        this.mediaPlayerElement.getMediaPlayer().playbackRate = playbackRate;
         return playbackRate;
     }
 
@@ -742,6 +754,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private displaySlider() {
         this.enablePlaybackSlider = !this.enablePlaybackSlider;
+        if (this.enablePlaybackSlider && this.pinnedSlider) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
+        } else {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+        }
+        this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
     }
 
     /**
@@ -750,7 +768,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private pinControls() {
         this.pinnedSlider = !this.pinnedSlider;
         this.enablePinnedSlider = !this.enablePinnedSlider;
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+        if (this.enablePlaybackSlider && this.pinnedSlider) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
+        } else {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+        }
+        this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
     }
 
     /**
@@ -805,7 +828,33 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.time = this.duration - this.currentTime;
         }
     }
-
+    @AutoBind
+    public hideControlsMenuOnClickDocument($event) {
+        $event.stopPropagation();
+        // click outside the player
+        if (this.enableMenu) {
+            this.enableMenu = !this.enableMenu;
+        }
+    }
+    @AutoBind
+    public hideControlsMenuOnClick($event) {
+        $event.stopPropagation();
+    }
+    @AutoBind
+    public hideAll() {
+        if (this.enableMenu) {
+            this.enableMenu = !this.enableMenu;
+        }
+        if (this.enableVolumeSlider) {
+            this.enableVolumeSlider = !this.enableVolumeSlider;
+        }
+        if (this.enableListPositionsSubtitle) {
+            this.enableListPositionsSubtitle = !this.enableListPositionsSubtitle;
+        }
+        if (this.enableListRatio) {
+            this.enableListRatio = !this.enableListRatio;
+        }
+    }
     /**
      * Mute sound
      */

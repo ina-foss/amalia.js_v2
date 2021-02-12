@@ -38,7 +38,7 @@ describe('Test Metadata manager', () => {
             autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
         };
         const pluginsConfiguration: Map<string, PluginConfigData<any>> = new Map<string, PluginConfigData<any>>();
-        const conf: PluginConfigData<TimeBarConfig> = {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f'}};
+        const conf: PluginConfigData<TimeBarConfig> = {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f', theme : 'outside'}};
         pluginsConfiguration.set(TimeBarPluginComponent.PLUGIN_NAME, conf);
 
         const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();

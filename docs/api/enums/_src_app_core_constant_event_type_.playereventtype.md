@@ -15,6 +15,7 @@ Player event type
 * [CAST_PAUSED](_src_app_core_constant_event_type_.playereventtype.md#cast_paused)
 * [CAST_PLAYING](_src_app_core_constant_event_type_.playereventtype.md#cast_playing)
 * [DATA_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#data_change)
+* [DOCUMENT_CLICK](_src_app_core_constant_event_type_.playereventtype.md#document_click)
 * [DURATION_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#duration_change)
 * [ENDED](_src_app_core_constant_event_type_.playereventtype.md#ended)
 * [END_DATA_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#end_data_change)
@@ -27,6 +28,7 @@ Player event type
 * [MUTE](_src_app_core_constant_event_type_.playereventtype.md#mute)
 * [PAUSED](_src_app_core_constant_event_type_.playereventtype.md#paused)
 * [PINNED_CONTROLBAR_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#pinned_controlbar_change)
+* [PINNED_SLIDER_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#pinned_slider_change)
 * [PLAYBACK_RATE_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#playback_rate_change)
 * [PLAYER_MOUSE_ENTER](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_enter)
 * [PLAYER_MOUSE_LEAVE](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_leave)
@@ -119,6 +121,16 @@ Invoked when data change
 
 ___
 
+###  DOCUMENT_CLICK
+
+• **DOCUMENT_CLICK**: = "ina.player.DOCUMENT_CLICK"
+
+Defined in src/app/core/constant/event-type.ts:171
+
+Invocked on click outside the player
+
+___
+
 ###  DURATION_CHANGE
 
 • **DURATION_CHANGE**: = "ina.player.DURATION_CHANGE"
@@ -193,7 +205,7 @@ ___
 
 • **KEYDOWN**: = "ina.player.KEYDOWN"
 
-Defined in src/app/core/constant/event-type.ts:163
+Defined in src/app/core/constant/event-type.ts:167
 
 Invocked on keydown when the mouse is over the player
 
@@ -236,6 +248,16 @@ ___
 Defined in src/app/core/constant/event-type.ts:159
 
 Invocked when click on pin controlbar
+
+___
+
+###  PINNED_SLIDER_CHANGE
+
+• **PINNED_SLIDER_CHANGE**: = "ina.player.PINNED_SLIDER_CHANGE"
+
+Defined in src/app/core/constant/event-type.ts:163
+
+Invocked when click on pin controlbar and slider is active
 
 ___
 
