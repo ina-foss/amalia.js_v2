@@ -1,3 +1,5 @@
-<div class="start {{displayState}}">{{startTc|tcFormat:displayFormat:fps}}</div>
-<div class="currentTime {{displayState}}">{{currentTime|tcFormat:displayFormat:fps}}</div>
-<div class="end {{displayState}}">{{startTc + duration|tcFormat:displayFormat:fps}}</div>
+<div class="timebar {{theme}}">
+    <div class="start {{displayState}}" [ngClass]="{'active' : active}">{{startTc|tcFormat:displayFormat:fps}}</div>
+    <div class="currentTime {{displayState}}" [ngClass]="{'active' : active}">{{currentTime|tcFormat:displayFormat:fps}}</div>
+    <div class="end {{displayState}}" [ngClass]="{'active' : active}">{{startTc + duration|tcFormat:displayFormat:fps}}</div>
+</div>

@@ -34,7 +34,7 @@ Media element
 * [mse](_src_app_core_media_media_element_.mediaelement.md#private-mse)
 * [panLeft](_src_app_core_media_media_element_.mediaelement.md#panleft)
 * [panRight](_src_app_core_media_media_element_.mediaelement.md#panright)
-* [reverseMode](_src_app_core_media_media_element_.mediaelement.md#private-reversemode)
+* [reverseMode](_src_app_core_media_media_element_.mediaelement.md#reversemode)
 * [volumeLeft](_src_app_core_media_media_element_.mediaelement.md#volumeleft)
 * [volumeRight](_src_app_core_media_media_element_.mediaelement.md#volumeright)
 * [DEFAULT_FRAMERATE](_src_app_core_media_media_element_.mediaelement.md#static-default_framerate)
@@ -243,7 +243,7 @@ Defined in src/app/core/media/media-element.ts:43
 
 ___
 
-### `Private` reverseMode
+###  reverseMode
 
 • **reverseMode**: *boolean* = false
 

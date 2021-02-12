@@ -17,7 +17,7 @@
 <div class="container-fluid">
     <div class="row" style="height: 500px;width: 90%">
         <div class="col-6 p-2" style="height: 500px;width: 90%;float: left">
-            <amalia-time-bar player-id="PLAYER" id="controlbar1"></amalia-time-bar>
+            <!--            <amalia-time-bar player-id="PLAYER" id="controlbar1"></amalia-time-bar>-->
             <amalia-player id="PLAYER" player-id="PLAYER"
                            config="http://localhost:4201/configs/base-config.json">
                 <amalia-control-bar style="display: block" id="controlbar" plugin-instance="1"
@@ -25,12 +25,11 @@
                 <amalia-control-bar style="display: none;" id="controlbar2" plugin-instance="2"
                                     player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
-
         </div>
         <div class="col-6 p-2" style="height: 500px;">
             <div style="width: 700px;height: 500px" id="transcription">
                 <amalia-timeline
-                        plugin-instance="P1">
+                        plugin-instance="P1" playerId="PLAYER">
                 </amalia-timeline>
             </div>
         </div>
@@ -87,8 +86,7 @@
         </div>
         <button onclick="window.dispatchEvent(new Event('resize'))">Resize</button>
         <button onclick="switchControlBar()"> Changer configuration controlBar</button>
-        ,
-        <!--config))">-->
+
     </footer>
     <script>
         function switchControlBar() {
@@ -104,15 +102,15 @@
             }
         }
 
-        /*window.ajsp = document.getElementById("ajs-poc")
-        window.ajsp.addEventListener("callback", handleEvent)
-        window.ajsp.addEventListener("oncallback", handleEvent)
+        window.ajsp = document.getElementById("PLAYER")
+        // window.ajsp.addEventListener("callback", handleEvent)
+        // window.ajsp.addEventListener("oncallback", handleEvent)
         // document.getElementById("addTranscription").addEventListener("click", addTranscription)
         window.ajsp.addEventListener("ina.player.PLAYING", handleEvent)
 
         function handleEvent() {
             console.info("handleEvent")
-        }*/
+        }
 
         // document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
         /*document.getElementById("addTimeline").addEventListener("click", addTimeline)

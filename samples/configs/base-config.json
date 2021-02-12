@@ -1,6 +1,6 @@
 {
   "debug": true,
-  "logLevel": "trace",
+  "logLevel": "debug",
   "player": {
     "src": "http://localhost:4201/medias/outputlm.mp4",
     "crossOrigin": "anonymous",
@@ -26,6 +26,11 @@
     },
     {
       "url": "http://localhost:4201/metadata/sample-transcription.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/sound_segments.json"
+    },{
+      "url": "http://localhost:8001/api/video/amalia/286941?clientType=SEGMENTATION-P1"
     }
   ],
   "thumbnail": {
@@ -80,7 +85,7 @@
           "icon": "screenshot",
           "zone": 1,
           "order": 2,
-          "priority": 2,
+          "priority": 1,
           "data": {
             "href": "http://localhost:4200/assets/logo.svg"
           }

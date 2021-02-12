@@ -89,6 +89,7 @@
 * ["src/app/plugins/storyboard/storyboard-plugin.component"](modules/_src_app_plugins_storyboard_storyboard_plugin_component_.md)
 * ["src/app/plugins/subtitles/subtitles-plugin.component"](modules/_src_app_plugins_subtitles_subtitles_plugin_component_.md)
 * ["src/app/plugins/time-bar/time-bar-plugin.component"](modules/_src_app_plugins_time_bar_time_bar_plugin_component_.md)
+* ["src/app/plugins/time-bar/time-bar-plugin.component.spec"](modules/_src_app_plugins_time_bar_time_bar_plugin_component_spec_.md)
 * ["src/app/plugins/timeline/timeline-plugin.component"](modules/_src_app_plugins_timeline_timeline_plugin_component_.md)
 * ["src/app/plugins/transcription/transcription-plugin.component"](modules/_src_app_plugins_transcription_transcription_plugin_component_.md)
 * ["src/app/service/media-player-service"](modules/_src_app_service_media_player_service_.md)

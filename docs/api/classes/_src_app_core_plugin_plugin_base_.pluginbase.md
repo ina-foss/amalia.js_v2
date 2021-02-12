@@ -142,7 +142,7 @@ ___
 
 ###  pluginInstance
 
-• **pluginInstance**: *string*
+• **pluginInstance**: *string* = ""
 
 Defined in src/app/core/plugin/plugin-base.ts:54
 

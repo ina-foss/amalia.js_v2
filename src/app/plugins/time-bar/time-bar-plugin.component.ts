@@ -42,7 +42,15 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Plugin display state
      */
     public displayState;
+    /**
+     * Show timeBar
+     */
+    public active = true;
 
+    /**
+     * theme
+     */
+    public theme: 'inside' | 'outside';
     constructor(playerService: MediaPlayerService) {
         super(playerService, TimeBarPluginComponent.PLUGIN_NAME);
     }
@@ -55,10 +63,15 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     init() {
         super.init();
         this.handleDisplayState();
+        this.theme = this.pluginConfiguration.data.theme;
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        if (this.theme === 'inside') {
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.hideTimeBar);
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
+        }
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
     }
-
     /**
      * switch container class based on width
      */
@@ -66,12 +79,25 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
     }
+    @AutoBind
+    public hideTimeBar() {
+        this.active = false;
+    }
+    @AutoBind
+    public showTimeBar() {
+        if (this.displayState !== 's') {
+            this.active = true;
+        } else {
+            this.active = false;
+        }
+    }
+
 
     /**
      * Return default config
      */
     getDefaultConfig(): PluginConfigData<TimeBarConfig> {
-        return {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f'}};
+        return {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f', theme: 'outside'}};
     }
 
     /**

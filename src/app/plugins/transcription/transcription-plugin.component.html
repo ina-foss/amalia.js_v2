@@ -1,4 +1,4 @@
-<div class="header" *ngIf="pluginConfiguration && pluginConfiguration.data.title" #headerBlock>
+<div class="header" #header *ngIf="pluginConfiguration && pluginConfiguration.data.title">
     <div class="resume">
         <h3 class="heading">{{pluginConfiguration.data?.title}}</h3>
         <p *ngIf="pluginConfiguration.data?.description">{{pluginConfiguration.data?.description}}</p>
@@ -6,22 +6,22 @@
 </div>
 
 <div *ngIf="transcriptions && transcriptions.length>0; then transcriptionBlock; else emptyBlock"></div>
-<div class="search-block">
+<div class="search-block" (keyup)="handleShortcut($event)">
     <div class="search-text">
         <div class="search-icon" (click)="searchWord(searchText.value);searching=true" [ngClass]="{'hidden' : searching === true}">
             <svg class="amalia-svg-search-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#search'"></use>
             </svg>
         </div>
-        <div class="search-result" *ngIf="listOfSearchedNodes?.length > 0">
+        <div class="search-result" *ngIf="listOfSearchedNodes?.length >= 0 && searching === true">
                 {{index}} / {{listOfSearchedNodes?.length}}  
-                <svg class="amalia-svg-clear-size icon" (click)="clearSearchList();;active = false">
+                <svg class="amalia-svg-clear-size icon" (click)="clearSearchList();active = false">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#clear'"></use>
                 </svg>
         </div>
         <input type="text"
-               value="Rechercher"
-               (click)="searchText.value ='';active = true"
+               value= {{pluginConfiguration.data.label}}
+               (click)="searchText.value ='';active= true"
                [ngClass]="{'active' : active === true}"
                #searchText>
     </div>
@@ -71,7 +71,7 @@
             </div>
         </div>
     </div>
-    <div class="auto-scroll" (click)="scrollToSelectedSegment()">
+    <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}"(click)="scrollToSelectedSegment()">
         <svg class="amalia-svg-auto-scroll-size icon">
             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#refresh'"></use>
         </svg>

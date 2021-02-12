@@ -6,7 +6,6 @@ import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {StoryboardConfig} from '../../core/config/model/storyboard-config';
 import * as _ from 'lodash';
 import {MediaPlayerService} from '../../service/media-player-service';
-import {TranscriptionPluginComponent} from '../transcription/transcription-plugin.component';
 
 @Component({
     selector: 'amalia-storyboard',
@@ -16,10 +15,20 @@ import {TranscriptionPluginComponent} from '../transcription/transcription-plugi
 })
 export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> implements OnInit {
     public static PLUGIN_NAME = 'STORYBOARD';
+    public static SELECTOR_THUMBNAIL = 'thumbnail';
+    public static SELECTOR_SELECTED = 'active';
+    public second = 'seconde';
+    public minute = 'minute';
+    public images = 'images';
     public baseUrl: string;
+    public msgSmall = 'Affichage petites miniatures';
+    public msgMedium = 'Affichage moyennes miniatures';
+    public msgLarge = 'Affichage grandes miniatures';
     public listOfThumbnail: Array<number>;
     @ViewChild('storyboardElement', {static: false})
     public storyboardElement: ElementRef<HTMLElement>;
+    @ViewChild('headerElement', {static: false})
+    public headerElement: ElementRef<HTMLElement>;
     public currentTime: number;
     /**
      * Media duration
@@ -32,7 +41,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Display format specifier h|m|s|f|ms|mms
      */
-    public displayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' = 'f';
+    public displayFormat: 'h' | 'm' | 's' | 'minutes' |'f' | 'ms' | 'mms' = 'f';
     /**
      * Media fps
      */
@@ -49,7 +58,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Time code interval
      */
-    public tcIntervals = [10, 30, 60];
+    public tcIntervals = [1, 2 , 5 , 10 , 30 , 60 , 120 , 240];
     /**
      * frame intervals
      */
@@ -65,6 +74,16 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public openIntervalList: boolean;
 
+    /**
+     * Default size of thumbnails
+     */
+    public sizeThumbnail = 'm';
+
+    /**
+     * default state of button synchro
+     */
+    public displaySynchro = false;
+    public ignoreNextScroll = false;
     constructor(playerService: MediaPlayerService) {
         super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
     }
@@ -85,8 +104,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             if (this.mediaPlayerElement.isMetadataLoaded) {
                 this.initStoryboard();
             }
+            this.sizeThumbnail = this.getWindowWidth();
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
         }
     }
 
@@ -131,16 +152,54 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 tcIntervals: this.tcIntervals,
                 frameIntervals: this.frameIntervals,
                 displayFormat: 'f',
-                theme: 'v'
+                theme: 'v',
+                labelSynchro: 'Synchronisation du storyboard'
             }
         };
     }
 
     /**
+     * Handle Scroll
+     */
+    public handleScroll(ignoreNextScroll?: boolean) {
+        this.ignoreNextScroll = ignoreNextScroll && ignoreNextScroll === true ? ignoreNextScroll : false;
+        this.updateSynchro();
+    }
+
+    /**
+     *
+     * if scrolling and active thumbnail is not visible add synchro button
+     */
+    @AutoBind
+    public updateSynchro() {
+        let visible = true;
+        const activeNode: HTMLElement = this.storyboardElement.nativeElement
+            .querySelector(`.${StoryboardPluginComponent.SELECTOR_THUMBNAIL}.${StoryboardPluginComponent.SELECTOR_SELECTED}`);
+        if (activeNode) {
+            const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
+            const positionB = activeNode.getBoundingClientRect();
+            // check if active element is visible
+            const top = (positionB.top + activeNode.clientHeight) >= positionA.top;
+            const bottom = (positionB.top - activeNode.clientHeight) < this.storyboardElement.nativeElement.clientHeight;
+            if (!(top && bottom)) {
+                visible = false;
+            }
+            // display button synchro if active node is not visible
+            if (!visible) {
+                this.displaySynchro = true;
+            } else {
+                this.displaySynchro = false;
+            }
+        } else {
+            this.displaySynchro = false;
+        }
+    }
+    /**
      * Handle to seek to time code
      * @param tc time code
      */
     public seekToTc(tc: number) {
+        this.displaySynchro = false;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 
@@ -199,12 +258,50 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * @param thumbnailNode element to scroll
      */
     private scrollToThumbnail(thumbnailNode: HTMLElement) {
-        const scrollPos = thumbnailNode.offsetTop
-            - this.storyboardElement.nativeElement.offsetTop;
-        if ((scrollPos - this.storyboardElement.nativeElement.scrollTop) > thumbnailNode.parentElement.clientHeight / 1.4) {
+        const scrollPos = thumbnailNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
+        const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+        const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
+        const positionB = thumbnailNode.getBoundingClientRect();
+        // check if active element is not visible
+        const visible = (positionB.top + thumbnailNode.clientHeight) >= positionA.top &&
+            (positionB.top + thumbnailNode.clientHeight) <= this.storyboardElement.nativeElement.clientHeight;
+        if (!(visible)) {
+            if (!reverseMode) {
+                this.storyboardElement.nativeElement.scrollTop = scrollPos;
+            } else {
+                if (scrollPos > thumbnailNode.clientHeight) {
+                    this.storyboardElement.nativeElement.scrollTop = (this.storyboardElement.nativeElement.clientHeight - thumbnailNode.clientHeight) + scrollPos;
+                } else {
+                    this.storyboardElement.nativeElement.scrollTop = scrollPos;
+                }
+
+            }
+        }
+    }
+    /**
+     * Get width window
+     */
+    private getWindowWidth() {
+        const width = window.innerWidth;
+        let size;
+        if (width <= 1280) {
+            size = 'm';
+        } else {
+            size = 'l';
+        }
+        return size;
+    }
+
+    /**
+     * Invoked on click button synchro
+     */
+    public scrollToActiveThumbnail() {
+        const scrollNode: HTMLElement = this.storyboardElement.nativeElement
+            .querySelector(`.${StoryboardPluginComponent.SELECTOR_THUMBNAIL}.${StoryboardPluginComponent.SELECTOR_SELECTED}`);
+        if (scrollNode) {
+            const scrollPos = scrollNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
             this.storyboardElement.nativeElement.scrollTop = scrollPos;
         }
-
 
     }
 }

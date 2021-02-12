@@ -32,7 +32,7 @@ export class AmaliaComponent implements OnInit {
      * version of player
      */
     public version = environment.VERSION;
-
+    public chrono;
     /**
      * player state
      */
@@ -176,6 +176,10 @@ export class AmaliaComponent implements OnInit {
      */
     public pinned = false;
     /**
+     * Pinned Slider state
+     */
+    public pinnedControlbar = false;
+    /**
      * In charge to load resource
      */
     private readonly httpClient: HttpClient;
@@ -315,12 +319,20 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
+        document.addEventListener('click', this.hideControlsMenuOnClickDocument);
     }
 
     @AutoBind
     public handlePinnedControlbarChange(event) {
+        this.pinnedControlbar = event;
+        this.pinned = false;
+    }
+    @AutoBind
+    public handlePinnedSliderChange(event) {
         this.pinned = event;
+        this.pinnedControlbar = false;
     }
 
     @AutoBind
@@ -466,5 +478,25 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     public emitKeyUpEvent() {
         this.listKeys = [];
+    }
+    @AutoBind
+    public hideControlsMenuOnClickDocument($event) {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.DOCUMENT_CLICK, $event);
+    }
+    // hide controlBar after 3 seconds of mouse inactive
+    public startTimer() {
+        this.chrono = setTimeout(this.hideControls , 1800);
+    }
+    // reset 3 seconds mouse inactive and start timer again
+    public resetTimer() {
+        // reset
+        clearTimeout(this.chrono);
+        this.startTimer();
+    }
+    // hide controls if mouse in inactive since 3 seconds
+    @AutoBind
+    public hideControls() {
+        this.playerHover = false;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
     }
 }

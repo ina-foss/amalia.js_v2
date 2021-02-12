@@ -2,26 +2,37 @@
 @import '../../core/styles/variables';
 
 :host {
-  position: relative;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  font-family: $amalia-font-family;
-  z-index: $amalia-default-z-index;
-  background: $amalia-ctrl-bar-bg-color;
-  user-select: none;
-
-  div {
-    padding: 5px;
-    color: white;
-
-    &.s {
+  .timebar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    left: 0;
+    right: 0;
+    font-family: $amalia-font-family;
+    z-index: $amalia-timebar-z-index;
+    background: $amalia-ctrl-bar-bg-color;
+    user-select: none;
+    &.inside {
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    &.outside {
+      position: relative;
+    }
+    div {
+      padding: 5px;
+      color: white;
       display: none;
+
+      &.s {
+        display: none;
+      }
+      &.active {
+        display: block;
+      }
+
     }
   }
-
-
 }
 

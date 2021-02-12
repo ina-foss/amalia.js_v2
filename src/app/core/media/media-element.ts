@@ -44,7 +44,7 @@ export class MediaElement {
     /**
      * play a video backwards
      */
-    private reverseMode = false;
+    public reverseMode = false;
     private intervalRewind = null;
 
     /**

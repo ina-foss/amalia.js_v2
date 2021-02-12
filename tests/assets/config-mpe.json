@@ -1,11 +1,16 @@
 {
   "player": {
+    "src": "http://localhost:4201/medias/outputlm.mp4",
+    "crossOrigin": "*.ina",
     "poster": "url du post",
     "autoplay": true,
     "duration": 5000,
     "defaultVolume": 100,
-    "crossOrigin": "*.ina",
-    "data": null,
-    "ratio": "16:9"
+    "ratio": "16:9",
+    "dataSources": [],
+    "thumbnail": {
+      "enableThumbnail": false
+    }
   }
+  
 }
