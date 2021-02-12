@@ -106,7 +106,6 @@
         &.activated {
           display: flex;
           flex-flow: wrap;
-          width: 98%;
         }
       }
       .menu-slider {
@@ -574,9 +573,9 @@
   }
 
   .playback-rate-slider2 {
-    width: 100%;
     height: 50px;
     display: none;
+    width: 95%;
 
     &.s, &.ms {
       display: none;
@@ -660,8 +659,8 @@
 
   .playback-rate-slider {
     display: none;
-    width: 100%;
     height: 50px;
+    width: 98%;
 
     &.s, &.ms {
       display: none;
@@ -669,14 +668,13 @@
 
     .playback-rate-labels {
       width: 100%;
-      display: flex;
-      flex-flow: row wrap;
+      position: relative;
 
       input[type="range"] {
-        position: relative;
+        position: absolute;
         width: 100%;
         height: 1px;
-        margin: 25px 0 0 0;
+        margin: 9px 0 0 0;
         box-sizing: border-box;
         -webkit-appearance: none; /* Override default CSS styles */
         appearance: none;
@@ -711,14 +709,12 @@
 
       datalist {
         display: flex;
-        width: 100%;
         justify-content: space-between;
-        margin: -35px 0 0 0;
         color: $amalia-ctrl-bar-pslider-bg-color;
         z-index: 2070;
         text-align: left;
         padding-left: 20px;
-        padding-right: 20px;
+        padding-right: 15px;
         position: relative;
 
         &:before {
@@ -733,9 +729,6 @@
         }
 
         option {
-          position: relative;
-          display: flex;
-          align-items: flex-start;
           color: $amalia-ctrl-bar-pslider-bg-color;
           z-index: 2070;
           margin-top: 0px;
@@ -753,19 +746,18 @@
             position: absolute;
             font-size: 25px;
             letter-spacing: 0;
-            top: 16px;
+            top: 12px;
             margin-left: 6px;
             color: $amalia-ctrl-bar-pslider-bg-color;
             z-index: 2070;
           }
 
-          &.first:before {
-            left: 0;
-            margin-left: -4px;
+          &:first-of-type:before {
+            left: 10px;
           }
 
           &.last:before {
-            //left: 50%;
+            right: 4%;
           }
         }
       }
