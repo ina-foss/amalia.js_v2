@@ -374,9 +374,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     @AutoBind
     public handleMetadataLoaded() {
         this.parseTimelineMetadata();
-        if (this.mediaPlayerElement.getMediaPlayer().getDuration() > 0) {
-            this.handleOnDurationChange();
-        }
     }
 
     /**
