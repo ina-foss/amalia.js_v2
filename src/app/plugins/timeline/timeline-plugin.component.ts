@@ -101,6 +101,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.listOfBlocksContainer.nativeElement.addEventListener('mousemove', this.handleMouseMoveToDrawRect);
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTimelineMetadata();
+            this.handleOnDurationChange();
         }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
