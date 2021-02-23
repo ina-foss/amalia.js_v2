@@ -6,11 +6,26 @@
     "autoplay": true,
     "duration": 5000,
     "defaultVolume": 100,
-    "ratio": "16:9",
-    "dataSources": [],
+    "ratio": "16:9"
+    },
     "thumbnail": {
-      "enableThumbnail": false
+      "baseUrl": "https://picsum.photos/id/237/200/300",
+      "enableThumbnail": true,
+      "tcParam": "tc"
+    },
+    "dataSources": [
+      {
+        "url": "http://localhost:4201/metadata/jt-d.json"
+      }
+    ],
+    "pluginsConfiguration": {
+      "CONTROL_BAR-PLAYER": {
+        "data": [
+          {
+            "label": "Barre de progression",
+            "control": "progressBar"
+          }
+        ]
+      }
     }
-  }
-  
 }

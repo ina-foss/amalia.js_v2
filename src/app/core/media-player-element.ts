@@ -13,21 +13,19 @@ import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from './constant/event-type';
 import {PreferenceStorageManager} from './storage/preference-storage-manager';
-import {ShortcutManager} from './shortcut/shortcut-manager';
 
 /**
  * In charge to create player
  */
 export class MediaPlayerElement {
-    private configurationManager: ConfigurationManager;
-    private _metadataManager: MetadataManager;
-    private defaultLoader: Loader<Array<Metadata>>;
+    public configurationManager: ConfigurationManager;
+    public _metadataManager: MetadataManager;
+    public defaultLoader: Loader<Array<Metadata>>;
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
     private readonly preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
-    private shortcutManager: ShortcutManager;
     public isMetadataLoaded = false;
     public width: number;
 
@@ -40,7 +38,7 @@ export class MediaPlayerElement {
     /**
      * Selected aspectRatio
      */
-    private _aspectRatio: '16:9' | '4:3' = '4:3';
+    public _aspectRatio: '16:9' | '4:3' = '4:3';
 
     get aspectRatio() {
         this._aspectRatio =  this.getConfiguration().player.ratio;
@@ -171,7 +169,7 @@ export class MediaPlayerElement {
         return this._metadataManager.init();
     }
 
-    private handleMetadataLoaded() {
+    public handleMetadataLoaded() {
         this.eventEmitter.emit(PlayerEventType.METADATA_LOADED);
         this.isMetadataLoaded = true;
     }
