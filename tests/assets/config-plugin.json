@@ -6,8 +6,7 @@
     "autoplay": true,
     "duration": 5000,
     "defaultVolume": 100,
-    "ratio": "16:9",
-    "tcOffset": 0
+    "ratio": "16:9"
     },
     "thumbnail": {
       "baseUrl": "https://picsum.photos/id/237/200/300",
@@ -20,7 +19,7 @@
       }
     ],
     "pluginsConfiguration": {
-      "CONTROL_BAR-PLAYER": {
+      "CONTROL_BAR": {
         "data": [
           {
             "label": "Barre de progression",
@@ -28,7 +27,7 @@
           }
         ]
       },
-      "TIME_BAR-PLAYER": {
+      "TIME_BAR": {
         "data": [
           {"timeFormat" : "f",
            "theme" : "outside"

@@ -19,7 +19,7 @@ export abstract class PluginBase<T> implements OnInit {
     /**
      * This plugin configuration
      */
-    private _player;
+    public _player;
 
     get player() {
         return this._player;
@@ -30,7 +30,7 @@ export abstract class PluginBase<T> implements OnInit {
         this._player = value;
     }
 
-    private _pluginConfiguration: PluginConfigData<T>;
+    public _pluginConfiguration: PluginConfigData<T>;
 
     get pluginConfiguration(): PluginConfigData<T> {
         return this._pluginConfiguration;

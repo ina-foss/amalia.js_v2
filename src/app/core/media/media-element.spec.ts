@@ -2,41 +2,46 @@ import {async, getTestBed, TestBed} from '@angular/core/testing';
 import {MediaElement} from './media-element';
 import {EventEmitter} from 'events';
 import {PlayerConfigData} from '../config/model/player-config-data';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpClient} from '@angular/common/http';
 
 describe('Test Media element', () => {
     let injector: TestBed;
-    const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
+    let httpClient: HttpClient;
+    let httpTestingController: HttpTestingController;
+    const srcMedia = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+    const backSrc = 'http://test-streams.mu.dev/9898.m3u8';
     const component = new MediaElement(document.createElement('video'), new EventEmitter());
     const config: PlayerConfigData = {
-        autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
+        autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: srcMedia,
+        backwardsSrc: backSrc , hls: {enable: true}
+    };
+    const config2: PlayerConfigData = {
+        autoplay: true, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: srcMedia,
+        backwardsSrc: backSrc , hls: {enable: true}
     };
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [],
+            imports: [HttpClientTestingModule],
             declarations: [],
         }).compileComponents();
         injector = getTestBed();
+        httpTestingController = injector.inject(HttpTestingController);
+        httpClient = injector.inject(HttpClient);
+
+
     }));
-
     afterEach(() => {
+        // After every test, assert that there are no more pending requests.
+        httpTestingController.verify();
     });
-
     it('Media player element ', () => {
         expect(component).toBeTruthy();
         component.setSrc(config);
+        expect(component.mse).toBeTruthy();
         expect(component.audioChannel).toEqual(1);
         component.audioChannel = 2;
         expect(component.audioChannel).toEqual(2);
-    });
-    it('test playbackrate setter and getter', () => {
-        expect(component.getPlaybackRate()).toEqual(1);
-        component.playbackRate = 4;
-        expect(component.getPlaybackRate()).toEqual(4);
-    });
-    it('Tests merge volume', () => {
-        expect(component.withMergeVolume).toEqual(true);
-        component.withMergeVolume = false;
-        expect(component.withMergeVolume).toEqual(false);
     });
     it('Tests framerate', () => {
         expect(component.framerate).toEqual(25);
@@ -48,10 +53,6 @@ describe('Test Media element', () => {
     it('Tests poster', () => {
         component.poster = '../assets/image.png';
         expect(component.poster).toEqual('../assets/image.png');
-    });
-    it('Test currentTime', () => {
-        component.stop();
-        expect(component.getCurrentTime()).toEqual(0);
     });
     it('Test events', () => {
         expect(component.isPaused()).toEqual(true);
@@ -71,14 +72,45 @@ describe('Test Media element', () => {
         expect(component.getCurrentTime()).toEqual((1 / 25 * 2) - (1 / 25 * 1));
         component.seekToEnd();
         expect(typeof (component.getDuration())).toBe('number');
-
     });
     it('Test Volume', () => {
         component.setVolume(50);
         expect(component.getVolume()).toEqual(50);
+        component.setVolume(20, 'r');
+        expect(component.getVolume('r')).toEqual(20);
+        component.setVolume(60, 'l');
+        expect(component.getVolume('l')).toEqual(60);
+        component.withMergeVolume = true;
+        component.setVolume(26, 'l');
+        expect(component.getVolume('r')).toEqual(26);
+        component.withMergeVolume = false;
+        component.setVolume(27, 'l');
+        expect(component.getVolume('r')).toEqual(26);
+        component.setVolume(24, 'r');
+        expect(component.getVolume('l')).toEqual(27);
     });
     it('Test Image', () => {
         expect(typeof (component.captureImage(50))).toBe('string');
+    });
+    it('Test play', () => {
+        component.setCurrentTime(25);
+        component.play();
+        component.playPause();
+        expect(component.isPaused()).toEqual(true);
+        component.pause();
+        expect(component.isPaused()).toEqual(true);
+        component.stop();
+        expect(component.getCurrentTime()).toEqual(0);
+        component.play();
+    });
+    it('test playbackrate setter and getter', () => {
+        component.setCurrentTime(225);
+        component.playbackRate = 4;
+        expect(component.getPlaybackRate()).toEqual(4);
+        component.pause();
+        expect(component.getPlaybackRate()).toEqual(1);
+        expect(component.reverseMode).toEqual(false);
+        component.setSrc(config2);
     });
 });
 

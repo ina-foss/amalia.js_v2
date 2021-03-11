@@ -15,14 +15,20 @@ import {ConfigData} from '../config/model/config-data';
 import {DefaultConfigLoader} from '../config/loader/default-config-loader';
 import {TimeBarConfig} from '../config/model/time-bar-config';
 import {TimeBarPluginComponent} from '../../plugins/time-bar/time-bar-plugin.component';
+import {MetadataUtils} from '../utils/metadata-utils';
+import {Histogram} from './model/histogram';
 
 describe('Test Metadata manager', () => {
     let injector: TestBed;
     let httpClient: HttpClient;
     let httpTestingController: HttpTestingController;
     const transcriptionModel = require('tests/assets/metadata/sample-transcription.json');
+    const histogramModel = require('tests/assets/metadata/sample-histogram.json');
+    const timelineModel = require('tests/assets/metadata/sample-timeline.json');
     const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
     const testMetadata = 'http://localhost/test.json';
+    const testMetadataHistogram = 'http://localhost/test-histogram.json';
+    const testMetadataTimeline = 'http://localhost/test-timeline.json';
     let configData: ConfigData;
     const logger = new DefaultLogger();
     let metadataManager: MetadataManager = null;
@@ -42,6 +48,7 @@ describe('Test Metadata manager', () => {
         pluginsConfiguration.set(TimeBarPluginComponent.PLUGIN_NAME, conf);
 
         const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
+        dataSources.push(timelineModel);
         configData = {player, pluginsConfiguration, dataSources};
         const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
         const configurationManager = new ConfigurationManager(configLoader, logger);
@@ -60,6 +67,7 @@ describe('Test Metadata manager', () => {
         const converter = new DefaultMetadataConverter();
         const loader = new DefaultMetadataLoader(httpClient, converter, logger);
         const metadataPromise = loader.load(testMetadata, null);
+
         // .load('./tests/assets/metadata/sample-transcription.json');
         metadataPromise.then((data) => {
             const m: Metadata = data[0];
@@ -73,6 +81,7 @@ describe('Test Metadata manager', () => {
         }).catch(() => {
             fail('Error to call assert');
         });
+
         httpTestingController.expectOne(testMetadata).flush(transcriptionModel, {
             status: 200,
             statusText: 'Ok'
@@ -109,6 +118,77 @@ describe('Test Metadata manager', () => {
             expect(true).toBeTruthy();
         }
 
+    });
+    it('Test transcription ', () => {
+        metadataManager.addMetadata(transcriptionModel);
+        const transcription = metadataManager.getTranscriptionLocalisations('transcription_test', 1, true);
+        const metadata = metadataManager.getMetadata('transcription_test');
+        if (metadata) {
+            const value = MetadataUtils.getTranscriptionLocalisations(metadata, 1, true);
+            expect(transcription).toEqual(value);
+        }
+        const transcription2 = metadataManager.getTranscriptionLocalisations('transcription', 1, true);
+        expect(transcription2).toBeNull();
+    });
+    it('Test histogram ', () => {
+        const converter = new DefaultMetadataConverter();
+        const loader = new DefaultMetadataLoader(httpClient, converter, logger);
+        const histogramMetadataPromise = loader.load(testMetadataHistogram, null);
+        histogramMetadataPromise.then((data) => {
+            const m: Metadata = data[0];
+            expect(m.id).toContain('1');
+        }).catch(() => {
+            fail('Error to call assert');
+        });
+        httpTestingController.expectOne(testMetadataHistogram).flush(histogramModel, {
+            status: 200,
+            statusText: 'Ok'
+        });
+        metadataManager.addMetadata(histogramModel);
+        metadataManager.getHistograms(['1']);
+        const histograms = new Array<Histogram>();
+        ['1'].forEach((id) => {
+            try {
+                const metadata = metadataManager.getMetadata(id);
+                if (metadata) {
+                    expect(metadata).toEqual(metadataManager.getMetadata(id));
+                    const list = MetadataUtils.getHistograms(metadata);
+                    expect(list).toEqual(MetadataUtils.getHistograms(metadata));
+                    if (list && list.length > 0) {
+                        histograms.push(...list);
+                    }
+                }
+            } catch (e) {
+                console.log(`Error to parse histogram [id: ${id}]`);
+            }
+        });
+        expect(metadataManager.getHistograms(['1', '2'])).toEqual(histograms);
+
+        metadataManager.getMetadataByType('histogram');
+    });
+    it('Test timeline ', () => {
+        const converter = new DefaultMetadataConverter();
+        const loader = new DefaultMetadataLoader(httpClient, converter, logger);
+        const timelineMetadataPromise = loader.load(testMetadataTimeline, null);
+        timelineMetadataPromise.then((data) => {
+            const m: Metadata = data[0];
+            expect(m.type).toContain('SEGMENTATION-P1');
+            expect(m.id).toContain('timeline-test');
+        }).catch(() => {
+            fail('Error to call assert');
+        });
+        httpTestingController.expectOne(testMetadataTimeline).flush(timelineModel, {
+            status: 200,
+            statusText: 'Ok'
+        });
+        metadataManager.addMetadata(timelineModel);
+        const metadata = metadataManager.getMetadata('timeline-test');
+        expect(metadata.type).toContain('SEGMENTATION-P1');
+        const timeline = metadataManager.getTimelineLocalisations(metadata);
+        if (metadata) {
+            const value = MetadataUtils.getTimelineLocalisations(metadata);
+            expect(timeline).toEqual(value);
+        }
     });
 });
 

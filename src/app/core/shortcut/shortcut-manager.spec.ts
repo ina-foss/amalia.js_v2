@@ -72,6 +72,55 @@ describe('Test Shortcut manager', () => {
         expect(item.done).toEqual(false);
         item = list.next();
         expect(item.done).toEqual(true);
+        const event = new KeyboardEvent('keydown');
+        shortcutManager.handleEvent(event);
+        const f = shortcutManager.isEventMatches('p', event);
+        expect(f).toBeFalsy();
+        shortcutManager.addShortcut('alt', playPromise);
+        const altEv = new KeyboardEvent('keydown', {
+            code : '18',
+            key : 'alt',
+            altKey : true,
+            ctrlKey : false,
+            metaKey : false,
+            shiftKey: false
+        });
+        const fun = shortcutManager.isEventMatches('alt', altEv);
+        expect(fun).toBeTruthy();
+        expect(shortcutManager.isValidKeyName('&éç')).toBeFalsy();
+        expect(shortcutManager.isValidKeyName('alt')).toBeTruthy();
+        shortcutManager.enableListener();
+        shortcutManager.disableListener();
+        const ctrlEv = new KeyboardEvent('keydown', {
+            code : '18',
+            key : 'c',
+            altKey : false,
+            ctrlKey : true,
+            metaKey : false,
+            shiftKey : false
+        });
+        const func = shortcutManager.isEventMatches('ctrl', ctrlEv);
+        expect(func).toBeFalsy();
+        const shiftEv = new KeyboardEvent('keydown', {
+            code : '16',
+            key : 'shift',
+            altKey : false,
+            ctrlKey : false,
+            metaKey : false,
+            shiftKey : true
+        });
+        const funct = shortcutManager.isEventMatches('shift', shiftEv);
+        expect(funct).toBeTruthy();
+        const metaEv = new KeyboardEvent('keydown', {
+            code : '16',
+            key : 'meta',
+            altKey : false,
+            ctrlKey : false,
+            metaKey : false,
+            shiftKey : false
+        });
+        const functi = shortcutManager.isEventMatches('meta', metaEv);
+        expect(functi).toBeFalsy();
     });
 });
 

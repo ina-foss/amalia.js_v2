@@ -12,15 +12,14 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {AmaliaException} from '../exception/amalia-exception';
 import {LoggerInterface} from '../logger/logger-interface';
 import {DefaultConfigLoader} from './loader/default-config-loader';
-
-
 describe('ConfigurationManager', () => {
     let injector: TestBed;
     let httpClient: HttpClient;
     let httpTestingController: HttpTestingController;
     const logger: LoggerInterface = new DefaultLogger();
-    const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
-    const configUrl = './tests/assets/config.json';
+    const mediaSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+    const backwardSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+    const configUrl = './tests/assets/config-mpe.json';
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -39,13 +38,8 @@ describe('ConfigurationManager', () => {
 
     it('Create configuration manager with default loader', () => {
         const player: PlayerConfigData = {
-            autoplay: false,
-            crossOrigin: null,
-            data: null,
-            defaultVolume: 0,
-            duration: null,
-            poster: '',
-            src: mediaSrc
+            autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc,
+            backwardsSrc: backwardSrc , hls: {enable: true}
         };
         const pluginsConfiguration: Map<string, PluginConfigData<any>> = new Map<string, PluginConfigData<any>>();
         const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
@@ -58,18 +52,24 @@ describe('ConfigurationManager', () => {
         const configurationManager = new ConfigurationManager(loader, logger);
         configurationManager.load(c).then(() => {
             expect(configurationManager.getCoreConfig().player.src).toContain(mediaSrc);
-            configurationManager.addPluginConfiguration('test', {
+            configurationManager.addPluginConfiguration('plugin-test', {
                 data: null,
                 debug: false,
                 metadataIds: ['test'],
                 name: 'test'
             });
-            expect(configurationManager.getPluginConfiguration('test')).toEqual({
+            const configTest = {
                 data: null,
                 debug: false,
                 metadataIds: ['test'],
                 name: 'test'
-            });
+            };
+            if (configurationManager.getPluginConfiguration('plugin-test')) {
+                expect(configurationManager.getPluginConfiguration('plugin-test')).toEqual(configTest);
+            } else {
+                expect(() => configurationManager.getPluginConfiguration('plugin-test'))
+                    .toThrow(new AmaliaException(`Error to get configuration for plugin 'plugin-test'.`));
+            }
             expect(() => configurationManager.getPluginConfiguration('test1'))
                 .toThrow(new AmaliaException(`Error to get configuration for plugin test1.`));
         });
@@ -77,7 +77,7 @@ describe('ConfigurationManager', () => {
     });
 
     it('Create configuration manager with http loader', fakeAsync(() => {
-            const configData = require('tests/assets/config.json');
+            const configData = require('tests/assets/config-mpe.json');
             const loader = new HttpConfigLoader(new DefaultConfigConverter(), httpClient, logger);
             const configurationManager = new ConfigurationManager(loader, logger);
             configurationManager.load(configUrl).then(() => {
