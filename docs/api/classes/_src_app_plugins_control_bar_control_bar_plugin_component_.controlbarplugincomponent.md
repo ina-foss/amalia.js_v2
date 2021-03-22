@@ -21,6 +21,8 @@
 
 ### Properties
 
+* [_player](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#_player)
+* [_pluginConfiguration](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#_pluginconfiguration)
 * [activated](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#activated)
 * [aspectRatio](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#aspectratio)
 * [backwardPlaybackRateStep](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#backwardplaybackratestep)
@@ -166,6 +168,28 @@ Name | Type |
 **Returns:** *[ControlBarPluginComponent](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md)*
 
 ## Properties
+
+###  _player
+
+• **_player**: *any*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)*
+
+Defined in src/app/core/plugin/plugin-base.ts:22
+
+This plugin configuration
+
+___
+
+###  _pluginConfiguration
+
+• **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹Array‹[ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)››*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)*
+
+Defined in src/app/core/plugin/plugin-base.ts:33
+
+___
 
 ###  activated
 

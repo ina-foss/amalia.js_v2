@@ -21,6 +21,8 @@
 
 ### Properties
 
+* [_player](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#_player)
+* [_pluginConfiguration](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#_pluginconfiguration)
 * [active](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#active)
 * [autoScroll](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#autoscroll)
 * [currentTime](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#currenttime)
@@ -103,6 +105,28 @@ Name | Type |
 **Returns:** *[TranscriptionPluginComponent](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md)*
 
 ## Properties
+
+###  _player
+
+• **_player**: *any*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)*
+
+Defined in src/app/core/plugin/plugin-base.ts:22
+
+This plugin configuration
+
+___
+
+###  _pluginConfiguration
+
+• **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[TranscriptionConfig](../interfaces/_src_app_core_config_model_transcription_config_.transcriptionconfig.md)›*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)*
+
+Defined in src/app/core/plugin/plugin-base.ts:33
+
+___
 
 ###  active
 

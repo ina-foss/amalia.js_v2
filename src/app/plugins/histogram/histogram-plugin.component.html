@@ -13,10 +13,20 @@
                 </svg>
             </div>
         </div>
-         <div #slider class="slider" [style]="{'transform':style}">
-            <span class="drag-left"></span>
-            <span class="drag-right"></span>
+         <div #slider class="slider" [style]="{'transform':style}" (mouseenter)="active =true" (mouseleave)="active =false">
+            <div class="border-top"></div>
+            <span class="drag-left" [ngClass]="{'active':active}">
+                <svg class="amalia-svg-drag-drop-size icon">
+                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
+                </svg>
+            </span>
+            <span class="drag-right" [ngClass]="{'active':active}">
+                <svg class="amalia-svg-drag-drop-size icon">
+                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
+                </svg>
+            </span>
             <div class="cursor" [style]="{left:cursorPosition+'%'}"></div>
+             <div class="border-bottom"></div>
         </div>
     </div>
     <!-- Zoomed Histograms -->
