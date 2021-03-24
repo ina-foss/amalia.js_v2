@@ -31,7 +31,7 @@
                     <!-- play pause mode-->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          (click)="controlClicked(c.control);hideAll()" *ngSwitchCase="'playPause'"
-                         class="play-pause control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
+                         class="play-pause control" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
                         </svg>
@@ -42,7 +42,7 @@
                     <!--FullScreen Button -->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
-                         class="toggleFullScreen control" title="{{c.label}}" [ngStyle]="{'order':c.order ? c.order:'0'}">
+                         class="toggleFullScreen control" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
                         </svg>
@@ -52,7 +52,7 @@
                     </div>
                     <!--Aspect Ratio-->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" title="{{c.label}}"
+                         *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" [attr.aria-label]="c.label"
                          (click)="changeAspectRatio()" [ngStyle]="{'order':c.order ? c.order:'0'}"
                          (mouseenter)="hideAll();enableListRatio=true;">
                         {{aspectRatio}}
@@ -76,13 +76,13 @@
                     </div>
                     <!--Playback Rate-->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m'))  && currentPlaybackRate !== 1}"
-                         *ngSwitchCase="'playbackRate'" class="playback-rate control text" title="{{c.label}}"
+                         *ngSwitchCase="'playbackRate'" class="playback-rate control text" [attr.aria-label]="c.label"
                          [ngStyle]="{'order':c.order ? c.order:'0'}">
                         {{currentPlaybackRate}}x
                     </div>
                     <!--Download-->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         *ngSwitchCase="'download'" class="control download" title="{{c.label}}"
+                         *ngSwitchCase="'download'" class="control download" [attr.aria-label]="c.label"
                          [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <a target="_blank" (click)="buildUrlWithTc(ctl,c);hideAll()" #ctl>
                             <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -92,7 +92,7 @@
                     </div>
                     <!--Callback-->
                     <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         *ngSwitchCase="'callback'" class="control callback" title="{{c.label}}" tooltip="{{c.label}}"
+                         *ngSwitchCase="'callback'" class="control callback" [attr.aria-label]="c.label" tooltip="{{c.label}}"
                          [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -100,7 +100,7 @@
                     </div>
                     <!--Volume-->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         *ngSwitchCase="'volume'" class="volume control" title="{{c.label}}"
+                         *ngSwitchCase="'volume'" class="volume control" [attr.aria-label]="c.label"
                          [ngStyle]="{'order':c.order ? c.order:'0'}"
                          (mouseenter)="hideAll();enableVolumeSlider=true;"
                          (click)="setupAudioNodes(c.data)">
@@ -181,7 +181,7 @@
                     </div>
                     <!-- Button subtitles -->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         *ngSwitchCase="'subtitles'" class="control subtitle" title="{{c.label}}"
+                         *ngSwitchCase="'subtitles'" class="control subtitle" [attr.aria-label]="c.label"
                          [ngStyle]="{'order':c.order ? c.order:'0'}"
                          (mouseenter)="hideAll();enableListPositionsSubtitle=true;"
                             (click)="updateSubtitlePosition()">
@@ -202,7 +202,7 @@
                     </div>
                     <!--Menu Button-->
                     <div  tooltip="{{c.label}}" [ngClass]="{'show':(displayState ==='m' || displayState === 'sm') && controls.length > 0}" *ngSwitchCase="'menu'" class="control menu"
-                         title="{{c.label}}"
+                          [attr.aria-label]="c.label"
                          (click)="hideAll();enableMenu = !enableMenu"
                          [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-dots-size icon">
@@ -211,7 +211,7 @@
                     </div>
                     <!--Other controls-->
                     <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}" class="control"
-                         title="{{c.label}}" (click)="controlClicked(c.control)" *ngSwitchDefault
+                         [attr.aria-label]="c.label" (click)="controlClicked(c.control)" *ngSwitchDefault
                          [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>

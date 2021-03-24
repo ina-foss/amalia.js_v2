@@ -3,7 +3,6 @@
 
 :host {
   font-family: $amalia-font-family;
-
   .icon {
     color: white;
   }
@@ -185,7 +184,6 @@
       position: relative;
       padding: 0;
       margin: 0 5px 0 5px;
-
       &.show {
         display: unset;
       }
