@@ -351,6 +351,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     if (scrollNode) {
                         const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
                         this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                        this.ignoreNextScroll = true;
                     }
                 }
             });
@@ -391,14 +392,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     @AutoBind
     public scrollToSelectedSegment() {
-
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
-            this.transcriptionElement.nativeElement.scrollTop = scrollPos - scrollPos;
-            this.ignoreNextScroll = false;
+            this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
             this.displaySynchro = false;
         }
     }
