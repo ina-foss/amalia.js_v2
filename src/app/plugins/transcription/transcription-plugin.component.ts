@@ -261,27 +261,30 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private scrollToNode(scrollNode: HTMLElement) {
         if (scrollNode) {
+            const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
+            const maxScrollPos = Math.round((2 * this.transcriptionElement.nativeElement.offsetHeight) / 3);
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
-            const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
+            /*const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
             const positionB = scrollNode.getBoundingClientRect();
-            // check if active element is not visible
+            //check if active element is not visible
             const visible = (positionB.top + scrollNode.clientHeight) >= positionA.top &&
-                (positionB.top + scrollNode.clientHeight) <= this.transcriptionElement.nativeElement.clientHeight;
+                (positionB.top + scrollNode.clientHeight) <= this.transcriptionElement.nativeElement.clientHeight;*/
             // in charge of modifying the status of the scroll when reading segment is display area
+            const visible = scrollPos < maxScrollPos;
             if (this.ignoreNextScroll && !visible) {
                 this.ignoreNextScroll = false;
             }
             // scroll to node if he's not visible
-            if (this.autoScroll && !this.ignoreNextScroll) {
+            if (this.autoScroll) {
                 if (!(visible)) {
                     if (!reverseMode) {
-                        this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                        this.transcriptionElement.nativeElement.scrollTop =  scrollPos  - minScroll;
                     } else {
                         if (scrollPos > scrollNode.clientHeight) {
                             this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
                         } else {
-                            this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+                            this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         }
                     }
                 }
@@ -293,7 +296,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * handle scroll event
      */
     public handleScroll(ignoreNextScroll?: boolean) {
-        this.ignoreNextScroll = ignoreNextScroll && ignoreNextScroll === true ? ignoreNextScroll : false;
+        this.ignoreNextScroll = true;
         this.updateSynchro();
     }
 
@@ -386,12 +389,17 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Invocked on click SYNCHRO button
      */
+    @AutoBind
     public scrollToSelectedSegment() {
+
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
-            this.transcriptionElement.nativeElement.scrollTop = scrollPos;
+            const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
+            this.transcriptionElement.nativeElement.scrollTop = scrollPos - scrollPos;
+            this.ignoreNextScroll = false;
+            this.displaySynchro = false;
         }
     }
     /**
@@ -432,7 +440,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 visible = false;
             }
             // display button synchro if active node is not visible
-            if (!visible) {
+            if (visible === false) {
                 this.displaySynchro = true;
             } else {
                 this.displaySynchro = false;

@@ -252,7 +252,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: $amalia-primary-color;
+            ackground: $amalia-primary-color;
             cursor: pointer;
           }
         }
@@ -396,7 +396,7 @@
         position: absolute;
         z-index: $amalia-volume-bar-z-index;
         background-color: $amalia-ctrl-bar-bg-color;
-        left: calc(50% - 80px);
+        right: calc(50% - 80px);
         top: -133px;
         padding: 0;
         margin: 0;
@@ -570,92 +570,7 @@
     }
   }
 
-  .playback-rate-slider2 {
-    height: 50px;
-    display: none;
-    width: 95%;
-
-    &.s, &.ms {
-      display: none;
-    }
-
-    div {
-      position: relative;
-      flex-shrink: 0;
-      flex-grow: 1;
-      color: $amalia-ctrl-bar-pslider-bg-color;
-      z-index: 2070;
-      cursor: pointer;
-      text-align: center;
-
-      div.line {
-        display: block;
-        flex-basis: auto;
-        width: 100%;
-        height: 1px;
-        background-color: $amalia-ctrl-bar-pslider-bg-color;
-        position: relative;
-        top: 10px;
-
-        &:before {
-          content: "";
-        }
-      }
-
-      &:before {
-        content: "•";
-        position: absolute;
-        font-size: 25px;
-        letter-spacing: 0;
-        top: 16px;
-        color: $amalia-ctrl-bar-pslider-bg-color;
-        z-index: 2070;
-        margin-left: -3px;
-        left: 50%;
-      }
-      &.selected {
-        font-weight: bold;
-        color: white;
-      }
-      &.selected:after {
-        content: "";
-        position: absolute;
-        z-index: 2070;
-        background-color: $amalia-ctrl-bar-pslider-bg-selected;
-        display: block;
-        height: 8px;
-        width: 20px;
-        left: 50%;
-        margin-left: -7px;
-        top: 30px;
-        pointer: grab;
-      }
-
-      &.first {
-        &:before {
-          left: 50%;
-        }
-
-        div.line {
-          width: 50%;
-          left: 50%;
-        }
-      }
-
-      &.last {
-        &:before {
-          left: 50%;
-        }
-
-        div.line {
-          left: 0;
-          width: 50%;
-        }
-      }
-    }
-  }
-
-  .playback-rate-slider {
+  .playback-rate-slider , .playback-rate-slider2 {
     display: none;
     height: 50px;
     width: 98%;
@@ -670,97 +585,76 @@
 
       input[type="range"] {
         position: absolute;
-        width: 100%;
+        width: 97%;
         height: 1px;
-        margin: 9px 0 0 0;
-        box-sizing: border-box;
+        margin-left: 18px;
+        margin-top: 29px;
         -webkit-appearance: none; /* Override default CSS styles */
         appearance: none;
-        background: transparent;
+        background: grey;
         outline: none; /* Remove outline */
         z-index: 2100;
-        padding-right: 20px;
-        padding-left: 20px;
-
+        border: 0;
+        border-radius: 0;
         &::-webkit-slider-thumb {
-          position: relative;
           -webkit-appearance: none;
           appearance: none;
-          width: 25px;
-          height: 10px;
+          height: 8px;
+          width: 20px;
           background: $amalia-primary-color;
           cursor: grab;
-          top: 10px;
-          left: -13px;
+          position: relative;
+          top : -9px;
         }
 
         &::-moz-range-thumb {
-          position: relative;
-          appearance: none;
-          width: 25px;
-          height: 10px;
-          background: $amalia-primary-color;
-          cursor: grab;
-          top: 10px;
-        }
-      }
-
-      datalist {
-        display: flex;
-        justify-content: space-between;
-        color: $amalia-ctrl-bar-pslider-bg-color;
-        z-index: 2070;
-        text-align: left;
-        padding-left: 20px;
-        padding-right: 15px;
-        position: relative;
-
-        &:before {
-          content: "";
-          position: absolute;
-          top: 30px;
-          z-index: 2070;
-          background-color: grey;
-          display: block;
-          height: 1px;
-          width: calc(100% - 61px);
+        appearance: none;
+         height: 8px;
+         width: 20px;
+         background: $amalia-primary-color;
+         cursor: grab;
+       }
         }
 
-        option {
+        datalist {
+          display: flex;
+          justify-content: space-between;
           color: $amalia-ctrl-bar-pslider-bg-color;
           z-index: 2070;
-          margin-top: 0px;
-          cursor: pointer;
-          text-align: left;
+          width: 97%;
+          left: 18px;
+          position: relative;
+          text-align: center;
 
-          &.selected {
-            //color: $amalia-ctrl-bar-pslider-bg-color-hover;
-            color:white;
-            font-weight: bold;
-          }
-
-          &:before {
-            content: "•";
-            position: absolute;
-            font-size: 25px;
-            letter-spacing: 0;
-            top: 12px;
-            margin-left: 6px;
+          option {
             color: $amalia-ctrl-bar-pslider-bg-color;
             z-index: 2070;
-          }
+            margin-top: 0px;
+            cursor: pointer;
+            &.active {
+              //color: $amalia-ctrl-bar-pslider-bg-color-hover;
+              color: white;
+              font-weight: bold;
+              .text:before, .text:after {
+                display: none;
+              }
+            }
 
-          &:first-of-type:before {
-            left: 10px;
-          }
-
-          &.last:before {
-            right: 4%;
+            &::after {
+              content: "•";
+              position: absolute;
+              font-size: 25px;
+              letter-spacing: 0;
+              top: 12px;
+              color: $amalia-ctrl-bar-pslider-bg-color;
+              z-index: 2071;
+              display: block;
+              text-indent: 0;
+            }
           }
         }
       }
     }
-  }
   .menu-slider {
     display: none;
     position: absolute;
@@ -937,4 +831,18 @@
       bottom: 106px;
     }
   }
+  // hack for firefox
+  @-moz-document url-prefix() {
+    .playback-rate-labels {
+      datalist {
+        option {
+          &::after {
+            top: 15px !important;
+          }
+        }
+      }
+    }
+  }
+
 }
+

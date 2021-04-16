@@ -234,7 +234,7 @@
                 <datalist id="playback-rate-list">
                     <option class="label"
                             *ngFor="let pr of sliderListOfPlaybackRateStep;index as i; first:as isFirst; last as isLast;"
-                            [ngStyle]="{width:this.sliderListOfPlaybackRateStepWidth[i]+'%' }"
+
                             [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
                             (click)="onChangePlaybackRate(pr)" [selected]="pr ==currentPlaybackRate">{{pr}}x
                     </option>
@@ -242,14 +242,24 @@
             </div>
         </div>
         <!-- Slider 2-->
-        <div class="playback-rate-slider2 {{displayState}}"
+        <div class="playback-rate-slider2 {{displayState}}" #slider
              [ngClass]="{'activated' : (selectedSlider === 'slider2' && enablePlaybackSlider)}"
              *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
-            <div *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
-                 [ngClass]="{'first':isFirst,'last':isLast,'selected':pr ==currentPlaybackRate}"
-                 (click)="onChangePlaybackRate(pr)"
-                  >{{pr}}x
-                <div class="line"></div>
+            <div class="playback-rate-labels">
+                <input type="range" list="sliderListOfPlaybackRateCustomSteps" #cursor
+                       [min]="minCursor"
+                       [max]="maxCursor"
+                       [step]="1"
+                       [value]="indexPlaybackRate"
+                       (change)="togglePlaybackrate(cursor.value)">
+                <datalist id="sliderListOfPlaybackRateCustomSteps">
+                    <option class="label"
+                            *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first:as isFirst; last as isLast;"
+                            [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
+                            (click)="changePlaybackrate(pr)" [selected]="pr ==currentPlaybackRate">
+                        <div class="text">{{pr}}x</div>
+                    </option>
+                </datalist>
             </div>
         </div>
         <div class="menu-slider" [ngClass]="{'activated' : enablePlaybackSlider}" (mouseenter)="enableMenuSlider = true">
