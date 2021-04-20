@@ -585,7 +585,7 @@
 
       input[type="range"] {
         position: absolute;
-        width: 97%;
+        width: 94%;
         height: 1px;
         margin-left: 18px;
         margin-top: 29px;
@@ -621,7 +621,7 @@
           justify-content: space-between;
           color: $amalia-ctrl-bar-pslider-bg-color;
           z-index: 2070;
-          width: 97%;
+          width: 94%;
           left: 18px;
           position: relative;
           text-align: center;
@@ -631,13 +631,25 @@
             z-index: 2070;
             margin-top: 0px;
             cursor: pointer;
+            &.equal {
+              width: 5.5% !important;
+              &::after {
+                width: 5.5%;
+              }
+            }
             &.active {
               //color: $amalia-ctrl-bar-pslider-bg-color-hover;
               color: white;
               font-weight: bold;
-              .text:before, .text:after {
+              &::after {
                 display: none;
               }
+            }
+            &.last::after {
+              text-align: right;
+            }
+            &.first::after {
+              text-align: left;
             }
 
             &::after {

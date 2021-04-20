@@ -478,7 +478,7 @@ ___
 
 ▸ **clearSearchList**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:409
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:408
 
 clear seach list onclick
 
@@ -583,7 +583,7 @@ ___
 
 ▸ **handleShortcut**(`event`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:419
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:418
 
 handleShortcut on search button
 
@@ -667,7 +667,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:363
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:364
 
 Scroll to next or previous searched word
 
@@ -685,7 +685,7 @@ ___
 
 ▸ **scrollToSelectedSegment**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:393
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:394
 
 Invocked on click SYNCHRO button
 
@@ -769,7 +769,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:429
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:428
 
 if scrolling and active segment is not visible add synchro button
 
