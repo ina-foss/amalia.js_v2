@@ -7,7 +7,7 @@
         </div>
     </div>
     <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinned}"
-         *ngIf="enableThumbnail" [hidden]="thumbnailHidden" [ngStyle]="{'left':thumbnailPosition + 'px'}">
+         *ngIf="enableThumbnail" [ngStyle]="{'left':thumbnailPosition + 'px'}">
         <div #thumbnail class="thumbnail" [ngStyle]="{'background-image':'url('+thumbnailBlob+')'}"></div>
         <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
     </div>
