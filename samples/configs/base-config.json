@@ -2,7 +2,7 @@
   "debug": true,
   "logLevel": "debug",
   "player": {
-    "src": "http://localhost:4201/medias/outputlm.mp4",
+    "src": "http://localhost:4201/medias/flux.mp4",
     "crossOrigin": "anonymous",
     "autoplay": false
   },
