@@ -6,13 +6,14 @@ import {MediaPlayerElement} from '../core/media-player-element';
  */
 @Injectable()
 export class MediaPlayerService {
-    private players = new Map<string, MediaPlayerElement>();
+    public players = new Map<string, MediaPlayerElement>();
 
     /**
      * In charge to crate instance or return existing instance
      * @param key instance id, this this case id is player id
      */
     public get(key: string): MediaPlayerElement {
+
         if (!key && this.players.size > 0) {
             key = this.players.keys().next().value;
         }

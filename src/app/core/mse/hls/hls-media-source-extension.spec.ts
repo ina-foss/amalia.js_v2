@@ -1,7 +1,22 @@
 import {async} from '@angular/core/testing';
 import {HLSMediaSourceExtension} from './hls-media-source-extension';
+import {EventEmitter} from 'events';
+import {PlayerConfigData} from '../../config/model/player-config-data';
+import {DefaultLogger} from '../../logger/default-logger';
+import * as Hls from 'hls.js';
+import {PlayerEventType} from '../../constant/event-type';
 
 describe('Test HLS Source extension', () => {
+    const mediaSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+    const backwardSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+    const eventEmitter = new EventEmitter();
+    const component = document.createElement('video');
+    const logger =  new DefaultLogger('root-player');
+    const config: PlayerConfigData = {
+        autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
+        , backwardsSrc: backwardSrc
+    };
+    const hlsPlayer = new HLSMediaSourceExtension(component, eventEmitter, config, logger);
 
     beforeEach(async(() => {
     }));
@@ -35,6 +50,30 @@ describe('Test HLS Source extension', () => {
 
         expect(HLSMediaSourceExtension.isUrl(m3u8List))
             .toEqual(false);
+    });
+    it('test switch function ', () => {
+        hlsPlayer.setSrc(config);
+        expect(hlsPlayer.getSrc()).toEqual(mediaSrc);
+        expect(hlsPlayer.getBackwardsSrc()).toEqual(backwardSrc);
+        hlsPlayer.switchToMainSrc();
+        expect(hlsPlayer.reverseMode).toEqual(false);
+        hlsPlayer.switchToBackwardsSrc();
+        expect(hlsPlayer.reverseMode).toEqual(true);
+    });
+    it('test handle error ', () => {
+        spyOn(eventEmitter, 'emit');
+        hlsPlayer.handleError('ERROR');
+        expect(eventEmitter.emit).toHaveBeenCalled();
+        hlsPlayer.handleError('hlsError');
+        expect(eventEmitter.emit).toHaveBeenCalled();
+        hlsPlayer.switchToBackwardsSrc();
+        eventEmitter.emit(Hls.Events.MANIFEST_LOADED);
+        expect(hlsPlayer.mediaElement.play()).toBeTruthy();
+
+    });
+    it('test destroy function ', () => {
+        hlsPlayer.destroy();
+        expect(hlsPlayer).toBeTruthy();
     });
 });
 

@@ -21,6 +21,8 @@
 
 ### Properties
 
+* [_player](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#_player)
+* [_pluginConfiguration](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#_pluginconfiguration)
 * [blocksDisplayStates](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#private-blocksdisplaystates)
 * [blocksIsOpen](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#private-blocksisopen)
 * [colors](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md#colors)
@@ -112,6 +114,28 @@ Name | Type |
 **Returns:** *[TimelinePluginComponent](_src_app_plugins_timeline_timeline_plugin_component_.timelineplugincomponent.md)*
 
 ## Properties
+
+###  _player
+
+• **_player**: *any*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)*
+
+Defined in src/app/core/plugin/plugin-base.ts:22
+
+This plugin configuration
+
+___
+
+###  _pluginConfiguration
+
+• **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[TimelineConfig](../interfaces/_src_app_core_config_model_timeline_config_.timelineconfig.md)›*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)*
+
+Defined in src/app/core/plugin/plugin-base.ts:33
+
+___
 
 ### `Private` blocksDisplayStates
 
@@ -502,7 +526,7 @@ ___
 
 ▸ **createMainMetadataIds**(`handleMetadataIds`: any, `metadataManager`: any): *[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)[]*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:385
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:382
 
 In charge to main timeline
 
@@ -547,7 +571,7 @@ ___
 
 ▸ **handleClickToDrawRect**(`event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:435
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:432
 
 **Parameters:**
 
@@ -581,7 +605,7 @@ ___
 
 ▸ **handleEnableZoom**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:468
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:465
 
 Enable zoom
 
@@ -605,7 +629,7 @@ ___
 
 ▸ **handleMouseEnterOnTc**(`event`: MouseEvent, `localisation`: [TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:415
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:412
 
 On mouse enter on tc bloc
 
@@ -624,7 +648,7 @@ ___
 
 ▸ **handleMouseLeaveOnTc**(`$event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:429
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:426
 
 On mouse enter on tc bloc
 
@@ -642,7 +666,7 @@ ___
 
 ▸ **handleMouseMoveToDrawRect**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:497
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:494
 
 handle mouse to draw
 
@@ -812,7 +836,7 @@ ___
 
 ▸ **updateFocusContainerOnSelection**(`focusWidth`: any, `leftPos`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:478
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:475
 
 In charge to change focus container
 
@@ -831,7 +855,7 @@ ___
 
 ▸ **updateMouseEvent**(`event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:509
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:506
 
 Update mouse position
 

@@ -13,14 +13,14 @@ import {LoggerInterface} from '../../logger/logger-interface';
  */
 export class HLSMediaSourceExtension implements MediaSourceExtension {
     private static DEFAULT_HEADER_BASE64 = 'data:application/vnd.apple.mpegurl;base64,';
-    private reverseMode = false;
+    public reverseMode = false;
     private currentTime: number;
     private duration: number;
     private mainMediaSrc: string;
     private backwardsMediaSrc: string;
-    private config: PlayerConfigData;
+    public config: PlayerConfigData;
     private logger: LoggerInterface;
-    private readonly mediaElement: HTMLVideoElement;
+    public readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
     private readonly hlsPlayer: Hls;
 

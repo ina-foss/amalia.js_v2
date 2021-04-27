@@ -11,7 +11,7 @@ import {LoggerInterface} from '../logger/logger-interface';
 export class DefaultMediaSourceExtension implements MediaSourceExtension {
     private mediaSrc: string = null;
     private backwardsMediaSrc: string = null;
-    private mainSource: HTMLSourceElement;
+    public mainSource: HTMLSourceElement;
     private config: PlayerConfigData;
     private logger: LoggerInterface;
     private readonly eventEmitter: EventEmitter;

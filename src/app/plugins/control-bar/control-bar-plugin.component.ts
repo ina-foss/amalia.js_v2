@@ -48,13 +48,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list playback rate step (2/6/8)
      */
     @Input()
-    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, 0,  1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1,  0, 1, 2, 4, 6, 8, 10];
 
     /**
      * List of playback rate
      */
     @Input()
-    public sliderListOfPlaybackRateCustomSteps: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 1.5, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateCustomSteps: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
     /**
      * Enable Menu
      */
@@ -119,6 +119,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * List of Controls
      */
     public controls = [];
+    public indexPlaybackRate = 3;
     /**
      * In sliding
      */
@@ -219,6 +220,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @ViewChild('controlsMenu')
     public controlsMenu: ElementRef<HTMLElement>;
     public debounceFunction;
+    public posPlaybackrates: Array<number> = [];
+    public negPlaybackrates: Array<number> = [];
+    public maxCursor: number;
+    public minCursor: number;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -231,6 +236,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         super.init();
         this.elements = this.pluginConfiguration.data;
         this.buildSliderSteps();
+        this.initPlaybackrates();
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(100);
         // init shortcuts
@@ -867,6 +873,56 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public unmute() {
         return this.mediaPlayerElement.getMediaPlayer().unmute();
+    }
+    public initPlaybackrates() {
+        let speed;
+        const negPlaybackrates: Array<number> = [];
+        const posPlaybackrates: Array<number> = [];
+        const playbackrates = this.sliderListOfPlaybackRateCustomSteps;
+        for (speed of playbackrates) {
+            if (Math.sign(speed) === 1) {
+                posPlaybackrates.push(speed);
+            } else if (Math.sign(speed) === -1) {
+                negPlaybackrates.push(speed);
+            }
+        }
+        this.negPlaybackrates = negPlaybackrates.reverse();
+        this.posPlaybackrates = posPlaybackrates;
+        this.minCursor = this.negPlaybackrates.length * -1;
+        this.maxCursor = this.posPlaybackrates.length;
+    }
+    @AutoBind
+    public togglePlaybackrate(value) {
+        let pr;
+        if (Math.sign(value) === 1) {
+            pr = this.posPlaybackrates[value - 1];
+        } else if (Math.sign(value) === -1) {
+            pr = this.negPlaybackrates[Math.abs(value) - 1];
+        }
+        this.indexPlaybackRate = value;
+        if (value !== 0) {
+            this.onChangePlaybackRate(pr);
+        }
+    }
+    @AutoBind
+    public changePlaybackrate(pr) {
+        if (pr !== 0) {
+            if (Math.sign(pr) === 1) {
+                for (let i = 0; i < this.posPlaybackrates.length; i++) {
+                    if (this.posPlaybackrates[i] === pr) {
+                        this.indexPlaybackRate = i;
+                    }
+                }
+            } else if (Math.sign(pr) === -1) {
+
+                for (let i = 0; i < this.negPlaybackrates.length; i++) {
+                    if (this.negPlaybackrates[i] === pr) {
+                        this.indexPlaybackRate = -1 * (i + 1);
+                    }
+                }
+            }
+            this.onChangePlaybackRate(pr);
+        }
     }
     /**
      * Handle on component destroy

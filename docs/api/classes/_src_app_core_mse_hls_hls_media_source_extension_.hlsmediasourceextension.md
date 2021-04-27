@@ -21,15 +21,15 @@ In  charge to handle HSL Media extension
 ### Properties
 
 * [backwardsMediaSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-backwardsmediasrc)
-* [config](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-config)
+* [config](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#config)
 * [currentTime](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-currenttime)
 * [duration](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-duration)
 * [eventEmitter](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-eventemitter)
 * [hlsPlayer](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-hlsplayer)
 * [logger](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-logger)
 * [mainMediaSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-mainmediasrc)
-* [mediaElement](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-mediaelement)
-* [reverseMode](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-reversemode)
+* [mediaElement](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#mediaelement)
+* [reverseMode](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#reversemode)
 * [DEFAULT_HEADER_BASE64](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#static-private-default_header_base64)
 
 ### Methods
@@ -75,7 +75,7 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:20
 
 ___
 
-### `Private` config
+###  config
 
 • **config**: *[PlayerConfigData](../interfaces/_src_app_core_config_model_player_config_data_.playerconfigdata.md)*
 
@@ -131,7 +131,7 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:19
 
 ___
 
-### `Private` mediaElement
+###  mediaElement
 
 • **mediaElement**: *HTMLVideoElement*
 
@@ -139,7 +139,7 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:23
 
 ___
 
-### `Private` reverseMode
+###  reverseMode
 
 • **reverseMode**: *boolean* = false
 

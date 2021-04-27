@@ -73,6 +73,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     public listOfHistograms: Array< { paths: [string, string], nbBins: number, posMax: number, negMax: number, scale: [string, string] } > ;
     /**
+     * state of hover cursor
+     */
+    public active = false;
+    /**
      * html element histogramContainer
      */
     @ViewChild('histogramContainer')

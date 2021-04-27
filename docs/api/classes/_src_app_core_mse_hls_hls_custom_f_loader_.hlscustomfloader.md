@@ -19,7 +19,7 @@ Specified custom loader when uses switch channel audio,  loader  retry to load a
 
 ### Properties
 
-* [_audioChannel](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#private-_audiochannel)
+* [_audioChannel](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#_audiochannel)
 
 ### Accessors
 
@@ -51,7 +51,7 @@ Name | Type |
 
 ## Properties
 
-### `Private` _audioChannel
+###  _audioChannel
 
 • **_audioChannel**: *number* = 1
 

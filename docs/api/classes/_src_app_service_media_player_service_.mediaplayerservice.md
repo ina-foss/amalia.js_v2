@@ -12,7 +12,7 @@ Service contain all instance of players
 
 ### Properties
 
-* [players](_src_app_service_media_player_service_.mediaplayerservice.md#private-players)
+* [players](_src_app_service_media_player_service_.mediaplayerservice.md#players)
 
 ### Methods
 
@@ -20,7 +20,7 @@ Service contain all instance of players
 
 ## Properties
 
-### `Private` players
+###  players
 
 • **players**: *Map‹string, [MediaPlayerElement](_src_app_core_media_player_element_.mediaplayerelement.md)‹››* = new Map<string, MediaPlayerElement>()
 

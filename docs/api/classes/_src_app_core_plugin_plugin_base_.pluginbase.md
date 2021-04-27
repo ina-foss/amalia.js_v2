@@ -38,8 +38,8 @@ Base class for create plugin
 
 ### Properties
 
-* [_player](_src_app_core_plugin_plugin_base_.pluginbase.md#private-_player)
-* [_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#private-_pluginconfiguration)
+* [_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)
+* [_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)
 * [fps](_src_app_core_plugin_plugin_base_.pluginbase.md#fps)
 * [logger](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-logger)
 * [mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)
@@ -82,7 +82,7 @@ Name | Type | Description |
 
 ## Properties
 
-### `Private` _player
+###  _player
 
 • **_player**: *any*
 
@@ -92,7 +92,7 @@ This plugin configuration
 
 ___
 
-### `Private` _pluginConfiguration
+###  _pluginConfiguration
 
 • **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 

@@ -92,14 +92,14 @@ export class ShortcutManager {
             if (!modifiersMatch) {
                 return false;
             }
-            return this.nameToCode(definition.key) === Number(event.key);
+            return this.nameToCode(definition.key) === Number(event.code);
         } catch (e) {
             return false;
         }
     }
 
     private parseShortcut(keys: string): Shortcut {
-        const parts = keys.split(/[\s+\+]+/).map(this.normaliseKeyName);
+        const parts = keys.split(/[\s+\+]+/);
         let key: string | null = null;
         let alt = false;
         let ctrl = false;
@@ -126,8 +126,8 @@ export class ShortcutManager {
                     if (part.length > 1 && !this.isValidKeyName(part)) {
                         throw new Error(`invalid named key "${part}"`);
                     }
-                    key = part;
             }
+            key = part;
         });
         if (!key) {
             throw new Error('no key specified, only modifiers');

@@ -2,7 +2,7 @@ import {async, getTestBed, TestBed} from '@angular/core/testing';
 import {TimeBarPluginComponent} from './time-bar-plugin.component';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ConfigurationManager} from '../../core/config/configuration-manager';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {EventEmitter} from 'events';
 import {PlayerConfigData} from '../../core/config/model/player-config-data';
 import {MediaElement} from '../../core/media/media-element';
@@ -14,66 +14,83 @@ import {DefaultConfigLoader} from '../../core/config/loader/default-config-loade
 import {DefaultConfigConverter} from '../../core/config/converter/default-config-converter';
 import {ConfigDataSource} from '../../core/config/model/config-data-source';
 import {ConfigData} from '../../core/config/model/config-data';
+import {MediaPlayerElement} from '../../core/media-player-element';
+import {DefaultMetadataLoader} from '../../core/metadata/loader/default-metadata-loader';
+import {PlayerState} from '../../core/constant/player-state';
+import {HttpClient} from '@angular/common/http';
+import {DefaultMetadataConverter} from '../../core/metadata/converter/default-metadata-converter';
 
 describe('TimeBar plugin test', () => {
     let injector: TestBed;
+    let httpClient: HttpClient;
+    let httpTestingController: HttpTestingController;
     const logger: LoggerInterface = new DefaultLogger();
     const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
-    const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
-    const configurationManager = new ConfigurationManager(loader, logger);
+    const mediaSrc = 'http://localhost:4201/medias/outputlm.mp4';
     const configPlugin: PluginConfigData<TimeBarConfig> = {name: 'TIME_BAR', data: {timeFormat: 'f', theme : 'outside'}};
-    const component = new MediaElement(document.createElement('video'), new EventEmitter());
-    const config: PlayerConfigData = {
-        autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: 5000, poster: '', src: mediaSrc
-    };
-    component.setSrc(config);
-    const pluginsConfiguration: Map<string, PluginConfigData<any>> = new Map<string, PluginConfigData<any>>();
-    const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
-    const playerService = new MediaPlayerService();
+    const eventEmitter = new EventEmitter();
+    const metadataConverter = new DefaultMetadataConverter();
 
-    const player: PlayerConfigData = {
-        autoplay: false,
-        crossOrigin: null,
-        data: null,
-        defaultVolume: 0,
-        duration: null,
-        poster: '',
-        src: mediaSrc,
-        ratio: '16:9'
-    };
-    const c: ConfigData = {
-        player,
-        pluginsConfiguration,
-        dataSources
-    };
+    // const mediaPlayer = new MediaElement(obj, eventEmitter);
+    const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+    const configData = require('tests/assets/config-mpe.json');
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             declarations: [],
         }).compileComponents();
         injector = getTestBed();
+        httpTestingController = injector.inject(HttpTestingController);
+        httpClient = injector.inject(HttpClient);
     }));
-    /*it('Test configuration Manager',() => {
-        configurationManager.load(c).then(() => {
+    it('Test functions plugin timebarcode', () => {
+        const metadataLoader = new DefaultMetadataLoader(httpClient, metadataConverter, logger);
+        const configurationManager = new ConfigurationManager(loader, logger);
+        const playerService = new MediaPlayerService();
+        const mpe = new MediaPlayerElement();
+        mpe.init(configData, metadataLoader, configLoader)
+            .then((state) => {
+
+                expect(state).toEqual(PlayerState.INITIALIZED);
+            })
+            .catch(() => {
+                fail('Error to init player');
+            });
+        configurationManager.load(configData).then(() => {
             expect(configurationManager.getCoreConfig().player.src).toContain(mediaSrc);
         });
-        configurationManager.addPluginConfiguration('TIME_BAR', configPlugin);
-    });*/
-    /*it('initalisation Plugin',() => {
-        let plugin = new TimeBarPluginComponent(playerService);
-        expect(plugin).toBeTruthy();
-    });
-    it('Test configuration',() => {
-        let plugin = new TimeBarPluginComponent(playerService);
-        expect (plugin.getDefaultConfig()).toEqual(configPlugin);
-    });*/
-    /*it('Test currentTime TimeCodeBar plugin', () => {
-        let plugin = new TimeBarPluginComponent(playerService);
-        expect(component).toBeTruthy();
+        mpe.configurationManager.configData = configData;
+        const obj = document.createElement('video');
+        mpe.setMediaPlayer(obj);
+        const mediaPlayer = new MediaElement(obj, eventEmitter);
+        expect(mpe.getMediaPlayer()).toEqual(mediaPlayer);
+        mpe.setMediaPlayerWidth(1980);
+        const plugin = new TimeBarPluginComponent(playerService);
+        expect(plugin.getDefaultConfig()).toEqual(configPlugin);
+        plugin.playerId = 'PLAYER';
+        plugin.pluginInstance = 'PLAYER';
+        plugin.mediaPlayerElement = mpe;
         plugin.init();
-        component.setCurrentTime(10);
+        plugin.hideTimeBar();
+        expect(plugin.active).toEqual(false);
+        plugin.showTimeBar();
+        expect(plugin.active).toEqual(true);
+        mediaPlayer.setCurrentTime(10);
+        plugin.handleOnTimeChange();
         expect(plugin.currentTime).toEqual(10);
-        component.getDuration();
-        expect(plugin.duration).toEqual(5000);
-    });*/
+        plugin.handleDisplayState();
+        expect(plugin.displayState).toEqual('l');
+        mpe.setMediaPlayerWidth(320);
+        plugin.handleDisplayState();
+        expect(plugin.displayState).toEqual('s');
+        plugin.showTimeBar();
+        expect(plugin.active).toEqual(false);
+        plugin.handleOnDurationChange();
+        playerService.get('PLAYER');
+        playerService.get('PLAYER2');
+        playerService.get(null);
+
+
+    });
 });

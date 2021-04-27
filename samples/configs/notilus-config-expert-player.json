@@ -199,7 +199,7 @@
           "key": "p"
         },
         {
-          "label": "Aspect ratio (a)",
+          "label": "Changer l'aspect ratio (a)",
           "control": "aspectRatio",
           "zone": 3,
           "priority": 2,
