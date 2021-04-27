@@ -24,7 +24,7 @@ In  charge to handle default media sources (Supported by browsers)
 * [config](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#private-config)
 * [eventEmitter](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#private-eventemitter)
 * [logger](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#private-logger)
-* [mainSource](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#private-mainsource)
+* [mainSource](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#mainsource)
 * [mediaElement](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#private-mediaelement)
 * [mediaSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#private-mediasrc)
 
@@ -91,7 +91,7 @@ Defined in src/app/core/mse/default-media-source-extension.ts:16
 
 ___
 
-### `Private` mainSource
+###  mainSource
 
 • **mainSource**: *HTMLSourceElement*
 

@@ -21,6 +21,8 @@
 
 ### Properties
 
+* [_player](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#_player)
+* [_pluginConfiguration](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#_pluginconfiguration)
 * [baseUrl](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#baseurl)
 * [currentTime](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#currenttime)
 * [displayFormat](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#displayformat)
@@ -99,6 +101,28 @@ Name | Type |
 **Returns:** *[StoryboardPluginComponent](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md)*
 
 ## Properties
+
+###  _player
+
+• **_player**: *any*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)*
+
+Defined in src/app/core/plugin/plugin-base.ts:22
+
+This plugin configuration
+
+___
+
+###  _pluginConfiguration
+
+• **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[StoryboardConfig](../interfaces/_src_app_core_config_model_storyboard_config_.storyboardconfig.md)›*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)*
+
+Defined in src/app/core/plugin/plugin-base.ts:33
+
+___
 
 ###  baseUrl
 

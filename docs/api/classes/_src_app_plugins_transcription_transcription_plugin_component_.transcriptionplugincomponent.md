@@ -21,6 +21,8 @@
 
 ### Properties
 
+* [_player](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#_player)
+* [_pluginConfiguration](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#_pluginconfiguration)
 * [active](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#active)
 * [autoScroll](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#autoscroll)
 * [currentTime](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#currenttime)
@@ -103,6 +105,28 @@ Name | Type |
 **Returns:** *[TranscriptionPluginComponent](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md)*
 
 ## Properties
+
+###  _player
+
+• **_player**: *any*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)*
+
+Defined in src/app/core/plugin/plugin-base.ts:22
+
+This plugin configuration
+
+___
+
+###  _pluginConfiguration
+
+• **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[TranscriptionConfig](../interfaces/_src_app_core_config_model_transcription_config_.transcriptionconfig.md)›*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)*
+
+Defined in src/app/core/plugin/plugin-base.ts:33
+
+___
 
 ###  active
 
@@ -454,7 +478,7 @@ ___
 
 ▸ **clearSearchList**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:401
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:408
 
 clear seach list onclick
 
@@ -516,7 +540,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:304
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:307
 
 Invoked on metadata loaded
 
@@ -541,7 +565,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:295
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:298
 
 handle scroll event
 
@@ -559,7 +583,7 @@ ___
 
 ▸ **handleShortcut**(`event`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:411
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:418
 
 handleShortcut on search button
 
@@ -601,7 +625,7 @@ ___
 
 ▸ **parseTranscription**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:311
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:314
 
 In charge to load metadata
 
@@ -643,7 +667,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:360
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:364
 
 Scroll to next or previous searched word
 
@@ -661,7 +685,7 @@ ___
 
 ▸ **scrollToSelectedSegment**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:389
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:394
 
 Invocked on click SYNCHRO button
 
@@ -673,7 +697,7 @@ ___
 
 ▸ **searchWord**(`searchText`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:336
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:339
 
 Search word ans scroll to first result
 
@@ -745,7 +769,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:421
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:428
 
 if scrolling and active segment is not visible add synchro button
 

@@ -12,7 +12,7 @@ import {Loader} from '../loader/loader';
  * In charge to handle amalia configuration
  */
 export class ConfigurationManager {
-    private configData: ConfigData;
+    public configData: ConfigData;
     private loader: Loader<ConfigData>;
     private logger: LoggerInterface;
 

@@ -60,7 +60,23 @@
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 0;
+    scrollbar-color: #0086B1 #DDD;
+    scrollbar-width: 6px;
+    // style scrollbar
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
 
+    &::-webkit-scrollbar-track {
+      border: 1px solid #ddd;
+      background-color: #fff;
+      background-clip: content-box;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: #0086B1;
+    }
     .segment {
       display: block;
       margin: 0;
@@ -249,6 +265,8 @@
 
     }
   }
+
+
 }
 
 

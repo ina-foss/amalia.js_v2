@@ -24,6 +24,10 @@ describe('Test Base utils', () => {
         const base64Atob = BaseUtils.base64DecToArr(base64);
         expect(base64Atob).toBeTruthy();
     });
+    it('Test get unique id utils:  ', () => {
+        const id = BaseUtils.getUniqueId(1);
+        expect(id).toBeTruthy();
+    });
 });
 
 

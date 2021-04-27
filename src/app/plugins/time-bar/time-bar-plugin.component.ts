@@ -105,7 +105,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * - update current time
      */
     @AutoBind
-    private handleOnTimeChange() {
+    public handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
     }
 
@@ -113,7 +113,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Invoked on duration change
      */
     @AutoBind
-    private handleOnDurationChange() {
+    public handleOnDurationChange() {
         this.startTc = (this.mediaPlayerElement.getConfiguration().tcOffset) ? this.mediaPlayerElement.getConfiguration().tcOffset : 0;
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();

@@ -1,6 +1,7 @@
 import {async, getTestBed, TestBed} from '@angular/core/testing';
 import {FormatUtils} from './format-utils';
 import {DEFAULT} from '../constant/default';
+import {AmaliaException} from '../exception/amalia-exception';
 
 
 describe('Test Format utils', () => {
@@ -26,12 +27,15 @@ describe('Test Format utils', () => {
         expect(FormatUtils.formatTime(3600, 'm')).toContain('01:00');
         expect(FormatUtils.formatTime(3600 * 2 + 2700 + 1.21, 'm')).toContain('02:45');
     });
+    it('Test FormatTime test only minutes', () => {
+        expect(FormatUtils.formatTime(3600, 'minutes')).toContain('0');
+        expect(FormatUtils.formatTime(3600 * 2 + 2700 + 1.21, 'minutes')).toContain('45');
+    });
 
     it('Test FormatTime test seconds', () => {
         expect(FormatUtils.formatTime(3600, 's')).toContain('01:00:00');
         expect(FormatUtils.formatTime(3600 * 2 + 2700 + 1.21, 's')).toContain('02:45:01');
     });
-
     it('Test FormatTime test seconds in unit', () => {
         expect(FormatUtils.formatTime(3600, 'seconds')).toContain('36000.0000');
         expect(FormatUtils.formatTime(3600 * 2 + 2700 + 1.21, 'seconds')).toContain('99001.2100');

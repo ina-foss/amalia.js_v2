@@ -21,6 +21,8 @@
 
 ### Properties
 
+* [_player](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#_player)
+* [_pluginConfiguration](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#_pluginconfiguration)
 * [active](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#active)
 * [currentTime](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#currenttime)
 * [displayFormat](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#displayformat)
@@ -48,8 +50,8 @@
 
 * [getDefaultConfig](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#getdefaultconfig)
 * [handleDisplayState](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#handledisplaystate)
-* [handleOnDurationChange](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#private-handleondurationchange)
-* [handleOnTimeChange](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#private-handleontimechange)
+* [handleOnDurationChange](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#handleondurationchange)
+* [handleOnTimeChange](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#handleontimechange)
 * [hideTimeBar](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#hidetimebar)
 * [init](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#init)
 * [ngOnInit](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#ngoninit)
@@ -74,6 +76,28 @@ Name | Type |
 **Returns:** *[TimeBarPluginComponent](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md)*
 
 ## Properties
+
+###  _player
+
+• **_player**: *any*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)*
+
+Defined in src/app/core/plugin/plugin-base.ts:22
+
+This plugin configuration
+
+___
+
+###  _pluginConfiguration
+
+• **_pluginConfiguration**: *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[TimeBarConfig](../interfaces/_src_app_core_config_model_time_bar_config_.timebarconfig.md)›*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)*
+
+Defined in src/app/core/plugin/plugin-base.ts:33
+
+___
 
 ###  active
 
@@ -323,7 +347,7 @@ switch container class based on width
 
 ___
 
-### `Private` handleOnDurationChange
+###  handleOnDurationChange
 
 ▸ **handleOnDurationChange**(): *void*
 
@@ -335,7 +359,7 @@ Invoked on duration change
 
 ___
 
-### `Private` handleOnTimeChange
+###  handleOnTimeChange
 
 ▸ **handleOnTimeChange**(): *void*
 

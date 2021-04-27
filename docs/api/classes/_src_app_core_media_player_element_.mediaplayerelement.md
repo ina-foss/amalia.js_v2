@@ -16,16 +16,15 @@ In charge to create player
 
 ### Properties
 
-* [_aspectRatio](_src_app_core_media_player_element_.mediaplayerelement.md#private-_aspectratio)
+* [_aspectRatio](_src_app_core_media_player_element_.mediaplayerelement.md#_aspectratio)
 * [_eventEmitter](_src_app_core_media_player_element_.mediaplayerelement.md#private-_eventemitter)
-* [_metadataManager](_src_app_core_media_player_element_.mediaplayerelement.md#private-_metadatamanager)
-* [configurationManager](_src_app_core_media_player_element_.mediaplayerelement.md#private-configurationmanager)
-* [defaultLoader](_src_app_core_media_player_element_.mediaplayerelement.md#private-defaultloader)
+* [_metadataManager](_src_app_core_media_player_element_.mediaplayerelement.md#_metadatamanager)
+* [configurationManager](_src_app_core_media_player_element_.mediaplayerelement.md#configurationmanager)
+* [defaultLoader](_src_app_core_media_player_element_.mediaplayerelement.md#defaultloader)
 * [isMetadataLoaded](_src_app_core_media_player_element_.mediaplayerelement.md#ismetadataloaded)
 * [logger](_src_app_core_media_player_element_.mediaplayerelement.md#private-logger)
 * [mediaPlayer](_src_app_core_media_player_element_.mediaplayerelement.md#private-mediaplayer)
 * [preferenceStorageManager](_src_app_core_media_player_element_.mediaplayerelement.md#private-preferencestoragemanager)
-* [shortcutManager](_src_app_core_media_player_element_.mediaplayerelement.md#private-shortcutmanager)
 * [state](_src_app_core_media_player_element_.mediaplayerelement.md#private-state)
 * [width](_src_app_core_media_player_element_.mediaplayerelement.md#width)
 
@@ -43,7 +42,7 @@ In charge to create player
 * [getPluginConfiguration](_src_app_core_media_player_element_.mediaplayerelement.md#getpluginconfiguration)
 * [getState](_src_app_core_media_player_element_.mediaplayerelement.md#getstate)
 * [getThumbnailUrl](_src_app_core_media_player_element_.mediaplayerelement.md#getthumbnailurl)
-* [handleMetadataLoaded](_src_app_core_media_player_element_.mediaplayerelement.md#private-handlemetadataloaded)
+* [handleMetadataLoaded](_src_app_core_media_player_element_.mediaplayerelement.md#handlemetadataloaded)
 * [init](_src_app_core_media_player_element_.mediaplayerelement.md#init)
 * [loadConfiguration](_src_app_core_media_player_element_.mediaplayerelement.md#private-loadconfiguration)
 * [loadDataSources](_src_app_core_media_player_element_.mediaplayerelement.md#private-loaddatasources)
@@ -58,17 +57,17 @@ In charge to create player
 
 \+ **new MediaPlayerElement**(): *[MediaPlayerElement](_src_app_core_media_player_element_.mediaplayerelement.md)*
 
-Defined in src/app/core/media-player-element.ts:32
+Defined in src/app/core/media-player-element.ts:30
 
 **Returns:** *[MediaPlayerElement](_src_app_core_media_player_element_.mediaplayerelement.md)*
 
 ## Properties
 
-### `Private` _aspectRatio
+###  _aspectRatio
 
 • **_aspectRatio**: *"16:9" | "4:3"* = "4:3"
 
-Defined in src/app/core/media-player-element.ts:43
+Defined in src/app/core/media-player-element.ts:41
 
 Selected aspectRatio
 
@@ -78,31 +77,31 @@ ___
 
 • **_eventEmitter**: *EventEmitter*
 
-Defined in src/app/core/media-player-element.ts:29
+Defined in src/app/core/media-player-element.ts:28
 
 ___
 
-### `Private` _metadataManager
+###  _metadataManager
 
 • **_metadataManager**: *[MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)*
-
-Defined in src/app/core/media-player-element.ts:23
-
-___
-
-### `Private` configurationManager
-
-• **configurationManager**: *[ConfigurationManager](_src_app_core_config_configuration_manager_.configurationmanager.md)*
 
 Defined in src/app/core/media-player-element.ts:22
 
 ___
 
-### `Private` defaultLoader
+###  configurationManager
+
+• **configurationManager**: *[ConfigurationManager](_src_app_core_config_configuration_manager_.configurationmanager.md)*
+
+Defined in src/app/core/media-player-element.ts:21
+
+___
+
+###  defaultLoader
 
 • **defaultLoader**: *[Loader](../interfaces/_src_app_core_loader_loader_.loader.md)‹Array‹Metadata››*
 
-Defined in src/app/core/media-player-element.ts:24
+Defined in src/app/core/media-player-element.ts:23
 
 ___
 
@@ -110,7 +109,7 @@ ___
 
 • **isMetadataLoaded**: *boolean* = false
 
-Defined in src/app/core/media-player-element.ts:31
+Defined in src/app/core/media-player-element.ts:29
 
 ___
 
@@ -118,7 +117,7 @@ ___
 
 • **logger**: *[LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/media-player-element.ts:28
+Defined in src/app/core/media-player-element.ts:27
 
 ___
 
@@ -126,7 +125,7 @@ ___
 
 • **mediaPlayer**: *[MediaElement](_src_app_core_media_media_element_.mediaelement.md)*
 
-Defined in src/app/core/media-player-element.ts:26
+Defined in src/app/core/media-player-element.ts:25
 
 ___
 
@@ -134,15 +133,7 @@ ___
 
 • **preferenceStorageManager**: *[PreferenceStorageManager](_src_app_core_storage_preference_storage_manager_.preferencestoragemanager.md)*
 
-Defined in src/app/core/media-player-element.ts:27
-
-___
-
-### `Private` shortcutManager
-
-• **shortcutManager**: *[ShortcutManager](_src_app_core_shortcut_shortcut_manager_.shortcutmanager.md)*
-
-Defined in src/app/core/media-player-element.ts:30
+Defined in src/app/core/media-player-element.ts:26
 
 ___
 
@@ -150,7 +141,7 @@ ___
 
 • **state**: *[PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)* = PlayerState.CREATED
 
-Defined in src/app/core/media-player-element.ts:25
+Defined in src/app/core/media-player-element.ts:24
 
 ___
 
@@ -158,7 +149,7 @@ ___
 
 • **width**: *number*
 
-Defined in src/app/core/media-player-element.ts:32
+Defined in src/app/core/media-player-element.ts:30
 
 ## Accessors
 
@@ -166,13 +157,13 @@ Defined in src/app/core/media-player-element.ts:32
 
 • **get aspectRatio**(): *"16:9" | "4:3"*
 
-Defined in src/app/core/media-player-element.ts:45
+Defined in src/app/core/media-player-element.ts:43
 
 **Returns:** *"16:9" | "4:3"*
 
 • **set aspectRatio**(`value`: "16:9" | "4:3"): *void*
 
-Defined in src/app/core/media-player-element.ts:50
+Defined in src/app/core/media-player-element.ts:48
 
 **Parameters:**
 
@@ -188,7 +179,7 @@ ___
 
 • **get eventEmitter**(): *EventEmitter*
 
-Defined in src/app/core/media-player-element.ts:55
+Defined in src/app/core/media-player-element.ts:53
 
 **Returns:** *EventEmitter*
 
@@ -198,13 +189,13 @@ ___
 
 • **get metadataManager**(): *[MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)*
 
-Defined in src/app/core/media-player-element.ts:66
+Defined in src/app/core/media-player-element.ts:64
 
 **Returns:** *[MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)*
 
 • **set metadataManager**(`value`: [MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)): *void*
 
-Defined in src/app/core/media-player-element.ts:70
+Defined in src/app/core/media-player-element.ts:68
 
 **Parameters:**
 
@@ -220,7 +211,7 @@ Name | Type |
 
 ▸ **getConfiguration**(): *[ConfigData](../interfaces/_src_app_core_config_model_config_data_.configdata.md)*
 
-Defined in src/app/core/media-player-element.ts:114
+Defined in src/app/core/media-player-element.ts:112
 
 Return configuration
 
@@ -232,7 +223,7 @@ ___
 
 ▸ **getDisplayState**(): *string*
 
-Defined in src/app/core/media-player-element.ts:212
+Defined in src/app/core/media-player-element.ts:210
 
 Return displayState (s/m/l)
 
@@ -244,7 +235,7 @@ ___
 
 ▸ **getMediaPlayer**(): *[MediaElement](_src_app_core_media_media_element_.mediaelement.md)*
 
-Defined in src/app/core/media-player-element.ts:136
+Defined in src/app/core/media-player-element.ts:134
 
 Return media source
 
@@ -256,7 +247,7 @@ ___
 
 ▸ **getPluginConfiguration**(`pluginName`: string): *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹any›*
 
-Defined in src/app/core/media-player-element.ts:121
+Defined in src/app/core/media-player-element.ts:119
 
 Return configuration
 
@@ -274,7 +265,7 @@ ___
 
 ▸ **getState**(): *[PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)*
 
-Defined in src/app/core/media-player-element.ts:62
+Defined in src/app/core/media-player-element.ts:60
 
 Return media player state
 
@@ -286,7 +277,7 @@ ___
 
 ▸ **getThumbnailUrl**(`tc`: number): *string*
 
-Defined in src/app/core/media-player-element.ts:195
+Defined in src/app/core/media-player-element.ts:193
 
 Return thumbnail base url
 
@@ -300,11 +291,11 @@ Name | Type | Description |
 
 ___
 
-### `Private` handleMetadataLoaded
+###  handleMetadataLoaded
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/core/media-player-element.ts:174
+Defined in src/app/core/media-player-element.ts:172
 
 **Returns:** *void*
 
@@ -314,7 +305,7 @@ ___
 
 ▸ **init**(`config`: object, `defaultLoader?`: [Loader](../interfaces/_src_app_core_loader_loader_.loader.md)‹Array‹Metadata››, `configLoader?`: [Loader](../interfaces/_src_app_core_loader_loader_.loader.md)‹[ConfigData](../interfaces/_src_app_core_config_model_config_data_.configdata.md)›): *Promise‹[PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)›*
 
-Defined in src/app/core/media-player-element.ts:80
+Defined in src/app/core/media-player-element.ts:78
 
 In  charge to init config
 
@@ -334,7 +325,7 @@ ___
 
 ▸ **loadConfiguration**(`config`: string | object): *Promise‹void›*
 
-Defined in src/app/core/media-player-element.ts:161
+Defined in src/app/core/media-player-element.ts:159
 
 In charge to load configuration
 
@@ -352,7 +343,7 @@ ___
 
 ▸ **loadDataSources**(): *Promise‹void›*
 
-Defined in src/app/core/media-player-element.ts:170
+Defined in src/app/core/media-player-element.ts:168
 
 In charge to load data sources
 
@@ -364,7 +355,7 @@ ___
 
 ▸ **setMediaPlayer**(`mediaPlayer`: HTMLVideoElement): *void*
 
-Defined in src/app/core/media-player-element.ts:128
+Defined in src/app/core/media-player-element.ts:126
 
 Set media element
 
@@ -382,7 +373,7 @@ ___
 
 ▸ **setMediaPlayerWidth**(`width`: any): *void*
 
-Defined in src/app/core/media-player-element.ts:204
+Defined in src/app/core/media-player-element.ts:202
 
 Set mediaPlayer width for responsive grid
 
@@ -400,7 +391,7 @@ ___
 
 ▸ **setMediaSource**(): *void*
 
-Defined in src/app/core/media-player-element.ts:182
+Defined in src/app/core/media-player-element.ts:180
 
 In charge to load data sources
 
@@ -412,7 +403,7 @@ ___
 
 ▸ **toggleFullscreen**(`element`: HTMLElement): *void*
 
-Defined in src/app/core/media-player-element.ts:144
+Defined in src/app/core/media-player-element.ts:142
 
 In charge to toggle fullscreen mode
 

@@ -7,8 +7,6 @@ import {PlayerConfigData} from '../config/model/player-config-data';
 import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
 import {DefaultLogger} from '../logger/default-logger';
-
-
 /**
  * Media element
  */
@@ -17,14 +15,14 @@ export class MediaElement {
     private readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
     private readonly logger: LoggerInterface;
-    private mse: MediaSourceExtension;
+    public mse: MediaSourceExtension;
     public volumeLeft: number;
     public volumeRight: number;
     /**
      * Selected audio channel
      */
-    private _audioChannel = 1;
-    private _playbackRate = 1;
+    public _audioChannel = 1;
+    public _playbackRate = 1;
     /**
      * Video framerate used for foreword and backward
      */
@@ -36,7 +34,7 @@ export class MediaElement {
     /**
      * To handle merge channel state
      */
-    private _withMergeVolume = true;
+    public _withMergeVolume = true;
     public audioContext: AudioContext = null;
     public audioContextSplitter = null;
     public panLeft: GainNode = null;

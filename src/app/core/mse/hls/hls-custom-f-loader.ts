@@ -27,7 +27,7 @@ export class HlsCustomFLoader extends Hls.DefaultConfig.loader {
         };
     }
 
-    private _audioChannel = 1;
+    public _audioChannel = 1;
 
     get audioChannel(): number {
         return this._audioChannel;

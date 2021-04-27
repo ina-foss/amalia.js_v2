@@ -16,7 +16,7 @@ In charge to handle amalia configuration
 
 ### Properties
 
-* [configData](_src_app_core_config_configuration_manager_.configurationmanager.md#private-configdata)
+* [configData](_src_app_core_config_configuration_manager_.configurationmanager.md#configdata)
 * [loader](_src_app_core_config_configuration_manager_.configurationmanager.md#private-loader)
 * [logger](_src_app_core_config_configuration_manager_.configurationmanager.md#private-logger)
 
@@ -46,7 +46,7 @@ Name | Type |
 
 ## Properties
 
-### `Private` configData
+###  configData
 
 • **configData**: *[ConfigData](../interfaces/_src_app_core_config_model_config_data_.configdata.md)*
 
