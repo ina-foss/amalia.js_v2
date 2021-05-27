@@ -671,7 +671,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     private handleOnTimeChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (!this.inSliding && !isNaN(this.currentTime)) {
             this.progressBarValue = (this.currentTime / this.duration) * 100;
         }
@@ -687,9 +688,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     private handleOnDurationChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.time = this.currentTime;
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.duration = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset :  this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 
     /**

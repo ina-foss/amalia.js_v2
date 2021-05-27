@@ -5,6 +5,7 @@ import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {TimeBarConfig} from '../../core/config/model/time-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {DEFAULT} from '../../core/constant/default';
+import {LABEL} from '../../core/constant/labels';
 import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
@@ -32,7 +33,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * Display format specifier h|m|s|f|ms|mms
      */
-    public displayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' = 'f';
+    public displayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 'f';
     /**
      * Media fps
      */
@@ -46,6 +47,14 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Show timeBar
      */
     public active = true;
+    /**
+     * label tcin
+     */
+    public labelTcIn;
+    /**
+     * label tcout
+     */
+    public labelTcOut;
 
     /**
      * theme
@@ -64,6 +73,14 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
         super.init();
         this.handleDisplayState();
         this.theme = this.pluginConfiguration.data.theme;
+        this.timeFormat = this.pluginConfiguration.data.timeFormat;
+        if (this.pluginConfiguration.data.timeFormat === 'hours') {
+            this.labelTcIn = LABEL.START_HOUR;
+            this.labelTcOut = LABEL.END_HOUR;
+        } else {
+            this.labelTcIn = LABEL.START_TC;
+            this.labelTcOut = LABEL.END_TC;
+        }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         if (this.theme === 'inside') {
@@ -97,6 +114,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Return default config
      */
     getDefaultConfig(): PluginConfigData<TimeBarConfig> {
+        console.log(TimeBarPluginComponent.PLUGIN_NAME);
         return {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f', theme: 'outside'}};
     }
 
@@ -106,7 +124,8 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      */
     @AutoBind
     public handleOnTimeChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
     }
 
     /**
@@ -114,8 +133,9 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      */
     @AutoBind
     public handleOnDurationChange() {
-        this.startTc = (this.mediaPlayerElement.getConfiguration().tcOffset) ? this.mediaPlayerElement.getConfiguration().tcOffset : 0;
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        this.startTc = (tcOffset) ? tcOffset : 0;
+        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.duration = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset :  this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 }
