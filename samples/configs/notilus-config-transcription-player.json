@@ -1,7 +1,7 @@
 {
   "player": {
-    "src": "http://localhost:4201/medias/video-http.json",
-    "backwardsSrc": "http://localhost:4201/medias/video-http.json",
+    "src": "http://localhost:4201/medias/video-http.m3u8",
+    "backwardsSrc": "http://localhost:4201/medias/video-http.m3u8",
     "crossOrigin": "anonymous"
   },
   "dataSources": [

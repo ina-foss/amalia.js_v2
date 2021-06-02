@@ -105,11 +105,11 @@
                          (mouseenter)="hideAll();enableVolumeSlider=true;"
                          (click)="setupAudioNodes(c.data)">
                         <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
-                             class="amalia-svg-volume-on-size icon" (click)="mute();changeVolume(0)">
+                             class="amalia-svg-volume-on-size icon" (click)="mute();changeVolumeCanal(leftVolumeSlider.value,'l');changeVolumeCanal(rightVolumeSlider.value,'r')">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                         </svg>
                         <svg *ngIf="volumeLeft == 0 && volumeRight == 0"
-                             class="amalia-svg-volume-off-size icon" (click)="unmute();changeVolume(100)">
+                             class="amalia-svg-volume-off-size icon" (click)="unmute();changeVolumeCanal(leftVolumeSlider.value,'l');changeVolumeCanal(rightVolumeSlider.value,'r')">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                         </svg>
                         <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
@@ -118,7 +118,7 @@
                                 <div class="header-list">Volume (m)</div>
                                 <div class="channel-volume-control">
                                     <div class="channel-volume-control-left">
-                                        <div (click)="changeVolume( volumeLeft==0 ? 100:0,'l')" class="channel-volume-icon">
+                                        <div (click)="changeVolumeCanal(leftVolumeSlider.value,'l')" class="channel-volume-icon">
                                             <svg *ngIf="volumeLeft > 0"
                                                  class="amalia-svg-volume-on-size icon">
                                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
@@ -145,7 +145,7 @@
                                         </div>
                                     </div>
                                     <div class="channel-volume-control-right">
-                                        <div (click)="changeVolume( volumeRight==0 ? 100:0,'r')"
+                                        <div (click)="changeVolumeCanal(rightVolumeSlider.value,'r')"
                                              class="channel-volume-icon">
                                             <svg *ngIf="volumeRight > 0"
                                                  class="amalia-svg-volume-on-size icon">

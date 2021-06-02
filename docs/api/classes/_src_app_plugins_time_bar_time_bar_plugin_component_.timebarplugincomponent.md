@@ -29,6 +29,8 @@
 * [displayState](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#displaystate)
 * [duration](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#duration)
 * [fps](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#fps)
+* [labelTcIn](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#labeltcin)
+* [labelTcOut](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#labeltcout)
 * [logger](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#protected-logger)
 * [mediaPlayerElement](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#mediaplayerelement)
 * [playerId](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#playerid)
@@ -65,7 +67,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:53
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:62
 
 **Parameters:**
 
@@ -103,7 +105,7 @@ ___
 
 • **active**: *boolean* = true
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:48
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:49
 
 Show timeBar
 
@@ -113,7 +115,7 @@ ___
 
 • **currentTime**: *number*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:26
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:27
 
 Return  current time
 
@@ -121,9 +123,9 @@ ___
 
 ###  displayFormat
 
-• **displayFormat**: *"h" | "m" | "s" | "f" | "ms" | "mms"* = "f"
+• **displayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"* = "f"
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:35
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:36
 
 Display format specifier h|m|s|f|ms|mms
 
@@ -133,7 +135,7 @@ ___
 
 • **displayState**: *any*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:44
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:45
 
 Plugin display state
 
@@ -143,7 +145,7 @@ ___
 
 • **duration**: *number*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:30
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:31
 
 Media duration
 
@@ -155,9 +157,29 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[fps](_src_app_core_plugin_plugin_base_.pluginbase.md#fps)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:39
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:40
 
 Media fps
+
+___
+
+###  labelTcIn
+
+• **labelTcIn**: *any*
+
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:53
+
+label tcin
+
+___
+
+###  labelTcOut
+
+• **labelTcOut**: *any*
+
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:57
+
+label tcout
 
 ___
 
@@ -225,7 +247,7 @@ ___
 
 • **startTc**: *number*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:21
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:22
 
 Return  current time
 
@@ -245,7 +267,7 @@ ___
 
 • **theme**: *"inside" | "outside"*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:53
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:62
 
 theme
 
@@ -265,7 +287,7 @@ ___
 
 ▪ **PLUGIN_NAME**: *string* = "TIME_BAR"
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:17
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:18
 
 ## Accessors
 
@@ -327,7 +349,7 @@ Name | Type |
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:99
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:116
 
 Return default config
 
@@ -339,7 +361,7 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:79
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:96
 
 switch container class based on width
 
@@ -351,7 +373,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:116
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:135
 
 Invoked on duration change
 
@@ -363,7 +385,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:108
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:126
 
 Invoked time change event for :
 - update current time
@@ -376,7 +398,7 @@ ___
 
 ▸ **hideTimeBar**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:83
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:100
 
 **Returns:** *void*
 
@@ -388,7 +410,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:63
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:72
 
 **Returns:** *void*
 
@@ -400,7 +422,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:58
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:67
 
 **Returns:** *void*
 
@@ -410,6 +432,6 @@ ___
 
 ▸ **showTimeBar**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:87
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:104
 
 **Returns:** *void*

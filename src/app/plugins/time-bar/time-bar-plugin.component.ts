@@ -114,7 +114,6 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Return default config
      */
     getDefaultConfig(): PluginConfigData<TimeBarConfig> {
-        console.log(TimeBarPluginComponent.PLUGIN_NAME);
         return {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f', theme: 'outside'}};
     }
 

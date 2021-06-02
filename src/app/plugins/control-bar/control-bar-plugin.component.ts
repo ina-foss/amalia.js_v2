@@ -83,11 +83,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Volume left side
      */
     public volumeLeft = 100;
+    /**
+     * Old Volume left side
+     */
+    public oldVolumeLeft = 100;
 
     /**
      * Volume right side
      */
     public volumeRight = 100;
+    /**
+     * Old Volume right side
+     */
+    public oldVolumeRight = 100;
 
     /**
      * Selected aspectRatio
@@ -409,6 +417,28 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
         this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
         this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
+    }
+
+    /**
+     * change Volume canal
+     * set old value after unmute
+     */
+    public changeVolumeCanal(value: string | number, volumeSide: string) {
+        if (Number(value) > 0) {
+            if (volumeSide === 'r') {
+                this.oldVolumeRight = Number(value);
+            } else {
+                this.oldVolumeLeft = Number(value);
+            }
+            value = 0;
+        } else if (Number(value) === 0) {
+            if (volumeSide === 'r') {
+                value = this.oldVolumeRight;
+            } else {
+                value = this.oldVolumeLeft;
+            }
+        }
+        this.changeVolume(value, volumeSide);
     }
     /**
      * Return true if the component is in ths configuration without zone
