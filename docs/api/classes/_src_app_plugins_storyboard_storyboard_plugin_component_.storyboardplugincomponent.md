@@ -142,7 +142,7 @@ ___
 
 ###  displayFormat
 
-• **displayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms"* = "f"
+• **displayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"* = "f"
 
 Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:44
 

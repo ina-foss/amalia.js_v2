@@ -4,7 +4,7 @@ export interface TranscriptionConfig {
     /**
      * Time display format
      */
-    timeFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds';
+    timeFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds';
     /**
      * Media Fps
      */

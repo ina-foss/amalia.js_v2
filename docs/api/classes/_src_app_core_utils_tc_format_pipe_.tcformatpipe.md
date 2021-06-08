@@ -20,7 +20,7 @@
 
 ###  transform
 
-▸ **transform**(`tc`: number, `format`: "h" | "m" | "s" | "f" | "minutes" | "ms" | "mms" | "seconds", `defaultFps`: number): *string*
+▸ **transform**(`tc`: number, `format`: "h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds", `defaultFps`: number): *string*
 
 Defined in src/app/core/utils/tc-format.pipe.ts:7
 
@@ -29,7 +29,7 @@ Defined in src/app/core/utils/tc-format.pipe.ts:7
 Name | Type | Default |
 ------ | ------ | ------ |
 `tc` | number | - |
-`format` | "h" &#124; "m" &#124; "s" &#124; "f" &#124; "minutes" &#124; "ms" &#124; "mms" &#124; "seconds" | null |
+`format` | "h" &#124; "m" &#124; "s" &#124; "minutes" &#124; "f" &#124; "ms" &#124; "mms" &#124; "hours" &#124; "seconds" | null |
 `defaultFps` | number | 25 |
 
 **Returns:** *string*

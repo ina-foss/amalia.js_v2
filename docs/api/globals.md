@@ -31,6 +31,7 @@
 * ["src/app/core/constant/error.spec"](modules/_src_app_core_constant_error_spec_.md)
 * ["src/app/core/constant/event-type"](modules/_src_app_core_constant_event_type_.md)
 * ["src/app/core/constant/event-type.spec"](modules/_src_app_core_constant_event_type_spec_.md)
+* ["src/app/core/constant/labels"](modules/_src_app_core_constant_labels_.md)
 * ["src/app/core/constant/player-state"](modules/_src_app_core_constant_player_state_.md)
 * ["src/app/core/constant/plugin-type"](modules/_src_app_core_constant_plugin_type_.md)
 * ["src/app/core/converter/converter"](modules/_src_app_core_converter_converter_.md)

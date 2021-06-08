@@ -31,7 +31,7 @@ ___
 
 ###  displayFormat
 
-• **displayFormat**: *"h" | "m" | "s" | "f" | "ms" | "mms" | "minutes"*
+• **displayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"*
 
 Defined in src/app/core/config/model/storyboard-config.ts:7
 

@@ -34,6 +34,7 @@
                 <amalia-control-bar player-id="PLAYER2"></amalia-control-bar>
             </amalia-player>
             <button id="btn-play-2">Play</button>
+            <button id="btn-switch">Switch src</button>
         </div>
     </div>
 </div>
@@ -47,7 +48,9 @@
 </footer>
 <script>
     let firstPlayer = document.getElementById('player-1');
-    document.getElementById("btn-play-1").addEventListener('click', play)
+    document.getElementById("btn-play-1").addEventListener('click', play);
+    let src = "http://localhost:4201/medias/flux.mp3";
+    document.getElementById("btn-swicth").addEventListener('click', switchSrc);
 
     /**
      * Event example
@@ -57,7 +60,9 @@
     });
 
     window.ajsp = firstPlayer;
-
+    function switchSrc() {
+        //firstPlayer.mediaPlayerElement.getMediaPlayer().setSrc(src);
+    }
     /**
      * Api samples with first player
      */
