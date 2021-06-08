@@ -373,7 +373,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:135
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:134
 
 Invoked on duration change
 
@@ -385,7 +385,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:126
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:125
 
 Invoked time change event for :
 - update current time
