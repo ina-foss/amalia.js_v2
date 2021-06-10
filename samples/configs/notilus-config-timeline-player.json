@@ -1,4 +1,5 @@
 {
+  "tcOffset" : 60,
   "player": {
     "backwardsSrc": "http://localhost:4201/medias/jt.mp4",
     "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
@@ -15,6 +16,10 @@
     "enableThumbnail": true
   },
   "pluginsConfiguration": {
-
+    "TIME_BAR-PLAYER" : {
+      "data": {
+          "timeFormat" : "hours"
+        }
+     }
   }
 }

@@ -298,7 +298,7 @@ ___
 
 ###  tcDisplayFormat
 
-• **tcDisplayFormat**: *"h" | "m" | "s" | "f" | "ms" | "mms" | "seconds"* = "s"
+• **tcDisplayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"* = "s"
 
 Defined in src/app/plugins/transcription/transcription-plugin.component.ts:29
 

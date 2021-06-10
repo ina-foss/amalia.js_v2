@@ -12,7 +12,7 @@ export class FormatUtils {
      * @param defaultFps frames per second
      * @return return format time
      */
-    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'minutes' |'f' | 'ms' | 'mms' | 'seconds' = 's', defaultFps: number = 25): string {
+    public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's', defaultFps: number = 25): string {
         let minute: number = Math.floor(seconds / 60);
         let formatTime: string;
         const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);
@@ -24,6 +24,7 @@ export class FormatUtils {
         const minuteStr = minute.toFixed().padStart(2, '0');
         const secondsStr = seconds.toFixed().padStart(2, '0');
         const fpsStr = fps.toFixed().padStart(2, '0');
+        const HH = Math.floor(( minute / 60) % 24);
         switch (format) {
             case 'h' :
                 formatTime = hoursStr;
@@ -48,6 +49,9 @@ export class FormatUtils {
                 break;
             case 'minutes' :
                 formatTime = minute.toString();
+                break;
+            case 'hours' :
+                formatTime = HH + ':' + minute + ':' + seconds + ':' + fpsStr;
                 break;
             default:
                 throw new AmaliaException('Unknown time format');

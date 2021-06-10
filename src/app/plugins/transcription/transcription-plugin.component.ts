@@ -26,7 +26,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public static SELECTOR_SELECTED = 'selected';
     public static SELECTOR_ACTIVATED = 'activated';
     public static SELECTOR_PROGRESS_BAR = '.progress-bar';
-    public tcDisplayFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds' = 's';
+    public tcDisplayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's';
     public fps = DEFAULT.FPS;
     public autoScroll = false;
     public active = false;

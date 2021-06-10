@@ -14,7 +14,7 @@ export interface TimelineConfig {
     /**
      * Time format
      */
-    timeFormat: 'h' | 'm' | 's' | 'f' | 'ms' | 'mms' | 'seconds';
+    timeFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds';
     /**
      * Main metadata ids
      */

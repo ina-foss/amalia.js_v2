@@ -25,6 +25,6 @@ ___
 
 ###  timeFormat
 
-• **timeFormat**: *"h" | "m" | "s" | "f" | "ms" | "mms" | "seconds"*
+• **timeFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"*
 
 Defined in src/app/core/config/model/time-bar-config.ts:2

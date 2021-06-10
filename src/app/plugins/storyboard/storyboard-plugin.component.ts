@@ -41,7 +41,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Display format specifier h|m|s|f|ms|mms
      */
-    public displayFormat: 'h' | 'm' | 's' | 'minutes' |'f' | 'ms' | 'mms' = 'f';
+    public displayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 'f';
     /**
      * Media fps
      */
