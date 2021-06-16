@@ -322,6 +322,7 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
         document.addEventListener('click', this.hideControlsMenuOnClickDocument);
+
     }
 
     @AutoBind
@@ -434,6 +435,14 @@ export class AmaliaComponent implements OnInit {
         this.logger.error(`Error to initialize player.`);
     }
 
+    /***
+     * focus mediaPlayer container
+     */
+    public focus() {
+        this.mediaContainer.nativeElement.focus();
+        // keypress works only after a click
+        this.mediaContainer.nativeElement.click();
+    }
     /**
      * Invoked on mouseenter and mouseleave events
      */
@@ -472,12 +481,14 @@ export class AmaliaComponent implements OnInit {
                 }
             }
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, key);
+            this.focus();
         }
     }
 
     @AutoBind
     public emitKeyUpEvent() {
         this.listKeys = [];
+        this.focus();
     }
     @AutoBind
     public hideControlsMenuOnClickDocument($event) {

@@ -74,6 +74,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
         this.handleDisplayState();
         this.theme = this.pluginConfiguration.data.theme;
         this.timeFormat = this.pluginConfiguration.data.timeFormat;
+        this.displayFormat = this.timeFormat;
         if (this.pluginConfiguration.data.timeFormat === 'hours') {
             this.labelTcIn = LABEL.START_HOUR;
             this.labelTcOut = LABEL.END_HOUR;
