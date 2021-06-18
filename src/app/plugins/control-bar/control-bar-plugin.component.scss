@@ -396,7 +396,7 @@
         position: absolute;
         z-index: $amalia-volume-bar-z-index;
         background-color: $amalia-ctrl-bar-bg-color;
-        right: calc(50% - 80px);
+        right: 10%;
         top: -133px;
         padding: 0;
         margin: 0;
@@ -458,7 +458,7 @@
         position: absolute;
         z-index: $amalia-volume-bar-z-index;
         background-color: $amalia-ctrl-bar-bg-color;
-        left: calc(50% - 80px);
+        right: 10%;
         top: -100px;
 
         &.on {
