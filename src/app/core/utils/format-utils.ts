@@ -24,7 +24,8 @@ export class FormatUtils {
         const minuteStr = minute.toFixed().padStart(2, '0');
         const secondsStr = seconds.toFixed().padStart(2, '0');
         const fpsStr = fps.toFixed().padStart(2, '0');
-        const HH = Math.floor(( minute / 60) % 24);
+        const h = Math.floor(( minute / 60) % 24);
+        const hStr = h.toFixed().padStart(2, '0');
         switch (format) {
             case 'h' :
                 formatTime = hoursStr;
@@ -51,7 +52,7 @@ export class FormatUtils {
                 formatTime = minute.toString();
                 break;
             case 'hours' :
-                formatTime = HH + ':' + minute + ':' + seconds + ':' + fpsStr;
+                formatTime = hStr + ':' + minuteStr + ':' +  secondsStr + ':' + fpsStr;
                 break;
             default:
                 throw new AmaliaException('Unknown time format');

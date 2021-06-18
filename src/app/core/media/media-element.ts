@@ -198,16 +198,22 @@ export class MediaElement {
         }
         if (this.audioContext) {
             if (this._withMergeVolume) {
-                this.panRight.gain.value = volumePercent / 100;
-                this.panLeft.gain.value = volumePercent / 100;
+                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                // this.panRight.gain.value = volumePercent / 100;
+                // this.panLeft.gain.value = volumePercent / 100;
             } else {
                 if (volumeSide === 'r') {
-                    this.panRight.gain.value = volumePercent / 100;
+                    this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                    /// this.panRight.gain.value = volumePercent / 100;
                 } else if (volumeSide === 'l') {
-                    this.panLeft.gain.value = volumePercent / 100;
+                    this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                    // this.panLeft.gain.value = volumePercent / 100;
                 } else {
-                    this.panRight.gain.value = volumePercent / 100;
-                    this.panLeft.gain.value = volumePercent / 100;
+                    this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                    this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                    // this.panRight.gain.value = volumePercent / 100;
+                    // this.panLeft.gain.value = volumePercent / 100;
                 }
             }
         } else {

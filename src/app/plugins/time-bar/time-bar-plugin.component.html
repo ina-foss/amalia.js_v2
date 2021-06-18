@@ -1,5 +1,5 @@
-<div class="timebar {{theme}}">
+<div class="timebar {{theme}}" *ngIf="currentTime >= 0 && duration >= 0">
     <div class="start {{displayState}}" [ngClass]="{'active' : active}"><span class="label">{{labelTcIn}} : </span>{{startTc|tcFormat:displayFormat:fps}}</div>
     <div class="currentTime {{displayState}}" [ngClass]="{'active' : active}">{{currentTime|tcFormat:displayFormat:fps}}</div>
-    <div class="end {{displayState}}" [ngClass]="{'active' : active}"><span class="label">{{labelTcOut}} </span>{{duration|tcFormat:displayFormat:fps}}</div>
+    <div class="end {{displayState}}" [ngClass]="{'active' : active}"><span class="label">{{labelTcOut}} : </span>{{duration|tcFormat:displayFormat:fps}}</div>
 </div>

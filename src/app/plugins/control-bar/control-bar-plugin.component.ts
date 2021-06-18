@@ -195,6 +195,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public enableMenuSlider = false;
     /**
+     * clicked button volume
+     */
+    public clickedVolume = false;
+    /**
      * list position subtitles
      */
     public listOfSubtitles = [{position: 'Bas', key: 'down'}, {
@@ -701,8 +705,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     private handleOnTimeChange() {
-        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
-        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (!this.inSliding && !isNaN(this.currentTime)) {
             this.progressBarValue = (this.currentTime / this.duration) * 100;
         }
@@ -718,10 +721,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     private handleOnDurationChange() {
-        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
-        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.time = this.currentTime;
-        this.duration = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset :  this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 
     /**
@@ -746,7 +748,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on volume button hover
      */
     public setupAudioNodes(data: any) {
-        this.mediaPlayerElement.getMediaPlayer().setupAudioNodes(data);
+        if (this.clickedVolume === false) {
+            this.mediaPlayerElement.getMediaPlayer().setupAudioNodes(data);
+        }
+
     }
 
     /**
@@ -868,15 +873,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
     @AutoBind
     public hideControlsMenuOnClickDocument($event) {
-        $event.stopPropagation();
         // click outside the player
         if (this.enableMenu) {
             this.enableMenu = !this.enableMenu;
         }
-    }
-    @AutoBind
-    public hideControlsMenuOnClick($event) {
-        $event.stopPropagation();
     }
     @AutoBind
     public hideAll() {

@@ -349,7 +349,7 @@ Name | Type |
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:116
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:117
 
 Return default config
 
@@ -361,7 +361,7 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:96
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:97
 
 switch container class based on width
 
@@ -373,7 +373,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:134
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:135
 
 Invoked on duration change
 
@@ -385,7 +385,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:125
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:126
 
 Invoked time change event for :
 - update current time
@@ -398,7 +398,7 @@ ___
 
 ▸ **hideTimeBar**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:100
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:101
 
 **Returns:** *void*
 
@@ -432,6 +432,6 @@ ___
 
 ▸ **showTimeBar**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:104
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:105
 
 **Returns:** *void*
