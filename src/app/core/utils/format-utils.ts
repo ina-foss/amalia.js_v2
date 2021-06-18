@@ -52,7 +52,7 @@ export class FormatUtils {
                 formatTime = minute.toString();
                 break;
             case 'hours' :
-                formatTime = hStr + 'h' + minuteStr + 'm' +  secondsStr + 's';
+                formatTime = hStr + ':' + minuteStr + ':' +  secondsStr + ':' + fpsStr;
                 break;
             default:
                 throw new AmaliaException('Unknown time format');
