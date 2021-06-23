@@ -1,21 +1,10 @@
 {
+  "tcOffset" : 60,
   "player": {
     "src": "http://localhost:4201/medias/video-http.m3u8",
     "backwardsSrc": "http://localhost:4201/medias/video-http.m3u8",
     "crossOrigin": "anonymous"
   },
-  "dataSources": [
-    {
-      "url": "http://localhost:4201/metadata/jt-d.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/jt-t.json"
-    },
-    {
-      "url": "http://localhost:4201/metadata/flux-video.json"
-    }
-
-  ],
   "thumbnail": {
     "baseUrl": "https://picsum.photos/id/237/200/300",
     "enableThumbnail": true

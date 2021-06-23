@@ -19,18 +19,21 @@
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
 
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
+            <amalia-player id="player" player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
 
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
             <amalia-time-bar player-id="PLAYER" plugin-configuration='{"data":{"theme": "outside"}}'></amalia-time-bar>
 
         </div>
+
+    </div>
+    <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
-            <div style="width: 700px;height: 500px" id="transcription">
-                <amalia-transcription plugin-configuration='{"metadataIds":["254"],"data":{"title":"254","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'>
-                    </amalia-transcription>
-               </div>
+            <div style="height: 600px;width: 450px;" id="storyboard">
+                <amalia-storyboard plugin-configuration='{"data":{"baseUrl":"https://traitgpu02.wsmedia.p.sas.ina/thumbs/mlMTiPBlJtq3mhlo7rzr39PToIGZE5EY+peTcj+R54U4deR5cH4gHyXx+9Rk+RZaqLZFbYdHX6Y1xxg8ewHgykFPyA/yaqplRZsnxSgbqpFZZdnXUjQHqAN6TgFqlwg4VBp0lTEhQKa1LLxDWN5WiNbcN05RtImeAS7MEi6VINW2b20eOqr8DdqsF2Mz+klb1FuktATRR3gWB8uvNkquXfvpF2GjrYcuoB3S9YJPJZOsgp9sk5qhfrV0S9vRzlSIIry5mZ7Q8pl2rlBYAYdE+wLLkLcyP5wNQeUyKOVWOofF61Yc6ZBep/v36Z0jyHWO9lPpqgrgV6nGUSnwVGKQRdjqVwZNhhzOiJLmOaYzYxRByCA+GzWUuPm0gs498ToF9H2DN4JcIRWPbjmbvWM4RHGWa8b5PxGec7M0hk6Ful7nQBD8k1k/ibUcl8f+hbMFhAnhxPDpyEkNLzQcHhoNdrNXJy/ZxSohv0IHUT37qqz/dpbU9bGjkfpwfTKQwOiwjC+I5lK/kXwF5LoZZLUSRTJRqEJzW5C2dtAF3VazsLJHgLIdESmzkSQ8QVFrswtanw+v+Jc43kvBznroJ9nUTGK33p1ck4dtAUaLk+Has7eEa4N/uvwQZIk+nMjfY8+/M5x5fmJ2wiZevRiLC4F0vPe7sRawcEmAQEcQgITH97B6UcIuIyH2hUhj4oTbJJ4wNWoVRXvrggp1MFlZhPGMxA==/sl_iv/n5jDWNX5dDllfS8zOZj4HA==/sl_hm/","tcParam":"start"}}'>
+                </amalia-storyboard>
+            </div>
         </div>
     </div>
 </div>

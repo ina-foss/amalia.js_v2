@@ -74,6 +74,9 @@ export abstract class PluginBase<T> implements OnInit {
         }
         if (!this.mediaPlayerElement.isMetadataLoaded) {
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init.bind(this));
+        } else if (this.pluginName === 'STORYBOARD') {
+            this.logger.info('here : ' + this.pluginName);
+            this.init.bind(this);
         } else {
             this.init();
         }
@@ -108,6 +111,7 @@ export abstract class PluginBase<T> implements OnInit {
                 ...this.pluginConfiguration.data
             };
         }
+
         this.tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset || 0;
         this.fps = this.mediaPlayerElement.getConfiguration().player.framerate || 25;
     }

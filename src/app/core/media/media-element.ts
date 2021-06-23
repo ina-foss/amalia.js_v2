@@ -401,6 +401,7 @@ export class MediaElement {
         this.mediaElement.addEventListener('seeked', this.handleSeeked);
         this.mediaElement.addEventListener('seeking', this.handleSeeking);
         window.addEventListener('resize', this.handleResize);
+        window.addEventListener('resizeend', this.handleResize);
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
         document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
@@ -413,6 +414,7 @@ export class MediaElement {
     private handleLoadstart() {
         this.logger.debug('onLoadstart');
         this.eventEmitter.emit(PlayerEventType.INIT);
+        this.logger.info(PlayerEventType.INIT);
         this.mediaElement.removeEventListener('loadstart', this.handleLoadstart);
     }
 

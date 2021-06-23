@@ -1,5 +1,5 @@
 <div #mediaContainer (mouseenter)="displayControlBar(true);resetTimer()" (mouseover)="playerHover= true;focus()"
-     (mouseleave)="displayControlBar(false);playerHover= false"
+     (mouseout)="displayControlBar(false);playerHover= false"
      (mousemove)="resetTimer();displayControlBar(true);" (load)="startTimer()" (contextmenu)="onContextMenu($event)"
      class="media-player aspect-ratio-{{ratio}}"
      (keydown)="emitKeyDownEvent($event)" (keyup)="emitKeyUpEvent()"

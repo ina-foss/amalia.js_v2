@@ -48,6 +48,7 @@ export class MediaPlayerElement {
     set aspectRatio(value: '16:9' | '4:3') {
         this._aspectRatio = value;
         this.eventEmitter.emit(PlayerEventType.ASPECT_RATIO_CHANGE, value);
+        this.logger.info(PlayerEventType.ASPECT_RATIO_CHANGE);
     }
 
     get eventEmitter(): EventEmitter {
@@ -171,6 +172,7 @@ export class MediaPlayerElement {
 
     public handleMetadataLoaded() {
         this.eventEmitter.emit(PlayerEventType.METADATA_LOADED);
+        this.logger.info(PlayerEventType.METADATA_LOADED);
         this.isMetadataLoaded = true;
     }
 
