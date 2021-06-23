@@ -688,7 +688,7 @@ ___
 
 ▸ **onContextMenu**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:506
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:508
 
 Invoked on click context menu
 

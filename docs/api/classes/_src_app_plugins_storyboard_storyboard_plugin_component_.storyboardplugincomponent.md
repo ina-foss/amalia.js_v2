@@ -504,7 +504,7 @@ Name | Type |
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:146
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:148
 
 Return default config
 
@@ -516,7 +516,7 @@ ___
 
 ▸ **getWindowWidth**(): *any*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:284
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:287
 
 Get width window
 
@@ -528,7 +528,7 @@ ___
 
 ▸ **handleDurationChange**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:220
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:223
 
 Invoked on duration change
 
@@ -540,7 +540,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:164
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:166
 
 Handle Scroll
 
@@ -558,7 +558,7 @@ ___
 
 ▸ **handleTimeChange**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:118
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:120
 
 Handle time change
 
@@ -582,7 +582,7 @@ ___
 
 ▸ **initStoryboard**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:128
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:130
 
 Init storyboard
 
@@ -606,7 +606,7 @@ ___
 
 ▸ **scrollToActiveThumbnail**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:298
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:301
 
 Invoked on click button synchro
 
@@ -618,7 +618,7 @@ ___
 
 ▸ **scrollToThumbnail**(`thumbnailNode`: HTMLElement): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:260
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:263
 
 Invoked to scroll to thumbnail
 
@@ -636,7 +636,7 @@ ___
 
 ▸ **seekToTc**(`tc`: number): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:201
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:203
 
 Handle to seek to time code
 
@@ -654,7 +654,7 @@ ___
 
 ▸ **selectThumbnail**(`tc`: number): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:239
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:242
 
 Select Thumbnail
 
@@ -672,7 +672,7 @@ ___
 
 ▸ **selectedThumbnailSize**(`type`: string, `tc`: number): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:211
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:214
 
 handle change thumbnail size
 
@@ -691,7 +691,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:174
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:176
 
 if scrolling and active thumbnail is not visible add synchro button
 
@@ -703,7 +703,7 @@ ___
 
 ▸ **updateThumbnailSize**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:227
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:230
 
 Handle interval
 

@@ -499,7 +499,7 @@ ___
 
 ▸ **changeDisplayState**(`event`: MouseEvent, `block`: object): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:286
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:287
 
 In charge to store display state change change display state
 
@@ -526,7 +526,7 @@ ___
 
 ▸ **createMainMetadataIds**(`handleMetadataIds`: any, `metadataManager`: any): *[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)[]*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:382
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:383
 
 In charge to main timeline
 
@@ -559,7 +559,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:169
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:170
 
 Return default config
 
@@ -571,7 +571,7 @@ ___
 
 ▸ **handleClickToDrawRect**(`event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:432
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:433
 
 **Parameters:**
 
@@ -587,7 +587,7 @@ ___
 
 ▸ **handleDisplayBlocks**(`isValid`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:298
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:299
 
 In charge of save or not display block states
 
@@ -605,7 +605,7 @@ ___
 
 ▸ **handleEnableZoom**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:465
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:466
 
 Enable zoom
 
@@ -617,7 +617,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:375
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:376
 
 Called when metadata loaded
 
@@ -629,7 +629,7 @@ ___
 
 ▸ **handleMouseEnterOnTc**(`event`: MouseEvent, `localisation`: [TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:412
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:413
 
 On mouse enter on tc bloc
 
@@ -648,7 +648,7 @@ ___
 
 ▸ **handleMouseLeaveOnTc**(`$event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:426
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:427
 
 On mouse enter on tc bloc
 
@@ -666,7 +666,7 @@ ___
 
 ▸ **handleMouseMoveToDrawRect**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:494
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:495
 
 handle mouse to draw
 
@@ -684,7 +684,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:324
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:325
 
 Invoked on duration change
 
@@ -696,7 +696,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:315
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:316
 
 Invoked time change event for :
 - update progress bar
@@ -709,7 +709,7 @@ ___
 
 ▸ **handleZoomRangeChange**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:336
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:337
 
 In charge to change focus container
 
@@ -733,7 +733,7 @@ ___
 
 ▸ **initFocusResizable**(`element`: HTMLElement): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:187
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:188
 
 Init focus
 
@@ -775,7 +775,7 @@ ___
 
 ▸ **refreshTimeCursor**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:348
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:349
 
 In charge to refresh time cursor
 
@@ -787,7 +787,7 @@ ___
 
 ▸ **toggleAllBlocksState**(`mainElement`: HTMLElement, `stateControl`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:266
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:267
 
 In charge to change display state for all blocks
 
@@ -806,7 +806,7 @@ ___
 
 ▸ **toggleState**(`mainElement`: HTMLElement): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:253
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:254
 
 In charge to change display state
 
@@ -824,7 +824,7 @@ ___
 
 ▸ **unZoom**(): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:362
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:363
 
 In charge to un-zoom
 
@@ -836,7 +836,7 @@ ___
 
 ▸ **updateFocusContainerOnSelection**(`focusWidth`: any, `leftPos`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:475
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:476
 
 In charge to change focus container
 
@@ -855,7 +855,7 @@ ___
 
 ▸ **updateMouseEvent**(`event`: any): *void*
 
-Defined in src/app/plugins/timeline/timeline-plugin.component.ts:506
+Defined in src/app/plugins/timeline/timeline-plugin.component.ts:507
 
 Update mouse position
 

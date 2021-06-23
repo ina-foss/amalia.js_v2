@@ -1,7 +1,7 @@
 {
   "tcOffset" : 60,
   "player": {
-    "src": "http://localhost:4201/medias/video-http.m3u8",
+    "src": "http://localhost:4201/medias/flux.mp3",
     "backwardsSrc": "http://localhost:4201/medias/video-http.m3u8",
     "crossOrigin": "anonymous"
   },
