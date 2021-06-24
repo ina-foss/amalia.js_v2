@@ -34,6 +34,7 @@
 * [headerElement](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#headerelement)
 * [ignoreNextScroll](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#ignorenextscroll)
 * [images](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#images)
+* [initialized](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#initialized)
 * [listOfThumbnail](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#listofthumbnail)
 * [logger](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#protected-logger)
 * [mediaPlayerElement](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#mediaplayerelement)
@@ -108,7 +109,7 @@ Name | Type |
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_player](_src_app_core_plugin_plugin_base_.pluginbase.md#_player)*
 
-Defined in src/app/core/plugin/plugin-base.ts:22
+Defined in src/app/core/plugin/plugin-base.ts:23
 
 This plugin configuration
 
@@ -120,7 +121,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[_pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#_pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:33
+Defined in src/app/core/plugin/plugin-base.ts:34
 
 ___
 
@@ -226,6 +227,16 @@ Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:22
 
 ___
 
+###  initialized
+
+• **initialized**: *any*
+
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[initialized](_src_app_core_plugin_plugin_base_.pluginbase.md#initialized)*
+
+Defined in src/app/core/plugin/plugin-base.ts:19
+
+___
+
 ###  listOfThumbnail
 
 • **listOfThumbnail**: *Array‹number›*
@@ -240,7 +251,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[logger](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-logger)*
 
-Defined in src/app/core/plugin/plugin-base.ts:57
+Defined in src/app/core/plugin/plugin-base.ts:58
 
 ___
 
@@ -250,7 +261,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[mediaPlayerElement](_src_app_core_plugin_plugin_base_.pluginbase.md#mediaplayerelement)*
 
-Defined in src/app/core/plugin/plugin-base.ts:55
+Defined in src/app/core/plugin/plugin-base.ts:56
 
 ___
 
@@ -312,7 +323,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[playerService](_src_app_core_plugin_plugin_base_.pluginbase.md#playerservice)*
 
-Defined in src/app/core/plugin/plugin-base.ts:52
+Defined in src/app/core/plugin/plugin-base.ts:53
 
 ___
 
@@ -322,7 +333,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginInstance](_src_app_core_plugin_plugin_base_.pluginbase.md#plugininstance)*
 
-Defined in src/app/core/plugin/plugin-base.ts:54
+Defined in src/app/core/plugin/plugin-base.ts:55
 
 ___
 
@@ -332,7 +343,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginName](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-pluginname)*
 
-Defined in src/app/core/plugin/plugin-base.ts:56
+Defined in src/app/core/plugin/plugin-base.ts:57
 
 ___
 
@@ -452,7 +463,7 @@ Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:18
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[player](_src_app_core_plugin_plugin_base_.pluginbase.md#player)*
 
-Defined in src/app/core/plugin/plugin-base.ts:24
+Defined in src/app/core/plugin/plugin-base.ts:25
 
 **Returns:** *any*
 
@@ -460,7 +471,7 @@ Defined in src/app/core/plugin/plugin-base.ts:24
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[player](_src_app_core_plugin_plugin_base_.pluginbase.md#player)*
 
-Defined in src/app/core/plugin/plugin-base.ts:29
+Defined in src/app/core/plugin/plugin-base.ts:30
 
 **Parameters:**
 
@@ -478,7 +489,7 @@ ___
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:35
+Defined in src/app/core/plugin/plugin-base.ts:36
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[StoryboardConfig](../interfaces/_src_app_core_config_model_storyboard_config_.storyboardconfig.md)›*
 
@@ -486,7 +497,7 @@ Defined in src/app/core/plugin/plugin-base.ts:35
 
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[pluginConfiguration](_src_app_core_plugin_plugin_base_.pluginbase.md#pluginconfiguration)*
 
-Defined in src/app/core/plugin/plugin-base.ts:40
+Defined in src/app/core/plugin/plugin-base.ts:41
 
 **Parameters:**
 

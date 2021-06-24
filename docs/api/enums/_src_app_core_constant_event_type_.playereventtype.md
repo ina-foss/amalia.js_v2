@@ -43,6 +43,7 @@ Player event type
 * [STARTED](_src_app_core_constant_event_type_.playereventtype.md#started)
 * [START_SEEKING](_src_app_core_constant_event_type_.playereventtype.md#start_seeking)
 * [STOP_SEEKING](_src_app_core_constant_event_type_.playereventtype.md#stop_seeking)
+* [STORYBOARD](_src_app_core_constant_event_type_.playereventtype.md#storyboard)
 * [TIME_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#time_change)
 * [UNBIND_METADATA](_src_app_core_constant_event_type_.playereventtype.md#unbind_metadata)
 * [UN_MUTE](_src_app_core_constant_event_type_.playereventtype.md#un_mute)
@@ -55,7 +56,7 @@ Player event type
 
 • **ASPECT_RATIO_CHANGE**: = "ina.player.aspectRatioChange"
 
-Defined in src/app/core/constant/event-type.ts:139
+Defined in src/app/core/constant/event-type.ts:144
 
 Invoked when audio channel changed
 
@@ -65,7 +66,7 @@ ___
 
 • **AUDIO_CHANNEL_CHANGE**: = "ina.player.audioChannelChange"
 
-Defined in src/app/core/constant/event-type.ts:135
+Defined in src/app/core/constant/event-type.ts:140
 
 Invoked when audio channel changed
 
@@ -75,7 +76,7 @@ ___
 
 • **BEGIN_DATA_CHANGE**: = "ina.player.BEGIN_DATA_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:76
+Defined in src/app/core/constant/event-type.ts:81
 
 Invoked at the beginning of data change
 
@@ -85,7 +86,7 @@ ___
 
 • **BIND_METADATA**: = "ina.player.BIND_METADATA"
 
-Defined in src/app/core/constant/event-type.ts:104
+Defined in src/app/core/constant/event-type.ts:109
 
 Invoked when bind metadata
 
@@ -95,7 +96,7 @@ ___
 
 • **CAST_PAUSED**: = "ina.player.CAST_PAUSED"
 
-Defined in src/app/core/constant/event-type.ts:20
+Defined in src/app/core/constant/event-type.ts:25
 
 Invoked the paused/resumed
 
@@ -105,7 +106,7 @@ ___
 
 • **CAST_PLAYING**: = "ina.player.CAST_PLAYING"
 
-Defined in src/app/core/constant/event-type.ts:16
+Defined in src/app/core/constant/event-type.ts:21
 
 Invoked when playing event.
 
@@ -115,7 +116,7 @@ ___
 
 • **DATA_CHANGE**: = "ina.player.DATA_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:72
+Defined in src/app/core/constant/event-type.ts:77
 
 Invoked when data change
 
@@ -125,7 +126,7 @@ ___
 
 • **DOCUMENT_CLICK**: = "ina.player.DOCUMENT_CLICK"
 
-Defined in src/app/core/constant/event-type.ts:171
+Defined in src/app/core/constant/event-type.ts:176
 
 Invocked on click outside the player
 
@@ -135,7 +136,7 @@ ___
 
 • **DURATION_CHANGE**: = "ina.player.DURATION_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:55
+Defined in src/app/core/constant/event-type.ts:60
 
 Invoked on media duration changed
 
@@ -145,7 +146,7 @@ ___
 
 • **ENDED**: = "ina.player.ENDED"
 
-Defined in src/app/core/constant/event-type.ts:32
+Defined in src/app/core/constant/event-type.ts:37
 
 Ended event should fire when a video is completely.
 
@@ -155,7 +156,7 @@ ___
 
 • **END_DATA_CHANGE**: = "ina.player.END_DATA_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:80
+Defined in src/app/core/constant/event-type.ts:85
 
 Invoked end of data change
 
@@ -165,7 +166,7 @@ ___
 
 • **ERROR**: = "ina.player.ERROR"
 
-Defined in src/app/core/constant/event-type.ts:125
+Defined in src/app/core/constant/event-type.ts:130
 
 Invoked when a media error has occurred.
 
@@ -175,7 +176,7 @@ ___
 
 • **FULLSCREEN_STATE_CHANGE**: = "ina.player.FULLSCREEN_STATE_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:59
+Defined in src/app/core/constant/event-type.ts:64
 
 Invoked on full-screen state mode change
 
@@ -185,7 +186,7 @@ ___
 
 • **IMAGE_CAPTURE**: = "ina.player.IMAGE_CAPTURE"
 
-Defined in src/app/core/constant/event-type.ts:84
+Defined in src/app/core/constant/event-type.ts:89
 
 Invoked when image capture
 
@@ -205,7 +206,7 @@ ___
 
 • **KEYDOWN**: = "ina.player.KEYDOWN"
 
-Defined in src/app/core/constant/event-type.ts:167
+Defined in src/app/core/constant/event-type.ts:172
 
 Invocked on keydown when the mouse is over the player
 
@@ -215,7 +216,7 @@ ___
 
 • **METADATA_LOADED**: = "ina.player.METADATA_LOADED"
 
-Defined in src/app/core/constant/event-type.ts:100
+Defined in src/app/core/constant/event-type.ts:105
 
 Invoked when metadata loaded
 
@@ -225,7 +226,7 @@ ___
 
 • **MUTE**: = "ina.player.MUTE"
 
-Defined in src/app/core/constant/event-type.ts:36
+Defined in src/app/core/constant/event-type.ts:41
 
 Invoked when the volume level is equal to 0.
 
@@ -235,7 +236,7 @@ ___
 
 • **PAUSED**: = "ina.player.PAUSED"
 
-Defined in src/app/core/constant/event-type.ts:28
+Defined in src/app/core/constant/event-type.ts:33
 
 Invoked the paused/resumed
 
@@ -245,7 +246,7 @@ ___
 
 • **PINNED_CONTROLBAR_CHANGE**: = "ina.player.PINNED_CONTROLBAR_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:159
+Defined in src/app/core/constant/event-type.ts:164
 
 Invocked when click on pin controlbar
 
@@ -255,7 +256,7 @@ ___
 
 • **PINNED_SLIDER_CHANGE**: = "ina.player.PINNED_SLIDER_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:163
+Defined in src/app/core/constant/event-type.ts:168
 
 Invocked when click on pin controlbar and slider is active
 
@@ -265,7 +266,7 @@ ___
 
 • **PLAYBACK_RATE_CHANGE**: = "ina.player.PLAYBACK_RATE_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:112
+Defined in src/app/core/constant/event-type.ts:117
 
 Invoked when unbind metadata
 
@@ -275,7 +276,7 @@ ___
 
 • **PLAYER_MOUSE_ENTER**: = "ina.player.PLAYER_MOUSE_ENTER"
 
-Defined in src/app/core/constant/event-type.ts:143
+Defined in src/app/core/constant/event-type.ts:148
 
 Invoked when player is hovered
 
@@ -285,7 +286,7 @@ ___
 
 • **PLAYER_MOUSE_LEAVE**: = "ina.player.PLAYER_MOUSE_LEAVE"
 
-Defined in src/app/core/constant/event-type.ts:147
+Defined in src/app/core/constant/event-type.ts:152
 
 Invoked mouse leave player
 
@@ -295,7 +296,7 @@ ___
 
 • **PLAYER_RESIZED**: = "ina.player.PLAYER_RESIZED"
 
-Defined in src/app/core/constant/event-type.ts:155
+Defined in src/app/core/constant/event-type.ts:160
 
 Invoked when window is resized
 
@@ -305,7 +306,7 @@ ___
 
 • **PLAYING**: = "ina.player.PLAYING"
 
-Defined in src/app/core/constant/event-type.ts:24
+Defined in src/app/core/constant/event-type.ts:29
 
 Invoked when playing event.
 
@@ -315,7 +316,7 @@ ___
 
 • **PLUGIN_ERROR**: = "ina.player.PLUGIN_ERROR"
 
-Defined in src/app/core/constant/event-type.ts:130
+Defined in src/app/core/constant/event-type.ts:135
 
 Invoked when a plugin error has occurred.
 
@@ -325,7 +326,7 @@ ___
 
 • **POSITION_SUBTITLE_CHANGE**: = "ina.player.POSITION_SUBTITLE_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:151
+Defined in src/app/core/constant/event-type.ts:156
 
 Invoked when user change position of subtitles
 
@@ -335,7 +336,7 @@ ___
 
 • **SEEKED**: = "ina.player.SEEKED"
 
-Defined in src/app/core/constant/event-type.ts:63
+Defined in src/app/core/constant/event-type.ts:68
 
 Invoked when the user seeks.
 
@@ -345,7 +346,7 @@ ___
 
 • **SEEKING**: = "ina.player.SEEKING"
 
-Defined in src/app/core/constant/event-type.ts:67
+Defined in src/app/core/constant/event-type.ts:72
 
 Invoked when A seek operation began.
 
@@ -355,7 +356,7 @@ ___
 
 • **SELECTED_ITEMS_CHANGE**: = "ina.player.SELECTED_ITEMS_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:96
+Defined in src/app/core/constant/event-type.ts:101
 
 Invoked when selected item has changed
 
@@ -365,7 +366,7 @@ ___
 
 • **SELECTED_METADATA_CHANGE**: = "ina.player.SELECTED_METADATA_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:92
+Defined in src/app/core/constant/event-type.ts:97
 
 Invoked when selected metadata has changed
 
@@ -385,7 +386,7 @@ ___
 
 • **START_SEEKING**: = "ina.player.START_SEEKING"
 
-Defined in src/app/core/constant/event-type.ts:116
+Defined in src/app/core/constant/event-type.ts:121
 
 Invoked when Stop Seeking
 
@@ -395,9 +396,19 @@ ___
 
 • **STOP_SEEKING**: = "ina.player.STOP_SEEKING"
 
-Defined in src/app/core/constant/event-type.ts:120
+Defined in src/app/core/constant/event-type.ts:125
 
 Invoked when Stop Seeking
+
+___
+
+###  STORYBOARD
+
+• **STORYBOARD**: = "ina.player.STORYBOARD"
+
+Defined in src/app/core/constant/event-type.ts:17
+
+invoked to force storyboard
 
 ___
 
@@ -405,7 +416,7 @@ ___
 
 • **TIME_CHANGE**: = "ina.player.TIME_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:50
+Defined in src/app/core/constant/event-type.ts:55
 
 This fires when the time change with attributes : 'obj' : instance of
 player 'currentTime' : player currentTime 'duration' : media duration
@@ -417,7 +428,7 @@ ___
 
 • **UNBIND_METADATA**: = "ina.player.UNBIND_METADATA"
 
-Defined in src/app/core/constant/event-type.ts:108
+Defined in src/app/core/constant/event-type.ts:113
 
 Invoked when unbind metadata
 
@@ -427,7 +438,7 @@ ___
 
 • **UN_MUTE**: = "ina.player.UN_MUTE"
 
-Defined in src/app/core/constant/event-type.ts:40
+Defined in src/app/core/constant/event-type.ts:45
 
 This fires when the volume level is equal to 0.
 
@@ -437,7 +448,7 @@ ___
 
 • **VOLUME_CHANGE**: = "ina.player.VOLUME_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:44
+Defined in src/app/core/constant/event-type.ts:49
 
 This fires when the volume level is changed.
 
@@ -447,6 +458,6 @@ ___
 
 • **ZOOM_RANGE_CHANGE**: = "ina.player.ZOOM_RANGE_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:88
+Defined in src/app/core/constant/event-type.ts:93
 
 Invoked when zoom range change

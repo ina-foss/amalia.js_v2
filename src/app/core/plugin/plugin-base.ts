@@ -72,7 +72,7 @@ export abstract class PluginBase<T> implements OnInit {
         this.mediaPlayerElement = this.playerService.get(this.playerId);
         const mediaPlayerElement = this.mediaPlayerElement;
         if (this.pluginName === 'STORYBOARD' && this.mediaPlayerElement) {
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, function() {
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, () => {
                 mediaPlayerElement.eventEmitter.emit(PlayerEventType.STORYBOARD);
             });
         }
