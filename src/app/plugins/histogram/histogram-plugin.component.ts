@@ -496,7 +496,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     @AutoBind
     public handleWindowResize() {
-        this.updateZoomedSvg(false);
+        this.handleDisplayState();
+        this.handleMetadataLoaded();
+        // this.updateZoomedSvg(false);
     }
     /**
      * Invoked on click context menu

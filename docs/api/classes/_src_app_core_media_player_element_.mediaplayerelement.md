@@ -179,7 +179,7 @@ ___
 
 • **get eventEmitter**(): *EventEmitter*
 
-Defined in src/app/core/media-player-element.ts:53
+Defined in src/app/core/media-player-element.ts:54
 
 **Returns:** *EventEmitter*
 
@@ -189,13 +189,13 @@ ___
 
 • **get metadataManager**(): *[MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)*
 
-Defined in src/app/core/media-player-element.ts:64
+Defined in src/app/core/media-player-element.ts:65
 
 **Returns:** *[MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)*
 
 • **set metadataManager**(`value`: [MetadataManager](_src_app_core_metadata_metadata_manager_.metadatamanager.md)): *void*
 
-Defined in src/app/core/media-player-element.ts:68
+Defined in src/app/core/media-player-element.ts:69
 
 **Parameters:**
 
@@ -211,7 +211,7 @@ Name | Type |
 
 ▸ **getConfiguration**(): *[ConfigData](../interfaces/_src_app_core_config_model_config_data_.configdata.md)*
 
-Defined in src/app/core/media-player-element.ts:112
+Defined in src/app/core/media-player-element.ts:113
 
 Return configuration
 
@@ -223,7 +223,7 @@ ___
 
 ▸ **getDisplayState**(): *string*
 
-Defined in src/app/core/media-player-element.ts:210
+Defined in src/app/core/media-player-element.ts:212
 
 Return displayState (s/m/l)
 
@@ -235,7 +235,7 @@ ___
 
 ▸ **getMediaPlayer**(): *[MediaElement](_src_app_core_media_media_element_.mediaelement.md)*
 
-Defined in src/app/core/media-player-element.ts:134
+Defined in src/app/core/media-player-element.ts:135
 
 Return media source
 
@@ -247,7 +247,7 @@ ___
 
 ▸ **getPluginConfiguration**(`pluginName`: string): *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹any›*
 
-Defined in src/app/core/media-player-element.ts:119
+Defined in src/app/core/media-player-element.ts:120
 
 Return configuration
 
@@ -265,7 +265,7 @@ ___
 
 ▸ **getState**(): *[PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)*
 
-Defined in src/app/core/media-player-element.ts:60
+Defined in src/app/core/media-player-element.ts:61
 
 Return media player state
 
@@ -277,7 +277,7 @@ ___
 
 ▸ **getThumbnailUrl**(`tc`: number): *string*
 
-Defined in src/app/core/media-player-element.ts:193
+Defined in src/app/core/media-player-element.ts:195
 
 Return thumbnail base url
 
@@ -295,7 +295,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/core/media-player-element.ts:172
+Defined in src/app/core/media-player-element.ts:173
 
 **Returns:** *void*
 
@@ -305,7 +305,7 @@ ___
 
 ▸ **init**(`config`: object, `defaultLoader?`: [Loader](../interfaces/_src_app_core_loader_loader_.loader.md)‹Array‹Metadata››, `configLoader?`: [Loader](../interfaces/_src_app_core_loader_loader_.loader.md)‹[ConfigData](../interfaces/_src_app_core_config_model_config_data_.configdata.md)›): *Promise‹[PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)›*
 
-Defined in src/app/core/media-player-element.ts:78
+Defined in src/app/core/media-player-element.ts:79
 
 In  charge to init config
 
@@ -325,7 +325,7 @@ ___
 
 ▸ **loadConfiguration**(`config`: string | object): *Promise‹void›*
 
-Defined in src/app/core/media-player-element.ts:159
+Defined in src/app/core/media-player-element.ts:160
 
 In charge to load configuration
 
@@ -343,7 +343,7 @@ ___
 
 ▸ **loadDataSources**(): *Promise‹void›*
 
-Defined in src/app/core/media-player-element.ts:168
+Defined in src/app/core/media-player-element.ts:169
 
 In charge to load data sources
 
@@ -355,7 +355,7 @@ ___
 
 ▸ **setMediaPlayer**(`mediaPlayer`: HTMLVideoElement): *void*
 
-Defined in src/app/core/media-player-element.ts:126
+Defined in src/app/core/media-player-element.ts:127
 
 Set media element
 
@@ -373,7 +373,7 @@ ___
 
 ▸ **setMediaPlayerWidth**(`width`: any): *void*
 
-Defined in src/app/core/media-player-element.ts:202
+Defined in src/app/core/media-player-element.ts:204
 
 Set mediaPlayer width for responsive grid
 
@@ -391,7 +391,7 @@ ___
 
 ▸ **setMediaSource**(): *void*
 
-Defined in src/app/core/media-player-element.ts:180
+Defined in src/app/core/media-player-element.ts:182
 
 In charge to load data sources
 
@@ -403,7 +403,7 @@ ___
 
 ▸ **toggleFullscreen**(`element`: HTMLElement): *void*
 
-Defined in src/app/core/media-player-element.ts:142
+Defined in src/app/core/media-player-element.ts:143
 
 In charge to toggle fullscreen mode
 

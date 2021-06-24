@@ -160,6 +160,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param tc time code
      */
     public callSeek(tc: number) {
+        this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 

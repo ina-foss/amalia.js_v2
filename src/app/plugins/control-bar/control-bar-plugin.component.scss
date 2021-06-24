@@ -165,7 +165,8 @@
       &:nth-of-type(2) {
         .control {
           .volume-control {
-            left: 0;
+            //left: 0;
+            right: inherit;
           }
         }
       }

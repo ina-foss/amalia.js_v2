@@ -11,6 +11,11 @@ export enum PlayerEventType {
      */
     STARTED = 'ina.player.STARTED',
     /**
+     * invoked to force storyboard
+     *
+     */
+    STORYBOARD = 'ina.player.STORYBOARD',
+    /**
      * Invoked when playing event.
      */
     CAST_PLAYING = 'ina.player.CAST_PLAYING',
