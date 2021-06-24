@@ -19,18 +19,22 @@
     <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
 
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
+            <amalia-player id="player" player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
 
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
             <amalia-time-bar player-id="PLAYER" plugin-configuration='{"data":{"theme": "outside"}}'></amalia-time-bar>
 
         </div>
+
+    </div>
+    <div class="row">
         <div class="col-6 p-2" style="height: 500px;">
-            <div style="width: 700px;height: 500px" id="transcription">
-                <amalia-transcription plugin-configuration='{"metadataIds":["254"],"data":{"title":"254","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'>
-                    </amalia-transcription>
-               </div>
+            <div style="height: 600px;width: 450px;" id="storyboard">
+                <amalia-storyboard plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/200/300l","tcParam":"start"}}'>
+                </amalia-storyboard>
+            </div>
+            <button id="btn-charge">Charger storyboard</button>
         </div>
     </div>
 </div>
@@ -42,5 +46,12 @@
         </div>
     </div>
 </footer>
+<script>
+    let firstPlayer = document.getElementById('player');
+    document.getElementById("btn-charge").addEventListener('click', charge);
+    function charge() {
+        firstPlayer.mediaPlayerElement.eventEmitter.emit('ina.player.STORYBOARD');
+    }
+    </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 
-<div class="controlbar">
+<div class="controlbar" (mousehover)="activated= true">
     <div class="time-label {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider && enablePlaybackSlider}">
         <div class="time-display" (click)="switchDisplayCurrentTime();hideAll()">
             <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
@@ -12,7 +12,7 @@
         <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
     </div>
     <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
-        <div class="control-bar" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
+        <div class="control-bar" (mousehover)="activated= true" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
             <div *ngIf="hasComponentWithoutZone('progressBar')"
                  class="control progress-bar" (mouseenter)="progressBarMouseEnter($event)"
                  (mouseleave)= "progressBarMouseLeave($event)" (mousemove)="progressBarMouseMove($event)">
@@ -278,7 +278,7 @@
     </div>
     <!-- Menu of controls displayed on "m" grid-->
     <div #controlsMenu class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider && enablePlaybackSlider}"
-         (mouseenter)="activated= true">
+         (mouseenter)="activated = true">
         <ul>
             <ng-container *ngFor="let c of controls; " [ngSwitch]="c.control">
                 <!--FullScreen Button -->

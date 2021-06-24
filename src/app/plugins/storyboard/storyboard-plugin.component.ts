@@ -100,14 +100,16 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
         // disable thumbnail when base url is empty
+        this.logger.info('data plugin storyboard' , this.pluginConfiguration.data);
         if (this.pluginConfiguration.data.baseUrl !== '') {
-            if (this.mediaPlayerElement.isMetadataLoaded) {
+            if (this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0) {
                 this.initStoryboard();
             }
             this.sizeThumbnail = this.getWindowWidth();
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
+
         }
     }
 
@@ -132,7 +134,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             const baseUrl = this.pluginConfiguration.data.baseUrl;
             const tcParam = this.pluginConfiguration.data.tcParam;
             this.baseUrl = baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=` : `${baseUrl}&${tcParam}=`;
-            this.theme = this.pluginConfiguration.data.theme;
+            this.theme = (this.pluginConfiguration.data.theme) ? this.pluginConfiguration.data.theme : this.getDefaultConfig().data.theme;
             this.updateThumbnailSize();
         } else {
             this.duration = null;
@@ -200,6 +202,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public seekToTc(tc: number) {
         this.displaySynchro = false;
+        this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 
