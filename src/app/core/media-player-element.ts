@@ -194,7 +194,7 @@ export class MediaPlayerElement {
      */
     public getThumbnailUrl(tc: number) {
         const baseUrl = this.getConfiguration().thumbnail.baseUrl;
-        const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'tc';
+        const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
         return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
     }
 

@@ -173,5 +173,13 @@ export enum PlayerEventType {
     /**
      * Invocked on click outside the player
      */
-    DOCUMENT_CLICK = 'ina.player.DOCUMENT_CLICK'
+    DOCUMENT_CLICK = 'ina.player.DOCUMENT_CLICK',
+    /**
+     * Invocked to scroll images when changing playbackrate
+     */
+    PLAYBACK_RATE_IMAGES_CHANGE = 'ina.player.PLAYBACK_RATE_IMAGES_CHANGE',
+    /**
+     * Invocked to clear interval
+     */
+    PLAYBACK_CLEAR_INTERVAL = 'ina.player.PLAYBACK_CLEAR_INTERVAL'
 }

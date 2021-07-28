@@ -252,6 +252,7 @@ export class MediaElement {
      * @returns the current playback speed of the audio/video.
      */
     private setPlaybackRate(speed: number) {
+        this.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         const lastStateIsReverseMode = this.reverseMode;
         const oldCurrentTime = this.getCurrentTime();
         this.reverseMode = (speed < 0);

@@ -37,7 +37,10 @@ export class AmaliaComponent implements OnInit {
      * player state
      */
     public state: PlayerState;
-
+    /**
+     * Interval Images
+     */
+    public intervalImages;
     /**
      * Selected aspectRatio
      */
@@ -148,7 +151,10 @@ export class AmaliaComponent implements OnInit {
      */
     @ViewChild('contextMenu', {static: true})
     public contextMenu: ElementRef<HTMLElement>;
-
+    /**
+     * tc
+     */
+    public tc = 0;
     /**
      * true when player load content
      */
@@ -320,6 +326,8 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
         document.addEventListener('click', this.hideControlsMenuOnClickDocument);
 
@@ -509,5 +517,33 @@ export class AmaliaComponent implements OnInit {
     public hideControls() {
         this.playerHover = false;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
+    }
+    @AutoBind
+    public scrollPlaybackRateImages($event) {
+        const playbackrate = $event;
+        const framesPerSecond = this.mediaPlayerElement.getMediaPlayer().framerate * playbackrate;
+        const self = this;
+        const ms = 500;
+        this.tc = self.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        clearInterval(this.intervalImages);
+        this.intervalImages = setInterval(() =>  {
+            const frames = framesPerSecond * (1000 / ms);
+            self.tc = self.tc + (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
+            // Set thumbnail video
+            self.setPreviewThumbnail(self.tc);
+            console.log(self.tc);
+            // set current Time
+            // self.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
+            if (self.tc > duration) {
+                clearInterval(this.intervalImages);
+            } }, ms);
+    }
+    @AutoBind
+    public clearInterval() {
+        if (this.intervalImages) {
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
+            clearInterval(this.intervalImages);
+        }
     }
 }
