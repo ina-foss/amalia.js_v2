@@ -523,16 +523,15 @@ export class AmaliaComponent implements OnInit {
         const playbackrate = $event;
         const framesPerSecond = this.mediaPlayerElement.getMediaPlayer().framerate * playbackrate;
         const self = this;
-        const ms = 500;
+        const ms = 200;
         this.tc = self.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         clearInterval(this.intervalImages);
         this.intervalImages = setInterval(() =>  {
-            const frames = framesPerSecond * (1000 / ms);
+            const frames = framesPerSecond / (1000 / ms);
             self.tc = self.tc + (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
             // Set thumbnail video
             self.setPreviewThumbnail(self.tc);
-            console.log(self.tc);
             // set current Time
             // self.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
             if (self.tc > duration) {
