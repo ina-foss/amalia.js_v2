@@ -235,6 +235,7 @@ export class MediaElement {
         const currentTime = isNaN(value) ? 0 : value;
         if (this.mediaElement) {
             this.mediaElement.currentTime = Math.max(0, currentTime);
+            this.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
         }
     }
 

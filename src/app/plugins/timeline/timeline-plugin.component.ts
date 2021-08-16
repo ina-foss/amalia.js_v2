@@ -152,6 +152,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 data: listOfLocalisations
             });
         });
+
+        if (!handleMetadataIds) {
+            listOfMetadata.forEach((metadata) => {
+                mainMetadataIds.push(metadata.id);
+            });
+        }
         this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
     }
 

@@ -370,9 +370,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             case 'forward':
                 this.nextPlaybackRate();
                 break;
-            case 'images-forward':
-                this.nextPlaybackRateImages();
-                break;
             case 'slow-forward':
                 this.nextSlowPlaybackRate();
                 break;
@@ -679,16 +676,34 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * When playbackrate >= 6 display images
      */
     @AutoBind
-    private nextPlaybackRateImages() {
+    public nextPlaybackRateImages(speed) {
         if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
             this.mediaPlayerElement.getMediaPlayer().play();
         }
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
-        if (this.getPlaybackStepValue(this.forwardPlaybackRateStep , true) < 6) {
+        if (this.getPlaybackStepValue(this.forwardPlaybackRateStep , true) < speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
         } else {
             this.currentPlaybackRate = this.getPlaybackStepValue(this.forwardPlaybackRateStep , true);
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate);
+        }
+
+    }
+    /**
+     * Invoked for change playback rate
+     * When playbackrate >= 6 display images
+     */
+    @AutoBind
+    public previousPlaybackRateImages(speed) {
+        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
+        if (this.getPlaybackStepValue(this.backwardPlaybackRateStep , true) < speed) {
+            this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
+        } else {
+            this.currentPlaybackRate = this.getPlaybackStepValue(this.backwardPlaybackRateStep , true);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate * -1);
         }
 
     }

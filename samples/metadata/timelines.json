@@ -1,0 +1,1798 @@
+[ {
+  "localisation" : [ {
+    "sublocalisations" : {
+      "localisation" : [ {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:00.000",
+        "tcout" : "00:00:09.540",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:10.700",
+        "tcout" : "00:00:27.940",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:28.360",
+        "tcout" : "00:00:45.660",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:46.340",
+        "tcout" : "00:00:56.720",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:58.500",
+        "tcout" : "00:01:06.760",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:01:12.880",
+        "tcout" : "00:01:15.700",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:01:21.480",
+        "tcout" : "00:01:48.760",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:01:50.660",
+        "tcout" : "00:01:57.780",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:02:04.560",
+        "tcout" : "00:02:46.140",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:02:55.800",
+        "tcout" : "00:03:02.660",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:03:12.860",
+        "tcout" : "00:03:17.580",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:03:19.280",
+        "tcout" : "00:03:36.620",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:03:51.560",
+        "tcout" : "00:04:02.760",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:12.980",
+        "tcout" : "00:04:28.140",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:39.300",
+        "tcout" : "00:04:52.320",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:52.700",
+        "tcout" : "00:04:53.340",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:53.880",
+        "tcout" : "00:04:57.660",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:58.060",
+        "tcout" : "00:04:59.780",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:05:17.240",
+        "tcout" : "00:07:08.720",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:07:43.540",
+        "tcout" : "00:07:48.060",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:08:00.360",
+        "tcout" : "00:08:13.980",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:08:24.020",
+        "tcout" : "00:08:30.840",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:08:43.640",
+        "tcout" : "00:08:44.580",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:08:45.460",
+        "tcout" : "00:09:33.160",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:09:33.860",
+        "tcout" : "00:09:39.400",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:09:53.920",
+        "tcout" : "00:10:01.000",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:09.800",
+        "tcout" : "00:10:18.440",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:34.320",
+        "tcout" : "00:10:42.160",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:48.860",
+        "tcout" : "00:10:50.640",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:53.660",
+        "tcout" : "00:11:00.280",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:11:08.820",
+        "tcout" : "00:11:35.920",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:11:58.320",
+        "tcout" : "00:12:07.320",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:12:31.380",
+        "tcout" : "00:12:48.320",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:13:02.680",
+        "tcout" : "00:13:17.820",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:13:32.160",
+        "tcout" : "00:14:36.760",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:14:47.340",
+        "tcout" : "00:15:26.380",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:15:29.000",
+        "tcout" : "00:15:31.120",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:15:34.940",
+        "tcout" : "00:15:45.580",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:15:46.100",
+        "tcout" : "00:16:10.460",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:16:10.880",
+        "tcout" : "00:16:24.800",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:16:30.440",
+        "tcout" : "00:16:50.860",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:16:53.600",
+        "tcout" : "00:17:12.360",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:17:12.860",
+        "tcout" : "00:17:33.100",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:17:33.620",
+        "tcout" : "00:18:10.760",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:08.780",
+        "tcout" : "00:19:14.720",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:23.200",
+        "tcout" : "00:19:30.780",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:31.240",
+        "tcout" : "00:19:38.680",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:20:18.380",
+        "tcout" : "00:20:34.720",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:20:47.820",
+        "tcout" : "00:21:03.440",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:22.100",
+        "tcout" : "00:21:22.900",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:27.260",
+        "tcout" : "00:21:37.040",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:37.420",
+        "tcout" : "00:21:44.080",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:57.360",
+        "tcout" : "00:22:12.180",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:22:20.360",
+        "tcout" : "00:22:23.500",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:22:27.200",
+        "tcout" : "00:22:41.280",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:22:48.980",
+        "tcout" : "00:22:58.080",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:23:15.440",
+        "tcout" : "00:23:24.620",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:23:37.680",
+        "tcout" : "00:23:52.580",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:24:25.460",
+        "tcout" : "00:24:32.440",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:24:58.820",
+        "tcout" : "00:25:36.180",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:25:36.800",
+        "tcout" : "00:25:43.560",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:25:46.000",
+        "tcout" : "00:26:04.460",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:26:10.300",
+        "tcout" : "00:26:21.220",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:26:25.240",
+        "tcout" : "00:26:39.780",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:26:44.760",
+        "tcout" : "00:27:25.640",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:27:28.220",
+        "tcout" : "00:28:23.200",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:28:25.180",
+        "tcout" : "00:28:51.260",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:28:51.640",
+        "tcout" : "00:29:24.880",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:29:30.160",
+        "tcout" : "00:29:32.300",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "homme" ],
+          "attribute" : [ {
+            "value" : "homme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:29:32.760",
+        "tcout" : "00:30:18.420",
+        "tclevel" : 1
+      } ]
+    },
+    "type" : "text",
+    "tcin" : "00:02:04.0140",
+    "tcout" : "00:32:23.0420",
+    "tclevel" : 0
+  } ],
+  "type" : "SEGMENTATION-1095",
+  "label" : "homme",
+  "algorithm" : "null null",
+  "processor" : "null null",
+  "processed" : 1628759504,
+  "version" : 1,
+  "id" : "SEGMENTATION-10951628759504homme"
+}, {
+  "localisation" : [ {
+    "sublocalisations" : {
+      "localisation" : [ {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:56.720",
+        "tcout" : "00:00:58.500",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:01:06.760",
+        "tcout" : "00:01:12.880",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:01:15.700",
+        "tcout" : "00:01:21.480",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:01:57.780",
+        "tcout" : "00:02:04.560",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:02:46.140",
+        "tcout" : "00:02:55.800",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:03:02.660",
+        "tcout" : "00:03:12.860",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:03:37.120",
+        "tcout" : "00:03:51.560",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:02.760",
+        "tcout" : "00:04:12.980",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:28.140",
+        "tcout" : "00:04:39.300",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:04:59.780",
+        "tcout" : "00:05:16.280",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:07:09.500",
+        "tcout" : "00:07:43.540",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:07:48.060",
+        "tcout" : "00:08:00.360",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:08:13.980",
+        "tcout" : "00:08:24.020",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:08:30.840",
+        "tcout" : "00:08:43.640",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:09:39.400",
+        "tcout" : "00:09:53.920",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:01.000",
+        "tcout" : "00:10:09.800",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:18.440",
+        "tcout" : "00:10:21.420",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:23.200",
+        "tcout" : "00:10:34.320",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:42.160",
+        "tcout" : "00:10:48.860",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:50.640",
+        "tcout" : "00:10:53.660",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:11:00.280",
+        "tcout" : "00:11:08.820",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:11:36.700",
+        "tcout" : "00:11:58.320",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:12:07.320",
+        "tcout" : "00:12:31.380",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:12:48.320",
+        "tcout" : "00:13:02.680",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:13:17.820",
+        "tcout" : "00:13:32.160",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:14:36.760",
+        "tcout" : "00:14:43.680",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:14:45.840",
+        "tcout" : "00:14:47.340",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:15:26.380",
+        "tcout" : "00:15:29.000",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:15:31.120",
+        "tcout" : "00:15:34.940",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:16:26.660",
+        "tcout" : "00:16:30.440",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:16:50.860",
+        "tcout" : "00:16:53.600",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:18:11.300",
+        "tcout" : "00:19:08.780",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:14.720",
+        "tcout" : "00:19:23.200",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:38.680",
+        "tcout" : "00:19:46.280",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:46.700",
+        "tcout" : "00:19:48.160",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:49.700",
+        "tcout" : "00:19:51.040",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:51.480",
+        "tcout" : "00:19:57.520",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:19:58.720",
+        "tcout" : "00:20:00.680",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:20:02.400",
+        "tcout" : "00:20:18.380",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:20:34.720",
+        "tcout" : "00:20:46.180",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:04.340",
+        "tcout" : "00:21:15.600",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:16.120",
+        "tcout" : "00:21:22.100",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:22.900",
+        "tcout" : "00:21:27.260",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:21:44.080",
+        "tcout" : "00:21:57.360",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:22:12.180",
+        "tcout" : "00:22:20.360",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:22:23.500",
+        "tcout" : "00:22:27.200",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:22:41.280",
+        "tcout" : "00:22:48.980",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:22:58.080",
+        "tcout" : "00:23:15.440",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:23:24.620",
+        "tcout" : "00:23:36.220",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:23:53.740",
+        "tcout" : "00:24:25.460",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:24:33.020",
+        "tcout" : "00:24:58.300",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:25:43.560",
+        "tcout" : "00:25:46.000",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:26:04.460",
+        "tcout" : "00:26:10.300",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:26:21.220",
+        "tcout" : "00:26:25.240",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:26:39.780",
+        "tcout" : "00:26:44.760",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:28:23.200",
+        "tcout" : "00:28:25.180",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "femme" ],
+          "attribute" : [ {
+            "value" : "femme",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:29:26.700",
+        "tcout" : "00:29:30.160",
+        "tclevel" : 1
+      } ]
+    },
+    "type" : "text",
+    "tcin" : "00:03:01.0720",
+    "tcout" : "00:31:35.0160",
+    "tclevel" : 0
+  } ],
+  "type" : "SEGMENTATION-1095",
+  "label" : "femme",
+  "algorithm" : "null null",
+  "processor" : "null null",
+  "processed" : 1628759504,
+  "version" : 1,
+  "id" : "SEGMENTATION-10951628759504femme"
+}, {
+  "localisation" : [ {
+    "sublocalisations" : {
+      "localisation" : [ {
+        "data" : {
+          "text" : [ "bruit" ],
+          "attribute" : [ {
+            "value" : "bruit",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:01:49.480",
+        "tcout" : "00:01:50.660",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "bruit" ],
+          "attribute" : [ {
+            "value" : "bruit",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:10:21.420",
+        "tcout" : "00:10:23.200",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "bruit" ],
+          "attribute" : [ {
+            "value" : "bruit",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:14:43.680",
+        "tcout" : "00:14:45.840",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "bruit" ],
+          "attribute" : [ {
+            "value" : "bruit",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:16:25.480",
+        "tcout" : "00:16:26.660",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "bruit" ],
+          "attribute" : [ {
+            "value" : "bruit",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:29:24.880",
+        "tcout" : "00:29:26.700",
+        "tclevel" : 1
+      } ]
+    },
+    "type" : "text",
+    "tcin" : "00:03:54.0480",
+    "tcout" : "00:31:31.0700",
+    "tclevel" : 0
+  } ],
+  "type" : "SEGMENTATION-1095",
+  "label" : "bruit",
+  "algorithm" : "null null",
+  "processor" : "null null",
+  "processed" : 1628759504,
+  "version" : 1,
+  "id" : "SEGMENTATION-10951628759504bruit"
+}, {
+  "localisation" : [ {
+    "sublocalisations" : {
+      "localisation" : [ {
+        "data" : {
+          "text" : [ "musique" ],
+          "attribute" : [ {
+            "value" : "musique",
+            "name" : "label",
+            "score" : 1.0
+          } ]
+        },
+        "type" : "text",
+        "tcin" : "00:27:26.280",
+        "tcout" : "00:27:28.220",
+        "tclevel" : 1
+      } ]
+    },
+    "type" : "text",
+    "tcin" : "00:29:31.0280",
+    "tcout" : "00:29:33.0220",
+    "tclevel" : 0
+  } ],
+  "type" : "SEGMENTATION-1095",
+  "label" : "musique",
+  "algorithm" : "null null",
+  "processor" : "null null",
+  "processed" : 1628759504,
+  "version" : 1,
+  "id" : "SEGMENTATION-10951628759504musique"
+} ]
