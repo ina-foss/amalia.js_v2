@@ -408,7 +408,9 @@ export class MediaElement {
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
         document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
     }
-
+    /**
+     * Invoked on playbackrate images change
+     */
     /**
      * Invoked when first frame of the media has finished loading.
      */

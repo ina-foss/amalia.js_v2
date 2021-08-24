@@ -32,7 +32,7 @@
           "order": 2,
           "priority": 2,
           "data": {
-            "href": "http://localhost:4200/assets/logo.svg"
+            "href": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/G3ntJNT9yjD0ImuwiDaM48nT4sGPMAxTDF4P3nLQDfvJfmgrVWJDeO4mCzaLVQWAw3xtNpN2ftPzSzAtxKpQujFSL9WDScy9bDW09t1089Kp59ibPU14ZsVYwGE2tK9KBiNWzgOSwytx+dHT0G6SRGDNBlVX9SHejvCyM3W0sFh1nMgccbeaie55bUYDsBE9fcAXLp1UO3D+Jd4mNFDDBb3mv5LlJOSewE9rgGeAE5s/tt++yR8/NZQzKQmIH6+uscgQQSExiYGyGlxppVwRO5U+zle/m0djfQaaD6pnRThYNWlfc7Q+qwp7EScdlLcHsBNiX8v0KRKEq99ffI3b5v3vv9qhiQjp6Zq9zVZQPXOkQ4wKhCspXrri+Zr6gHR9VccuOZgUnGVPdIHGxXtQ3mFcMyUE81UPWsJoDUbI2IRI7IfTodvpYcDbXeuAAKRY55oMh4rNkD87iZ5p4OfKopTbx2N6GcSF/lvQH0ndce3Yuk08aecM4JoSZSIFgVUja2ebGPiIX1j/7FzQ0JqvThTM2LEMtmjHvKPiZOmIBvmtylQVFpo1nQ0GcyFhGyIgI4Va8tPT/2Uo7R0pmsJkQrZC3m3JE4HUlucjA3T7tUoUviXpiPECwEi6dQ+EZS9w0xYlW05vwhzHo8izX2tgq8TVmMOWu/3LD5/VZO/X2Z1SDZDrgWJW0/8Wv15tkccB/sl_iv/Ai+zgqgE0YWhkGDSLQx8xQ==/sl_hm/"
           }
         },
         {
@@ -88,7 +88,7 @@
           "zone": 2,
           "priority": 1,
           "data": {
-            "speed": 2
+            "speed": -6
           }
         },
         {
@@ -104,7 +104,7 @@
           "zone": 2,
           "priority": 1,
           "data": {
-            "speed": 10
+            "speed": 6
           }
         },
         {

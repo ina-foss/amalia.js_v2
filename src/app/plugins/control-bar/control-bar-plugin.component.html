@@ -1,4 +1,3 @@
-
 <div class="controlbar" (mousehover)="activated= true">
     <div class="time-label {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider && enablePlaybackSlider}">
         <div class="time-display" (click)="switchDisplayCurrentTime();hideAll()">

@@ -326,13 +326,13 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
         document.addEventListener('click', this.hideControlsMenuOnClickDocument);
 
@@ -527,6 +527,7 @@ export class AmaliaComponent implements OnInit {
     public scrollPlaybackRateImages($event) {
         let rewinding = false;
         let playbackrate = $event;
+        let mainSource = false;
         if (playbackrate < 0) {
             rewinding = true;
             playbackrate = Math.abs(playbackrate);
@@ -540,23 +541,26 @@ export class AmaliaComponent implements OnInit {
         this.intervalImages = setInterval(() =>  {
             const frames = framesPerSecond / (1000 / ms);
             if (rewinding === false ) {
-                self.tc = self.tc + (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
+                   self.tc = self.tc + (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
             } else {
+                if (mainSource === false) {
+                    self.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc();
+                    mainSource = true;
+                }
                 self.tc = self.tc - (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
             }
-
             // Set thumbnail video
             self.setPreviewThumbnail(self.tc);
             // set current Time
             self.mediaPlayerElement.getMediaPlayer().setCurrentTime(self.tc);
-            if (self.tc > duration || self.tc < duration) {
+
+            if (self.tc > duration || self.tc < 0) {
                 clearInterval(this.intervalImages);
             } }, ms);
     }
     @AutoBind
     public clearInterval() {
         if (this.intervalImages) {
-            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
             clearInterval(this.intervalImages);
         }
     }

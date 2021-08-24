@@ -628,11 +628,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        const url = this.mediaPlayerElement.getThumbnailUrl(tc);
-        if (isFinite(tc)) {
-            this.thumbnailService.getThumbnail(url, tc).then((blob) => {
+        const timecode = (tcOffset) ? tcOffset + tc : tc;
+        const url = this.mediaPlayerElement.getThumbnailUrl(timecode);
+        if (isFinite(timecode)) {
+            this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
                     this.thumbnailBlob = blob;
                 }
@@ -687,11 +689,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.currentPlaybackRate = this.getPlaybackStepValue(this.forwardPlaybackRateStep , true);
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate);
         }
-
     }
     /**
      * Invoked for change playback rate
-     * When playbackrate >= 6 display images
+     * When playbackrate >= speed configuration display images
      */
     @AutoBind
     public previousPlaybackRateImages(speed) {
@@ -699,11 +700,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().play();
         }
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
-        if (this.getPlaybackStepValue(this.backwardPlaybackRateStep , true) < speed) {
+        if (this.getPlaybackStepValue(this.backwardPlaybackRateStep , true) > speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         } else {
             this.currentPlaybackRate = this.getPlaybackStepValue(this.backwardPlaybackRateStep , true);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate * -1);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate);
         }
 
     }
@@ -886,9 +887,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param control control bar config
      */
     public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
-        const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
+        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
+        const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
         if (baseUrl !== '') {
             element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
         }
@@ -919,7 +922,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
     @AutoBind
-    public hideControlsMenuOnClickDocument($event) {
+    public hideControlsMenuOnClickDocument() {
         // click outside the player
         if (this.enableMenu) {
             this.enableMenu = !this.enableMenu;
