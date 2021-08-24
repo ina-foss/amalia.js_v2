@@ -952,7 +952,7 @@ ___
 
 ▸ **buildSliderSteps**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:645
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:647
 
 In charge to build step width size
 
@@ -964,7 +964,7 @@ ___
 
 ▸ **buildUrlWithTc**(`element`: HTMLElement, `control`: [ControlBarConfig](../interfaces/_src_app_core_config_model_control_bar_config_.controlbarconfig.md)): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:888
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:889
 
 Handle to download url
 
@@ -995,7 +995,7 @@ ___
 
 ▸ **changePlaybackRate**(`value`: number): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:744
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:745
 
 Invoked sbor change playback rate
 
@@ -1013,7 +1013,7 @@ ___
 
 ▸ **changePlaybackrate**(`pr`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:987
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:990
 
 **Parameters:**
 
@@ -1041,7 +1041,7 @@ ___
 
 ▸ **changeSlider**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:901
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:904
 
 change slider displayed
 
@@ -1110,7 +1110,7 @@ ___
 
 ▸ **displaySlider**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:845
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:846
 
 Toggle Display playbackslider
 
@@ -1185,7 +1185,7 @@ ___
 
 ▸ **getPlaybackStepValue**(`playbackRateStep`: Array‹number›, `ignoreSetPlaybackrate?`: boolean): *number*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:727
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:728
 
 Return playback step value
 
@@ -1206,7 +1206,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:791
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:792
 
 Invoked on aspect ratio change
 
@@ -1254,7 +1254,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:770
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:771
 
 Invoked on duration change
 
@@ -1266,7 +1266,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:754
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:755
 
 Invoked time change event for :
 - update progress bar
@@ -1279,7 +1279,7 @@ ___
 
 ▸ **handlePlaybackRateChange**(`playbackRate`: number): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:781
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:782
 
 Invoked on playback change
 
@@ -1297,7 +1297,7 @@ ___
 
 ▸ **handlePlayerMouseenter**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:809
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:810
 
 Invoked player mouse enter event for :
 - animate controlBar
@@ -1310,7 +1310,7 @@ ___
 
 ▸ **handlePlayerMouseleave**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:817
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:818
 
 Invoked player mouse leave event for :
 - animate controlBar
@@ -1425,7 +1425,7 @@ ___
 
 ▸ **hideAll**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:929
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:932
 
 **Returns:** *void*
 
@@ -1433,15 +1433,9 @@ ___
 
 ###  hideControlsMenuOnClickDocument
 
-▸ **hideControlsMenuOnClickDocument**(`$event`: any): *void*
+▸ **hideControlsMenuOnClickDocument**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:922
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`$event` | any |
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:925
 
 **Returns:** *void*
 
@@ -1463,7 +1457,7 @@ ___
 
 ▸ **initPlaybackrates**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:956
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:959
 
 **Returns:** *void*
 
@@ -1509,7 +1503,7 @@ ___
 
 ▸ **mute**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:946
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:949
 
 Mute sound
 
@@ -1521,7 +1515,7 @@ ___
 
 ▸ **nextPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:671
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:673
 
 Invoked for change playback rate
 
@@ -1533,7 +1527,7 @@ ___
 
 ▸ **nextPlaybackRateImages**(`speed`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:679
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:681
 
 Invoked for change playback rate
 When playbackrate >= 6 display images
@@ -1552,7 +1546,7 @@ ___
 
 ▸ **nextSlowPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:719
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:720
 
 Invoked for change slow playback rate
 
@@ -1564,7 +1558,7 @@ ___
 
 ▸ **ngOnDestroy**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1009
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1012
 
 Handle on component destroy
 
@@ -1606,7 +1600,7 @@ ___
 
 ▸ **pinControls**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:858
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:859
 
 Toggle Pinned class playback slider
 
@@ -1618,7 +1612,7 @@ ___
 
 ▸ **prevPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:665
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:667
 
 Invoked for change playback rate
 
@@ -1630,7 +1624,7 @@ ___
 
 ▸ **prevSlowPlaybackRate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:713
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:714
 
 Invoked for change slow playback rate
 
@@ -1642,10 +1636,10 @@ ___
 
 ▸ **previousPlaybackRateImages**(`speed`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:697
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:698
 
 Invoked for change playback rate
-When playbackrate >= 6 display images
+When playbackrate >= speed configuration display images
 
 **Parameters:**
 
@@ -1715,7 +1709,7 @@ ___
 
 ▸ **setVideoAspectRatio**(`ratio`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:872
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:873
 
 Set aspect Ratio
 
@@ -1733,7 +1727,7 @@ ___
 
 ▸ **setupAudioNodes**(`data`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:797
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:798
 
 Invoked on volume button hover
 
@@ -1751,7 +1745,7 @@ ___
 
 ▸ **switchDisplayCurrentTime**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:912
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:915
 
 switch timeCode display onclick
 
@@ -1763,7 +1757,7 @@ ___
 
 ▸ **toggleFullScreen**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:879
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:880
 
 Toggle fullscreen player
 
@@ -1775,7 +1769,7 @@ ___
 
 ▸ **togglePlaybackrate**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:974
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:977
 
 **Parameters:**
 
@@ -1791,7 +1785,7 @@ ___
 
 ▸ **unmute**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:953
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:956
 
 unmute sound
 
@@ -1803,7 +1797,7 @@ ___
 
 ▸ **updateSubtitlePosition**(`position?`: string): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:824
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:825
 
 update position subtitle onclick
 
