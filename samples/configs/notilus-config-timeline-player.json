@@ -1,15 +1,17 @@
 {
-  "tcOffset" : 3600,
+  "tcOffset" : 0,
   "player": {
-    "backwardsSrc": "http://localhost:4201/medias/jt.mp4",
-    "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
+    "backwardsSrc": "http://localhost:4201/medias/video-timeline.m3u8",
+    "src": "http://localhost:4201/medias/video-timeline.m3u8",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
     {
       "url": "http://localhost:4201/metadata/timeline-type.json"
+    },
+    {
+      "url": "http://localhost:4201/metadata/timelines.json"
     }
-
   ],
   "thumbnail": {
     "baseUrl": "https://picsum.photos/id/237/200/300",

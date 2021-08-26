@@ -18,6 +18,8 @@ import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 import {BaseUtils} from '../core/utils/base-utils';
 import {MediaPlayerService} from '../service/media-player-service';
 import {ThumbnailService} from '../service/thumbnail-service';
+import {DomSanitizer} from '@angular/platform-browser';
+
 import * as _ from 'lodash';
 
 @Component({
@@ -37,7 +39,10 @@ export class AmaliaComponent implements OnInit {
      * player state
      */
     public state: PlayerState;
-
+    /**
+     * Interval Images
+     */
+    public intervalImages;
     /**
      * Selected aspectRatio
      */
@@ -119,6 +124,8 @@ export class AmaliaComponent implements OnInit {
      * Thumbnail service
      */
     private readonly thumbnailService: ThumbnailService;
+    // dom sanitizer
+    private sanitizer: DomSanitizer;
     /**
      * Metadata converter, converter metadata parameter
      */
@@ -148,7 +155,10 @@ export class AmaliaComponent implements OnInit {
      */
     @ViewChild('contextMenu', {static: true})
     public contextMenu: ElementRef<HTMLElement>;
-
+    /**
+     * tc
+     */
+    public tc = 0;
     /**
      * true when player load content
      */
@@ -202,12 +212,13 @@ export class AmaliaComponent implements OnInit {
     /**
      * thumbnail blob preview on seeking
      */
-    public thumbnailBlobVideo: string;
+    public thumbnailBlobVideo;
 
     public debounceFunction;
 
-    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService) {
+    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, sanitizer: DomSanitizer) {
         this.httpClient = httpClient;
+        this.sanitizer = sanitizer;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
         this.debounceFunction = _.debounce(this.setPreviewThumbnail, 150, {maxWait: AmaliaComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
@@ -315,11 +326,13 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
         document.addEventListener('click', this.hideControlsMenuOnClickDocument);
 
@@ -404,7 +417,7 @@ export class AmaliaComponent implements OnInit {
             this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
             this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
-                    this.thumbnailBlobVideo = blob;
+                    this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
                 }
             });
         }
@@ -509,5 +522,46 @@ export class AmaliaComponent implements OnInit {
     public hideControls() {
         this.playerHover = false;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
+    }
+    @AutoBind
+    public scrollPlaybackRateImages($event) {
+        let rewinding = false;
+        let playbackrate = $event;
+        let mainSource = false;
+        if (playbackrate < 0) {
+            rewinding = true;
+            playbackrate = Math.abs(playbackrate);
+        }
+        const framesPerSecond = this.mediaPlayerElement.getMediaPlayer().framerate * playbackrate;
+        const self = this;
+        const ms = 200;
+        this.tc = self.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        clearInterval(this.intervalImages);
+        this.intervalImages = setInterval(() =>  {
+            const frames = framesPerSecond / (1000 / ms);
+            if (rewinding === false ) {
+                   self.tc = self.tc + (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
+            } else {
+                if (mainSource === false) {
+                    self.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc();
+                    mainSource = true;
+                }
+                self.tc = self.tc - (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
+            }
+            // Set thumbnail video
+            self.setPreviewThumbnail(self.tc);
+            // set current Time
+            self.mediaPlayerElement.getMediaPlayer().setCurrentTime(self.tc);
+
+            if (self.tc > duration || self.tc < 0) {
+                clearInterval(this.intervalImages);
+            } }, ms);
+    }
+    @AutoBind
+    public clearInterval() {
+        if (this.intervalImages) {
+            clearInterval(this.intervalImages);
+        }
     }
 }

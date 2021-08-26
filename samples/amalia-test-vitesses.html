@@ -12,23 +12,23 @@
 <body>
 
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">Timeline Plugin</h5>
+    <h5 class="my-0 mr-md-auto font-weight-normal">Avancement rapide par images / Avancement rapide</h5>
 </div>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-6 p-2" style="height: 500px;">
-           <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
-            <amalia-player player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-timeline-player.json">
+        <div class="col-5 p-2" style="height: 500px;">
+            <amalia-player id="player" player-id="PLAYER" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
                 <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
+            <amalia-time-bar player-id="PLAYER" plugin-configuration='{"data":{"theme": "outside"}}'></amalia-time-bar>
+
         </div>
-        <div class="col-6 p-2" style="height: 500px;">
-            <div style="width: 700px;height: 500px" id="transcription">
-                <amalia-timeline
-                        plugin-instance="1095">
-                </amalia-timeline>
-               </div>
+        <div class="col-5 p-2" style="height: 500px;">
+            <amalia-player id="player2" player-id="PLAYER2" config="http://localhost:4201/configs/notilus-config-transcription-player.json">
+                <amalia-time-bar player-id="PLAYER2" plugin-configuration='{"data":{"theme": "inside"}}'></amalia-time-bar>
+                <amalia-control-bar player-id="PLAYER2"></amalia-control-bar>
+            </amalia-player>
         </div>
     </div>
 </div>
