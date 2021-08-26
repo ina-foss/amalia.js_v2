@@ -5,9 +5,9 @@
      (keydown)="emitKeyDownEvent($event)" (keyup)="emitKeyUpEvent()"
      [ngClass]="{'pinned' : pinned , 'pinnedControlbar' : pinnedControlbar}" tabindex="0">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
-    <div #previewThumbnail class="preview-thumbnail"
+    <img #previewThumbnail class="preview-thumbnail"
          [hidden]="!enablePreviewThumbnail &&!previewThumbnailUrl &&previewThumbnailUrl==''"
-         [ngStyle]="{'background-image':'url('+thumbnailBlobVideo+')'}"></div>
+         [src]="thumbnailBlobVideo"/>
 </div>
 <div *ngIf="inLoading" class="loader"></div>
 <div *ngIf="inError" class="error">

@@ -58,7 +58,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Time code interval
      */
-    public tcIntervals = [1, 2 , 5 , 10 , 30 , 60 , 120 , 240];
+    public tcIntervals = [2 , 5 , 10 , 30 , 60 , 120 , 240];
     /**
      * frame intervals
      */
@@ -69,6 +69,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public selectedInterval: [string, number];
 
+
+
     /**
      * state list of interval
      */
@@ -78,7 +80,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Default size of thumbnails
      */
     public sizeThumbnail = 'm';
-
+    /**
+     *  Personalized selected Interval
+     */
+    public tcInterval = 2;
     /**
      * default state of button synchro
      */
@@ -90,13 +95,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.selectedInterval = ['tc', this.tcIntervals[0]];
+        this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
     }
 
     @AutoBind
     init() {
         super.init();
-        this.selectedInterval = ['tc', this.tcIntervals[0]];
+        this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
         this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
         // disable thumbnail when base url is empty

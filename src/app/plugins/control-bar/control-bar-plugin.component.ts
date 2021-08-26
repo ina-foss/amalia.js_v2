@@ -469,9 +469,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
         // Controls priority 3
-        let controlsP3 = this.getControlsByPriority(3);
-        // Controls priority 2
-        let controlsP2 = this.getControlsByPriority(2);
+        let controlsP3 = [];
+        let controlsP2 = [];
+        for (let zone = 1; zone < 4 ; zone++) {
+            // Controls priority 3
+             controlsP3 = controlsP3.concat(this.getControlsByPriority(3 , zone));
+            // Controls priority 2
+             controlsP2 = controlsP2.concat(this.getControlsByPriority(2 , zone));
+         }
         if (controlsP3 === null) {
             controlsP3 = [];
         }
@@ -481,7 +486,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.displayState === 'm') {
             this.controls = controlsP3;
         } else if (this.displayState === 'sm') {
-            this.controls = controlsP3.concat(controlsP2);
+            this.controls = controlsP2.concat(controlsP3);
         }
     }
     /**
@@ -502,6 +507,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on change playback rate
      */
     public onChangePlaybackRate(value) {
+        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
     }
@@ -531,9 +539,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * return list controls by priority
      * @param priority : number
      */
-    public getControlsByPriority(priority: number): Array<ControlBarConfig> {
+    public getControlsByPriority(priority: number , zone: number): Array<ControlBarConfig> {
         if (this.elements) {
-            return _.filter(this.elements, {priority});
+            this.elements = _.orderBy(this.elements , ['order']);
+            return _.filter(this.elements, {priority, zone});
         }
         return null;
     }
@@ -619,11 +628,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        const url = this.mediaPlayerElement.getThumbnailUrl(tc);
-        if (isFinite(tc)) {
-            this.thumbnailService.getThumbnail(url, tc).then((blob) => {
+        const timecode = (tcOffset) ? tcOffset + tc : tc;
+        const url = this.mediaPlayerElement.getThumbnailUrl(timecode);
+        if (isFinite(timecode)) {
+            this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
                     this.thumbnailBlob = blob;
                 }
@@ -663,6 +674,41 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
     }
     /**
+     * Invoked for change playback rate
+     * When playbackrate >= 6 display images
+     */
+    @AutoBind
+    public nextPlaybackRateImages(speed) {
+        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
+        if (this.getPlaybackStepValue(this.forwardPlaybackRateStep , true) < speed) {
+            this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
+        } else {
+            this.currentPlaybackRate = this.getPlaybackStepValue(this.forwardPlaybackRateStep , true);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate);
+        }
+    }
+    /**
+     * Invoked for change playback rate
+     * When playbackrate >= speed configuration display images
+     */
+    @AutoBind
+    public previousPlaybackRateImages(speed) {
+        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
+        if (this.getPlaybackStepValue(this.backwardPlaybackRateStep , true) > speed) {
+            this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
+        } else {
+            this.currentPlaybackRate = this.getPlaybackStepValue(this.backwardPlaybackRateStep , true);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate);
+        }
+
+    }
+    /**
      * Invoked for change slow playback rate
      */
     private prevSlowPlaybackRate() {
@@ -679,7 +725,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param playbackRateStep list of steps
      * @return return playback step
      */
-    private getPlaybackStepValue(playbackRateStep: Array<number>): number {
+    private getPlaybackStepValue(playbackRateStep: Array<number> , ignoreSetPlaybackrate?: boolean): number {
         let playbackRate;
         let indexOfCurrentPlaybackRate = playbackRateStep.indexOf(this.currentPlaybackRate);
         indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
@@ -687,12 +733,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             indexOfCurrentPlaybackRate = 0;
         }
         playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
-        this.mediaPlayerElement.getMediaPlayer().playbackRate = playbackRate;
+        if (!ignoreSetPlaybackrate) {
+            this.mediaPlayerElement.getMediaPlayer().playbackRate = playbackRate;
+        }
         return playbackRate;
     }
 
     /**
-     * Invoked for change playback rate
+     * Invoked sbor change playback rate
      */
     private changePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
@@ -839,9 +887,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param control control bar config
      */
     public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
-        const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
+        const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
         if (baseUrl !== '') {
             element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
         }
@@ -872,7 +922,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
     @AutoBind
-    public hideControlsMenuOnClickDocument($event) {
+    public hideControlsMenuOnClickDocument() {
         // click outside the player
         if (this.enableMenu) {
             this.enableMenu = !this.enableMenu;
