@@ -235,6 +235,7 @@ export class MediaElement {
         const currentTime = isNaN(value) ? 0 : value;
         if (this.mediaElement) {
             this.mediaElement.currentTime = Math.max(0, currentTime);
+            this.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
         }
     }
 
@@ -252,6 +253,7 @@ export class MediaElement {
      * @returns the current playback speed of the audio/video.
      */
     private setPlaybackRate(speed: number) {
+        this.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         const lastStateIsReverseMode = this.reverseMode;
         const oldCurrentTime = this.getCurrentTime();
         this.reverseMode = (speed < 0);
@@ -406,7 +408,9 @@ export class MediaElement {
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
         document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
     }
-
+    /**
+     * Invoked on playbackrate images change
+     */
     /**
      * Invoked when first frame of the media has finished loading.
      */

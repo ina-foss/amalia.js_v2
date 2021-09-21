@@ -194,6 +194,8 @@
       }
 
       &.playback-rate {
+        display: unset !important;
+        visibility: hidden;
         min-width: 25px;
         position: relative;
         padding: 3px 7px;
@@ -201,6 +203,9 @@
         text-align: center;
         font-size: 12px;
         font-weight: bold;
+        &.show {
+          visibility: visible;
+        }
       }
 
       &.aspect-ratio {

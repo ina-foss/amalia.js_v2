@@ -29,7 +29,9 @@ Player event type
 * [PAUSED](_src_app_core_constant_event_type_.playereventtype.md#paused)
 * [PINNED_CONTROLBAR_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#pinned_controlbar_change)
 * [PINNED_SLIDER_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#pinned_slider_change)
+* [PLAYBACK_CLEAR_INTERVAL](_src_app_core_constant_event_type_.playereventtype.md#playback_clear_interval)
 * [PLAYBACK_RATE_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#playback_rate_change)
+* [PLAYBACK_RATE_IMAGES_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#playback_rate_images_change)
 * [PLAYER_MOUSE_ENTER](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_enter)
 * [PLAYER_MOUSE_LEAVE](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_leave)
 * [PLAYER_RESIZED](_src_app_core_constant_event_type_.playereventtype.md#player_resized)
@@ -262,6 +264,16 @@ Invocked when click on pin controlbar and slider is active
 
 ___
 
+###  PLAYBACK_CLEAR_INTERVAL
+
+• **PLAYBACK_CLEAR_INTERVAL**: = "ina.player.PLAYBACK_CLEAR_INTERVAL"
+
+Defined in src/app/core/constant/event-type.ts:184
+
+Invocked to clear interval
+
+___
+
 ###  PLAYBACK_RATE_CHANGE
 
 • **PLAYBACK_RATE_CHANGE**: = "ina.player.PLAYBACK_RATE_CHANGE"
@@ -269,6 +281,16 @@ ___
 Defined in src/app/core/constant/event-type.ts:117
 
 Invoked when unbind metadata
+
+___
+
+###  PLAYBACK_RATE_IMAGES_CHANGE
+
+• **PLAYBACK_RATE_IMAGES_CHANGE**: = "ina.player.PLAYBACK_RATE_IMAGES_CHANGE"
+
+Defined in src/app/core/constant/event-type.ts:180
+
+Invocked to scroll images when changing playbackrate
 
 ___
 
