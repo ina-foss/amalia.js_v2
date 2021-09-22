@@ -77,6 +77,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     public active = false;
     /**
+     * state of histograms
+     */
+    public moving = false;
+    /**
      * html element histogramContainer
      */
     @ViewChild('histogramContainer')
@@ -199,28 +203,39 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.handleCursorMove(this.currentTime);
+    }
+    /**
+     * Invoked cursor move event
+     */
+    @AutoBind
+    private handleCursorMove(currentTime) {
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         const ratio = ((duration * this.zoomSize) / 100) / 2;
         // when media is stopped
-        if (this.currentTime === 0) {
+        if (currentTime === 0) {
             this.initializeCursors();
         }
-        if (this.currentTime <= ratio) {
-            this.updateTimeCursors(this.currentTime, ratio, true);
-        } else if (this.currentTime >= duration -  ratio) {
-            this.updateCursors(this.currentTime);
-            this.updateTimeCursors(this.currentTime, ratio, false);
-        } else if  (this.currentTime >= ratio && this.currentTime <= duration - ratio) {
-            this.updateCursors(this.currentTime);
+        if (currentTime <= ratio) {
+            this.updateTimeCursors(currentTime, ratio, true);
+        } else if (currentTime >= duration -  ratio) {
+            this.updateCursors(currentTime);
+            this.updateTimeCursors(currentTime, ratio, false);
+        } else if  (currentTime >= ratio && currentTime <= duration - ratio) {
+            this.updateCursors(currentTime);
             this.cursorPosition = 50;
             this.cursorZoomPosition = 50;
         }
     }
     @AutoBind
     public handleHistogramsClick(event) {
-        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        const currentTime =  ((event.clientX / this.histograms.nativeElement.offsetWidth) * duration);
-        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
+        if (this.moving === false) {
+            const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+            const currentTime =  ((event.clientX / this.histograms.nativeElement.offsetWidth) * duration);
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
+        } else {
+            this.moving = false;
+        }
     }
     /**
      * Initialize cursors
@@ -326,42 +341,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         }
     }
     /**
-     * Called on start dragging element
-     */
-    public startDragging(event) {
-        // store the state of the player when drag
-        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        if (mediaPlayer.isPaused() === false && typeof(this.isplaying) !== 'undefined') {
-            this.isplaying = true;
-            mediaPlayer.pause();
-        } else {
-            this.isplaying = false;
-        }
-    }
-    /**
-     * Called on stop dragging element
-     */
-    public  stopDragging(event) {
-        // 4 = border width
-        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        const duration = mediaPlayer.getDuration();
-        const nativeElement = this.sliderElement.nativeElement;
-        const position =  ((nativeElement.offsetLeft + nativeElement.offsetWidth / 2) / this.histogramContainerElement.nativeElement.offsetWidth) * 100;
-        let currentTime =  (duration * position) / 100;
-        currentTime = parseFloat(currentTime.toFixed(2));
-        mediaPlayer.setCurrentTime(currentTime);
-        if (this.isplaying === true) {
-            mediaPlayer.play();
-        }
-        // reset
-        this.isplaying = null;
-    }
-    /**
      * slider events
      */
     @AutoBind
     public initSliderEvents() {
-        const position = { x: 0};
+        const position = {x: this.sliderPosition};
         const self = this;
         const duration = self.mediaPlayerElement.getMediaPlayer().getDuration();
         const container = self.sliderElement.nativeElement;
@@ -371,8 +355,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     restriction: '.histograms'
                 })
             ],
-                listeners: {
+            listeners: {
                 start() {
+                    position.x = self.sliderPosition;
                     //  store the state of the player when  drag
                     if (self.mediaPlayerElement.getMediaPlayer().isPaused() === false && typeof(self.isplaying) !== 'undefined') {
                         self.isplaying = true;
@@ -384,26 +369,23 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 move(event) {
                     position.x += event.dx;
                     event.target.style.transform = 'translate(' + position.x + 'px)';
+                    event.target.setAttribute('data-x', position.x);
                     // 4 = border width
                     const left = position.x;
                     const width = self.sliderElement.nativeElement.offsetWidth;
-                    const pos =  ((left + width /  2 + 4) / self.histogramContainerElement.nativeElement.offsetWidth) * 100;
-                    let currentTime =  (duration * pos) / 100;
+                    const pos = ((left + width / 2 + 4) / self.histogramContainerElement.nativeElement.offsetWidth) * 100;
+                    let currentTime = (duration * pos) / 100;
                     currentTime = parseFloat(currentTime.toFixed(2));
+                    self.handleCursorMove(currentTime);
                     self.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
                 },
                 end() {
-                    /*const left = position.x;
-                    const width = self.sliderElement.nativeElement.offsetWidth;
-                    const pos =  ((left + width /  2 + 4) / self.histogramContainerElement.nativeElement.offsetWidth) * 100;
-                    let currentTime =  (duration * pos) / 100;
-                    currentTime = parseFloat(currentTime.toFixed(2));
-                    self.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);*/
                     if (self.isplaying === true) {
                         self.mediaPlayerElement.getMediaPlayer().play();
                     }
                     // reset
                     self.isplaying = null;
+                    self.moving = true;
                 }
             }
         });
@@ -413,25 +395,41 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 bottom: false,
                 right: '.drag-right',
                 left: '.drag-left'
+            },
+            modifiers: [
+                // keep the edges inside the parent
+                interact.modifiers.restrictEdges({
+                    outer: 'parent'
+                }),
+            ],
+            listeners: {
+                move(event) {
+                    self.moving = true;
+                    const target = event.target;
+                    let x = (parseFloat(target.getAttribute('data-x')) || 0);
+                    // update the element's style
+                    target.style.width = event.rect.width + 'px';
+                    // translate when resizing from left
+                    x += event.deltaRect.left;
+                    target.style.transform = 'translate(' + x + 'px)';
+                    target.setAttribute('data-x', x);
+                },
+                end(event) {
+                    self.moving = true;
+                    const containerWidth = self.histogramContainerElement.nativeElement.offsetWidth;
+                    const zoomSize = (event.rect.width / containerWidth ) * 100;
+                    const x = event.target.getAttribute('data-x');
+                    self.zoomSize = Math.round(zoomSize);
+                    self.zoomedWidth = self.getZoomedWidth(containerWidth, self.zoomSize);
+                    const currentTime = parseFloat((((x + event) * duration) / containerWidth).toFixed(2));
+                    if (isFinite(currentTime)) {
+                        self.handleCursorMove(currentTime);
+                        self.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
+                        self.updateZoomedSvg(true);
+                    }
+                },
             }
-        })
-    .on('resizemove', event => {
-        let { x, y } = event.target.dataset;
-        x = parseFloat(x) || 0;
-        y = parseFloat(y) || 0;
-        Object.assign(event.target.style, {
-            width: event.rect.width + 'px',
-            // transform: 'translate(' + event.deltaRect.left + 'px)'
         });
-        Object.assign(event.target.dataset, { x, y });
-    })
-     .on('resizeend', event => {
-         const containerWidth = self.histogramContainerElement.nativeElement.offsetWidth;
-         const zoomSize = (event.rect.width / containerWidth ) * 100;
-         self.zoomSize = Math.round(zoomSize);
-         self.zoomedWidth = self.getZoomedWidth(containerWidth, self.zoomSize);
-         this.updateZoomedSvg(true);
-     });
     }
 
     /**
