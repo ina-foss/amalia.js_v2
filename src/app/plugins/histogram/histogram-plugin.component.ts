@@ -423,7 +423,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     self.zoomedWidth = self.getZoomedWidth(containerWidth, self.zoomSize);
                     const currentTime = parseFloat((((x + event) * duration) / containerWidth).toFixed(2));
                     if (isFinite(currentTime)) {
-                        self.handleCursorMove(currentTime);
+                        // self.handleCursorMove(currentTime);
                         self.mediaPlayerElement.getMediaPlayer().setCurrentTime(currentTime);
                         self.updateZoomedSvg(true);
                     }
