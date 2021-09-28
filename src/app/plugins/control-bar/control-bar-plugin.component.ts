@@ -580,10 +580,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse move
      */
     public progressBarMouseMove(event: MouseEvent) {
-        if (this.enableThumbnail && !this.inSliding) {
-            const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
+        if (this.enableThumbnail && !this.inSliding && this.thumbnailHidden === false) {
             const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-            const tc = parseFloat((((event.offsetX - 4) * this.duration) / containerWidth).toFixed(2));
+            const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
+            const value = this.getMouseValue(event);
+            const tc = parseFloat((value * this.duration / 100).toFixed(2));
             if (isFinite(tc)) {
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
@@ -595,26 +596,39 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Progress bar on mouse down
      * @param value mouse event
      */
-    public handleProgressBarMouseDown(value) {
+    public handleProgressBarMouseDown() {
         this.inSliding = true;
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
+        this.thumbnailHidden = true;
+    }
+
+    /**
+     * get value
+     * @param event mousevent
+     */
+    public getMouseValue(event) {
+        const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
+        const  value = (event.offsetX  / containerWidth) *  100;
+        return value;
     }
     /**
      * Progress bar on mouse up
      * @param value mouse event
      */
-    public handleProgressBarMouseUp(value) {
+    public handleProgressBarMouseUp(event) {
         this.inSliding = false;
+        const value = this.getMouseValue(event);
         this.moveSliderCursor(value);
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
     }
     /**
      * Progress bar on mouse move
      * @param value mouse event
      */
-    public handleProgressBarMouseMove(value) {
+    public handleProgressBarMouseMove(event) {
         if (this.inSliding) {
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
+            const value = this.getMouseValue(event);
+            this.moveSliderCursor(value);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value);
         }
     }
     /**
@@ -755,7 +769,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (!this.inSliding && !isNaN(this.currentTime)) {
-            this.progressBarValue = (this.currentTime / this.duration) * 100;
+            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(2));
         }
         if (this.inverse === false) {
             this.time = this.currentTime;

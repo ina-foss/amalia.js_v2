@@ -18,9 +18,9 @@
                 <div class="ui-slider">
                     <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
                     <input type="range" step='0.01' class="slider" min="0" [value]="progressBarValue" #progressBar
-                           (mousedown)="handleProgressBarMouseDown(progressBar.value)"
-                           (mousemove)="handleProgressBarMouseMove(progressBar.value)"
-                           (mouseup)="handleProgressBarMouseUp(progressBar.value)">
+                           (mousedown)="handleProgressBarMouseDown()"
+                           (mousemove)="handleProgressBarMouseMove($event)"
+                           (mouseup)="handleProgressBarMouseUp($event)">
                 </div>
             </div>
             <div *ngFor="let colId of [1,2,3]; index as i; last as isLast;" [ngClass]="{'last':isLast,'mid':i===1} "
