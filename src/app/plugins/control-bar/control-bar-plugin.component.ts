@@ -469,7 +469,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.logger.info('moveSliderCursor ', value);
         this.progressBarValue = value;
         this.currentTime = value * this.duration / 100;
-        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+        const oldPlaybackrate = this.currentPlaybackRate;
+        if (this.mediaPlayerElement.getMediaPlayer().reverseMode === true) {
+            this.currentTime = this.duration - this.currentTime;
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+        } else {
+            this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+            this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+        }
     }
     /**
      * switch container class based on width
@@ -1026,7 +1034,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const valuesContainer = this.controlBarContainer.nativeElement
             .querySelector('.playback-rate-values') as HTMLElement;
         const maxWidth = valuesContainer.offsetWidth;
-        // console.log(maxWidth);
         let oldPosition = position.x;
         container.style.transform = 'translate(' + position.x + 'px)';
         container.setAttribute('data-x', position.x);
