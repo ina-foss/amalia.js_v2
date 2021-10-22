@@ -1,8 +1,8 @@
 {
   "tcOffset" : 60,
   "player": {
-    "src": "http://localhost:4201/medias/video.m3u8",
-    "backwardsSrc": "http://localhost:4201/medias/video-http.m3u8",
+    "src": "http://localhost:4201/medias/video-new.m3u8",
+    "backwardsSrc": "http://localhost:4201/medias/video-new-inverse.m3u8",
     "crossOrigin": "anonymous"
   },
   "thumbnail": {
