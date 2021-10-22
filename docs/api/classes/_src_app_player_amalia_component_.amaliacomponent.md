@@ -530,7 +530,7 @@ ___
 
 ▸ **clearInterval**(): *void*
 
-Defined in src/app/player/amalia.component.ts:557
+Defined in src/app/player/amalia.component.ts:562
 
 **Returns:** *void*
 

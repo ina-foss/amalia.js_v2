@@ -1,6 +1,6 @@
-<div class="controlbar" (mousehover)="activated= true">
-    <div class="time-label {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider && enablePlaybackSlider}">
-        <div class="time-display" (click)="switchDisplayCurrentTime();hideAll()">
+<div #controlBarContainer class="controlbar" (mouseover)="handlePlayerMouseHover()">
+    <div class="time-label {{displayState}}" [ngClass]="{'activated' : (activated || pinnedSlider),'pinned' :(pinnedSlider && enablePlaybackSlider) || (enablePlaybackSlider && activated)}">
+        <div class="time-display" *ngIf="time > 0 && duration > 0"(click)="switchDisplayCurrentTime();hideAll()">
             <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
             <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>
         </div>
@@ -10,17 +10,17 @@
         <div #thumbnail class="thumbnail" [ngStyle]="{'background-image':'url('+thumbnailBlob+')'}"></div>
         <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
     </div>
-    <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated,'pinned' :pinnedSlider}">
-        <div class="control-bar" (mousehover)="activated= true" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
+    <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated ,'pinned' :pinnedSlider}">
+        <div class="control-bar" (mouseover)="handlePlayerMouseHover()" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
             <div *ngIf="hasComponentWithoutZone('progressBar')"
                  class="control progress-bar" (mouseenter)="progressBarMouseEnter($event)"
                  (mouseleave)= "progressBarMouseLeave($event)" (mousemove)="progressBarMouseMove($event)">
                 <div class="ui-slider">
                     <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
                     <input type="range" step='0.01' class="slider" min="0" [value]="progressBarValue" #progressBar
-                           (mousedown)="handleProgressBarMouseDown(progressBar.value)"
-                           (mousemove)="handleProgressBarMouseMove(progressBar.value)"
-                           (mouseup)="handleProgressBarMouseUp(progressBar.value)">
+                           (mousedown)="handleProgressBarMouseDown()"
+                           (mousemove)="handleProgressBarMouseMove($event)"
+                           (mouseup)="handleProgressBarMouseUp($event)">
                 </div>
             </div>
             <div *ngFor="let colId of [1,2,3]; index as i; last as isLast;" [ngClass]="{'last':isLast,'mid':i===1} "
@@ -236,8 +236,43 @@
             </div>
         </div>
         <!-- Slider -->
-        <div class="playback-rate-slider {{displayState}} "
-             [ngClass]="{'activated' : (selectedSlider === 'slider1' && enablePlaybackSlider)}"
+        <div class="playback-rate-slider {{displayState}}"
+             [ngClass]="{'activated' : (enablePlaybackSlider && ( activated || pinnedSlider ))}">
+             <div class="slider">
+                 <div #slider
+                      [ngClass]="{'selected' : (selectedSlider === 'slider2')}"
+                      *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')"
+                     (oninit)="initDragThumb()">
+                     <ul class="playback-rate-values">
+                            <li class="playbackrate-value"
+                            *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
+                            [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
+                            (click)="changePlaybackrate(pr)" [value]="pr">{{pr}}x</li>
+                    </ul>
+                    <ul class="thumbs">
+                        <li class="playbackrate-thumb"
+                            *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
+                            [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
+                            (click)="changePlaybackrate(pr)">.</li>
+                    </ul>
+                 </div>
+                <div #dragThumb class="thumb">.<div class="line"></div><div class="second-line"></div><div class="last-line"></div></div>
+             </div>
+            <div class="menu-slider" (mouseenter)="enableMenuSlider = true">
+                <svg class="amalia-svg-switch-size icon">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#switch'"></use>
+                </svg>
+                <!--<div class="menu" [ngClass]="{'on' : enableMenuSlider}"
+                     (mouseleave)="enableMenuSlider = false">
+                    <div [ngClass]="{'selected' : selectedSlider === 'slider1'}"
+                         (click)="changeSlider()">Mode lecture 1</div>
+                    <div [ngClass]="{'selected' : selectedSlider === 'slider2'}"
+                         (click)="changeSlider()">Mode lecture 2</div>
+                </div>-->
+            </div>
+        <div>
+        <!--<div class="playback-rate-slider {{displayState}} "
+             [ngClass]="{'activated' : (selectedSlider === 'slider1' && enablePlaybackSlider && ( activated || pinned ))}"
              *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')">
             <div class="playback-rate-labels">
                 <input type="range" list="playback-rate-list" #playbackRateCursor
@@ -255,12 +290,12 @@
                     </option>
                 </datalist>
             </div>
-        </div>
+        </div>--W
         <!-- Slider 2-->
-        <div class="playback-rate-slider2 {{displayState}}" #slider
-             [ngClass]="{'activated' : (selectedSlider === 'slider2' && enablePlaybackSlider)}"
+        <!--<div class="playback-rate-slider2 {{displayState}}" #slider
+             [ngClass]="{'activated' : (selectedSlider === 'slider2' && enablePlaybackSlider && ( activated || pinned ))}"
              *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')">
-            <div class="playback-rate-labels">
+            <!--<div class="playback-rate-labels">
                 <input type="range" list="sliderListOfPlaybackRateCustomSteps" #cursor
                        [min]="minCursor"
                        [max]="maxCursor"
@@ -275,22 +310,25 @@
                         <div class="text">{{pr}}x</div>
                     </option>
                 </datalist>
-            </div>
-        </div>
-        <div class="menu-slider" [ngClass]="{'activated' : enablePlaybackSlider}" (mouseenter)="enableMenuSlider = true">
-            <svg class="amalia-svg-switch-size icon">
-                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#switch'"></use>
-            </svg>
-            <div class="menu" [ngClass]="{'on' : enableMenuSlider}"
-                (mouseleave)="enableMenuSlider = false">
-                 <div [ngClass]="{'selected' : selectedSlider === 'slider1'}"
-                      (click)="changeSlider()">Mode lecture 1</div>
-                 <div [ngClass]="{'selected' : selectedSlider === 'slider2'}"
-                     (click)="changeSlider()">Mode lecture 2</div>
-            </div>
+            </div>-->
+            <!--<ul class="playback-rate-values">
+                <li class="playbackrate-value"
+                    *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
+                    [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
+                    (click)="changePlaybackrate(pr)" [value]="pr">{{pr}}x</li>
+            </ul>
+            <ul class="thumbs">
+                <li class="playbackrate-thumb"
+                    *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
+                    [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
+                    (click)="changePlaybackrate(pr)">.</li>
+            </ul>
+            <div #dragThumb class="thumb">.<div class="line"></div><div class="second-line"></div><div class="last-line"></div></div>
         </div>
 
-    </div>
+
+
+    </div>-->
     <!-- Menu of controls displayed on "m" grid-->
     <div #controlsMenu class="controls-menu {{displayState}}" [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider && enablePlaybackSlider}"
          (mouseenter)="activated = true">

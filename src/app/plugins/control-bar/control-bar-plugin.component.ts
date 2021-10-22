@@ -16,6 +16,7 @@ import {ControlBarConfig} from '../../core/config/model/control-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ThumbnailService} from '../../service/thumbnail-service';
+import interact from 'interactjs';
 
 @Component({
     selector: 'amalia-control-bar',
@@ -189,7 +190,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * slider displayed
      */
-    public selectedSlider = 'slider1';
+    // public selectedSlider = 'slider1';
+    public selectedSlider = 'slider2';
     /**
      * show menu slider
      */
@@ -224,6 +226,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public thumbnailElement: ElementRef<HTMLElement>;
     @ViewChild('thumbnailContainer')
     public thumbnailContainer: ElementRef<HTMLElement>;
+    @ViewChild('controlBarContainer')
+    public controlBarContainer: ElementRef<HTMLElement>;
     /**
      * list of shortcuts
      */
@@ -236,6 +240,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public negPlaybackrates: Array<number> = [];
     public maxCursor: number;
     public minCursor: number;
+    // handle slider drag
+    @ViewChild('dragThumb')
+    public dragElement: ElementRef;
+    public sliderPosition = 0;
+    public moving = false;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -460,7 +469,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.logger.info('moveSliderCursor ', value);
         this.progressBarValue = value;
         this.currentTime = value * this.duration / 100;
-        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+        const oldPlaybackrate = this.currentPlaybackRate;
+        if (this.mediaPlayerElement.getMediaPlayer().reverseMode === true) {
+            this.currentTime = this.duration - this.currentTime;
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+        } else {
+            this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+            this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+        }
     }
     /**
      * switch container class based on width
@@ -580,10 +597,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse move
      */
     public progressBarMouseMove(event: MouseEvent) {
-        if (this.enableThumbnail && !this.inSliding) {
-            const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
+        if (this.enableThumbnail && !this.inSliding && this.thumbnailHidden === false) {
             const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-            const tc = parseFloat((((event.offsetX - 4) * this.duration) / containerWidth).toFixed(2));
+            const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
+            const value = this.getMouseValue(event);
+            const tc = parseFloat((value * this.duration / 100).toFixed(2));
             if (isFinite(tc)) {
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
@@ -595,26 +613,39 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Progress bar on mouse down
      * @param value mouse event
      */
-    public handleProgressBarMouseDown(value) {
+    public handleProgressBarMouseDown() {
         this.inSliding = true;
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
+        this.thumbnailHidden = true;
+    }
+
+    /**
+     * get value
+     * @param event mousevent
+     */
+    public getMouseValue(event) {
+        const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
+        const  value = (event.offsetX  / containerWidth) *  100;
+        return value;
     }
     /**
      * Progress bar on mouse up
      * @param value mouse event
      */
-    public handleProgressBarMouseUp(value) {
+    public handleProgressBarMouseUp(event) {
         this.inSliding = false;
+        const value = this.getMouseValue(event);
         this.moveSliderCursor(value);
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value * this.duration / 100);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
     }
     /**
      * Progress bar on mouse move
      * @param value mouse event
      */
-    public handleProgressBarMouseMove(value) {
+    public handleProgressBarMouseMove(event) {
         if (this.inSliding) {
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value * this.duration / 100);
+            const value = this.getMouseValue(event);
+            this.moveSliderCursor(value);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value);
         }
     }
     /**
@@ -689,6 +720,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.currentPlaybackRate = this.getPlaybackStepValue(this.forwardPlaybackRateStep , true);
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE , this.currentPlaybackRate);
         }
+        setTimeout( () => this.selectActivePlaybackrate(), 10);
     }
     /**
      * Invoked for change playback rate
@@ -755,7 +787,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (!this.inSliding && !isNaN(this.currentTime)) {
-            this.progressBarValue = (this.currentTime / this.duration) * 100;
+            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(2));
         }
         if (this.inverse === false) {
             this.time = this.currentTime;
@@ -782,6 +814,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handlePlaybackRateChange(playbackRate: number) {
         this.currentPlaybackRate = playbackRate;
         this.logger.info('Handle playback rate change', playbackRate);
+        setTimeout( () => this.selectActivePlaybackrate(), 10);
     }
 
     /**
@@ -810,13 +843,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handlePlayerMouseenter() {
         this.activated = true;
     }
+    @AutoBind
+    public  handlePlayerMouseHover() {
+        this.activated = true;
+    }
     /**
      * Invoked player mouse leave event for :
      * - animate controlBar
      */
     @AutoBind
     private handlePlayerMouseleave() {
-        this.activated = false;
+            this.activated = false;
     }
     /**
      * update position subtitle onclick
@@ -851,6 +888,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
         }
         this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
+        setTimeout(() => this.initDragThumb(), 10);
     }
 
     /**
@@ -907,6 +945,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         } else {
             this.selectedSlider = 'slider1';
         }
+        setTimeout(() => this.initDragThumb(), 10);
     }
     /**
      * switch timeCode display onclick
@@ -956,6 +995,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public unmute() {
         return this.mediaPlayerElement.getMediaPlayer().unmute();
     }
+
     public initPlaybackrates() {
         let speed;
         const negPlaybackrates: Array<number> = [];
@@ -968,10 +1008,80 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 negPlaybackrates.push(speed);
             }
         }
-        this.negPlaybackrates = negPlaybackrates.reverse();
+        this.negPlaybackrates = [...negPlaybackrates].reverse();
         this.posPlaybackrates = posPlaybackrates;
         this.minCursor = this.negPlaybackrates.length * -1;
         this.maxCursor = this.posPlaybackrates.length;
+    }
+    @AutoBind
+    public initDragThumb() {
+        // init drag slider
+        const selected: HTMLElement = this.controlBarContainer.nativeElement
+            .querySelector('.playbackrate-value.active') as HTMLElement;
+        const step = Math.ceil(selected.offsetWidth);
+        const values = this.controlBarContainer.nativeElement
+            .querySelectorAll<HTMLElement>('.playbackrate-value');
+        let left = (step / 2);
+        // let left = 0;
+        values.forEach(value => {
+            // const left = Math.ceil(value.offsetLeft) + (step / 2);
+            value.setAttribute('data-x', left.toString());
+            left += step;
+        });
+        const position = {x: Number(selected.getAttribute('data-x'))};
+        const container = this.dragElement.nativeElement;
+        const self = this;
+        const valuesContainer = this.controlBarContainer.nativeElement
+            .querySelector('.playback-rate-values') as HTMLElement;
+        const maxWidth = valuesContainer.offsetWidth;
+        let oldPosition = position.x;
+        container.style.transform = 'translate(' + position.x + 'px)';
+        container.setAttribute('data-x', position.x);
+        interact(container).draggable({
+            inertia: {
+                  resistance: 10,
+                  minSpeed: 500,
+                  endSpeed: 500
+            },
+            modifiers: [
+                interact.modifiers.restrictRect({
+                    restriction: '.playback-rate-values'
+                })
+            ],
+            listeners: {
+                move(event) {
+                    const pos = (position.x + event.dx);
+                    if (pos > oldPosition) {
+                        position.x += step;
+                    } else {
+                        position.x -= step;
+                    }
+                    // position.x = Math.ceil(position.x);
+                    if (position.x === step / 2) {
+                        event.target.style.transform = 'translate(' + 0 + 'px)';
+                        event.target.setAttribute('data-x', 0);
+                    } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
+                        event.target.style.transform = 'translate(' + Number(maxWidth - 10) + 'px)';
+                        event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+                    } else if (position.x > 0) {
+                        event.target.style.transform = 'translate(' + position.x + 'px)';
+                        event.target.setAttribute('data-x', position.x);
+                        oldPosition = position.x;
+                    }
+                },
+                end() {
+                    values.forEach(value => {
+                        const v = Number(value.getAttribute('data-x'));
+                        if (position.x === v) {
+                          const pr = value.getAttribute('value');
+                          if (Number(pr) !== 0) {
+                              self.changePlaybackrate(pr);
+                          }
+                        }
+                    });
+                }
+            }
+        });
     }
     @AutoBind
     public togglePlaybackrate(value) {
@@ -1005,6 +1115,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
             this.onChangePlaybackRate(pr);
         }
+    }
+    @AutoBind
+    public selectActivePlaybackrate() {
+        const container = this.dragElement.nativeElement;
+        const selected: HTMLElement = this.controlBarContainer.nativeElement
+            .querySelector('.playbackrate-value.active') as HTMLElement;
+        const position = Number(selected.getAttribute('data-x'));
+        container.style.transform = 'translate(' + position + 'px)';
+        container.setAttribute('data-x', position);
     }
     /**
      * Handle on component destroy
