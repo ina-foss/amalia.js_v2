@@ -479,6 +479,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
         }
     }
+
+    /**
+     * Tooltip tag is append after footer (ng2-directive-tooltip)
+     * in fullscreen only the player is target , this function move the tooltip target from body to containerControlbar
+     */
     @AutoBind
     public changeTooltipEmplacement() {
         if (this.fullScreenMode === true) {
