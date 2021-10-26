@@ -479,6 +479,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
         }
     }
+    @AutoBind
+    public changeTooltipEmplacement() {
+        if (this.fullScreenMode === true) {
+            const tooltip = document.body.getElementsByTagName('tooltip')[0] as Node;
+            console.log(tooltip);
+            if (tooltip) {
+                document.body.removeChild(tooltip);
+                this.controlBarContainer.nativeElement.appendChild(tooltip);
+            }
+        }
+    }
     /**
      * switch container class based on width
      */

@@ -1,4 +1,4 @@
-<div #controlBarContainer class="controlbar" (mouseover)="handlePlayerMouseHover()">
+<div #controlBarContainer class="controlbar" (mouseover)="handlePlayerMouseHover();changeTooltipEmplacement()">
     <div class="time-label {{displayState}}" [ngClass]="{'activated' : (activated || pinnedSlider),'pinned' :(pinnedSlider && enablePlaybackSlider) || (enablePlaybackSlider && activated)}">
         <div class="time-display" *ngIf="time > 0 && duration > 0"(click)="switchDisplayCurrentTime();hideAll()">
             <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
@@ -39,7 +39,7 @@
                         </svg>
                     </div>
                     <!--FullScreen Button -->
-                    <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
+                    <div tooltip="{{c.label}}" autoPlacement='false' [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
                          class="toggleFullScreen control" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
