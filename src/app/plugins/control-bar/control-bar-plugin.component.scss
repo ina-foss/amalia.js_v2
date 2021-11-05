@@ -544,6 +544,18 @@
       .slider {
         height: 50px;
         width: 95%;
+        .playbackratestep {
+          &.selected {
+            .playbackrate-value {
+              width: calc(100% / 13) !important;
+            }
+            .thumbs {
+              > li {
+                width: calc(100% / 13) !important;
+              }
+            }
+          }
+        }
         > div {
           display: none;
           &.selected {
@@ -623,7 +635,7 @@
         top: -29px;
         position: relative;
         text-align: center;
-        left: 8px;
+        // left: 8px;
         cursor: grab !important;
         z-index: 2101;
         .line , .second-line , .last-line {

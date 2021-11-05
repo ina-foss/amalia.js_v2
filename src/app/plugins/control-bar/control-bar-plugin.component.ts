@@ -138,7 +138,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Player playback rate
      */
     public currentPlaybackRate = 1;
-
+    /**
+     * Player playbackrate slider 1
+     */
+    public currentPlaybackRateSlider = 1;
     /**
      * Volume slider state
      */
@@ -488,7 +491,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeTooltipEmplacement() {
         if (this.fullScreenMode === true) {
             const tooltip = document.body.getElementsByTagName('tooltip')[0] as Node;
-            console.log(tooltip);
             if (tooltip) {
                 document.body.removeChild(tooltip);
                 this.controlBarContainer.nativeElement.appendChild(tooltip);
@@ -545,6 +547,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
     /**
      * Change volume state
@@ -793,6 +796,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private changePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
     /**
@@ -831,6 +835,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.currentPlaybackRate = playbackRate;
         this.logger.info('Handle playback rate change', playbackRate);
         setTimeout( () => this.selectActivePlaybackrate(), 10);
+        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
     /**
@@ -1033,10 +1038,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public initDragThumb() {
         // init drag slider
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector('.playbackrate-value.active') as HTMLElement;
+                .querySelector('.selected > .playback-rate-values > .playbackrate-value.active') as HTMLElement;
         const step = Math.ceil(selected.offsetWidth);
         const values = this.controlBarContainer.nativeElement
-            .querySelectorAll<HTMLElement>('.playbackrate-value');
+            .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
         let left = (step / 2);
         // let left = 0;
         values.forEach(value => {
@@ -1048,7 +1053,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const container = this.dragElement.nativeElement;
         const self = this;
         const valuesContainer = this.controlBarContainer.nativeElement
-            .querySelector('.playback-rate-values') as HTMLElement;
+            .querySelector('.selected > .playback-rate-values') as HTMLElement;
         const maxWidth = valuesContainer.offsetWidth;
         let oldPosition = position.x;
         container.style.transform = 'translate(' + position.x + 'px)';
@@ -1066,35 +1071,74 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             ],
             listeners: {
                 move(event) {
-                    const pos = (position.x + event.dx);
-                    if (pos > oldPosition) {
-                        position.x += step;
+                    if (self.selectedSlider === 'slider2') {
+                        const pos = (position.x + event.dx);
+                        if (pos > oldPosition) {
+                            position.x += step;
+                        } else {
+                            position.x -= step;
+                        }
+                        // position.x = Math.ceil(position.x);
+                        if (position.x === step / 2) {
+                            event.target.style.transform = 'translate(' + 0 + 'px)';
+                            event.target.setAttribute('data-x', 0);
+                        } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
+                            event.target.style.transform = 'translate(' + Number(maxWidth - 10) + 'px)';
+                            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+                        } else if (position.x > 0) {
+                            event.target.style.transform = 'translate(' + position.x + 'px)';
+                            event.target.setAttribute('data-x', position.x);
+                            oldPosition = position.x;
+                        }
                     } else {
-                        position.x -= step;
-                    }
-                    // position.x = Math.ceil(position.x);
-                    if (position.x === step / 2) {
-                        event.target.style.transform = 'translate(' + 0 + 'px)';
-                        event.target.setAttribute('data-x', 0);
-                    } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
-                        event.target.style.transform = 'translate(' + Number(maxWidth - 10) + 'px)';
-                        event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
-                    } else if (position.x > 0) {
-                        event.target.style.transform = 'translate(' + position.x + 'px)';
-                        event.target.setAttribute('data-x', position.x);
+                        const s = step / 10;
+                        const pos = (position.x + event.dx);
+                        if (pos > oldPosition) {
+                            position.x += s;
+                        } else {
+                            position.x -= s;
+                        }
+                        if (position.x === s / 2) {
+                            event.target.style.transform = 'translate(' + 0 + 'px)';
+                            event.target.setAttribute('data-x', 0);
+                        } else if (position.x === (Number(maxWidth - (s / 2))) || position.x > maxWidth) {
+                            event.target.style.transform = 'translate(' + Number(maxWidth - 10) + 'px)';
+                            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+                        } else if (position.x > 0) {
+                            values.forEach(value => {
+                                const v = Number(value.getAttribute('data-x'));
+                                const p =  Number(value.getAttribute('value'));
+                                if (value.nextElementSibling) {
+                                    const nextP = Number(value.nextElementSibling.getAttribute('data-x'));
+                                    const nextValue = Number(value.nextElementSibling.getAttribute('value'));
+                                    const difference = nextValue - p;
+                                    if (position.x >= v && position.x < nextP) {
+                                        const percentage = Math.round(((position.x - v) * 100) / step);
+                                        const  pr = p  + ( ( percentage  * difference) / 100);
+                                        event.target.style.transform = 'translate(' + position.x + 'px)';
+                                        event.target.setAttribute('data-x', position.x);
+                                        if (Number(pr) !== 0) {
+                                            self.changePlaybackrate(pr);
+                                        }
+                                    }
+                                }
+                            });
+                        }
                         oldPosition = position.x;
                     }
                 },
                 end() {
-                    values.forEach(value => {
-                        const v = Number(value.getAttribute('data-x'));
-                        if (position.x === v) {
-                          const pr = value.getAttribute('value');
-                          if (Number(pr) !== 0) {
-                              self.changePlaybackrate(pr);
-                          }
-                        }
-                    });
+                    if (self.selectedSlider === 'slider2') {
+                        values.forEach(value => {
+                            const v = Number(value.getAttribute('data-x'));
+                            if (position.x === v) {
+                                const pr = value.getAttribute('value');
+                                if (Number(pr) !== 0) {
+                                    self.changePlaybackrate(pr);
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -1136,7 +1180,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector('.playbackrate-value.active') as HTMLElement;
+            .querySelector('.selected > .playback-rate-values > .playbackrate-value.active') as HTMLElement;
         const position = Number(selected.getAttribute('data-x'));
         container.style.transform = 'translate(' + position + 'px)';
         container.setAttribute('data-x', position);
