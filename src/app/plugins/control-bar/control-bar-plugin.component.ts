@@ -262,7 +262,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     init() {
         super.init();
         this.elements = this.pluginConfiguration.data;
-        // this.buildSliderSteps();
         this.initPlaybackrates();
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(100);
@@ -817,10 +816,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handlePlaybackRateChange(playbackRate: number) {
         this.currentPlaybackRate = playbackRate;
         this.logger.info('Handle playback rate change', playbackRate);
-        if (this.selectedSlider === 'slider2') {
-            setTimeout( () => this.selectActivePlaybackrate(), 10);
-            this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
-        }
+        setTimeout( () => this.selectActivePlaybackrate(), 10);
+        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
     /**
@@ -1037,9 +1034,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const values = this.controlBarContainer.nativeElement
             .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
         let left = (step / 2);
-        // let left = 0;
         values.forEach(value => {
-            // const left = Math.ceil(value.offsetLeft) + (step / 2);
             value.setAttribute('data-x', left.toString());
             left += step;
         });
@@ -1049,42 +1044,23 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const valuesContainer = this.controlBarContainer.nativeElement
             .querySelector('.selected > .playback-rate-values') as HTMLElement;
         const maxWidth = valuesContainer.offsetWidth;
-        let oldPosition = position.x;
-        // container.style.transform = 'translate(' + position.x + 'px)';
         container.style.paddingLeft = position.x + 'px';
         container.setAttribute('data-x', position.x);
-        // interact.options.speed = 2500;
+        interact(container).styleCursor(false);
         interact(container).draggable({
-            origin: 'self',                   // (0, 0) will be the element's top-left
-            inertia: true,                    // start inertial movement if thrown
+            origin: 'self',
+            inertia: true,
             modifiers: [
                 interact.modifiers.restrict({
-                    restriction: 'self'           // keep the drag coords within the element
+                    restriction: 'self'
                 })
             ],
             listeners: {
 
                 move(event) {
-                    event.speed =  20;
                     if (self.selectedSlider === 'slider2') {
-                        const pos = (position.x + event.dx);
-                        if (pos > oldPosition) {
-                            position.x += step;
-                        } else {
-                            position.x -= step;
-                        }
-                        if (position.x === step / 2) {
-                            event.target.style.paddingLeft = '0px';
-                            event.target.setAttribute('data-x', 0);
-                        } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
-                            // event.target.style.transform = 'translate(' + Number(maxWidth - 10) + 'px)';
-                            event.target.style.paddingLeft = Number(maxWidth - 10) + 'px';
-                            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
-                        } else if (position.x > 0) {
-                            event.target.style.paddingLeft = position.x + 'px';
-                            event.target.setAttribute('data-x', position.x);
-                            oldPosition = position.x;
-                        }
+                        setTimeout(() => self.handleMoveDragThumb(event, position, step, maxWidth), 50);
+                        event.stopImmediatePropagation();
                     } else {
                         position.x += event.dx;
                         if (position.x < step / 2) {
@@ -1108,7 +1084,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                                         event.target.style.paddingLeft = position.x + 'px';
                                         event.target.setAttribute('data-x', position.x);
                                         if (Number(playbackrate) !== 0) {
-                                             self.changePlaybackrate(playbackrate);
+                                            self.changePlaybackrate(playbackrate);
                                         }
                                     }
                                 }
@@ -1116,21 +1092,53 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                         }
                     }
                 },
-                end() {
+                end(event) {
                     if (self.selectedSlider === 'slider2') {
-                        values.forEach(value => {
-                            const v = Number(value.getAttribute('data-x'));
-                            if (position.x === v) {
-                                const pr = value.getAttribute('data');
-                                if (Number(pr) !== 0) {
-                                    self.changePlaybackrate(pr);
-                                }
-                            }
-                        });
+                        setTimeout(() => self.handleStopMoveDragThumb(values, position.x), 10);
+                        event.stopImmediatePropagation();
                     }
                 }
             }
         });
+    }
+    /**
+     * Handle stop move drag thumb
+     */
+    public handleStopMoveDragThumb(values, position) {
+        values.forEach(value => {
+            const v = Number(value.getAttribute('data-x'));
+            if (position === v) {
+                const pr = value.getAttribute('data');
+                if (Number(pr) !== 0) {
+                    this.changePlaybackrate(pr);
+                }
+            }
+        });
+    }
+    /**
+     * handle move drag thumb
+     */
+    public handleMoveDragThumb(event , position, step, maxWidth) {
+        event.speed =  20;
+        let oldPosition = position.x;
+        const pos = (position.x + event.dx);
+        if (pos > oldPosition) {
+            position.x += step;
+        } else {
+            position.x -= step;
+        }
+        if (position.x === step / 2) {
+            event.target.style.paddingLeft = '0px';
+            event.target.setAttribute('data-x', 0);
+        } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
+            event.target.style.paddingLeft = Number(maxWidth - 10) + 'px';
+            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+        } else if (position.x > 0) {
+            event.target.style.paddingLeft = position.x + 'px';
+            event.target.setAttribute('data-x', position.x);
+            oldPosition = position.x;
+            event.stopImmediatePropagation();
+        }
     }
     @AutoBind
     public togglePlaybackrate(value) {
@@ -1170,9 +1178,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const container = this.dragElement.nativeElement;
         const selected: HTMLElement = this.controlBarContainer.nativeElement
             .querySelector('.selected > .playback-rate-values > .playbackrate-value.active') as HTMLElement;
-        const position = Number(selected.getAttribute('data-x'));
-        container.style.paddingLeft = position + 'px';
-        container.setAttribute('data-x', position);
+        if (selected) {
+            const position = Number(selected.getAttribute('data-x'));
+            container.style.paddingLeft = position + 'px';
+            container.setAttribute('data-x', position);
+        }
     }
     /**
      * Handle on component destroy

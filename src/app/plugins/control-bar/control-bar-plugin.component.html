@@ -347,7 +347,7 @@
                             <li class="playbackrate-value"
                             *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
                             [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
-                            (click)="changePlaybackrate(pr)" [value]="pr">{{pr}}x</li>
+                            (click)="changePlaybackrate(pr)" attr.data="{{pr}}">{{pr}}x</li>
                     </ul>
                  </div>
                  <div class="playbackratestep"
