@@ -133,7 +133,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * In sliding
      */
     public inSliding = false;
-
+    /**
+     * keypressed
+     */
+    public keypressed  = '';
     /**
      * Player playback rate
      */
@@ -331,6 +334,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public applyShortcut(key) {
         for (const shortcut of this.listOfShortcuts) {
             if (key === shortcut.key) {
+                this.keypressed = shortcut.key;
                 this.controlClicked(shortcut.control);
             }
         }
@@ -420,6 +424,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'subtitles':
                 this.updateSubtitlePosition();
+                break;
+            case 'download':
+                this.downloadUrl(control);
                 break;
             default:
                 this.logger.warn('Control not implemented', control);
@@ -665,7 +672,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleProgressBarMouseMove(event) {
         if (this.inSliding) {
             const value = this.getMouseValue(event);
-            this.moveSliderCursor(value);
+            this.progressBarValue = value;
+            this.currentTime = value * this.duration / 100;
+            if (this.inverse === false) {
+                this.time = this.currentTime;
+            } else {
+                this.time = this.duration - this.currentTime;
+            }
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value);
         }
     }
@@ -684,7 +697,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         const timecode = (tcOffset) ? tcOffset + tc : tc;
-        const url = this.mediaPlayerElement.getThumbnailUrl(timecode);
+        const url = this.mediaPlayerElement.getThumbnailUrl(timecode , true);
         if (isFinite(timecode)) {
             this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
@@ -937,6 +950,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param control control bar config
      */
     public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
+        const data = this.pluginConfiguration.data;
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
@@ -944,6 +958,29 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
         if (baseUrl !== '') {
             element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
+        }
+    }
+
+    /**
+     * Download URL on shortcut
+     */
+    public downloadUrl(control) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        const data = this.elements;
+        for (const i in data) {
+            if (typeof data[i] === 'object') {
+                const c = data[i];
+                if (typeof c.key !== 'undefined') {
+                    if (c.control === control && c.key === this.keypressed) {
+                        let baseUrl = c.data.href;
+                        const tcParam = c.data?.tcParam || 'tc';
+                        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
+                        const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
+                        baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + tc : baseUrl + '&' + tcParam + '=' + tc;
+                        window.open(baseUrl);
+                    }
+                }
+            }
         }
     }
 

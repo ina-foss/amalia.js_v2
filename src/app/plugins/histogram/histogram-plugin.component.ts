@@ -97,6 +97,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     public position: number;
     public zoomedWidth;
     public style = 'translate('  + this.sliderPosition + 'px)';
+    public label;
     /**
      * Plugin display state
      */
@@ -110,8 +111,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param negMax max negative bin
      * @param mirror true for enable mirror histogram
      */
-    public drawHistogram(nbBins: number , posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoomed):
-        { paths: [string, string], nbBins: number,  posMax: number, negMax: number, scale: [string, string] } {
+    public drawHistogram(nbBins: number , posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoomed, label?):
+        { paths: [string, string], nbBins: number,  posMax: number, negMax: number, scale: [string, string], label?: string } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
         if (positiveValues !== null) {
@@ -148,7 +149,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const negScaleY = height / negMax;
             const positiveScale = 'matrix(' + scaleX + ',0,0,' + posScaleY + ',0,0)';
             const negativeScale = 'matrix(' + scaleX + ',0,0,' + negScaleY + ',0,0)';
-            return {paths: [positivePath, negativePath], nbBins, posMax, negMax, scale: [positiveScale, negativeScale]};
+            return {paths: [positivePath, negativePath], nbBins, posMax, negMax, scale: [positiveScale, negativeScale], label};
+
         }
         return null;
     }
@@ -189,7 +191,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 if (index > 1) {
                     zoomed = true;
                 }
-                const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror, zoomed);
+                if (index % 2 === 0) {
+                    this.label = 'Canal Gauche';
+                } else {
+                    this.label = 'Canal Droit';
+                }
+                const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
+                    zoomed , this.label);
                 if (histogram) {
                     this.listOfHistograms.push(histogram);
                     index++;
@@ -495,6 +503,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public handleWindowResize() {
         this.handleDisplayState();
+        this.listOfHistograms = [];
         this.handleMetadataLoaded();
         // this.updateZoomedSvg(false);
     }
