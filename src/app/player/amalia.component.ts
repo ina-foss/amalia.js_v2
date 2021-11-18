@@ -499,7 +499,6 @@ export class AmaliaComponent implements OnInit {
                     keys += ' + ' + key;
                 }
             }
-            console.log(keys);
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, keys);
         }
     }

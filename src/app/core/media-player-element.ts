@@ -197,7 +197,7 @@ export class MediaPlayerElement {
         const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
         const widthParam = this.getConfiguration().thumbnail.width;
         if (widthParam > 0 && onhover) {
-            return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}&width=${widthParam}` : `${baseUrl}&${tcParam}=${tc}&width=${widthParam}`;
+            return baseUrl.search('\\?') === -1 ? `${baseUrl}?width=${widthParam}&${tcParam}=` : `${baseUrl}&width=${widthParam}&${tcParam}=`;
         } else {
             return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
         }

@@ -24,11 +24,11 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * Return  current time
      */
-    public currentTime: number;
+    public timeTimeBar: number;
     /**
      * Media duration
      */
-    public duration: number;
+    public durationTimeBar: number;
 
     /**
      * Display format specifier h|m|s|f|ms|mms
@@ -125,7 +125,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     @AutoBind
     public handleOnTimeChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
-        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
     }
 
     /**
@@ -135,7 +135,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     public handleOnDurationChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.startTc = (tcOffset) ? tcOffset : 0;
-        this.currentTime = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.duration = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset :  this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.durationTimeBar = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset :  this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 }

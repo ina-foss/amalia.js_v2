@@ -68,9 +68,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Selected interval
      */
     public selectedInterval: [string, number];
-
-
-
     /**
      * state list of interval
      */
@@ -104,8 +101,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
         this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
-        // disable thumbnail when base url is empty
         this.logger.info('data plugin storyboard' , this.pluginConfiguration.data);
+        // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl !== '') {
             if (this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0) {
                 this.initStoryboard();
@@ -117,14 +114,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
         }
     }
-
     /**
      * Handle time change
      */
     @AutoBind
     public handleTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (this.storyboardElement) {
+        if (this.storyboardElement && this.displaySynchro === false) {
             this.selectThumbnail(this.currentTime);
         }
     }

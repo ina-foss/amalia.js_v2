@@ -258,7 +258,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
         this.thumbnailService = thumbnailService;
-        this.debounceFunction = _.debounce(this.updateThumbnail, 150, {maxWaitKey: ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
+        // this.debounceFunction = _.debounce(this.updateThumbnail, 150, {maxWaitKey: ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
     }
 
     @AutoBind
@@ -634,7 +634,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
-            this.debounceFunction(event);
+            // this.debounceFunction(event);
+            this.updateThumbnail(event);
         }
     }
     /**
@@ -698,12 +699,28 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         const timecode = (tcOffset) ? tcOffset + tc : tc;
         const url = this.mediaPlayerElement.getThumbnailUrl(timecode , true);
+        const urlImage = url + this.tcThumbnail;
         if (isFinite(timecode)) {
-            this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
+            /*this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
                     this.thumbnailBlob = blob;
                 }
-            });
+            });*/
+            const request = new XMLHttpRequest();
+            request.open('GET', urlImage);
+            request.send();
+            setTimeout(() => this.getImage(request) , 100);
+
+            // this.thumbnailBlob = url;
+        }
+    }
+
+    /**
+     *
+     */
+    public getImage(request) {
+        if (request.status === 200) {
+            this.thumbnailElement.nativeElement.setAttribute('src' , request.responseURL);
         }
     }
     /**
