@@ -22,6 +22,7 @@ export interface ConfigData {
         enableThumbnail?: boolean,
         enableThumbnailPreview?: boolean
         debounceTime?: number,
+        width?: number
     };
     debug?: boolean;
     logLevel?: string;

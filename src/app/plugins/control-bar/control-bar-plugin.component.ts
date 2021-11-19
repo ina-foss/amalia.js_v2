@@ -49,7 +49,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list playback rate step (2/6/8)
      */
     @Input()
-    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1,  0, 1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
 
     /**
      * List of playback rate
@@ -133,12 +133,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * In sliding
      */
     public inSliding = false;
-
+    /**
+     * keypressed
+     */
+    public keypressed  = '';
     /**
      * Player playback rate
      */
     public currentPlaybackRate = 1;
-
+    /**
+     * Player playbackrate slider 1
+     */
+    public currentPlaybackRateSlider = 1;
     /**
      * Volume slider state
      */
@@ -150,7 +156,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * position of subtitles
      */
-    public position = 'none';
+    public subtitlePosition = 'none';
+    /**
+     * default label subtitle
+     */
+    public selectedLabel = 'Aucun (original)';
     /**
      * List positions subtitle state
      */
@@ -190,8 +200,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * slider displayed
      */
-    // public selectedSlider = 'slider1';
-    public selectedSlider = 'slider2';
+    public selectedSlider = 'slider1';
     /**
      * show menu slider
      */
@@ -203,10 +212,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list position subtitles
      */
-    public listOfSubtitles = [{position: 'Bas', key: 'down'}, {
-        position: 'Haut',
+    public listOfSubtitles = [{label: 'Bas', key: 'down'}, {
+        label: 'Haut',
         key: 'up'
-    }, {position: 'Aucun (original)', key: 'none'}];
+    }, {label: this.selectedLabel, key: this.subtitlePosition}];
     /**
      * progressBar element
      */
@@ -249,14 +258,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
         this.thumbnailService = thumbnailService;
-        this.debounceFunction = _.debounce(this.updateThumbnail, 150, {maxWaitKey: ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
+        // this.debounceFunction = _.debounce(this.updateThumbnail, 150, {maxWaitKey: ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
     }
 
     @AutoBind
     init() {
         super.init();
         this.elements = this.pluginConfiguration.data;
-        this.buildSliderSteps();
         this.initPlaybackrates();
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(100);
@@ -326,6 +334,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public applyShortcut(key) {
         for (const shortcut of this.listOfShortcuts) {
             if (key === shortcut.key) {
+                this.keypressed = shortcut.key;
                 this.controlClicked(shortcut.control);
             }
         }
@@ -416,6 +425,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             case 'subtitles':
                 this.updateSubtitlePosition();
                 break;
+            case 'download':
+                this.downloadUrl(control);
+                break;
             default:
                 this.logger.warn('Control not implemented', control);
                 break;
@@ -479,6 +491,21 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
         }
     }
+
+    /**
+     * Tooltip tag is append after footer (ng2-directive-tooltip)
+     * in fullscreen only the player is target , this function move the tooltip target from body to containerControlbar
+     */
+    @AutoBind
+    public changeTooltipEmplacement() {
+        if (this.fullScreenMode === true) {
+            const tooltip = document.body.getElementsByTagName('tooltip')[0] as Node;
+            if (tooltip) {
+                document.body.removeChild(tooltip);
+                this.controlBarContainer.nativeElement.appendChild(tooltip);
+            }
+        }
+    }
     /**
      * switch container class based on width
      */
@@ -529,6 +556,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
     /**
      * Change volume state
@@ -606,7 +634,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
-            this.debounceFunction(event);
+            // this.debounceFunction(event);
+            this.updateThumbnail(event);
         }
     }
     /**
@@ -644,7 +673,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleProgressBarMouseMove(event) {
         if (this.inSliding) {
             const value = this.getMouseValue(event);
-            this.moveSliderCursor(value);
+            this.progressBarValue = value;
+            this.currentTime = value * this.duration / 100;
+            if (this.inverse === false) {
+                this.time = this.currentTime;
+            } else {
+                this.time = this.duration - this.currentTime;
+            }
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value);
         }
     }
@@ -663,33 +698,29 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         const timecode = (tcOffset) ? tcOffset + tc : tc;
-        const url = this.mediaPlayerElement.getThumbnailUrl(timecode);
+        const url = this.mediaPlayerElement.getThumbnailUrl(timecode , true);
+        const urlImage = url + this.tcThumbnail;
         if (isFinite(timecode)) {
-            this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
+            /*this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
                     this.thumbnailBlob = blob;
                 }
-            });
+            });*/
+            const request = new XMLHttpRequest();
+            request.open('GET', urlImage);
+            request.send();
+            setTimeout(() => this.getImage(request) , 100);
+
+            // this.thumbnailBlob = url;
         }
     }
+
     /**
-     * In charge to build step width size
+     *
      */
-    private buildSliderSteps() {
-        const maxStep = this.sliderListOfPlaybackRateStep.length;
-        this.sliderListOfPlaybackRateStepWidth = new Array<number>();
-        for (let i = 0; i < maxStep; i++) {
-            const startStep = this.sliderListOfPlaybackRateStep[i];
-            const endStep = this.sliderListOfPlaybackRateStep[(i === maxStep - 1) ? i - 1 : i + 1];
-            if (i === maxStep - 1) {
-                this.sliderListOfPlaybackRateStepWidth[i] = 1;
-            } else {
-                this.sliderListOfPlaybackRateStepWidth[i] = Math.abs(startStep - endStep);
-            }
-        }
-        const sumOfGap = _.sum(this.sliderListOfPlaybackRateStepWidth);
-        for (let i = 0; i < maxStep; i++) {
-            this.sliderListOfPlaybackRateStepWidth[i] = (this.sliderListOfPlaybackRateStepWidth[i] * 100 / sumOfGap);
+    public getImage(request) {
+        if (request.status === 200) {
+            this.thumbnailElement.nativeElement.setAttribute('src' , request.responseURL);
         }
     }
     /**
@@ -777,6 +808,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private changePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
     /**
@@ -815,6 +847,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.currentPlaybackRate = playbackRate;
         this.logger.info('Handle playback rate change', playbackRate);
         setTimeout( () => this.selectActivePlaybackrate(), 10);
+        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
     /**
@@ -834,7 +867,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
     }
-
     /**
      * Invoked player mouse enter event for :
      * - animate controlBar
@@ -857,24 +889,34 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
     /**
      * update position subtitle onclick
-     * @param position subtitle position
+     * @param subtitlePosition subtitle position
      */
-    public updateSubtitlePosition(position?: string) {
+    @AutoBind
+    public updateSubtitlePosition(subtitlePosition?: string) {
         let j;
-        if (typeof(position) === 'undefined') {
+        let selectedLabel;
+        if (typeof(subtitlePosition) === 'undefined') {
             for (let i = 0; i < this.listOfSubtitles.length; i++) {
-                if (this.position === this.listOfSubtitles[i].key) {
+                if (this.subtitlePosition === this.listOfSubtitles[i].key) {
                     if (i === this.listOfSubtitles.length - 1) {
                         j = 0;
                     } else {
                         j = i + 1;
                     }
-                    position = this.listOfSubtitles[j].key;
+                    subtitlePosition = this.listOfSubtitles[j].key;
+                    selectedLabel = this.listOfSubtitles[j].label;
+                }
+            }
+        } else {
+            for (const subtitle of this.listOfSubtitles) {
+                if (subtitlePosition === subtitle.key) {
+                    selectedLabel = subtitle.label;
                 }
             }
         }
-        this.position = position;
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, position);
+        this.subtitlePosition = subtitlePosition;
+        this.selectedLabel = selectedLabel;
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, subtitlePosition);
     }
 
     /**
@@ -925,6 +967,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param control control bar config
      */
     public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
+        const data = this.pluginConfiguration.data;
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
@@ -932,6 +975,29 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
         if (baseUrl !== '') {
             element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
+        }
+    }
+
+    /**
+     * Download URL on shortcut
+     */
+    public downloadUrl(control) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        const data = this.elements;
+        for (const i in data) {
+            if (typeof data[i] === 'object') {
+                const c = data[i];
+                if (typeof c.key !== 'undefined') {
+                    if (c.control === control && c.key === this.keypressed) {
+                        let baseUrl = c.data.href;
+                        const tcParam = c.data?.tcParam || 'tc';
+                        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
+                        const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
+                        baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + tc : baseUrl + '&' + tcParam + '=' + tc;
+                        window.open(baseUrl);
+                    }
+                }
+            }
         }
     }
 
@@ -1017,14 +1083,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public initDragThumb() {
         // init drag slider
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector('.playbackrate-value.active') as HTMLElement;
+                .querySelector('.selected > .playback-rate-values > .playbackrate-value.active') as HTMLElement;
         const step = Math.ceil(selected.offsetWidth);
         const values = this.controlBarContainer.nativeElement
-            .querySelectorAll<HTMLElement>('.playbackrate-value');
+            .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
         let left = (step / 2);
-        // let left = 0;
         values.forEach(value => {
-            // const left = Math.ceil(value.offsetLeft) + (step / 2);
             value.setAttribute('data-x', left.toString());
             left += step;
         });
@@ -1032,56 +1096,103 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const container = this.dragElement.nativeElement;
         const self = this;
         const valuesContainer = this.controlBarContainer.nativeElement
-            .querySelector('.playback-rate-values') as HTMLElement;
+            .querySelector('.selected > .playback-rate-values') as HTMLElement;
         const maxWidth = valuesContainer.offsetWidth;
-        let oldPosition = position.x;
-        container.style.transform = 'translate(' + position.x + 'px)';
+        container.style.paddingLeft = position.x + 'px';
         container.setAttribute('data-x', position.x);
+        interact(container).styleCursor(false);
         interact(container).draggable({
-            inertia: {
-                  resistance: 10,
-                  minSpeed: 500,
-                  endSpeed: 500
-            },
+            origin: 'self',
+            inertia: true,
             modifiers: [
-                interact.modifiers.restrictRect({
-                    restriction: '.playback-rate-values'
+                interact.modifiers.restrict({
+                    restriction: 'self'
                 })
             ],
             listeners: {
+
                 move(event) {
-                    const pos = (position.x + event.dx);
-                    if (pos > oldPosition) {
-                        position.x += step;
+                    if (self.selectedSlider === 'slider2') {
+                        setTimeout(() => self.handleMoveDragThumb(event, position, step, maxWidth), 50);
+                        event.stopImmediatePropagation();
                     } else {
-                        position.x -= step;
-                    }
-                    // position.x = Math.ceil(position.x);
-                    if (position.x === step / 2) {
-                        event.target.style.transform = 'translate(' + 0 + 'px)';
-                        event.target.setAttribute('data-x', 0);
-                    } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
-                        event.target.style.transform = 'translate(' + Number(maxWidth - 10) + 'px)';
-                        event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
-                    } else if (position.x > 0) {
-                        event.target.style.transform = 'translate(' + position.x + 'px)';
-                        event.target.setAttribute('data-x', position.x);
-                        oldPosition = position.x;
+                        position.x += event.dx;
+                        if (position.x < step / 2) {
+                            event.target.style.paddingLeft = '0px';
+                            event.target.setAttribute('data-x', 0);
+                        } else if (position.x > (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
+                            event.target.style.paddingLeft = Number(maxWidth - 10) + 'px';
+                            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+                        } else if (position.x > 0) {
+                            values.forEach(value => {
+                                const v = Number(value.getAttribute('data-x'));
+                                const p =  Number(value.getAttribute('data'));
+                                if (value.nextElementSibling) {
+                                    const nextP = Number(value.nextElementSibling.getAttribute('data-x'));
+                                    const nextValue = Number(value.nextElementSibling.getAttribute('data'));
+                                    const difference = nextValue - p;
+                                    if (position.x >= v && position.x < nextP) {
+                                        const percentage = Math.round(((position.x - v) * 100) / step);
+                                        const  pr = (p  + ( ( percentage  * difference) / 100));
+                                        const playbackrate = pr.toFixed(1);
+                                        event.target.style.paddingLeft = position.x + 'px';
+                                        event.target.setAttribute('data-x', position.x);
+                                        if (Number(playbackrate) !== 0) {
+                                            self.changePlaybackrate(playbackrate);
+                                        }
+                                    }
+                                }
+                            });
+                        }
                     }
                 },
-                end() {
-                    values.forEach(value => {
-                        const v = Number(value.getAttribute('data-x'));
-                        if (position.x === v) {
-                          const pr = value.getAttribute('value');
-                          if (Number(pr) !== 0) {
-                              self.changePlaybackrate(pr);
-                          }
-                        }
-                    });
+                end(event) {
+                    if (self.selectedSlider === 'slider2') {
+                        setTimeout(() => self.handleStopMoveDragThumb(values, position.x), 10);
+                        event.stopImmediatePropagation();
+                    }
                 }
             }
         });
+    }
+    /**
+     * Handle stop move drag thumb
+     */
+    public handleStopMoveDragThumb(values, position) {
+        values.forEach(value => {
+            const v = Number(value.getAttribute('data-x'));
+            if (position === v) {
+                const pr = value.getAttribute('data');
+                if (Number(pr) !== 0) {
+                    this.changePlaybackrate(pr);
+                }
+            }
+        });
+    }
+    /**
+     * handle move drag thumb
+     */
+    public handleMoveDragThumb(event , position, step, maxWidth) {
+        event.speed =  20;
+        let oldPosition = position.x;
+        const pos = (position.x + event.dx);
+        if (pos > oldPosition) {
+            position.x += step;
+        } else {
+            position.x -= step;
+        }
+        if (position.x === step / 2) {
+            event.target.style.paddingLeft = '0px';
+            event.target.setAttribute('data-x', 0);
+        } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
+            event.target.style.paddingLeft = Number(maxWidth - 10) + 'px';
+            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+        } else if (position.x > 0) {
+            event.target.style.paddingLeft = position.x + 'px';
+            event.target.setAttribute('data-x', position.x);
+            oldPosition = position.x;
+            event.stopImmediatePropagation();
+        }
     }
     @AutoBind
     public togglePlaybackrate(value) {
@@ -1120,10 +1231,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector('.playbackrate-value.active') as HTMLElement;
-        const position = Number(selected.getAttribute('data-x'));
-        container.style.transform = 'translate(' + position + 'px)';
-        container.setAttribute('data-x', position);
+            .querySelector('.selected > .playback-rate-values > .playbackrate-value.active') as HTMLElement;
+        if (selected) {
+            const position = Number(selected.getAttribute('data-x'));
+            container.style.paddingLeft = position + 'px';
+            container.setAttribute('data-x', position);
+        }
     }
     /**
      * Handle on component destroy

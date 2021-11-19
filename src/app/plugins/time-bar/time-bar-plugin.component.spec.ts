@@ -78,7 +78,7 @@ describe('TimeBar plugin test', () => {
         expect(plugin.active).toEqual(true);
         mediaPlayer.setCurrentTime(10);
         plugin.handleOnTimeChange();
-        expect(plugin.currentTime).toEqual(10);
+        expect(plugin.timeTimeBar).toEqual(10);
         plugin.handleDisplayState();
         expect(plugin.displayState).toEqual('l');
         mpe.setMediaPlayerWidth(320);

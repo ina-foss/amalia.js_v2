@@ -33,9 +33,10 @@
     }
   ],
   "thumbnail": {
-    "baseUrl": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/eiyAOeoaAjbO5RrLK8U0dLg+qXCIYjjz2atGAajal7seT06kejUxvEUecBrNbpSuSeBgJ+9JPh4+KgypaA6hQzYxMfQ3Yd+M9Uk6/zlBovvz/DxRXvOvg+IT5rrozBzjNnRLb4aLhXd7leU2gFLgNsmCGwuLbPZTX2oqSuFC7PSjINk8SpHdiiy7FOm3ve3vk4VM0wzMDpPX8VodrpED7gmm29KblQCHJAigOBBgC7U3ua0mA3/kJOfellGqwkIrHrFMmVNVWW48Craa8p4WB14OoVdRoli1pwp+jmnNa/Jiae7paNsn7S+qv6I5ELR6UuceMdp2FGo8lmWmhxxq43jnKUfS51aOuSBDmLNzBWjpKjI86jpEB9SLlRTLyTYF4CUkUoDnqnUIEwHQ7pCK+f9zUGO4WQUn+w5ZdEAzij/yVOhx28zCDNvG5QoHAHakXFH3FwUk4Sj2taTLXDVJdtoeMOdm4R0oXiMutXbR6kZtDP6GcWYuHXXuaP1XzwXRI3xSB13oOm4GtAnUoX6aOAyfmmxtWFjSabsiaVEjZoeYYvQnktReOO+NelQKpzc+iJowXCsqAVYH/BnToC56DtpXATBAQbImtmrthWXmX06LsEe/grSNFltJ5P1WMVZJre+fPU0ZPWM3s6nxC9j8QbOPEvp8CUjyG9KNcL0A6nmZX6mECtpTszEZ+QJj1/WcfSw9qkcagKDTIKxyru6SGI43F9VO4QkTwvxHaa6jmfbTMJs77ZDFNViEQpx+7PgNUqBuXW8X518zpk/CYY4U6l9BQMD1vNQevQ5Cay51BMtM/w/ww6N4yGe/ajgPqU2f9EElgA9pOO5bUOZFZSle5hqr3nSCIfS/5AqYDTJb6fGArQwNkE8caTGzJVXexNtWy3dkbC3LW+v62mBzPMK7hliyFBwcXV11I8VLllFNFts=/sl_iv/eNov/3yzXO3VpajexHiPNA==/sl_hm/",
+    "baseUrl": "https://image.wsmedia.d.sas.ina/thumbs/CTkK06HcNUidRte+34cxhbyGVfVsGMAO7IRuk3hTPBdLIDbzqIQzbImohPHezOzYKy9hpOy48beo0wPCgtNh1fTzZ1R2gXfOM1zNVA0CyvGoLv0ck8qWvRvU1QliP12lqg+6bQQ2PVAtw25aimrfukFo9LgMI2ta824sTgIAy1QXPVvsD9VUraYVPslAxV1DYZgqP5wCzhJdJtog1b244BiZvxAVXFvB7qu4WmFBwtL0aDHbgTl0AAeeKNBP33kTwo59kiGpK57v2QycYMO+XE19vDJICxhhkqqIekFFGFpHBXbFBMf8et2ZNTzLVWCgdQT+GtWjnaIHUgILbSM9OS8gO+nrdHbKBGyWgbGeOZXr95h3pB5Rk6XQXmq0K5vJNiLyrx5I0L16pHdW18SlTCwJ9K9V4Tv65zkG38S37wty+EjxfoZTtpjarLstb7E8PMQ5wiBeU35oBHH04ElctLexDMhsWdm2b+lfW78sDVwny8mWTLthQY5cDCZJK+g9MTe62G79DY2voYb/KTxow2uk+Jai7Gvd1RTRE6SOwsKAUcfR0BEq905JIeQW9hvIRY4ANPuvmMfosQBWSlD0Jq+bMmDVTC3ui4jWvVOzp1q9A8MzuZJOVskwEktEG4r7KYP+lZyJXVYj5YwSLKKa2DJwyLSXuHeTBVUBraDfOHY7UT+yMNpKg0L8jdUUOsyOiUm6kd8VgY/j7R1NbMem+w==/sl_iv/NqyVBeocVbgQVMiBzOd9rA==/sl_hm/",
     "enableThumbnail": true,
-    "tcParam": "start"
+    "tcParam": "start",
+    "width": 170
   },
   "pluginsConfiguration": {
     "CONTROL_BAR-PLAYER": {
@@ -56,12 +57,13 @@
           "label": "Capture Image",
           "control": "download",
           "icon": "screenshot",
-          "key": "a",
+          "key": "c",
           "zone": 1,
           "order": 2,
           "priority": 2,
           "data": {
-            "href": "http://localhost:4200/assets/logo.svg"
+            "href": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/eiyAOeoaAjbO5RrLK8U0dLg+qXCIYjjz2atGAajal7seT06kejUxvEUecBrNbpSuSeBgJ+9JPh4+KgypaA6hQzYxMfQ3Yd+M9Uk6/zlBovvz/DxRXvOvg+IT5rrozBzjNnRLb4aLhXd7leU2gFLgNsmCGwuLbPZTX2oqSuFC7PSjINk8SpHdiiy7FOm3ve3vk4VM0wzMDpPX8VodrpED7gmm29KblQCHJAigOBBgC7U3ua0mA3/kJOfellGqwkIrHrFMmVNVWW48Craa8p4WB14OoVdRoli1pwp+jmnNa/Jiae7paNsn7S+qv6I5ELR6UuceMdp2FGo8lmWmhxxq43jnKUfS51aOuSBDmLNzBWjpKjI86jpEB9SLlRTLyTYF4CUkUoDnqnUIEwHQ7pCK+f9zUGO4WQUn+w5ZdEAzij/yVOhx28zCDNvG5QoHAHakXFH3FwUk4Sj2taTLXDVJdtoeMOdm4R0oXiMutXbR6kZtDP6GcWYuHXXuaP1XzwXRI3xSB13oOm4GtAnUoX6aOAyfmmxtWFjSabsiaVEjZoeYYvQnktReOO+NelQKpzc+iJowXCsqAVYH/BnToC56DtpXATBAQbImtmrthWXmX06LsEe/grSNFltJ5P1WMVZJre+fPU0ZPWM3s6nxC9j8QbOPEvp8CUjyG9KNcL0A6nmZX6mECtpTszEZ+QJj1/WcfSw9qkcagKDTIKxyru6SGI43F9VO4QkTwvxHaa6jmfbTMJs77ZDFNViEQpx+7PgNUqBuXW8X518zpk/CYY4U6l9BQMD1vNQevQ5Cay51BMtM/w/ww6N4yGe/ajgPqU2f9EElgA9pOO5bUOZFZSle5hqr3nSCIfS/5AqYDTJb6fGArQwNkE8caTGzJVXexNtWy3dkbC3LW+v62mBzPMK7hliyFBwcXV11I8VLllFNFts=/sl_iv/eNov/3yzXO3VpajexHiPNA==/sl_hm/",
+            "tcParam": "start"
           }
         },
         {
@@ -73,7 +75,7 @@
           "key": "",
           "priority": 2,
           "data": {
-            "href": "http://localhost:4200/assets/logo.svg"
+            "href": "localhost"
           }
         },
         {
@@ -136,7 +138,7 @@
           "control": "forward",
           "zone": 2,
           "priority": 1,
-          "key": "i"
+          "key": "Control + ArrowRight"
         },
         {
           "label": "slow-forward",
@@ -160,7 +162,7 @@
           "control": "forward-frame",
           "zone": 2,
           "priority": 2,
-          "key": "l"
+          "key": "ArrowRight"
         },
         {
           "label": "forward-end",

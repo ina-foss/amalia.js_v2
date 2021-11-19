@@ -476,25 +476,30 @@ export class AmaliaComponent implements OnInit {
         const parent = element.offsetParent as HTMLElement;
         this.mediaPlayerElement.toggleFullscreen(parent);
     }
-
     /**
      * invoked on keydown
      */
     @AutoBind
     public emitKeyDownEvent($event) {
+        this.focus();
+        let i;
+        let keys;
         let key = $event.key;
         if (key === ' ') {
             key = 'espace';
         }
         if (this.playerHover === true) {
-            this.listKeys.push(key);
-            if (this.listKeys.length > 1) {
-                if (this.listKeys[0] !== key) {
-                    key = this.listKeys[0] + ' + ' + key;
+            if (this.listKeys.length ===  0) {
+                this.listKeys.push(key);
+                keys = key;
+            }
+            for ( i = 0; i < this.listKeys.length; i++) {
+                if (this.listKeys[i] !== key) {
+                    this.listKeys.push(key);
+                    keys += ' + ' + key;
                 }
             }
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, key);
-            this.focus();
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, keys);
         }
     }
 
@@ -520,7 +525,7 @@ export class AmaliaComponent implements OnInit {
     // hide controls if mouse in inactive since 3 seconds
     @AutoBind
     public hideControls() {
-        this.playerHover = false;
+        // this.playerHover = false;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
     }
     @AutoBind

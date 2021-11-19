@@ -21,6 +21,16 @@
         }
       .histograms {
         height: 100%;
+        .label {
+          display: block;
+          background-color: $amalia-ctrl-bar-bg-color;
+          padding: 2px 3px 2px 8px;
+          color: white;
+          width: 15%;
+          position: absolute;
+          font-size: 14px;
+          min-width: max-content;
+        }
         .slider{
           display: none;
         }
@@ -35,9 +45,21 @@
 
     .histograms {
       height: 34%;
+      .label {
+        display: none;
+      }
     }
     .zoomed-histograms {
       height: 66%;
+      .label {
+        background-color: $amalia-ctrl-bar-bg-color;
+        padding: 2px 3px 2px 8px;
+        color: white;
+        width: 10%;
+        position: absolute;
+        font-size: 14px;
+        min-width: max-content;
+      }
     }
     .histograms, .zoomed-histograms {
       position: relative;
