@@ -192,10 +192,15 @@ export class MediaPlayerElement {
      * Return thumbnail base url
      * @param tc time code
      */
-    public getThumbnailUrl(tc: number) {
+    public getThumbnailUrl(tc: number , onhover?: boolean) {
         const baseUrl = this.getConfiguration().thumbnail.baseUrl;
         const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
-        return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
+        const widthParam = this.getConfiguration().thumbnail.width;
+        if (widthParam > 0 && onhover) {
+            return baseUrl.search('\\?') === -1 ? `${baseUrl}?width=${widthParam}&${tcParam}=` : `${baseUrl}&width=${widthParam}&${tcParam}=`;
+        } else {
+            return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
+        }
     }
 
     /**

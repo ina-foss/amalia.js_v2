@@ -13,7 +13,7 @@
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#search'"></use>
             </svg>
         </div>
-        <div class="search-result" *ngIf="listOfSearchedNodes?.length >= 0 && searching === true">
+        <div class="search-result" *ngIf="(listOfSearchedNodes?.length >= 0 && searching === true)">
                 {{index}} / {{listOfSearchedNodes?.length}}  
                 <svg class="amalia-svg-clear-size icon" (click)="clearSearchList();active = false">
                         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#clear'"></use>
@@ -22,6 +22,7 @@
         <input type="text"
                value= {{pluginConfiguration.data.label}}
                (click)="searchText.value ='';active= true"
+               (keypress)="handleChangeInput()"
                [ngClass]="{'active' : active === true}"
                #searchText>
     </div>
@@ -38,11 +39,11 @@
         </div>
     </div>
     <div class="message">
-        <span *ngIf="listOfSearchedNodes?.length > 0; else elseBlock">{{listOfSearchedNodes?.length}} mot(s)
+        <span *ngIf="(listOfSearchedNodes?.length > 0 && searching === true); else elseBlock">{{listOfSearchedNodes?.length}} mot(s)
         correspond aux terme recherché.
     </span>
         <ng-template #elseBlock><span
-                *ngIf="listOfSearchedNodes?.length === 0">Aucun mot ne correspond aux termes de recherche</span>
+                *ngIf="(listOfSearchedNodes?.length === 0 && searching === true)">Aucun mot ne correspond aux termes de recherche</span>
         </ng-template>
     </div>
 </div>

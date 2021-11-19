@@ -223,7 +223,7 @@ ___
 
 ▸ **getDisplayState**(): *string*
 
-Defined in src/app/core/media-player-element.ts:212
+Defined in src/app/core/media-player-element.ts:217
 
 Return displayState (s/m/l)
 
@@ -275,7 +275,7 @@ ___
 
 ###  getThumbnailUrl
 
-▸ **getThumbnailUrl**(`tc`: number): *string*
+▸ **getThumbnailUrl**(`tc`: number, `onhover?`: boolean): *string*
 
 Defined in src/app/core/media-player-element.ts:195
 
@@ -286,6 +286,7 @@ Return thumbnail base url
 Name | Type | Description |
 ------ | ------ | ------ |
 `tc` | number | time code  |
+`onhover?` | boolean | - |
 
 **Returns:** *string*
 
@@ -373,7 +374,7 @@ ___
 
 ▸ **setMediaPlayerWidth**(`width`: any): *void*
 
-Defined in src/app/core/media-player-element.ts:204
+Defined in src/app/core/media-player-element.ts:209
 
 Set mediaPlayer width for responsive grid
 

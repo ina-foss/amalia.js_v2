@@ -41,7 +41,7 @@ ___
 
 • **debug**? : *boolean*
 
-Defined in src/app/core/config/model/config-data.ts:26
+Defined in src/app/core/config/model/config-data.ts:27
 
 ___
 
@@ -49,7 +49,7 @@ ___
 
 • **logLevel**? : *string*
 
-Defined in src/app/core/config/model/config-data.ts:27
+Defined in src/app/core/config/model/config-data.ts:28
 
 ___
 
@@ -96,3 +96,5 @@ Defined in src/app/core/config/model/config-data.ts:19
 * **enableThumbnailPreview**? : *boolean*
 
 * **tcParam**? : *string*
+
+* **width**? : *number*
