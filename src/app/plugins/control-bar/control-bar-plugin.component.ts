@@ -258,7 +258,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
         this.thumbnailService = thumbnailService;
-        // this.debounceFunction = _.debounce(this.updateThumbnail, 150, {maxWaitKey: ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
+        this.debounceFunction = _.debounce(this.updateThumbnail, 50, {maxWaitKey: ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
     }
 
     @AutoBind
@@ -273,6 +273,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
+        // Show thumbnail when tc = 0
+        const url = this.mediaPlayerElement.getThumbnailUrl(0 , true);
+        this.thumbnailService.getThumbnail(url, 0).then((blob) => {
+            if (typeof (blob) !== 'undefined') {
+                this.thumbnailElement.nativeElement.setAttribute('src' , blob);
+            }
+        });
         // Init Events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -634,8 +641,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
             }
-            // this.debounceFunction(event);
-            this.updateThumbnail(event);
+            this.debounceFunction(event);
+            // this.updateThumbnail(event);
         }
     }
     /**
@@ -699,28 +706,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
         const timecode = (tcOffset) ? tcOffset + tc : tc;
         const url = this.mediaPlayerElement.getThumbnailUrl(timecode , true);
-        const urlImage = url + this.tcThumbnail;
         if (isFinite(timecode)) {
-            /*this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
-                if (typeof (blob) !== 'undefined') {
-                    this.thumbnailBlob = blob;
-                }
-            });*/
-            const request = new XMLHttpRequest();
-            request.open('GET', urlImage);
-            request.send();
-            setTimeout(() => this.getImage(request) , 100);
-
-            // this.thumbnailBlob = url;
-        }
-    }
-
-    /**
-     *
-     */
-    public getImage(request) {
-        if (request.status === 200) {
-            this.thumbnailElement.nativeElement.setAttribute('src' , request.responseURL);
+        // setTimeout(() => this.getImage(url) , 500);
+            this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
+                 if (typeof (blob) !== 'undefined') {
+                     this.thumbnailElement.nativeElement.setAttribute('src' , blob);
+                 }
+            });
         }
     }
     /**
@@ -803,7 +795,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
-     * Invoked sbor change playback rate
+     * Invoked for change playback rate
      */
     private changePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
