@@ -24,10 +24,9 @@
 * [_player](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#_player)
 * [_pluginConfiguration](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#_pluginconfiguration)
 * [active](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#active)
-* [currentTime](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#currenttime)
 * [displayFormat](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#displayformat)
 * [displayState](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#displaystate)
-* [duration](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#duration)
+* [durationTimeBar](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#durationtimebar)
 * [fps](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#fps)
 * [initialized](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#initialized)
 * [labelTcIn](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#labeltcin)
@@ -42,6 +41,7 @@
 * [tcOffset](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#tcoffset)
 * [theme](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#theme)
 * [timeFormat](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#timeformat)
+* [timeTimeBar](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#timetimebar)
 * [PLUGIN_NAME](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md#static-plugin_name)
 
 ### Accessors
@@ -112,16 +112,6 @@ Show timeBar
 
 ___
 
-###  currentTime
-
-• **currentTime**: *number*
-
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:27
-
-Return  current time
-
-___
-
 ###  displayFormat
 
 • **displayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"* = "f"
@@ -142,9 +132,9 @@ Plugin display state
 
 ___
 
-###  duration
+###  durationTimeBar
 
-• **duration**: *number*
+• **durationTimeBar**: *number*
 
 Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:31
 
@@ -291,6 +281,16 @@ ___
 *Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[timeFormat](_src_app_core_plugin_plugin_base_.pluginbase.md#timeformat)*
 
 Defined in src/app/core/plugin/plugin-base.ts:16
+
+___
+
+###  timeTimeBar
+
+• **timeTimeBar**: *number*
+
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:27
+
+Return  current time
 
 ___
 

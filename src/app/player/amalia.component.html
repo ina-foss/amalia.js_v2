@@ -6,7 +6,7 @@
      [ngClass]="{'pinned' : pinned , 'pinnedControlbar' : pinnedControlbar}" tabindex="0">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
     <img #previewThumbnail class="preview-thumbnail"
-         [hidden]="!enablePreviewThumbnail &&!previewThumbnailUrl &&previewThumbnailUrl==''"
+         [hidden]="!enablePreviewThumbnail"
          [src]="thumbnailBlobVideo" alt="video-preview"/>
 </div>
 <div *ngIf="inLoading" class="loader"></div>

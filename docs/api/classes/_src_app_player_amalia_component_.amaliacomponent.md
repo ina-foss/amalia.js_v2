@@ -75,6 +75,7 @@
 * [handleFullScreenChange](_src_app_player_amalia_component_.amaliacomponent.md#handlefullscreenchange)
 * [handlePinnedControlbarChange](_src_app_player_amalia_component_.amaliacomponent.md#handlepinnedcontrolbarchange)
 * [handlePinnedSliderChange](_src_app_player_amalia_component_.amaliacomponent.md#handlepinnedsliderchange)
+* [handlePlay](_src_app_player_amalia_component_.amaliacomponent.md#private-handleplay)
 * [handleSeeked](_src_app_player_amalia_component_.amaliacomponent.md#private-handleseeked)
 * [handleSeeking](_src_app_player_amalia_component_.amaliacomponent.md#private-handleseeking)
 * [handleWindowResize](_src_app_player_amalia_component_.amaliacomponent.md#private-handlewindowresize)
@@ -518,7 +519,7 @@ Name | Type |
 
 ▸ **bindEvents**(): *void*
 
-Defined in src/app/player/amalia.component.ts:325
+Defined in src/app/player/amalia.component.ts:329
 
 In charge to bin events
 
@@ -530,7 +531,7 @@ ___
 
 ▸ **clearInterval**(): *void*
 
-Defined in src/app/player/amalia.component.ts:568
+Defined in src/app/player/amalia.component.ts:580
 
 **Returns:** *void*
 
@@ -540,7 +541,7 @@ ___
 
 ▸ **displayControlBar**(`_displayControlBar`: boolean): *void*
 
-Defined in src/app/player/amalia.component.ts:462
+Defined in src/app/player/amalia.component.ts:471
 
 Invoked on mouseenter and mouseleave events
 
@@ -558,7 +559,7 @@ ___
 
 ▸ **emitKeyDownEvent**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:483
+Defined in src/app/player/amalia.component.ts:496
 
 invoked on keydown
 
@@ -576,7 +577,7 @@ ___
 
 ▸ **emitKeyUpEvent**(): *void*
 
-Defined in src/app/player/amalia.component.ts:508
+Defined in src/app/player/amalia.component.ts:520
 
 **Returns:** *void*
 
@@ -586,7 +587,7 @@ ___
 
 ▸ **focus**(): *void*
 
-Defined in src/app/player/amalia.component.ts:454
+Defined in src/app/player/amalia.component.ts:463
 
 focus mediaPlayer container
 
@@ -598,7 +599,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:383
+Defined in src/app/player/amalia.component.ts:392
 
 Invoked on aspect ratio change
 
@@ -616,7 +617,7 @@ ___
 
 ▸ **handleError**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:373
+Defined in src/app/player/amalia.component.ts:382
 
 Invoked when error event
 
@@ -634,7 +635,7 @@ ___
 
 ▸ **handleFullScreenChange**(): *void*
 
-Defined in src/app/player/amalia.component.ts:474
+Defined in src/app/player/amalia.component.ts:483
 
 Invoked on fullscreen change
 
@@ -646,7 +647,7 @@ ___
 
 ▸ **handlePinnedControlbarChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:342
+Defined in src/app/player/amalia.component.ts:347
 
 **Parameters:**
 
@@ -662,7 +663,7 @@ ___
 
 ▸ **handlePinnedSliderChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:347
+Defined in src/app/player/amalia.component.ts:352
 
 **Parameters:**
 
@@ -674,11 +675,21 @@ Name | Type |
 
 ___
 
+### `Private` handlePlay
+
+▸ **handlePlay**(): *void*
+
+Defined in src/app/player/amalia.component.ts:371
+
+**Returns:** *void*
+
+___
+
 ### `Private` handleSeeked
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/player/amalia.component.ts:361
+Defined in src/app/player/amalia.component.ts:366
 
 **Returns:** *void*
 
@@ -688,7 +699,7 @@ ___
 
 ▸ **handleSeeking**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:353
+Defined in src/app/player/amalia.component.ts:358
 
 **Parameters:**
 
@@ -704,7 +715,7 @@ ___
 
 ▸ **handleWindowResize**(): *void*
 
-Defined in src/app/player/amalia.component.ts:259
+Defined in src/app/player/amalia.component.ts:261
 
 update mediaPlayerWidth on window resize
 
@@ -716,7 +727,7 @@ ___
 
 ▸ **hideControls**(): *void*
 
-Defined in src/app/player/amalia.component.ts:528
+Defined in src/app/player/amalia.component.ts:540
 
 **Returns:** *void*
 
@@ -726,7 +737,7 @@ ___
 
 ▸ **hideControlsMenuOnClickDocument**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:513
+Defined in src/app/player/amalia.component.ts:525
 
 **Parameters:**
 
@@ -742,7 +753,7 @@ ___
 
 ▸ **initDefaultHandlers**(): *void*
 
-Defined in src/app/player/amalia.component.ts:392
+Defined in src/app/player/amalia.component.ts:401
 
 In charge to init default handlers when input not specified
 
@@ -766,7 +777,7 @@ ___
 
 ▸ **onContextMenu**(`event`: MouseEvent): *boolean*
 
-Defined in src/app/player/amalia.component.ts:271
+Defined in src/app/player/amalia.component.ts:275
 
 Invoked on click context menu
 
@@ -786,7 +797,7 @@ ___
 
 ▸ **onErrorInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:444
+Defined in src/app/player/amalia.component.ts:453
 
 Invoked on error to init config
 
@@ -804,7 +815,7 @@ ___
 
 ▸ **onInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:430
+Defined in src/app/player/amalia.component.ts:439
 
 Invoked on  init config
 
@@ -822,7 +833,7 @@ ___
 
 ▸ **resetTimer**(): *void*
 
-Defined in src/app/player/amalia.component.ts:521
+Defined in src/app/player/amalia.component.ts:533
 
 **Returns:** *void*
 
@@ -832,7 +843,7 @@ ___
 
 ▸ **scrollPlaybackRateImages**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:533
+Defined in src/app/player/amalia.component.ts:545
 
 **Parameters:**
 
@@ -848,7 +859,7 @@ ___
 
 ▸ **setPreviewThumbnail**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:415
+Defined in src/app/player/amalia.component.ts:424
 
 In charge to update thumbnail
 
@@ -866,7 +877,7 @@ ___
 
 ▸ **startTimer**(): *void*
 
-Defined in src/app/player/amalia.component.ts:517
+Defined in src/app/player/amalia.component.ts:529
 
 **Returns:** *void*
 
@@ -876,7 +887,7 @@ ___
 
 ▸ **updatePlayerSizeWithAspectRatio**(): *void*
 
-Defined in src/app/player/amalia.component.ts:283
+Defined in src/app/player/amalia.component.ts:287
 
 In charge to update player size with aspect ratio
 

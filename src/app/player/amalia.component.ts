@@ -250,6 +250,8 @@ export class AmaliaComponent implements OnInit {
             this.logger.error('Error to initialize media player element.');
         }
         this.callback.emit(this.mediaPlayerElement);
+        // init preview thumbnail video
+        this.debounceFunction(0);
     }
 
     /**
@@ -258,8 +260,10 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     private handleWindowResize() {
         const mediaContainer = this.mediaContainer.nativeElement;
-        this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.offsetWidth);
-        this.logger.info(`Player resized !`);
+        if (mediaContainer) {
+            this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.offsetWidth);
+            this.logger.info(`Player resized !`);
+        }
     }
 
     /**
@@ -325,6 +329,7 @@ export class AmaliaComponent implements OnInit {
     private bindEvents() {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlay);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
@@ -352,19 +357,23 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     private handleSeeking(tc: number) {
         if (this.enableThumbnail) {
-            this.debounceFunction(tc);
             this.enablePreviewThumbnail = true;
+            this.debounceFunction(tc);
         }
     }
 
     @AutoBind
     private handleSeeked() {
+        const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.debounceFunction(tc);
+    }
+    @AutoBind
+    private handlePlay() {
         if (this.enableThumbnail) {
             this.enablePreviewThumbnail = false;
             this.previewThumbnailUrl = '';
         }
     }
-
     /**
      * Invoked when error event
      * @param event error type
@@ -473,8 +482,12 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     public handleFullScreenChange() {
         const element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
-        const parent = element.offsetParent as HTMLElement;
-        this.mediaPlayerElement.toggleFullscreen(parent);
+        if (element) {
+            const parent = element.offsetParent as HTMLElement;
+            if (parent) {
+                this.mediaPlayerElement.toggleFullscreen(parent);
+            }
+        }
     }
     /**
      * invoked on keydown
