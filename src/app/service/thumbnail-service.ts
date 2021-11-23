@@ -28,6 +28,7 @@ export class ThumbnailService {
                 resolve(this.listThumbnails[tc][ThumbnailService.key]);
             });
         }
+        return this.loadThumbnail(url, tc);
     }
     /**
      * Call loader to get blob

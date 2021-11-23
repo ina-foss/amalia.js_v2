@@ -131,7 +131,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement && this.displaySynchro === false) {
+        if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             if (this.pluginConfiguration.data.mode === 1) {
                 this.disableRemoveAllSelectedNodes();
@@ -150,7 +150,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * Handle change text on searching input
      */
     public handleChangeInput() {
-        console.log(this.searching);
         if (this.searching === true) {
             this.searching = false;
         }
@@ -259,7 +258,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private scroll() {
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
-        if (scrollNode) {
+        if (scrollNode && this.displaySynchro === false) {
             this.scrollToNode(scrollNode);
         }
     }

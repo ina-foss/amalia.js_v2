@@ -171,15 +171,16 @@
 
       &.aspect-ratio {
         min-width: 25px;
-        border: solid white 1px;
         position: relative;
-        padding: 1px 6px;
         cursor: pointer;
-        text-align: center;
-        font-size: 14px;
-        top: -3px;
-        .list-options {
-          bottom : 56px;
+        height: 100%;
+        .value {
+          top: 12px;
+          text-align: center;
+          font-size: 14px;
+          padding: 1px 6px;
+          border: solid white 1px;
+          position: relative;
         }
       }
 
@@ -366,50 +367,53 @@
         display: none;
         position: absolute;
         z-index: $amalia-volume-bar-z-index;
-        background-color: $amalia-ctrl-bar-bg-color;
         right: 10%;
         // top: -133px;
-        bottom: 75px;
-        padding: 0;
-        margin: 0;
-        list-style: none;
-        width: 180px;
-
+        bottom: 50px;
         &.on {
           display: block;
-
-          & > li:not(:first-child) {
-            text-align: left;
-            display: block;
-            font-size: 12px;
-            line-height: 31px;
-            cursor: pointer;
-            color: white;
-            padding-left: 36px;
+          ul {
+            background-color: $amalia-ctrl-bar-bg-color;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            width: 180px;
             position: relative;
-
-            > .amalia-svg-checked-size {
-              display: none;
-              height: 25px;
-              position: absolute;
-              width: 20px;
-              left: 5px;
-              top: 3px;
-            }
-
-            &:hover {
-              background-color: rgba(255, 255, 255, 0.45);
-            }
-
-            &.selected {
-              font-weight: bold;
+            bottom: 23px;
+            & > li:not(:first-child) {
+              text-align: left;
+              display: block;
+              font-size: 12px;
+              line-height: 31px;
+              cursor: pointer;
+              color: white;
+              padding-left: 36px;
+              position: relative;
 
               > .amalia-svg-checked-size {
-                display: inline;
+                display: none;
+                height: 25px;
+                position: absolute;
+                width: 20px;
+                left: 5px;
+                top: 3px;
               }
 
+              &:hover {
+                background-color: rgba(255, 255, 255, 0.45);
+              }
+
+              &.selected {
+                font-weight: bold;
+
+                > .amalia-svg-checked-size {
+                  display: inline;
+                }
+
+              }
             }
           }
+
         }
       }
 
@@ -429,16 +433,19 @@
         display: none;
         position: absolute;
         z-index: $amalia-volume-bar-z-index;
-        background-color: $amalia-ctrl-bar-bg-color;
         right: 10%;
+        bottom: 50px;
         // top: -100px;
-        bottom: 75px;
+
 
         &.on {
           display: block;
         }
 
         .channel-volume-sliders {
+          bottom: 23px;
+          position: relative;
+          background-color: $amalia-ctrl-bar-bg-color;
           .channel-volume-control {
             .channel-volume-control-left,
             .channel-volume-control-mid,
@@ -808,7 +815,7 @@
       display: none;
       position: absolute;
       z-index: $amalia-volume-bar-z-index;
-      bottom: 80px;
+      bottom: 73px;
       right: 10px;
       &.pinned {
         bottom: 110px;
@@ -905,8 +912,8 @@
           padding: 1px 2px;
           margin-right: 2px;
           position: relative;
-          left: -2px;
-          top: 3px;
+          left: 1px;
+          top: 4px;
           float: left;
           line-height: 18px;
           font-size: 12px;
