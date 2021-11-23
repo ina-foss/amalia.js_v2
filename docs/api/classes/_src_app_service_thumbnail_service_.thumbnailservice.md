@@ -99,7 +99,7 @@ ___
 
 ▸ **loadThumbnail**(`url`: any, `tc`: any): *Promise‹string›*
 
-Defined in src/app/service/thumbnail-service.ts:35
+Defined in src/app/service/thumbnail-service.ts:36
 
 Call loader to get blob
 
