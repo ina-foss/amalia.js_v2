@@ -844,7 +844,7 @@
           .text-right {
             float: right;
             margin-right: 5px;
-            margin-left: 15px;
+            margin-left: 30px;
           }
           &.subtitle.on, &.aspect-ratio.on {
             .ratio {
@@ -913,16 +913,17 @@
           margin-right: 2px;
           position: relative;
           left: 1px;
-          top: 4px;
+          top: 7px;
           float: left;
-          line-height: 18px;
-          font-size: 12px;
+          line-height: 12px;
+          font-size: 9px;
+          margin-right: 5px;
         }
 
         .icon {
           width: 16px;
           height: 16px;
-          margin-right: 8px;
+          margin-right: 13px;
           position: relative;
           left: 3px;
           top: 3px;

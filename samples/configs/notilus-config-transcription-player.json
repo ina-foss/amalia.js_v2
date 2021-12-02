@@ -1,19 +1,19 @@
 {
   "tcOffset" : 60,
   "player": {
-    "src": "http://localhost:4201/medias/FPVDB14111905.01.m3u8",
-    "backwardsSrc": "http://localhost:4201/medias/FPVDB14111905.01_reverse.m3u8",
+    "src": "http://10.3.24.26:4201/medias/FPVDB14111905.01.m3u8",
+    "backwardsSrc": "http://10.3.24.26:4201/medias/FPVDB14111905.01_reverse.m3u8",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/jt-d.json"
+      "url": "http://10.3.24.26:4201/metadata/jt-d.json"
     },
     {
-      "url": "http://localhost:4201/metadata/jt-t.json"
+      "url": "http://10.3.24.26:4201/metadata/jt-t.json"
     },
     {
-      "url": "http://localhost:4201/metadata/transcription-stock.json"
+      "url": "http://10.3.24.26:4201/metadata/transcription-stock.json"
     }
   ],
   "thumbnail": {
@@ -99,7 +99,7 @@
           "zone": 2,
           "priority": 1,
           "data": {
-            "speed": -6
+            "speed": -2
           }
         },
         {
@@ -177,6 +177,7 @@
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
           "zone": 3,
+          "key": "c",
           "priority": 3
         },
         {

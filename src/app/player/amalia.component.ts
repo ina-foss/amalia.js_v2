@@ -246,12 +246,13 @@ export class AmaliaComponent implements OnInit {
             this.bindEvents();
             // set mediaPlayer width for responsive grid
             this.mediaPlayerElement.setMediaPlayerWidth(this.mediaContainer.nativeElement.offsetWidth);
+            if (this.enableThumbnail) {
+                this.setPreviewThumbnail(0);
+            }
         } else {
             this.logger.error('Error to initialize media player element.');
         }
         this.callback.emit(this.mediaPlayerElement);
-        // init preview thumbnail video
-        this.debounceFunction(0);
     }
 
     /**
@@ -353,10 +354,9 @@ export class AmaliaComponent implements OnInit {
         this.pinned = event;
         this.pinnedControlbar = false;
     }
-
     @AutoBind
     private handleSeeking(tc: number) {
-        if (this.enableThumbnail) {
+        if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1)) {
             this.enablePreviewThumbnail = true;
             this.debounceFunction(tc);
         }
@@ -364,8 +364,11 @@ export class AmaliaComponent implements OnInit {
 
     @AutoBind
     private handleSeeked() {
-        const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.debounceFunction(tc);
+        if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1 && this.enableThumbnail) {
+            const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+            this.setPreviewThumbnail(tc);
+        }
+
     }
     @AutoBind
     private handlePlay() {
@@ -422,13 +425,15 @@ export class AmaliaComponent implements OnInit {
      * In charge to update thumbnail
      */
     private setPreviewThumbnail(tc: number) {
-        if (!isNaN(tc)) {
+        if (!isNaN(tc) && this.enableThumbnail) {
             this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
-            this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
-                if (typeof (blob) !== 'undefined') {
-                    this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
-                }
-            });
+            if (this.previewThumbnailUrl) {
+                this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
+                    if (typeof (blob) !== 'undefined') {
+                        this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
+                    }
+                });
+            }
         }
     }
 
@@ -545,7 +550,7 @@ export class AmaliaComponent implements OnInit {
     public scrollPlaybackRateImages($event) {
         let rewinding = false;
         let playbackrate = $event;
-        let mainSource = false;
+        const mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
         if (playbackrate < 0) {
             rewinding = true;
             playbackrate = Math.abs(playbackrate);
@@ -555,30 +560,39 @@ export class AmaliaComponent implements OnInit {
         const ms = 200;
         this.tc = self.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        clearInterval(this.intervalImages);
+        // clearInterval(this.intervalImages);
         this.intervalImages = setInterval(() =>  {
-            const frames = framesPerSecond / (1000 / ms);
-            if (rewinding === false ) {
-                   self.tc = self.tc + (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
-            } else {
-                if (mainSource === false) {
-                    self.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc();
-                    mainSource = true;
-                }
-                self.tc = self.tc - (frames / self.mediaPlayerElement.getMediaPlayer().framerate);
-            }
-            // Set thumbnail video
-            self.setPreviewThumbnail(self.tc);
-            // set current Time
-            self.mediaPlayerElement.getMediaPlayer().setCurrentTime(self.tc);
-
-            if (self.tc > duration || self.tc < 0) {
-                clearInterval(this.intervalImages);
-            } }, ms);
+            self.displayImages(framesPerSecond, ms, rewinding, duration, mainSource);
+             }, ms);
     }
     @AutoBind
     public clearInterval() {
         if (this.intervalImages) {
+            clearInterval(this.intervalImages);
+        }
+    }
+    @AutoBind
+    public displayImages(framesPerSecond , ms , rewinding , duration , mainSource) {
+        const frames = framesPerSecond / (1000 / ms);
+        if (rewinding === false ) {
+            this.tc = this.tc + (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
+        } else {
+            if (mainSource === false) {
+                this.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc();
+                mainSource = true;
+                const tc = duration - this.tc;
+                this.tc = tc - (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
+            } else {
+                this.tc = this.tc - (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
+            }
+        }
+        // Set thumbnail video
+        if (this.enableThumbnail) {
+            this.setPreviewThumbnail(this.tc);
+        }
+        // set current Time
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
+        if (this.tc > duration || this.tc < 0) {
             clearInterval(this.intervalImages);
         }
     }

@@ -237,6 +237,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public thumbnailContainer: ElementRef<HTMLElement>;
     @ViewChild('controlBarContainer')
     public controlBarContainer: ElementRef<HTMLElement>;
+    @ViewChild('volumeButton')
+    public volumeButton: ElementRef<HTMLElement>;
     /**
      * list of shortcuts
      */
@@ -254,6 +256,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public dragElement: ElementRef;
     public sliderPosition = 0;
     public moving = false;
+    // slider volume
+    @ViewChild('leftVolumeSlider')
+    public leftVolumeSlider: ElementRef;
+    @ViewChild('rightVolumeSlider')
+    public rightVolumeSlider: ElementRef;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -264,6 +271,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     init() {
         super.init();
+        console.log('controlBar init');
         this.elements = this.pluginConfiguration.data;
         this.initPlaybackrates();
         // init volume
@@ -274,12 +282,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
         // Show thumbnail when tc = 0
-        const url = this.mediaPlayerElement.getThumbnailUrl(0 , true);
-        this.thumbnailService.getThumbnail(url, 0).then((blob) => {
-            if (typeof (blob) !== 'undefined') {
-                this.thumbnailElement.nativeElement.setAttribute('src' , blob);
-            }
-        });
+        if (this.enableThumbnail) {
+            const url = this.mediaPlayerElement.getThumbnailUrl(0 , true);
+            this.thumbnailService.getThumbnail(url, 0).then((blob) => {
+                if (typeof (blob) !== 'undefined') {
+                    this.thumbnailElement.nativeElement.setAttribute('src' , blob);
+                }
+            });
+        }
         // Init Events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -350,6 +360,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked player with specified control function name
      * @param control control name
      */
+    @AutoBind
     public controlClicked(control: string) {
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
@@ -360,6 +371,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         switch (control) {
             case 'playPause':
                 mediaPlayer.playPause();
+                break;
+            case 'volume':
+                this.toggleVolume();
                 break;
             case 'viewRatio':
                 mediaPlayer.playPause();
@@ -493,9 +507,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.currentTime = this.duration - this.currentTime;
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
         } else {
-            this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
-            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+            // this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
             this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
         }
     }
 
@@ -558,12 +572,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on change playback rate
      */
     public onChangePlaybackRate(value) {
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
-            this.mediaPlayerElement.getMediaPlayer().play();
-        }
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
-        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+        if (this.currentPlaybackRate < 1 && this.currentPlaybackRate > -1) {
+            this.currentPlaybackRateSlider = (this.currentPlaybackRate);
+        } else {
+            this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+        }
+        if (this.mediaPlayerElement.getMediaPlayer().isPaused() && value !== 1) {
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
     }
     /**
      * Change volume state
@@ -707,12 +725,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const timecode = (tcOffset) ? tcOffset + tc : tc;
         const url = this.mediaPlayerElement.getThumbnailUrl(timecode , true);
         if (isFinite(timecode)) {
+            if (typeof (url) !== 'undefined') {
+                this.thumbnailElement.nativeElement.setAttribute('src', url);
+            }
         // setTimeout(() => this.getImage(url) , 500);
-            this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
+            /*this.thumbnailService.getThumbnail(url, timecode).then((blob) => {
                  if (typeof (blob) !== 'undefined') {
                      this.thumbnailElement.nativeElement.setAttribute('src' , blob);
                  }
-            });
+            });*/
         }
     }
     /**
@@ -836,10 +857,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     private handlePlaybackRateChange(playbackRate: number) {
-        this.currentPlaybackRate = playbackRate;
         this.logger.info('Handle playback rate change', playbackRate);
+        if (this.mediaPlayerElement.getMediaPlayer().isPaused() && playbackRate !== 1) {
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
+        this.currentPlaybackRate = playbackRate;
         setTimeout( () => this.selectActivePlaybackrate(), 10);
-        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+        if (this.currentPlaybackRate >= 1 || this.currentPlaybackRate <= -1) {
+            this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+        } else {
+            this.currentPlaybackRateSlider = (this.currentPlaybackRate);
+        }
     }
 
     /**
@@ -1026,8 +1054,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
     @AutoBind
-    public hideAll() {
-        if (this.enableMenu) {
+    public hideAll(control?) {
+        if (this.enableMenu && control !== 'menu') {
             this.enableMenu = !this.enableMenu;
         }
         if (this.enableVolumeSlider) {
@@ -1036,7 +1064,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enableListPositionsSubtitle) {
             this.enableListPositionsSubtitle = !this.enableListPositionsSubtitle;
         }
-        if (this.enableListRatio) {
+        if (this.enableListRatio && control !== 'ratio') {
             this.enableListRatio = !this.enableListRatio;
         }
     }
@@ -1084,7 +1112,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             value.setAttribute('data-x', left.toString());
             left += step;
         });
-        const position = {x: Number(selected.getAttribute('data-x'))};
+        let position = {x: Number(selected.getAttribute('data-x'))};
         const container = this.dragElement.nativeElement;
         const self = this;
         const valuesContainer = this.controlBarContainer.nativeElement
@@ -1108,6 +1136,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                         setTimeout(() => self.handleMoveDragThumb(event, position, step, maxWidth), 50);
                         event.stopImmediatePropagation();
                     } else {
+                        event.preventDefault();
+                        position = { x : Number(container.getAttribute('data-x'))};
                         position.x += event.dx;
                         if (position.x < step / 2) {
                             event.target.style.paddingLeft = '0px';
@@ -1131,6 +1161,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                                         event.target.setAttribute('data-x', position.x);
                                         if (Number(playbackrate) !== 0) {
                                             self.changePlaybackrate(playbackrate);
+                                            event.stopImmediatePropagation();
                                         }
                                     }
                                 }
@@ -1209,7 +1240,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                     }
                 }
             } else if (Math.sign(pr) === -1) {
-
                 for (let i = 0; i < this.negPlaybackrates.length; i++) {
                     if (this.negPlaybackrates[i] === pr) {
                         this.indexPlaybackRate = -1 * (i + 1);
@@ -1219,6 +1249,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.onChangePlaybackRate(pr);
         }
     }
+
+    /**
+     * AutoBind Select Playbackrate
+     */
     @AutoBind
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
@@ -1229,6 +1263,23 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             container.style.paddingLeft = position + 'px';
             container.setAttribute('data-x', position);
         }
+    }
+
+    /***
+     * toggle Volume
+     */
+    @AutoBind
+    private toggleVolume() {
+        this.volumeButton.nativeElement.click();
+        if (this.volumeLeft > 0 || this.volumeRight > 0) {
+           this.mute();
+
+        }
+        if (this.volumeLeft === 0 && this.volumeRight === 0) {
+            this.unmute();
+        }
+        this.changeVolumeCanal(this.leftVolumeSlider.nativeElement.value, 'l');
+        this.changeVolumeCanal(this.rightVolumeSlider.nativeElement.value, 'r');
     }
     /**
      * Handle on component destroy

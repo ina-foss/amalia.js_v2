@@ -44,6 +44,8 @@ export class MediaElement {
      */
     public reverseMode = false;
     private intervalRewind = null;
+    // switched to backward src
+    private switched = false;
 
     /**
      * Init media element for handle html video element
@@ -120,9 +122,7 @@ export class MediaElement {
      * Invoked for paused player
      */
     pause(): void {
-        if (this.getPlaybackRate() !== 1) {
-            this.playbackRate = 1;
-        }
+        this.setPlaybackRate(1);
         this.mediaElement.pause();
     }
 
@@ -294,6 +294,7 @@ export class MediaElement {
         this._playbackRate = speed;
         this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
     }
+
 
     /**
      * Return true if media is paused
