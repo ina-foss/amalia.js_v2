@@ -271,7 +271,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     init() {
         super.init();
-        console.log('controlBar init');
         this.elements = this.pluginConfiguration.data;
         this.initPlaybackrates();
         // init volume

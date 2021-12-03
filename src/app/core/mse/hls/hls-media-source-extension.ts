@@ -82,9 +82,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             }
             this.logger.debug('Hls string source', this.mainMediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
-            console.log(this.hlsPlayer);
             this.hlsPlayer.loadSource(this.mainMediaSrc);
-            console.log(this.hlsPlayer);
             // handle events
             this.hlsPlayer.on(Hls.Events.MANIFEST_LOADED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);

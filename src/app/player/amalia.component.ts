@@ -328,8 +328,8 @@ export class AmaliaComponent implements OnInit {
      * In charge to bin events
      */
     private bindEvents() {
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
+        /* this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);*/
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlay);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
