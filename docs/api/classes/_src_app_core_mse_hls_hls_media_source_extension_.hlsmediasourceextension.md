@@ -161,7 +161,7 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:15
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:130
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:128
 
 **Returns:** *void*
 
@@ -173,7 +173,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:101
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:99
 
 **Returns:** *string | MediaStream | MediaSource | Blob | null*
 
@@ -197,7 +197,7 @@ ___
 
 ▸ **handleAudioChannelChange**(`event`: any): *void*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:167
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:165
 
 Invoked on channel change
 
@@ -217,7 +217,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:140
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:138
 
 Invoked when error events
 
@@ -235,7 +235,7 @@ ___
 
 ▸ **handleOnManifestLoaded**(): *void*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:154
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:152
 
 Invoked when manifest loaded
 
@@ -268,7 +268,7 @@ ___
 
 ▸ **switchSrc**(`src`: string, `reverseMode`: boolean): *Promise‹void›*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:117
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:115
 
 Media source
 
@@ -289,7 +289,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:109
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:107
 
 **Returns:** *Promise‹void›*
 
@@ -301,7 +301,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:105
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:103
 
 **Returns:** *Promise‹void›*
 

@@ -1,5 +1,5 @@
 {
-  "tcOffset" : 89000,
+  "tcOffset": 62000,
   "player": {
     "src": "http://localhost:4201/medias/video-new.m3u8",
     "backwardsSrc": "http://localhost:4201/medias/list-inverse.m3u8",

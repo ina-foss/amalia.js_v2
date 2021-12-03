@@ -718,12 +718,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
-        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        // const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        const timecode = (tcOffset) ? tcOffset + tc : tc;
-        const url = this.mediaPlayerElement.getThumbnailUrl(timecode , true);
-        if (isFinite(timecode)) {
+        // const timecode = (tcOffset) ? tcOffset + tc : tc;
+        const url = this.mediaPlayerElement.getThumbnailUrl(tc , true);
+        if (isFinite(tc)) {
             if (typeof (url) !== 'undefined') {
                 this.thumbnailElement.nativeElement.setAttribute('src', url);
             }
