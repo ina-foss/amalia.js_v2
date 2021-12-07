@@ -1,8 +1,8 @@
 {
-  "tcOffset" : 60,
+  "tcOffset": 62000,
   "player": {
-    "src": "http://localhost:4201/medias/FPVDB14111905.01.m3u8",
-    "backwardsSrc": "http://localhost:4201/medias/FPVDB14111905.01_reverse.m3u8",
+    "src": "http://localhost:4201/medias/video-new.m3u8",
+    "backwardsSrc": "http://localhost:4201/medias/list-inverse.m3u8",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
@@ -95,11 +95,11 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "images-backward",
+          "control": "backward",
           "zone": 2,
           "priority": 1,
           "data": {
-            "speed": -6
+            "speed": -2
           }
         },
         {
@@ -177,6 +177,7 @@
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
           "zone": 3,
+          "key": "c",
           "priority": 3
         },
         {
