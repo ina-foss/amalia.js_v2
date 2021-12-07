@@ -13,19 +13,19 @@ export class FormatUtils {
      * @return return format time
      */
     public static formatTime(seconds: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's', defaultFps: number = 25): string {
-        let minute: number = Math.floor(seconds / 60);
         let formatTime: string;
+        let minute: number = Math.floor(seconds / 60);
         const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);
         const hours: number = Math.floor(minute / 60);
         const milliseconds: number = seconds % 60;
+        const h = Math.floor(( minute / 60) % 24);
+        const hStr = h.toFixed().padStart(2, '0');
         seconds = Math.floor(seconds % 60);
         minute = Math.floor(minute % 60);
         const hoursStr = hours.toFixed().padStart(2, '0');
         const minuteStr = minute.toFixed().padStart(2, '0');
         const secondsStr = seconds.toFixed().padStart(2, '0');
         const fpsStr = fps.toFixed().padStart(2, '0');
-        const h = Math.floor(( minute / 60) % 24);
-        const hStr = h.toFixed().padStart(2, '0');
         switch (format) {
             case 'h' :
                 formatTime = hoursStr;
