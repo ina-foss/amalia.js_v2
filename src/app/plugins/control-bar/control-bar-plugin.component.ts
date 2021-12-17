@@ -17,7 +17,7 @@ import interact from 'interactjs';
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
     public static PLUGIN_NAME = 'CONTROL_BAR';
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 250;
+    public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
     /**
      * Min playback rate
      */
@@ -256,7 +256,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
         this.thumbnailService = thumbnailService;
-        this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME, { 'trailing': false });
+        this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, {trailing: false});
     }
 
     @AutoBind
@@ -730,15 +730,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
-        // const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        // const timecode = (tcOffset) ? tcOffset + tc : tc;
         const url = this.mediaPlayerElement.getThumbnailUrl(tc, true);
         if (isFinite(tc)) {
-            if (typeof (url) !== 'undefined') {
-                this.thumbnailElement.nativeElement.setAttribute('src', url);
-            }
+            this.thumbnailService.getThumbnail(url, tc).then((blob) => {
+                if (typeof (blob) !== 'undefined') {
+                    this.thumbnailElement.nativeElement.setAttribute('src' , blob);
+                }
+            });
         }
     }
 
