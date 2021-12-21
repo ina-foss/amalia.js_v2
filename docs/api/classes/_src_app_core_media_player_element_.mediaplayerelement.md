@@ -223,7 +223,7 @@ ___
 
 ▸ **getDisplayState**(): *string*
 
-Defined in src/app/core/media-player-element.ts:217
+Defined in src/app/core/media-player-element.ts:219
 
 Return displayState (s/m/l)
 
@@ -374,7 +374,7 @@ ___
 
 ▸ **setMediaPlayerWidth**(`width`: any): *void*
 
-Defined in src/app/core/media-player-element.ts:209
+Defined in src/app/core/media-player-element.ts:211
 
 Set mediaPlayer width for responsive grid
 

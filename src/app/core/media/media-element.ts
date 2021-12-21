@@ -44,7 +44,13 @@ export class MediaElement {
      */
     public reverseMode = false;
     private intervalRewind = null;
+    // switched to backward src
+    private switched = false;
 
+    /**
+     * Player initalized
+     */
+    private initialized = false;
     /**
      * Init media element for handle html video element
      * @param mediaElement html video element
@@ -107,12 +113,6 @@ export class MediaElement {
     }
 
     play(): Promise<void> {
-        // switch to main src if reverse mode equal to true
-        if (this.reverseMode === true) {
-            this.reverseMode = !this.reverseMode;
-            this.mse.switchToMainSrc();
-            this.setCurrentTime(Math.max(0, this.getDuration() - this.getCurrentTime()));
-        }
         return this.mediaElement.play();
     }
 
@@ -120,9 +120,7 @@ export class MediaElement {
      * Invoked for paused player
      */
     pause(): void {
-        if (this.getPlaybackRate() !== 1) {
-            this.playbackRate = 1;
-        }
+        this.setPlaybackRate(1);
         this.mediaElement.pause();
     }
 
@@ -255,44 +253,53 @@ export class MediaElement {
     private setPlaybackRate(speed: number) {
         this.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         const lastStateIsReverseMode = this.reverseMode;
-        const oldCurrentTime = this.getCurrentTime();
         this.reverseMode = (speed < 0);
-        if (this.reverseMode) {
-            const oldDuration = this.getDuration();
-            if (this.mse.getBackwardsSrc()) {
-                this.mse.switchToBackwardsSrc().then(() => {
-                    this.setCurrentTime(Math.max(0, oldDuration - oldCurrentTime));
-                    if (this.mediaElement) {
-                        this.mediaElement.playbackRate = Math.abs(speed);
-                    }
-                });
-            } else {
-                clearInterval(this.intervalRewind);
-                this.intervalRewind = setInterval(() => {
-                    this.mediaElement.playbackRate = 1;
-                    let currentTime = this.getCurrentTime();
-                    if (currentTime === 0) {
-                        clearInterval(this.intervalRewind);
-                        speed = 1;
-                        this.pause();
-                    } else {
-                        currentTime += speed;
-                        this.setCurrentTime(currentTime);
-                    }
-                }, 30);
+        if (this.getDuration() > 0 && this.getCurrentTime() >= 0) {
+            let currentTime = this.getCurrentTime();
+            if (this.reverseMode && this.switched === false) {
+                if (this.mse.getBackwardsSrc()) {
+                    //
+                    this.mse.switchToBackwardsSrc().then(() => {
+                        if (this.mediaElement) {
+                            this.mediaElement.playbackRate = Math.abs(speed);
+                            // this.setCurrentTime(Math.max(0, tc));
+                        }
+                    });
+                } else {
+                    clearInterval(this.intervalRewind);
+                    this.intervalRewind = setInterval(() => {
+                        // this.mediaElement.playbackRate = 1;
+                        if (currentTime === 0) {
+                            clearInterval(this.intervalRewind);
+                            speed = 1;
+                            this.pause();
+                        } else {
+                            currentTime += speed;
+                            this.setCurrentTime(currentTime);
+                        }
+                    }, 30);
+                }
+            } else if (this.reverseMode && this.switched) {
+                if (this.mediaElement) {
+                    this.mediaElement.playbackRate = Math.abs(speed);
+                }
             }
-        } else {
-            if (lastStateIsReverseMode === true) {
+            if (lastStateIsReverseMode === true && !this.reverseMode) {
+                const tc = this.getDuration() - this.getCurrentTime();
                 this.mse.switchToMainSrc().then(() => {
-                    this.setCurrentTime(oldCurrentTime);
                     this.mediaElement.playbackRate = speed;
+                    this.setCurrentTime((Math.max(0, tc)));
+                    this.switched = false;
                 });
-            } else if (this.mediaElement) {
+            } else if (this.mediaElement && !this.reverseMode) {
                 this.mediaElement.playbackRate = speed;
             }
+            this._playbackRate = speed;
+            this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
+            if (this.reverseMode) {
+                this.switched = true;
+            }
         }
-        this._playbackRate = speed;
-        this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
     }
 
     /**
@@ -416,10 +423,13 @@ export class MediaElement {
      */
     @AutoBind
     private handleLoadstart() {
-        this.logger.debug('onLoadstart');
-        this.eventEmitter.emit(PlayerEventType.INIT);
-        this.logger.info(PlayerEventType.INIT);
-        this.mediaElement.removeEventListener('loadstart', this.handleLoadstart);
+        if (!this.initialized) {
+            this.logger.debug('onLoadstart');
+            this.eventEmitter.emit(PlayerEventType.INIT);
+            this.logger.info(PlayerEventType.INIT);
+            this.mediaElement.removeEventListener('loadstart', this.handleLoadstart);
+            this.initialized = true;
+        }
     }
 
     /**
