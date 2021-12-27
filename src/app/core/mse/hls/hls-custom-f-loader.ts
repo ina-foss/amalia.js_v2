@@ -1,11 +1,11 @@
-import * as Hls from 'hls.js';
+import Hls from 'hls.js';
 
 /**
  * Specified custom loader when uses switch channel audio,  loader  retry to load audio channel segment
  * // TODO fix Audio channel
  */
 export class HlsCustomFLoader extends Hls.DefaultConfig.loader {
-    constructor(config: Hls.LoaderConfig) {
+    constructor(config) {
         super(config);
         const load = this.load.bind(this);
         // tslint:disable-next-line:no-shadowed-variable
@@ -14,13 +14,13 @@ export class HlsCustomFLoader extends Hls.DefaultConfig.loader {
             const originalCallback = callbacks;
             const onSuccess = callbacks.onSuccess;
             // tslint:disable-next-line:no-shadowed-variable
-            callbacks.onSuccess = (response, stats, context) => {
+            callbacks.onSuccess = (response, stats, context, networkDetails) => {
                 if ((response.data as ArrayBuffer).byteLength === 0) {
                     setTimeout(() => {
                         load(context, config, originalCallback);
                     }, 500);
                 } else {
-                    onSuccess(response, stats, context);
+                    onSuccess(response, stats, context, networkDetails);
                 }
             };
             load(context, config, callbacks);

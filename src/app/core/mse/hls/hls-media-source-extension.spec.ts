@@ -3,7 +3,7 @@ import {HLSMediaSourceExtension} from './hls-media-source-extension';
 import {EventEmitter} from 'events';
 import {PlayerConfigData} from '../../config/model/player-config-data';
 import {DefaultLogger} from '../../logger/default-logger';
-import * as Hls from 'hls.js';
+import Hls from 'hls.js';
 import {PlayerEventType} from '../../constant/event-type';
 
 describe('Test HLS Source extension', () => {
