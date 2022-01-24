@@ -212,8 +212,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * @param type type interval
      * @param tc time code
      */
+    @AutoBind
     public selectedThumbnailSize(type: string, tc: number) {
         this.selectedInterval = [type, tc];
+        // this.openIntervalList = false;
         this.updateThumbnailSize();
     }
 
@@ -228,12 +230,15 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Handle interval
      */
+    @AutoBind
     private updateThumbnailSize() {
         let interval: number = this.selectedInterval[1];
         if (this.selectedInterval[0] === 'frame') {
             interval = (1 / this.fps) * interval;
         }
         this.listOfThumbnail = _.range(0, this.duration, interval);
+        // close menu
+        this.openIntervalList = false;
     }
 
     /**
@@ -307,5 +312,12 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.storyboardElement.nativeElement.scrollTop = scrollPos;
         }
 
+    }
+
+    /**
+     * Toggle openList
+     */
+    public toggleList() {
+        this.openIntervalList = !this.openIntervalList;
     }
 }

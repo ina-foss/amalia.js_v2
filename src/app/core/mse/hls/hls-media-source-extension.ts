@@ -39,7 +39,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         }
         if (!config.hls.config) {
             config.hls.config = Hls.DefaultConfig;
-            config.hls.config.debug = true;
+            config.hls.config.debug = false;
         }
         // config.hls.config.fLoader = HlsCustomFLoader;
         this.hlsPlayer = new Hls(config.hls.config);
@@ -86,7 +86,6 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             // handle events
             this.hlsPlayer.on(Hls.Events.MANIFEST_PARSED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
-            this.hlsPlayer.on(Hls.Events.ERROR, this.logError);
 
             if (config.autoplay) {
                 this.mediaElement.play();
@@ -117,19 +116,14 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.logger.debug(`Switch src :${src}  ${reverseMode}`);
             this.currentTime = this.mediaElement.currentTime;
             this.duration = this.mediaElement.duration;
-            this.mediaElement.pause();
+            /*this.mediaElement.pause();
             this.hlsPlayer.stopLoad();
-            this.hlsPlayer.detachMedia();
+            this.hlsPlayer.detachMedia();*/
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(src);
             this.reverseMode = reverseMode;
             resolve();
         });
-    }
-    public logError(data) {
-        console.log(this.hlsPlayer);
-        console.log(this);
-        console.log(data);
     }
 
     public destroy() {
@@ -159,20 +153,8 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     private handleOnManifestLoaded() {
         this.logger.debug('Manifest loaded');
         if (this.reverseMode) {
-            // this.mediaElement.currentTime = this.duration - this.currentTime;
-            // this.hlsPlayer.startLoad(Math.max(0, this.duration - this.currentTime));
-            /*this.mediaElement.currentTime = this.duration - this.currentTime;
-            this.mediaElement.play();*/
-        }
-            /*console.log('here');
             this.hlsPlayer.startLoad(Math.max(0, this.duration - this.currentTime));
-            console.log('duration   ' + this.duration);
-            console.log('currentTime    ' + this.currentTime);
-            console.log('looaaad');
-            console.log(this.duration - this.currentTime);
-            this.mediaElement.currentTime = this.duration - this.currentTime;
-            this.mediaElement.play();
-        }*/
+        }
     }
 
     /**

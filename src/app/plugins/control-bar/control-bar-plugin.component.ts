@@ -599,7 +599,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeSameVolumeState() {
         this.mediaPlayerElement.getMediaPlayer().withMergeVolume = !this.mediaPlayerElement.getMediaPlayer().withMergeVolume;
         if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
-            const v = Math.min(this.volumeRight, this.volumeLeft);
+            // const v = Math.min(this.volumeRight, this.volumeLeft);
+            const v = Math.max(this.volumeRight, this.volumeLeft);
             this.changeVolume(v);
             this.volumeLeft = v;
             this.volumeRight = v;
@@ -1188,8 +1189,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                                         event.target.style.paddingLeft = position.x + 'px';
                                         event.target.setAttribute('data-x', position.x);
                                         if (Number(playbackrate) !== 0) {
-                                            self.changePlaybackrate(playbackrate);
                                             event.stopImmediatePropagation();
+                                            setTimeout(() => self.changePlaybackrate(playbackrate), 350);
                                         }
                                     }
                                 }

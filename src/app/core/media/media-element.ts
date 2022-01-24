@@ -262,7 +262,6 @@ export class MediaElement {
                 if (this.mse.getBackwardsSrc()) {
                     this.mse.switchToBackwardsSrc().then(() => {
                         if (this.mediaElement) {
-                            console.log('ici');
                             this.mediaElement.playbackRate = Math.abs(speed);
                             this.setCurrentTime((Math.max(0, duration - currentTime)));
                         }

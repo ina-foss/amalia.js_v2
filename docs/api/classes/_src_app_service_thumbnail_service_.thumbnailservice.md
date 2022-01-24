@@ -32,7 +32,7 @@ Service contain all instance of players
 
 \+ **new ThumbnailService**(`httpClient`: HttpClient): *[ThumbnailService](_src_app_service_thumbnail_service_.thumbnailservice.md)*
 
-Defined in src/app/service/thumbnail-service.ts:14
+Defined in src/app/service/thumbnail-service.ts:13
 
 **Parameters:**
 
@@ -48,7 +48,7 @@ Name | Type |
 
 • **httpClient**: *HttpClient*
 
-Defined in src/app/service/thumbnail-service.ts:12
+Defined in src/app/service/thumbnail-service.ts:11
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 • **listThumbnails**: *Array‹object›* = []
 
-Defined in src/app/service/thumbnail-service.ts:14
+Defined in src/app/service/thumbnail-service.ts:13
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 • **loader**: *[ThumbnailLoader](_src_app_core_loader_thumbnail_loader_.thumbnailloader.md)*
 
-Defined in src/app/service/thumbnail-service.ts:13
+Defined in src/app/service/thumbnail-service.ts:12
 
 ___
 
@@ -72,7 +72,7 @@ ___
 
 ▪ **key**: *string* = "blob"
 
-Defined in src/app/service/thumbnail-service.ts:11
+Defined in src/app/service/thumbnail-service.ts:10
 
 ## Methods
 
@@ -99,7 +99,7 @@ ___
 
 ▸ **loadThumbnail**(`url`: any, `tc`: any): *Promise‹string›*
 
-Defined in src/app/service/thumbnail-service.ts:36
+Defined in src/app/service/thumbnail-service.ts:35
 
 Call loader to get blob
 

@@ -18,18 +18,17 @@ describe('Test HLS custom loader', () => {
         autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
         , backwardsSrc: backwardSrc
     };
-    const hlsPlayer = new HLSMediaSourceExtension(component, eventEmitter, config, logger);
-    /* hlsPlayer.config.hls.config.fLoader = HlsCustomFLoader;
-    //const lConfig: LoaderConfig = {timeout: 30, maxRetry: 4, retryDelay: 30, maxRetryDelay: 30};
-    //const loader = new HlsCustomFLoader(lConfig);
+    /*const hlsPlayer = new HLSMediaSourceExtension(component, eventEmitter, config, logger);
+    hlsPlayer.config.hls.config.fLoader = HlsCustomFLoader;
+    const lConfig: LoaderConfig = {timeout: 30, maxRetry: 4, retryDelay: 30, maxRetryDelay: 30};
+    const loader = new HlsCustomFLoader(lConfig);
 
     it('test Audio channel ', () => {
         expect(loader).toBeTruthy();
         expect(loader.audioChannel).toEqual(1);
         loader.audioChannel = 3;
         expect(loader.audioChannel).toEqual(3);
-        });
-        */
+        });*/
 });
 
 
