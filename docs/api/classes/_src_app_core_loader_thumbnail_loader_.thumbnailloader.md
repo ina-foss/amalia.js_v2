@@ -32,7 +32,7 @@ in charge to get thumbnail
 
 \+ **new ThumbnailLoader**(`httpClient`: HttpClient): *[ThumbnailLoader](_src_app_core_loader_thumbnail_loader_.thumbnailloader.md)*
 
-Defined in src/app/core/loader/thumbnail-loader.ts:8
+Defined in src/app/core/loader/thumbnail-loader.ts:9
 
 **Parameters:**
 
@@ -48,7 +48,7 @@ Name | Type |
 
 • **httpClient**: *HttpClient*
 
-Defined in src/app/core/loader/thumbnail-loader.ts:8
+Defined in src/app/core/loader/thumbnail-loader.ts:9
 
 ## Methods
 
@@ -56,7 +56,7 @@ Defined in src/app/core/loader/thumbnail-loader.ts:8
 
 ▸ **load**(`url`: any): *Promise‹any›*
 
-Defined in src/app/core/loader/thumbnail-loader.ts:16
+Defined in src/app/core/loader/thumbnail-loader.ts:18
 
 **Parameters:**
 

@@ -465,7 +465,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * change Volume canal
      * set old value after unmute
      */
-    public changeVolumeCanal(value: string | number, volumeSide: string) {
+    public changeVolumeCanal(value: string | number, volumeSide: string, mute?: boolean) {
+        if (mute) {
+            if (volumeSide === 'r' && Number(value) === 0) {
+                this.oldVolumeRight = 0;
+            } else if (volumeSide === 'l' && Number(value) === 0) {
+                this.oldVolumeLeft = 0;
+            }
+        }
         if (Number(value) > 0) {
             if (volumeSide === 'r') {
                 this.oldVolumeRight = Number(value);
@@ -473,7 +480,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.oldVolumeLeft = Number(value);
             }
             value = 0;
-        } else if (Number(value) === 0) {
+        } else if (Number(value) === 0 && !mute) {
             if (volumeSide === 'r') {
                 value = this.oldVolumeRight;
             } else {
@@ -592,7 +599,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeSameVolumeState() {
         this.mediaPlayerElement.getMediaPlayer().withMergeVolume = !this.mediaPlayerElement.getMediaPlayer().withMergeVolume;
         if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
-            const v = Math.min(this.volumeRight, this.volumeLeft);
+            // const v = Math.min(this.volumeRight, this.volumeLeft);
+            const v = Math.max(this.volumeRight, this.volumeLeft);
             this.changeVolume(v);
             this.volumeLeft = v;
             this.volumeRight = v;
@@ -1181,8 +1189,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                                         event.target.style.paddingLeft = position.x + 'px';
                                         event.target.setAttribute('data-x', position.x);
                                         if (Number(playbackrate) !== 0) {
-                                            self.changePlaybackrate(playbackrate);
                                             event.stopImmediatePropagation();
+                                            setTimeout(() => self.changePlaybackrate(playbackrate), 350);
                                         }
                                     }
                                 }

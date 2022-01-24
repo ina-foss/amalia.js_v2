@@ -7,7 +7,7 @@
   height: 100%;
   position: relative;
   overflow: hidden;
-  font-family: $amalia-font-family;
+  font-family: $amalia-font-family !important;
   user-select: none;
   z-index: $amalia-default-z-index;
   padding: 0;
@@ -61,7 +61,7 @@
     top: 0;
     background-color: $amalia-ctrl-bar-bg-color;
     z-index: $amalia-context-menu-z-index;
-    font-family: $amalia-font-family;
+    font-family: $amalia-font-family !important;
     font-size: 11px;
     color: white;
 
@@ -106,7 +106,7 @@
     font-weight: bold;
     z-index: $amalia-error-z-index;
     text-align: center;
-    font-family: $amalia-font-family;
+    font-family: $amalia-font-family !important;
     .amalia-svg-error-size {
         color: $amalia-primary-color;
     }

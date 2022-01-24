@@ -3,13 +3,14 @@
 
 :host {
   z-index: $amalia-plugin-subtitle-z-index;
+  font-family: $amalia-font-family !important;
   div {
     z-index: $amalia-plugin-subtitle-z-index;
     position: absolute;
     padding: 0;
     margin: 0;
     text-align: center;
-    font-family: $amalia-font-family;
+    font-family: $amalia-font-family !important;
     background: $amalia-plugin-subtitle-bg;
     color: $amalia-plugin-subtitle-color;
     font-size: $amalia-plugin-subtitle-font-size;

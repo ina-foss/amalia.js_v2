@@ -115,7 +115,7 @@ Name | Type | Description |
 
 • **isMute**(): *boolean*
 
-Defined in src/app/core/media/media-element.ts:361
+Defined in src/app/core/media/media-element.ts:363
 
 Return true if is mute
 
@@ -405,7 +405,7 @@ Name | Type |
 
 ▸ **captureImage**(`scale`: number): *string*
 
-Defined in src/app/core/media/media-element.ts:380
+Defined in src/app/core/media/media-element.ts:382
 
 In charge to capture image
 
@@ -425,7 +425,7 @@ ___
 
 ▸ **getCurrentImage**(`scale`: any): *string*
 
-Defined in src/app/core/media/media-element.ts:539
+Defined in src/app/core/media/media-element.ts:541
 
 Return current image
 
@@ -455,7 +455,7 @@ ___
 
 ▸ **getDuration**(): *number*
 
-Defined in src/app/core/media/media-element.ts:335
+Defined in src/app/core/media/media-element.ts:337
 
 Return media duration with tc offset
 
@@ -502,7 +502,7 @@ ___
 
 ▸ **handleDurationchange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:466
+Defined in src/app/core/media/media-element.ts:468
 
 Invoked when the duration attribute has been updated.
 
@@ -514,7 +514,7 @@ ___
 
 ▸ **handleEnd**(): *void*
 
-Defined in src/app/core/media/media-element.ts:457
+Defined in src/app/core/media/media-element.ts:459
 
 Invoked when playback has stopped because the end of the media was reached.
 
@@ -526,7 +526,7 @@ ___
 
 ▸ **handleFullscreenChange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:512
+Defined in src/app/core/media/media-element.ts:514
 
 Invoked when the fullscreen state changed.
 
@@ -538,7 +538,7 @@ ___
 
 ▸ **handleLoadstart**(): *void*
 
-Defined in src/app/core/media/media-element.ts:425
+Defined in src/app/core/media/media-element.ts:427
 
 Invoked when first frame of the media has finished loading.
 
@@ -550,7 +550,7 @@ ___
 
 ▸ **handlePause**(): *void*
 
-Defined in src/app/core/media/media-element.ts:447
+Defined in src/app/core/media/media-element.ts:449
 
 Invoked when Playback has been paused.
 
@@ -562,7 +562,7 @@ ___
 
 ▸ **handlePlay**(): *void*
 
-Defined in src/app/core/media/media-element.ts:439
+Defined in src/app/core/media/media-element.ts:441
 
 Invoked when Playback has begun.
 
@@ -574,7 +574,7 @@ ___
 
 ▸ **handleResize**(): *void*
 
-Defined in src/app/core/media/media-element.ts:530
+Defined in src/app/core/media/media-element.ts:532
 
 Invoked when player resized
 
@@ -586,7 +586,7 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/core/media/media-element.ts:484
+Defined in src/app/core/media/media-element.ts:486
 
 Invoked when a seek operation completed.
 
@@ -598,7 +598,7 @@ ___
 
 ▸ **handleSeeking**(): *void*
 
-Defined in src/app/core/media/media-element.ts:493
+Defined in src/app/core/media/media-element.ts:495
 
 Invoked when a seek operation began.
 
@@ -610,7 +610,7 @@ ___
 
 ▸ **handleTimeupdate**(): *void*
 
-Defined in src/app/core/media/media-element.ts:475
+Defined in src/app/core/media/media-element.ts:477
 
 The time indicated by the currentTime attribute has been updated.
 
@@ -622,7 +622,7 @@ ___
 
 ▸ **handleVolumeChange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:502
+Defined in src/app/core/media/media-element.ts:504
 
 Invoked when the volume has changed.
 
@@ -634,7 +634,7 @@ ___
 
 ▸ **handleWaiting**(): *void*
 
-Defined in src/app/core/media/media-element.ts:522
+Defined in src/app/core/media/media-element.ts:524
 
 Invoked when  The volume has changed.
 
@@ -646,7 +646,7 @@ ___
 
 ▸ **initAudioChannelMerger**(): *void*
 
-Defined in src/app/core/media/media-element.ts:557
+Defined in src/app/core/media/media-element.ts:559
 
 In charge to init audio chanel merger
 
@@ -677,7 +677,7 @@ ___
 
 ▸ **initPlayerEvents**(): *void*
 
-Defined in src/app/core/media/media-element.ts:402
+Defined in src/app/core/media/media-element.ts:404
 
 In charge to init player events
 
@@ -689,7 +689,7 @@ ___
 
 ▸ **isPaused**(): *boolean*
 
-Defined in src/app/core/media/media-element.ts:309
+Defined in src/app/core/media/media-element.ts:311
 
 Return true if media is paused
 
@@ -703,7 +703,7 @@ ___
 
 ▸ **moveNextFrame**(`nbFrames`: number): *void*
 
-Defined in src/app/core/media/media-element.ts:317
+Defined in src/app/core/media/media-element.ts:319
 
 In charge to move next number of frame
 
@@ -721,7 +721,7 @@ ___
 
 ▸ **movePrevFrame**(`nbFrames`: number): *void*
 
-Defined in src/app/core/media/media-element.ts:326
+Defined in src/app/core/media/media-element.ts:328
 
 In charge to move prev number of frame
 
@@ -751,7 +751,7 @@ ___
 
 ▸ **muteUnmute**(): *void*
 
-Defined in src/app/core/media/media-element.ts:368
+Defined in src/app/core/media/media-element.ts:370
 
 Return player instance
 
@@ -785,7 +785,7 @@ ___
 
 ▸ **playPause**(): *void*
 
-Defined in src/app/core/media/media-element.ts:391
+Defined in src/app/core/media/media-element.ts:393
 
 Play if paused, if paused play
 
@@ -797,7 +797,7 @@ ___
 
 ▸ **seekToBegin**(): *void*
 
-Defined in src/app/core/media/media-element.ts:344
+Defined in src/app/core/media/media-element.ts:346
 
 Set current time to the beginning of the file
 
@@ -813,7 +813,7 @@ ___
 
 ▸ **seekToEnd**(): *void*
 
-Defined in src/app/core/media/media-element.ts:352
+Defined in src/app/core/media/media-element.ts:354
 
 Set current time to the end of the file
 
@@ -902,7 +902,7 @@ ___
 
 ▸ **setupAudioNodes**(`data`: any): *void*
 
-Defined in src/app/core/media/media-element.ts:576
+Defined in src/app/core/media/media-element.ts:578
 
 Set Audio Nodes
 
