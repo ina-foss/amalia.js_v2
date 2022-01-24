@@ -275,7 +275,7 @@ ___
 
 ###  getThumbnailUrl
 
-▸ **getThumbnailUrl**(`tc`: number, `onhover?`: boolean): *string*
+▸ **getThumbnailUrl**(`tc`: number, `onHover?`: boolean): *string*
 
 Defined in src/app/core/media-player-element.ts:195
 
@@ -286,7 +286,7 @@ Return thumbnail base url
 Name | Type | Description |
 ------ | ------ | ------ |
 `tc` | number | time code  |
-`onhover?` | boolean | - |
+`onHover?` | boolean | - |
 
 **Returns:** *string*
 

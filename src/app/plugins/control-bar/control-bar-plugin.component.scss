@@ -2,7 +2,7 @@
 @import '../../core/styles/variables';
 
 :host {
-  font-family: $amalia-font-family;
+  font-family: $amalia-font-family !important;
   .icon {
     color: white;
   }

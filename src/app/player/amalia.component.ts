@@ -430,7 +430,7 @@ export class AmaliaComponent implements OnInit {
             if (this.previewThumbnailUrl) {
                 this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
                     if (typeof (blob) !== 'undefined') {
-                        this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
+                        // this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
                     }
                 });
             }

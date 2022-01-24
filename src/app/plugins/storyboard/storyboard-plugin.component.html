@@ -1,16 +1,17 @@
 <ng-container *ngIf="theme==='v'">
     <div #headerElement>
-        <div class="interval" (click)="openIntervalList = true" (mouseleave)="openIntervalList = false">
-            <p class="label"><strong>Intervalle: </strong> <span
-                    class="selected">{{selectedInterval[1]}}
-                    <span *ngIf="selectedInterval[1] < 60 && selectedInterval[0] == 'tc'">{{second}}<span *ngIf="selectedInterval[1] > 1">s</span></span>
+        <div class="interval" (mouseleave)="openIntervalList = false">
+            <p class="label" (click)="toggleList()"><strong>Intervalle: </strong>
+                <span class="selected" *ngIf="(selectedInterval[1] < 60 && selectedInterval[0] == 'tc') || selectedInterval[0] == 'frame'">{{selectedInterval[1]}}&nbsp;</span>
+                <span class="selected" *ngIf="(selectedInterval[1] >= 60 && selectedInterval[0] == 'tc') || selectedInterval[0] == 'frame'">{{selectedInterval[1] |tcFormat:'minutes'}}&nbsp;</span>
+                <span *ngIf="selectedInterval[1] < 60 && selectedInterval[0] == 'tc'">{{second}}<span *ngIf="selectedInterval[1] > 1">s</span></span>
                     <span *ngIf="selectedInterval[1] >= 60 && selectedInterval[0] == 'tc'">{{minute}}<span *ngIf="selectedInterval[1] > 60">s</span></span>
-                    <span *ngIf="selectedInterval[0] == 'frame'"> {{images}} </span></span>
+                    <span *ngIf="selectedInterval[0] == 'frame'"> {{images}} </span>
                 <svg class="amalia-svg-down icon" [ngClass]="{'active':openIntervalList}">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
                 </svg>
             </p>
-            <ul [hidden]="!openIntervalList">
+            <ul [ngClass]="{'active':openIntervalList}">
                 <li class="label">Temps :</li>
                 <li class="tc" *ngFor="let tci of tcIntervals"
                     [ngClass]="{'selected':(selectedInterval[0]=='tc'&&selectedInterval[1]==tci)}"
@@ -46,7 +47,7 @@
 </ng-container>
 <!-- Storyboard Horizontal --->
 <ng-container *ngIf="theme==='h'">
-    <div class="interval-h" (click)="openIntervalList = true" (mouseleave)="openIntervalList = false">
+    <div class="interval-h" (click)="toggleList()" (mouseleave)="openIntervalList = false">
         <p class="label"><strong>Intervalle: </strong> <span
                 class="selected">{{selectedInterval[1]}} {{(selectedInterval[0] == 'tc' ? 'Secondes' : 'Images')}}</span>
             <svg class="amalia-svg-down icon">

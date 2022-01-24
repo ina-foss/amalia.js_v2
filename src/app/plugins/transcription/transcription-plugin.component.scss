@@ -3,7 +3,7 @@
 
 :host {
   position: relative;
-  font-family: $amalia-font-family;
+  font-family: $amalia-font-family !important;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -61,10 +61,10 @@
     overflow-y: auto;
     min-height: 0;
     scrollbar-color: #0086B1 #DDD;
-    scrollbar-width: 6px;
+    scrollbar-width: 12px;
     // style scrollbar
     &::-webkit-scrollbar {
-      width: 6px;
+      width: 12px;
     }
 
     &::-webkit-scrollbar-track {

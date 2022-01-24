@@ -40,6 +40,7 @@ In  charge to handle HSL Media extension
 * [handleAudioChannelChange](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleaudiochannelchange)
 * [handleError](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#handleerror)
 * [handleOnManifestLoaded](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleonmanifestloaded)
+* [logError](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#logerror)
 * [setSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setsrc)
 * [switchSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-switchsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#switchtobackwardssrc)
@@ -161,7 +162,7 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:15
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:128
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:135
 
 **Returns:** *void*
 
@@ -173,7 +174,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:99
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:100
 
 **Returns:** *string | MediaStream | MediaSource | Blob | null*
 
@@ -197,7 +198,7 @@ ___
 
 ▸ **handleAudioChannelChange**(`event`: any): *void*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:165
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:183
 
 Invoked on channel change
 
@@ -217,7 +218,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:138
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:145
 
 Invoked when error events
 
@@ -235,9 +236,25 @@ ___
 
 ▸ **handleOnManifestLoaded**(): *void*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:152
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:159
 
 Invoked when manifest loaded
+
+**Returns:** *void*
+
+___
+
+###  logError
+
+▸ **logError**(`data`: any): *void*
+
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:129
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`data` | any |
 
 **Returns:** *void*
 

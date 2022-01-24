@@ -1,9 +1,13 @@
 [Amalia](../README.md) › [Globals](../globals.md) › ["src/app/core/mse/hls/hls-custom-f-loader"](../modules/_src_app_core_mse_hls_hls_custom_f_loader_.md) › [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md)
 
-# Class: HlsCustomFLoader
+# Class: HlsCustomFLoader <**T**>
 
 Specified custom loader when uses switch channel audio,  loader  retry to load audio channel segment
 // TODO fix Audio channel
+
+## Type parameters
+
+▪ **T**: *LoaderContext*
 
 ## Hierarchy
 
@@ -20,6 +24,9 @@ Specified custom loader when uses switch channel audio,  loader  retry to load a
 ### Properties
 
 * [_audioChannel](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#_audiochannel)
+* [context](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#context)
+* [getCacheAge](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#optional-getcacheage)
+* [stats](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#stats)
 
 ### Accessors
 
@@ -35,9 +42,7 @@ Specified custom loader when uses switch channel audio,  loader  retry to load a
 
 ###  constructor
 
-\+ **new HlsCustomFLoader**(`config`: LoaderConfig): *[HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md)*
-
-*Overrides void*
+\+ **new HlsCustomFLoader**(`config`: any): *[HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md)*
 
 Defined in src/app/core/mse/hls/hls-custom-f-loader.ts:7
 
@@ -45,7 +50,7 @@ Defined in src/app/core/mse/hls/hls-custom-f-loader.ts:7
 
 Name | Type |
 ------ | ------ |
-`config` | LoaderConfig |
+`config` | any |
 
 **Returns:** *[HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md)*
 
@@ -56,6 +61,48 @@ Name | Type |
 • **_audioChannel**: *number* = 1
 
 Defined in src/app/core/mse/hls/hls-custom-f-loader.ts:30
+
+___
+
+###  context
+
+• **context**: *T*
+
+*Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[context](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#context)*
+
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2092
+
+___
+
+### `Optional` getCacheAge
+
+• **getCacheAge**? : *function*
+
+*Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[getCacheAge](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#optional-getcacheage)*
+
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2091
+
+`getCacheAge()` is called by hls.js to get the duration that a given object
+has been sitting in a cache proxy when playing live.  If implemented,
+this should return a value in seconds.
+
+For HTTP based loaders, this should return the contents of the "age" header.
+
+**`returns`** time object being lodaded
+
+#### Type declaration:
+
+▸ (): *number | null*
+
+___
+
+###  stats
+
+• **stats**: *LoaderStats*
+
+*Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[stats](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#stats)*
+
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2093
 
 ## Accessors
 
@@ -87,9 +134,7 @@ Name | Type |
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[abort](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#abort)*
 
-Defined in node_modules/@types/hls.js/index.d.ts:116
-
-Abort any loading in progress.
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2080
 
 **Returns:** *void*
 
@@ -101,9 +146,7 @@ ___
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[destroy](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#destroy)*
 
-Defined in node_modules/@types/hls.js/index.d.ts:120
-
-Destroy loading context.
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2079
 
 **Returns:** *void*
 
@@ -111,20 +154,18 @@ ___
 
 ###  load
 
-▸ **load**(`context`: LoaderContext, `config`: LoaderConfig, `callbacks`: LoaderCallbacks): *void*
+▸ **load**(`context`: LoaderContext, `config`: LoaderConfiguration, `callbacks`: LoaderCallbacks‹T›): *void*
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[load](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#load)*
 
-Defined in node_modules/@types/hls.js/index.d.ts:108
-
-Start retrieving content located at given URL (HTTP GET).
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2081
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `context` | LoaderContext |
-`config` | LoaderConfig |
-`callbacks` | LoaderCallbacks |
+`config` | LoaderConfiguration |
+`callbacks` | LoaderCallbacks‹T› |
 
 **Returns:** *void*

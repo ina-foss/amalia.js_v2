@@ -1,7 +1,7 @@
 {
   "player": {
-    "src" : "http://localhost:4201/medias/video.m3u8",
-    "backwardsSrc":"",
+    "src" : "http://localhost:4201/medias/vid.m3u8",
+    "backwardsSrc":"http://localhost:4201/medias/vid.m3u8",
     "crossOrigin": "anonymous",
     "ratio": "16:8",
     "hls": {
