@@ -81,6 +81,7 @@
 * [seekToTc](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#seektotc)
 * [selectThumbnail](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#selectthumbnail)
 * [selectedThumbnailSize](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#selectedthumbnailsize)
+* [toggleList](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#togglelist)
 * [updateSynchro](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#updatesynchro)
 * [updateThumbnailSize](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#private-updatethumbnailsize)
 
@@ -538,7 +539,7 @@ ___
 
 ▸ **getWindowWidth**(): *any*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:288
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:293
 
 Get width window
 
@@ -550,7 +551,7 @@ ___
 
 ▸ **handleDurationChange**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:224
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:226
 
 Invoked on duration change
 
@@ -628,7 +629,7 @@ ___
 
 ▸ **scrollToActiveThumbnail**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:302
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:307
 
 Invoked on click button synchro
 
@@ -640,7 +641,7 @@ ___
 
 ▸ **scrollToThumbnail**(`thumbnailNode`: HTMLElement): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:264
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:269
 
 Invoked to scroll to thumbnail
 
@@ -676,7 +677,7 @@ ___
 
 ▸ **selectThumbnail**(`tc`: number): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:243
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:248
 
 Select Thumbnail
 
@@ -694,7 +695,7 @@ ___
 
 ▸ **selectedThumbnailSize**(`type`: string, `tc`: number): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:215
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:216
 
 handle change thumbnail size
 
@@ -704,6 +705,18 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `type` | string | type interval |
 `tc` | number | time code  |
+
+**Returns:** *void*
+
+___
+
+###  toggleList
+
+▸ **toggleList**(): *void*
+
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:320
+
+Toggle openList
 
 **Returns:** *void*
 
@@ -725,7 +738,7 @@ ___
 
 ▸ **updateThumbnailSize**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:231
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:234
 
 Handle interval
 

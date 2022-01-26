@@ -350,7 +350,7 @@
                             <li class="playbackrate-value"
                             *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
                             [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
-                            (click)="changePlaybackrate(pr)" attr.data="{{pr}}">{{pr}}x</li>
+                            (click)="changePlaybackrate(pr, true)" attr.data="{{pr}}">{{pr}}x</li>
                     </ul>
                  </div>
                  <div class="playbackratestep"
@@ -361,7 +361,7 @@
                          <li class="playbackrate-value"
                              *ngFor="let pr of sliderListOfPlaybackRateStep;index as i; first as isFirst; last as isLast;"
                              [ngClass]="{'first':isFirst,'last':isLast,'active':pr == currentPlaybackRateSlider}"
-                             (click)="changePlaybackrate(pr)" attr.data="{{pr}}">{{pr}}x</li>
+                             (click)="changePlaybackrate(pr, true)" attr.data="{{pr}}">{{pr}}x</li>
                      </ul>
                  </div>
                 <!--<div #dragThumb class="thumb">.<div class="line"></div><div class="second-line"></div><div class="last-line"></div></div>-->
