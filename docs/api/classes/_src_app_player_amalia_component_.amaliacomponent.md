@@ -250,7 +250,7 @@ ___
 
 ###  inLoading
 
-• **inLoading**: *boolean* = false
+• **inLoading**: *boolean* = true
 
 Defined in src/app/player/amalia.component.ts:165
 

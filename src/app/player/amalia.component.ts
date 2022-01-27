@@ -162,7 +162,7 @@ export class AmaliaComponent implements OnInit {
     /**
      * true when player load content
      */
-    public inLoading = true;
+    public inLoading = false;
 
     /**
      * true when player load content
@@ -443,7 +443,7 @@ export class AmaliaComponent implements OnInit {
      */
     private onInitConfig(state: PlayerState) {
         this.state = state;
-        this.inLoading = true;
+        this.inLoading = false;
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
         this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || '16:8';
@@ -457,7 +457,7 @@ export class AmaliaComponent implements OnInit {
      */
     private onErrorInitConfig(state: PlayerState) {
         this.state = state;
-        this.inLoading = true;
+        this.inLoading = false;
         this.inError = true;
         this.logger.error(`Error to initialize player.`);
     }

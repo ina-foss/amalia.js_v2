@@ -93,7 +93,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:23
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:24
 
 **Parameters:**
 
@@ -132,7 +132,7 @@ ___
 
 • **active**: *boolean* = false
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:78
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:79
 
 state of hover cursor
 
@@ -142,7 +142,7 @@ ___
 
 • **currentTime**: *number*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:38
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:39
 
 Return  current time
 
@@ -152,7 +152,7 @@ ___
 
 • **cursorPosition**: *number* = 0
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:66
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:67
 
 Cursor position
 
@@ -162,7 +162,7 @@ ___
 
 • **cursorZoomPosition**: *number* = 0
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:70
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:71
 
 Cursor zoom position
 
@@ -172,7 +172,7 @@ ___
 
 • **displayState**: *any*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:104
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:105
 
 Plugin display state
 
@@ -182,7 +182,7 @@ ___
 
 • **duration**: *number*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:42
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:43
 
 Media duration
 
@@ -202,7 +202,7 @@ ___
 
 • **histogramContainerElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:87
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:88
 
 html element histogramContainer
 
@@ -212,7 +212,7 @@ ___
 
 • **histogramPosition**: *number* = 0
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:54
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:55
 
 Zoomed histogram histogram
 
@@ -222,7 +222,7 @@ ___
 
 • **histograms**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:91
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:92
 
 ___
 
@@ -230,7 +230,7 @@ ___
 
 • **httpClient**: *HttpClient*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:23
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:24
 
 ___
 
@@ -248,7 +248,7 @@ ___
 
 • **isplaying**: *boolean*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:34
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:35
 
 state of video
 
@@ -258,7 +258,7 @@ ___
 
 • **label**: *any*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:100
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:101
 
 ___
 
@@ -266,7 +266,7 @@ ___
 
 • **listOfHistograms**: *Array‹object›*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:74
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:75
 
 list of histograms
 
@@ -296,7 +296,7 @@ ___
 
 • **minZoomSize**: *number* = 1
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:62
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:63
 
 Min zoom size 10% of container width
 
@@ -306,7 +306,7 @@ ___
 
 • **moving**: *boolean* = false
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:82
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:83
 
 state of histograms
 
@@ -356,7 +356,7 @@ ___
 
 • **position**: *number*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:97
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:98
 
 Mouse Positions
 
@@ -366,7 +366,7 @@ ___
 
 • **sliderElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:89
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:90
 
 ___
 
@@ -374,7 +374,7 @@ ___
 
 • **sliderPosition**: *number* = 0
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:50
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:51
 
 left slider position
 
@@ -384,7 +384,7 @@ ___
 
 • **style**: *string* = 'translate('  + this.sliderPosition + 'px)'
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:99
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:100
 
 ___
 
@@ -412,7 +412,7 @@ ___
 
 • **withFocus**: *boolean* = false
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:46
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:47
 
 Enable focus container
 
@@ -422,7 +422,7 @@ ___
 
 • **zoomSize**: *number* = 10
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:58
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:59
 
 zoom size 10% of container width
 
@@ -432,7 +432,7 @@ ___
 
 • **zoomedHistograms**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:93
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:94
 
 ___
 
@@ -440,7 +440,7 @@ ___
 
 • **zoomedWidth**: *any*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:98
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:99
 
 ___
 
@@ -448,7 +448,7 @@ ___
 
 ▪ **PLUGIN_NAME**: *string* = "HISTOGRAM"
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:22
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:23
 
 ## Accessors
 
@@ -508,7 +508,7 @@ Name | Type |
 
 ▸ **drawHistogram**(`nbBins`: number, `posBins`: string, `negBins`: string, `posMax`: number, `negMax`: number, `mirror`: boolean, `zoomed`: any, `label?`: any): *object*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:114
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:115
 
 Handle draw histogram return tuple with positive bins and negative bins
 In charge to create svg paths
@@ -546,7 +546,7 @@ ___
 
 ▸ **drawHistograms**(`histograms`: Array‹[Histogram](../interfaces/_src_app_core_metadata_model_histogram_.histogram.md)›): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:184
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:185
 
 Handle draw histogram
 
@@ -566,7 +566,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:174
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:175
 
 Return default config
 
@@ -578,7 +578,7 @@ ___
 
 ▸ **getZoomedWidth**(`width`: any, `zoom`: any): *number*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:321
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:322
 
 return zoomed svg Width
 
@@ -597,7 +597,7 @@ ___
 
 ▸ **handleCursorMove**(`currentTime`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:220
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:221
 
 Invoked cursor move event
 
@@ -615,7 +615,7 @@ ___
 
 ▸ **handleDisplayState**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:496
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:497
 
 switch container class based on width
 
@@ -627,7 +627,7 @@ ___
 
 ▸ **handleHistogramsClick**(`event`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:239
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:240
 
 **Parameters:**
 
@@ -643,7 +643,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:340
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:341
 
 Invoked on metadata loaded
 
@@ -655,7 +655,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:331
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:332
 
 Invoked on duration change
 
@@ -667,7 +667,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:212
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:213
 
 Invoked time change event
 
@@ -679,7 +679,7 @@ ___
 
 ▸ **handleWindowResize**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:504
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:505
 
 update all scales on window resize
 
@@ -693,7 +693,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:162
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:163
 
 **Returns:** *void*
 
@@ -703,7 +703,7 @@ ___
 
 ▸ **initSliderEvents**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:355
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:356
 
 slider events
 
@@ -715,7 +715,7 @@ ___
 
 ▸ **initializeCursors**(): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:252
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:253
 
 Initialize cursors
 
@@ -729,7 +729,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:157
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:158
 
 **Returns:** *void*
 
@@ -739,7 +739,7 @@ ___
 
 ▸ **onContextMenu**(`event`: MouseEvent): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:515
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:516
 
 Invoked on click context menu
 
@@ -759,7 +759,7 @@ ___
 
 ▸ **updateCursors**(`currentTime`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:284
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:285
 
 update slider position
 
@@ -777,7 +777,7 @@ ___
 
 ▸ **updateTimeCursors**(`currentTime`: any, `ratio`: any, `start`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:263
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:264
 
 update time cursor
 
@@ -797,7 +797,7 @@ ___
 
 ▸ **updateZoomedSvg**(`onlyResized`: any): *void*
 
-Defined in src/app/plugins/histogram/histogram-plugin.component.ts:447
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:448
 
 update scale of zoomed svg on zoom resize
 
