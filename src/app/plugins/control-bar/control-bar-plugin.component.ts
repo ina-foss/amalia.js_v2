@@ -582,7 +582,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public onChangePlaybackRate(value) {
         this.currentPlaybackRate = value;
-        this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
         if (this.currentPlaybackRate < 1 && this.currentPlaybackRate > -1) {
             this.currentPlaybackRateSlider = (this.currentPlaybackRate);
         } else {
@@ -591,6 +590,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.mediaPlayerElement.getMediaPlayer().isPaused() && value !== 1) {
             this.mediaPlayerElement.getMediaPlayer().play();
         }
+        this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
     }
 
     /**
@@ -841,7 +841,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private changePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
-        this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+        setTimeout(() => this.selectActivePlaybackrate(), 10);
+        // this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
     /**
@@ -882,7 +883,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().play();
         }
         this.currentPlaybackRate = playbackRate;
-        setTimeout(() => this.selectActivePlaybackrate(), 10);
+        if (playbackRate === 1) {
+            setTimeout(() => this.selectActivePlaybackrate(), 10);
+        }
+        // setTimeout(() => this.selectActivePlaybackrate(), 10);
         if (this.currentPlaybackRate >= 1 || this.currentPlaybackRate <= -1) {
             this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
         } else {
@@ -1190,7 +1194,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                                         event.target.setAttribute('data-x', position.x);
                                         if (Number(playbackrate) !== 0) {
                                             event.stopImmediatePropagation();
-                                            setTimeout(() => self.changePlaybackrate(playbackrate), 350);
+                                            // self.mediaPlayerElement.getMediaPlayer().playbackRate = Number(playbackrate);
+                                            self.changePlaybackrate(playbackrate);
                                         }
                                     }
                                 }
@@ -1260,26 +1265,25 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.indexPlaybackRate = value;
         if (value !== 0) {
             this.onChangePlaybackRate(pr);
+        } else {
+            this.mediaPlayerElement.getMediaPlayer().pause();
         }
     }
 
     @AutoBind
-    public changePlaybackrate(pr) {
+    public changePlaybackrate(pr, click?) {
         if (pr !== 0) {
             if (Math.sign(pr) === 1) {
-                for (let i = 0; i < this.posPlaybackrates.length; i++) {
-                    if (this.posPlaybackrates[i] === pr) {
-                        this.indexPlaybackRate = i;
-                    }
-                }
+                this.indexPlaybackRate = this.posPlaybackrates.indexOf(pr);
             } else if (Math.sign(pr) === -1) {
-                for (let i = 0; i < this.negPlaybackrates.length; i++) {
-                    if (this.negPlaybackrates[i] === pr) {
-                        this.indexPlaybackRate = -1 * (i + 1);
-                    }
-                }
+                this.indexPlaybackRate = -1 * (this.negPlaybackrates.indexOf(pr) + 1);
             }
             this.onChangePlaybackRate(pr);
+        } else {
+            this.mediaPlayerElement.getMediaPlayer().pause();
+        }
+        if (click) {
+            setTimeout(() => this.selectActivePlaybackrate(), 10);
         }
     }
 
