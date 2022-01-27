@@ -79,7 +79,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
     @AutoBind
     handleError(event): void {
         this.logger.error('Error to load source', event);
-        this.eventEmitter.emit(PlayerEventType.ERROR);
+        this.eventEmitter.emit(PlayerEventType.ERROR, 'Votre média n\'a pas pu être chargé dans le player');
     }
 
 }

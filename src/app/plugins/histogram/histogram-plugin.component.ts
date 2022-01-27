@@ -162,6 +162,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     init() {
         super.init();
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_BEGIN);
         this.handleDisplayState();
         this.withFocus = this.pluginConfiguration.data.withFocus;
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -341,12 +342,17 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     private handleMetadataLoaded() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
+        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds}`);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
-            this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-            this.initSliderEvents();
-            this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
+            if (metadataManager.getHistograms(handleMetadataIds).length > 0) {
+                this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_END);
+                this.initSliderEvents();
+            } else {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargés');
+            }
         }
     }
     /**

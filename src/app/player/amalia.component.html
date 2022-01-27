@@ -14,7 +14,7 @@
     <svg class="amalia-svg-error-size icon">
         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#error'"></use>
     </svg>
-    <p>Une erreur technique est survenue.<br>Votre média n'a pas pu être chargé dans le player</p>
+    <p>Une erreur technique est survenue.<br>{{errorMessage}}</p>
 </div>
 <div #contextMenu (mouseleave)="contextMenuState=false" [hidden]="!contextMenuState" class="context-menu">
     <ul>

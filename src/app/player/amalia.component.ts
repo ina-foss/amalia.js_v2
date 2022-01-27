@@ -165,7 +165,7 @@ export class AmaliaComponent implements OnInit {
     public inLoading = false;
 
     /**
-     * true when player load content
+     * true when error
      */
     public inError = false;
 
@@ -215,6 +215,10 @@ export class AmaliaComponent implements OnInit {
     public thumbnailBlobVideo;
 
     public debounceFunction;
+    /**
+     * Message d'erreur
+     */
+    public errorMessage;
 
     constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, sanitizer: DomSanitizer) {
         this.httpClient = httpClient;
@@ -339,11 +343,20 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_LOADING_BEGIN, this.handleLoading);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_LOADING_END, this.handleLoadingEnd);
         this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
         document.addEventListener('click', this.hideControlsMenuOnClickDocument);
 
     }
-
+    @AutoBind
+    public handleLoading() {
+       this.inLoading = true;
+    }
+    @AutoBind
+    public handleLoadingEnd() {
+        this.inLoading = false;
+    }
     @AutoBind
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
@@ -384,6 +397,7 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     private handleError(event: any) {
         this.inError = true;
+        this.errorMessage = event;
         this.logger.error('Error', event);
     }
 
