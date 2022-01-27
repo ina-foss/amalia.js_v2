@@ -81,20 +81,7 @@
     }
   }
 
-  .loader {
-    color: white;
-    position: absolute;
-    z-index: 1;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-    top: 50%;
-    font-size: 100px;
-    margin-top: -50px;
-    background-color: #2b91af;
-  }
-
-  .error {
+  .error, .loader  {
     position: absolute;
     top: 0;
     width: 100%;
@@ -110,9 +97,32 @@
     .amalia-svg-error-size {
         color: $amalia-primary-color;
     }
-
     svg {
       margin-top: 10%;
+    }
+  }
+  .loader {
+    .spinner {
+      width: 100%;
+      height: 100%;
+      // margin-top: 10%;
+      &:after {
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #00b0e8;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        content: " ";
+        margin: 0 auto;
+        display: block;
+        /*width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 6px solid #00b0e8;
+        border-color: #00b0e8 transparent #00b0e8 transparent;
+        animation: spin 1.2s linear infinite;*/
+      }
     }
   }
 
@@ -142,6 +152,15 @@
       }
     }
   }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
 }
 
 

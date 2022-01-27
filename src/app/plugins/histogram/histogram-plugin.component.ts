@@ -10,6 +10,7 @@ import {Histogram} from '../../core/metadata/model/histogram';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {HttpClient} from '@angular/common/http';
 import {AmaliaException} from '../../core/exception/amalia-exception';
+import {LABEL} from '../../core/constant/labels';
 import interact from 'interactjs';
 
 @Component({
@@ -192,9 +193,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     zoomed = true;
                 }
                 if (index % 2 === 0) {
-                    this.label = 'Canal Gauche';
+                    this.label = LABEL.LEFT_CANAL;
                 } else {
-                    this.label = 'Canal Droit';
+                    this.label = LABEL.RIGHT_CANAL;
                 }
                 const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
                     zoomed , this.label);
@@ -338,13 +339,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     @AutoBind
     private handleMetadataLoaded() {
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        this.initSliderEvents();
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
         this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds}`);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+            this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+            this.initSliderEvents();
             this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
         }
     }
@@ -503,7 +504,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public handleWindowResize() {
         this.handleDisplayState();
-        this.listOfHistograms = [];
+        // this.listOfHistograms = [];
         this.handleMetadataLoaded();
         // this.updateZoomedSvg(false);
     }
