@@ -440,11 +440,11 @@ export class AmaliaComponent implements OnInit {
      */
     private setPreviewThumbnail(tc: number) {
         if (!isNaN(tc) && this.enableThumbnail) {
-            this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(Math.round(tc));
+            this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
             if (this.previewThumbnailUrl) {
                 this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
                     if (typeof (blob) !== 'undefined') {
-                        // this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
+                        this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
                     }
                 });
             }

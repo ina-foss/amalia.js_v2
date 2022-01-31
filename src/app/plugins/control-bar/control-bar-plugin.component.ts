@@ -395,6 +395,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.movePrevFrame(frames);
                 break;
             case 'backward-frame':
+                mediaPlayer.pause();
                 mediaPlayer.movePrevFrame(1);
                 break;
             case 'backward-start':
@@ -420,6 +421,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.moveNextFrame(frames);
                 break;
             case 'forward-frame':
+                mediaPlayer.pause();
                 mediaPlayer.moveNextFrame(1);
                 break;
             case 'forward-end':
