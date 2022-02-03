@@ -216,7 +216,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.pluginConfiguration.data.mode === 1) {
                 filteredNodes = elementNodes
                     .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+                        && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
             } else {
                  filteredNodes = elementNodes
                     .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
@@ -231,7 +231,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         //
                     }
                     if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime <= parseFloat(n.getAttribute('data-tcout'))) {
+                    && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
                         n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     }
                 });
@@ -293,6 +293,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.ignoreNextScroll && !visible) {
                 this.ignoreNextScroll = false;
             }
+            if (this.currentTime === 0) {
+                this.transcriptionElement.nativeElement.scrollTop = 0;
+            }
             // scroll to node if he's not visible
             if (this.autoScroll) {
                 if (!(visible)) {
@@ -300,7 +303,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         this.transcriptionElement.nativeElement.scrollTop =  scrollPos  - minScroll;
                     } else {
                         if (scrollPos > scrollNode.clientHeight) {
-                            this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
+                            // console.log('ici');
+                            // this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
+                            this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         } else {
                             this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         }
