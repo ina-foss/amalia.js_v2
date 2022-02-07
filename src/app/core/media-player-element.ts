@@ -42,6 +42,9 @@ export class MediaPlayerElement {
 
     get aspectRatio() {
         this._aspectRatio = this.getConfiguration().player.ratio;
+        if (this._aspectRatio !== '16:9' && this._aspectRatio !== '4:3') {
+            this._aspectRatio = '16:9';
+        }
         return this._aspectRatio;
     }
 

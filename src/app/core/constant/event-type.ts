@@ -181,5 +181,13 @@ export enum PlayerEventType {
     /**
      * Invocked to clear interval
      */
-    PLAYBACK_CLEAR_INTERVAL = 'ina.player.PLAYBACK_CLEAR_INTERVAL'
+    PLAYBACK_CLEAR_INTERVAL = 'ina.player.PLAYBACK_CLEAR_INTERVAL',
+    /**
+     * Loading begin
+     */
+    PLAYER_LOADING_BEGIN = 'ina.player.PLAYER_LOADING_BEGIN',
+    /**
+     * Loading END
+     */
+    PLAYER_LOADING_END = 'ina.player.PLAYER_LOADING_BEGIN_END',
 }
