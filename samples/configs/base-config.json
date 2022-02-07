@@ -2,7 +2,8 @@
   "debug": true,
   "logLevel": "debug",
   "player": {
-    "src": "http://localhost:4201/medias/flux.mp3",
+    "src": "http://localhost:4201/medias/FPVDB07032005.m3u8",
+    "backwardsSrc": "http://localhost:4201/medias/FPVDB07032005-inverse.m3u8",
     "crossOrigin": "anonymous",
     "autoplay": false
   },
@@ -31,10 +32,13 @@
       "url": "http://localhost:4201/metadata/sound_segments.json"
     },{
       "url": "http://localhost:8001/api/video/amalia/286941?clientType=SEGMENTATION-P1"
+    },
+    {
+      "url": "http://localhost:4201/metadata/FPVDB07032005.json"
     }
   ],
   "thumbnail": {
-    "baseUrl": "https://picsum.photos/id/237/200/300",
+    "baseUrl": "https://image.wsmedia.d.sas.ina/thumbs/5xjt4ZG3gCNHzy+FGMs4/OjyT6fbaxfOCsjRRkHqPbN2GuRv2NAD4a3PKlDHl+vfkFPbO7ucDjAX3RQIQt53JEI/BlORk7Y2fKLH2PgdtXD1RNEpNMwai+FyZHyr2Z6zKHCAnZH3f3yctgAFoxez5HovC8MA5vKSR1Hd1DTulaUcksmJVHdT2W0y/sDCWff6HULuq9l+MLqiL+1OasdKiYJpH8iiFJcij/9qCbCrlREQSYWfWXoETUAuYiRJzrTRW0ZDhSPC8Dl2eI9Z2xVuCWH2BHfMj6qe7bxf3VbxpmoeuuZ7+gJmkwdjuZcS0P/fP6VGmOcUtmhlbiUKckqFfPGRrTVj+kDKHdvZ+Xi+b7K1qaoCAooa6jYatDUTSJDue3gfQ/mtkBoPTzWE102ln5A+BdJh1LPgnBNEH6uISC0bibOu4ZqDaYfJT3OJ8x/Muso6nYA0Hcpa4AFiQoSXJ7sI8AuDbKqwUhjogMrDy51fe5ZVOqrF5wbIX1DKz8AmDlxalGSsNbmU24/oljeszx+qoEtRiCCj/4cb4jhKdmaJa8kmkd2Uih9mSqrs+WLFfxpjSn56E5sCnmWfjtR6o6A/g9YOj8C3eoPrjThclG/0pDAOv41ELoaxiyKLBmODhObTjLj9oW8s35bNQl/jRka4VCf1hj6DR1ahSEiHzw9nRVkM3ka70MAajZGSk8bopr1yH5vmQ2MO0pSWez6v7g==/sl_iv/YXtyIP/ucQMbF3I928quYQ==/sl_hm/",
     "enableThumbnail": true,
     "tcParam": "start"
   },

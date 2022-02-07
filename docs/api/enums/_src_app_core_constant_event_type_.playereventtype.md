@@ -32,6 +32,8 @@ Player event type
 * [PLAYBACK_CLEAR_INTERVAL](_src_app_core_constant_event_type_.playereventtype.md#playback_clear_interval)
 * [PLAYBACK_RATE_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#playback_rate_change)
 * [PLAYBACK_RATE_IMAGES_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#playback_rate_images_change)
+* [PLAYER_LOADING_BEGIN](_src_app_core_constant_event_type_.playereventtype.md#player_loading_begin)
+* [PLAYER_LOADING_END](_src_app_core_constant_event_type_.playereventtype.md#player_loading_end)
 * [PLAYER_MOUSE_ENTER](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_enter)
 * [PLAYER_MOUSE_LEAVE](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_leave)
 * [PLAYER_RESIZED](_src_app_core_constant_event_type_.playereventtype.md#player_resized)
@@ -291,6 +293,26 @@ ___
 Defined in src/app/core/constant/event-type.ts:180
 
 Invocked to scroll images when changing playbackrate
+
+___
+
+###  PLAYER_LOADING_BEGIN
+
+• **PLAYER_LOADING_BEGIN**: = "ina.player.PLAYER_LOADING_BEGIN"
+
+Defined in src/app/core/constant/event-type.ts:188
+
+Loading begin
+
+___
+
+###  PLAYER_LOADING_END
+
+• **PLAYER_LOADING_END**: = "ina.player.PLAYER_LOADING_BEGIN_END"
+
+Defined in src/app/core/constant/event-type.ts:192
+
+Loading END
 
 ___
 

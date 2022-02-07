@@ -60,10 +60,10 @@
             <div class="text" (click)="seekToWord($event)">
                 <span *ngIf="t.subLocalisations && t.subLocalisations.length>0; then subLocalisationBlock; else wordBlock"></span>
                 <ng-template #subLocalisationBlock>
-                    <span *ngFor="let w of t.subLocalisations"
+                    <div *ngFor="let w of t.subLocalisations"
                           class="w"
                           [attr.data-tcin]="w.tcIn"
-                          [attr.data-tcOut]="w.tcOut" [innerHTML]="w.text+' ' | sanitizeHtml: 'html'"></span>
+                          [attr.data-tcOut]="w.tcOut" [innerHTML]="w.text+' ' | sanitizeHtml: 'html'"></div>
                 </ng-template>
                 <ng-template #wordBlock><span class="w" [attr.data-tcin]="t.tcIn"
                                               [attr.data-tcOut]="t.tcOut"

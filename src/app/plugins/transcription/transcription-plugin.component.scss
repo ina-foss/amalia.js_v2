@@ -80,7 +80,7 @@
     .segment {
       display: block;
       margin: 0;
-
+      overflow: hidden;
       padding: 5px;
 
       &.selected {
@@ -124,25 +124,26 @@
         letter-spacing: 0;
         .w {
           cursor: pointer;
+          float: left;
+          padding-right: 3px;
+          &.activated {
+            color: $amalia-plugin-transcription-tc-hover;
+          }
           &.selected-text {
             background-color: $amalia-plugin-transcription-search;
             &.selected {
               background-color: $amalia-plugin-transcription-tc-hover;
+              color: $amalia-plugin-transcription-tc-hover;
               color : #fff;
               &:hover {
                 color : #fff;
               }
             }
           }
-
           &:hover {
             text-decoration: underline;
             color: #34495E;
           }
-        }
-
-        span.selected {
-          color: $amalia-plugin-transcription-tc-hover;
         }
       }
 
