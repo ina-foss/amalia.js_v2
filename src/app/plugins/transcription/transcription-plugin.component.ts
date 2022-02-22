@@ -152,16 +152,18 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public handleChangeInput() {
         if (this.searching === true) {
             this.searching = false;
+            Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
+                node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
+            });
         }
     }
     /**
      *  disabled selected words on rewinding
      */
     private disableSelectedWords() {
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`span.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
-            if (this.currentTime < parseFloat(node.getAttribute('data-tcin'))) {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            }
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
+            .forEach(node => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
         });
     }
     /**
@@ -169,11 +171,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private disableRemoveSelectedSegment() {
         // remove selected segment
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`div.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
+            .forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
         });
-        // Remove activated span
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`span.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`)).forEach(node => {
+        // Remove activated world
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`))
+            .forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
         });
     }
@@ -182,13 +186,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private disableRemoveAllSelectedNodes() {
         // remove selected word
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`span.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
+            .forEach(node => {
             if (!node.parentElement.parentElement.classList.contains(TranscriptionPluginComponent.SELECTOR_SELECTED)) {
                 node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
             }
         });
         // remove selected segment
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`div.${TranscriptionPluginComponent.SELECTOR_SELECTED}`)).forEach(node => {
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
+            .forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
             if (this.pluginConfiguration.data && this.pluginConfiguration.data.progressBar) {
                 const progressBarNode: HTMLElement = node.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
@@ -210,19 +216,23 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.pluginConfiguration.data.mode === 1) {
                 filteredNodes = elementNodes
                     .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+                        && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
             } else {
                  filteredNodes = elementNodes
                     .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
             }
             if (filteredNodes && filteredNodes.length > 0) {
                 filteredNodes.forEach(n => {
-                    n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
                     // add active to parent segment
                     if ( this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
                         n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                        //
+                    }
+                    if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
+                        n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     }
                 });
             }
@@ -283,6 +293,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.ignoreNextScroll && !visible) {
                 this.ignoreNextScroll = false;
             }
+            if (this.currentTime === 0) {
+                this.transcriptionElement.nativeElement.scrollTop = 0;
+            }
             // scroll to node if he's not visible
             if (this.autoScroll) {
                 if (!(visible)) {
@@ -290,7 +303,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         this.transcriptionElement.nativeElement.scrollTop =  scrollPos  - minScroll;
                     } else {
                         if (scrollPos > scrollNode.clientHeight) {
-                            this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
+                            // console.log('ici');
+                            // this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
+                            this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         } else {
                             this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         }
@@ -305,7 +320,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     public handleScroll(ignoreNextScroll?: boolean) {
         this.ignoreNextScroll = true;
-        this.updateSynchro();
+        setTimeout(() => this.updateSynchro(), 350);
     }
 
     /**
@@ -406,8 +421,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
             this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
-            this.displaySynchro = false;
         }
+        this.displaySynchro = false;
     }
     /**
      * clear seach list onclick
@@ -419,6 +434,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.listOfSearchedNodes = null;
         this.searching = false;
         this.searchText.nativeElement.value = this.pluginConfiguration.data.label;
+        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
+            node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
+        });
     }
     /***
      * handleShortcut on search button
@@ -435,14 +453,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     @AutoBind
     public updateSynchro() {
         let visible;
-        const activeNode: HTMLElement = this.transcriptionElement.nativeElement
-            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`);
+        const selector = '.' + TranscriptionPluginComponent.SELECTOR_SEGMENT + ' > ' + '.text > .' + TranscriptionPluginComponent.SELECTOR_WORD
+            + '.' + TranscriptionPluginComponent.SELECTOR_SELECTED;
+        const activeNode: HTMLElement = this.transcriptionElement.nativeElement.querySelector(selector);
         if (activeNode) {
             const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
             const positionB = activeNode.getBoundingClientRect();
             // check if active element is visible
-            const top = (positionB.top + activeNode.clientHeight) >= positionA.top;
-            const bottom = (positionB.top - activeNode.clientHeight) < this.transcriptionElement.nativeElement.clientHeight;
+            const top = (positionB.top) >= positionA.top;
+            const bottom = (positionB.top - activeNode.clientHeight) < ( this.transcriptionElement.nativeElement.clientHeight + positionA.top);
             if (!(top && bottom)) {
                 visible = false;
             }

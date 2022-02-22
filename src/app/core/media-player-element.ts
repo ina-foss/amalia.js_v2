@@ -42,6 +42,9 @@ export class MediaPlayerElement {
 
     get aspectRatio() {
         this._aspectRatio = this.getConfiguration().player.ratio;
+        if (this._aspectRatio !== '16:9' && this._aspectRatio !== '4:3') {
+            this._aspectRatio = '16:9';
+        }
         return this._aspectRatio;
     }
 
@@ -192,14 +195,16 @@ export class MediaPlayerElement {
      * Return thumbnail base url
      * @param tc time code
      */
-    public getThumbnailUrl(tc: number , onhover?: boolean) {
-        const baseUrl = this.getConfiguration().thumbnail.baseUrl;
-        const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
-        const widthParam = this.getConfiguration().thumbnail.width;
-        if (widthParam > 0 && onhover) {
-            return baseUrl.search('\\?') === -1 ? `${baseUrl}?width=${widthParam}&${tcParam}=${tc}` : `${baseUrl}&width=${widthParam}&${tcParam}=${tc}`;
-        } else {
-            return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
+    public getThumbnailUrl(tc: number , onHover?: boolean) {
+        if (this.getConfiguration().thumbnail.enableThumbnail) {
+            const baseUrl = this.getConfiguration().thumbnail.baseUrl;
+            const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
+            const widthParam = this.getConfiguration().thumbnail.width;
+            if (widthParam > 0 && onHover) {
+                return baseUrl.search('\\?') === -1 ? `${baseUrl}?width=${widthParam}&${tcParam}=${tc}` : `${baseUrl}&width=${widthParam}&${tcParam}=${tc}`;
+            } else {
+                return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
+            }
         }
     }
 

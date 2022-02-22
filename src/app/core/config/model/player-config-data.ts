@@ -1,5 +1,7 @@
 import * as Hls from 'hls.js';
 
+
+
 export interface PlayerConfigData {
     src: string | MediaStream | MediaSource | Blob | null;
     backwardsSrc?: string | MediaStream | MediaSource | Blob | null;
@@ -10,7 +12,7 @@ export interface PlayerConfigData {
     crossOrigin?: string;
     data?: any;
     framerate?: number;
-    hls?: { enable: boolean, config?: Hls.Config };
+    hls?: { enable: boolean, config?: Hls.HlsConfig};
     mpegDash?: { enable: boolean, config?: any };
     ratio?: '16:9' | '4:3';
 }

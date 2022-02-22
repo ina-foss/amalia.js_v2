@@ -1,7 +1,7 @@
 {
   "player": {
-    "src" : "http://localhost:4201/medias/video.m3u8",
-    "backwardsSrc":"",
+    "src" : "http://localhost:4201/medias/vid.m3u8",
+    "backwardsSrc":"http://localhost:4201/medias/vid-inverse.m3u8",
     "crossOrigin": "anonymous",
     "ratio": "16:8",
     "hls": {
@@ -33,7 +33,7 @@
     }
   ],
   "thumbnail": {
-    "baseUrl": "https://image.wsmedia.d.sas.ina/thumbs/CTkK06HcNUidRte+34cxhbyGVfVsGMAO7IRuk3hTPBdLIDbzqIQzbImohPHezOzYKy9hpOy48beo0wPCgtNh1fTzZ1R2gXfOM1zNVA0CyvGoLv0ck8qWvRvU1QliP12lqg+6bQQ2PVAtw25aimrfukFo9LgMI2ta824sTgIAy1QXPVvsD9VUraYVPslAxV1DYZgqP5wCzhJdJtog1b244BiZvxAVXFvB7qu4WmFBwtL0aDHbgTl0AAeeKNBP33kTwo59kiGpK57v2QycYMO+XE19vDJICxhhkqqIekFFGFpHBXbFBMf8et2ZNTzLVWCgdQT+GtWjnaIHUgILbSM9OS8gO+nrdHbKBGyWgbGeOZXr95h3pB5Rk6XQXmq0K5vJNiLyrx5I0L16pHdW18SlTCwJ9K9V4Tv65zkG38S37wty+EjxfoZTtpjarLstb7E8PMQ5wiBeU35oBHH04ElctLexDMhsWdm2b+lfW78sDVwny8mWTLthQY5cDCZJK+g9MTe62G79DY2voYb/KTxow2uk+Jai7Gvd1RTRE6SOwsKAUcfR0BEq905JIeQW9hvIRY4ANPuvmMfosQBWSlD0Jq+bMmDVTC3ui4jWvVOzp1q9A8MzuZJOVskwEktEG4r7KYP+lZyJXVYj5YwSLKKa2DJwyLSXuHeTBVUBraDfOHY7UT+yMNpKg0L8jdUUOsyOiUm6kd8VgY/j7R1NbMem+w==/sl_iv/NqyVBeocVbgQVMiBzOd9rA==/sl_hm/",
+    "baseUrl": "https://image.wsmedia.d.sas.ina/thumbs/5xjt4ZG3gCNHzy+FGMs4/OjyT6fbaxfOCsjRRkHqPbN2GuRv2NAD4a3PKlDHl+vfkFPbO7ucDjAX3RQIQt53JEI/BlORk7Y2fKLH2PgdtXD1RNEpNMwai+FyZHyr2Z6zKHCAnZH3f3yctgAFoxez5HovC8MA5vKSR1Hd1DTulaUcksmJVHdT2W0y/sDCWff6HULuq9l+MLqiL+1OasdKiYJpH8iiFJcij/9qCbCrlREQSYWfWXoETUAuYiRJzrTRW0ZDhSPC8Dl2eI9Z2xVuCWH2BHfMj6qe7bxf3VbxpmoeuuZ7+gJmkwdjuZcS0P/fP6VGmOcUtmhlbiUKckqFfPGRrTVj+kDKHdvZ+Xi+b7K1qaoCAooa6jYatDUTSJDue3gfQ/mtkBoPTzWE102ln5A+BdJh1LPgnBNEH6uISC0bibOu4ZqDaYfJT3OJ8x/Muso6nYA0Hcpa4AFiQoSXJ7sI8AuDbKqwUhjogMrDy51fe5ZVOqrF5wbIX1DKz8AmDlxalGSsNbmU24/oljeszx+qoEtRiCCj/4cb4jhKdmaJa8kmkd2Uih9mSqrs+WLFfxpjSn56E5sCnmWfjtR6o6A/g9YOj8C3eoPrjThclG/0pDAOv41ELoaxiyKLBmODhObTjLj9oW8s35bNQl/jRka4VCf1hj6DR1ahSEiHzw9nRVkM3ka70MAajZGSk8bopr1yH5vmQ2MO0pSWez6v7g==/sl_iv/YXtyIP/ucQMbF3I928quYQ==/sl_hm/",
     "enableThumbnail": true,
     "tcParam": "start",
     "width": 170
@@ -177,7 +177,7 @@
           "control": "volume",
           "zone": 3,
           "priority": 1,
-          "key": "n",
+          "key": "m",
           "data" : {
             "channelMergeVolume" : false,
             "channelMergerNode" : "r"

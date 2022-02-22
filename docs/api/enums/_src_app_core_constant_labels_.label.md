@@ -8,6 +8,8 @@
 
 * [END_HOUR](_src_app_core_constant_labels_.label.md#end_hour)
 * [END_TC](_src_app_core_constant_labels_.label.md#end_tc)
+* [LEFT_CANAL](_src_app_core_constant_labels_.label.md#left_canal)
+* [RIGHT_CANAL](_src_app_core_constant_labels_.label.md#right_canal)
 * [START_HOUR](_src_app_core_constant_labels_.label.md#start_hour)
 * [START_TC](_src_app_core_constant_labels_.label.md#start_tc)
 
@@ -26,6 +28,24 @@ ___
 • **END_TC**: = "TC OUT"
 
 Defined in src/app/core/constant/labels.ts:7
+
+___
+
+###  LEFT_CANAL
+
+• **LEFT_CANAL**: = "Canal Gauche"
+
+Defined in src/app/core/constant/labels.ts:13
+
+___
+
+###  RIGHT_CANAL
+
+• **RIGHT_CANAL**: = "Canal Droit"
+
+Defined in src/app/core/constant/labels.ts:12
+
+Plugin Histogram
 
 ___
 

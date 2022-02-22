@@ -2,13 +2,14 @@
 @import '../../core/styles/variables';
 
 :host {
+  font-family: $amalia-font-family !important;
   .timebar {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     left: 0;
     right: 0;
-    font-family: $amalia-font-family;
+    font-family: $amalia-font-family !important;
     z-index: $amalia-timebar-z-index;
     background: $amalia-ctrl-bar-bg-color;
     user-select: none;

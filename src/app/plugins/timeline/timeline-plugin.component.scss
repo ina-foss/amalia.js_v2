@@ -3,7 +3,7 @@
 
 :host {
   position: relative;
-  font-family: $amalia-font-family;
+  font-family: $amalia-font-family !important;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -172,7 +172,7 @@
 
       .header {
         color: #222222;
-        font-family: $amalia-font-family;
+        font-family: $amalia-font-family !important;
         font-size: 20px;
         font-weight: bold;
         letter-spacing: 0;
@@ -195,7 +195,7 @@
           list-style: none;
 
           li {
-            font-family: $amalia-font-family;
+            font-family: $amalia-font-family !important;
             color: #222222;
             font-size: 16px;
             letter-spacing: 0;
@@ -279,7 +279,7 @@
       font-size: 8px;
 
       .label {
-        font-family: $amalia-font-family;
+        font-family: $amalia-font-family !important;
         padding: 5px 10px;
         border-radius: 13px;
         background-color: #34495E;
@@ -293,7 +293,7 @@
       }
 
       .tc {
-        font-family: $amalia-font-family;
+        font-family: $amalia-font-family !important;
         font-size: 12px;
         font-weight: bold;
         letter-spacing: 0;

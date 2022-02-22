@@ -6,4 +6,9 @@ export enum LABEL {
     START_HOUR = 'Heure Début',
     END_TC = 'TC OUT',
     END_HOUR = 'Heure Fin',
+    /**
+     * Plugin Histogram
+     */
+    RIGHT_CANAL = 'Canal Droit',
+    LEFT_CANAL = 'Canal Gauche',
 }
