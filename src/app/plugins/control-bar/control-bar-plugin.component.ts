@@ -252,6 +252,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public leftVolumeSlider: ElementRef;
     @ViewChild('rightVolumeSlider')
     public rightVolumeSlider: ElementRef;
+    public playbackrateByImages = false;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -290,11 +291,29 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
     }
+    /**
+     * SIMULATE SEEKING
+     */
+    @AutoBind
+    public handlePlaybackRateChangeByImages(tc) {
+        this.currentTime = tc;
+        this.progressBarValue = parseFloat(((tc / this.duration) * 100).toFixed(2));
+        this.time = tc;
+        this.playbackrateByImages = true;
+    }
 
+    /**
+     * stop simulate seeking
+     */
+    public handlePlaybackRateChangeByImagesStop() {
+        this.playbackrateByImages = false;
+    }
     /**
      * Return plugin configuration
      */
@@ -505,6 +524,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on mouse move
      * @param value change value
      */
+    @AutoBind
     public moveSliderCursor(value: any) {
         this.logger.info('moveSliderCursor ', value);
         this.progressBarValue = value;
@@ -515,8 +535,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
         } else {
             // this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
-            this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+            this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+            if (this.playbackrateByImages) {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
+            }
         }
     }
 
@@ -740,11 +764,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        const url = this.mediaPlayerElement.getThumbnailUrl(tc, true);
+        let currentTime = (tcOffset) ? tcOffset + tc : tc;
+        currentTime = parseFloat(currentTime.toFixed(2));
+        const url = this.mediaPlayerElement.getThumbnailUrl(currentTime, true);
         if (isFinite(tc)) {
-            this.thumbnailService.getThumbnail(url, tc).then((blob) => {
+            this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
                     this.thumbnailElement.nativeElement.setAttribute('src' , blob);
                 }
@@ -772,9 +799,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     public nextPlaybackRateImages(speed) {
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
-            this.mediaPlayerElement.getMediaPlayer().play();
-        }
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         if (this.getPlaybackStepValue(this.forwardPlaybackRateStep, true) < speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
@@ -791,9 +815,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     public previousPlaybackRateImages(speed) {
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
-            this.mediaPlayerElement.getMediaPlayer().play();
-        }
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         if (this.getPlaybackStepValue(this.backwardPlaybackRateStep, true) > speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));

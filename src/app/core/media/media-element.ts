@@ -51,6 +51,11 @@ export class MediaElement {
      * Player initalized
      */
     private initialized = false;
+
+    /**
+     * Force show button play when video is paused (handle playbackrate change by images)
+     */
+    private force = false;
     /**
      * Init media element for handle html video element
      * @param mediaElement html video element
@@ -119,9 +124,14 @@ export class MediaElement {
     /**
      * Invoked for paused player
      */
-    pause(): void {
-        this.setPlaybackRate(1);
-        this.mediaElement.pause();
+    pause(ignore?): void {
+        if (!ignore) {
+            this.setPlaybackRate(1);
+            this.mediaElement.pause();
+        } else {
+            this.mediaElement.pause();
+            this.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_PLAY, true);
+        }
     }
 
     stop(): void {
@@ -308,7 +318,12 @@ export class MediaElement {
      * @return boolean true is paused
      */
     isPaused(): boolean {
-        return this.mediaElement ? this.mediaElement.paused : false;
+        const force = this.force;
+        if (force) {
+            return false;
+        } else {
+            return this.mediaElement ? this.mediaElement.paused : false;
+        }
     }
 
     /**
@@ -415,6 +430,15 @@ export class MediaElement {
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
         document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
+        this.eventEmitter.on(PlayerEventType.PLAYER_SIMULATE_PLAY, this.simulatePlay);
+    }
+
+    /**
+     * Simulate play on playback change by images
+     */
+    @AutoBind
+    private simulatePlay($event) {
+        this.force = $event;
     }
     /**
      * Invoked on playbackrate images change

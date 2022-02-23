@@ -143,9 +143,10 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "backward",
+          "control": "images-backward",
           "zone": 2,
-          "priority": 1
+          "priority": 1,
+          "data": { "speed": 6 }
         },
         {
           "label": "Play / Pause",
@@ -156,9 +157,10 @@
         {
           "label": "forward",
           "icon": "forward",
-          "control": "forward",
+          "control": "images-forward",
           "zone": 2,
-          "priority": 1
+          "priority": 1,
+          "data": { "speed": 6 }
         },
         {
           "label": "slow-forward",

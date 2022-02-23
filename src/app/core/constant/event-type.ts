@@ -190,4 +190,16 @@ export enum PlayerEventType {
      * Loading END
      */
     PLAYER_LOADING_END = 'ina.player.PLAYER_LOADING_BEGIN_END',
+    /**
+     * Simulate slider controlbar timeline
+     */
+    PLAYER_SIMULATE_SLIDER = 'ina.player.SIMULATE_SLIDER',
+    /**
+     * Simulate Play
+     */
+    PLAYER_SIMULATE_PLAY = 'ina.player.SIMULATE_PLAY',
+    /**
+     * STOP Simulate Play
+     */
+    PLAYER_STOP_SIMULATE_PLAY = 'ina.player.STOP_SIMULATE_PLAY',
 }

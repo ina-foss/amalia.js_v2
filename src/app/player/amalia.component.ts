@@ -21,6 +21,7 @@ import {ThumbnailService} from '../service/thumbnail-service';
 import {DomSanitizer} from '@angular/platform-browser';
 
 import * as _ from 'lodash';
+import {ControlBarPluginComponent} from '../plugins/control-bar/control-bar-plugin.component';
 
 @Component({
     selector: 'amalia-player',
@@ -29,7 +30,7 @@ import * as _ from 'lodash';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AmaliaComponent implements OnInit {
-    public static DEFAULT_THUMBNAIL_DEBOUNCE_TIME = 250;
+    public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
     /**
      * version of player
      */
@@ -214,7 +215,7 @@ export class AmaliaComponent implements OnInit {
      */
     public thumbnailBlobVideo;
 
-    public debounceFunction;
+    public throttleFunc;
     /**
      * Message d'erreur
      */
@@ -225,8 +226,7 @@ export class AmaliaComponent implements OnInit {
         this.sanitizer = sanitizer;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
-        this.debounceFunction = _.debounce(this.setPreviewThumbnail, 150, {maxWait: AmaliaComponent.DEFAULT_THUMBNAIL_DEBOUNCE_TIME});
-
+        this.throttleFunc = _.throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, {trailing: false});
     }
 
     /**
@@ -371,7 +371,8 @@ export class AmaliaComponent implements OnInit {
     private handleSeeking(tc: number) {
         if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1)) {
             this.enablePreviewThumbnail = true;
-            this.debounceFunction(tc);
+            this.throttleFunc(tc);
+            // this.debounceFunction(tc);
         }
     }
 
@@ -379,7 +380,8 @@ export class AmaliaComponent implements OnInit {
     private handleSeeked() {
         if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1 && this.enableThumbnail) {
             const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-            this.setPreviewThumbnail(tc);
+            this.throttleFunc(tc);
+            // this.setPreviewThumbnail(tc);
         }
 
     }
@@ -562,6 +564,7 @@ export class AmaliaComponent implements OnInit {
     }
     @AutoBind
     public scrollPlaybackRateImages($event) {
+        this.mediaPlayerElement.getMediaPlayer().pause(true);
         let rewinding = false;
         let playbackrate = $event;
         const mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
@@ -583,6 +586,12 @@ export class AmaliaComponent implements OnInit {
     public clearInterval() {
         if (this.intervalImages) {
             clearInterval(this.intervalImages);
+            this.intervalImages = '';
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_PLAY, false);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY);
+            this.mediaPlayerElement.getMediaPlayer().play();
+            // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
+            // this.tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         }
     }
     @AutoBind
@@ -590,6 +599,7 @@ export class AmaliaComponent implements OnInit {
         const frames = framesPerSecond / (1000 / ms);
         if (rewinding === false ) {
             this.tc = this.tc + (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
+            this.tc = parseFloat(this.tc.toFixed(2));
         } else {
             if (mainSource === false) {
                 this.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc();
@@ -601,11 +611,15 @@ export class AmaliaComponent implements OnInit {
             }
         }
         // Set thumbnail video
+        this.enablePreviewThumbnail = true;
+        // console.log(this.enableThumbnail);
         if (this.enableThumbnail) {
-            this.setPreviewThumbnail(this.tc);
+            this.throttleFunc(this.tc);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_SLIDER, this.tc);
+            // this.setPreviewThumbnail(this.tc);
         }
         // set current Time
-        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
+        // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
         if (this.tc > duration || this.tc < 0) {
             clearInterval(this.intervalImages);
         }

@@ -1,4 +1,5 @@
 {
+  "tcOffset": 100,
   "player": {
     "src" : "http://localhost:4201/medias/vid.m3u8",
     "backwardsSrc":"http://localhost:4201/medias/vid-inverse.m3u8",
@@ -120,7 +121,7 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "backward",
+          "control": "images-backward",
           "zone": 2,
           "priority": 1,
           "key": "h"
@@ -135,7 +136,7 @@
         {
           "label": "forward",
           "icon": "forward",
-          "control": "forward",
+          "control": "images-forward",
           "zone": 2,
           "priority": 1,
           "key": "Control + ArrowRight"

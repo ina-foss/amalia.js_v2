@@ -76,9 +76,10 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "backward",
+          "control": "backward-images",
           "zone": 2,
-          "priority": 1
+          "priority": 1,
+          "data": { "speed": 6 }
         },
         {
           "label": "Play / Pause",
@@ -89,9 +90,10 @@
         {
           "label": "forward",
           "icon": "forward",
-          "control": "forward",
+          "control": "forward-images",
           "zone": 2,
-          "priority": 1
+          "priority": 1,
+          "data": { "speed": 6 }
         },
         {
           "label": "forward-5seconds",
