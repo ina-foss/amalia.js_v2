@@ -534,6 +534,9 @@ export class AmaliaComponent implements OnInit {
                 }
             }
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, keys);
+            if (key === 'espace') {
+                $event.preventDefault();
+            }
         }
     }
 
@@ -597,9 +600,10 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     public displayImages(framesPerSecond , ms , rewinding , duration , mainSource) {
         const frames = framesPerSecond / (1000 / ms);
+        console.log('rewinding  ' + rewinding);
+        console.log('mainSource  ' + mainSource);
         if (rewinding === false ) {
             this.tc = this.tc + (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
-            this.tc = parseFloat(this.tc.toFixed(2));
         } else {
             if (mainSource === false) {
                 this.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc();
@@ -610,16 +614,17 @@ export class AmaliaComponent implements OnInit {
                 this.tc = this.tc - (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
             }
         }
+        this.tc = parseFloat(this.tc.toFixed(2));
         // Set thumbnail video
         this.enablePreviewThumbnail = true;
         // console.log(this.enableThumbnail);
         if (this.enableThumbnail) {
             this.throttleFunc(this.tc);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_SLIDER, this.tc);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_SLIDER);
             // this.setPreviewThumbnail(this.tc);
         }
         // set current Time
-        // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
         if (this.tc > duration || this.tc < 0) {
             clearInterval(this.intervalImages);
         }

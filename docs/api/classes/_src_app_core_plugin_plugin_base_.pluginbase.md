@@ -12,9 +12,9 @@ Base class for create plugin
 
 * **PluginBase**
 
-  ↳ [TimeBarPluginComponent](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md)
-
   ↳ [ControlBarPluginComponent](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md)
+
+  ↳ [TimeBarPluginComponent](_src_app_plugins_time_bar_time_bar_plugin_component_.timebarplugincomponent.md)
 
   ↳ [TranscriptionPluginComponent](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md)
 

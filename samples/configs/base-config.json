@@ -146,13 +146,14 @@
           "control": "images-backward",
           "zone": 2,
           "priority": 1,
-          "data": { "speed": 6 }
+          "data": { "speed": -2 }
         },
         {
           "label": "Play / Pause",
           "control": "playPause",
           "zone": 2,
-          "priority": 1
+          "priority": 1,
+          "key": "espace"
         },
         {
           "label": "forward",

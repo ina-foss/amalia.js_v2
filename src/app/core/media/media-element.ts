@@ -298,8 +298,8 @@ export class MediaElement {
             if (lastStateIsReverseMode === true && !this.reverseMode) {
                 const tc = this.getDuration() - this.getCurrentTime();
                 this.mse.switchToMainSrc().then(() => {
-                    this.mediaElement.playbackRate = speed;
                     this.setCurrentTime((Math.max(0, tc)));
+                    this.mediaElement.playbackRate = speed;
                     this.switched = false;
                 });
             } else if (this.mediaElement && !this.reverseMode) {
@@ -440,9 +440,6 @@ export class MediaElement {
     private simulatePlay($event) {
         this.force = $event;
     }
-    /**
-     * Invoked on playbackrate images change
-     */
     /**
      * Invoked when first frame of the media has finished loading.
      */

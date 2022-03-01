@@ -301,10 +301,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * SIMULATE SEEKING
      */
     @AutoBind
-    public handlePlaybackRateChangeByImages(tc) {
-        this.currentTime = tc;
-        this.progressBarValue = parseFloat(((tc / this.duration) * 100).toFixed(2));
-        this.time = tc;
+    public handlePlaybackRateChangeByImages() {
         this.playbackrateByImages = true;
     }
 
@@ -537,9 +534,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             // this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
-            this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
             if (this.playbackrateByImages) {
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
+            } else {
+                this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
             }
         }
     }
