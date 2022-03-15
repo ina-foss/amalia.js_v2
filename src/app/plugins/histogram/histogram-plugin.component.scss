@@ -16,9 +16,9 @@
     background: #34495E;
     height: 100%;
     z-index: 1;
-    &.sm {
+    &.sm {c
         .zoomed-histograms{
-          visibility: hidden;
+          display: none;
         }
       .histograms {
         height: 100%;

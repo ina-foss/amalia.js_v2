@@ -49,7 +49,7 @@ describe('Test Metadata manager', () => {
 
         const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
         dataSources.push(timelineModel);
-        configData = {player, pluginsConfiguration, dataSources};
+        configData = {timeFormat: 'f', player, pluginsConfiguration, dataSources};
         const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
         const configurationManager = new ConfigurationManager(configLoader, logger);
         const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);

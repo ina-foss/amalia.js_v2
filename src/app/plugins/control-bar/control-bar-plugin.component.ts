@@ -1051,7 +1051,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Download URL on shortcut
      */
     public downloadUrl(control) {
+        let currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        const timeFormat = this.mediaPlayerElement.getConfiguration().timeFormat;
+        if (tcOffset && timeFormat !== 'hours') {
+            currentTime = (tcOffset) ? tcOffset + currentTime : currentTime;
+        }
         const data = this.elements;
         for (const i in data) {
             if (typeof data[i] === 'object') {
@@ -1060,10 +1065,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                     if (c.control === control && c.key === this.keypressed) {
                         let baseUrl = c.data.href;
                         const tcParam = c.data?.tcParam || 'tc';
-                        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
-                        const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
-                        baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + tc : baseUrl + '&' + tcParam + '=' + tc;
-                        window.open(baseUrl);
+                        baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + currentTime : baseUrl + '&' + tcParam + '=' + currentTime;
+                        // window.open(baseUrl, 'Download');
+                        window.location.href = baseUrl;
                     }
                 }
             }

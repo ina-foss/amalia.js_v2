@@ -263,7 +263,7 @@ export class AmaliaComponent implements OnInit {
      * update mediaPlayerWidth on window resize
      */
     @AutoBind
-    private handleWindowResize() {
+    public handleWindowResize() {
         const mediaContainer = this.mediaContainer.nativeElement;
         if (mediaContainer) {
             this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.offsetWidth);
@@ -600,8 +600,6 @@ export class AmaliaComponent implements OnInit {
     @AutoBind
     public displayImages(framesPerSecond , ms , rewinding , duration , mainSource) {
         const frames = framesPerSecond / (1000 / ms);
-        console.log('rewinding  ' + rewinding);
-        console.log('mainSource  ' + mainSource);
         if (rewinding === false ) {
             this.tc = this.tc + (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
         } else {

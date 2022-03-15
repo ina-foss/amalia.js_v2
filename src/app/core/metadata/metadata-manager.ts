@@ -149,6 +149,8 @@ export class MetadataManager {
      * @param loadData ConfigDataSource
      */
     private async loadDataSource(loadData: ConfigDataSource, completed) {
+        console.log(loadData);
+        console.log(completed);
         if (loadData && loadData.url) {
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
@@ -165,6 +167,7 @@ export class MetadataManager {
      * @param listOfMetadata list of metadata
      */
     private onMetadataLoaded(listOfMetadata: Array<Metadata>, completed) {
+        // console.log(listOfMetadata);
         if (listOfMetadata && isArrayLike<Metadata>(listOfMetadata)) {
             for (const metadata of listOfMetadata) {
                 try {

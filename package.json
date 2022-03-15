@@ -6,7 +6,7 @@
   "main": "amalia.min.js",
   "scripts": {
     "ng": "ng",
-    "start": "npm run build:icon && ng serve",
+    "start": "npm run build:icon && ng serve --port 4202",
     "start-examples": "npm run build && cp -r dist/amalia/assets/ samples/ &&  cp -r dist/amalia/amalia.min.js samples/main.js && http-server samples/ -i --cors * '*' -z -f -p 4201 -d ",
     "gendoc": "typedoc --out docs/api src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md",
     "gendoc-md": "typedoc --plugin typedoc-plugin-markdown --out docs/api-md src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md",

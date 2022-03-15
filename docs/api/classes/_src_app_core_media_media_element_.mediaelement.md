@@ -437,7 +437,7 @@ ___
 
 ▸ **getCurrentImage**(`scale`: any): *string*
 
-Defined in src/app/core/media/media-element.ts:564
+Defined in src/app/core/media/media-element.ts:561
 
 Return current image
 
@@ -514,7 +514,7 @@ ___
 
 ▸ **handleDurationchange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:491
+Defined in src/app/core/media/media-element.ts:488
 
 Invoked when the duration attribute has been updated.
 
@@ -526,7 +526,7 @@ ___
 
 ▸ **handleEnd**(): *void*
 
-Defined in src/app/core/media/media-element.ts:482
+Defined in src/app/core/media/media-element.ts:479
 
 Invoked when playback has stopped because the end of the media was reached.
 
@@ -538,7 +538,7 @@ ___
 
 ▸ **handleFullscreenChange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:537
+Defined in src/app/core/media/media-element.ts:534
 
 Invoked when the fullscreen state changed.
 
@@ -550,7 +550,7 @@ ___
 
 ▸ **handleLoadstart**(): *void*
 
-Defined in src/app/core/media/media-element.ts:450
+Defined in src/app/core/media/media-element.ts:447
 
 Invoked when first frame of the media has finished loading.
 
@@ -562,7 +562,7 @@ ___
 
 ▸ **handlePause**(): *void*
 
-Defined in src/app/core/media/media-element.ts:472
+Defined in src/app/core/media/media-element.ts:469
 
 Invoked when Playback has been paused.
 
@@ -574,7 +574,7 @@ ___
 
 ▸ **handlePlay**(): *void*
 
-Defined in src/app/core/media/media-element.ts:464
+Defined in src/app/core/media/media-element.ts:461
 
 Invoked when Playback has begun.
 
@@ -586,7 +586,7 @@ ___
 
 ▸ **handleResize**(): *void*
 
-Defined in src/app/core/media/media-element.ts:555
+Defined in src/app/core/media/media-element.ts:552
 
 Invoked when player resized
 
@@ -598,7 +598,7 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/core/media/media-element.ts:509
+Defined in src/app/core/media/media-element.ts:506
 
 Invoked when a seek operation completed.
 
@@ -610,7 +610,7 @@ ___
 
 ▸ **handleSeeking**(): *void*
 
-Defined in src/app/core/media/media-element.ts:518
+Defined in src/app/core/media/media-element.ts:515
 
 Invoked when a seek operation began.
 
@@ -622,7 +622,7 @@ ___
 
 ▸ **handleTimeupdate**(): *void*
 
-Defined in src/app/core/media/media-element.ts:500
+Defined in src/app/core/media/media-element.ts:497
 
 The time indicated by the currentTime attribute has been updated.
 
@@ -634,7 +634,7 @@ ___
 
 ▸ **handleVolumeChange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:527
+Defined in src/app/core/media/media-element.ts:524
 
 Invoked when the volume has changed.
 
@@ -646,7 +646,7 @@ ___
 
 ▸ **handleWaiting**(): *void*
 
-Defined in src/app/core/media/media-element.ts:547
+Defined in src/app/core/media/media-element.ts:544
 
 Invoked when  The volume has changed.
 
@@ -658,7 +658,7 @@ ___
 
 ▸ **initAudioChannelMerger**(): *void*
 
-Defined in src/app/core/media/media-element.ts:582
+Defined in src/app/core/media/media-element.ts:579
 
 In charge to init audio chanel merger
 
@@ -920,7 +920,7 @@ ___
 
 ▸ **setupAudioNodes**(`data`: any): *void*
 
-Defined in src/app/core/media/media-element.ts:601
+Defined in src/app/core/media/media-element.ts:598
 
 Set Audio Nodes
 

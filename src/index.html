@@ -40,6 +40,15 @@
             </amalia-timeline>
         </div>
     </div>
+    <div class="row" style="height: 500px;width: 350px">
+        <amalia-player player-id="PLAYER2" id="PLAYER2"
+                       config="http://localhost:4201/configs/notilus-config-audio-expert-player.json">
+            <amalia-histogram player-id="PLAYER2" plugin-configuration='{"metadataIds":["waveform-46fa5221c551c1f96d63f0a357678c10-15000-0",
+                "waveform-MA00605_01-2048-1",
+                "1591607938077",
+                "1591608575408"]}'></amalia-histogram>
+        </amalia-player>
+    </div>
     <footer class="border-top">
         <div class="row pt-3 pl-3">
             <div class="col-12 col-md">
@@ -74,7 +83,6 @@
         function handleEvent() {
             console.info("handleEvent")
         }
-
         // document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
         /*document.getElementById("addTimeline").addEventListener("click", addTimeline)
 

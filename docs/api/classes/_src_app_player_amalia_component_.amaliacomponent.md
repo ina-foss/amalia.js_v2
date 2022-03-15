@@ -545,7 +545,7 @@ ___
 
 ▸ **clearInterval**(): *void*
 
-Defined in src/app/player/amalia.component.ts:586
+Defined in src/app/player/amalia.component.ts:589
 
 **Returns:** *void*
 
@@ -573,7 +573,7 @@ ___
 
 ▸ **displayImages**(`framesPerSecond`: any, `ms`: any, `rewinding`: any, `duration`: any, `mainSource`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:598
+Defined in src/app/player/amalia.component.ts:601
 
 **Parameters:**
 
@@ -611,7 +611,7 @@ ___
 
 ▸ **emitKeyUpEvent**(): *void*
 
-Defined in src/app/player/amalia.component.ts:541
+Defined in src/app/player/amalia.component.ts:544
 
 **Returns:** *void*
 
@@ -781,7 +781,7 @@ ___
 
 ▸ **hideControls**(): *void*
 
-Defined in src/app/player/amalia.component.ts:561
+Defined in src/app/player/amalia.component.ts:564
 
 **Returns:** *void*
 
@@ -791,7 +791,7 @@ ___
 
 ▸ **hideControlsMenuOnClickDocument**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:546
+Defined in src/app/player/amalia.component.ts:549
 
 **Parameters:**
 
@@ -887,7 +887,7 @@ ___
 
 ▸ **resetTimer**(): *void*
 
-Defined in src/app/player/amalia.component.ts:554
+Defined in src/app/player/amalia.component.ts:557
 
 **Returns:** *void*
 
@@ -897,7 +897,7 @@ ___
 
 ▸ **scrollPlaybackRateImages**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:566
+Defined in src/app/player/amalia.component.ts:569
 
 **Parameters:**
 
@@ -931,7 +931,7 @@ ___
 
 ▸ **startTimer**(): *void*
 
-Defined in src/app/player/amalia.component.ts:550
+Defined in src/app/player/amalia.component.ts:553
 
 **Returns:** *void*
 
