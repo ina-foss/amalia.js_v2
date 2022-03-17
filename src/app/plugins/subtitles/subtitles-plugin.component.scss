@@ -4,6 +4,8 @@
 :host {
   z-index: $amalia-plugin-subtitle-z-index;
   font-family: $amalia-font-family !important;
+  font-size: $amalia-font-size !important;
+  font-weight: normal;
   div {
     z-index: $amalia-plugin-subtitle-z-index;
     position: absolute;
@@ -13,7 +15,7 @@
     font-family: $amalia-font-family !important;
     background: $amalia-plugin-subtitle-bg;
     color: $amalia-plugin-subtitle-color;
-    font-size: $amalia-plugin-subtitle-font-size;
+    font-size: $amalia-plugin-subtitle-font-size !important;
     width: max-content;
     transform: translate(-50%,0);
     left: 50%;

@@ -82,7 +82,7 @@
 * [handlePlay](_src_app_player_amalia_component_.amaliacomponent.md#private-handleplay)
 * [handleSeeked](_src_app_player_amalia_component_.amaliacomponent.md#private-handleseeked)
 * [handleSeeking](_src_app_player_amalia_component_.amaliacomponent.md#private-handleseeking)
-* [handleWindowResize](_src_app_player_amalia_component_.amaliacomponent.md#private-handlewindowresize)
+* [handleWindowResize](_src_app_player_amalia_component_.amaliacomponent.md#handlewindowresize)
 * [hideControls](_src_app_player_amalia_component_.amaliacomponent.md#hidecontrols)
 * [hideControlsMenuOnClickDocument](_src_app_player_amalia_component_.amaliacomponent.md#hidecontrolsmenuonclickdocument)
 * [initDefaultHandlers](_src_app_player_amalia_component_.amaliacomponent.md#private-initdefaulthandlers)
@@ -765,7 +765,7 @@ Name | Type |
 
 ___
 
-### `Private` handleWindowResize
+###  handleWindowResize
 
 ▸ **handleWindowResize**(): *void*
 

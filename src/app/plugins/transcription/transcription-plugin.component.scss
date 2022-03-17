@@ -4,6 +4,9 @@
 :host {
   position: relative;
   font-family: $amalia-font-family !important;
+  font-size: $amalia-font-size !important;
+  line-height: 24px;
+  font-weight: normal;
   display: flex;
   flex-direction: column;
   height: 100%;

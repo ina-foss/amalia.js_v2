@@ -74,20 +74,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Volume left side
      */
-    public volumeLeft = 100;
+    public volumeLeft = 50;
     /**
      * Old Volume left side
      */
-    public oldVolumeLeft = 100;
+    public oldVolumeLeft = 50;
 
     /**
      * Volume right side
      */
-    public volumeRight = 100;
+    public volumeRight = 50;
     /**
      * Old Volume right side
      */
-    public oldVolumeRight = 100;
+    public oldVolumeRight = 50;
 
     /**
      * Selected aspectRatio
@@ -266,7 +266,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.elements = this.pluginConfiguration.data;
         this.initPlaybackrates();
         // init volume
-        this.mediaPlayerElement.getMediaPlayer().setVolume(100);
+        this.mediaPlayerElement.getMediaPlayer().setVolume(50);
         // init shortcuts
         this.listOfShortcuts = this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail

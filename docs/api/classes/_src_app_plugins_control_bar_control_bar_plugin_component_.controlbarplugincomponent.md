@@ -1116,7 +1116,7 @@ ___
 
 ▸ **changePlaybackrate**(`pr`: any, `click?`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1295
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1299
 
 **Parameters:**
 
@@ -1145,7 +1145,7 @@ ___
 
 ▸ **changeSlider**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1077
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1081
 
 change slider displayed
 
@@ -1408,7 +1408,7 @@ ___
 
 ▸ **handleMoveDragThumb**(`event`: any, `position`: any, `step`: any, `maxWidth`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1255
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1259
 
 handle move drag thumb
 
@@ -1598,7 +1598,7 @@ ___
 
 ▸ **handleStopMoveDragThumb**(`values`: any, `position`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1240
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1244
 
 Handle stop move drag thumb
 
@@ -1647,7 +1647,7 @@ ___
 
 ▸ **hideAll**(`control?`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1109
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1113
 
 **Parameters:**
 
@@ -1663,7 +1663,7 @@ ___
 
 ▸ **hideControlsMenuOnClickDocument**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1101
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1105
 
 **Returns:** *void*
 
@@ -1685,7 +1685,7 @@ ___
 
 ▸ **initDragThumb**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1157
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1161
 
 **Returns:** *void*
 
@@ -1695,7 +1695,7 @@ ___
 
 ▸ **initPlaybackrates**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1138
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1142
 
 **Returns:** *void*
 
@@ -1741,7 +1741,7 @@ ___
 
 ▸ **mute**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1127
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1131
 
 Mute sound
 
@@ -1796,7 +1796,7 @@ ___
 
 ▸ **ngOnDestroy**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1346
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1350
 
 Handle on component destroy
 
@@ -1947,7 +1947,7 @@ ___
 
 ▸ **selectActivePlaybackrate**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1315
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1319
 
 AutoBind Select Playbackrate
 
@@ -1995,7 +1995,7 @@ ___
 
 ▸ **switchDisplayCurrentTime**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1090
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1094
 
 switch timeCode display onclick
 
@@ -2019,7 +2019,7 @@ ___
 
 ▸ **togglePlaybackrate**(`value`: any): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1279
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1283
 
 **Parameters:**
 
@@ -2035,7 +2035,7 @@ ___
 
 ▸ **toggleVolume**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1330
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1334
 
 toggle Volume
 
@@ -2047,7 +2047,7 @@ ___
 
 ▸ **unmute**(): *void*
 
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1134
+Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1138
 
 unmute sound
 
