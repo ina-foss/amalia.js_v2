@@ -657,7 +657,7 @@ ___
 
 ###  oldVolumeLeft
 
-• **oldVolumeLeft**: *number* = 100
+• **oldVolumeLeft**: *number* = 50
 
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:81
 
@@ -667,7 +667,7 @@ ___
 
 ###  oldVolumeRight
 
-• **oldVolumeRight**: *number* = 100
+• **oldVolumeRight**: *number* = 50
 
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:90
 
@@ -959,7 +959,7 @@ ___
 
 ###  volumeLeft
 
-• **volumeLeft**: *number* = 100
+• **volumeLeft**: *number* = 50
 
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:77
 
@@ -969,7 +969,7 @@ ___
 
 ###  volumeRight
 
-• **volumeRight**: *number* = 100
+• **volumeRight**: *number* = 50
 
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:86
 

@@ -228,7 +228,12 @@ export class MediaElement {
             this.mediaElement.volume = Math.min(volumePercent / 100, 1);
         }
     }
-
+    /*
+    Set value of reverseMode
+     */
+    setReverseMode(value) {
+        this.reverseMode = value;
+    }
     /**
      * Return current position in seconds
      */

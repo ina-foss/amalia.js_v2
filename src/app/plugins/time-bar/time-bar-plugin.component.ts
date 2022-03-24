@@ -109,8 +109,6 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
             this.active = false;
         }
     }
-
-
     /**
      * Return default config
      */

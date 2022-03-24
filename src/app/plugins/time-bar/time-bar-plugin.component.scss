@@ -2,9 +2,6 @@
 @import '../../core/styles/variables';
 
 :host {
-  font-family: $amalia-font-family !important;
-  font-size: $amalia-font-size !important;
-  font-weight: normal;
   .timebar {
     display: flex;
     flex-direction: row;
@@ -12,6 +9,7 @@
     left: 0;
     right: 0;
     font-family: $amalia-font-family !important;
+    font-weight: normal;
     z-index: $amalia-timebar-z-index;
     background: $amalia-ctrl-bar-bg-color;
     user-select: none;

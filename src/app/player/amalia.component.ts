@@ -99,6 +99,8 @@ export class AmaliaComponent implements OnInit {
     public playerHover = false;
 
     private _config: any;
+    // mainSource as src video
+    public mainSource = true;
 
     get config(): any {
         return this._config;
@@ -567,23 +569,21 @@ export class AmaliaComponent implements OnInit {
     }
     @AutoBind
     public scrollPlaybackRateImages($event) {
-        this.mediaPlayerElement.getMediaPlayer().pause(true);
         let rewinding = false;
         let playbackrate = $event;
-        const mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
+        this.mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
         if (playbackrate < 0) {
             rewinding = true;
             playbackrate = Math.abs(playbackrate);
         }
         const framesPerSecond = this.mediaPlayerElement.getMediaPlayer().framerate * playbackrate;
-        const self = this;
         const ms = 200;
-        this.tc = self.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        // clearInterval(this.intervalImages);
-        this.intervalImages = setInterval(() =>  {
-            self.displayImages(framesPerSecond, ms, rewinding, duration, mainSource);
-             }, ms);
+        this.mediaPlayerElement.getMediaPlayer().pause(true);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_SLIDER);
+        const self = this;
+        this.intervalImages = setInterval(() => {
+            self.displayImages(framesPerSecond, ms, rewinding);
+        }, ms);
     }
     @AutoBind
     public clearInterval() {
@@ -598,32 +598,24 @@ export class AmaliaComponent implements OnInit {
         }
     }
     @AutoBind
-    public displayImages(framesPerSecond , ms , rewinding , duration , mainSource) {
+    public displayImages(framesPerSecond , ms , rewinding) {
+        this.tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         const frames = framesPerSecond / (1000 / ms);
         if (rewinding === false ) {
             this.tc = this.tc + (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
         } else {
-            if (mainSource === false) {
-                this.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc();
-                mainSource = true;
-                const tc = duration - this.tc;
-                this.tc = tc - (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
-            } else {
-                this.tc = this.tc - (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
-            }
+            this.tc = this.tc - (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
         }
         this.tc = parseFloat(this.tc.toFixed(2));
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
         // Set thumbnail video
         this.enablePreviewThumbnail = true;
-        // console.log(this.enableThumbnail);
         if (this.enableThumbnail) {
             this.throttleFunc(this.tc);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_SLIDER);
             // this.setPreviewThumbnail(this.tc);
+            // set current Time
         }
-        // set current Time
-        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
-        if (this.tc > duration || this.tc < 0) {
+        if (this.tc > this.mediaPlayerElement.getMediaPlayer().getDuration() || this.tc < 0) {
             clearInterval(this.intervalImages);
         }
     }

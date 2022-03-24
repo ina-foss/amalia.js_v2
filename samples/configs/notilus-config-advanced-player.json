@@ -70,9 +70,11 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "backward",
+          "control": 'images-backward',
           "zone": 2,
-          "priority": 1
+          "data": {
+            "speed": -6
+          },
         },
         {
           "label": "Play / Pause",

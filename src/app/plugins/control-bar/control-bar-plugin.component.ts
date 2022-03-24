@@ -535,8 +535,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
             if (this.playbackrateByImages) {
+                console.log('this.playbackrateByImages');
+                console.log(this.currentTime);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
             } else {
+                // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
                 this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
             }
         }
@@ -818,9 +821,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         } else {
             this.currentPlaybackRate = this.getPlaybackStepValue(this.backwardPlaybackRateStep, true);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+            const mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
+            if (this.currentPlaybackRate < 0 && mainSource === false) {
+                const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+                this.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc().then(() => {
+                    this.mediaPlayerElement.getMediaPlayer().setReverseMode(false);
+                    this.mediaPlayerElement.getMediaPlayer().setCurrentTime((Math.max(0, tc)));
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+                });
+            } else {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+            }
         }
-
     }
 
     /**

@@ -139,7 +139,7 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "images-backward",
+          "control": "backward",
           "zone": 2,
           "priority": 1,
           "data": { "speed": -2 }
@@ -154,7 +154,7 @@
         {
           "label": "forward",
           "icon": "forward",
-          "control": "images-forward",
+          "control": "forward",
           "zone": 2,
           "priority": 1,
           "data": { "speed": 6 }
