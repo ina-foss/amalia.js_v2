@@ -12,13 +12,15 @@
   width: 100%;
   z-index: 2;
   font-family: $amalia-font-family !important;
+  font-size: $amalia-font-size !important;
+  font-weight: normal;
   .histogram-container {
     background: #34495E;
     height: 100%;
     z-index: 1;
-    &.sm {
+    &.sm {c
         .zoomed-histograms{
-          visibility: hidden;
+          display: none;
         }
       .histograms {
         height: 100%;

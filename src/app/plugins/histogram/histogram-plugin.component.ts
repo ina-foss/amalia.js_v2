@@ -103,6 +103,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * Plugin display state
      */
     public displayState;
+
+    /**
+     * List of histogram drawn
+     */
+    private histogramsList = [];
     /**
      * Handle draw histogram return tuple with positive bins and negative bins
      * In charge to create svg paths
@@ -198,11 +203,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 } else {
                     this.label = LABEL.RIGHT_CANAL;
                 }
-                const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
+                if (!(zoomed && this.displayState === 'sm')) {
+                    const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
                     zoomed , this.label);
-                if (histogram) {
-                    this.listOfHistograms.push(histogram);
-                    index++;
+                    if (histogram) {
+                        this.listOfHistograms.push(histogram);
+                        index++;
+                    }
                 }
             });
         }
@@ -347,11 +354,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
             if (metadataManager.getHistograms(handleMetadataIds).length > 0) {
-                this.drawHistograms(metadataManager.getHistograms(handleMetadataIds));
+                this.histogramsList = metadataManager.getHistograms(handleMetadataIds);
+                this.drawHistograms(this.histogramsList);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_END);
                 this.initSliderEvents();
             } else {
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargés');
+                // this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargées');
             }
         }
     }
@@ -510,9 +518,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @AutoBind
     public handleWindowResize() {
         this.handleDisplayState();
-        // this.listOfHistograms = [];
-        this.handleMetadataLoaded();
-        // this.updateZoomedSvg(false);
+        this.updateHistograms(this.listOfHistograms);
     }
     /**
      * Invoked on click context menu
@@ -521,5 +527,14 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     public onContextMenu(event: MouseEvent) {
         this.mediaPlayerElement.eventEmitter.emit('contextmenu', event);
+    }
+    @AutoBind
+    public updateHistograms(list) {
+        if (list.length > 0) {
+            const handleMetadataIds = this.pluginConfiguration.metadataIds;
+            const metadataManager = this.mediaPlayerElement.metadataManager;
+            setTimeout(() => this.drawHistograms(metadataManager.getHistograms(handleMetadataIds)), 500);
+            this.initSliderEvents();
+        }
     }
 }

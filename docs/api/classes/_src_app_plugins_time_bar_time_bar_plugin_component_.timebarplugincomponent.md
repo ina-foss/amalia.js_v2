@@ -360,7 +360,7 @@ Name | Type |
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:117
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:115
 
 Return default config
 
@@ -384,7 +384,7 @@ ___
 
 ▸ **handleOnDurationChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:135
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:133
 
 Invoked on duration change
 
@@ -396,7 +396,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:126
+Defined in src/app/plugins/time-bar/time-bar-plugin.component.ts:124
 
 Invoked time change event for :
 - update current time

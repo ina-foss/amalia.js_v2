@@ -2,7 +2,7 @@
      (mouseout)="displayControlBar(false);playerHover= false"
      (mousemove)="resetTimer();displayControlBar(true);focus();playerHover= true;" (load)="startTimer()" (contextmenu)="onContextMenu($event)"
      class="media-player aspect-ratio-{{ratio}}"
-     (keydown)="emitKeyDownEvent($event);" (keyup)="emitKeyUpEvent()"
+     (keydown)="emitKeyDownEvent($event);" (keyup)="emitKeyUpEvent()" (onresize)="handleWindowResize()"
      [ngClass]="{'pinned' : pinned , 'pinnedControlbar' : pinnedControlbar}" tabindex="0">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
     <img #previewThumbnail class="preview-thumbnail"

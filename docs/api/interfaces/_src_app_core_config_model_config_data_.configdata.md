@@ -18,6 +18,7 @@
 * [pluginsConfiguration](_src_app_core_config_model_config_data_.configdata.md#optional-pluginsconfiguration)
 * [tcOffset](_src_app_core_config_model_config_data_.configdata.md#optional-tcoffset)
 * [thumbnail](_src_app_core_config_model_config_data_.configdata.md#optional-thumbnail)
+* [timeFormat](_src_app_core_config_model_config_data_.configdata.md#timeformat)
 
 ## Properties
 
@@ -25,7 +26,7 @@
 
 • **data**? : *any*
 
-Defined in src/app/core/config/model/config-data.ts:18
+Defined in src/app/core/config/model/config-data.ts:19
 
 ___
 
@@ -33,7 +34,7 @@ ___
 
 • **dataSources**? : *Array‹[ConfigDataSource](_src_app_core_config_model_config_data_source_.configdatasource.md)›*
 
-Defined in src/app/core/config/model/config-data.ts:17
+Defined in src/app/core/config/model/config-data.ts:18
 
 ___
 
@@ -41,7 +42,7 @@ ___
 
 • **debug**? : *boolean*
 
-Defined in src/app/core/config/model/config-data.ts:27
+Defined in src/app/core/config/model/config-data.ts:28
 
 ___
 
@@ -49,7 +50,7 @@ ___
 
 • **logLevel**? : *string*
 
-Defined in src/app/core/config/model/config-data.ts:28
+Defined in src/app/core/config/model/config-data.ts:29
 
 ___
 
@@ -57,7 +58,7 @@ ___
 
 • **player**: *[PlayerConfigData](_src_app_core_config_model_player_config_data_.playerconfigdata.md)*
 
-Defined in src/app/core/config/model/config-data.ts:15
+Defined in src/app/core/config/model/config-data.ts:16
 
 ___
 
@@ -65,7 +66,7 @@ ___
 
 • **pluginsConfiguration**? : *Map‹string, [PluginConfigData](_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹any››*
 
-Defined in src/app/core/config/model/config-data.ts:16
+Defined in src/app/core/config/model/config-data.ts:17
 
 ___
 
@@ -83,7 +84,7 @@ ___
 
 • **thumbnail**? : *object*
 
-Defined in src/app/core/config/model/config-data.ts:19
+Defined in src/app/core/config/model/config-data.ts:20
 
 #### Type declaration:
 
@@ -98,3 +99,11 @@ Defined in src/app/core/config/model/config-data.ts:19
 * **tcParam**? : *string*
 
 * **width**? : *number*
+
+___
+
+###  timeFormat
+
+• **timeFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"*
+
+Defined in src/app/core/config/model/config-data.ts:15

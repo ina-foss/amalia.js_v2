@@ -74,20 +74,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Volume left side
      */
-    public volumeLeft = 100;
+    public volumeLeft = 50;
     /**
      * Old Volume left side
      */
-    public oldVolumeLeft = 100;
+    public oldVolumeLeft = 50;
 
     /**
      * Volume right side
      */
-    public volumeRight = 100;
+    public volumeRight = 50;
     /**
      * Old Volume right side
      */
-    public oldVolumeRight = 100;
+    public oldVolumeRight = 50;
 
     /**
      * Selected aspectRatio
@@ -252,6 +252,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public leftVolumeSlider: ElementRef;
     @ViewChild('rightVolumeSlider')
     public rightVolumeSlider: ElementRef;
+    public playbackrateByImages = false;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -265,7 +266,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.elements = this.pluginConfiguration.data;
         this.initPlaybackrates();
         // init volume
-        this.mediaPlayerElement.getMediaPlayer().setVolume(100);
+        this.mediaPlayerElement.getMediaPlayer().setVolume(50);
         // init shortcuts
         this.listOfShortcuts = this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
@@ -290,11 +291,26 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
     }
+    /**
+     * SIMULATE SEEKING
+     */
+    @AutoBind
+    public handlePlaybackRateChangeByImages() {
+        this.playbackrateByImages = true;
+    }
 
+    /**
+     * stop simulate seeking
+     */
+    public handlePlaybackRateChangeByImagesStop() {
+        this.playbackrateByImages = false;
+    }
     /**
      * Return plugin configuration
      */
@@ -505,6 +521,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on mouse move
      * @param value change value
      */
+    @AutoBind
     public moveSliderCursor(value: any) {
         this.logger.info('moveSliderCursor ', value);
         this.progressBarValue = value;
@@ -515,8 +532,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
         } else {
             // this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
-            this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+            if (this.playbackrateByImages) {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
+            } else {
+                // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+                this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+            }
         }
     }
 
@@ -740,11 +763,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        const url = this.mediaPlayerElement.getThumbnailUrl(tc, true);
+        let currentTime = (tcOffset) ? tcOffset + tc : tc;
+        currentTime = parseFloat(currentTime.toFixed(2));
+        const url = this.mediaPlayerElement.getThumbnailUrl(currentTime, true);
         if (isFinite(tc)) {
-            this.thumbnailService.getThumbnail(url, tc).then((blob) => {
+            this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
                 if (typeof (blob) !== 'undefined') {
                     this.thumbnailElement.nativeElement.setAttribute('src' , blob);
                 }
@@ -772,9 +798,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     public nextPlaybackRateImages(speed) {
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
-            this.mediaPlayerElement.getMediaPlayer().play();
-        }
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         if (this.getPlaybackStepValue(this.forwardPlaybackRateStep, true) < speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
@@ -791,17 +814,23 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     @AutoBind
     public previousPlaybackRateImages(speed) {
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused()) {
-            this.mediaPlayerElement.getMediaPlayer().play();
-        }
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         if (this.getPlaybackStepValue(this.backwardPlaybackRateStep, true) > speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         } else {
             this.currentPlaybackRate = this.getPlaybackStepValue(this.backwardPlaybackRateStep, true);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+            const mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
+            if (this.currentPlaybackRate < 0 && mainSource === false) {
+                const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+                this.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc().then(() => {
+                    this.mediaPlayerElement.getMediaPlayer().setReverseMode(false);
+                    this.mediaPlayerElement.getMediaPlayer().setCurrentTime((Math.max(0, tc)));
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+                });
+            } else {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+            }
         }
-
     }
 
     /**
@@ -1032,7 +1061,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Download URL on shortcut
      */
     public downloadUrl(control) {
+        let currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        const timeFormat = this.mediaPlayerElement.getConfiguration().timeFormat;
+        if (tcOffset && timeFormat !== 'hours') {
+            currentTime = (tcOffset) ? tcOffset + currentTime : currentTime;
+        }
         const data = this.elements;
         for (const i in data) {
             if (typeof data[i] === 'object') {
@@ -1041,10 +1075,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                     if (c.control === control && c.key === this.keypressed) {
                         let baseUrl = c.data.href;
                         const tcParam = c.data?.tcParam || 'tc';
-                        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
-                        const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
-                        baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + tc : baseUrl + '&' + tcParam + '=' + tc;
-                        window.open(baseUrl);
+                        baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + currentTime : baseUrl + '&' + tcParam + '=' + currentTime;
+                        // window.open(baseUrl, 'Download');
+                        window.location.href = baseUrl;
                     }
                 }
             }
