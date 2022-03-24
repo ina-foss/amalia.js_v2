@@ -37,6 +37,9 @@ Player event type
 * [PLAYER_MOUSE_ENTER](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_enter)
 * [PLAYER_MOUSE_LEAVE](_src_app_core_constant_event_type_.playereventtype.md#player_mouse_leave)
 * [PLAYER_RESIZED](_src_app_core_constant_event_type_.playereventtype.md#player_resized)
+* [PLAYER_SIMULATE_PLAY](_src_app_core_constant_event_type_.playereventtype.md#player_simulate_play)
+* [PLAYER_SIMULATE_SLIDER](_src_app_core_constant_event_type_.playereventtype.md#player_simulate_slider)
+* [PLAYER_STOP_SIMULATE_PLAY](_src_app_core_constant_event_type_.playereventtype.md#player_stop_simulate_play)
 * [PLAYING](_src_app_core_constant_event_type_.playereventtype.md#playing)
 * [PLUGIN_ERROR](_src_app_core_constant_event_type_.playereventtype.md#plugin_error)
 * [POSITION_SUBTITLE_CHANGE](_src_app_core_constant_event_type_.playereventtype.md#position_subtitle_change)
@@ -343,6 +346,36 @@ ___
 Defined in src/app/core/constant/event-type.ts:160
 
 Invoked when window is resized
+
+___
+
+###  PLAYER_SIMULATE_PLAY
+
+• **PLAYER_SIMULATE_PLAY**: = "ina.player.SIMULATE_PLAY"
+
+Defined in src/app/core/constant/event-type.ts:200
+
+Simulate Play
+
+___
+
+###  PLAYER_SIMULATE_SLIDER
+
+• **PLAYER_SIMULATE_SLIDER**: = "ina.player.SIMULATE_SLIDER"
+
+Defined in src/app/core/constant/event-type.ts:196
+
+Simulate slider controlbar timeline
+
+___
+
+###  PLAYER_STOP_SIMULATE_PLAY
+
+• **PLAYER_STOP_SIMULATE_PLAY**: = "ina.player.STOP_SIMULATE_PLAY"
+
+Defined in src/app/core/constant/event-type.ts:204
+
+STOP Simulate Play
 
 ___
 

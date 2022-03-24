@@ -20,7 +20,7 @@
     }
   ],
   "thumbnail": {
-  "baseUrl": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/2GAW3x1oFxVc3d/5ocPzcN8HOagZhH+HmV7pHEOkFNU4/HHjQHHXr3YDqBxNaceQu0eHZv2r9iGwJeV5rsWUYUtS1aACrcVmppcVByQX1vPOYpUqDdDQIPMNYbFph8ALIOcZN5982y4UZds6uVVMnLQ3I3bQgG/mmZntqyw0QwZCfWWO9HpOpRZfj8ZRsadU7DUwDVeBjcJtnN1Zx7quLO0X5BXaZhXv42pU7rWFXOcm6ZqCVzbC/8BgyV6tA6ebv+igmXXfxELB/VsNJcF4jNeWzPraHbkhUwZhxH4Wa7sbQiGCR1YtJaWi/93GOwg1g+P+BrhNS8TNJI/E75wklOTxN/S10gU4rcaux7sjigt94zVMdV53S8WU2+Nlvi6Ftsuh9VrT0ZeQjL6ovEtIAcVQovTZ0i1Fmsta6l4mIHVMhrhCYYMMKdsdkgmskfv/HWE7izujNDXMUxMttgdXfoFFt1k9gE8g4LJsJdXQRXOwTswf6ZP5nKXsbu0FGWt/HGUcSAqOfWumT/dZ6HFmFxTi2Ii21OZZtGIr06uNjlkwbqOIcdcFWV70voiRtR0X98EGU3liqietoeaDCaYPZKz1Z+84Ya5hqqCNK4GILu6jmJ3PzCNDogifx3Ez93gShcOUFkxbjRzLxdzPvd8WgeagCVKbBzVJLfR98LnDFgeeZmD2+7+D7p1Pq1zWOsVDAn4MqxQlYcJiadtpYmkeKTnUfMLw0rW4jWMNbYB/ABUedvXqtG+rmvMhqoBmDUM8UF3Gzq2ACa95887ogQMog8QG0w0kdHY8S64LI/6Y6EqwHEPasMBcycr/qrQ8VtTZuFY5bAGoUAyRGzqUDCLhOdZfOIlGQria6gdYov+arxKdA+8Beaw5aUa65qpXgvgH/sl_iv/UxNYxbC85G1K7BD32z1XwQ==/sl_hm/",
+  "baseUrl": "https://image.wsmedia.d.sas.ina/thumbs/5xjt4ZG3gCNHzy+FGMs4/OjyT6fbaxfOCsjRRkHqPbN2GuRv2NAD4a3PKlDHl+vfkFPbO7ucDjAX3RQIQt53JEI/BlORk7Y2fKLH2PgdtXD1RNEpNMwai+FyZHyr2Z6zKHCAnZH3f3yctgAFoxez5HovC8MA5vKSR1Hd1DTulaUcksmJVHdT2W0y/sDCWff6HULuq9l+MLqiL+1OasdKiYJpH8iiFJcij/9qCbCrlREQSYWfWXoETUAuYiRJzrTRW0ZDhSPC8Dl2eI9Z2xVuCWH2BHfMj6qe7bxf3VbxpmoeuuZ7+gJmkwdjuZcS0P/fP6VGmOcUtmhlbiUKckqFfPGRrTVj+kDKHdvZ+Xi+b7K1qaoCAooa6jYatDUTSJDue3gfQ/mtkBoPTzWE102ln5A+BdJh1LPgnBNEH6uISC0bibOu4ZqDaYfJT3OJ8x/Muso6nYA0Hcpa4AFiQoSXJ7sI8AuDbKqwUhjogMrDy51fe5ZVOqrF5wbIX1DKz8AmDlxalGSsNbmU24/oljeszx+qoEtRiCCj/4cb4jhKdmaJa8kmkd2Uih9mSqrs+WLFfxpjSn56E5sCnmWfjtR6o6A/g9YOj8C3eoPrjThclG/0pDAOv41ELoaxiyKLBmODhObTjLj9oW8s35bNQl/jRka4VCf1hj6DR1ahSEiHzw9nRVkM3ka70MAajZGSk8bopr1yH5vmQ2MO0pSWez6v7g==/sl_iv/YXtyIP/ucQMbF3I928quYQ==/sl_hm/",
   "enableThumbnail": true,
   "tcParam": "start"
 },
@@ -70,9 +70,11 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "backward",
+          "control": 'images-backward',
           "zone": 2,
-          "priority": 1
+          "data": {
+            "speed": -6
+          },
         },
         {
           "label": "Play / Pause",

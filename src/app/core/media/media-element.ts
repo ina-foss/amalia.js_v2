@@ -51,6 +51,11 @@ export class MediaElement {
      * Player initalized
      */
     private initialized = false;
+
+    /**
+     * Force show button play when video is paused (handle playbackrate change by images)
+     */
+    private force = false;
     /**
      * Init media element for handle html video element
      * @param mediaElement html video element
@@ -119,9 +124,14 @@ export class MediaElement {
     /**
      * Invoked for paused player
      */
-    pause(): void {
-        this.setPlaybackRate(1);
-        this.mediaElement.pause();
+    pause(ignore?): void {
+        if (!ignore) {
+            this.setPlaybackRate(1);
+            this.mediaElement.pause();
+        } else {
+            this.mediaElement.pause();
+            this.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_PLAY, true);
+        }
     }
 
     stop(): void {
@@ -218,7 +228,12 @@ export class MediaElement {
             this.mediaElement.volume = Math.min(volumePercent / 100, 1);
         }
     }
-
+    /*
+    Set value of reverseMode
+     */
+    setReverseMode(value) {
+        this.reverseMode = value;
+    }
     /**
      * Return current position in seconds
      */
@@ -288,8 +303,8 @@ export class MediaElement {
             if (lastStateIsReverseMode === true && !this.reverseMode) {
                 const tc = this.getDuration() - this.getCurrentTime();
                 this.mse.switchToMainSrc().then(() => {
-                    this.mediaElement.playbackRate = speed;
                     this.setCurrentTime((Math.max(0, tc)));
+                    this.mediaElement.playbackRate = speed;
                     this.switched = false;
                 });
             } else if (this.mediaElement && !this.reverseMode) {
@@ -308,7 +323,12 @@ export class MediaElement {
      * @return boolean true is paused
      */
     isPaused(): boolean {
-        return this.mediaElement ? this.mediaElement.paused : false;
+        const force = this.force;
+        if (force) {
+            return false;
+        } else {
+            return this.mediaElement ? this.mediaElement.paused : false;
+        }
     }
 
     /**
@@ -415,10 +435,16 @@ export class MediaElement {
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
         this.mediaElement.addEventListener('suspend', this.handleWaiting);
         document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
+        this.eventEmitter.on(PlayerEventType.PLAYER_SIMULATE_PLAY, this.simulatePlay);
     }
+
     /**
-     * Invoked on playbackrate images change
+     * Simulate play on playback change by images
      */
+    @AutoBind
+    private simulatePlay($event) {
+        this.force = $event;
+    }
     /**
      * Invoked when first frame of the media has finished loading.
      */

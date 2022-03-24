@@ -40,6 +40,7 @@ describe('Test Shortcut manager', () => {
         const pluginsConfiguration: Map<string, PluginConfigData<any>> = new Map<string, PluginConfigData<any>>();
         const dataSources: Array<ConfigDataSource> = new Array<ConfigDataSource>();
         const c: ConfigData = {
+            timeFormat: 'f',
             player,
             pluginsConfiguration,
             dataSources

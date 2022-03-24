@@ -12,6 +12,7 @@ export interface ConfigData {
      * Time code offset handle metadata time code
      */
     tcOffset?: number;
+    timeFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds';
     player: PlayerConfigData;
     pluginsConfiguration?: Map<string, PluginConfigData<any>>;
     dataSources?: Array<ConfigDataSource>;
