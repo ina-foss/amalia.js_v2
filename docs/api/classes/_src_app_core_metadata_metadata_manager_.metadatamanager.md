@@ -120,7 +120,7 @@ ___
 
 ▸ **errorToLoadMetadata**(`url`: any, `completed`: any): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:193
+Defined in src/app/core/metadata/metadata-manager.ts:190
 
 Error to load data
 
@@ -268,7 +268,7 @@ ___
 
 ▸ **onMetadataLoaded**(`listOfMetadata`: Array‹Metadata›, `completed`: any): *void*
 
-Defined in src/app/core/metadata/metadata-manager.ts:169
+Defined in src/app/core/metadata/metadata-manager.ts:167
 
 Called on metadata loaded
 

@@ -359,7 +359,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_END);
                 this.initSliderEvents();
             } else {
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargées');
+                // this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargées');
             }
         }
     }

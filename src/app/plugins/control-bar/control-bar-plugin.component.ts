@@ -535,8 +535,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
             if (this.playbackrateByImages) {
-                console.log('this.playbackrateByImages');
-                console.log(this.currentTime);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
             } else {
                 // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
