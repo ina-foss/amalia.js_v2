@@ -763,11 +763,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public updateThumbnail(event: MouseEvent) {
-        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
         const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        let currentTime = (tcOffset) ? tcOffset + tc : tc;
-        currentTime = parseFloat(currentTime.toFixed(2));
+        const currentTime = parseFloat(tc.toFixed(2));
         const url = this.mediaPlayerElement.getThumbnailUrl(currentTime, true);
         if (isFinite(tc)) {
             this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
@@ -1047,13 +1045,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param control control bar config
      */
     public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
-        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
         const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
-        const tc = (tcOffset) ? tcOffset + currentTime : currentTime;
         if (baseUrl !== '') {
-            element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`);
+            element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${currentTime}` : `${baseUrl}&${tcParam}=${this.currentTime}`);
         }
     }
 
@@ -1061,12 +1057,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Download URL on shortcut
      */
     public downloadUrl(control) {
-        let currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
-        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
-        const timeFormat = this.mediaPlayerElement.getConfiguration().timeFormat;
-        if (tcOffset && timeFormat !== 'hours') {
-            currentTime = (tcOffset) ? tcOffset + currentTime : currentTime;
-        }
+        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
         const data = this.elements;
         for (const i in data) {
             if (typeof data[i] === 'object') {
