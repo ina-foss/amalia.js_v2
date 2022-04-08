@@ -303,7 +303,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         this.transcriptionElement.nativeElement.scrollTop =  scrollPos  - minScroll;
                     } else {
                         if (scrollPos > scrollNode.clientHeight) {
-                            // console.log('ici');
                             // this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
                             this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         } else {
