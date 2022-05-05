@@ -55,6 +55,7 @@ describe('Test Media element', () => {
         expect(component.poster).toEqual('../assets/image.png');
     });
     it('Test events', () => {
+        component.pause();
         expect(component.isPaused()).toEqual(true);
         component.seekToBegin();
         component.stop();
@@ -66,7 +67,6 @@ describe('Test Media element', () => {
         expect(component.isMute()).toEqual(false);
         expect(component.getCurrentTime()).toEqual(0);
         component.moveNextFrame(2);
-        expect(component.isPaused()).toEqual(true);
         expect(component.getCurrentTime()).toEqual(0 + (1 / 25 * 2));
         component.movePrevFrame(1);
         expect(component.getCurrentTime()).toEqual((1 / 25 * 2) - (1 / 25 * 1));
@@ -105,12 +105,16 @@ describe('Test Media element', () => {
     });
     it('test playbackrate setter and getter', () => {
         component.setCurrentTime(225);
-        /* component.playbackRate = 4;
-        expect(component.getPlaybackRate()).toEqual(4);*/
+        component.setReverseMode(true);
+        expect(component.reverseMode).toEqual(true);
         component.pause();
         expect(component.getPlaybackRate()).toEqual(1);
         expect(component.reverseMode).toEqual(false);
         component.setSrc(config2);
+        component.playbackRate = 4;
+        expect(component.withMergeVolume).toEqual(component._withMergeVolume);
+        component.pause(true);
+        // expect(component.isPaused()).toEqual(true);
     });
 });
 

@@ -490,7 +490,7 @@ ___
 
 ▸ **clearSearchList**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:431
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:430
 
 clear seach list onclick
 
@@ -564,7 +564,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:330
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:329
 
 Invoked on metadata loaded
 
@@ -589,7 +589,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:321
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:320
 
 handle scroll event
 
@@ -607,7 +607,7 @@ ___
 
 ▸ **handleShortcut**(`event`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:444
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:443
 
 handleShortcut on search button
 
@@ -649,7 +649,7 @@ ___
 
 ▸ **parseTranscription**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:337
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:336
 
 In charge to load metadata
 
@@ -691,7 +691,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:387
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:386
 
 Scroll to next or previous searched word
 
@@ -709,7 +709,7 @@ ___
 
 ▸ **scrollToSelectedSegment**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:417
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:416
 
 Invocked on click SYNCHRO button
 
@@ -721,7 +721,7 @@ ___
 
 ▸ **searchWord**(`searchText`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:362
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:361
 
 Search word ans scroll to first result
 
@@ -793,7 +793,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:454
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:453
 
 if scrolling and active segment is not visible add synchro button
 

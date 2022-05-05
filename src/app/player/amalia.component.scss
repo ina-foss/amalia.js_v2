@@ -183,7 +183,7 @@
 
   .tooltip {
     position: absolute;
-    // z-index: $amalia-tooltip-z-index;
+    z-index: $amalia-volume-bar-z-index;
     display: block;
     margin: 5px;
     word-wrap: break-word;

@@ -160,7 +160,7 @@ export class MediaPlayerElement {
      * In charge to load configuration
      * @param config configuration parameter
      */
-    private loadConfiguration(config: string | object): Promise<void> {
+    public loadConfiguration(config: string | object): Promise<void> {
         return new Promise((resolve, reject) => {
             this.configurationManager.load(config).then(() => resolve(), () => reject());
         });

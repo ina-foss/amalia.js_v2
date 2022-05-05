@@ -271,7 +271,6 @@ export class MediaElement {
         this.reverseMode = (speed < 0);
         if (this.getDuration() > 0 && this.getCurrentTime() >= 0) {
             let currentTime = this.getCurrentTime();
-            const duration = this.getDuration();
             if (this.reverseMode && this.switched === false) {
                 // this.pause();
                 if (this.mse.getBackwardsSrc()) {

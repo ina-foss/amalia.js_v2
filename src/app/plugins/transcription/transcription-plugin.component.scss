@@ -187,16 +187,17 @@
         .search-result {
           color: #A6A8A9;
           font-size: 14px;
-          top: 26px;
+          top: 27px;
           position: absolute;
-          right: 10px;
+          right: 35px;
         }
         .amalia-svg-clear-size {
           width: 16px;
           height: 16px;
           float: right;
-          margin-left: 6px;
-          margin-top: 2px;
+          position: absolute;
+          top: 30px;
+          right: 10px;
           color: $amalia-plugin-transcription-search-icons;
         }
         .search-icon {

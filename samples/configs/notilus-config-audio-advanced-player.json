@@ -11,16 +11,16 @@
   "dataSources": [
 
     {
-      "url": "http://localhost:4201/metadata/waveform-timeline0.json"
+      "url": "http://localhost:4203/metadata/waveform-timeline0.json"
     },
     {
-      "url": "http://localhost:4201/metadata/waveform-timeline1.json"
+      "url": "http://localhost:4203/metadata/waveform-timeline1.json"
     },
     {
-      "url": "http://localhost:4201/metadata/waveform-timeline0-zoom.json"
+      "url": "http://localhost:4203/metadata/waveform-timeline0-zoom.json"
     },
     {
-      "url": "http://localhost:4201/metadata/waveform-timeline1-zoom.json"
+      "url": "http://localhost:4203/metadata/waveform-timeline1-zoom.json"
     }
 
   ],

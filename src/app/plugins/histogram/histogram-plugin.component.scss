@@ -18,7 +18,7 @@
     background: #34495E;
     height: 100%;
     z-index: 1;
-    &.sm {c
+    &.sm {
         .zoomed-histograms{
           display: none;
         }
@@ -52,17 +52,21 @@
         display: none;
       }
     }
+    .label {
+      background-color: $amalia-ctrl-bar-bg-color;
+      padding: 2px 3px 2px 8px;
+      color: white;
+      width: 10%;
+      position: absolute;
+      font-size: 14px;
+      min-width: max-content;
+      z-index: 3;
+      &.right {
+        top: 50%;
+      }
+    }
     .zoomed-histograms {
       height: 66%;
-      .label {
-        background-color: $amalia-ctrl-bar-bg-color;
-        padding: 2px 3px 2px 8px;
-        color: white;
-        width: 10%;
-        position: absolute;
-        font-size: 14px;
-        min-width: max-content;
-      }
     }
     .histograms, .zoomed-histograms {
       position: relative;

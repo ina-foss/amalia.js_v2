@@ -15,27 +15,27 @@
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/amalia01-ball.json",
+      "url": "http://localhost:4203/metadata/amalia01-ball.json",
       "headers": [
       ]
     },
     {
-      "url": "http://localhost:4201/metadata/amalia01-events.json"
+      "url": "http://localhost:4203/metadata/amalia01-events.json"
     },
     {
-      "url": "http://localhost:4201/metadata/F24_14301445_21032014_id_en.json"
+      "url": "http://localhost:4203/metadata/F24_14301445_21032014_id_en.json"
     },
     {
-      "url": "http://localhost:4201/metadata/F24_14301445_21032014_tr_en.json"
+      "url": "http://localhost:4203/metadata/F24_14301445_21032014_tr_en.json"
     },
     {
-      "url": "http://localhost:4201/metadata/sample-transcription.json"
+      "url": "http://localhost:4203/metadata/sample-transcription.json"
     },
     {
-      "url": "http://localhost:4201/metadata/sound_segments.json"
+      "url": "http://localhost:4203/metadata/sound_segments.json"
     },
     {
-      "url": "http://localhost:4201/metadata/FPVDB07032005.json"
+      "url": "http://localhost:4203/metadata/FPVDB07032005.json"
     }
   ],
   "thumbnail": {
@@ -85,14 +85,19 @@
           "control": "playbackRateCustomSteps"
         },
         {
+          "label": "Playback rate steps",
+          "control": "playbackRateSteps"
+        },
+        {
           "label": "Capture Image",
           "control": "download",
           "icon": "screenshot",
           "zone": 1,
           "order": 2,
-          "priority": 1,
+          "priority": 2,
+          "key": "c",
           "data": {
-            "href": "https://image.wsmedia.d.sas.ina/thumbs/5xjt4ZG3gCNHzy+FGMs4/OjyT6fbaxfOCsjRRkHqPbN2GuRv2NAD4a3PKlDHl+vfkFPbO7ucDjAX3RQIQt53JEI/BlORk7Y2fKLH2PgdtXD1RNEpNMwai+FyZHyr2Z6zKHCAnZH3f3yctgAFoxez5HovC8MA5vKSR1Hd1DTulaUcksmJVHdT2W0y/sDCWff6HULuq9l+MLqiL+1OasdKiYJpH8iiFJcij/9qCbCrlREQSYWfWXoETUAuYiRJzrTRW0ZDhSPC8Dl2eI9Z2xVuCWH2BHfMj6qe7bxf3VbxpmoeuuZ7+gJmkwdjuZcS0P/fP6VGmOcUtmhlbiUKckqFfPGRrTVj+kDKHdvZ+Xi+b7K1qaoCAooa6jYatDUTSJDue3gfQ/mtkBoPTzWE102ln5A+BdJh1LPgnBNEH6uISC0bibOu4ZqDaYfJT3OJ8x/Muso6nYA0Hcpa4AFiQoSXJ7sI8AuDbKqwUhjogMrDy51fe5ZVOqrF5wbIX1DKz8AmDlxalGSsNbmU24/oljeszx+qoEtRiCCj/4cb4jhKdmaJa8kmkd2Uih9mSqrs+WLFfxpjSn56E5sCnmWfjtR6o6A/g9YOj8C3eoPrjThclG/0pDAOv41ELoaxiyKLBmODhObTjLj9oW8s35bNQl/jRka4VCf1hj6DR1ahSEiHzw9nRVkM3ka70MAajZGSk8bopr1yH5vmQ2MO0pSWez6v7g==/sl_iv/YXtyIP/ucQMbF3I928quYQ==/sl_hm/"
+            "href": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/G3ntJNT9yjD0ImuwiDaM48nT4sGPMAxTDF4P3nLQDfvJfmgrVWJDeO4mCzaLVQWAw3xtNpN2ftPzSzAtxKpQujFSL9WDScy9bDW09t1089Kp59ibPU14ZsVYwGE2tK9KBiNWzgOSwytx+dHT0G6SRGDNBlVX9SHejvCyM3W0sFh1nMgccbeaie55bUYDsBE9fcAXLp1UO3D+Jd4mNFDDBb3mv5LlJOSewE9rgGeAE5s/tt++yR8/NZQzKQmIH6+uscgQQSExiYGyGlxppVwRO5U+zle/m0djfQaaD6pnRThYNWlfc7Q+qwp7EScdlLcHsBNiX8v0KRKEq99ffI3b5v3vv9qhiQjp6Zq9zVZQPXOkQ4wKhCspXrri+Zr6gHR9VccuOZgUnGVPdIHGxXtQ3mFcMyUE81UPWsJoDUbI2IRI7IfTodvpYcDbXeuAAKRY55oMh4rNkD87iZ5p4OfKopTbx2N6GcSF/lvQH0ndce3Yuk08aecM4JoSZSIFgVUja2ebGPiIX1j/7FzQ0JqvThTM2LEMtmjHvKPiZOmIBvmtylQVFpo1nQ0GcyFhGyIgI4Va8tPT/2Uo7R0pmsJkQrZC3m3JE4HUlucjA3T7tUoUviXpiPECwEi6dQ+EZS9w0xYlW05vwhzHo8izX2tgq8TVmMOWu/3LD5/VZO/X2Z1SDZDrgWJW0/8Wv15tkccB/sl_iv/Ai+zgqgE0YWhkGDSLQx8xQ==/sl_hm/"
           }
         },
         {
@@ -103,7 +108,7 @@
           "order": 1,
           "priority": 2,
           "data": {
-            "href": "https://image.wsmedia.d.sas.ina/thumbs/5xjt4ZG3gCNHzy+FGMs4/OjyT6fbaxfOCsjRRkHqPbN2GuRv2NAD4a3PKlDHl+vfkFPbO7ucDjAX3RQIQt53JEI/BlORk7Y2fKLH2PgdtXD1RNEpNMwai+FyZHyr2Z6zKHCAnZH3f3yctgAFoxez5HovC8MA5vKSR1Hd1DTulaUcksmJVHdT2W0y/sDCWff6HULuq9l+MLqiL+1OasdKiYJpH8iiFJcij/9qCbCrlREQSYWfWXoETUAuYiRJzrTRW0ZDhSPC8Dl2eI9Z2xVuCWH2BHfMj6qe7bxf3VbxpmoeuuZ7+gJmkwdjuZcS0P/fP6VGmOcUtmhlbiUKckqFfPGRrTVj+kDKHdvZ+Xi+b7K1qaoCAooa6jYatDUTSJDue3gfQ/mtkBoPTzWE102ln5A+BdJh1LPgnBNEH6uISC0bibOu4ZqDaYfJT3OJ8x/Muso6nYA0Hcpa4AFiQoSXJ7sI8AuDbKqwUhjogMrDy51fe5ZVOqrF5wbIX1DKz8AmDlxalGSsNbmU24/oljeszx+qoEtRiCCj/4cb4jhKdmaJa8kmkd2Uih9mSqrs+WLFfxpjSn56E5sCnmWfjtR6o6A/g9YOj8C3eoPrjThclG/0pDAOv41ELoaxiyKLBmODhObTjLj9oW8s35bNQl/jRka4VCf1hj6DR1ahSEiHzw9nRVkM3ka70MAajZGSk8bopr1yH5vmQ2MO0pSWez6v7g==/sl_iv/YXtyIP/ucQMbF3I928quYQ==/sl_hm/"
+            "href": "http://localhost:4200/assets/logo.svg"
           }
         },
         {
@@ -147,14 +152,15 @@
           "control": "backward",
           "zone": 2,
           "priority": 1,
-          "data": { "speed": -2 }
+          "data": {
+            "speed": -2
+          }
         },
         {
           "label": "Play / Pause",
           "control": "playPause",
           "zone": 2,
-          "priority": 1,
-          "key": "espace"
+          "priority": 1
         },
         {
           "label": "forward",
@@ -162,7 +168,9 @@
           "control": "forward",
           "zone": 2,
           "priority": 1,
-          "data": { "speed": 6 }
+          "data": {
+            "speed": 6
+          }
         },
         {
           "label": "slow-forward",
@@ -193,34 +201,38 @@
           "priority": 2
         },
         {
-          "label": "Volume",
-          "control": "volume",
-          "zone": 3,
-          "priority": 1,
-          "data": {
-            "channelMergeVolume": true,
-            "channelMergerNode": ""
-          }
-        },
-        {
           "label": "Sous titres",
           "control": "subtitles",
           "icon": "subtitle",
           "zone": 3,
-          "priority": 2
+          "priority": 1
         },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 3,
+          "priority": 1,
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
+          }
+        },
+
         {
           "label": "Fullscreen",
           "control": "toggleFullScreen",
           "icon": "fullscreen",
           "zone": 3,
-          "priority": 1
+          "priority": 1,
+          "key": "f"
         },
         {
           "label": "Aspect ratio (a)",
           "control": "aspectRatio",
           "zone": 3,
-          "priority": 2
+          "key": "c",
+          "priority": 3
         },
         {
           "label": "Menu",
@@ -228,6 +240,7 @@
           "icon": "dots",
           "zone": 3
         },
+
         {
           "label": "Epingler slider",
           "control": "pinControls",
