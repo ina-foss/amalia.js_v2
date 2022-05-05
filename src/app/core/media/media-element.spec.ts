@@ -72,6 +72,15 @@ describe('Test Media element', () => {
         expect(component.getCurrentTime()).toEqual((1 / 25 * 2) - (1 / 25 * 1));
         component.seekToEnd();
         expect(typeof (component.getDuration())).toBe('number');
+        component.setCurrentTime(25);
+        component.play();
+        component.playPause();
+        expect(component.isPaused()).toEqual(true);
+        component.pause();
+        expect(component.isPaused()).toEqual(true);
+        component.stop();
+        expect(component.getCurrentTime()).toEqual(0);
+        component.play();
     });
     it('Test Volume', () => {
         component.setVolume(50);
@@ -91,17 +100,6 @@ describe('Test Media element', () => {
     });
     it('Test Image', () => {
         expect(typeof (component.captureImage(50))).toBe('string');
-    });
-    it('Test play', () => {
-        component.setCurrentTime(25);
-        component.play();
-        component.playPause();
-        expect(component.isPaused()).toEqual(true);
-        component.pause();
-        expect(component.isPaused()).toEqual(true);
-        component.stop();
-        expect(component.getCurrentTime()).toEqual(0);
-        component.play();
     });
     it('test playbackrate setter and getter', () => {
         component.setCurrentTime(225);

@@ -44,7 +44,7 @@ In charge to create player
 * [getThumbnailUrl](_src_app_core_media_player_element_.mediaplayerelement.md#getthumbnailurl)
 * [handleMetadataLoaded](_src_app_core_media_player_element_.mediaplayerelement.md#handlemetadataloaded)
 * [init](_src_app_core_media_player_element_.mediaplayerelement.md#init)
-* [loadConfiguration](_src_app_core_media_player_element_.mediaplayerelement.md#private-loadconfiguration)
+* [loadConfiguration](_src_app_core_media_player_element_.mediaplayerelement.md#loadconfiguration)
 * [loadDataSources](_src_app_core_media_player_element_.mediaplayerelement.md#private-loaddatasources)
 * [setMediaPlayer](_src_app_core_media_player_element_.mediaplayerelement.md#setmediaplayer)
 * [setMediaPlayerWidth](_src_app_core_media_player_element_.mediaplayerelement.md#setmediaplayerwidth)
@@ -322,7 +322,7 @@ Name | Type | Description |
 
 ___
 
-### `Private` loadConfiguration
+###  loadConfiguration
 
 ▸ **loadConfiguration**(`config`: string | object): *Promise‹void›*
 
