@@ -2,7 +2,7 @@
   "debug": true,
   "logLevel": "trace",
   "player": {
-    "src": "http://localhost:4201/medias/F24_14301445_21032014_id_en.mp4",
+    "src": "http://localhost:4203/medias/F24_14301445_21032014_id_en.mp4",
     "crossOrigin": "anonymous",
     "ratio": "16:8",
     "hls": {
@@ -11,13 +11,13 @@
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/lac-subtitles.json"
+      "url": "http://localhost:4203/metadata/lac-subtitles.json"
     },
     {
-      "url": "http://localhost:4201/metadata/lac-timeline1.json"
+      "url": "http://localhost:4203/metadata/lac-timeline1.json"
     },
     {
-      "url": "http://localhost:4201/metadata/lac-transcription-1.json"
+      "url": "http://localhost:4203/metadata/lac-transcription-1.json"
     }
   ],
   "thumbnail": {

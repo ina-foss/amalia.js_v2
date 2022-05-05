@@ -48,10 +48,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @Input()
     public sliderListOfPlaybackRateCustomSteps: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
     /**
-     * Enable Menu
-     */
-    public enableMenu = false;
-    /**
      * list of backward playback step
      */
     @Input()
@@ -65,6 +61,44 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public forwardPlaybackRateStep: Array<number> = [2, 6, 10];
     @Input()
     public forwardSlowPlaybackRateStep: Array<number> = [0.25, 0.5];
+    public sliderListOfPlaybackRateStepWidth: Array<number> = [];
+    public posPlaybackrates: Array<number> = [];
+    public negPlaybackrates: Array<number> = [];
+    public maxCursor: number;
+    public minCursor: number;
+    // handle slider drag
+    @ViewChild('dragThumb')
+    public dragElement: ElementRef;
+    public sliderPosition = 0;
+    public moving = false;
+    /**
+     * Player playback rate
+     */
+    public currentPlaybackRate = 1;
+    /**
+     * Player playbackrate slider 1
+     */
+    public currentPlaybackRateSlider = 1;
+    /**
+     * Playbackrate slider state
+     */
+    public enablePlaybackSlider = false;
+    /**
+     * Pinned Controls state
+     */
+    public pinnedSlider = false;
+    /**
+     * Pinned slider state
+     */
+    public enablePinnedSlider = false;
+    /**
+     *  Pinned slider and ControlBar
+     */
+    public pinned = false;
+    /**
+     * Enable Menu
+     */
+    public enableMenu = false;
     /**
      * In charge to notify download event
      */
@@ -101,6 +135,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * return  current time
      */
     public currentTime = 0;
+    /**
+     * currentime
+     */
     public time = 0;
     /**
      * inverse display currentime
@@ -129,14 +166,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public keypressed = '';
     /**
-     * Player playback rate
-     */
-    public currentPlaybackRate = 1;
-    /**
-     * Player playbackrate slider 1
-     */
-    public currentPlaybackRateSlider = 1;
-    /**
      * Volume slider state
      */
     public enableVolumeSlider = false;
@@ -164,22 +193,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * State of controlBar
      */
     public activated = true;
-    /**
-     * Playbackrate slider state
-     */
-    public enablePlaybackSlider = false;
-    /**
-     * Pinned Controls state
-     */
-    public pinnedSlider = false;
-    /**
-     * Pinned slider state
-     */
-    public enablePinnedSlider = false;
-    /**
-     *  Pinned slider and ControlBar
-     */
-    public pinned = false;
     /**
      * display state (s/m/l)
      */
@@ -220,8 +233,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public enableThumbnail = false;
     public thumbnailHidden = true;
     public thumbnailPosition = 0;
-    public sliderListOfPlaybackRateStepWidth: Array<number> = [];
-    public thumbnailBlob: string;
     @ViewChild('thumbnail')
     public thumbnailElement: ElementRef<HTMLElement>;
     @ViewChild('thumbnailContainer')
@@ -238,15 +249,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @ViewChild('controlsMenu')
     public controlsMenu: ElementRef<HTMLElement>;
     public throttleFunc;
-    public posPlaybackrates: Array<number> = [];
-    public negPlaybackrates: Array<number> = [];
-    public maxCursor: number;
-    public minCursor: number;
-    // handle slider drag
-    @ViewChild('dragThumb')
-    public dragElement: ElementRef;
-    public sliderPosition = 0;
-    public moving = false;
     // slider volume
     @ViewChild('leftVolumeSlider')
     public leftVolumeSlider: ElementRef;
@@ -264,6 +266,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     init() {
         super.init();
         this.elements = this.pluginConfiguration.data;
+        // init playbackrates
         this.initPlaybackrates();
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(50);
@@ -275,11 +278,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // Show thumbnail when tc = 0
         if (this.enableThumbnail) {
             const url = this.mediaPlayerElement.getThumbnailUrl(0, true);
-            this.thumbnailService.getThumbnail(url, 0).then((blob) => {
-                if (typeof (blob) !== 'undefined') {
-                    this.thumbnailElement.nativeElement.setAttribute('src', blob);
-                }
-            });
+            this.setThumbnail(url, 0);
         }
         // Init Events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
@@ -297,6 +296,35 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.getDefaultAspectRatio();
         this.handleDisplayState();
     }
+
+    /**
+     * Events
+     */
+    /**
+     * Invoked on duration change
+     */
+    @AutoBind
+    private handleOnDurationChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.time = this.currentTime;
+        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+    }
+    /**
+     * Invoked time change event for :
+     * - update progress bar
+     */
+    @AutoBind
+    private handleOnTimeChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        if (!this.inSliding && !isNaN(this.currentTime)) {
+            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(2));
+        }
+        if (this.inverse === false) {
+            this.time = this.currentTime;
+        } else {
+            this.time = this.duration - this.currentTime;
+        }
+    }
     /**
      * SIMULATE SEEKING
      */
@@ -310,6 +338,98 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public handlePlaybackRateChangeByImagesStop() {
         this.playbackrateByImages = false;
+    }
+    /**
+     * Invoked on playback change
+     * @param playbackRate playback rate
+     */
+    @AutoBind
+    private handlePlaybackRateChange(playbackRate: number) {
+        this.logger.info('Handle playback rate change', playbackRate);
+        if (this.mediaPlayerElement.getMediaPlayer().isPaused() && playbackRate !== 1) {
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
+        this.currentPlaybackRate = playbackRate;
+        if (playbackRate === 1) {
+            setTimeout(() => this.selectActivePlaybackrate(), 10);
+        }
+        // setTimeout(() => this.selectActivePlaybackrate(), 10);
+        if (this.currentPlaybackRate >= 1 || this.currentPlaybackRate <= -1) {
+            this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+        } else {
+            this.currentPlaybackRateSlider = (this.currentPlaybackRate);
+        }
+    }
+    /**
+     * Invoked on aspect ratio change
+     * @param event aspect ratio
+     */
+    @AutoBind
+    private handleAspectRatioChange(event) {
+        this.aspectRatio = event;
+    }
+    /**
+     * Invoked player mouse enter event for :
+     * - animate controlBar
+     */
+    @AutoBind
+    private handlePlayerMouseenter() {
+        this.activated = true;
+    }
+    /**
+     * Invoked player mouse leave event for :
+     * - animate controlBar
+     */
+    @AutoBind
+    private handlePlayerMouseleave() {
+        this.activated = false;
+    }
+    /**
+     * Update displayState on windowResize
+     */
+    @AutoBind
+    public handleWindowResize() {
+        this.handleDisplayState();
+        // handle full screen on esc press
+        this.fullScreenMode = document.fullscreenElement !== null;
+    }
+    /**
+     * Apply shortcut if exists on keydown
+     */
+    @AutoBind
+    public handleShortcuts(event) {
+        this.applyShortcut(event);
+    }
+    /**
+     * Progress bar on mouse move
+     * @param value mouse event
+     */
+    public handleProgressBarMouseMove(event) {
+        if (this.inSliding) {
+            const value = this.getMouseValue(event);
+            this.progressBarValue = value;
+            this.currentTime = value * this.duration / 100;
+            if (this.inverse === false) {
+                this.time = this.currentTime;
+            } else {
+                this.time = this.duration - this.currentTime;
+            }
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value);
+        }
+    }
+
+    /**
+     * Handle callback
+     */
+    public handleCallback(control: ControlBarConfig) {
+        this.callback.emit(control);
+    }
+    @AutoBind
+    public hideControlsMenuOnClickDocument() {
+        // click outside the player
+        if (this.enableMenu) {
+            this.enableMenu = !this.enableMenu;
+        }
     }
     /**
      * Return plugin configuration
@@ -346,15 +466,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         return listOfShortcuts;
     }
-
-    /**
-     * Apply shortcut if exists on keydown
-     */
-    @AutoBind
-    public handleShortcuts(event) {
-        this.applyShortcut(event);
-    }
-
     /**
      * If key is declared in config apply control
      */
@@ -366,7 +477,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
         }
     }
-
     /**
      * Invoked player with specified control function name
      * @param control control name
@@ -467,7 +577,31 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
         }
     }
-
+    /**
+     * Return true if the component is in ths configuration without zone
+     * @param componentName compoent name
+     */
+    public hasComponentWithoutZone(componentName: string): boolean {
+        const control = _.find(this.pluginConfiguration.data, {control: componentName});
+        return (control);
+    }
+    /**
+     * Return list controls by zone id
+     * @param zone zone id
+     */
+    public getControlsByZone(zone: number): Array<ControlBarConfig> {
+        if (this.elements) {
+            return _.filter(this.elements, {zone});
+        }
+        return null;
+    }
+    public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
+        if (this.elements) {
+            this.elements = _.orderBy(this.elements, ['order']);
+            return _.filter(this.elements, {priority, zone});
+        }
+        return null;
+    }
     /**
      * Change volume
      * @param value volume percentage
@@ -507,16 +641,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         this.changeVolume(value, volumeSide);
     }
-
-    /**
-     * Return true if the component is in ths configuration without zone
-     * @param componentName compoent name
-     */
-    public hasComponentWithoutZone(componentName: string): boolean {
-        const control = _.find(this.pluginConfiguration.data, {control: componentName});
-        return (control);
-    }
-
     /**
      * Invoked on mouse move
      * @param value change value
@@ -550,7 +674,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     public changeTooltipEmplacement() {
         if (this.fullScreenMode === true) {
-            const tooltip = document.body.getElementsByTagName('tooltip')[0] as Node;
+            const tooltip = document.body.getElementsByTagName('tooltip')[0];
             if (tooltip) {
                 document.body.removeChild(tooltip);
                 this.controlBarContainer.nativeElement.appendChild(tooltip);
@@ -617,7 +741,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
     }
-
     /**
      * Change volume state
      */
@@ -633,38 +756,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
-     * Return list controls by zone id
-     * @param zone zone id
-     */
-    public getControlsByZone(zone: number): Array<ControlBarConfig> {
-        if (this.elements) {
-            return _.filter(this.elements, {zone});
-        }
-        return null;
-    }
-
-    /**
      * return list controls by priority
      * @param priority : number
      */
-    public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
-        if (this.elements) {
-            this.elements = _.orderBy(this.elements, ['order']);
-            return _.filter(this.elements, {priority, zone});
-        }
-        return null;
-    }
-
-    /**
-     * Update displayState on windowResize
-     */
-    @AutoBind
-    public handleWindowResize() {
-        this.handleDisplayState();
-        // handle full screen on esc press
-        this.fullScreenMode = document.fullscreenElement !== null;
-    }
-
     /**
      * Handle mouse enter on progress bar
      * @param event mouse enter
@@ -702,7 +796,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.throttleFunc(event);
         }
     }
-
     /**
      * Progress bar on mouse down
      * @param value mouse event
@@ -711,7 +804,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.inSliding = true;
         this.thumbnailHidden = true;
     }
-
     /**
      * get value
      * @param event mousevent
@@ -732,32 +824,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.moveSliderCursor(value);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
     }
-
-    /**
-     * Progress bar on mouse move
-     * @param value mouse event
-     */
-    public handleProgressBarMouseMove(event) {
-        if (this.inSliding) {
-            const value = this.getMouseValue(event);
-            this.progressBarValue = value;
-            this.currentTime = value * this.duration / 100;
-            if (this.inverse === false) {
-                this.time = this.currentTime;
-            } else {
-                this.time = this.duration - this.currentTime;
-            }
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value);
-        }
-    }
-
-    /**
-     * Handle callback
-     */
-    public handleCallback(control: ControlBarConfig) {
-        this.callback.emit(control);
-    }
-
     /**
      * Handle thumbnail pos
      * @param event mouse event
@@ -768,14 +834,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const currentTime = parseFloat(tc.toFixed(2));
         const url = this.mediaPlayerElement.getThumbnailUrl(currentTime, true);
         if (isFinite(tc)) {
-            this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
-                if (typeof (blob) !== 'undefined') {
-                    this.thumbnailElement.nativeElement.setAttribute('src' , blob);
-                }
-            });
+            this.setThumbnail(url, currentTime);
         }
     }
-
+    @AutoBind
+    public setThumbnail(url, currentTime) {
+        this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
+            if (typeof (blob) !== 'undefined') {
+                this.thumbnailElement.nativeElement.setAttribute('src', blob);
+            }
+        });
+    }
     /**
      * Invoked for change playback rate
      */
@@ -874,63 +943,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
-    /**
-     * Invoked time change event for :
-     * - update progress bar
-     */
-    @AutoBind
-    private handleOnTimeChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (!this.inSliding && !isNaN(this.currentTime)) {
-            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(2));
-        }
-        if (this.inverse === false) {
-            this.time = this.currentTime;
-        } else {
-            this.time = this.duration - this.currentTime;
-        }
-    }
 
-    /**
-     * Invoked on duration change
-     */
-    @AutoBind
-    private handleOnDurationChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.time = this.currentTime;
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-    }
 
-    /**
-     * Invoked on playback change
-     * @param playbackRate playback rate
-     */
-    @AutoBind
-    private handlePlaybackRateChange(playbackRate: number) {
-        this.logger.info('Handle playback rate change', playbackRate);
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused() && playbackRate !== 1) {
-            this.mediaPlayerElement.getMediaPlayer().play();
-        }
-        this.currentPlaybackRate = playbackRate;
-        if (playbackRate === 1) {
-            setTimeout(() => this.selectActivePlaybackrate(), 10);
-        }
-        // setTimeout(() => this.selectActivePlaybackrate(), 10);
-        if (this.currentPlaybackRate >= 1 || this.currentPlaybackRate <= -1) {
-            this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
-        } else {
-            this.currentPlaybackRateSlider = (this.currentPlaybackRate);
-        }
-    }
 
-    /**
-     * Invoked on aspect ratio change
-     * @param event aspect ratio
-     */
-    @AutoBind
-    private handleAspectRatioChange(event) {
-        this.aspectRatio = event;
-    }
+
+
+
+
 
     /**
      * Invoked on volume button hover
@@ -942,28 +961,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     }
 
-    /**
-     * Invoked player mouse enter event for :
-     * - animate controlBar
-     */
-    @AutoBind
-    private handlePlayerMouseenter() {
-        this.activated = true;
-    }
+
 
     @AutoBind
     public handlePlayerMouseHover() {
         this.activated = true;
     }
 
-    /**
-     * Invoked player mouse leave event for :
-     * - animate controlBar
-     */
-    @AutoBind
-    private handlePlayerMouseleave() {
-        this.activated = false;
-    }
+
 
     /**
      * update position subtitle onclick
@@ -1102,13 +1107,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
-    @AutoBind
-    public hideControlsMenuOnClickDocument() {
-        // click outside the player
-        if (this.enableMenu) {
-            this.enableMenu = !this.enableMenu;
-        }
-    }
+
 
     @AutoBind
     public hideAll(control?) {
@@ -1162,7 +1161,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public initDragThumb() {
         // init drag slider
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector('.selected > .playback-rate-values > .playbackrate-value.active') as HTMLElement;
+            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
         const step = Math.ceil(selected.offsetWidth);
         const values = this.controlBarContainer.nativeElement
             .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
@@ -1175,7 +1174,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const container = this.dragElement.nativeElement;
         const self = this;
         const valuesContainer = this.controlBarContainer.nativeElement
-            .querySelector('.selected > .playback-rate-values') as HTMLElement;
+            .querySelector<HTMLElement>('.selected > .playback-rate-values');
         const maxWidth = valuesContainer.offsetWidth;
         container.style.paddingLeft = position.x + 'px';
         container.setAttribute('data-x', position.x);
@@ -1259,7 +1258,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public handleMoveDragThumb(event, position, step, maxWidth) {
         event.speed = 20;
-        let oldPosition = position.x;
+        const oldPosition = position.x;
         const pos = (position.x + event.dx);
         if (pos > oldPosition) {
             position.x += step;
@@ -1275,7 +1274,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         } else if (position.x > 0) {
             event.target.style.paddingLeft = position.x + 'px';
             event.target.setAttribute('data-x', position.x);
-            oldPosition = position.x;
             event.stopImmediatePropagation();
         }
     }
@@ -1320,7 +1318,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector('.selected > .playback-rate-values > .playbackrate-value.active') as HTMLElement;
+            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
         if (selected) {
             const position = Number(selected.getAttribute('data-x'));
             container.style.paddingLeft = position + 'px';

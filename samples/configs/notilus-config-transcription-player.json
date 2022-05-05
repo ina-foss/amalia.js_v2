@@ -1,19 +1,19 @@
 {
   "tcOffset": 62000,
   "player": {
-    "src": "http://localhost:4201/medias/FPVDB07032005.m3u8",
-    "backwardsSrc": "http://localhost:4201/medias/FPVDB07032005-inverse.m3u8",
+    "src": "http://localhost:4203/medias/FPVDB07032005.m3u8",
+    "backwardsSrc": "http://localhost:4203/medias/FPVDB07032005-inverse.m3u8",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/FPVDB07032005.json"
+      "url": "http://localhost:4203/metadata/FPVDB07032005.json"
     },
     {
-      "url": "http://localhost:4201/metadata/jt-t.json"
+      "url": "http://localhost:4203/metadata/jt-t.json"
     },
     {
-      "url": "http://localhost:4201/metadata/transcription-stock.json"
+      "url": "http://localhost:4203/metadata/transcription-stock.json"
     }
   ],
   "thumbnail": {

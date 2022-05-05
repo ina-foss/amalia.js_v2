@@ -39,6 +39,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public searchText: ElementRef;
     public displayProgressBar = false;
     public searching = false;
+    public typing = false;
     public index = 0;
     /**
      * Return  current time
@@ -149,7 +150,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Handle change text on searching input
      */
-    public handleChangeInput() {
+    @AutoBind
+    public handleChangeInput(value) {
+        if (value.length > 0) {
+            this.typing = true;
+        }
         if (this.searching === true) {
             this.searching = false;
             Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
@@ -299,16 +304,18 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             // scroll to node if he's not visible
             if (this.autoScroll) {
                 if (!(visible)) {
-                    if (!reverseMode) {
+                    this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
+                    /*if (!reverseMode) {
                         this.transcriptionElement.nativeElement.scrollTop =  scrollPos  - minScroll;
                     } else {
+                        this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         if (scrollPos > scrollNode.clientHeight) {
                             // this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
-                            this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
+
                         } else {
                             this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -358,9 +365,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Search word ans scroll to first result
      */
+    @AutoBind
     public searchWord(searchText: string) {
         this.listOfSearchedNodes = new Array<HTMLElement>();
         if (searchText !== '' && searchText !== this.pluginConfiguration.data.label) {
+            this.searching = true;
             Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
                 node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
                 if (TextUtils.hasSearchText(node.textContent, searchText)) {
@@ -383,9 +392,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Scroll to next or previous searched word
      */
+    @AutoBind
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
-            this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
+            if (this.listOfSearchedNodes[this.searchedWordIndex]) {
+                this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
+            }
             if (direction === 'up') {
                 this.searchedWordIndex = this.searchedWordIndex - 1;
             } else {
@@ -430,6 +442,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public clearSearchList() {
         this.autoScroll = true;
         this.index = 0;
+        this.searchedWordIndex = 0;
         this.listOfSearchedNodes = null;
         this.searching = false;
         this.searchText.nativeElement.value = this.pluginConfiguration.data.label;

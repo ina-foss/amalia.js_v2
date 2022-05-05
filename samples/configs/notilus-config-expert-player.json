@@ -1,8 +1,8 @@
 {
   "tcOffset": 100,
   "player": {
-    "src" : "http://localhost:4201/medias/vid.m3u8",
-    "backwardsSrc":"http://localhost:4201/medias/vid-inverse.m3u8",
+    "src" : "http://localhost:4203/medias/vid.m3u8",
+    "backwardsSrc":"http://localhost:4203/medias/vid-inverse.m3u8",
     "crossOrigin": "anonymous",
     "ratio": "16:8",
     "hls": {
@@ -12,25 +12,25 @@
   },
   "dataSources": [
     {
-      "url": "http://localhost:4201/metadata/jt-d.json"
+      "url": "http://localhost:4203/metadata/jt-d.json"
     },
     {
-      "url": "http://localhost:4201/metadata/jt-t.json"
+      "url": "http://localhost:4203/metadata/jt-t.json"
     },
     {
-      "url": "http://localhost:4201/metadata/sample-transcription.json"
+      "url": "http://localhost:4203/metadata/sample-transcription.json"
     },
     {
-      "url": "http://localhost:4201/metadata/subtitles-lac.json"
+      "url": "http://localhost:4203/metadata/subtitles-lac.json"
     },
     {
-      "url": "http://localhost:4201/metadata/transcription.json"
+      "url": "http://localhost:4203/metadata/transcription.json"
     },
     {
-      "url": "http://localhost:4201/metadata/transcription-stock.json"
+      "url": "http://localhost:4203/metadata/transcription-stock.json"
     },
     {
-      "url": "http://localhost:4201/metadata/subtitles-flux.json"
+      "url": "http://localhost:4203/metadata/subtitles-flux.json"
     }
   ],
   "thumbnail": {
@@ -121,7 +121,7 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "images-backward",
+          "control": "backward",
           "zone": 2,
           "priority": 1,
           "key": "h"
@@ -136,7 +136,7 @@
         {
           "label": "forward",
           "icon": "forward",
-          "control": "images-forward",
+          "control": "forward",
           "zone": 2,
           "priority": 1,
           "key": "Control + ArrowRight"
