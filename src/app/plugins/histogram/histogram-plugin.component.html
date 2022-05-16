@@ -49,22 +49,20 @@
         </div>
         <div class="cursor-zoom" [style]="{'margin-left':cursorZoomPosition+'%'}"></div>
         <div class="label right " *ngFor="let histogram of listOfHistograms | slice:3:4">{{histogram.label}}</div>
-        <div #zoomedHistograms class="zoomed-histograms" *ngIf="withFocus">
-            <div class="zoomed-histogram" *ngFor="let histogram of listOfHistograms | slice:3:4" [style]="{'margin-left':histogramPosition+'px'}">
-                <div class="svg">
-                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-                         [style]="{'width': zoomedWidth + 'px'}"
-                         height="100%">
-                        <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"
-                              stroke-width="1"
-                              [style]="{'transform': histogram.scale[0]}"></path>
-                        <path [attr.d]="histogram.paths[1]" fill="#34495E" stroke-opacity="1"
-                              stroke="#34495E" stroke-width="1"
-                              [style]="{'transform': histogram.scale[1]}"></path>
-                    </svg>
-                </div>
+        <div class="zoomed-histogram" *ngFor="let histogram of listOfHistograms | slice:3:4" [style]="{'margin-left':histogramPosition+'px'}">
+            <div class="svg">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                     [style]="{'width': zoomedWidth + 'px'}"
+                     height="100%">
+                    <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"
+                          stroke-width="1"
+                          [style]="{'transform': histogram.scale[0]}"></path>
+                    <path [attr.d]="histogram.paths[1]" fill="#34495E" stroke-opacity="1"
+                          stroke="#34495E" stroke-width="1"
+                          [style]="{'transform': histogram.scale[1]}"></path>
+                </svg>
             </div>
-            <div class="cursor-zoom" [style]="{'margin-left':cursorZoomPosition+'%'}"></div>
         </div>
+        <div class="cursor-zoom" [style]="{'margin-left':cursorZoomPosition+'%'}"></div>
     </div>
 </div>

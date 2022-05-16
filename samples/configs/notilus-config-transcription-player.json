@@ -112,7 +112,7 @@
         {
           "label": "forward",
           "icon": "forward",
-          "control": "forward",
+          "control": "images-forward",
           "zone": 2,
           "priority": 1,
           "data": {
