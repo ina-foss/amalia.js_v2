@@ -13,6 +13,7 @@ In charge to handle search text
 ### Methods
 
 * [hasSearchText](_src_app_core_utils_text_utils_.textutils.md#static-hassearchtext)
+* [removeDiacritics](_src_app_core_utils_text_utils_.textutils.md#static-removediacritics)
 
 ## Methods
 
@@ -20,7 +21,7 @@ In charge to handle search text
 
 ▸ **hasSearchText**(`text`: string, `searchText`: string): *boolean*
 
-Defined in src/app/core/utils/text-utils.ts:12
+Defined in src/app/core/utils/text-utils.ts:16
 
 Utils in charge search text with normalize
 
@@ -32,3 +33,21 @@ Name | Type | Description |
 `searchText` | string | search text  |
 
 **Returns:** *boolean*
+
+___
+
+### `Static` removeDiacritics
+
+▸ **removeDiacritics**(`str`: string): *string*
+
+Defined in src/app/core/utils/text-utils.ts:8
+
+Removes all special characters from a string (ex: 'é' => 'e')
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`str` | string |
+
+**Returns:** *string*

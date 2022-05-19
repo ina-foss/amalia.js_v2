@@ -266,10 +266,12 @@ export class AmaliaComponent implements OnInit {
      */
     @AutoBind
     public handleWindowResize() {
-        const mediaContainer = this.mediaContainer.nativeElement;
-        if (mediaContainer) {
-            this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.offsetWidth);
-            this.logger.info(`Player resized !`);
+        if (this.mediaContainer) {
+            const mediaContainer = this.mediaContainer.nativeElement;
+            if (mediaContainer && mediaContainer.offsetWidth > 0) {
+                this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.offsetWidth);
+                this.logger.info(`Player resized !`);
+            }
         }
     }
 
@@ -577,10 +579,11 @@ export class AmaliaComponent implements OnInit {
             playbackrate = Math.abs(playbackrate);
         }
         const framesPerSecond = this.mediaPlayerElement.getMediaPlayer().framerate * playbackrate;
-        const ms = 200;
+        const ms = 1000;
         this.mediaPlayerElement.getMediaPlayer().pause(true);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_SLIDER);
         const self = this;
+        this.tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.intervalImages = setInterval(() => {
             self.displayImages(framesPerSecond, ms, rewinding);
         }, ms);
@@ -592,14 +595,13 @@ export class AmaliaComponent implements OnInit {
             this.intervalImages = '';
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_PLAY, false);
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY);
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
             this.mediaPlayerElement.getMediaPlayer().play();
-            // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
             // this.tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         }
     }
     @AutoBind
     public displayImages(framesPerSecond , ms , rewinding) {
-        this.tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         const frames = framesPerSecond / (1000 / ms);
         if (rewinding === false ) {
             this.tc = this.tc + (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
@@ -611,8 +613,8 @@ export class AmaliaComponent implements OnInit {
         // Set thumbnail video
         this.enablePreviewThumbnail = true;
         if (this.enableThumbnail) {
-            this.throttleFunc(this.tc);
-            // this.setPreviewThumbnail(this.tc);
+            // this.throttleFunc(this.tc);
+            this.setPreviewThumbnail(this.tc);
             // set current Time
         }
         if (this.tc > this.mediaPlayerElement.getMediaPlayer().getDuration() || this.tc < 0) {

@@ -554,7 +554,7 @@ ___
 
 ▸ **clearInterval**(): *void*
 
-Defined in src/app/player/amalia.component.ts:589
+Defined in src/app/player/amalia.component.ts:590
 
 **Returns:** *void*
 
@@ -582,7 +582,7 @@ ___
 
 ▸ **displayImages**(`framesPerSecond`: any, `ms`: any, `rewinding`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:601
+Defined in src/app/player/amalia.component.ts:602
 
 **Parameters:**
 
