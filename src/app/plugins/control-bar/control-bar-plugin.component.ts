@@ -57,6 +57,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list of forward playback step
      */
+    public listBufferSize: Array<number> = [120, 180, 240];
     @Input()
     public forwardPlaybackRateStep: Array<number> = [2, 6, 10];
     @Input()
@@ -651,6 +652,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.progressBarValue = value;
         this.currentTime = value * this.duration / 100;
         const oldPlaybackrate = this.currentPlaybackRate;
+        if  (this.currentPlaybackRate === 1) {
+            this.playbackrateByImages = false;
+        }
         if (this.mediaPlayerElement.getMediaPlayer().reverseMode === true) {
             this.currentTime = this.duration - this.currentTime;
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
@@ -674,11 +678,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     @AutoBind
     public changeTooltipEmplacement() {
         if (this.fullScreenMode === true) {
-            const tooltip = document.body.getElementsByTagName('tooltip')[0];
-            if (tooltip) {
-                document.body.removeChild(tooltip);
-                this.controlBarContainer.nativeElement.appendChild(tooltip);
-            }
+            setTimeout(() => {
+                const tooltip = document.body.getElementsByTagName('tooltip')[0];
+                if (tooltip) {
+                    console.log(tooltip);
+                    document.body.removeChild(tooltip);
+                    this.controlBarContainer.nativeElement.appendChild(tooltip);
+                }
+            }, 150);
         }
     }
 
@@ -850,6 +857,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private prevPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
+        const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
+        const bufferSize = this.changeBufferSize(index);
+        this.mediaPlayerElement.getMediaPlayer().mse.setConfig(bufferSize);
     }
 
     /**
@@ -857,8 +867,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private nextPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
+        const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
+        const bufferSize = this.changeBufferSize(index);
+        this.mediaPlayerElement.getMediaPlayer().mse.setConfig(bufferSize);
     }
-
+    private changeBufferSize(index) {
+        return this.listBufferSize[index];
+    }
     /**
      * Invoked for change playback rate
      * When playbackrate >= 6 display images
@@ -942,15 +957,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         setTimeout(() => this.selectActivePlaybackrate(), 10);
         // this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
-
-
-
-
-
-
-
-
-
     /**
      * Invoked on volume button hover
      */
@@ -1092,7 +1098,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         setTimeout(() => this.initDragThumb(), 10);
     }
-
     /**
      * switch timeCode display onclick
      */
@@ -1152,6 +1157,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
         }
         this.negPlaybackrates = [...negPlaybackrates].reverse();
+        negPlaybackrates.reverse();
         this.posPlaybackrates = posPlaybackrates;
         this.minCursor = this.negPlaybackrates.length * -1;
         this.maxCursor = this.posPlaybackrates.length;

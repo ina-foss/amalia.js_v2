@@ -52,7 +52,6 @@ export class MPEGDashMediaSourceExtension implements MediaSourceExtension {
         });
     }
 
-
     /**
      * Not implemented
      * @throws AmaliaException
@@ -68,6 +67,18 @@ export class MPEGDashMediaSourceExtension implements MediaSourceExtension {
     handleError(): void {
         throw new AmaliaException('Not implemented');
     }
-
-
+    /**
+     * Not implemented
+     * @throws AmaliaException
+     */
+    getConfig() {
+        throw new AmaliaException('Not implemented');
+    }
+    /**
+     * Not implemented
+     * @throws AmaliaException
+     */
+    setConfig(value) {
+        throw new AmaliaException('Not implemented');
+    }
 }

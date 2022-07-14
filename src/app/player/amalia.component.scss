@@ -191,6 +191,7 @@
 
     &.show {
       opacity: $amalia-tooltip-opacity;
+      z-index: 5;
     }
 
     .tooltip-arrow {

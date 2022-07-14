@@ -375,8 +375,8 @@ export class AmaliaComponent implements OnInit {
     private handleSeeking(tc: number) {
         if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1)) {
             this.enablePreviewThumbnail = true;
-            this.throttleFunc(tc);
-            // this.debounceFunction(tc);
+            const timecode = parseFloat(tc.toFixed(2));
+            this.throttleFunc(timecode);
         }
     }
 
@@ -384,8 +384,8 @@ export class AmaliaComponent implements OnInit {
     private handleSeeked() {
         if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1 && this.enableThumbnail) {
             const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-            this.throttleFunc(tc);
-            // this.setPreviewThumbnail(tc);
+            const timecode = parseFloat(tc.toFixed(2));
+            this.setPreviewThumbnail(timecode);
         }
 
     }
@@ -613,12 +613,38 @@ export class AmaliaComponent implements OnInit {
         // Set thumbnail video
         this.enablePreviewThumbnail = true;
         if (this.enableThumbnail) {
-            // this.throttleFunc(this.tc);
-            this.setPreviewThumbnail(this.tc);
+            this.loopImages(this.tc);
+            // this.setPreviewThumbnail(this.tc);
             // set current Time
         }
         if (this.tc > this.mediaPlayerElement.getMediaPlayer().getDuration() || this.tc < 0) {
             clearInterval(this.intervalImages);
         }
+    }
+    public loopImages(tc) {
+        this.showImage(tc).then(time => {
+            const dif = 250 - Number(time);
+            const r = Math.max(250, dif);
+            setTimeout(() => this.loopImages(tc), r);
+        });
+    }
+    @AutoBind
+    public showImage(tc) {
+            let prevImg;
+            return new Promise(resolve => {
+                const url = this.mediaPlayerElement.getThumbnailUrl(tc);
+                if (prevImg === url) {
+                    resolve(0);
+                }
+                const t =  new Date().getTime();
+                this.previewThumbnailElement.nativeElement.onload = () => {
+                    prevImg = url;
+                    const tm = new Date().getTime();
+                    const diff = Number(tm - t);
+                    resolve(diff);
+                };
+                this.previewThumbnailElement.nativeElement.onerror = () => resolve(0);
+                this.thumbnailBlobVideo = url;
+            });
     }
 }

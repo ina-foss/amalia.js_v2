@@ -7,7 +7,7 @@
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
     <img #previewThumbnail class="preview-thumbnail"
          [hidden]="!enablePreviewThumbnail"
-         [src]="thumbnailBlobVideo" alt="video-preview"/>
+         [src]="thumbnailBlobVideo" alt="video-preview" fetchPriority="high" importance="high"/>
     <div *ngIf="inLoading" class="loader"><div class="spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
     <div *ngIf="inError" class="error">
         <svg class="amalia-svg-error-size icon">
