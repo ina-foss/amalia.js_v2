@@ -36,10 +36,12 @@ In  charge to handle HSL Media extension
 
 * [destroy](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#destroy)
 * [getBackwardsSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#getbackwardssrc)
+* [getConfig](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#getconfig)
 * [getSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#getsrc)
 * [handleAudioChannelChange](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleaudiochannelchange)
 * [handleError](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#handleerror)
 * [handleOnManifestLoaded](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleonmanifestloaded)
+* [setConfig](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setconfig)
 * [setSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setsrc)
 * [switchSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-switchsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#switchtobackwardssrc)
@@ -179,6 +181,18 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:99
 
 ___
 
+###  getConfig
+
+▸ **getConfig**(): *object & object & object & object & object & object & object & object & object & object & object & object & object & object*
+
+*Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
+
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:169
+
+**Returns:** *object & object & object & object & object & object & object & object & object & object & object & object & object & object*
+
+___
+
 ###  getSrc
 
 ▸ **getSrc**(): *string | MediaStream | MediaSource | Blob | null*
@@ -238,6 +252,24 @@ ___
 Defined in src/app/core/mse/hls/hls-media-source-extension.ts:153
 
 Invoked when manifest loaded
+
+**Returns:** *void*
+
+___
+
+###  setConfig
+
+▸ **setConfig**(`value`: any): *void*
+
+*Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
+
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:172
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | any |
 
 **Returns:** *void*
 

@@ -1348,10 +1348,4 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changeVolumeCanal(this.leftVolumeSlider.nativeElement.value, 'l');
         this.changeVolumeCanal(this.rightVolumeSlider.nativeElement.value, 'r');
     }
-
-    /**
-     * Handle on component destroy
-     */
-    ngOnDestroy() {
-    }
 }

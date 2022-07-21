@@ -11,9 +11,6 @@ describe('Test Storage Manager', () => {
         }).compileComponents();
         injector = getTestBed();
     }));
-
-    afterEach(() => {
-    });
     it('Preference storage Manager ', () => {
         component.clear();
         component.setItem('test', 'toto');

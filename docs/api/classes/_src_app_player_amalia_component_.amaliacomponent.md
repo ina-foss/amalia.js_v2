@@ -87,6 +87,7 @@
 * [hideControls](_src_app_player_amalia_component_.amaliacomponent.md#hidecontrols)
 * [hideControlsMenuOnClickDocument](_src_app_player_amalia_component_.amaliacomponent.md#hidecontrolsmenuonclickdocument)
 * [initDefaultHandlers](_src_app_player_amalia_component_.amaliacomponent.md#private-initdefaulthandlers)
+* [loopImages](_src_app_player_amalia_component_.amaliacomponent.md#loopimages)
 * [ngOnInit](_src_app_player_amalia_component_.amaliacomponent.md#ngoninit)
 * [onContextMenu](_src_app_player_amalia_component_.amaliacomponent.md#oncontextmenu)
 * [onErrorInitConfig](_src_app_player_amalia_component_.amaliacomponent.md#private-onerrorinitconfig)
@@ -94,6 +95,7 @@
 * [resetTimer](_src_app_player_amalia_component_.amaliacomponent.md#resettimer)
 * [scrollPlaybackRateImages](_src_app_player_amalia_component_.amaliacomponent.md#scrollplaybackrateimages)
 * [setPreviewThumbnail](_src_app_player_amalia_component_.amaliacomponent.md#private-setpreviewthumbnail)
+* [showImage](_src_app_player_amalia_component_.amaliacomponent.md#showimage)
 * [startTimer](_src_app_player_amalia_component_.amaliacomponent.md#starttimer)
 * [updatePlayerSizeWithAspectRatio](_src_app_player_amalia_component_.amaliacomponent.md#private-updateplayersizewithaspectratio)
 
@@ -822,6 +824,22 @@ In charge to init default handlers when input not specified
 
 ___
 
+###  loopImages
+
+▸ **loopImages**(`tc`: any): *void*
+
+Defined in src/app/player/amalia.component.ts:624
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`tc` | any |
+
+**Returns:** *void*
+
+___
+
 ###  ngOnInit
 
 ▸ **ngOnInit**(): *void*
@@ -931,6 +949,22 @@ Name | Type |
 `tc` | number |
 
 **Returns:** *void*
+
+___
+
+###  showImage
+
+▸ **showImage**(`tc`: any): *Promise‹unknown›*
+
+Defined in src/app/player/amalia.component.ts:632
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`tc` | any |
+
+**Returns:** *Promise‹unknown›*
 
 ___
 
