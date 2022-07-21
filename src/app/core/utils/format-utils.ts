@@ -56,7 +56,6 @@ export class FormatUtils {
                 break;
             default:
                 throw new AmaliaException('Unknown time format');
-                break;
         }
         return formatTime;
     }

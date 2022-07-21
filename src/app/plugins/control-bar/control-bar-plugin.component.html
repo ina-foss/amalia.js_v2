@@ -8,7 +8,7 @@
     </div>
     <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}" [ngClass]="{'pinned' :pinned}"
          *ngIf="enableThumbnail" [ngStyle]="{'left':thumbnailPosition + 'px'}">
-        <img #thumbnail class="thumbnail" [alt]="thumbnail" src=""/>
+        <img #thumbnail class="thumbnail" alt="thumbnail" src=""/>
         <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
     </div>
     <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated ,'pinned' :pinnedSlider}">

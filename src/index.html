@@ -48,24 +48,6 @@
         </div>
     </div>
 </div>
-   <!--<div class="row" style="height: 500px;width: 90%">
-        <div style="width: 700px;height: 500px" id="timeline">
-            <amalia-timeline
-                    plugin-instance="P1" playerId="PLAYER">
-            </amalia-timeline>
-        </div>
-    </div>-->
-    <!--<div class="row" style="height: 150px;width: 150px">
-        <amalia-player player-id="PLAYER2" id="PLAYER2"
-                       config="http://localhost:4203/configs/notilus-config-audio-expert-player.json">
-            <amalia-histogram player-id="PLAYER2" plugin-configuration='{"metadataIds":["waveform-46fa5221c551c1f96d63f0a357678c10-15000-0",
-                "waveform-MA00605_01-2048-1",
-                "1591607938077",
-                "1591608575408"]}'></amalia-histogram>
-            <amalia-control-bar style="display: block" plugin-instance="1"
-                                player-id="PLAYER2"></amalia-control-bar>
-        </amalia-player>
-    </div>-->
     <footer class="border-top">
         <div class="row pt-3 pl-3">
             <div class="col-12 col-md">
@@ -73,62 +55,6 @@
                 <small class="d-block mb-3 text-muted">&copy; 2020</small>
             </div>
         </div>
-        <!--<button onclick="window.dispatchEvent(new Event('resize'))">Resize</button>
-        <button onclick="switchControlBar()"> Changer configuration controlBar</button>-->
-
     </footer>
-    <!--<script>
-        function switchControlBar() {
-            var player = document.getElementById('PLAYER');
-            var firstControlbar = player.shadowRoot.querySelector('#controlbar');
-            var secondControlbar = player.shadowRoot.querySelector('#controlbar2');
-            if (firstControlbar.style.display === 'block') {
-                firstControlbar.style.display = 'none';
-                secondControlbar.style.display = 'block';
-            } else if (secondControlbar.style.display === 'block') {
-                secondControlbar.style.display = 'none';
-                firstControlbar.style.display = 'block';
-            }
-        }
-
-        window.ajsp = document.getElementById("PLAYER")
-        // window.ajsp.addEventListener("callback", handleEvent)
-        // window.ajsp.addEventListener("oncallback", handleEvent)
-        // document.getElementById("addTranscription").addEventListener("click", addTranscription)
-        window.ajsp.addEventListener("ina.player.PLAYING", handleEvent)
-
-        function handleEvent() {
-            console.info("handleEvent")
-        }
-        // document.getElementById("addStoryboard").addEventListener("click", addStoryboard)
-        /*document.getElementById("addTimeline").addEventListener("click", addTimeline)
-
-        function addTranscription() {
-            const transactionElement = document.createElement("amalia-transcription");
-            transactionElement.setAttribute("player-id", "PLAYER")
-            transactionElement.setAttribute("plugin-configuration", '{"metadataIds":["transcription_id"],"data":{"title":"Test","description":"Test description", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}')
-            const content = document.getElementById('transcription');
-            content.innerHTML = '';
-            content.append(transactionElement);
-        }
-
-        function addTimeline() {
-            const timelineElement = document.createElement("amalia-timeline");
-            timelineElement.setAttribute("player-id", "PLAYER")
-            timelineElement.setAttribute("plugin-configuration", '{"metadataIds":["l-254","l-255","l-256"],"data":{"mainMetadataIds":["l-254","l-255","l-256"]}}')
-            const content = document.getElementById('timeline');
-            content.innerHTML = '';
-            content.append(timelineElement);
-        }
-
-        function addStoryboard() {
-            const transactionElement = document.createElement("amalia-storyboard");
-            transactionElement.setAttribute("player-id", "PLAYER")
-            transactionElement.setAttribute("plugin-configuration", '{"data":{"baseUrl":"https://picsum.photos/id/237/160/90"}}')
-            const content = document.getElementById('storyboard');
-            content.innerHTML = '';
-            content.append(transactionElement);
-        }*/
-    </script>-->
 </body>
 </html>

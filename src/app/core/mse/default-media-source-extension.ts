@@ -81,5 +81,11 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
         this.logger.error('Error to load source', event);
         this.eventEmitter.emit(PlayerEventType.ERROR, 'Votre média n\'a pas pu être chargé dans le player');
     }
+    getConfig() {
+        return this.config;
+    }
+    setConfig() {
+        return null;
+    }
 
 }

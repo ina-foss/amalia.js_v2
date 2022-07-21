@@ -42,4 +42,13 @@ export interface MediaSourceExtension {
      * Emmit event Error
      */
     handleError(event): void;
+
+    /**
+     * Get config
+     */
+    getConfig(): object | void;
+    /**
+     * Get config
+     */
+    setConfig(value): object | void;
 }

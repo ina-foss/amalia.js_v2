@@ -20,8 +20,10 @@ In charge to handle MediaSourceExtension
 
 * [destroy](_src_app_core_mse_media_source_extension_.mediasourceextension.md#destroy)
 * [getBackwardsSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#getbackwardssrc)
+* [getConfig](_src_app_core_mse_media_source_extension_.mediasourceextension.md#getconfig)
 * [getSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#getsrc)
 * [handleError](_src_app_core_mse_media_source_extension_.mediasourceextension.md#handleerror)
+* [setConfig](_src_app_core_mse_media_source_extension_.mediasourceextension.md#setconfig)
 * [setSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#setsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#switchtobackwardssrc)
 * [switchToMainSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#switchtomainsrc)
@@ -49,6 +51,18 @@ Defined in src/app/core/mse/media-source-extension.ts:23
 Invoked on reverse mode
 
 **Returns:** *string | MediaStream | MediaSource | Blob | null*
+
+___
+
+###  getConfig
+
+▸ **getConfig**(): *object | void*
+
+Defined in src/app/core/mse/media-source-extension.ts:49
+
+Get config
+
+**Returns:** *object | void*
 
 ___
 
@@ -80,6 +94,24 @@ Name | Type |
 `event` | any |
 
 **Returns:** *void*
+
+___
+
+###  setConfig
+
+▸ **setConfig**(`value`: any): *object | void*
+
+Defined in src/app/core/mse/media-source-extension.ts:53
+
+Get config
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | any |
+
+**Returns:** *object | void*
 
 ___
 

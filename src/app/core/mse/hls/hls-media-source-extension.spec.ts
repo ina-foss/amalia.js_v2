@@ -18,12 +18,6 @@ describe('Test HLS Source extension', () => {
     };
     const hlsPlayer = new HLSMediaSourceExtension(component, eventEmitter, config, logger);
 
-    beforeEach(async(() => {
-    }));
-
-    afterEach(() => {
-    });
-
     it('Media player element ', () => {
         const m3u8Url = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
         const m3u8List = 'I0VYVE0zVQojRVhULVgtVkVSU0lPTjozCiNFWFQtWC1QTEFZTElTVC1UWVBFOlZPRAojRVhULVgtVEFSR0' +

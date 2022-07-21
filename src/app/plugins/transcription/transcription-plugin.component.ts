@@ -287,7 +287,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
             const maxScrollPos = Math.round((2 * this.transcriptionElement.nativeElement.offsetHeight) / 3);
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
-            const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+            // const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
             /*const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
             const positionB = scrollNode.getBoundingClientRect();
             //check if active element is not visible

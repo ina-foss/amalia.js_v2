@@ -166,4 +166,10 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         // (this.config.hls.config.pLoader as HlsCustomFLoader).audioChannel = 2;
         this.logger.debug('Manifest loaded', event);
     }
+    getConfig() {
+        return this.hlsPlayer.config;
+    }
+    setConfig(value) {
+        this.hlsPlayer.config.maxBufferLength = value;
+    }
 }

@@ -16,8 +16,10 @@
 
 * [destroy](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#destroy)
 * [getBackwardsSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#getbackwardssrc)
+* [getConfig](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#getconfig)
 * [getSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#getsrc)
 * [handleError](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#handleerror)
+* [setConfig](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#setconfig)
 * [setSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#setsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#switchtobackwardssrc)
 * [switchToMainSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#switchtomainsrc)
@@ -30,7 +32,7 @@
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/mpeg-dash-media-source-extension.ts:60
+Defined in src/app/core/mse/mpeg-dash-media-source-extension.ts:59
 
 Not implemented
 
@@ -56,6 +58,22 @@ Not implemented
 
 ___
 
+###  getConfig
+
+▸ **getConfig**(): *void*
+
+*Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
+
+Defined in src/app/core/mse/mpeg-dash-media-source-extension.ts:74
+
+Not implemented
+
+**`throws`** AmaliaException
+
+**Returns:** *void*
+
+___
+
 ###  getSrc
 
 ▸ **getSrc**(): *any*
@@ -76,11 +94,33 @@ ___
 
 ▸ **handleError**(): *void*
 
-Defined in src/app/core/mse/mpeg-dash-media-source-extension.ts:68
+Defined in src/app/core/mse/mpeg-dash-media-source-extension.ts:67
 
 Not implemented
 
 **`throws`** AmaliaException
+
+**Returns:** *void*
+
+___
+
+###  setConfig
+
+▸ **setConfig**(`value`: any): *void*
+
+*Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
+
+Defined in src/app/core/mse/mpeg-dash-media-source-extension.ts:81
+
+Not implemented
+
+**`throws`** AmaliaException
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`value` | any |
 
 **Returns:** *void*
 

@@ -32,8 +32,10 @@ In  charge to handle default media sources (Supported by browsers)
 
 * [destroy](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#destroy)
 * [getBackwardsSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#getbackwardssrc)
+* [getConfig](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#getconfig)
 * [getSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#getsrc)
 * [handleError](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#handleerror)
+* [setConfig](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#setconfig)
 * [setSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#setsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#switchtobackwardssrc)
 * [switchToMainSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#switchtomainsrc)
@@ -139,6 +141,18 @@ Defined in src/app/core/mse/default-media-source-extension.ts:31
 
 ___
 
+###  getConfig
+
+▸ **getConfig**(): *[PlayerConfigData](../interfaces/_src_app_core_config_model_player_config_data_.playerconfigdata.md)*
+
+*Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
+
+Defined in src/app/core/mse/default-media-source-extension.ts:84
+
+**Returns:** *[PlayerConfigData](../interfaces/_src_app_core_config_model_player_config_data_.playerconfigdata.md)*
+
+___
+
 ###  getSrc
 
 ▸ **getSrc**(): *string*
@@ -166,6 +180,16 @@ Name | Type |
 `event` | any |
 
 **Returns:** *void*
+
+___
+
+###  setConfig
+
+▸ **setConfig**(): *any*
+
+Defined in src/app/core/mse/default-media-source-extension.ts:87
+
+**Returns:** *any*
 
 ___
 
