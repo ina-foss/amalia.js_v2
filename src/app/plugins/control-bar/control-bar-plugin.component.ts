@@ -15,7 +15,7 @@ import interact from 'interactjs';
     styleUrls: ['./control-bar-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> implements OnDestroy {
+export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> {
     public static PLUGIN_NAME = 'CONTROL_BAR';
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
     /**
