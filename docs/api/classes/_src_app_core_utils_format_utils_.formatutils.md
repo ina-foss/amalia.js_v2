@@ -20,7 +20,7 @@
 
 ▸ **convertTcToSeconds**(`tc`: string): *number*
 
-Defined in src/app/core/utils/format-utils.ts:64
+Defined in src/app/core/utils/format-utils.ts:63
 
 **Parameters:**
 
@@ -36,7 +36,7 @@ ___
 
 ▸ **formatString**(`str`: string, ...`val`: string[]): *string*
 
-Defined in src/app/core/utils/format-utils.ts:85
+Defined in src/app/core/utils/format-utils.ts:84
 
  Formatting a string in java is using
 

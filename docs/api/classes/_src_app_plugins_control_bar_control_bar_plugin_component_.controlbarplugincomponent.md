@@ -163,7 +163,6 @@
 * [nextPlaybackRate](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-nextplaybackrate)
 * [nextPlaybackRateImages](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#nextplaybackrateimages)
 * [nextSlowPlaybackRate](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-nextslowplaybackrate)
-* [ngOnDestroy](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#ngondestroy)
 * [ngOnInit](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#ngoninit)
 * [onChangePlaybackRate](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#onchangeplaybackrate)
 * [pinControls](_src_app_plugins_control_bar_control_bar_plugin_component_.controlbarplugincomponent.md#private-pincontrols)
@@ -1805,18 +1804,6 @@ ___
 Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:928
 
 Invoked for change slow playback rate
-
-**Returns:** *void*
-
-___
-
-###  ngOnDestroy
-
-▸ **ngOnDestroy**(): *void*
-
-Defined in src/app/plugins/control-bar/control-bar-plugin.component.ts:1355
-
-Handle on component destroy
 
 **Returns:** *void*
 
