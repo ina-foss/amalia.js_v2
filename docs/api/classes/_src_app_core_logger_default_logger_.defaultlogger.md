@@ -86,7 +86,7 @@ Defined in src/app/core/logger/default-logger.ts:9
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:78
+Defined in src/app/core/logger/default-logger.ts:81
 
 **Parameters:**
 
@@ -105,7 +105,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:82
+Defined in src/app/core/logger/default-logger.ts:85
 
 **Parameters:**
 
@@ -124,7 +124,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:86
+Defined in src/app/core/logger/default-logger.ts:89
 
 **Parameters:**
 
@@ -143,7 +143,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:90
+Defined in src/app/core/logger/default-logger.ts:93
 
 **Parameters:**
 
@@ -160,7 +160,7 @@ ___
 
 ▸ **log**(`level`: [LoggerLevel](../enums/_src_app_core_logger_logger_level_.loggerlevel.md), `log`: [LoggerData](../interfaces/_src_app_core_logger_logger_data_.loggerdata.md)): *void*
 
-Defined in src/app/core/logger/default-logger.ts:37
+Defined in src/app/core/logger/default-logger.ts:40
 
 Outputs the message to the web console
 
@@ -217,7 +217,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:95
+Defined in src/app/core/logger/default-logger.ts:98
 
 **Parameters:**
 
@@ -236,7 +236,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:99
+Defined in src/app/core/logger/default-logger.ts:102
 
 **Parameters:**
 
