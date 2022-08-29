@@ -199,27 +199,30 @@ export class MediaElement {
                 this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
             }
         } else {
-            if (volumeSide === 'r') {
-                this.volumeRight = volumePercent;
-                if (this.audioContext) {
-                    this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                }
-            } else if (volumeSide === 'l') {
-                this.volumeLeft = volumePercent;
-                if (this.audioContext) {
-                    this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                }
-            } else {
-                this.volumeRight = volumePercent;
-                this.volumeLeft = volumePercent;
-                if (this.audioContext) {
-                    this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                    this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                }
-            }
+            this.setVolumeSideValues(volumeSide, volumePercent);
         }
         if (!this.audioContext) {
             this.mediaElement.volume = Math.min(volumePercent / 100, 1);
+        }
+    }
+    setVolumeSideValues(volumeSide, volumePercent) {
+        if (volumeSide === 'r') {
+            this.volumeRight = volumePercent;
+            if (this.audioContext) {
+                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            }
+        } else if (volumeSide === 'l') {
+            this.volumeLeft = volumePercent;
+            if (this.audioContext) {
+                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            }
+        } else {
+            this.volumeRight = volumePercent;
+            this.volumeLeft = volumePercent;
+            if (this.audioContext) {
+                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            }
         }
     }
     /*

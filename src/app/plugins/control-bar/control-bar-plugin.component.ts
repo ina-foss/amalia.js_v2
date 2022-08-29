@@ -58,6 +58,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list of forward playback step
      */
     public listBufferSize: Array<number> = [120, 180, 240];
+    // public defaultBufferSize = 12;
     @Input()
     public forwardPlaybackRateStep: Array<number> = [2, 6, 10];
     @Input()
@@ -859,7 +860,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
-        this.mediaPlayerElement.getMediaPlayer().mse.setConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
     }
 
     /**
@@ -869,7 +871,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
-        this.mediaPlayerElement.getMediaPlayer().mse.setConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
     }
     private changeBufferSize(index) {
         return this.listBufferSize[index];
@@ -1068,8 +1070,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Download URL on shortcut
      */
     public downloadUrl(control) {
+        console.log('downloadUrl');
         const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
         const data = this.elements;
+        console.log(data);
         for (const i in data) {
             if (typeof data[i] === 'object') {
                 const c = data[i];
