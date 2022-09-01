@@ -434,7 +434,6 @@ export class MediaElement {
         this.mediaElement.addEventListener('timeupdate', this.handleTimeupdate);
         this.mediaElement.addEventListener('volumechange', this.handleVolumeChange);
         this.mediaElement.addEventListener('seeked', this.handleSeeked);
-        this.mediaElement.addEventListener('seeking', this.handleSeeking);
         window.addEventListener('resize', this.handleResize);
         window.addEventListener('resizeend', this.handleResize);
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
@@ -516,15 +515,6 @@ export class MediaElement {
     private handleSeeked() {
         this.logger.debug('handleSeeked');
         this.eventEmitter.emit(PlayerEventType.SEEKED);
-    }
-
-    /**
-     * Invoked when a seek operation began.
-     */
-    @AutoBind
-    private handleSeeking() {
-        this.logger.debug('handleSeeking');
-        this.eventEmitter.emit(PlayerEventType.SEEKING);
     }
 
     /**

@@ -373,6 +373,7 @@ export class AmaliaComponent implements OnInit {
     }
     @AutoBind
     private handleSeeking(tc: number) {
+        this.logger.debug('handleSeeking');
         if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1)) {
             this.enablePreviewThumbnail = true;
             const timecode = parseFloat(tc.toFixed(2));
