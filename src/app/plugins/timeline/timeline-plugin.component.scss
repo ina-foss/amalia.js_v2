@@ -10,7 +10,7 @@
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
-  border: 1px solid #DDDDDD;
+  border: 1px solid $amalia-plugin-timeline-border-color;
   align-items: stretch;
   overflow: hidden;
 
@@ -37,8 +37,8 @@
 
   .header,
   .footer {
-    background-color: #34495E;
-    color: white;
+    background-color: $amalia-plugin-timeline-secondary-color;
+    color: $amalia-plugin-timeline-font-color;
     font-size: 14px;
     height: 32px;
     overflow: hidden;
@@ -47,7 +47,7 @@
     justify-content: space-between;
 
     .icon {
-      color: white;
+      color: $amalia-plugin-timeline-font-color;
     }
 
     .amalia-svg-settings-size {
@@ -65,7 +65,7 @@
 
       .amalia-svg-unzoom-size {
         cursor: pointer;
-        color: white;
+        color: $amalia-plugin-timeline-font-color;
         height: 30px;
         width: 25px;
         top: 1px;
@@ -92,8 +92,8 @@
         position: relative;
         border: 1px solid #727070;
         cursor: pointer;
-        background-color: white;
-        color: #727070;
+        background-color: $amalia-plugin-timeline-bg-color;
+        color: $amalia-plugin-timeline-actions-border-color;
         height: 25px;
         line-height: 25px;
         top: 3px;
@@ -105,10 +105,10 @@
 
         &.selected {
           background-color: #0087B2;
-          color: white;
+          color: $amalia-plugin-timeline-font-color;
 
           .icon {
-            color: white;
+            color: $amalia-plugin-timeline-font-color;
           }
         }
       }
@@ -136,7 +136,7 @@
       position: relative;
       height: 100%;
       width: 60%;
-      background-color: white;
+      background-color: $amalia-plugin-timeline-bg-color;
       display: flex;
       flex-direction: column;
       right: -100%;
@@ -156,12 +156,12 @@
         position: relative;
         top: 10px;
         margin-right: 5px;
-        background-color: white;
+        background-color: $amalia-plugin-timeline-bg-color;
         cursor: pointer;
 
         &.valid {
-          color: white;
-          background-color: #0086B1;
+          color: $amalia-plugin-timeline-font-color;
+          background-color: $amalia-plugin-timeline-primary-color;
         }
       }
 
@@ -169,11 +169,11 @@
       .footer {
         width: 100%;
         height: 55px;
-        background-color: white;
+        background-color: $amalia-plugin-timeline-bg-color;
       }
 
       .header {
-        color: #222222;
+        color: $amalia-plugin-timeline-header-font-color;
         font-family: $amalia-font-family !important;
         font-size: 20px;
         font-weight: bold;
@@ -189,7 +189,7 @@
       .main {
         height: calc(100% - 110px);
         width: 100%;
-        background-color: #F2F5F9;
+        background-color: $amalia-plugin-timeline-header-bg-color;
         overflow-y: auto;
 
 
@@ -198,7 +198,7 @@
 
           li {
             font-family: $amalia-font-family !important;
-            color: #222222;
+            color: $amalia-plugin-timeline-header-font-color;
             font-size: 16px;
             letter-spacing: 0;
             height: 20px;
@@ -221,20 +221,20 @@
               box-sizing: border-box;
               height: 16px;
               width: 16px;
-              border: 1px solid #DDDDDD;
+              border: 1px solid $amalia-plugin-timeline-border-color;
               border-radius: 2px;
-              background-color: #FFFFFF;
+              background-color: $amalia-plugin-timeline-bg-color;
             }
 
             .check:after {
               content: " ";
-              background-color: #fff;
+              background-color: $amalia-plugin-timeline-bg-color;
               display: inline-block;
               color: #747474;
               width: 15px;
               height: 15px;
               visibility: visible;
-              border: 1px solid #DDDDDD;
+              border: 1px solid $amalia-plugin-timeline-border-color;
               text-align: center;
             }
 
@@ -259,7 +259,7 @@
     user-select: none;
 
     .rectangle {
-      border: 1px solid #FF0000;
+      border: 1px solid $amalia-plugin-timeline-primary-color;
       position: absolute;
       z-index: 1;
     }
@@ -267,9 +267,9 @@
     .tooltip {
       min-height: 30px;
       min-width: 150px;
-      border: 1px solid #DDDDDD;
+      border: 1px solid $amalia-plugin-timeline-border-color;
       border-radius: 10px;
-      background-color: white;
+      background-color: $amalia-plugin-timeline-bg-color;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
       color: black;
       display: none;
@@ -284,8 +284,8 @@
         font-family: $amalia-font-family !important;
         padding: 5px 10px;
         border-radius: 13px;
-        background-color: #34495E;
-        color: #FFFFFF;
+        background-color: $amalia-plugin-timeline-secondary-color;
+        color: $amalia-plugin-timeline-font-color;
         font-size: 12px;
         font-style: italic;
         font-weight: bold;
@@ -300,7 +300,7 @@
         font-weight: bold;
         letter-spacing: 0;
         line-height: 12px;
-        color: #727070;
+        color: $amalia-plugin-timeline-actions-tc-color;
       }
     }
 
@@ -314,14 +314,14 @@
     }
 
     &::-webkit-scrollbar-track {
-      background-color: #F2F5F9;
+      background-color: $amalia-plugin-timeline-header-bg-color;
       border-width: 0;
       border-radius: 100px;
     }
 
     &::-webkit-scrollbar-thumb {
       border-radius: 10px;
-      background-color: #0086B1;
+      background-color: $amalia-plugin-timeline-primary-color;
       border-style: solid;
       border-color: transparent;
       border-width: 3px;
@@ -348,13 +348,13 @@
 
 
       &.sortable-chosen {
-        border: solid #34495E 1px;
+        border: solid $amalia-plugin-timeline-secondary-color 1px;
       }
 
       .drag {
         right: 15px;
         cursor: grab;
-        color: #0086B1;
+        color: $amalia-plugin-timeline-primary-color;
         position: relative;
       }
 
@@ -377,7 +377,7 @@
         top: 5px;
         width: 100%;
         left: 0;
-        border: solid 1px #34495E;
+        border: solid 1px $amalia-plugin-timeline-secondary-color;
         z-index: 10;
 
         .time-code {
@@ -396,8 +396,8 @@
         flex-direction: row;
         justify-content: space-between;
         box-sizing: border-box;
-        border: 1px solid #DDDDDD;
-        background-color: #F2F5F9;
+        border: 1px solid $amalia-plugin-timeline-border-color;
+        background-color: $amalia-plugin-timeline-header-bg-color;
         min-height: 30px;
         user-select: none;
 
@@ -433,12 +433,12 @@
         .cue-point {
           position: absolute;
           top: calc(50% - 3px);
-          background-color: #00b0e8;
+          background-color: $amalia-plugin-timeline-primary-color;
           height: 10px;
           width: 10px;
           border-radius: 10px;
           left: 30%;
-          border: 1px solid #34495E;
+          border: 1px solid $amalia-plugin-timeline-secondary-color;
           cursor: pointer;
           transition: all 0.25s ease-in-out;
         }
@@ -449,9 +449,9 @@
           width: 100px;
           height: 10px;
           left: 85%;
-          background-color: #00b0e8;
+          background-color: $amalia-plugin-timeline-primary-color;
           border-radius: 2px;
-          border: 1px solid #34495E;
+          border: 1px solid $amalia-plugin-timeline-secondary-color;
           cursor: pointer;
           transition: all 0.25s ease-in-out;
         }
@@ -470,7 +470,7 @@
     height: 50px;
 
     .block.main {
-      background-color: #F2F5F9;
+      background-color: $amalia-plugin-timeline-header-bg-color;
       height: 50px;
     }
   }

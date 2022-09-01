@@ -78,7 +78,7 @@ export class MPEGDashMediaSourceExtension implements MediaSourceExtension {
      * Not implemented
      * @throws AmaliaException
      */
-    setConfig(value) {
+    setMaxBufferLengthConfig() {
         throw new AmaliaException('Not implemented');
     }
 }

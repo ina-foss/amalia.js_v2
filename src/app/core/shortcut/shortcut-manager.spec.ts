@@ -56,8 +56,10 @@ describe('Test Shortcut manager', () => {
     it('Test list of Shortcut ', () => {
         const shortcutManager = new ShortcutManager(configurationManager, logger);
         const playPromise = new Promise<void>(() => {
+            // Play Promise
         });
         const pausePromise = new Promise<void>(() => {
+            // Pause Promise
         });
         shortcutManager.addShortcut('p', playPromise);
         shortcutManager.addShortcut('p', pausePromise);

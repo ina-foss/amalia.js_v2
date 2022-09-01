@@ -41,7 +41,7 @@ In  charge to handle HSL Media extension
 * [handleAudioChannelChange](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleaudiochannelchange)
 * [handleError](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#handleerror)
 * [handleOnManifestLoaded](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleonmanifestloaded)
-* [setConfig](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setconfig)
+* [setMaxBufferLengthConfig](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setmaxbufferlengthconfig)
 * [setSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setsrc)
 * [switchSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-switchsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#switchtobackwardssrc)
@@ -257,9 +257,9 @@ Invoked when manifest loaded
 
 ___
 
-###  setConfig
+###  setMaxBufferLengthConfig
 
-▸ **setConfig**(`value`: any): *void*
+▸ **setMaxBufferLengthConfig**(`value`: any): *void*
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 

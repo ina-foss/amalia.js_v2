@@ -35,7 +35,7 @@ In  charge to handle default media sources (Supported by browsers)
 * [getConfig](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#getconfig)
 * [getSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#getsrc)
 * [handleError](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#handleerror)
-* [setConfig](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#setconfig)
+* [setMaxBufferLengthConfig](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#setmaxbufferlengthconfig)
 * [setSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#setsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#switchtobackwardssrc)
 * [switchToMainSrc](_src_app_core_mse_default_media_source_extension_.defaultmediasourceextension.md#switchtomainsrc)
@@ -183,9 +183,9 @@ Name | Type |
 
 ___
 
-###  setConfig
+###  setMaxBufferLengthConfig
 
-▸ **setConfig**(): *any*
+▸ **setMaxBufferLengthConfig**(): *any*
 
 Defined in src/app/core/mse/default-media-source-extension.ts:87
 
