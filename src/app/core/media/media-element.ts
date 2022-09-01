@@ -267,53 +267,62 @@ export class MediaElement {
         const lastStateIsReverseMode = this.reverseMode;
         this.reverseMode = (speed < 0);
         if (this.getDuration() > 0 && this.getCurrentTime() >= 0) {
-            let currentTime = this.getCurrentTime();
-            if (this.reverseMode && this.switched === false) {
-                // this.pause();
-                if (this.mse.getBackwardsSrc()) {
-                    this.mse.switchToBackwardsSrc().then(() => {
-                        if (this.mediaElement) {
-                            this.mediaElement.playbackRate = Math.abs(speed);
-                            // this.setCurrentTime((Math.max(0, duration - currentTime)));
-                        }
+            if (this.reverseMode) {
+                this.setNegativePlaybackrate(speed);
+            } else {
+                if (lastStateIsReverseMode === true) {
+                    const tc = this.getDuration() - this.getCurrentTime();
+                    this.mse.switchToMainSrc().then(() => {
+                        this.setCurrentTime((Math.max(0, tc)));
+                        this.mediaElement.playbackRate = speed;
+                        this.switched = false;
                     });
                 } else {
-                    clearInterval(this.intervalRewind);
-                    this.intervalRewind = setInterval(() => {
-                        // this.mediaElement.playbackRate = 1;
-                        if (currentTime === 0) {
-                            clearInterval(this.intervalRewind);
-                            speed = 1;
-                            this.pause();
-                        } else {
-                            currentTime += speed;
-                            this.setCurrentTime(currentTime);
-                        }
-                    }, 30);
+                    this.setPositivePlaybackrate(speed);
                 }
-            } else if (this.reverseMode && this.switched) {
-                if (this.mediaElement) {
-                    this.mediaElement.playbackRate = Math.abs(speed);
-                }
-            }
-            if (lastStateIsReverseMode === true && !this.reverseMode) {
-                const tc = this.getDuration() - this.getCurrentTime();
-                this.mse.switchToMainSrc().then(() => {
-                    this.setCurrentTime((Math.max(0, tc)));
-                    this.mediaElement.playbackRate = speed;
-                    this.switched = false;
-                });
-            } else if (this.mediaElement && !this.reverseMode) {
-                this.mediaElement.playbackRate = speed;
             }
             this._playbackRate = speed;
             this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
-            if (this.reverseMode) {
-                this.switched = true;
-            }
         }
     }
-
+    // Change src if negative playbackrate
+    private setNegativePlaybackrate(speed) {
+        const currentTime = this.getCurrentTime();
+        if (this.switched === false) {
+            // this.pause();
+            if (this.mse.getBackwardsSrc()) {
+                this.mse.switchToBackwardsSrc().then(() => {
+                    if (this.mediaElement) {
+                        this.mediaElement.playbackRate = Math.abs(speed);
+                        // this.setCurrentTime((Math.max(0, duration - currentTime)));
+                    }
+                });
+            } else {
+                this.setRewindInterval(speed, currentTime);
+            }
+        }
+        this.switched = true;
+    }
+    // Rewind by interval if backwardSrc is not configured
+    private setRewindInterval(speed, currentTime) {
+        clearInterval(this.intervalRewind);
+        this.intervalRewind = setInterval(() => {
+            // this.mediaElement.playbackRate = 1;
+            if (currentTime === 0) {
+                clearInterval(this.intervalRewind);
+                speed = 1;
+                this.pause();
+            } else {
+                currentTime += speed;
+                this.setCurrentTime(currentTime);
+            }
+        }, 30);
+    }
+    private setPositivePlaybackrate(speed) {
+        if (this.mediaElement) {
+            this.mediaElement.playbackRate = Math.abs(speed);
+        }
+    }
     /**
      * Return true if media is paused
      * @return boolean true is paused
