@@ -198,11 +198,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 if (index > 1) {
                     zoomed = true;
                 }
-                if (index % 2 === 0) {
-                    this.label = LABEL.LEFT_CANAL;
-                } else {
-                    this.label = LABEL.RIGHT_CANAL;
-                }
+                this.setLabel(index);
                 if (!(zoomed && this.displayState === 'sm')) {
                     const histogram = this.drawHistogram(nbbins, hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
                     zoomed , this.label);
@@ -212,6 +208,14 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     }
                 }
             });
+        }
+    }
+    // Set label
+    private setLabel(index) {
+        if (index % 2 === 0) {
+            this.label = LABEL.LEFT_CANAL;
+        } else {
+            this.label = LABEL.RIGHT_CANAL;
         }
     }
     /**

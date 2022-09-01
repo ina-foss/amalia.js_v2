@@ -19,7 +19,7 @@
 * [getConfig](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#getconfig)
 * [getSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#getsrc)
 * [handleError](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#handleerror)
-* [setConfig](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#setconfig)
+* [setMaxBufferLengthConfig](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#setmaxbufferlengthconfig)
 * [setSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#setsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#switchtobackwardssrc)
 * [switchToMainSrc](_src_app_core_mse_mpeg_dash_media_source_extension_.mpegdashmediasourceextension.md#switchtomainsrc)
@@ -104,23 +104,15 @@ Not implemented
 
 ___
 
-###  setConfig
+###  setMaxBufferLengthConfig
 
-▸ **setConfig**(`value`: any): *void*
-
-*Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
+▸ **setMaxBufferLengthConfig**(): *void*
 
 Defined in src/app/core/mse/mpeg-dash-media-source-extension.ts:81
 
 Not implemented
 
 **`throws`** AmaliaException
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`value` | any |
 
 **Returns:** *void*
 

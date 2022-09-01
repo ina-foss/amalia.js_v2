@@ -169,7 +169,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     getConfig() {
         return this.hlsPlayer.config;
     }
-    setConfig(value) {
+    setMaxBufferLengthConfig(value) {
         this.hlsPlayer.config.maxBufferLength = value;
     }
 }

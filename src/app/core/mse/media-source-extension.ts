@@ -50,5 +50,5 @@ export interface MediaSourceExtension {
     /**
      * Get config
      */
-    setConfig(value): object | void;
+    setMaxBufferLengthConfig(value): object | void;
 }

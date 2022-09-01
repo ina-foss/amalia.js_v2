@@ -1,5 +1,6 @@
 {
   "tcOffset": 62000,
+  "debug": true,
   "player": {
     "src": "http://localhost:4203/medias/FPVDB07032005.m3u8",
     "backwardsSrc": "http://localhost:4203/medias/FPVDB07032005-inverse.m3u8",

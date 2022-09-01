@@ -26,7 +26,10 @@ export class DefaultLogger implements LoggerInterface {
     }
 
     public state(state: boolean): void {
-        this._enabled = state || false;
+        if (!state) {
+            state = false;
+        }
+        this._enabled = state;
     }
 
     /**
@@ -35,7 +38,7 @@ export class DefaultLogger implements LoggerInterface {
      * @param log log message
      */
     private log(level: LoggerLevel, log: LoggerData): void {
-        if (console && this.state) {
+        if (console && this._enabled) {
             const msg = `[${this.namespaces}]-[${LoggerLevel.valToString(level)}] - ${log.msg}`;
             let logConsole = null;
             switch (level) {
