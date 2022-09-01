@@ -66,7 +66,6 @@ Media element
 * [handlePlay](_src_app_core_media_media_element_.mediaelement.md#private-handleplay)
 * [handleResize](_src_app_core_media_media_element_.mediaelement.md#private-handleresize)
 * [handleSeeked](_src_app_core_media_media_element_.mediaelement.md#private-handleseeked)
-* [handleSeeking](_src_app_core_media_media_element_.mediaelement.md#private-handleseeking)
 * [handleTimeupdate](_src_app_core_media_media_element_.mediaelement.md#private-handletimeupdate)
 * [handleVolumeChange](_src_app_core_media_media_element_.mediaelement.md#private-handlevolumechange)
 * [handleWaiting](_src_app_core_media_media_element_.mediaelement.md#private-handlewaiting)
@@ -442,7 +441,7 @@ ___
 
 ▸ **getCurrentImage**(`scale`: any): *string*
 
-Defined in src/app/core/media/media-element.ts:571
+Defined in src/app/core/media/media-element.ts:561
 
 Return current image
 
@@ -519,7 +518,7 @@ ___
 
 ▸ **handleDurationchange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:498
+Defined in src/app/core/media/media-element.ts:497
 
 Invoked when the duration attribute has been updated.
 
@@ -531,7 +530,7 @@ ___
 
 ▸ **handleEnd**(): *void*
 
-Defined in src/app/core/media/media-element.ts:489
+Defined in src/app/core/media/media-element.ts:488
 
 Invoked when playback has stopped because the end of the media was reached.
 
@@ -543,7 +542,7 @@ ___
 
 ▸ **handleFullscreenChange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:544
+Defined in src/app/core/media/media-element.ts:534
 
 Invoked when the fullscreen state changed.
 
@@ -555,7 +554,7 @@ ___
 
 ▸ **handleLoadstart**(): *void*
 
-Defined in src/app/core/media/media-element.ts:457
+Defined in src/app/core/media/media-element.ts:456
 
 Invoked when first frame of the media has finished loading.
 
@@ -567,7 +566,7 @@ ___
 
 ▸ **handlePause**(): *void*
 
-Defined in src/app/core/media/media-element.ts:479
+Defined in src/app/core/media/media-element.ts:478
 
 Invoked when Playback has been paused.
 
@@ -579,7 +578,7 @@ ___
 
 ▸ **handlePlay**(): *void*
 
-Defined in src/app/core/media/media-element.ts:471
+Defined in src/app/core/media/media-element.ts:470
 
 Invoked when Playback has begun.
 
@@ -591,7 +590,7 @@ ___
 
 ▸ **handleResize**(): *void*
 
-Defined in src/app/core/media/media-element.ts:562
+Defined in src/app/core/media/media-element.ts:552
 
 Invoked when player resized
 
@@ -603,21 +602,9 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/core/media/media-element.ts:516
+Defined in src/app/core/media/media-element.ts:515
 
 Invoked when a seek operation completed.
-
-**Returns:** *void*
-
-___
-
-### `Private` handleSeeking
-
-▸ **handleSeeking**(): *void*
-
-Defined in src/app/core/media/media-element.ts:525
-
-Invoked when a seek operation began.
 
 **Returns:** *void*
 
@@ -627,7 +614,7 @@ ___
 
 ▸ **handleTimeupdate**(): *void*
 
-Defined in src/app/core/media/media-element.ts:507
+Defined in src/app/core/media/media-element.ts:506
 
 The time indicated by the currentTime attribute has been updated.
 
@@ -639,7 +626,7 @@ ___
 
 ▸ **handleVolumeChange**(): *void*
 
-Defined in src/app/core/media/media-element.ts:534
+Defined in src/app/core/media/media-element.ts:524
 
 Invoked when the volume has changed.
 
@@ -651,7 +638,7 @@ ___
 
 ▸ **handleWaiting**(): *void*
 
-Defined in src/app/core/media/media-element.ts:554
+Defined in src/app/core/media/media-element.ts:544
 
 Invoked when  The volume has changed.
 
@@ -663,7 +650,7 @@ ___
 
 ▸ **initAudioChannelMerger**(): *void*
 
-Defined in src/app/core/media/media-element.ts:589
+Defined in src/app/core/media/media-element.ts:579
 
 In charge to init audio chanel merger
 
@@ -1007,7 +994,7 @@ ___
 
 ▸ **setupAudioNodes**(`data`: any): *void*
 
-Defined in src/app/core/media/media-element.ts:608
+Defined in src/app/core/media/media-element.ts:598
 
 Set Audio Nodes
 
@@ -1025,7 +1012,7 @@ ___
 
 ▸ **simulatePlay**(`$event`: any): *void*
 
-Defined in src/app/core/media/media-element.ts:450
+Defined in src/app/core/media/media-element.ts:449
 
 Simulate play on playback change by images
 
