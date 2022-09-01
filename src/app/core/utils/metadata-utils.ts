@@ -97,7 +97,9 @@ export class MetadataUtils {
      */
     private static parseTimelineLocalisation(localisation: any, timelineLocalisations: Array<TimelineLocalisation>) {
         if (localisation) {
-            MetadataUtils.pushTimelineLocalisation(localisation, timelineLocalisations);
+            if (localisation.tclevel > 0) {
+                MetadataUtils.pushTimelineLocalisation(localisation, timelineLocalisations);
+            }
             // parse sub localisation
             if (localisation.sublocalisations && localisation.sublocalisations.localisation && localisation.sublocalisations.localisation.length) {
                 localisation.sublocalisations.localisation.forEach((subLocalisation) => {
@@ -108,19 +110,17 @@ export class MetadataUtils {
     }
     // push timelineLocalisation
     private static pushTimelineLocalisation(localisation, timelineLocalisations) {
-        if (localisation.tclevel > 0) {
-            const tl: TimelineLocalisation = {
-                label: localisation.label || null,
-                thumb: localisation.thumb || null,
-                type: localisation.type || null,
-                tc: (typeof localisation.tc === 'string') ? FormatUtils.convertTcToSeconds(localisation.tc) : localisation.tc || null,
-                tcIn: (typeof localisation.tcin === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcin) : localisation.tcin || null,
-                tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
-            };
-            // add to list if tc or tcin not empty
-            if (tl.tc || tl.tcIn) {
-                timelineLocalisations.push(tl);
-            }
+        const tl: TimelineLocalisation = {
+            label: localisation.label || null,
+            thumb: localisation.thumb || null,
+            type: localisation.type || null,
+            tc: (typeof localisation.tc === 'string') ? FormatUtils.convertTcToSeconds(localisation.tc) : localisation.tc || null,
+            tcIn: (typeof localisation.tcin === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcin) : localisation.tcin || null,
+            tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
+        };
+        // add to list if tc or tcin not empty
+        if (tl.tc || tl.tcIn) {
+            timelineLocalisations.push(tl);
         }
     }
 }
