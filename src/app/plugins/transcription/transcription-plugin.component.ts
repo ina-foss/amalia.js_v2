@@ -235,12 +235,31 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                         //
                     }
+                    this.handleSelectedWordsStyle(filteredNodes, karaokeTcDelta);
                     if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
                         n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     }
                 });
             }
+        }
+    }
+    // add TranscriptionPluginComponent.SELECTOR_SELECTED to selected words
+    private handleSelectedWordsStyle(filteredNodes, karaokeTcDelta) {
+        if (filteredNodes && filteredNodes.length > 0) {
+            filteredNodes.forEach(n => {
+                n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
+                // add active to parent segment
+                if ( this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
+                    n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    //
+                }
+                if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
+                    n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                }
+            });
         }
     }
 

@@ -556,7 +556,7 @@ ___
 
 ▸ **clearInterval**(): *void*
 
-Defined in src/app/player/amalia.component.ts:592
+Defined in src/app/player/amalia.component.ts:593
 
 **Returns:** *void*
 
@@ -566,7 +566,7 @@ ___
 
 ▸ **displayControlBar**(`_displayControlBar`: boolean): *void*
 
-Defined in src/app/player/amalia.component.ts:496
+Defined in src/app/player/amalia.component.ts:497
 
 Invoked on mouseenter and mouseleave events
 
@@ -584,7 +584,7 @@ ___
 
 ▸ **displayImages**(`framesPerSecond`: any, `ms`: any, `rewinding`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:604
+Defined in src/app/player/amalia.component.ts:605
 
 **Parameters:**
 
@@ -602,7 +602,7 @@ ___
 
 ▸ **emitKeyDownEvent**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:521
+Defined in src/app/player/amalia.component.ts:522
 
 invoked on keydown
 
@@ -620,7 +620,7 @@ ___
 
 ▸ **emitKeyUpEvent**(): *void*
 
-Defined in src/app/player/amalia.component.ts:548
+Defined in src/app/player/amalia.component.ts:549
 
 **Returns:** *void*
 
@@ -630,7 +630,7 @@ ___
 
 ▸ **focus**(): *void*
 
-Defined in src/app/player/amalia.component.ts:488
+Defined in src/app/player/amalia.component.ts:489
 
 focus mediaPlayer container
 
@@ -642,7 +642,7 @@ ___
 
 ▸ **handleAspectRatioChange**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:415
+Defined in src/app/player/amalia.component.ts:416
 
 Invoked on aspect ratio change
 
@@ -660,7 +660,7 @@ ___
 
 ▸ **handleError**(`event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:404
+Defined in src/app/player/amalia.component.ts:405
 
 Invoked when error event
 
@@ -678,7 +678,7 @@ ___
 
 ▸ **handleFullScreenChange**(): *void*
 
-Defined in src/app/player/amalia.component.ts:508
+Defined in src/app/player/amalia.component.ts:509
 
 Invoked on fullscreen change
 
@@ -742,7 +742,7 @@ ___
 
 ▸ **handlePlay**(): *void*
 
-Defined in src/app/player/amalia.component.ts:393
+Defined in src/app/player/amalia.component.ts:394
 
 **Returns:** *void*
 
@@ -752,7 +752,7 @@ ___
 
 ▸ **handleSeeked**(): *void*
 
-Defined in src/app/player/amalia.component.ts:384
+Defined in src/app/player/amalia.component.ts:385
 
 **Returns:** *void*
 
@@ -790,7 +790,7 @@ ___
 
 ▸ **hideControls**(): *void*
 
-Defined in src/app/player/amalia.component.ts:568
+Defined in src/app/player/amalia.component.ts:569
 
 **Returns:** *void*
 
@@ -800,7 +800,7 @@ ___
 
 ▸ **hideControlsMenuOnClickDocument**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:553
+Defined in src/app/player/amalia.component.ts:554
 
 **Parameters:**
 
@@ -816,7 +816,7 @@ ___
 
 ▸ **initDefaultHandlers**(): *void*
 
-Defined in src/app/player/amalia.component.ts:424
+Defined in src/app/player/amalia.component.ts:425
 
 In charge to init default handlers when input not specified
 
@@ -828,7 +828,7 @@ ___
 
 ▸ **loopImages**(`tc`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:624
+Defined in src/app/player/amalia.component.ts:625
 
 **Parameters:**
 
@@ -876,7 +876,7 @@ ___
 
 ▸ **onErrorInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:478
+Defined in src/app/player/amalia.component.ts:479
 
 Invoked on error to init config
 
@@ -894,7 +894,7 @@ ___
 
 ▸ **onInitConfig**(`state`: [PlayerState](../enums/_src_app_core_constant_player_state_.playerstate.md)): *void*
 
-Defined in src/app/player/amalia.component.ts:464
+Defined in src/app/player/amalia.component.ts:465
 
 Invoked on  init config
 
@@ -912,7 +912,7 @@ ___
 
 ▸ **resetTimer**(): *void*
 
-Defined in src/app/player/amalia.component.ts:561
+Defined in src/app/player/amalia.component.ts:562
 
 **Returns:** *void*
 
@@ -922,7 +922,7 @@ ___
 
 ▸ **scrollPlaybackRateImages**(`$event`: any): *void*
 
-Defined in src/app/player/amalia.component.ts:573
+Defined in src/app/player/amalia.component.ts:574
 
 **Parameters:**
 
@@ -938,7 +938,7 @@ ___
 
 ▸ **setPreviewThumbnail**(`tc`: number): *void*
 
-Defined in src/app/player/amalia.component.ts:447
+Defined in src/app/player/amalia.component.ts:448
 
 In charge to update thumbnail
 
@@ -956,7 +956,7 @@ ___
 
 ▸ **showImage**(`tc`: any): *Promise‹unknown›*
 
-Defined in src/app/player/amalia.component.ts:632
+Defined in src/app/player/amalia.component.ts:633
 
 **Parameters:**
 
@@ -972,7 +972,7 @@ ___
 
 ▸ **startTimer**(): *void*
 
-Defined in src/app/player/amalia.component.ts:557
+Defined in src/app/player/amalia.component.ts:558
 
 **Returns:** *void*
 

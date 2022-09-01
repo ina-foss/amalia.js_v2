@@ -136,6 +136,17 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 });
             }
         }
+        this.handleMetadataProperties(listOfMetadata, metadataManager);
+
+        if (!handleMetadataIds) {
+            listOfMetadata.forEach((metadata) => {
+                mainMetadataIds.push(metadata.id);
+            });
+        }
+        this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
+    }
+    // Handle metadata properties
+    private handleMetadataProperties(listOfMetadata, metadataManager) {
         listOfMetadata.forEach((metadata) => {
             let listOfLocalisations = null;
             try {
@@ -152,13 +163,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 data: listOfLocalisations
             });
         });
-
-        if (!handleMetadataIds) {
-            listOfMetadata.forEach((metadata) => {
-                mainMetadataIds.push(metadata.id);
-            });
-        }
-        this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
     }
 
     /**
