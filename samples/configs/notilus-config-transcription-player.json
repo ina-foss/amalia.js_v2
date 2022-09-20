@@ -108,7 +108,8 @@
           "label": "Play / Pause",
           "control": "playPause",
           "zone": 2,
-          "priority": 1
+          "priority": 1,
+          "key": "espace"
         },
         {
           "label": "forward",

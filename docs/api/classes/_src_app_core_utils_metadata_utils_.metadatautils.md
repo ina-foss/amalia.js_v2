@@ -120,7 +120,7 @@ ___
 
 ▸ **pushTimelineLocalisation**(`localisation`: any, `timelineLocalisations`: any): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:110
+Defined in src/app/core/utils/metadata-utils.ts:112
 
 **Parameters:**
 

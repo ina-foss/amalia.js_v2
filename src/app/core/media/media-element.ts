@@ -179,6 +179,7 @@ export class MediaElement {
      * will return the volume even if the player is muted.
      */
     getVolume(side?: 'r' | 'l'): number {
+        console.log('side get volume' + side);
         if (side) {
             return (side === 'l') ? this.volumeLeft : this.volumeRight;
         } else {
@@ -190,6 +191,7 @@ export class MediaElement {
      * Sets the volume. Accepts an integer between 0 and 100.
      */
     setVolume(volumePercent: number, volumeSide?: string) {
+        console.log('setVolume:  ' + volumePercent);
         this.logger.debug(`setVolume change side :${volumeSide} volume: ${volumePercent} with same volume ${this._withMergeVolume}`);
         if (this._withMergeVolume === true) {
             this.volumeLeft = volumePercent;
@@ -579,7 +581,6 @@ export class MediaElement {
     private initAudioChannelMerger() {
         this.logger.info('initAudioChannelMerger');
         this.audioContext = new AudioContext();
-
         this.mediaElement.crossOrigin = 'anonymous';
         const source = this.audioContext.createMediaElementSource(this.mediaElement);
         this.audioContextSplitter = this.audioContext.createChannelSplitter(2);
@@ -624,7 +625,6 @@ export class MediaElement {
                     // Connect both channels to the Merger
                     this.panLeft.connect(merger, 0, 0);
                     this.panRight.connect(merger, 0, 1);
-
                     // Connect the Merger Node to the final audio destination
                     merger.connect(this.audioContext.destination);
                 }
@@ -632,6 +632,7 @@ export class MediaElement {
 
         } else {
             this.initAudioChannelMerger();
+            this.setupAudioNodes(data);
         }
     }
 
