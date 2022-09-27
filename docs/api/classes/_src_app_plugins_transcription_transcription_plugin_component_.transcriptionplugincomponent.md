@@ -73,6 +73,7 @@
 * [getDefaultConfig](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#getdefaultconfig)
 * [handleChangeInput](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#handlechangeinput)
 * [handleMetadataLoaded](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-handlemetadataloaded)
+* [handleModeTranscription](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-handlemodetranscription)
 * [handleOnTimeChange](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-handleontimechange)
 * [handleScroll](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#handlescroll)
 * [handleSelectedWordsStyle](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-handleselectedwordsstyle)
@@ -500,7 +501,7 @@ ___
 
 ▸ **clearSearchList**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:461
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:466
 
 clear seach list onclick
 
@@ -580,11 +581,28 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:355
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:360
 
 Invoked on metadata loaded
 
 **Returns:** *void*
+
+___
+
+### `Private` handleModeTranscription
+
+▸ **handleModeTranscription**(`elementNodes`: any, `karaokeTcDelta`: any): *any*
+
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:240
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`elementNodes` | any |
+`karaokeTcDelta` | any |
+
+**Returns:** *any*
 
 ___
 
@@ -605,7 +623,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:346
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:351
 
 handle scroll event
 
@@ -623,7 +641,7 @@ ___
 
 ▸ **handleSelectedWordsStyle**(`filteredNodes`: any, `karaokeTcDelta`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:248
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:253
 
 **Parameters:**
 
@@ -640,7 +658,7 @@ ___
 
 ▸ **handleShortcut**(`event`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:475
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:480
 
 handleShortcut on search button
 
@@ -682,7 +700,7 @@ ___
 
 ▸ **parseTranscription**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:362
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:367
 
 In charge to load metadata
 
@@ -694,7 +712,7 @@ ___
 
 ▸ **scroll**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:292
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:297
 
 In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
 
@@ -706,7 +724,7 @@ ___
 
 ▸ **scrollToNode**(`scrollNode`: HTMLElement): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:304
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:309
 
 Invoked to scroll to node
 
@@ -724,7 +742,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:415
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:420
 
 Scroll to next or previous searched word
 
@@ -742,7 +760,7 @@ ___
 
 ▸ **scrollToSelectedSegment**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:447
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:452
 
 Invocked on click SYNCHRO button
 
@@ -754,7 +772,7 @@ ___
 
 ▸ **searchWord**(`searchText`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:388
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:393
 
 Search word ans scroll to first result
 
@@ -790,7 +808,7 @@ ___
 
 ▸ **selectSegment**(`karaokeTcDelta`: number): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:269
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:274
 
 In charge to select segment
 
@@ -826,7 +844,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:485
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:490
 
 if scrolling and active segment is not visible add synchro button
 

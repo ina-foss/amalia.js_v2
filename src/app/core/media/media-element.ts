@@ -51,6 +51,10 @@ export class MediaElement {
      * Player initalized
      */
     private initialized = false;
+    /**
+     * Default buffersize hls player
+     */
+    private defaultBufferSize = 12;
 
     /**
      * Force show button play when video is paused (handle playbackrate change by images)
@@ -179,7 +183,6 @@ export class MediaElement {
      * will return the volume even if the player is muted.
      */
     getVolume(side?: 'r' | 'l'): number {
-        console.log('side get volume' + side);
         if (side) {
             return (side === 'l') ? this.volumeLeft : this.volumeRight;
         } else {
@@ -191,7 +194,6 @@ export class MediaElement {
      * Sets the volume. Accepts an integer between 0 and 100.
      */
     setVolume(volumePercent: number, volumeSide?: string) {
-        console.log('setVolume:  ' + volumePercent);
         this.logger.debug(`setVolume change side :${volumeSide} volume: ${volumePercent} with same volume ${this._withMergeVolume}`);
         if (this._withMergeVolume === true) {
             this.volumeLeft = volumePercent;
@@ -323,6 +325,9 @@ export class MediaElement {
     private setPositivePlaybackrate(speed) {
         if (this.mediaElement) {
             this.mediaElement.playbackRate = Math.abs(speed);
+            if (speed === 1) {
+                this.mse.setMaxBufferLengthConfig(this.defaultBufferSize);
+            }
         }
     }
     /**

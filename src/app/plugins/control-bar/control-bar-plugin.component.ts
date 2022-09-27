@@ -610,13 +610,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param volumeSide volume side (l or r)
      */
     public changeVolume(value: string | number, volumeSide?: string) {
-        console.log('volume side  ' + volumeSide);
         this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
-        console.log('setVolume  ' + Number(value));
         this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
-        console.log('volume left changeVolume' + this.volumeLeft);
         this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
-        console.log('volume right changeVolume' + this.volumeRight);
     }
 
     /**
@@ -760,19 +756,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
             // const v = Math.min(this.volumeRight, this.volumeLeft);
             const v = Math.max(this.volumeRight, this.volumeLeft);
-            console.log('changeSameVolumeState volume right  ' + this.volumeRight);
-            console.log('changeSameVolumeState volume left  '  + this.volumeLeft);
-            console.log('volume v' + v);
             this.changeVolume(v);
             this.volumeLeft = v;
             this.volumeRight = v;
         }
     }
-
-    /**
-     * return list controls by priority
-     * @param priority : number
-     */
     /**
      * Handle mouse enter on progress bar
      * @param event mouse enter
@@ -974,16 +962,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
     }
-
-
-
+    @AutoBind
+    public handleKeyUp() {
+        console.log('here');
+        this.thumbnailHidden = false;
+        this.enableThumbnail = true;
+    }
     @AutoBind
     public handlePlayerMouseHover() {
         this.activated = true;
     }
-
-
-
     /**
      * update position subtitle onclick
      * @param subtitlePosition subtitle position

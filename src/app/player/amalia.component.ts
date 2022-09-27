@@ -489,10 +489,9 @@ export class AmaliaComponent implements OnInit {
      * focus mediaPlayer container
      */
     public focus() {
+        // keypress works only after a click
         this.mediaPlayer.nativeElement.click();
         this.mediaContainer.nativeElement.focus();
-        // keypress works only after a click
-        // this.vir.nativeElement.click();
     }
     /**
      * Invoked on mouseenter and mouseleave events
