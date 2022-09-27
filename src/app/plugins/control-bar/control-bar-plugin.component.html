@@ -15,8 +15,7 @@
         <div class="control-bar" (mouseover)="handlePlayerMouseHover()" (mouseleave)="enableVolumeSlider=false" *ngIf="elements">
             <div *ngIf="hasComponentWithoutZone('progressBar')"
                  class="control progress-bar" (mouseenter)="progressBarMouseEnter($event)"
-                 (mouseleave)= "progressBarMouseLeave($event)" (mousemove)="progressBarMouseMove($event)"
-                 (keyup) = "handleKeyUp()">
+                 (mouseleave)= "progressBarMouseLeave($event)" (mousemove)="progressBarMouseMove($event)">
                 <div class="ui-slider">
                     <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
                     <input type="range" step='0.01' class="slider" min="0" [value]="progressBarValue" #progressBar

@@ -825,6 +825,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const value = this.getMouseValue(event);
         this.moveSliderCursor(value);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
+        this.thumbnailHidden = false;
+        this.enableThumbnail = true;
     }
     /**
      * Handle thumbnail pos
@@ -961,12 +963,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer().setupAudioNodes(data);
         }
 
-    }
-    @AutoBind
-    public handleKeyUp() {
-        console.log('here');
-        this.thumbnailHidden = false;
-        this.enableThumbnail = true;
     }
     @AutoBind
     public handlePlayerMouseHover() {
