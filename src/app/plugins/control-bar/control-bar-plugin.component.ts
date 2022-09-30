@@ -682,7 +682,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             setTimeout(() => {
                 const tooltip = document.body.getElementsByTagName('tooltip')[0];
                 if (tooltip) {
-                    console.log(tooltip);
                     document.body.removeChild(tooltip);
                     this.controlBarContainer.nativeElement.appendChild(tooltip);
                 }
@@ -762,11 +761,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.volumeRight = v;
         }
     }
-
-    /**
-     * return list controls by priority
-     * @param priority : number
-     */
     /**
      * Handle mouse enter on progress bar
      * @param event mouse enter
@@ -831,6 +825,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const value = this.getMouseValue(event);
         this.moveSliderCursor(value);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
+        this.thumbnailHidden = false;
+        this.enableThumbnail = true;
     }
     /**
      * Handle thumbnail pos
@@ -968,16 +964,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
     }
-
-
-
     @AutoBind
     public handlePlayerMouseHover() {
         this.activated = true;
     }
-
-
-
     /**
      * update position subtitle onclick
      * @param subtitlePosition subtitle position

@@ -24,6 +24,8 @@ Player event type
 * [IMAGE_CAPTURE](_src_app_core_constant_event_type_.playereventtype.md#image_capture)
 * [INIT](_src_app_core_constant_event_type_.playereventtype.md#init)
 * [KEYDOWN](_src_app_core_constant_event_type_.playereventtype.md#keydown)
+* [KEYDOWN_HISTOGRAM](_src_app_core_constant_event_type_.playereventtype.md#keydown_histogram)
+* [KEYUP_HISTOGRAM](_src_app_core_constant_event_type_.playereventtype.md#keyup_histogram)
 * [METADATA_LOADED](_src_app_core_constant_event_type_.playereventtype.md#metadata_loaded)
 * [MUTE](_src_app_core_constant_event_type_.playereventtype.md#mute)
 * [PAUSED](_src_app_core_constant_event_type_.playereventtype.md#paused)
@@ -133,7 +135,7 @@ ___
 
 • **DOCUMENT_CLICK**: = "ina.player.DOCUMENT_CLICK"
 
-Defined in src/app/core/constant/event-type.ts:176
+Defined in src/app/core/constant/event-type.ts:184
 
 Invocked on click outside the player
 
@@ -219,6 +221,26 @@ Invocked on keydown when the mouse is over the player
 
 ___
 
+###  KEYDOWN_HISTOGRAM
+
+• **KEYDOWN_HISTOGRAM**: = "ina.player.KEYDOWN_HISTOGRAM"
+
+Defined in src/app/core/constant/event-type.ts:176
+
+Invocked on keydown when the mouse is over histogram
+
+___
+
+###  KEYUP_HISTOGRAM
+
+• **KEYUP_HISTOGRAM**: = "ina.player.KEYUP_HISTOGRAM"
+
+Defined in src/app/core/constant/event-type.ts:180
+
+Invocked on keydup when the mouse is over histogram
+
+___
+
 ###  METADATA_LOADED
 
 • **METADATA_LOADED**: = "ina.player.METADATA_LOADED"
@@ -273,7 +295,7 @@ ___
 
 • **PLAYBACK_CLEAR_INTERVAL**: = "ina.player.PLAYBACK_CLEAR_INTERVAL"
 
-Defined in src/app/core/constant/event-type.ts:184
+Defined in src/app/core/constant/event-type.ts:192
 
 Invocked to clear interval
 
@@ -293,7 +315,7 @@ ___
 
 • **PLAYBACK_RATE_IMAGES_CHANGE**: = "ina.player.PLAYBACK_RATE_IMAGES_CHANGE"
 
-Defined in src/app/core/constant/event-type.ts:180
+Defined in src/app/core/constant/event-type.ts:188
 
 Invocked to scroll images when changing playbackrate
 
@@ -303,7 +325,7 @@ ___
 
 • **PLAYER_LOADING_BEGIN**: = "ina.player.PLAYER_LOADING_BEGIN"
 
-Defined in src/app/core/constant/event-type.ts:188
+Defined in src/app/core/constant/event-type.ts:196
 
 Loading begin
 
@@ -313,7 +335,7 @@ ___
 
 • **PLAYER_LOADING_END**: = "ina.player.PLAYER_LOADING_BEGIN_END"
 
-Defined in src/app/core/constant/event-type.ts:192
+Defined in src/app/core/constant/event-type.ts:200
 
 Loading END
 
@@ -353,7 +375,7 @@ ___
 
 • **PLAYER_SIMULATE_PLAY**: = "ina.player.SIMULATE_PLAY"
 
-Defined in src/app/core/constant/event-type.ts:200
+Defined in src/app/core/constant/event-type.ts:208
 
 Simulate Play
 
@@ -363,7 +385,7 @@ ___
 
 • **PLAYER_SIMULATE_SLIDER**: = "ina.player.SIMULATE_SLIDER"
 
-Defined in src/app/core/constant/event-type.ts:196
+Defined in src/app/core/constant/event-type.ts:204
 
 Simulate slider controlbar timeline
 
@@ -373,7 +395,7 @@ ___
 
 • **PLAYER_STOP_SIMULATE_PLAY**: = "ina.player.STOP_SIMULATE_PLAY"
 
-Defined in src/app/core/constant/event-type.ts:204
+Defined in src/app/core/constant/event-type.ts:212
 
 STOP Simulate Play
 

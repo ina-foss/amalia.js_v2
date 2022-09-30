@@ -1,9 +1,10 @@
-<div #histogramContainer class="histogram-container {{displayState}}" (contextmenu)="onContextMenu($event)">
+<div #histogramContainer tabindex="1" class="histogram-container {{displayState}}" (contextmenu)="onContextMenu($event)"
+     (mouseover)="handleHover()" (mousemove)="handleHover()" (keydown)="handleKeyDownHistogramEvent($event)" (keyup)="handleKeyUpHistogramEvent($event)">
     <div #histograms class="histograms" (click)="handleHistogramsClick($event)">
         <div class="histogram" *ngFor="let histogram of listOfHistograms | slice:0:2">
             <div class="svg">
                 <div class="label">{{histogram.label}}</div>
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                <svg tabindex="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                      width="100%" height="100%">
                     <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"
                           stroke-width="1"
@@ -17,12 +18,12 @@
          <div #slider class="slider" [style]="{'transform':style}" (mouseenter)="active =true" (mouseleave)="active =false">
             <div class="border-top"></div>
             <span class="drag-left" [ngClass]="{'active':active}">
-                <svg class="amalia-svg-drag-drop-size icon">
+                <svg tabindex="0" class="amalia-svg-drag-drop-size icon">
                      <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
                 </svg>
             </span>
             <span class="drag-right" [ngClass]="{'active':active}">
-                <svg class="amalia-svg-drag-drop-size icon">
+                <svg tabindex="0" class="amalia-svg-drag-drop-size icon">
                      <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
                 </svg>
             </span>
@@ -35,7 +36,7 @@
     <div #zoomedHistograms class="zoomed-histograms" *ngIf="withFocus">
         <div class="zoomed-histogram" *ngFor="let histogram of listOfHistograms | slice:2:3" [style]="{'margin-left':histogramPosition+'px'}">
             <div class="svg">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                <svg tabindex="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                      [style]="{'width': zoomedWidth + 'px'}"
                      height="100%">
                     <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"
@@ -51,7 +52,7 @@
         <div class="label right " *ngFor="let histogram of listOfHistograms | slice:3:4">{{histogram.label}}</div>
         <div class="zoomed-histogram" *ngFor="let histogram of listOfHistograms | slice:3:4" [style]="{'margin-left':histogramPosition+'px'}">
             <div class="svg">
-                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                <svg tabindex="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                      [style]="{'width': zoomedWidth + 'px'}"
                      height="100%">
                     <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"

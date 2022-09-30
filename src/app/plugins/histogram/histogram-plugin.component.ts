@@ -541,4 +541,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             this.initSliderEvents();
         }
     }
+    public handleHover() {
+        this.zoomedHistograms.nativeElement.click();
+        this.histogramContainerElement.nativeElement.focus();
+
+    }
+    public handleKeyDownHistogramEvent(event) {
+        this.mediaPlayerElement.eventEmitter.emit('ina.player.KEYDOWN_HISTOGRAM', event);
+    }
+    public handleKeyUpHistogramEvent(event) {
+        this.mediaPlayerElement.eventEmitter.emit('ina.player.KEYUP_HISTOGRAM', event);
+    }
 }

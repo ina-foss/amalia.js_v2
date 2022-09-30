@@ -171,6 +171,14 @@ export enum PlayerEventType {
      */
     KEYDOWN = 'ina.player.KEYDOWN',
     /**
+     * Invocked on keydown when the mouse is over histogram
+     */
+    KEYDOWN_HISTOGRAM = 'ina.player.KEYDOWN_HISTOGRAM',
+    /**
+     * Invocked on keydup when the mouse is over histogram
+     */
+    KEYUP_HISTOGRAM = 'ina.player.KEYUP_HISTOGRAM',
+    /**
      * Invocked on click outside the player
      */
     DOCUMENT_CLICK = 'ina.player.DOCUMENT_CLICK',

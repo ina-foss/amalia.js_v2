@@ -216,16 +216,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private selectWords(karaokeTcDelta: number) {
         const elementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.w'));
-        let filteredNodes;
         if (elementNodes) {
-            if (this.pluginConfiguration.data.mode === 1) {
-                filteredNodes = elementNodes
-                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
-            } else {
-                 filteredNodes = elementNodes
-                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
-            }
+            const filteredNodes = this.handleModeTranscription(elementNodes, karaokeTcDelta);
             if (filteredNodes && filteredNodes.length > 0) {
                 filteredNodes.forEach(n => {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
@@ -243,6 +235,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 });
             }
         }
+    }
+    // handle mode 1 || mode 2
+    private handleModeTranscription(elementNodes , karaokeTcDelta ) {
+        let filteredNodes;
+        if (this.pluginConfiguration.data.mode === 1) {
+            filteredNodes = elementNodes
+                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
+        } else {
+            filteredNodes = elementNodes
+                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
+        }
+        return filteredNodes;
     }
     // add TranscriptionPluginComponent.SELECTOR_SELECTED to selected words
     private handleSelectedWordsStyle(filteredNodes, karaokeTcDelta) {

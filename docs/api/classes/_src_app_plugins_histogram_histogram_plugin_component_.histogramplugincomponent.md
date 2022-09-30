@@ -73,6 +73,9 @@
 * [handleCursorMove](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-handlecursormove)
 * [handleDisplayState](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#handledisplaystate)
 * [handleHistogramsClick](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#handlehistogramsclick)
+* [handleHover](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#handlehover)
+* [handleKeyDownHistogramEvent](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#handlekeydownhistogramevent)
+* [handleKeyUpHistogramEvent](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#handlekeyuphistogramevent)
 * [handleMetadataLoaded](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-handlemetadataloaded)
 * [handleOnDurationChange](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-handleondurationchange)
 * [handleOnTimeChange](_src_app_plugins_histogram_histogram_plugin_component_.histogramplugincomponent.md#private-handleontimechange)
@@ -641,6 +644,48 @@ ___
 ▸ **handleHistogramsClick**(`event`: any): *void*
 
 Defined in src/app/plugins/histogram/histogram-plugin.component.ts:252
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`event` | any |
+
+**Returns:** *void*
+
+___
+
+###  handleHover
+
+▸ **handleHover**(): *void*
+
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:544
+
+**Returns:** *void*
+
+___
+
+###  handleKeyDownHistogramEvent
+
+▸ **handleKeyDownHistogramEvent**(`event`: any): *void*
+
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:549
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`event` | any |
+
+**Returns:** *void*
+
+___
+
+###  handleKeyUpHistogramEvent
+
+▸ **handleKeyUpHistogramEvent**(`event`: any): *void*
+
+Defined in src/app/plugins/histogram/histogram-plugin.component.ts:552
 
 **Parameters:**
 
