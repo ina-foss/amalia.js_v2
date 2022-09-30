@@ -51,6 +51,10 @@ export class MediaElement {
      * Player initalized
      */
     private initialized = false;
+    /**
+     * Default buffersize hls player
+     */
+    private defaultBufferSize = 12;
 
     /**
      * Force show button play when video is paused (handle playbackrate change by images)
@@ -321,6 +325,9 @@ export class MediaElement {
     private setPositivePlaybackrate(speed) {
         if (this.mediaElement) {
             this.mediaElement.playbackRate = Math.abs(speed);
+            if (speed === 1) {
+                this.mse.setMaxBufferLengthConfig(this.defaultBufferSize);
+            }
         }
     }
     /**
@@ -579,7 +586,6 @@ export class MediaElement {
     private initAudioChannelMerger() {
         this.logger.info('initAudioChannelMerger');
         this.audioContext = new AudioContext();
-
         this.mediaElement.crossOrigin = 'anonymous';
         const source = this.audioContext.createMediaElementSource(this.mediaElement);
         this.audioContextSplitter = this.audioContext.createChannelSplitter(2);
@@ -624,7 +630,6 @@ export class MediaElement {
                     // Connect both channels to the Merger
                     this.panLeft.connect(merger, 0, 0);
                     this.panRight.connect(merger, 0, 1);
-
                     // Connect the Merger Node to the final audio destination
                     merger.connect(this.audioContext.destination);
                 }
@@ -632,6 +637,7 @@ export class MediaElement {
 
         } else {
             this.initAudioChannelMerger();
+            this.setupAudioNodes(data);
         }
     }
 

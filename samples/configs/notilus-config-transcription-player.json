@@ -1,6 +1,6 @@
 {
   "tcOffset": 62000,
-  "debug": true,
+  "debug": false,
   "player": {
     "src": "http://localhost:4203/medias/FPVDB07032005.m3u8",
     "backwardsSrc": "http://localhost:4203/medias/FPVDB07032005-inverse.m3u8",
@@ -97,7 +97,7 @@
         {
           "label": "backward",
           "icon": "backward",
-          "control": "images-backward",
+          "control": "backward",
           "zone": 2,
           "priority": 1,
           "data": {
@@ -108,12 +108,13 @@
           "label": "Play / Pause",
           "control": "playPause",
           "zone": 2,
-          "priority": 1
+          "priority": 1,
+          "key": "espace"
         },
         {
           "label": "forward",
           "icon": "forward",
-          "control": "images-forward",
+          "control": "forward",
           "zone": 2,
           "priority": 1,
           "data": {
