@@ -14,44 +14,12 @@
   font-family: $amalia-font-family !important;
   font-size: $amalia-font-size !important;
   font-weight: normal;
+
   .histogram-container {
     background: #34495E;
     height: 100%;
     z-index: 1;
-    &.sm {
-        .zoomed-histograms{
-          display: none;
-        }
-      .histograms {
-        height: 100%;
-        .label {
-          display: block;
-          background-color: $amalia-ctrl-bar-bg-color;
-          padding: 2px 3px 2px 8px;
-          color: white;
-          width: 15%;
-          position: absolute;
-          font-size: 14px;
-          min-width: max-content;
-        }
-        .slider{
-          display: none;
-        }
-      }
-    }
-    &.s {
-      display: none;
-      .zoomed-histograms,.histograms {
-        display: none;
-      }
-    }
 
-    .histograms {
-      height: 34%;
-      .label {
-        display: none;
-      }
-    }
     .label {
       background-color: $amalia-ctrl-bar-bg-color;
       padding: 2px 3px 2px 8px;
@@ -61,40 +29,53 @@
       font-size: 14px;
       min-width: max-content;
       z-index: 3;
+
       &.right {
         top: 50%;
       }
     }
-    .zoomed-histograms {
-      height: 66%;
-    }
-    .histograms, .zoomed-histograms {
+
+    .histograms {
       position: relative;
       background-color: #6c6c6c;
-      display: flex;
-      flex-direction: column;
+      display: block;
       justify-content: space-between;
-      //height: inherit;
-      width: inherit;
-      .svg {
+      flex-flow: column wrap;
+      height: 100%;
+
+
+      .cursor {
+        position: absolute;
+        background-color: white;
+        width: 1px;
+        height: 100%;
+        z-index: 1;
+        top: 0;
+      }
+
+      .svg-content {
         height: 100%;
         width: 100%;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        display: flex;
       }
+
       .slider {
         touch-action: none;
         user-select: none;
         position: absolute;
         border: solid 2px #0086B1;
-        height: calc(100% - 3px);
-        min-width: 1%;
-        max-width: 100%;
+        height: calc(50% - 5px);
+        min-width: 1% !important;
+        max-width: 100% !important;
         width: 10%;
         background-color: rgba(255, 255, 255, 0.4);
         z-index: 2;
-        //left: 0;
-        top: 0;
         display: block;
         cursor: move;
+        top: 0;
 
         .drag-left,
         .drag-right {
@@ -106,11 +87,13 @@
           top: 50%;
           margin-top: -10px;
           margin-left: -7px;
-          z-index :3;
-          display: none;
+          z-index: 3;
+          cursor: e-resize;
+
           &.active {
             display: block;
           }
+
           .amalia-svg-drag-drop-size {
             width: 10px;
             position: relative;
@@ -119,55 +102,28 @@
             color: #0086B1;
           }
         }
-        .border-top,
-        .border-bottom {
-          background: #0086B1;
-          width: 100%;
-          position: relative;
-          height: 2px;
-          z-index :2;
-        }
-        .border-top {
-          top: 48%;
-        }
-        .border-bottom {
-          top: 50%;
-        }
 
         .drag-right {
           left: 100%;
         }
 
-        .cursor {
-          position: absolute;
-          background-color: white;
-          width: 1px;
-          height: 100%;
-          left: 0%;
-        }
+
       }
-      .zoomed-histogram {
-        //height: 264px;
-        height: 50%;
-        background-color: #B2DAE7;
-        position: relative;
-        display: block;
-        border-bottom: solid 1px white;
-      }
+
       .histogram {
-        background-color: #80C2D8;
-        height: 50%;
-        //height: 140px;
-        position: relative;
         display: block;
+        background-color: #80C2D8;
+        position: relative;
         border-bottom: solid 1px white;
-      }
-      .cursor-zoom {
-        height: 100%;
-        width: 1px;
-        background: #ffffff;
-        position: absolute;
-        top: 0px;
+        overflow: hidden;
+
+        &.zoom-histogram {
+          background-color: #b2dae7;
+
+          .cursor {
+            width: 2px;
+          }
+        }
       }
     }
   }

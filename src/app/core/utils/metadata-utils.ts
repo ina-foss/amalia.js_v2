@@ -66,6 +66,7 @@ export class MetadataUtils {
             metadata.localisation.forEach((l) => {
                 if (l.data.hasOwnProperty('histogram') && l.data.histogram && isArrayLike(l.data.histogram)) {
                     l.data.histogram.forEach((h) => {
+                        h.id = metadata.id;
                         histograms.push(h as Histogram);
                     });
                 }
