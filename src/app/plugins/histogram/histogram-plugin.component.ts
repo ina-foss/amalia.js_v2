@@ -130,10 +130,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param negBins negative bins
      * @param posMax max positive bin
      * @param negMax max negative bin
-     * @param nbBins number of bins
      * @param mirror true for enable mirror histogram
+     * @param zoom true for enable zoom container
+     * @param label histogram label
      */
-    public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoom, label: string):
+    public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoom: boolean, label: string):
         { paths: [string, string], nbBins: number, posMax: number, negMax: number, viewBox: string, label: string, zoom: boolean } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
@@ -173,6 +174,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * Handle draw histogram
      * @param histograms list of histogram metadata
+     * @param labels histogram labels
+     * @param zoomMetadataIdx list of index
      */
     private drawHistograms(histograms: Array<Histogram>, labels: Array<string>, zoomMetadataIdx: Array<number>) {
         if (histograms && histograms.length > 0) {
@@ -361,8 +364,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * In charge to calculate TC with slider
      */
     private updateTc(): void {
-        let zTcIn = 0;
-        let zTcOut = 0;
+        let zTcIn: number;
+        let zTcOut: number;
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         const width = this.sliderElement.nativeElement.parentElement.offsetWidth;
         const focusWidth = this.sliderElement.nativeElement.offsetWidth;
@@ -380,7 +383,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
             const zWidth = duration * 100 / zDuration;
             const zLeft = zTcIn * zWidth / duration;
-            for (const elementKey in histograms) {
+            for (const elementKey in Object.keys(histograms)) {
                 const element: any = histograms.item(Number(elementKey));
                 Object.assign(element.dataset, {
                     zTcIn,
@@ -397,27 +400,32 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * Update cursor
      * @param tc time code
-     * @private
      */
     private updateCursors(tc: number) {
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.HISTOGRAM_ELM);
         if (histograms.length > 0) {
-            for (const elementKey in histograms) {
-                let tcIn = 0;
-                let tcOut = this.mediaPlayerElement.getMediaPlayer().getDuration();
-                const element: any = histograms.item(Number(elementKey));
-                if (element.classList.contains(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM)) {
-                    tcIn = (parseFloat(element.dataset.zTcIn) || 0);
-                    tcOut = (parseFloat(element.dataset.zTcOut) || 0);
+            for (const elementKey in Object.keys(histograms)) {
+                if (control.errors.hasOwnProperty(key)) {
+                    let tcIn = 0;
+                    let tcOut = this.mediaPlayerElement.getMediaPlayer().getDuration();
+                    const element: any = histograms.item(Number(elementKey));
+                    if (element.classList.contains(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM)) {
+                        tcIn = (parseFloat(element.dataset.zTcIn) || 0);
+                        tcOut = (parseFloat(element.dataset.zTcOut) || 0);
+                    }
+                    const leftPos = ((this.currentTime - tcIn) * 100) / (tcOut - tcIn);
+                    Object.assign(element.getElementsByClassName('cursor')[0].style, {
+                        left: `${leftPos}%`
+                    });
                 }
-                const leftPos = ((this.currentTime - tcIn) * 100) / (tcOut - tcIn);
-                Object.assign(element.getElementsByClassName('cursor')[0].style, {
-                    left: `${leftPos}%`
-                });
             }
         }
     }
 
+    /**
+     * Slide with cursor in middle
+     * @param tc timecode
+     */
     private slideFocusWithMid(tc) {
         if (this.sliderElement) {
             const elm = this.sliderElement.nativeElement;
@@ -428,6 +436,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         }
     }
 
+    /**
+     * Slide focus container
+     * @param tc timecode
+     */
     private slideFocus(tc) {
         if (this.sliderElement) {
             const {focusMinOffset, focusMaxOffset} = this.pluginConfiguration.data;
@@ -445,8 +457,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     /**
-     * on click to histogram
-     * @param event
+     * Handle on click to histogram
+     * @param event mouse event
      */
     public handleHistogramClick(event) {
         const tcIn = (parseFloat(event.currentTarget.dataset.zTcIn) || 0);
