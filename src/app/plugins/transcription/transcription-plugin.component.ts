@@ -216,16 +216,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private selectWords(karaokeTcDelta: number) {
         const elementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.w'));
-        let filteredNodes;
         if (elementNodes) {
-            if (this.pluginConfiguration.data.mode === 1) {
-                filteredNodes = elementNodes
-                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
-            } else {
-                 filteredNodes = elementNodes
-                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
-            }
+            const filteredNodes = this.handleModeTranscription(elementNodes, karaokeTcDelta);
             if (filteredNodes && filteredNodes.length > 0) {
                 filteredNodes.forEach(n => {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
@@ -235,12 +227,44 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                         //
                     }
+                    this.handleSelectedWordsStyle(filteredNodes, karaokeTcDelta);
                     if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
                         n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     }
                 });
             }
+        }
+    }
+    // handle mode 1 || mode 2
+    private handleModeTranscription(elementNodes , karaokeTcDelta ) {
+        let filteredNodes;
+        if (this.pluginConfiguration.data.mode === 1) {
+            filteredNodes = elementNodes
+                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
+        } else {
+            filteredNodes = elementNodes
+                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
+        }
+        return filteredNodes;
+    }
+    // add TranscriptionPluginComponent.SELECTOR_SELECTED to selected words
+    private handleSelectedWordsStyle(filteredNodes, karaokeTcDelta) {
+        if (filteredNodes && filteredNodes.length > 0) {
+            filteredNodes.forEach(n => {
+                n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
+                // add active to parent segment
+                if ( this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
+                    n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    //
+                }
+                if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
+                    && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
+                    n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                }
+            });
         }
     }
 

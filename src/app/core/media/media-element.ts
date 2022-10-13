@@ -51,6 +51,10 @@ export class MediaElement {
      * Player initalized
      */
     private initialized = false;
+    /**
+     * Default buffersize hls player
+     */
+    private defaultBufferSize = 12;
 
     /**
      * Force show button play when video is paused (handle playbackrate change by images)
@@ -199,27 +203,30 @@ export class MediaElement {
                 this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
             }
         } else {
-            if (volumeSide === 'r') {
-                this.volumeRight = volumePercent;
-                if (this.audioContext) {
-                    this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                }
-            } else if (volumeSide === 'l') {
-                this.volumeLeft = volumePercent;
-                if (this.audioContext) {
-                    this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                }
-            } else {
-                this.volumeRight = volumePercent;
-                this.volumeLeft = volumePercent;
-                if (this.audioContext) {
-                    this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                    this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                }
-            }
+            this.setVolumeSideValues(volumeSide, volumePercent);
         }
         if (!this.audioContext) {
             this.mediaElement.volume = Math.min(volumePercent / 100, 1);
+        }
+    }
+    setVolumeSideValues(volumeSide, volumePercent) {
+        if (volumeSide === 'r') {
+            this.volumeRight = volumePercent;
+            if (this.audioContext) {
+                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            }
+        } else if (volumeSide === 'l') {
+            this.volumeLeft = volumePercent;
+            if (this.audioContext) {
+                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            }
+        } else {
+            this.volumeRight = volumePercent;
+            this.volumeLeft = volumePercent;
+            if (this.audioContext) {
+                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            }
         }
     }
     /*
@@ -264,53 +271,65 @@ export class MediaElement {
         const lastStateIsReverseMode = this.reverseMode;
         this.reverseMode = (speed < 0);
         if (this.getDuration() > 0 && this.getCurrentTime() >= 0) {
-            let currentTime = this.getCurrentTime();
-            if (this.reverseMode && this.switched === false) {
-                // this.pause();
-                if (this.mse.getBackwardsSrc()) {
-                    this.mse.switchToBackwardsSrc().then(() => {
-                        if (this.mediaElement) {
-                            this.mediaElement.playbackRate = Math.abs(speed);
-                            // this.setCurrentTime((Math.max(0, duration - currentTime)));
-                        }
+            if (this.reverseMode) {
+                this.setNegativePlaybackrate(speed);
+            } else {
+                if (lastStateIsReverseMode === true) {
+                    const tc = this.getDuration() - this.getCurrentTime();
+                    this.mse.switchToMainSrc().then(() => {
+                        this.setCurrentTime((Math.max(0, tc)));
+                        this.mediaElement.playbackRate = speed;
+                        this.switched = false;
                     });
                 } else {
-                    clearInterval(this.intervalRewind);
-                    this.intervalRewind = setInterval(() => {
-                        // this.mediaElement.playbackRate = 1;
-                        if (currentTime === 0) {
-                            clearInterval(this.intervalRewind);
-                            speed = 1;
-                            this.pause();
-                        } else {
-                            currentTime += speed;
-                            this.setCurrentTime(currentTime);
-                        }
-                    }, 30);
+                    this.setPositivePlaybackrate(speed);
                 }
-            } else if (this.reverseMode && this.switched) {
-                if (this.mediaElement) {
-                    this.mediaElement.playbackRate = Math.abs(speed);
-                }
-            }
-            if (lastStateIsReverseMode === true && !this.reverseMode) {
-                const tc = this.getDuration() - this.getCurrentTime();
-                this.mse.switchToMainSrc().then(() => {
-                    this.setCurrentTime((Math.max(0, tc)));
-                    this.mediaElement.playbackRate = speed;
-                    this.switched = false;
-                });
-            } else if (this.mediaElement && !this.reverseMode) {
-                this.mediaElement.playbackRate = speed;
             }
             this._playbackRate = speed;
             this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
-            if (this.reverseMode) {
-                this.switched = true;
+        }
+    }
+    // Change src if negative playbackrate
+    private setNegativePlaybackrate(speed) {
+        const currentTime = this.getCurrentTime();
+        if (this.switched === false) {
+            // this.pause();
+            if (this.mse.getBackwardsSrc()) {
+                this.mse.switchToBackwardsSrc().then(() => {
+                    if (this.mediaElement) {
+                        this.mediaElement.playbackRate = Math.abs(speed);
+                        // this.setCurrentTime((Math.max(0, duration - currentTime)));
+                    }
+                });
+            } else {
+                this.setRewindInterval(speed, currentTime);
+            }
+        }
+        this.switched = true;
+    }
+    // Rewind by interval if backwardSrc is not configured
+    private setRewindInterval(speed, currentTime) {
+        clearInterval(this.intervalRewind);
+        this.intervalRewind = setInterval(() => {
+            // this.mediaElement.playbackRate = 1;
+            if (currentTime === 0) {
+                clearInterval(this.intervalRewind);
+                speed = 1;
+                this.pause();
+            } else {
+                currentTime += speed;
+                this.setCurrentTime(currentTime);
+            }
+        }, 30);
+    }
+    private setPositivePlaybackrate(speed) {
+        if (this.mediaElement) {
+            this.mediaElement.playbackRate = Math.abs(speed);
+            if (speed === 1) {
+                this.mse.setMaxBufferLengthConfig(this.defaultBufferSize);
             }
         }
     }
-
     /**
      * Return true if media is paused
      * @return boolean true is paused
@@ -422,7 +441,6 @@ export class MediaElement {
         this.mediaElement.addEventListener('timeupdate', this.handleTimeupdate);
         this.mediaElement.addEventListener('volumechange', this.handleVolumeChange);
         this.mediaElement.addEventListener('seeked', this.handleSeeked);
-        this.mediaElement.addEventListener('seeking', this.handleSeeking);
         window.addEventListener('resize', this.handleResize);
         window.addEventListener('resizeend', this.handleResize);
         this.mediaElement.addEventListener('waiting', this.handleWaiting);
@@ -507,15 +525,6 @@ export class MediaElement {
     }
 
     /**
-     * Invoked when a seek operation began.
-     */
-    @AutoBind
-    private handleSeeking() {
-        this.logger.debug('handleSeeking');
-        this.eventEmitter.emit(PlayerEventType.SEEKING);
-    }
-
-    /**
      * Invoked when the volume has changed.
      */
     @AutoBind
@@ -577,7 +586,6 @@ export class MediaElement {
     private initAudioChannelMerger() {
         this.logger.info('initAudioChannelMerger');
         this.audioContext = new AudioContext();
-
         this.mediaElement.crossOrigin = 'anonymous';
         const source = this.audioContext.createMediaElementSource(this.mediaElement);
         this.audioContextSplitter = this.audioContext.createChannelSplitter(2);
@@ -622,7 +630,6 @@ export class MediaElement {
                     // Connect both channels to the Merger
                     this.panLeft.connect(merger, 0, 0);
                     this.panRight.connect(merger, 0, 1);
-
                     // Connect the Merger Node to the final audio destination
                     merger.connect(this.audioContext.destination);
                 }
@@ -630,6 +637,7 @@ export class MediaElement {
 
         } else {
             this.initAudioChannelMerger();
+            this.setupAudioNodes(data);
         }
     }
 

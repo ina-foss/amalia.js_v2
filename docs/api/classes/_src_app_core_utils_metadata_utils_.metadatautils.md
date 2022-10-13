@@ -15,6 +15,8 @@
 * [getTranscriptionLocalisations](_src_app_core_utils_metadata_utils_.metadatautils.md#static-gettranscriptionlocalisations)
 * [parseTimelineLocalisation](_src_app_core_utils_metadata_utils_.metadatautils.md#static-private-parsetimelinelocalisation)
 * [parseTranscriptionLocalisations](_src_app_core_utils_metadata_utils_.metadatautils.md#static-parsetranscriptionlocalisations)
+* [pushTimelineLocalisation](_src_app_core_utils_metadata_utils_.metadatautils.md#static-private-pushtimelinelocalisation)
+* [pushTranscriptionLocalisations](_src_app_core_utils_metadata_utils_.metadatautils.md#static-private-pushtranscriptionlocalisations)
 
 ## Methods
 
@@ -22,7 +24,7 @@
 
 ▸ **getHistograms**(`metadata`: Metadata): *Array‹[Histogram](../interfaces/_src_app_core_metadata_model_histogram_.histogram.md)›*
 
-Defined in src/app/core/utils/metadata-utils.ts:63
+Defined in src/app/core/utils/metadata-utils.ts:67
 
 Return list of histogram
 
@@ -40,7 +42,7 @@ ___
 
 ▸ **getTimelineLocalisations**(`metadata`: Metadata): *Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›*
 
-Defined in src/app/core/utils/metadata-utils.ts:81
+Defined in src/app/core/utils/metadata-utils.ts:85
 
 Parse timeline localisation
 
@@ -78,7 +80,7 @@ ___
 
 ▸ **parseTimelineLocalisation**(`localisation`: any, `timelineLocalisations`: Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:94
+Defined in src/app/core/utils/metadata-utils.ts:98
 
 Convert metadata localisation to timeline localisation
 
@@ -109,5 +111,40 @@ Name | Type | Description |
 `localisations` | Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)› | transcription |
 `parseLevel` | number | parse level |
 `withSubLocalisations` | boolean | true for parse sub localisation  |
+
+**Returns:** *void*
+
+___
+
+### `Static` `Private` pushTimelineLocalisation
+
+▸ **pushTimelineLocalisation**(`localisation`: any, `timelineLocalisations`: any): *void*
+
+Defined in src/app/core/utils/metadata-utils.ts:112
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`localisation` | any |
+`timelineLocalisations` | any |
+
+**Returns:** *void*
+
+___
+
+### `Static` `Private` pushTranscriptionLocalisations
+
+▸ **pushTranscriptionLocalisations**(`l`: any, `localisations`: any, `subLocalisations`: any): *void*
+
+Defined in src/app/core/utils/metadata-utils.ts:52
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`l` | any |
+`localisations` | any |
+`subLocalisations` | any |
 
 **Returns:** *void*

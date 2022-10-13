@@ -40,20 +40,24 @@ export class MetadataUtils {
                     MetadataUtils.parseTranscriptionLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations);
                 });
             }
-            localisations.push({
-                label: (l.label) ? l.label : '',
-                thumb: (l.thumb) ? l.thumb : '',
-                tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin,
-                tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
-                text: (l.data && l.data.text && isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
-                subLocalisations
-            });
+            MetadataUtils.pushTranscriptionLocalisations(l, localisations, subLocalisations);
         }
         if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && l.tclevel <= parseLevel) {
             l.sublocalisations.localisation.forEach((subl) => {
                 MetadataUtils.parseTranscriptionLocalisations(subl, localisations, parseLevel, withSubLocalisations);
             });
         }
+    }
+    // push transcription localisations
+    private static pushTranscriptionLocalisations(l, localisations, subLocalisations) {
+        localisations.push({
+            label: (l.label) ? l.label : '',
+            thumb: (l.thumb) ? l.thumb : '',
+            tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin,
+            tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
+            text: (l.data && l.data.text && isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
+            subLocalisations
+        });
     }
 
     /**
@@ -95,18 +99,7 @@ export class MetadataUtils {
     private static parseTimelineLocalisation(localisation: any, timelineLocalisations: Array<TimelineLocalisation>) {
         if (localisation) {
             if (localisation.tclevel > 0) {
-                const tl: TimelineLocalisation = {
-                    label: localisation.label || null,
-                    thumb: localisation.thumb || null,
-                    type: localisation.type || null,
-                    tc: (typeof localisation.tc === 'string') ? FormatUtils.convertTcToSeconds(localisation.tc) : localisation.tc || null,
-                    tcIn: (typeof localisation.tcin === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcin) : localisation.tcin || null,
-                    tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
-                };
-                // add to list if tc or tcin not empty
-                if (tl.tc || tl.tcIn) {
-                    timelineLocalisations.push(tl);
-                }
+                MetadataUtils.pushTimelineLocalisation(localisation, timelineLocalisations);
             }
             // parse sub localisation
             if (localisation.sublocalisations && localisation.sublocalisations.localisation && localisation.sublocalisations.localisation.length) {
@@ -114,6 +107,21 @@ export class MetadataUtils {
                     MetadataUtils.parseTimelineLocalisation(subLocalisation, timelineLocalisations);
                 });
             }
+        }
+    }
+    // push timelineLocalisation
+    private static pushTimelineLocalisation(localisation, timelineLocalisations) {
+        const tl: TimelineLocalisation = {
+            label: localisation.label || null,
+            thumb: localisation.thumb || null,
+            type: localisation.type || null,
+            tc: (typeof localisation.tc === 'string') ? FormatUtils.convertTcToSeconds(localisation.tc) : localisation.tc || null,
+            tcIn: (typeof localisation.tcin === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcin) : localisation.tcin || null,
+            tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
+        };
+        // add to list if tc or tcin not empty
+        if (tl.tc || tl.tcIn) {
+            timelineLocalisations.push(tl);
         }
     }
 }

@@ -339,6 +339,8 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlay);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN_HISTOGRAM, this.handleKeyDownEvent);
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYUP_HISTOGRAM, this.emitKeyUpEvent);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
@@ -373,6 +375,7 @@ export class AmaliaComponent implements OnInit {
     }
     @AutoBind
     private handleSeeking(tc: number) {
+        this.logger.debug('handleSeeking');
         if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1)) {
             this.enablePreviewThumbnail = true;
             const timecode = parseFloat(tc.toFixed(2));
@@ -486,9 +489,9 @@ export class AmaliaComponent implements OnInit {
      * focus mediaPlayer container
      */
     public focus() {
-        this.mediaContainer.nativeElement.focus();
         // keypress works only after a click
-        // this.mediaContainer.nativeElement.click();
+        this.mediaPlayer.nativeElement.click();
+        this.mediaContainer.nativeElement.focus();
     }
     /**
      * Invoked on mouseenter and mouseleave events
@@ -513,6 +516,11 @@ export class AmaliaComponent implements OnInit {
                 this.mediaPlayerElement.toggleFullscreen(parent);
             }
         }
+    }
+    @AutoBind
+    public handleKeyDownEvent(event) {
+        this.playerHover = true;
+        this.emitKeyDownEvent(event);
     }
     /**
      * invoked on keydown

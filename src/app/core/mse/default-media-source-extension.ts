@@ -84,7 +84,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
     getConfig() {
         return this.config;
     }
-    setConfig() {
+    setMaxBufferLengthConfig() {
         return null;
     }
 

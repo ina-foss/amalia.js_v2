@@ -58,6 +58,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list of forward playback step
      */
     public listBufferSize: Array<number> = [120, 180, 240];
+    // public defaultBufferSize = 12;
     @Input()
     public forwardPlaybackRateStep: Array<number> = [2, 6, 10];
     @Input()
@@ -681,7 +682,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             setTimeout(() => {
                 const tooltip = document.body.getElementsByTagName('tooltip')[0];
                 if (tooltip) {
-                    console.log(tooltip);
                     document.body.removeChild(tooltip);
                     this.controlBarContainer.nativeElement.appendChild(tooltip);
                 }
@@ -761,11 +761,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.volumeRight = v;
         }
     }
-
-    /**
-     * return list controls by priority
-     * @param priority : number
-     */
     /**
      * Handle mouse enter on progress bar
      * @param event mouse enter
@@ -830,6 +825,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const value = this.getMouseValue(event);
         this.moveSliderCursor(value);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
+        this.thumbnailHidden = false;
+        this.enableThumbnail = true;
     }
     /**
      * Handle thumbnail pos
@@ -859,7 +856,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
-        this.mediaPlayerElement.getMediaPlayer().mse.setConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
     }
 
     /**
@@ -869,7 +867,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
-        this.mediaPlayerElement.getMediaPlayer().mse.setConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
     }
     private changeBufferSize(index) {
         return this.listBufferSize[index];
@@ -966,48 +964,44 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
     }
-
-
-
     @AutoBind
     public handlePlayerMouseHover() {
         this.activated = true;
     }
-
-
-
     /**
      * update position subtitle onclick
      * @param subtitlePosition subtitle position
      */
     @AutoBind
     public updateSubtitlePosition(subtitlePosition?: string) {
-        let j;
-        let selectedLabel;
         if (typeof (subtitlePosition) === 'undefined') {
-            for (let i = 0; i < this.listOfSubtitles.length; i++) {
-                if (this.subtitlePosition === this.listOfSubtitles[i].key) {
-                    if (i === this.listOfSubtitles.length - 1) {
-                        j = 0;
-                    } else {
-                        j = i + 1;
-                    }
-                    subtitlePosition = this.listOfSubtitles[j].key;
-                    selectedLabel = this.listOfSubtitles[j].label;
-                }
-            }
+            this.updateSubtitleInfos();
         } else {
             for (const subtitle of this.listOfSubtitles) {
                 if (subtitlePosition === subtitle.key) {
-                    selectedLabel = subtitle.label;
+                    this.selectedLabel = subtitle.label;
+                    this.subtitlePosition = subtitlePosition;
                 }
             }
         }
-        this.subtitlePosition = subtitlePosition;
-        this.selectedLabel = selectedLabel;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.POSITION_SUBTITLE_CHANGE, subtitlePosition);
     }
-
+    // update Subtitle position & subtitle label {
+    @AutoBind
+    public updateSubtitleInfos() {
+        let j;
+        for (let i = 0; i < this.listOfSubtitles.length; i++) {
+            if (this.subtitlePosition === this.listOfSubtitles[i].key) {
+                if (i === this.listOfSubtitles.length - 1) {
+                    j = 0;
+                } else {
+                    j = i + 1;
+                }
+                this.subtitlePosition = this.listOfSubtitles[j].key;
+                this.selectedLabel = this.listOfSubtitles[j].label;
+            }
+        }
+    }
     /**
      * Toggle Display playbackslider
      */
@@ -1073,15 +1067,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         for (const i in data) {
             if (typeof data[i] === 'object') {
                 const c = data[i];
-                if (typeof c.key !== 'undefined') {
-                    if (c.control === control && c.key === this.keypressed) {
-                        let baseUrl = c.data.href;
-                        const tcParam = c.data?.tcParam || 'tc';
-                        baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + currentTime : baseUrl + '&' + tcParam + '=' + currentTime;
-                        // window.open(baseUrl, 'Download');
-                        window.location.href = baseUrl;
-                    }
-                }
+                this.openDownloadUrl(c, control, currentTime);
+            }
+        }
+    }
+    private openDownloadUrl(c, control, currentTime) {
+        if (typeof c.key !== 'undefined') {
+            if (c.control === control && c.key === this.keypressed) {
+                let baseUrl = c.data.href;
+                const tcParam = c.data?.tcParam || 'tc';
+                baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + currentTime : baseUrl + '&' + tcParam + '=' + currentTime;
+                // window.open(baseUrl, 'Download');
+                window.location.href = baseUrl;
             }
         }
     }
@@ -1210,27 +1207,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                             event.target.style.paddingLeft = Number(maxWidth - 10) + 'px';
                             event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
                         } else if (position.x > 0) {
-                            values.forEach(value => {
-                                const v = Number(value.getAttribute('data-x'));
-                                const p = Number(value.getAttribute('data'));
-                                if (value.nextElementSibling) {
-                                    const nextP = Number(value.nextElementSibling.getAttribute('data-x'));
-                                    const nextValue = Number(value.nextElementSibling.getAttribute('data'));
-                                    const difference = nextValue - p;
-                                    if (position.x >= v && position.x < nextP) {
-                                        const percentage = Math.round(((position.x - v) * 100) / step);
-                                        const pr = (p + ((percentage * difference) / 100));
-                                        const playbackrate = pr.toFixed(1);
-                                        event.target.style.paddingLeft = position.x + 'px';
-                                        event.target.setAttribute('data-x', position.x);
-                                        if (Number(playbackrate) !== 0) {
-                                            event.stopImmediatePropagation();
-                                            // self.mediaPlayerElement.getMediaPlayer().playbackRate = Number(playbackrate);
-                                            self.changePlaybackrate(playbackrate);
-                                        }
-                                    }
-                                }
-                            });
+                            self.handleThumbPosition(values, event, position, step);
                         }
                     }
                 },
@@ -1243,7 +1220,30 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
         });
     }
-
+    // Handle thumb position slider
+    private handleThumbPosition(values, event, position, step) {
+        values.forEach(value => {
+            const v = Number(value.getAttribute('data-x'));
+            const p = Number(value.getAttribute('data'));
+            if (value.nextElementSibling) {
+                const nextP = Number(value.nextElementSibling.getAttribute('data-x'));
+                const nextValue = Number(value.nextElementSibling.getAttribute('data'));
+                const difference = nextValue - p;
+                if (position.x >= v && position.x < nextP) {
+                    const percentage = Math.round(((position.x - v) * 100) / step);
+                    const pr = (p + ((percentage * difference) / 100));
+                    const playbackrate = pr.toFixed(1);
+                    event.target.style.paddingLeft = position.x + 'px';
+                    event.target.setAttribute('data-x', position.x);
+                    if (Number(playbackrate) !== 0) {
+                        event.stopImmediatePropagation();
+                        // self.mediaPlayerElement.getMediaPlayer().playbackRate = Number(playbackrate);
+                        this.changePlaybackrate(playbackrate);
+                    }
+                }
+            }
+        });
+    }
     /**
      * Handle stop move drag thumb
      */

@@ -23,7 +23,7 @@ In charge to handle MediaSourceExtension
 * [getConfig](_src_app_core_mse_media_source_extension_.mediasourceextension.md#getconfig)
 * [getSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#getsrc)
 * [handleError](_src_app_core_mse_media_source_extension_.mediasourceextension.md#handleerror)
-* [setConfig](_src_app_core_mse_media_source_extension_.mediasourceextension.md#setconfig)
+* [setMaxBufferLengthConfig](_src_app_core_mse_media_source_extension_.mediasourceextension.md#setmaxbufferlengthconfig)
 * [setSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#setsrc)
 * [switchToBackwardsSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#switchtobackwardssrc)
 * [switchToMainSrc](_src_app_core_mse_media_source_extension_.mediasourceextension.md#switchtomainsrc)
@@ -97,9 +97,9 @@ Name | Type |
 
 ___
 
-###  setConfig
+###  setMaxBufferLengthConfig
 
-▸ **setConfig**(`value`: any): *object | void*
+▸ **setMaxBufferLengthConfig**(`value`: any): *object | void*
 
 Defined in src/app/core/mse/media-source-extension.ts:53
 
