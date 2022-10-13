@@ -5,6 +5,6 @@ export interface HistogramConfig {
     zoomMetadataIdx: Array<number>;
     focusMin: number;
     focusMax: number;
-    focusMinOffset:number;
-    focusMaxOffset:number;
+    focusMinOffset: number;
+    focusMaxOffset: number;
 }

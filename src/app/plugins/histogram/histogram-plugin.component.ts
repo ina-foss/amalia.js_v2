@@ -144,11 +144,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             let positivePath = ``;
             let negativePath = '';
             for (let i = 0; i < nbBins; i++) {
-                let posX = i + 5;
+                const posX = i + 5;
                 itemPositiveValue = positiveValues[i];
                 positivePath += `M${posX},${posMax},L${posX},${posMax - itemPositiveValue}z `;
                 if (negativeValues !== null) {
-                    itemNegativeValue = (negativeValues !== null) ? negativeValues[i] : itemPositiveValue;
+                    itemNegativeValue = negativeValues[i];
                     negativePath += `M${posX},${posMax},L${posX},${posMax + itemNegativeValue}z `;
                 } else if (mirror) {
                     negativePath += `M${posX},${posMax},L${posX},${posMax + itemPositiveValue}z `;
@@ -347,7 +347,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     console.log(event.deltaRect);
                     const containerWidth = Math.max(event.rect.width * 100 / self.sliderElement.nativeElement.parentElement.offsetWidth, self.pluginConfiguration.data.focusMin);
                     if (event.deltaRect.right === 0) {
-                        let left = (self.sliderElement.nativeElement.offsetLeft * 100) / self.sliderElement.nativeElement.parentElement.offsetWidth;
+                        const left = (self.sliderElement.nativeElement.offsetLeft * 100) / self.sliderElement.nativeElement.parentElement.offsetWidth;
                         event.target.style.left = `${left - 0.1}%`;
                     }
                     event.target.style.width = `${Math.min((containerWidth), self.pluginConfiguration.data.focusMax)}%`;
@@ -359,9 +359,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     /**
      * In charge to calculate TC with slider
-     * @private
      */
-    private updateTc() {
+    private updateTc(): void {
         let zTcIn = 0;
         let zTcOut = 0;
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
@@ -375,14 +374,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     private updateZoomContainer(zTcIn: number, zTcOut: number) {
-        console.log(zTcIn, zTcOut);
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM);
         if (histograms?.length > 0) {
             const zDuration = zTcOut - zTcIn;
             const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
             const zWidth = duration * 100 / zDuration;
             const zLeft = zTcIn * zWidth / duration;
-            for (let elementKey in histograms) {
+            for (const elementKey in histograms) {
                 const element: any = histograms.item(Number(elementKey));
                 Object.assign(element.dataset, {
                     zTcIn,
@@ -398,13 +396,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     /**
      * Update cursor
-     * @param tc
+     * @param tc time code
      * @private
      */
     private updateCursors(tc: number) {
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.HISTOGRAM_ELM);
         if (histograms.length > 0) {
-            for (let elementKey in histograms) {
+            for (const elementKey in histograms) {
                 let tcIn = 0;
                 let tcOut = this.mediaPlayerElement.getMediaPlayer().getDuration();
                 const element: any = histograms.item(Number(elementKey));
