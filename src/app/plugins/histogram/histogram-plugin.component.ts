@@ -403,21 +403,19 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private updateCursors(tc: number) {
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.HISTOGRAM_ELM);
-        if (histograms.length > 0) {
-            for (const elementKey in Object.keys(histograms)) {
-                if (control.errors.hasOwnProperty(key)) {
-                    let tcIn = 0;
-                    let tcOut = this.mediaPlayerElement.getMediaPlayer().getDuration();
-                    const element: any = histograms.item(Number(elementKey));
-                    if (element.classList.contains(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM)) {
-                        tcIn = (parseFloat(element.dataset.zTcIn) || 0);
-                        tcOut = (parseFloat(element.dataset.zTcOut) || 0);
-                    }
-                    const leftPos = ((this.currentTime - tcIn) * 100) / (tcOut - tcIn);
-                    Object.assign(element.getElementsByClassName('cursor')[0].style, {
-                        left: `${leftPos}%`
-                    });
+        for (const elementKey in Object.keys(histograms)) {
+            if (histograms.hasOwnProperty(elementKey)) {
+                let tcIn = 0;
+                let tcOut = this.mediaPlayerElement.getMediaPlayer().getDuration();
+                const element: any = histograms.item(Number(elementKey));
+                if (element.classList.contains(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM)) {
+                    tcIn = (parseFloat(element.dataset.zTcIn) || 0);
+                    tcOut = (parseFloat(element.dataset.zTcOut) || 0);
                 }
+                const leftPos = ((this.currentTime - tcIn) * 100) / (tcOut - tcIn);
+                Object.assign(element.getElementsByClassName('cursor')[0].style, {
+                    left: `${leftPos}%`
+                });
             }
         }
     }
