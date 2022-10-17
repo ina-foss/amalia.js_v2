@@ -26,9 +26,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     private readonly httpClient: HttpClient;
 
     /**
-     * state of video
+     * True when user resize the focus container
      */
-    public isplaying: boolean;
+    public inResizing = false;
     /**
      * Return  current time
      */
@@ -38,7 +38,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     public duration: number;
     /**
-     * Enable focus container
+     * Enable focus conteneur
      */
     public withFocus = false;
     /**
@@ -73,10 +73,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * state of hover cursor
      */
     public active = false;
-    /**
-     * state of histograms
-     */
-    public moving = false;
 
     @ViewChild('sliderElement')
     public sliderElement: ElementRef<HTMLElement>;
@@ -109,7 +105,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     ngOnInit(): void {
         super.ngOnInit();
     }
-
 
     @AutoBind
     init() {
@@ -208,19 +203,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.updateCursors(this.currentTime);
     }
 
-
-    /**
-     * Initialize cursors
-     */
-    @AutoBind
-    public initializeCursors() {
-        this.sliderPosition = 0;
-        this.cursorPosition = 0;
-        this.cursorZoomPosition = 0;
-        this.histogramPosition = 0;
-    }
-
-
     /**
      * Invoked on duration change
      */
@@ -279,15 +261,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     /**
-     * Invoked on click context menu
-     * @param event mouse event
-     * @return return false for disable browser context menu
-     */
-    public onContextMenu(event: MouseEvent) {
-        this.mediaPlayerElement.eventEmitter.emit('contextmenu', event);
-    }
-
-    /**
      * slider events
      */
     @AutoBind
@@ -304,13 +277,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             ],
             listeners: {
                 start() {
-                    //  store the state of the player when  drag
-                    if (self.mediaPlayerElement.getMediaPlayer().isPaused() === false && typeof (self.isplaying) !== 'undefined') {
-                        self.isplaying = true;
-                        self.mediaPlayerElement.getMediaPlayer().pause();
-                    } else {
-                        self.isplaying = false;
-                    }
+                    self.inResizing = true;
                 },
                 move(event) {
                     const left = (self.sliderElement.nativeElement.offsetLeft * 100) / self.sliderElement.nativeElement.parentElement.offsetWidth;
@@ -320,12 +287,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     event.target.style.left = `${moveXPercent}%`;
                 },
                 end() {
-                    if (self.isplaying === true) {
-                        self.mediaPlayerElement.getMediaPlayer().play();
-                    }
-                    // reset
-                    self.isplaying = null;
-                    self.moving = false;
+                    self.inResizing = false;
                     self.updateTc();
                 }
             }
@@ -346,14 +308,19 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 })
             ],
             listeners: {
+                start() {
+                    self.inResizing = true;
+                },
                 move(event) {
-                    console.log(event.deltaRect);
                     const containerWidth = Math.max(event.rect.width * 100 / self.sliderElement.nativeElement.parentElement.offsetWidth, self.pluginConfiguration.data.focusMin);
                     if (event.deltaRect.right === 0) {
                         const left = (self.sliderElement.nativeElement.offsetLeft * 100) / self.sliderElement.nativeElement.parentElement.offsetWidth;
                         event.target.style.left = `${left - 0.1}%`;
                     }
                     event.target.style.width = `${Math.min((containerWidth), self.pluginConfiguration.data.focusMax)}%`;
+                },
+                end() {
+                    self.inResizing = false;
                     self.updateTc();
                 }
             }
@@ -372,10 +339,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const focusLeft = this.sliderElement.nativeElement.offsetLeft;
         zTcIn = Math.max(focusLeft * duration / width, 0);
         zTcOut = Math.min(zTcIn + (focusWidth * duration / width), duration);
-        this.updateZoomContainer(zTcIn, zTcOut);
         this.logger.info(`Zoom TcIn:  ${zTcIn} TcOut:  ${zTcOut}`);
+        this.updateZoomContainer(zTcIn, zTcOut);
     }
 
+    /**
+     * In charge to update zoom container size
+     * @param zTcIn start time code
+     * @param zTcOut end time code
+     */
     private updateZoomContainer(zTcIn: number, zTcOut: number) {
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM);
         if (histograms?.length > 0) {
@@ -413,7 +385,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     tcOut = (parseFloat(element.dataset.zTcOut) || 0);
                 }
                 const leftPos = ((this.currentTime - tcIn) * 100) / (tcOut - tcIn);
-                Object.assign(element.getElementsByClassName('cursor')[0].style, {
+                Object.assign(element.getElementsByClassName(HistogramPluginComponent.CURSOR_ELM)[0].style, {
                     left: `${leftPos}%`
                 });
             }
@@ -425,13 +397,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param tc timecode
      */
     private slideFocusWithMid(tc) {
-        if (this.sliderElement) {
+        if (this.sliderElement && this.inResizing === false) {
             const elm = this.sliderElement.nativeElement;
             const containerWidthPercent = elm.offsetWidth * 100 / elm.parentElement.offsetWidth;
             const leftPercent = tc * 100 / this.mediaPlayerElement.getMediaPlayer().getDuration();
             this.sliderElement.nativeElement.style.left = `${Math.min(Math.max(leftPercent - containerWidthPercent / 2, 0), 100 - containerWidthPercent)}%`;
-            this.updateTc();
         }
+        this.updateTc();
     }
 
     /**
@@ -439,7 +411,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param tc timecode
      */
     private slideFocus(tc) {
-        if (this.sliderElement) {
+        if (this.sliderElement && this.inResizing === false) {
             const {focusMinOffset, focusMaxOffset} = this.pluginConfiguration.data;
             const elm = this.sliderElement.nativeElement;
             const containerWidthPercent = (elm.offsetWidth * 100 / elm.parentElement.offsetWidth) * (focusMaxOffset / 100);
