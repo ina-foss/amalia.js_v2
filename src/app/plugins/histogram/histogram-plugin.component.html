@@ -1,4 +1,4 @@
-<div class="histogram-container {{displayState}}" (contextmenu)="onContextMenu($event)">
+<div class="histogram-container {{displayState}}">
     <div #histograms class="histograms">
         <div class="histogram" *ngFor="let histogram of listOfHistograms" [ngClass]="{'zoom-histogram':histogram.zoom}"
              [ngStyle]="{height:100/listOfHistograms?.length+'%'}" (click)="handleHistogramClick($event)">
