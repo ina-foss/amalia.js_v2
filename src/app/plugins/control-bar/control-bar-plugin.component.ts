@@ -282,6 +282,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             const url = this.mediaPlayerElement.getThumbnailUrl(0, true);
             this.setThumbnail(url, 0);
         }
+        // fixed controlBar
+        const fixedControlBar = this.pluginConfiguration.fixed;
+        if (fixedControlBar) {
+            this.fixControlBar();
+        }
         // Init Events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -1016,6 +1021,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         setTimeout(() => this.initDragThumb(), 10);
     }
 
+    private fixControlBar() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, true);
+    }
     /**
      * Toggle Pinned class playback slider
      */
