@@ -3,4 +3,5 @@ export interface PluginConfigData<T> {
     debug?: boolean;
     data: T;
     metadataIds?: Array<string>;
+    fixed?: boolean;
 }

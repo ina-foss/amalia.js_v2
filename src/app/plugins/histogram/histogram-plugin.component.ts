@@ -80,6 +80,14 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @ViewChild('histograms')
     public histograms: ElementRef<HTMLElement>;
     /**
+     * Pinned ControlBar state
+     */
+    public pinned = false;
+    /**
+     * Pinned Slider state
+     */
+    public pinnedControlbar = false;
+    /**
      * Mouse Positions
      */
     public position: number;
@@ -104,6 +112,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     ngOnInit(): void {
         super.ngOnInit();
+        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
     }
 
     @AutoBind
@@ -117,7 +126,16 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
     }
-
+    @AutoBind
+    public handlePinnedControlbarChange(event) {
+        this.pinnedControlbar = event;
+        this.pinned = false;
+    }
+    @AutoBind
+    public handlePinnedSliderChange(event) {
+        this.pinned = event;
+        this.pinnedControlbar = false;
+    }
     /**
      * Handle draw histogram return tuple with positive bins and negative bins
      * In charge to create svg paths
