@@ -19,7 +19,14 @@
     background: #34495E;
     height: 100%;
     z-index: 1;
-
+    &.pinned {
+      height: calc(100% - 106px);
+      position: inherit;
+    }
+    &.pinnedControlbar {
+      height: calc(100% - 63px);
+      position: inherit;
+    }
     .label {
       background-color: $amalia-ctrl-bar-bg-color;
       padding: 2px 3px 2px 8px;
