@@ -60,10 +60,21 @@ $amalia-plugin-storyboard-thumbnail-lw-l: var(--amalia-plugin-storyboard-thumbna
 $amalia-plugin-storyboard-thumbnail-lh-l: var(--amalia-plugin-storyboard-thumbnail-lh-l, 328px);
 $amalia-plugin-storyboard-label-bg: var(--amalia-plugin-storyboard-label-bg, white);
 $amalia-plugin-storyboard-label-color: var(amalia-plugin-storyboard-label-color, #34495E);
-$amalia-plugin-storyboard-label-hover-color: var(--amalia-plugin-storyboard-label-hover-color, rgba(0,0,0,0.2));
+$amalia-plugin-storyboard-label-hover-color: var(--amalia-plugin-storyboard-label-hover-color, rgba(0, 0, 0, 0.2));
 $amalia-plugin-storyboard-box-color: var(--amalia-plugin-storyboard-box-color, #0086B1);
 $amalia-plugin-storyboard-box-border-color: var(--amalia-plugin-storyboard-box-border-color, #dddddd);
 $amalia-plugin-storyboard-bg-color: var(--amalia-plugin-storyboard-bg-color, #F2F5F9);
+
+//Histogram
+
+$amalia-plugin-histograms-bg: var(--amalia-plugin-histogram-bg, #6c6c6c);
+$amalia-plugin-histogram-pinned: var(--amalia-plugin-histogram-pinned, 106px);
+$amalia-plugin-histogram-pinned-control-bar: var(--amalia-plugin-histogram-pinned-control-bar, 63px);
+$amalia-plugin-histogram-slider-border: var(--amalia-plugin-histogram-slider-border, #0086B1);
+$amalia-plugin-histogram-slider-bg: var(--amalia-plugin-histogram-slider-bg, rgba(255, 255, 255, 0.4));
+$amalia-plugin-histogram-bg: var(--amalia-plugin-histogram-bg, #80C2D8);
+$amalia-plugin-histogram-zoom-bg: var(--amalia-plugin-histogram-zoom-bg, #b2dae7);
+
 
 // Timeline
 $amalia-plugin-timeline-border-color: var(--amalia-plugin-timeline-border-color, #DDDDDD);
@@ -75,7 +86,6 @@ $amalia-plugin-timeline-actions-tc-color: var(--amalia-plugin-timeline-actions-t
 $amalia-plugin-timeline-font-color: var(--amalia-plugin-timeline-font-color, #FFFFFF);
 $amalia-plugin-timeline-header-bg-color: var(--amalia-plugin-timeline-header-bg-color, #F2F5F9);
 $amalia-plugin-timeline-header-font-color: var(--amalia-plugin-timeline-header-font-color, #222222);
-
 
 
 /**

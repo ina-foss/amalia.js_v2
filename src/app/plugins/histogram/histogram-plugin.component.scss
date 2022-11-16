@@ -19,13 +19,16 @@
     background: #34495E;
     height: 100%;
     z-index: 1;
+
     &.pinned {
-      height: calc(100% - 106px);
+      height: calc(100% - $amalia-plugin-histogram-pinned);
 
     }
+
     &.pinnedControlbar {
-      height: calc(100% - 63px);
+      height: calc(100% - $amalia-plugin-histogram-pinned-control-bar);
     }
+
     .label {
       background-color: $amalia-ctrl-bar-bg-color;
       padding: 2px 3px 2px 8px;
@@ -43,7 +46,7 @@
 
     .histograms {
       position: relative;
-      background-color: #6c6c6c;
+      background-color: $amalia-plugin-histograms-bg;
       display: block;
       justify-content: space-between;
       flex-flow: column wrap;
@@ -72,12 +75,12 @@
         touch-action: none;
         user-select: none;
         position: absolute;
-        border: solid 2px #0086B1;
+        border: solid 2px $amalia-plugin-histogram-slider-border;
         height: calc(50% - 5px);
         min-width: 1% !important;
         max-width: 100% !important;
         width: 10%;
-        background-color: rgba(255, 255, 255, 0.4);
+        background-color: $amalia-plugin-histogram-slider-bg;
         z-index: 2;
         display: block;
         cursor: move;
@@ -118,13 +121,13 @@
 
       .histogram {
         display: block;
-        background-color: #80C2D8;
+        background-color: $amalia-plugin-histogram-bg;
         position: relative;
         border-bottom: solid 1px white;
         overflow: hidden;
 
         &.zoom-histogram {
-          background-color: #b2dae7;
+          background-color: $amalia-plugin-histogram-zoom-bg ;
 
           .cursor {
             width: 2px;
