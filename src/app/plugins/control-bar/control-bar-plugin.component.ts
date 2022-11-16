@@ -831,7 +831,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.moveSliderCursor(value);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
         this.thumbnailHidden = false;
-        this.enableThumbnail = true;
     }
     /**
      * Handle thumbnail pos
