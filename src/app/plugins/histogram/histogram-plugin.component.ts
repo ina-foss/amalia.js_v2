@@ -157,12 +157,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             let itemNegativeValue = null;
             let positivePath = ``;
             let negativePath = '';
-            for (let i = 0; i < nbBins; i++) {
-                const posX = i + 5;
-                itemPositiveValue = positiveValues[i];
+            for (let posX = 0; posX < nbBins; posX++) {
+                itemPositiveValue = positiveValues[posX];
                 positivePath += `M${posX},${posMax},L${posX},${posMax - itemPositiveValue}z `;
                 if (negativeValues !== null) {
-                    itemNegativeValue = negativeValues[i];
+                    itemNegativeValue = negativeValues[posX];
                     negativePath += `M${posX},${posMax},L${posX},${posMax + itemNegativeValue}z `;
                 } else if (mirror) {
                     negativePath += `M${posX},${posMax},L${posX},${posMax + itemPositiveValue}z `;

@@ -16,6 +16,7 @@
 
 * [data](_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md#data)
 * [debug](_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md#optional-debug)
+* [fixed](_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md#optional-fixed)
 * [metadataIds](_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md#optional-metadataids)
 * [name](_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md#name)
 
@@ -34,6 +35,14 @@ ___
 • **debug**? : *boolean*
 
 Defined in src/app/core/config/model/plugin-config-data.ts:3
+
+___
+
+### `Optional` fixed
+
+• **fixed**? : *boolean*
+
+Defined in src/app/core/config/model/plugin-config-data.ts:6
 
 ___
 

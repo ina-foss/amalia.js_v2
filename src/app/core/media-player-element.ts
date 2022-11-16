@@ -196,7 +196,7 @@ export class MediaPlayerElement {
      * @param tc time code
      */
     public getThumbnailUrl(tc: number , onHover?: boolean) {
-        if (this.getConfiguration().thumbnail.enableThumbnail) {
+        if (this.getConfiguration().thumbnail.enableThumbnail && this.getConfiguration().thumbnail?.baseUrl) {
             const baseUrl = this.getConfiguration().thumbnail.baseUrl;
             const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
             const widthParam = this.getConfiguration().thumbnail.width;
