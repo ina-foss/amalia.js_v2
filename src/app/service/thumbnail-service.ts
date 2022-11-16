@@ -1,6 +1,7 @@
 import {ThumbnailLoader} from '../core/loader/thumbnail-loader';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {DefaultLogger} from '../core/logger/default-logger';
 
 /**
  * Service contain all instance of players
@@ -11,6 +12,10 @@ export class ThumbnailService {
     private readonly httpClient: HttpClient;
     private loader: ThumbnailLoader;
     public listThumbnails: Array<{ 'url': string, 'blob': string }> = [];
+    /**
+     * Default loader
+     */
+    public logger = new DefaultLogger();
 
     constructor(httpClient: HttpClient) {
         this.httpClient = httpClient;
@@ -41,7 +46,7 @@ export class ThumbnailService {
                     resolve(blob.toString());
                 })
                 .catch(error => {
-                    reject(error);
+                    this.logger.warn('Error to load image', error);
                 });
         });
     }
