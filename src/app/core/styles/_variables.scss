@@ -68,8 +68,8 @@ $amalia-plugin-storyboard-bg-color: var(--amalia-plugin-storyboard-bg-color, #F2
 //Histogram
 
 $amalia-plugin-histograms-bg: var(--amalia-plugin-histogram-bg, #6c6c6c);
-$amalia-plugin-histogram-pinned: var(--amalia-plugin-histogram-pinned, 106px);
-$amalia-plugin-histogram-pinned-control-bar: var(--amalia-plugin-histogram-pinned-control-bar, 63px);
+$amalia-plugin-histogram-pinned: var(--amalia-plugin-histogram-pinned, calc(100% - 106px));
+$amalia-plugin-histogram-pinned-control-bar: var(--amalia-plugin-histogram-pinned-control-bar, calc(100% - 63px));
 $amalia-plugin-histogram-slider-border: var(--amalia-plugin-histogram-slider-border, #0086B1);
 $amalia-plugin-histogram-slider-bg: var(--amalia-plugin-histogram-slider-bg, rgba(255, 255, 255, 0.4));
 $amalia-plugin-histogram-bg: var(--amalia-plugin-histogram-bg, #80C2D8);

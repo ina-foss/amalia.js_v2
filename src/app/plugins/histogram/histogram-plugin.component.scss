@@ -21,12 +21,12 @@
     z-index: 1;
 
     &.pinned {
-      height: calc(100% - $amalia-plugin-histogram-pinned);
+      height:  $amalia-plugin-histogram-pinned;
 
     }
 
     &.pinnedControlbar {
-      height: calc(100% - $amalia-plugin-histogram-pinned-control-bar);
+      height: $amalia-plugin-histogram-pinned-control-bar;
     }
 
     .label {
