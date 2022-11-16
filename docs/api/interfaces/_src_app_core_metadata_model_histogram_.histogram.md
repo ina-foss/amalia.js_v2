@@ -10,6 +10,7 @@
 
 ### Properties
 
+* [id](_src_app_core_metadata_model_histogram_.histogram.md#id)
 * [nbbins](_src_app_core_metadata_model_histogram_.histogram.md#nbbins)
 * [negbins](_src_app_core_metadata_model_histogram_.histogram.md#negbins)
 * [negmax](_src_app_core_metadata_model_histogram_.histogram.md#negmax)
@@ -18,11 +19,19 @@
 
 ## Properties
 
+###  id
+
+• **id**: *string*
+
+Defined in src/app/core/metadata/model/histogram.ts:2
+
+___
+
 ###  nbbins
 
 • **nbbins**: *number*
 
-Defined in src/app/core/metadata/model/histogram.ts:4
+Defined in src/app/core/metadata/model/histogram.ts:5
 
 ___
 
@@ -30,7 +39,7 @@ ___
 
 • **negbins**: *string*
 
-Defined in src/app/core/metadata/model/histogram.ts:3
+Defined in src/app/core/metadata/model/histogram.ts:4
 
 ___
 
@@ -38,7 +47,7 @@ ___
 
 • **negmax**: *number*
 
-Defined in src/app/core/metadata/model/histogram.ts:6
+Defined in src/app/core/metadata/model/histogram.ts:7
 
 ___
 
@@ -46,7 +55,7 @@ ___
 
 • **posbins**: *string*
 
-Defined in src/app/core/metadata/model/histogram.ts:2
+Defined in src/app/core/metadata/model/histogram.ts:3
 
 ___
 
@@ -54,4 +63,4 @@ ___
 
 • **posmax**: *number*
 
-Defined in src/app/core/metadata/model/histogram.ts:5
+Defined in src/app/core/metadata/model/histogram.ts:6

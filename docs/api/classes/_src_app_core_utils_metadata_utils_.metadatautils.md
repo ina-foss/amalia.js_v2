@@ -42,7 +42,7 @@ ___
 
 ▸ **getTimelineLocalisations**(`metadata`: Metadata): *Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›*
 
-Defined in src/app/core/utils/metadata-utils.ts:85
+Defined in src/app/core/utils/metadata-utils.ts:86
 
 Parse timeline localisation
 
@@ -80,7 +80,7 @@ ___
 
 ▸ **parseTimelineLocalisation**(`localisation`: any, `timelineLocalisations`: Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:98
+Defined in src/app/core/utils/metadata-utils.ts:99
 
 Convert metadata localisation to timeline localisation
 
@@ -120,7 +120,7 @@ ___
 
 ▸ **pushTimelineLocalisation**(`localisation`: any, `timelineLocalisations`: any): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:112
+Defined in src/app/core/utils/metadata-utils.ts:113
 
 **Parameters:**
 

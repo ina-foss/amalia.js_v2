@@ -19,6 +19,7 @@ Service contain all instance of players
 * [httpClient](_src_app_service_thumbnail_service_.thumbnailservice.md#private-httpclient)
 * [listThumbnails](_src_app_service_thumbnail_service_.thumbnailservice.md#listthumbnails)
 * [loader](_src_app_service_thumbnail_service_.thumbnailservice.md#private-loader)
+* [logger](_src_app_service_thumbnail_service_.thumbnailservice.md#logger)
 * [key](_src_app_service_thumbnail_service_.thumbnailservice.md#static-key)
 
 ### Methods
@@ -32,7 +33,7 @@ Service contain all instance of players
 
 \+ **new ThumbnailService**(`httpClient`: HttpClient): *[ThumbnailService](_src_app_service_thumbnail_service_.thumbnailservice.md)*
 
-Defined in src/app/service/thumbnail-service.ts:13
+Defined in src/app/service/thumbnail-service.ts:18
 
 **Parameters:**
 
@@ -48,7 +49,7 @@ Name | Type |
 
 • **httpClient**: *HttpClient*
 
-Defined in src/app/service/thumbnail-service.ts:11
+Defined in src/app/service/thumbnail-service.ts:12
 
 ___
 
@@ -56,7 +57,7 @@ ___
 
 • **listThumbnails**: *Array‹object›* = []
 
-Defined in src/app/service/thumbnail-service.ts:13
+Defined in src/app/service/thumbnail-service.ts:14
 
 ___
 
@@ -64,7 +65,17 @@ ___
 
 • **loader**: *[ThumbnailLoader](_src_app_core_loader_thumbnail_loader_.thumbnailloader.md)*
 
-Defined in src/app/service/thumbnail-service.ts:12
+Defined in src/app/service/thumbnail-service.ts:13
+
+___
+
+###  logger
+
+• **logger**: *[DefaultLogger](_src_app_core_logger_default_logger_.defaultlogger.md)‹›* = new DefaultLogger()
+
+Defined in src/app/service/thumbnail-service.ts:18
+
+Default loader
 
 ___
 
@@ -72,7 +83,7 @@ ___
 
 ▪ **key**: *string* = "blob"
 
-Defined in src/app/service/thumbnail-service.ts:10
+Defined in src/app/service/thumbnail-service.ts:11
 
 ## Methods
 
@@ -80,7 +91,7 @@ Defined in src/app/service/thumbnail-service.ts:10
 
 ▸ **getThumbnail**(`url`: any, `tc`: any): *Promise‹string›*
 
-Defined in src/app/service/thumbnail-service.ts:23
+Defined in src/app/service/thumbnail-service.ts:28
 
 If tc exist in listThumbnails return blob else call api to get blob
 
@@ -99,7 +110,7 @@ ___
 
 ▸ **loadThumbnail**(`url`: any, `tc`: any): *Promise‹string›*
 
-Defined in src/app/service/thumbnail-service.ts:35
+Defined in src/app/service/thumbnail-service.ts:40
 
 Call loader to get blob
 
