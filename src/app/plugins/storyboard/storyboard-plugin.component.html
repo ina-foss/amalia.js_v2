@@ -1,12 +1,12 @@
 <ng-container *ngIf="theme==='v'">
-    <div #headerElement>
-        <div class="interval" (mouseleave)="openIntervalList = false">
+    <div #headerElement class="row">
+        <div class="col-9 interval" (mouseleave)="openIntervalList = false">
             <p class="label" (click)="toggleList()"><strong>Intervalle: </strong>
                 <span class="selected" *ngIf="(selectedInterval[1] < 60 && selectedInterval[0] == 'tc') || selectedInterval[0] == 'frame'">{{selectedInterval[1]}}&nbsp;</span>
-                <span class="selected" *ngIf="(selectedInterval[1] >= 60 && selectedInterval[0] == 'tc') || selectedInterval[0] == 'frame'">{{selectedInterval[1] |tcFormat:'minutes'}}&nbsp;</span>
-                <span *ngIf="selectedInterval[1] < 60 && selectedInterval[0] == 'tc'">{{second}}<span *ngIf="selectedInterval[1] > 1">s</span></span>
-                    <span *ngIf="selectedInterval[1] >= 60 && selectedInterval[0] == 'tc'">{{minute}}<span *ngIf="selectedInterval[1] > 60">s</span></span>
-                    <span *ngIf="selectedInterval[0] == 'frame'"> {{images}} </span>
+                <span class="selected" *ngIf="(selectedInterval[1] >= 60 && selectedInterval[0] == 'tc')">{{selectedInterval[1] |tcFormat:'minutes'}}&nbsp;</span>
+                <span *ngIf="selectedInterval[1] > 0 && selectedInterval[1] < 60 && selectedInterval[0] == 'tc'">{{second}}<span *ngIf="selectedInterval[1] > 1">s</span></span>
+                <span *ngIf="selectedInterval[1] >= 60 && selectedInterval[0] == 'tc'">{{minute}}<span *ngIf="selectedInterval[1] > 60">s</span></span>
+                <span *ngIf="selectedInterval[0] == 'frame'"> {{images}} </span>
                 <svg class="amalia-svg-down icon" [ngClass]="{'active':openIntervalList}">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
                 </svg>
@@ -25,28 +25,27 @@
                     (click)="selectedThumbnailSize('frame',fci)">{{fci}} {{images}}</li>
             </ul>
         </div>
-        <div class="storyboard-size">
+        <div class="col-3 storyboard-size">
             <div class="first"></div>
-            <div class="size small" tooltip='{{msgSmall}}' [ngClass]="{'selected':size == 'small'}" (click)="size = 'small'"></div>
             <div class="size medium" tooltip='{{msgMedium}}' [ngClass]="{'selected':size == 'medium'}" (click)="size = 'medium'"></div>
             <div class="size large" tooltip='{{msgLarge}}' [ngClass]="{'selected':size == 'large'}" (click)="size = 'large'"></div>
             <div class="last"></div>
         </div>
     </div>
     <div class="storyboard" #storyboardElement (scroll)="handleScroll(true)">
-        <div (click)="seekToTc(tc)" class="thumbnail {{size}} {{sizeThumbnail}}" *ngFor="let tc of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}" [attr.data-tc]="tc">
+        <div (click)="seekToTc(tc)" class="thumbnail {{size}} {{sizeThumbnail}}" *ngFor="let tc of listOfThumbnail; last as isLast; first as isFirst;" [ngClass]="{'first': isFirst,'last':isLast}" [attr.data-tc]="tc">
             <img src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy"/>
             <div *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</div>
         </div>
     </div>
-    <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}"(click)="scrollToActiveThumbnail()">
+    <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}" (click)="scrollToActiveThumbnail()">
         <svg class="amalia-svg-auto-scroll-size icon">
             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#refresh'"></use>
         </svg>
     </div>
 </ng-container>
 <!-- Storyboard Horizontal --->
-<ng-container *ngIf="theme==='h'">
+<!--<ng-container *ngIf="theme==='h'">
     <div class="interval-h" (click)="toggleList()" (mouseleave)="openIntervalList = false">
         <p class="label"><strong>Intervalle: </strong> <span
                 class="selected">{{selectedInterval[1]}} {{(selectedInterval[0] == 'tc' ? 'Secondes' : 'Images')}}</span>
@@ -78,4 +77,4 @@
             </div>
         </div>
     </div>
-</ng-container>
+</ng-container>-->

@@ -13,8 +13,11 @@
   font-weight: normal;
   .interval {
     flex: 1;
-    text-align: right;
+    display: flex;
+    text-align: center;
+    float: right;
     color: $amalia-plugin-storyboard-label-color;
+    margin-inline-end: 20px;
     .label {
       font-weight: bold;
     }
@@ -86,10 +89,9 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: center;
-    background-color: $amalia-plugin-storyboard-bg-color;
-    padding-bottom: 8px;
-    padding-top: 8px;
-    border-bottom: 6px solid $amalia-plugin-storyboard-box-border-color;
+    float: left;
+    margin-top: 13px;
+    margin-inline-start: 20px;
     div.size {
       border: solid 1px $amalia-plugin-storyboard-box-color;
       margin-right: 10px;
@@ -99,12 +101,6 @@
         border: solid 1px $amalia-plugin-storyboard-box-color;
         background-color: $amalia-plugin-storyboard-box-color;
       }
-    }
-
-    .small {
-      width: 20px;
-      height: 13px;
-      cursor: pointer;
     }
 
     .medium {
@@ -164,36 +160,7 @@
         }
       }
 
-      &.small {
-        width: $amalia-plugin-storyboard-thumbnail-sw;
-        height: $amalia-plugin-storyboard-thumbnail-sh;
-        &.m {
-          .label {
-            font-size: 10px;
-          }
-        }
-        &.l {
-          width: $amalia-plugin-storyboard-thumbnail-sw-l;
-          height: $amalia-plugin-storyboard-thumbnail-sh-l;
-        }
-      }
-
       &.medium {
-        width: $amalia-plugin-storyboard-thumbnail-mw;
-        height: $amalia-plugin-storyboard-thumbnail-mh;
-        &.l {
-          width: $amalia-plugin-storyboard-thumbnail-mw-l;
-          height: $amalia-plugin-storyboard-thumbnail-mh-l;
-        }
-        .label {
-          height: 20%;
-        }
-        img {
-          height: 80%;
-        }
-      }
-
-      &.large {
         width: $amalia-plugin-storyboard-thumbnail-lw;
         height: $amalia-plugin-storyboard-thumbnail-lh;
         &.l {
@@ -294,7 +261,7 @@
   //scrollBar style
   ::-webkit-scrollbar  {
     height: 10px;
-    bakground-color: #DDD;
+    background-color: #DDD;
     border: 1px solid #fff;
   }
   ::-webkit-scrollbar-thumb {

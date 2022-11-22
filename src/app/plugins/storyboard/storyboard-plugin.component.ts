@@ -21,7 +21,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public minute = 'minute';
     public images = 'images';
     public baseUrl: string;
-    public msgSmall = 'Affichage petites miniatures';
     public msgMedium = 'Affichage moyennes miniatures';
     public msgLarge = 'Affichage grandes miniatures';
     public listOfThumbnail: Array<number>;
@@ -37,7 +36,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * thumbnail size
      */
-    public size: 'small' | 'medium' | 'large' = 'small';
+    public size: 'medium' | 'large' = 'medium';
     /**
      * Display format specifier h|m|s|f|ms|mms
      */
@@ -62,7 +61,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * frame intervals
      */
-    public frameIntervals = [6, 60, 360];
+    public frameIntervals = [60, 90, 180, 360];
 
     /**
      * Selected interval
@@ -98,7 +97,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     init() {
         super.init();
-        this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
         this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
         this.logger.info('data plugin storyboard' , this.pluginConfiguration.data);
@@ -107,11 +105,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             if (this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0) {
                 this.initStoryboard();
             }
-            this.sizeThumbnail = this.getWindowWidth();
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
-
         }
     }
     /**
@@ -121,12 +117,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public handleTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.storyboardElement && this.displaySynchro === false) {
-            this.selectThumbnail(this.currentTime);
+            this.selectThumbnail();
         }
     }
     /**
      * Init storyboard
-     * @param duration media duration
      */
     initStoryboard() {
         const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
@@ -188,11 +183,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 visible = false;
             }
             // display button synchro if active node is not visible
-            if (!visible) {
-                this.displaySynchro = true;
-            } else {
-                this.displaySynchro = false;
-            }
+            this.displaySynchro = !visible
         } else {
             this.displaySynchro = false;
         }
@@ -239,13 +230,14 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.listOfThumbnail = _.range(0, this.duration, interval);
         // close menu
         this.openIntervalList = false;
+        this.selectThumbnail();
     }
 
     /**
      * Select Thumbnail
      */
     @AutoBind
-    public selectThumbnail(tc: number) {
+    public selectThumbnail() {
         const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
         if (thumbnailElementNodes) {
             const thumbnailFilteredNodes = thumbnailElementNodes
@@ -259,6 +251,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                     thumbnailNode.classList.add('active');
                     this.scrollToThumbnail(thumbnailNode);
                 });
+            } else {
+                const activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
+                if (activeThumbnail != null) {
+                    activeThumbnail.classList.add('active');
+                }
             }
         }
     }
@@ -287,19 +284,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             }
         }
     }
-    /**
-     * Get width window
-     */
-    private getWindowWidth() {
-        const width = window.innerWidth;
-        let size;
-        if (width <= 1280) {
-            size = 'm';
-        } else {
-            size = 'l';
-        }
-        return size;
-    }
 
     /**
      * Invoked on click button synchro
@@ -308,10 +292,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         const scrollNode: HTMLElement = this.storyboardElement.nativeElement
             .querySelector(`.${StoryboardPluginComponent.SELECTOR_THUMBNAIL}.${StoryboardPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
-            const scrollPos = scrollNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
-            this.storyboardElement.nativeElement.scrollTop = scrollPos;
+            this.storyboardElement.nativeElement.scrollTop = scrollNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
         }
-
     }
 
     /**
