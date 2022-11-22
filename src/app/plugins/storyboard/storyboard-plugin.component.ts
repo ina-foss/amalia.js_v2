@@ -183,7 +183,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 visible = false;
             }
             // display button synchro if active node is not visible
-            !visible ? this.displaySynchro = true : this.displaySynchro = true;
+            !visible ? this.displaySynchro = true : this.displaySynchro = false;
         } else {
             this.displaySynchro = false;
         }
