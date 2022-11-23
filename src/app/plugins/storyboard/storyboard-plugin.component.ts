@@ -57,7 +57,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Time code interval
      */
-    public tcIntervals = [2 , 5 , 10 , 30 , 60 , 120 , 240];
+    public tcIntervals = [2, 5, 10, 30, 60, 120, 240];
     /**
      * frame intervals
      */
@@ -85,13 +85,14 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public displaySynchro = false;
     public ignoreNextScroll = false;
+
     constructor(playerService: MediaPlayerService) {
         super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
+        this.selectedInterval = ['tc', null];
     }
 
     @AutoBind
@@ -99,17 +100,15 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         super.init();
         this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
-        this.logger.info('data plugin storyboard' , this.pluginConfiguration.data);
+        this.logger.info('data plugin storyboard', this.pluginConfiguration.data);
         // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl !== '') {
-            if (this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0) {
-                this.initStoryboard();
-            }
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
         }
     }
+
     /**
      * Handle time change
      */
@@ -120,6 +119,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.selectThumbnail();
         }
     }
+
     /**
      * Init storyboard
      */
@@ -183,11 +183,12 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 visible = false;
             }
             // display button synchro if active node is not visible
-            this.displaySynchro = !visible
+            this.displaySynchro = !visible;
         } else {
             this.displaySynchro = false;
         }
     }
+
     /**
      * Handle to seek to time code
      * @param tc time code
@@ -206,7 +207,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     public selectedThumbnailSize(type: string, tc: number) {
         this.selectedInterval = [type, tc];
-        // this.openIntervalList = false;
         this.updateThumbnailSize();
     }
 
@@ -215,6 +215,17 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     @AutoBind
     private handleDurationChange() {
+        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        // nombre d'images en fonction de la durée du fichier
+        if (duration < 3600 && duration >= 0) {
+            this.selectedThumbnailSize('frame', 60);
+        } else if (duration < 7200 && duration >= 3600) {
+            this.selectedThumbnailSize('frame', 90);
+        } else if (duration < 14400 && duration >= 7200) {
+            this.selectedThumbnailSize('frame', 180);
+        } else if (duration >= 14400) {
+            this.selectedThumbnailSize('frame', 360);
+        }
         this.initStoryboard();
     }
 
@@ -259,6 +270,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             }
         }
     }
+
     /**
      * Invoked to scroll to thumbnail
      * @param thumbnailNode element to scroll

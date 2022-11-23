@@ -180,6 +180,10 @@
         height: 75%;
         display: block;
         overflow: hidden;
+        object-fit: contain; /* Fit logo in the image size */
+        -o-object-fit: contain; /* Fit logo fro opera browser */
+        object-position: center; /* Set logo position */
+        -o-object-position: center;
       }
 
       .label {

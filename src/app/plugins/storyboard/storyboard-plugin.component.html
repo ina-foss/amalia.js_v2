@@ -34,7 +34,7 @@
     </div>
     <div class="storyboard" #storyboardElement (scroll)="handleScroll(true)">
         <div (click)="seekToTc(tc)" class="thumbnail {{size}} {{sizeThumbnail}}" *ngFor="let tc of listOfThumbnail; last as isLast; first as isFirst;" [ngClass]="{'first': isFirst,'last':isLast}" [attr.data-tc]="tc">
-            <img src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy"/>
+            <img src="{{baseUrl+tc.toFixed(2)}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy"/>
             <div *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</div>
         </div>
     </div>
@@ -44,37 +44,4 @@
         </svg>
     </div>
 </ng-container>
-<!-- Storyboard Horizontal --->
-<!--<ng-container *ngIf="theme==='h'">
-    <div class="interval-h" (click)="toggleList()" (mouseleave)="openIntervalList = false">
-        <p class="label"><strong>Intervalle: </strong> <span
-                class="selected">{{selectedInterval[1]}} {{(selectedInterval[0] == 'tc' ? 'Secondes' : 'Images')}}</span>
-            <svg class="amalia-svg-down icon">
-                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
-            </svg>
-        </p>
-        <ul [hidden]="!openIntervalList">
-            <li class="text">Temps :</li>
-            <li class="tc" *ngFor="let tci of tcIntervals"
-                [ngClass]="{'selected':(selectedInterval[0]=='tc'&&selectedInterval[1]==tci)}"
-                (click)="selectedThumbnailSize('tc',tci)">{{tci}}</li>
-            <li class="text">Nombre d'image:</li>
-            <li class="frame" *ngFor="let fci of frameIntervals"
-                [ngClass]="{'selected':(selectedInterval[0]=='frame'&&selectedInterval[1]==fci)}"
-                (click)="selectedThumbnailSize('frame',fci)">{{fci}}</li>
-        </ul>
-    </div>
-    <div class="storyboard-container">
-        <div class="horizontal-storyboard">
-            <div class="thumbnail" *ngFor="let tc of listOfThumbnail; last as isLast;" [ngClass]="{'last':isLast}">
-                <img src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy" (click)="seekToTc(tc)"/>
-            </div>
-        </div>
-        <div class="horizontal-interval">
-            <div class="label" *ngFor="let time of listOfThumbnail">
-                <div class="unity"></div>
-                <div>{{time|tcFormat:displayFormat:fps}}</div>
-            </div>
-        </div>
-    </div>
-</ng-container>-->
+
