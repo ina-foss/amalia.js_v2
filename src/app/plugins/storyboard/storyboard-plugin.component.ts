@@ -24,8 +24,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public msgMedium = 'Affichage moyennes miniatures';
     public msgLarge = 'Affichage grandes miniatures';
     public listOfThumbnail: Array<number>;
+    public listOfThumbnailFilter: Array<number>;
     @ViewChild('storyboardElement', {static: false})
     public storyboardElement: ElementRef<HTMLElement>;
+    @ViewChild('scrollElement', {static: false})
+    public scrollElement: ElementRef<HTMLElement>;
     @ViewChild('headerElement', {static: false})
     public headerElement: ElementRef<HTMLElement>;
     public currentTime: number;
@@ -81,18 +84,29 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public tcInterval = 2;
     /**
+     * thumbnails per line
+     */
+    public itemPerLine: number;
+    /**
+     * Height Thumbnail
+     */
+    public heightThumbnail: number;
+    /**
      * default state of button synchro
      */
     public displaySynchro = false;
     public ignoreNextScroll = false;
+    public activeThumbnail: any;
+    public selectedTc = 0;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
+        this.listOfThumbnailFilter = [];
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.selectedInterval = ['tc', null];
+        this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
     }
 
     @AutoBind
@@ -100,9 +114,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         super.init();
         this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
         this.enableLabel = this.pluginConfiguration.data.enableLabel;
+        this.itemPerLine = this.pluginConfiguration.data.itemPerLine;
         this.logger.info('data plugin storyboard', this.pluginConfiguration.data);
         // disable thumbnail when base url is empty
         if (this.pluginConfiguration.data.baseUrl !== '') {
+            if (this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0) {
+                this.initStoryboard();
+            }
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
@@ -151,7 +169,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 frameIntervals: this.frameIntervals,
                 displayFormat: 'f',
                 theme: 'v',
-                labelSynchro: 'Synchronisation du storyboard'
+                labelSynchro: 'Synchronisation du storyboard',
+                itemPerLine: 20
             }
         };
     }
@@ -160,7 +179,23 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Handle Scroll
      */
     public handleScroll(ignoreNextScroll?: boolean) {
-        this.ignoreNextScroll = ignoreNextScroll && ignoreNextScroll === true ? ignoreNextScroll : false;
+        if (this.itemPerLine) {
+            if (ignoreNextScroll && this.storyboardElement.nativeElement.children.length > 0) {
+                const clientHeight = this.storyboardElement.nativeElement.clientHeight;
+                const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
+                const elementStyle = this.storyboardElement.nativeElement.style;
+                Object.assign(elementStyle, {
+                    transform: `translateY(${scrollTop}px)`
+                });
+                const start = (scrollTop / this.heightThumbnail) * this.itemPerLine;
+                const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
+                this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+            } else {
+                const is = 0;
+                const ie = is + this.itemPerLine;
+                this.listOfThumbnailFilter = this.listOfThumbnail.slice(is, ie);
+            }
+        }
         this.updateSynchro();
     }
 
@@ -171,8 +206,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     public updateSynchro() {
         let visible = true;
-        const activeNode: HTMLElement = this.storyboardElement.nativeElement
-            .querySelector(`.${StoryboardPluginComponent.SELECTOR_THUMBNAIL}.${StoryboardPluginComponent.SELECTOR_SELECTED}`);
+        const activeNode = this.activeThumbnail;
         if (activeNode) {
             const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
             const positionB = activeNode.getBoundingClientRect();
@@ -195,6 +229,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public seekToTc(tc: number) {
         this.displaySynchro = false;
+        this.selectedTc = tc;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
@@ -215,25 +250,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     @AutoBind
     private handleDurationChange() {
-        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        // nombre d'images en fonction de la durée du fichier
-        if (duration < 3600 && duration >= 0) {
-            this.selectedThumbnailSize('frame', 60);
-        } else if (duration < 7200 && duration >= 3600) {
-            this.selectedThumbnailSize('frame', 90);
-        } else if (duration < 14400 && duration >= 7200) {
-            this.selectedThumbnailSize('frame', 180);
-        } else if (duration >= 14400) {
-            this.selectedThumbnailSize('frame', 360);
-        }
         this.initStoryboard();
     }
 
     /**
      * Handle interval
      */
-    @AutoBind
-    private updateThumbnailSize() {
+    public updateThumbnailSize() {
         let interval: number = this.selectedInterval[1];
         if (this.selectedInterval[0] === 'frame') {
             interval = (1 / this.fps) * interval;
@@ -241,6 +264,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.listOfThumbnail = _.range(0, this.duration, interval);
         // close menu
         this.openIntervalList = false;
+        this.handleScroll(false);
         this.selectThumbnail();
     }
 
@@ -255,17 +279,28 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
             if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
                 thumbnailFilteredNodes.forEach(thumbnailNode => {
-                    const activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
-                    if (activeThumbnail) {
-                        activeThumbnail.classList.remove('active');
+                    this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
+                    if (this.activeThumbnail) {
+                        this.activeThumbnail.classList.remove('active');
                     }
                     thumbnailNode.classList.add('active');
+                    Object.assign(this.storyboardElement.nativeElement.parentElement.dataset, {
+                        scrollTop: this.storyboardElement.nativeElement.parentElement.scrollTop,
+                    });
                     this.scrollToThumbnail(thumbnailNode);
                 });
             } else {
-                const activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
-                if (activeThumbnail != null) {
-                    activeThumbnail.classList.add('active');
+                this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
+                if (this.activeThumbnail != null) {
+                    this.activeThumbnail.classList.add('active');
+                    this.heightThumbnail = this.storyboardElement.nativeElement.firstElementChild.clientHeight;
+                    const totalThumbnail = this.listOfThumbnail.length;
+                    this.itemPerLine = Math.floor(this.storyboardElement.nativeElement.clientWidth / this.storyboardElement.nativeElement.firstElementChild.clientWidth);
+                    const storyBoardHeight = this.heightThumbnail * (totalThumbnail / this.itemPerLine);
+                    Object.assign(this.scrollElement.nativeElement.style, {
+                        height: `${storyBoardHeight}px`
+                    });
+                    this.logger.info(`totalThumbnail : ${totalThumbnail} itemPerLine: ${this.itemPerLine}`);
                 }
             }
         }
@@ -276,23 +311,25 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * @param thumbnailNode element to scroll
      */
     private scrollToThumbnail(thumbnailNode: HTMLElement) {
-        const scrollPos = thumbnailNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
-        const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
-        const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
-        const positionB = thumbnailNode.getBoundingClientRect();
-        // check if active element is not visible
-        const visible = (positionB.top + thumbnailNode.clientHeight) >= positionA.top &&
-            (positionB.top + thumbnailNode.clientHeight) <= this.storyboardElement.nativeElement.clientHeight;
-        if (!(visible)) {
-            if (!reverseMode) {
-                this.storyboardElement.nativeElement.scrollTop = scrollPos;
-            } else {
-                if (scrollPos > thumbnailNode.clientHeight) {
-                    this.storyboardElement.nativeElement.scrollTop = (this.storyboardElement.nativeElement.clientHeight - thumbnailNode.clientHeight) + scrollPos;
-                } else {
+        if (this.displaySynchro) {
+            const scrollPos = thumbnailNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
+            const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+            const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
+            const positionB = thumbnailNode.getBoundingClientRect();
+            // check if active element is not visible
+            const visible = (positionB.top + thumbnailNode.clientHeight) >= positionA.top &&
+                (positionB.top + thumbnailNode.clientHeight) <= this.storyboardElement.nativeElement.clientHeight;
+            if (!(visible)) {
+                if (!reverseMode) {
                     this.storyboardElement.nativeElement.scrollTop = scrollPos;
-                }
+                } else {
+                    if (scrollPos > thumbnailNode.clientHeight) {
+                        this.storyboardElement.nativeElement.scrollTop = (this.storyboardElement.nativeElement.clientHeight - thumbnailNode.clientHeight) + scrollPos;
+                    } else {
+                        this.storyboardElement.nativeElement.scrollTop = scrollPos;
+                    }
 
+                }
             }
         }
     }
@@ -300,12 +337,17 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Invoked on click button synchro
      */
-    public scrollToActiveThumbnail() {
-        const scrollNode: HTMLElement = this.storyboardElement.nativeElement
-            .querySelector(`.${StoryboardPluginComponent.SELECTOR_THUMBNAIL}.${StoryboardPluginComponent.SELECTOR_SELECTED}`);
-        if (scrollNode) {
-            this.storyboardElement.nativeElement.scrollTop = scrollNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
+    public scrollToActiveThumbnail(tc: number, ignoreNextScroll: boolean = false, withSeek: boolean = false) {
+        this.displaySynchro = false;
+        this.handleScroll(ignoreNextScroll);
+        const scrollTop = parseFloat(this.storyboardElement.nativeElement.parentElement.dataset.scrollTop);
+        this.storyboardElement.nativeElement.parentElement.scrollTo({behavior: 'smooth', top: scrollTop});
+        if (withSeek) {
+            setTimeout(() => {
+                this.seekToTc(this.selectedTc);
+            }, 800);
         }
+
     }
 
     /**
