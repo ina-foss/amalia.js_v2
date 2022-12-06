@@ -14,6 +14,7 @@
 * [displayFormat](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#displayformat)
 * [enableLabel](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#enablelabel)
 * [frameIntervals](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-frameintervals)
+* [itemPerLine](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#itemperline)
 * [labelSynchro](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-labelsynchro)
 * [tcIntervals](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-tcintervals)
 * [tcParam](_src_app_core_config_model_storyboard_config_.storyboardconfig.md#optional-tcparam)
@@ -50,6 +51,14 @@ ___
 • **frameIntervals**? : *Array‹number›*
 
 Defined in src/app/core/config/model/storyboard-config.ts:6
+
+___
+
+###  itemPerLine
+
+• **itemPerLine**: *number*
+
+Defined in src/app/core/config/model/storyboard-config.ts:10
 
 ___
 
