@@ -7,4 +7,5 @@ export interface StoryboardConfig {
     displayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds';
     theme: 'h'|'v';
     labelSynchro?: string;
+    itemPerLine: number;
 }
