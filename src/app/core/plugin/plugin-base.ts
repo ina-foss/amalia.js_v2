@@ -70,22 +70,12 @@ export abstract class PluginBase<T> implements OnInit {
 
     ngOnInit(): void {
         this.mediaPlayerElement = this.playerService.get(this.playerId);
-        const mediaPlayerElement = this.mediaPlayerElement;
-        if (this.pluginName === 'STORYBOARD' && this.mediaPlayerElement) {
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, () => {
-                mediaPlayerElement.eventEmitter.emit(PlayerEventType.STORYBOARD);
-            });
-        }
         if (!this.mediaPlayerElement) {
             throw new AmaliaException(`Error to init plugin ${this.pluginName} (player id : ${this.playerId}).`);
         }
-        if (!this.mediaPlayerElement.isMetadataLoaded && this.pluginName !== 'STORYBOARD') {
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init.bind(this));
-        } else if (this.pluginName !== 'STORYBOARD') {
-            this.init();
-        }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.STORYBOARD, this.init.bind(this));
+        this.init();
     }
+
     init() {
         const defaultConfig = this.getDefaultConfig();
         try {
@@ -116,8 +106,8 @@ export abstract class PluginBase<T> implements OnInit {
             };
         }
 
-        this.tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset || 0;
-        this.fps = this.mediaPlayerElement.getConfiguration().player.framerate || 25;
+        this.tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset || 0;
+        this.fps = this.mediaPlayerElement.getConfiguration()?.player.framerate || 25;
     }
 
     abstract getDefaultConfig(): PluginConfigData<T>;

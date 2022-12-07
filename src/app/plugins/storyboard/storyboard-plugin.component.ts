@@ -102,11 +102,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     constructor(playerService: MediaPlayerService) {
         super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
         this.listOfThumbnailFilter = [];
+        this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-        this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
     }
 
     @AutoBind
@@ -180,10 +180,12 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public handleScroll(ignoreNextScroll?: boolean) {
         if (this.itemPerLine) {
-            if (ignoreNextScroll && this.storyboardElement.nativeElement.children.length > 0) {
+            if (this.storyboardElement && this.storyboardElement.nativeElement.children.length > 0) {
                 const clientHeight = this.storyboardElement.nativeElement.clientHeight;
                 const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
                 const elementStyle = this.storyboardElement.nativeElement.style;
+                this.heightThumbnail = this.storyboardElement.nativeElement.firstElementChild.clientHeight;
+                this.itemPerLine = Math.floor(this.storyboardElement.nativeElement.clientWidth / this.storyboardElement.nativeElement.firstElementChild.clientWidth);
                 Object.assign(elementStyle, {
                     transform: `translateY(${scrollTop}px)`
                 });
@@ -271,10 +273,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Select Thumbnail
      */
-    @AutoBind
     public selectThumbnail() {
-        const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
-        if (thumbnailElementNodes) {
+        if (this.storyboardElement) {
+            const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
             const thumbnailFilteredNodes = thumbnailElementNodes
                 .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
             if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
