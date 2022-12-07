@@ -46,13 +46,27 @@
             </amalia-player>
         </div>
         <div class="col-6 p-2" style="height: 500px;">
+            <p>Storyboard</p>
             <div style="height: 600px;width: 450px;" id="storyboard">
-                <amalia-storyboard  player-id="PLAYER2"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start"}}'>
-                </amalia-storyboard>
+<!--                <amalia-storyboard player-id="PLAYER2"-->
+<!--                                   plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start"}}'>-->
+<!--                </amalia-storyboard>-->
             </div>
         </div>
 
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Dom ready")
+        document.getElementById('storyboard').addEventListener('click', addStoryboard);
+    });
+
+    function addStoryboard() {
+        document.getElementById('storyboard').removeEventListener('click', addStoryboard);
+        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER2"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start"}}'>
+                </amalia-storyboard>`;
+    }
+</script>
 </body>
 </html>
