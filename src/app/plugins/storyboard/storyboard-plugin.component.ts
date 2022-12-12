@@ -25,7 +25,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public msgLarge = 'Affichage grandes miniatures';
     public listOfThumbnail: Array<number>;
     public listOfThumbnailFilter: Array<number>;
-    @ViewChild('storyboardElement', {static: false})
+    @ViewChild('storyboardElement')
     public storyboardElement: ElementRef<HTMLElement>;
     @ViewChild('scrollElement', {static: false})
     public scrollElement: ElementRef<HTMLElement>;
@@ -105,10 +105,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
-    }
-
     @AutoBind
     init() {
         super.init();
@@ -125,6 +121,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
         }
+        // this.init();
     }
 
     /**
@@ -195,6 +192,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             } else {
                 const is = 0;
                 const ie = is + this.itemPerLine;
+                // const scrollTop = this.storyboardElement.nativeElement.scrollTop;
+
                 this.listOfThumbnailFilter = this.listOfThumbnail.slice(is, ie);
             }
         }
