@@ -73,7 +73,11 @@ export abstract class PluginBase<T> implements OnInit {
         if (!this.mediaPlayerElement) {
             throw new AmaliaException(`Error to init plugin ${this.pluginName} (player id : ${this.playerId}).`);
         }
-        this.init();
+        if (!this.mediaPlayerElement.isMetadataLoaded && this.pluginName !== 'STORYBOARD') {
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init.bind(this));
+        } else {
+            this.init();
+        }
     }
 
     init() {

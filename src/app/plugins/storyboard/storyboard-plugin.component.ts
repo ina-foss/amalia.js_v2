@@ -25,7 +25,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public msgLarge = 'Affichage grandes miniatures';
     public listOfThumbnail: Array<number>;
     public listOfThumbnailFilter: Array<number>;
-    @ViewChild('storyboardElement', {static: false})
     public storyboardElement: ElementRef<HTMLElement>;
     @ViewChild('scrollElement', {static: false})
     public scrollElement: ElementRef<HTMLElement>;
@@ -105,10 +104,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
-    }
-
     @AutoBind
     init() {
         super.init();
@@ -125,8 +120,15 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
         }
+        // this.init();
     }
-
+    @ViewChild('storyboardElement')
+    set ele2(v: ElementRef) {
+        if ( !this.storyboardElement) {
+            this.storyboardElement = v;
+            this.init();
+        }
+    }
     /**
      * Handle time change
      */
@@ -135,6 +137,18 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.storyboardElement && this.displaySynchro === false) {
             this.selectThumbnail();
+        }
+        const lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
+        if (this.currentTime > lastTc) {
+            const clientHeight = this.storyboardElement.nativeElement.clientHeight;
+            const elementStyle = this.storyboardElement.nativeElement.style;
+            const start = this.listOfThumbnail.indexOf(lastTc);
+            const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
+            const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
+            Object.assign(elementStyle, {
+                transform: `translateY(${scrollTop}px)`
+            });
+            this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
         }
     }
 
@@ -195,6 +209,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             } else {
                 const is = 0;
                 const ie = is + this.itemPerLine;
+                // const scrollTop = this.storyboardElement.nativeElement.scrollTop;
+
                 this.listOfThumbnailFilter = this.listOfThumbnail.slice(is, ie);
             }
         }
@@ -312,7 +328,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * @param thumbnailNode element to scroll
      */
     private scrollToThumbnail(thumbnailNode: HTMLElement) {
-        if (this.displaySynchro) {
             const scrollPos = thumbnailNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
             const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
             const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
@@ -332,7 +347,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
                 }
             }
-        }
     }
 
     /**
@@ -340,7 +354,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public scrollToActiveThumbnail(tc: number, ignoreNextScroll: boolean = false, withSeek: boolean = false) {
         this.displaySynchro = false;
-        this.handleScroll(ignoreNextScroll);
+        this.handleScroll(this.ignoreNextScroll);
         const scrollTop = parseFloat(this.storyboardElement.nativeElement.parentElement.dataset.scrollTop);
         this.storyboardElement.nativeElement.parentElement.scrollTo({behavior: 'smooth', top: scrollTop});
         if (withSeek) {

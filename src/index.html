@@ -51,6 +51,7 @@
 <!--                <amalia-storyboard player-id="PLAYER2"-->
 <!--                                   plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start"}}'>-->
 <!--                </amalia-storyboard>-->
+
             </div>
         </div>
 
@@ -59,12 +60,12 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         console.log("Dom ready")
-        document.getElementById('storyboard').addEventListener('click', addStoryboard);
+         document.getElementById('storyboard').addEventListener('click', addStoryboard);
     });
 
     function addStoryboard() {
         document.getElementById('storyboard').removeEventListener('click', addStoryboard);
-        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER2"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start"}}'>
+        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER2"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start","itemPerLine":5}}'>
                 </amalia-storyboard>`;
     }
 </script>
