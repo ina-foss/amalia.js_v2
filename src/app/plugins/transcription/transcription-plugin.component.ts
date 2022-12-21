@@ -21,6 +21,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public static PLUGIN_NAME = 'TRANSCRIPTION';
     public static KARAOKE_TC_DELTA = 0.250;
     public static SELECTOR_SEGMENT = 'segment';
+    public static SELECTOR_SUBSEGMENT = 'subsegment';
     public static SELECTOR_WORD = 'w';
     public static SEARCH_SELECTOR = 'selected-text';
     public static SELECTOR_SELECTED = 'selected';
@@ -489,8 +490,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     @AutoBind
     public updateSynchro() {
         let visible;
-        const selector = '.' + TranscriptionPluginComponent.SELECTOR_SEGMENT + ' > ' + '.text > .' + TranscriptionPluginComponent.SELECTOR_WORD
-            + '.' + TranscriptionPluginComponent.SELECTOR_SELECTED;
+        const selector = '.' + TranscriptionPluginComponent.SELECTOR_SEGMENT + ' > .' + TranscriptionPluginComponent.SELECTOR_SUBSEGMENT
+            + ' > ' + '.text > .' + TranscriptionPluginComponent.SELECTOR_WORD + '.' + TranscriptionPluginComponent.SELECTOR_SELECTED;
         const activeNode: HTMLElement = this.transcriptionElement.nativeElement.querySelector(selector);
         if (activeNode) {
             const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
@@ -508,7 +509,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.displaySynchro = false;
             }
         } else {
-            this.displaySynchro = false;
+            if (this.ignoreNextScroll) {
+                this.displaySynchro = true;
+            } else {
+                this.displaySynchro = false;
+            }
         }
     }
 }
