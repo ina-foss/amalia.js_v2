@@ -105,6 +105,16 @@
             color: $amalia-plugin-timeline-font-color;
           }
         }
+        .named-entities{
+          .named-entity{
+            color: #0086B1;
+            &:hover {
+              background-color: $amalia-plugin-transcription-tc-hover !important;
+              color: $amalia-plugin-transcription-tc-hover;
+              color : #fff;
+            }
+          }
+        }
       }
       .timecode {
         display: flex;
@@ -135,6 +145,33 @@
           padding-right: 5px;
         }
       }
+
+      .named-entities{
+        display: block;
+        margin: 5px;
+        overflow: hidden;
+        padding: 5px;
+        border-radius: 4px;
+        background-color: $amalia-plugin-timeline-font-color;
+        box-shadow: 0 -1px 10px 0 rgba(0,0,0,0.15);
+
+        .named-entity{
+          box-sizing: border-box;
+          height: 26px;
+          border: 1px solid #D9D9D9;
+          border-radius: 100px;
+          background-color: #FFFFFF;
+          padding-right: 10px;
+          padding-left: 10px;
+          margin-right: 10px;
+          color: #4A4A4A;
+          font-family: "Trebuchet MS";
+          font-size: 12px;
+          letter-spacing: 0.09px;
+          line-height: 14px;
+
+        }
+      }
         .subsegment{
           display: block;
           margin: 5px;
@@ -163,6 +200,9 @@
           padding-right: 3px;
           &.activated {
             color: black;
+          }
+          &.named-entity {
+            color: #0086B1;
           }
           &.selected-text {
             background-color: $amalia-plugin-transcription-tc-hover !important;

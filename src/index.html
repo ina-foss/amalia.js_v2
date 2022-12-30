@@ -35,23 +35,17 @@
 <!--</div>-->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-6 p-2" style="height: 450px;">
-            <amalia-player player-id="PLAYER2"
-                           config="http://localhost:4203/configs/notilus-config-audio-expert-player.json">
-                <amalia-histogram player-id="PLAYER2" plugin-configuration='{"metadataIds":["waveform-MA00605_01-2048-1",
-                "waveform-MA00605_01-2048-1","waveform-MA00605_01-2048-1",
-                "waveform-MA00605_01-2048-1"],"data":{
-                "zoomMetadataIdx":[2,3],"labels":["","","Canal Gauche","Canal Gauche"],"focusMinOffset":null, "focusMaxOffset":null}}'></amalia-histogram>
-                <amalia-control-bar player-id="PLAYER2"></amalia-control-bar>
+        <div class="col-6 p-2" style="height: 500px;">
+            <amalia-player id="player" player-id="PLAYER" config="http://localhost:4203/configs/notilus-config-transcription-player.json">
+
+                <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
             </amalia-player>
+            <amalia-time-bar player-id="PLAYER" plugin-configuration='{"data":{"theme": "outside"}}'></amalia-time-bar>
+
         </div>
         <div class="col-6 p-2" style="height: 500px;">
-            <p>Storyboard</p>
-            <div style="height: 600px;width: 450px;" id="storyboard">
-<!--                <amalia-storyboard player-id="PLAYER2"-->
-<!--                                   plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start"}}'>-->
-<!--                </amalia-storyboard>-->
-
+            <div style="height: 500px" id="transcription">
+                <amalia-transcription style="border: 1px solid #DDDDDD;" plugin-configuration='{"metadataIds":["test"],"data":{"title":"test","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'/>
             </div>
         </div>
 
@@ -60,7 +54,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         console.log("Dom ready")
-         document.getElementById('storyboard').addEventListener('click', addStoryboard);
+         //document.getElementById('storyboard').addEventListener('click', addStoryboard);
     });
 
     function addStoryboard() {
