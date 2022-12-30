@@ -5,4 +5,5 @@ export interface TranscriptionLocalisation {
     tcIn: number;
     tcOut: number;
     subLocalisations?: Array<TranscriptionLocalisation>;
+    annotations?: Array<{label: string, id: string, type: string}>;
 }

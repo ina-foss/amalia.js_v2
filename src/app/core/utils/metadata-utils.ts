@@ -19,7 +19,8 @@ export class MetadataUtils {
         const localisations: Array<TranscriptionLocalisation> = new Array<TranscriptionLocalisation>();
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
-                MetadataUtils.parseTranscriptionLocalisations(l, localisations, parseLevel, withSubLocalisations);
+                MetadataUtils.parseTranscriptionLocalisations(l, localisations, parseLevel, withSubLocalisations,
+                    new Array<{ label: string, id: string, type: string }>() );
             });
         }
         return localisations;
@@ -32,31 +33,40 @@ export class MetadataUtils {
      * @param parseLevel parse level
      * @param withSubLocalisations true for parse sub localisation
      */
-    public static parseTranscriptionLocalisations(l: any, localisations: Array<TranscriptionLocalisation>, parseLevel: number, withSubLocalisations: boolean): void {
+    public static parseTranscriptionLocalisations(l: any, localisations: Array<TranscriptionLocalisation>, parseLevel: number,
+                                                  withSubLocalisations: boolean, annotationsLoc: Array<{ label: string, id: string, type: string }>): void {
         if (l.tcin && l.tcout && l.data && l.data.text && l.tclevel === parseLevel) {
             const subLocalisations = new Array<TranscriptionLocalisation>();
             if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && withSubLocalisations) {
                 l.sublocalisations.localisation.forEach((subl) => {
-                    MetadataUtils.parseTranscriptionLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations);
+                    MetadataUtils.parseTranscriptionLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations,
+                        new Array<{ label: string, id: string, type: string }>());
                 });
             }
-            MetadataUtils.pushTranscriptionLocalisations(l, localisations, subLocalisations);
+            MetadataUtils.pushTranscriptionLocalisations(l, localisations, subLocalisations, annotationsLoc);
         }
         if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && l.tclevel <= parseLevel) {
             l.sublocalisations.localisation.forEach((subl) => {
-                MetadataUtils.parseTranscriptionLocalisations(subl, localisations, parseLevel, withSubLocalisations);
+                const annotations = new Array<{ label: string, id: string, type: string }>();
+                if (subl.data.annotations && subl.data.annotations.length > 0) {
+                    subl.data.annotations.forEach(a => {
+                        annotations.push(a);
+                    });
+                }
+                MetadataUtils.parseTranscriptionLocalisations(subl, localisations, parseLevel, withSubLocalisations, annotations);
             });
         }
     }
     // push transcription localisations
-    private static pushTranscriptionLocalisations(l, localisations, subLocalisations) {
+    private static pushTranscriptionLocalisations(l, localisations, subLocalisations, annotations) {
         localisations.push({
             label: (l.label) ? l.label : '',
             thumb: (l.thumb) ? l.thumb : '',
             tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin,
             tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
             text: (l.data && l.data.text && isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
-            subLocalisations
+            subLocalisations,
+            annotations
         });
     }
 
