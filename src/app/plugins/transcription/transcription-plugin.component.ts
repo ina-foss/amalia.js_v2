@@ -29,6 +29,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public static SELECTOR_ACTIVATED = 'activated';
     public static SELECTOR_PROGRESS_BAR = '.progress-bar';
     public static BACKSPACE_KEY = 'Backspace';
+    public static SELECTOR_NAMED_ENTITY = 'named-entity';
     public tcDisplayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's';
     public fps = DEFAULT.FPS;
     public autoScroll = false;
@@ -303,6 +304,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.scroll();
             }
         }
+        this.getNamedEntities(karaokeTcDelta);
     }
 
     /**
@@ -428,6 +430,36 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 }
             });
         }
+    }
+
+    /**
+     * Search named entities
+     */
+    @AutoBind
+    public getNamedEntities(karaokeTcDelta: number) {
+         const listOfNamedEntitesNodes = new Array<HTMLElement>();
+         const segmentElementNode = this.transcriptionElement.nativeElement.querySelector<HTMLElement>('.segment .selected');
+         const transcriptionFilteredSegment = this.transcriptions
+            .find(node => Math.round(node.tcIn) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcin')))
+            && Math.round(node.tcOut) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcout'))));
+
+         const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+         const segmentFilteredNodes = segmentElementNodes
+        .find(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+            && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+
+         transcriptionFilteredSegment.annotations.forEach( a => {
+             const t = segmentFilteredNodes.
+             querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+             t.forEach(node => {
+                     if (TextUtils.hasSearchText(node.textContent, a.label)) {
+                         listOfNamedEntitesNodes.push(node as HTMLElement);
+                         listOfNamedEntitesNodes.forEach(e => {
+                             e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
+                         });
+                     }
+                 });
+        });
     }
 
     /**

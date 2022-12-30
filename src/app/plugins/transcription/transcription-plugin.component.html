@@ -60,6 +60,12 @@
                 <div class="separator"></div>
                 <div class="tcout">{{t.tcOut|tcFormat:tcDisplayFormat}}</div>
             </div>
+
+            <div class="named-entities" *ngIf="t.annotations.length>0" >
+                <button class="named-entity" *ngFor="let a of t.annotations" data-toggle="tooltip" data-placement="bottom"
+                        title="{{'ID métier : ' + a.id +'\n'+ 'Type de l\'annotation :' + a.type}}">{{a.label}}</button>
+            </div>
+
             <div class="subsegment" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
             <div class="title">{{t.label}}</div>
 

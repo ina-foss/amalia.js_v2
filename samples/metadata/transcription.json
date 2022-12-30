@@ -3,6 +3,13 @@
     "sublocalisations" : {
       "localisation" : [ {
         "data" : {
+          "annotations" : [
+            {
+              "label" : "ont",
+              "id" : "FDS212",
+              "type" : "dsq"
+            }
+          ],
           "text" : [ "Pour une fois ce qui ont pour mission de faire voyager les autres ont fait de même pourquoi il y a , en effet , venant de 36 nations différentes , les experts en tourisme à tous le congrès annuel du boîte à ." ]
         },
         "sublocalisations" : {
@@ -322,6 +329,13 @@
         "tclevel" : 1
       }, {
         "data" : {
+          "annotations" : [
+            {
+              "label" : "sont",
+              "id" : "FDS212",
+              "type" : "dsq"
+            }
+          ],
           "text" : [ "Peut-être il la ." ]
         },
         "sublocalisations" : {
