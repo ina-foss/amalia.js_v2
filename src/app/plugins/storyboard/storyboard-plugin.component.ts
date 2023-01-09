@@ -81,7 +81,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      *  Personalized selected Interval
      */
-    public tcInterval = 2;
+    public tcInterval = 3;
     /**
      * thumbnails per line
      */
@@ -116,6 +116,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             if (this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0) {
                 this.initStoryboard();
             }
+            this.sizeThumbnail = this.getWindowWidth();
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
@@ -128,6 +129,20 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.storyboardElement = v;
             this.init();
         }
+    }
+
+    /**
+     * Get width window
+     */
+    private getWindowWidth() {
+        const width = window.innerWidth;
+        let size;
+        if (width <= 1280) {
+            size = 'm';
+        } else {
+            size = 'l';
+        }
+        return size;
     }
     /**
      * Handle time change

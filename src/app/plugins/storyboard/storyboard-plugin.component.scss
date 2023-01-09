@@ -9,15 +9,17 @@
   display: flex;
   flex-direction: column;
   font-family: $amalia-font-family !important;
-  font-size: $amalia-font-size !important;
   font-weight: normal;
   .interval {
     flex: 1;
     display: flex;
     text-align: center;
     float: right;
-    color: $amalia-plugin-storyboard-label-color;
     margin-inline-end: 20px;
+    color: #4A4A4A;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 16px;
     .label {
       font-weight: bold;
     }
@@ -25,9 +27,12 @@
       font-size: 14px;
     }
     .selected {
-      font-weight: bold;
       color: $amalia-plugin-storyboard-box-color;
       cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0;
+      line-height: 16px;
+      font-weight: normal;
     }
 
     .amalia-svg-down.icon {
@@ -174,6 +179,21 @@
         }
 
         &.medium {
+          width: $amalia-plugin-storyboard-thumbnail-mw;
+          height: $amalia-plugin-storyboard-thumbnail-mh;
+          &.l {
+            width: $amalia-plugin-storyboard-thumbnail-mw-l;
+            height: $amalia-plugin-storyboard-thumbnail-mh-l;
+          }
+          .label {
+            height: 10%;
+          }
+          img {
+            height: 80%;
+          }
+        }
+
+        &.large {
           width: $amalia-plugin-storyboard-thumbnail-lw;
           height: $amalia-plugin-storyboard-thumbnail-lh;
           &.l {
@@ -184,7 +204,7 @@
             height: 10%;
           }
           img {
-            height: 90%;
+            height: 80%;
           }
         }
 
