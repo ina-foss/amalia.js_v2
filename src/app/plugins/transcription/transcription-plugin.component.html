@@ -4,9 +4,6 @@
         <p *ngIf="pluginConfiguration.data?.description">{{pluginConfiguration.data?.description}}</p>
     </div>
 </div>-->
-<div class="header">
-    <h3 class="heading">TRANSCRIPTION</h3>
-</div>
 <div *ngIf="transcriptions && transcriptions.length>0; then transcriptionBlock; else emptyBlock"></div>
 <div class="search-block" (keyup)="handleShortcut($event)" (click)="searchWord(searchText.value);">
     <div class="search-text">
@@ -69,7 +66,6 @@
             <div class="subsegment" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
             <div class="title">{{t.label}}</div>
 
-            <div class="progress-bar" [ngStyle]="{width: '0%'}" *ngIf="displayProgressBar"></div>
             <div class="text" (click)="seekToWord($event)">
                 <span *ngIf="t.subLocalisations && t.subLocalisations.length>0; then subLocalisationBlock; else wordBlock"></span>
                 <ng-template #subLocalisationBlock>

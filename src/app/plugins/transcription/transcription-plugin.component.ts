@@ -41,7 +41,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public headerElement: ElementRef<HTMLElement>;
     @ViewChild('searchText')
     public searchText: ElementRef;
-    public displayProgressBar = false;
     public searching = false;
     public typing = false;
     public index = 0;
@@ -76,7 +75,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.autoScroll = true;
                 this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
-            this.displayProgressBar = this.pluginConfiguration.data?.progressBar || false;
         }
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTranscription();
@@ -205,12 +203,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
             .forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            if (this.pluginConfiguration.data && this.pluginConfiguration.data.progressBar) {
+            /*if (this.pluginConfiguration.data && this.pluginConfiguration.data.progressBar) {
                 const progressBarNode: HTMLElement = node.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
                 if (progressBarNode) {
                     progressBarNode.style.width = '0%';
                 }
-            }
+            }*/
         });
     }
 
@@ -286,8 +284,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     const tcIn = Math.round(parseFloat(segmentNode.getAttribute('data-tcin')));
                     const tcOut = Math.round(parseFloat(segmentNode.getAttribute('data-tcout')));
                     const percentWidth = ((Math.round(this.currentTime) - tcIn) * 100) / (tcOut - tcIn);
-                    const progressBar: HTMLElement = segmentNode.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
-                    progressBar.style.width = percentWidth + '%';
+                    // const progressBar: HTMLElement = segmentNode.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
+                    // progressBar.style.width = percentWidth + '%';
                     segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
                 segmentElementNodes.forEach(n => {
@@ -365,8 +363,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * handle scroll event
      */
     public handleScroll(ignoreNextScroll?: boolean) {
-        this.ignoreNextScroll = true;
-        setTimeout(() => this.updateSynchro(), 350);
+            this.ignoreNextScroll = true;
+            setTimeout(() => this.updateSynchro(), 350);
     }
 
     /**
@@ -439,19 +437,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public getNamedEntities(karaokeTcDelta: number) {
          const listOfNamedEntitesNodes = new Array<HTMLElement>();
          const segmentElementNode = this.transcriptionElement.nativeElement.querySelector<HTMLElement>('.segment .selected');
-         const transcriptionFilteredSegment = this.transcriptions
-            .find(node => Math.round(node.tcIn) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcin')))
-            && Math.round(node.tcOut) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcout'))));
+         if (segmentElementNode != null) {
+             const transcriptionFilteredSegment = this.transcriptions
+                 .find(node => Math.round(node.tcIn) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcin')))
+                     && Math.round(node.tcOut) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcout'))));
 
-         const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
-         const segmentFilteredNodes = segmentElementNodes
-        .find(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-            && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+             const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+             const segmentFilteredNodes = segmentElementNodes
+                 .find(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                     && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
 
-         transcriptionFilteredSegment.annotations.forEach( a => {
-             const t = segmentFilteredNodes.
-             querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-             t.forEach(node => {
+             transcriptionFilteredSegment.annotations.forEach(a => {
+                 const t = segmentFilteredNodes.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                 t.forEach(node => {
                      if (TextUtils.hasSearchText(node.textContent, a.label)) {
                          listOfNamedEntitesNodes.push(node as HTMLElement);
                          listOfNamedEntitesNodes.forEach(e => {
@@ -459,7 +457,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                          });
                      }
                  });
-        });
+             });
+         }
     }
 
     /**
@@ -518,7 +517,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.searchedWordIndex = 0;
         this.listOfSearchedNodes = null;
         this.searching = false;
-        this.searchText.nativeElement = this.pluginConfiguration.data.label;
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
             node.classList.remove(TranscriptionPluginComponent.SEARCH_FOUNDED);
