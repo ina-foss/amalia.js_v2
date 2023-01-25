@@ -174,7 +174,7 @@
         .w {
           cursor: pointer;
           float: left;
-          padding-right: 3px;
+          margin-right: 3px;
           &.activated {
             color: black;
           }
@@ -298,9 +298,9 @@
         .up{
           display: none;
           .icon {
-            height: 9px;
+            height: 16px;
             width: 16px;
-            top: 30px;
+            top: 26px;
             //left: 9px;
             position: absolute;
             color: $amalia-plugin-transcription-search-icons;
@@ -314,9 +314,9 @@
         .down {
           display: none;
           .icon {
-            height: 9px;
+            height: 16px;
             width: 16px;
-            top: 30px;
+            top: 26px;
             //left: 9px;
             position: absolute;
             color: $amalia-plugin-transcription-search-icons;
