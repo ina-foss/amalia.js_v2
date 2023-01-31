@@ -421,7 +421,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             } else {
                 this.time = this.duration - this.currentTime;
             }
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, value);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, this.time);
         }
     }
 
