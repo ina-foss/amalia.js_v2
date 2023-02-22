@@ -24,7 +24,7 @@
 
 ▸ **getHistograms**(`metadata`: Metadata): *Array‹[Histogram](../interfaces/_src_app_core_metadata_model_histogram_.histogram.md)›*
 
-Defined in src/app/core/utils/metadata-utils.ts:67
+Defined in src/app/core/utils/metadata-utils.ts:77
 
 Return list of histogram
 
@@ -42,7 +42,7 @@ ___
 
 ▸ **getTimelineLocalisations**(`metadata`: Metadata): *Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›*
 
-Defined in src/app/core/utils/metadata-utils.ts:86
+Defined in src/app/core/utils/metadata-utils.ts:96
 
 Parse timeline localisation
 
@@ -80,7 +80,7 @@ ___
 
 ▸ **parseTimelineLocalisation**(`localisation`: any, `timelineLocalisations`: Array‹[TimelineLocalisation](../interfaces/_src_app_core_metadata_model_timeline_localisation_.timelinelocalisation.md)›): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:99
+Defined in src/app/core/utils/metadata-utils.ts:109
 
 Convert metadata localisation to timeline localisation
 
@@ -97,9 +97,9 @@ ___
 
 ### `Static` parseTranscriptionLocalisations
 
-▸ **parseTranscriptionLocalisations**(`l`: any, `localisations`: Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)›, `parseLevel`: number, `withSubLocalisations`: boolean): *void*
+▸ **parseTranscriptionLocalisations**(`l`: any, `localisations`: Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)›, `parseLevel`: number, `withSubLocalisations`: boolean, `annotationsLoc`: Array‹object›): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:35
+Defined in src/app/core/utils/metadata-utils.ts:36
 
 In charge to parse transcription
 
@@ -111,6 +111,7 @@ Name | Type | Description |
 `localisations` | Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)› | transcription |
 `parseLevel` | number | parse level |
 `withSubLocalisations` | boolean | true for parse sub localisation  |
+`annotationsLoc` | Array‹object› | - |
 
 **Returns:** *void*
 
@@ -120,7 +121,7 @@ ___
 
 ▸ **pushTimelineLocalisation**(`localisation`: any, `timelineLocalisations`: any): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:113
+Defined in src/app/core/utils/metadata-utils.ts:123
 
 **Parameters:**
 
@@ -135,9 +136,9 @@ ___
 
 ### `Static` `Private` pushTranscriptionLocalisations
 
-▸ **pushTranscriptionLocalisations**(`l`: any, `localisations`: any, `subLocalisations`: any): *void*
+▸ **pushTranscriptionLocalisations**(`l`: any, `localisations`: any, `subLocalisations`: any, `annotations`: any): *void*
 
-Defined in src/app/core/utils/metadata-utils.ts:52
+Defined in src/app/core/utils/metadata-utils.ts:61
 
 **Parameters:**
 
@@ -146,5 +147,6 @@ Name | Type |
 `l` | any |
 `localisations` | any |
 `subLocalisations` | any |
+`annotations` | any |
 
 **Returns:** *void*

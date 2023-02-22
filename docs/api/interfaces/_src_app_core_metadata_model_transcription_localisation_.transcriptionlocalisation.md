@@ -10,6 +10,7 @@
 
 ### Properties
 
+* [annotations](_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md#optional-annotations)
 * [label](_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md#label)
 * [subLocalisations](_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md#optional-sublocalisations)
 * [tcIn](_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md#tcin)
@@ -18,6 +19,14 @@
 * [thumb](_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md#thumb)
 
 ## Properties
+
+### `Optional` annotations
+
+• **annotations**? : *Array‹object›*
+
+Defined in src/app/core/metadata/model/transcription-localisation.ts:8
+
+___
 
 ###  label
 

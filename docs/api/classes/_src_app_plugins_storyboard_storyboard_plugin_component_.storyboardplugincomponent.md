@@ -68,12 +68,14 @@
 
 ### Accessors
 
+* [ele2](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#ele2)
 * [player](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#player)
 * [pluginConfiguration](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#pluginconfiguration)
 
 ### Methods
 
 * [getDefaultConfig](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#getdefaultconfig)
+* [getWindowWidth](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#private-getwindowwidth)
 * [handleDurationChange](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#private-handledurationchange)
 * [handleScroll](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#handlescroll)
 * [handleTimeChange](_src_app_plugins_storyboard_storyboard_plugin_component_.storyboardplugincomponent.md#handletimechange)
@@ -97,7 +99,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:100
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:99
 
 **Parameters:**
 
@@ -135,7 +137,7 @@ ___
 
 • **activeThumbnail**: *any*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:99
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:98
 
 ___
 
@@ -151,7 +153,7 @@ ___
 
 • **currentTime**: *number*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:34
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:33
 
 ___
 
@@ -159,7 +161,7 @@ ___
 
 • **displayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"* = "f"
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:46
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:45
 
 Display format specifier h|m|s|f|ms|mms
 
@@ -169,7 +171,7 @@ ___
 
 • **displaySynchro**: *boolean* = false
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:97
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:96
 
 default state of button synchro
 
@@ -179,7 +181,7 @@ ___
 
 • **duration**: *number*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:38
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:37
 
 Media duration
 
@@ -189,7 +191,7 @@ ___
 
 • **enableLabel**: *boolean*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:54
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:53
 
 show time code label
 
@@ -201,7 +203,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[fps](_src_app_core_plugin_plugin_base_.pluginbase.md#fps)*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:50
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:49
 
 Media fps
 
@@ -211,7 +213,7 @@ ___
 
 • **frameIntervals**: *number[]* = [60, 90, 180, 360]
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:67
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:66
 
 frame intervals
 
@@ -221,7 +223,7 @@ ___
 
 • **headerElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:33
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:32
 
 ___
 
@@ -229,7 +231,7 @@ ___
 
 • **heightThumbnail**: *number*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:93
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:92
 
 Height Thumbnail
 
@@ -239,7 +241,7 @@ ___
 
 • **ignoreNextScroll**: *boolean* = false
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:98
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:97
 
 ___
 
@@ -265,7 +267,7 @@ ___
 
 • **itemPerLine**: *number*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:89
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:88
 
 thumbnails per line
 
@@ -335,7 +337,7 @@ ___
 
 • **openIntervalList**: *boolean*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:76
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:75
 
 state list of interval
 
@@ -385,7 +387,7 @@ ___
 
 • **scrollElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:31
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:30
 
 ___
 
@@ -401,7 +403,7 @@ ___
 
 • **selectedInterval**: *[string, number]*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:72
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:71
 
 Selected interval
 
@@ -411,7 +413,7 @@ ___
 
 • **selectedTc**: *number* = 0
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:100
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:99
 
 ___
 
@@ -419,7 +421,7 @@ ___
 
 • **size**: *"medium" | "large"* = "medium"
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:42
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:41
 
 thumbnail size
 
@@ -429,7 +431,7 @@ ___
 
 • **sizeThumbnail**: *string* = "m"
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:81
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:80
 
 Default size of thumbnails
 
@@ -439,15 +441,15 @@ ___
 
 • **storyboardElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:29
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:28
 
 ___
 
 ###  tcInterval
 
-• **tcInterval**: *number* = 2
+• **tcInterval**: *number* = 3
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:85
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:84
 
  Personalized selected Interval
 
@@ -457,7 +459,7 @@ ___
 
 • **tcIntervals**: *number[]* = [2, 5, 10, 30, 60, 120, 240]
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:63
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:62
 
 Time code interval
 
@@ -477,7 +479,7 @@ ___
 
 • **theme**: *"v" | "h"* = "v"
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:58
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:57
 
 orientation of the plugin (horizontal|vertical)
 
@@ -516,6 +518,22 @@ ___
 Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:18
 
 ## Accessors
+
+###  ele2
+
+• **set ele2**(`v`: ElementRef): *void*
+
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:127
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`v` | ElementRef |
+
+**Returns:** *void*
+
+___
 
 ###  player
 
@@ -575,7 +593,7 @@ Name | Type |
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:162
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:191
 
 Return default config
 
@@ -583,11 +601,23 @@ Return default config
 
 ___
 
+### `Private` getWindowWidth
+
+▸ **getWindowWidth**(): *any*
+
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:137
+
+Get width window
+
+**Returns:** *any*
+
+___
+
 ### `Private` handleDurationChange
 
 ▸ **handleDurationChange**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:252
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:285
 
 Invoked on duration change
 
@@ -599,7 +629,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:181
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:210
 
 Handle Scroll
 
@@ -617,7 +647,7 @@ ___
 
 ▸ **handleTimeChange**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:134
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:151
 
 Handle time change
 
@@ -631,7 +661,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:113
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:108
 
 **Returns:** *void*
 
@@ -641,7 +671,7 @@ ___
 
 ▸ **initStoryboard**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:144
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:173
 
 Init storyboard
 
@@ -653,9 +683,9 @@ ___
 
 ▸ **ngOnInit**(): *void*
 
-*Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
+*Inherited from [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:107
+Defined in src/app/core/plugin/plugin-base.ts:71
 
 **Returns:** *void*
 
@@ -665,7 +695,7 @@ ___
 
 ▸ **scrollToActiveThumbnail**(`tc`: number, `ignoreNextScroll`: boolean, `withSeek`: boolean): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:340
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:370
 
 Invoked on click button synchro
 
@@ -685,7 +715,7 @@ ___
 
 ▸ **scrollToThumbnail**(`thumbnailNode`: HTMLElement): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:313
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:345
 
 Invoked to scroll to thumbnail
 
@@ -703,7 +733,7 @@ ___
 
 ▸ **seekToTc**(`tc`: number): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:230
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:263
 
 Handle to seek to time code
 
@@ -721,7 +751,7 @@ ___
 
 ▸ **selectThumbnail**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:275
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:307
 
 Select Thumbnail
 
@@ -733,7 +763,7 @@ ___
 
 ▸ **selectedThumbnailSize**(`type`: string, `tc`: number): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:243
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:276
 
 handle change thumbnail size
 
@@ -752,7 +782,7 @@ ___
 
 ▸ **toggleList**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:356
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:386
 
 Toggle openList
 
@@ -764,7 +794,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:207
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:240
 
 if scrolling and active thumbnail is not visible add synchro button
 
@@ -776,7 +806,7 @@ ___
 
 ▸ **updateThumbnailSize**(): *void*
 
-Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:259
+Defined in src/app/plugins/storyboard/storyboard-plugin.component.ts:292
 
 Handle interval
 

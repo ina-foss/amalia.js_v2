@@ -26,7 +26,6 @@
 * [active](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#active)
 * [autoScroll](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#autoscroll)
 * [currentTime](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#currenttime)
-* [displayProgressBar](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#displayprogressbar)
 * [displaySynchro](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#displaysynchro)
 * [fps](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#fps)
 * [headerElement](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#headerelement)
@@ -49,13 +48,17 @@
 * [transcriptionElement](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#transcriptionelement)
 * [transcriptions](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#transcriptions)
 * [typing](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#typing)
+* [BACKSPACE_KEY](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-backspace_key)
 * [KARAOKE_TC_DELTA](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-karaoke_tc_delta)
 * [PLUGIN_NAME](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-plugin_name)
+* [SEARCH_FOUNDED](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-search_founded)
 * [SEARCH_SELECTOR](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-search_selector)
 * [SELECTOR_ACTIVATED](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-selector_activated)
+* [SELECTOR_NAMED_ENTITY](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-selector_named_entity)
 * [SELECTOR_PROGRESS_BAR](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-selector_progress_bar)
 * [SELECTOR_SEGMENT](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-selector_segment)
 * [SELECTOR_SELECTED](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-selector_selected)
+* [SELECTOR_SUBSEGMENT](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-selector_subsegment)
 * [SELECTOR_WORD](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#static-selector_word)
 
 ### Accessors
@@ -71,6 +74,7 @@
 * [disableRemoveSelectedSegment](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-disableremoveselectedsegment)
 * [disableSelectedWords](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-disableselectedwords)
 * [getDefaultConfig](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#getdefaultconfig)
+* [getNamedEntities](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#getnamedentities)
 * [handleChangeInput](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#handlechangeinput)
 * [handleMetadataLoaded](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-handlemetadataloaded)
 * [handleModeTranscription](_src_app_plugins_transcription_transcription_plugin_component_.transcriptionplugincomponent.md#private-handlemodetranscription)
@@ -99,7 +103,7 @@
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[constructor](_src_app_core_plugin_plugin_base_.pluginbase.md#protected-constructor)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:51
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:54
 
 **Parameters:**
 
@@ -137,7 +141,7 @@ ___
 
 • **active**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:32
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:36
 
 ___
 
@@ -145,7 +149,7 @@ ___
 
 • **autoScroll**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:31
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:35
 
 ___
 
@@ -153,17 +157,9 @@ ___
 
 • **currentTime**: *number*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:47
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:50
 
 Return  current time
-
-___
-
-###  displayProgressBar
-
-• **displayProgressBar**: *boolean* = false
-
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:40
 
 ___
 
@@ -171,7 +167,7 @@ ___
 
 • **displaySynchro**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:51
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:54
 
 ___
 
@@ -181,7 +177,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[fps](_src_app_core_plugin_plugin_base_.pluginbase.md#fps)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:30
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:34
 
 ___
 
@@ -189,7 +185,7 @@ ___
 
 • **headerElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:37
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:41
 
 ___
 
@@ -197,7 +193,7 @@ ___
 
 • **ignoreNextScroll**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:33
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:37
 
 ___
 
@@ -205,7 +201,7 @@ ___
 
 • **index**: *number* = 0
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:43
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:46
 
 ___
 
@@ -223,7 +219,7 @@ ___
 
 • **listOfSearchedNodes**: *Array‹HTMLElement›*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:49
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:52
 
 ___
 
@@ -291,7 +287,7 @@ ___
 
 • **searchText**: *ElementRef*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:39
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:43
 
 ___
 
@@ -299,7 +295,7 @@ ___
 
 • **searchedWordIndex**: *number* = 0
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:50
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:53
 
 ___
 
@@ -307,7 +303,7 @@ ___
 
 • **searching**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:41
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:44
 
 ___
 
@@ -315,7 +311,7 @@ ___
 
 • **tcDisplayFormat**: *"h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds"* = "s"
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:29
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:33
 
 ___
 
@@ -343,7 +339,7 @@ ___
 
 • **transcriptionElement**: *ElementRef‹HTMLElement›*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:35
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:39
 
 ___
 
@@ -351,7 +347,7 @@ ___
 
 • **transcriptions**: *Array‹[TranscriptionLocalisation](../interfaces/_src_app_core_metadata_model_transcription_localisation_.transcriptionlocalisation.md)›* = null
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:48
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:51
 
 ___
 
@@ -359,7 +355,15 @@ ___
 
 • **typing**: *boolean* = false
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:42
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:45
+
+___
+
+### `Static` BACKSPACE_KEY
+
+▪ **BACKSPACE_KEY**: *string* = "Backspace"
+
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:31
 
 ___
 
@@ -379,11 +383,19 @@ Defined in src/app/plugins/transcription/transcription-plugin.component.ts:21
 
 ___
 
+### `Static` SEARCH_FOUNDED
+
+▪ **SEARCH_FOUNDED**: *string* = "founded-text"
+
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:27
+
+___
+
 ### `Static` SEARCH_SELECTOR
 
 ▪ **SEARCH_SELECTOR**: *string* = "selected-text"
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:25
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:26
 
 ___
 
@@ -391,7 +403,15 @@ ___
 
 ▪ **SELECTOR_ACTIVATED**: *string* = "activated"
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:27
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:29
+
+___
+
+### `Static` SELECTOR_NAMED_ENTITY
+
+▪ **SELECTOR_NAMED_ENTITY**: *string* = "named-entity"
+
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:32
 
 ___
 
@@ -399,7 +419,7 @@ ___
 
 ▪ **SELECTOR_PROGRESS_BAR**: *string* = ".progress-bar"
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:28
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:30
 
 ___
 
@@ -415,7 +435,15 @@ ___
 
 ▪ **SELECTOR_SELECTED**: *string* = "selected"
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:26
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:28
+
+___
+
+### `Static` SELECTOR_SUBSEGMENT
+
+▪ **SELECTOR_SUBSEGMENT**: *string* = "subsegment"
+
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:24
 
 ___
 
@@ -423,7 +451,7 @@ ___
 
 ▪ **SELECTOR_WORD**: *string* = "w"
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:24
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:25
 
 ## Accessors
 
@@ -483,7 +511,7 @@ Name | Type |
 
 ▸ **callSeek**(`tc`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:88
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:90
 
 handle call
 
@@ -501,7 +529,7 @@ ___
 
 ▸ **clearSearchList**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:466
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:492
 
 clear seach list onclick
 
@@ -551,11 +579,29 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[getDefaultConfig](_src_app_core_plugin_plugin_base_.pluginbase.md#abstract-getdefaultconfig)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:95
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:97
 
 Return default config
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹[TranscriptionConfig](../interfaces/_src_app_core_config_model_transcription_config_.transcriptionconfig.md)›*
+
+___
+
+###  getNamedEntities
+
+▸ **getNamedEntities**(`karaokeTcDelta`: number): *void*
+
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:415
+
+Search named entities
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`karaokeTcDelta` | number |
+
+**Returns:** *void*
 
 ___
 
@@ -581,7 +627,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:360
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:352
 
 Invoked on metadata loaded
 
@@ -593,7 +639,7 @@ ___
 
 ▸ **handleModeTranscription**(`elementNodes`: any, `karaokeTcDelta`: any): *any*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:240
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:235
 
 **Parameters:**
 
@@ -610,7 +656,7 @@ ___
 
 ▸ **handleOnTimeChange**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:133
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:135
 
 Invoked time change event for :
 - update current time
@@ -623,7 +669,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:351
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:343
 
 handle scroll event
 
@@ -641,7 +687,7 @@ ___
 
 ▸ **handleSelectedWordsStyle**(`filteredNodes`: any, `karaokeTcDelta`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:253
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:248
 
 **Parameters:**
 
@@ -658,7 +704,7 @@ ___
 
 ▸ **handleShortcut**(`event`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:480
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:506
 
 handleShortcut on search button
 
@@ -678,7 +724,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[init](_src_app_core_plugin_plugin_base_.pluginbase.md#init)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:62
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:65
 
 **Returns:** *void*
 
@@ -690,7 +736,7 @@ ___
 
 *Overrides [PluginBase](_src_app_core_plugin_plugin_base_.pluginbase.md).[ngOnInit](_src_app_core_plugin_plugin_base_.pluginbase.md#ngoninit)*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:57
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:60
 
 **Returns:** *void*
 
@@ -700,7 +746,7 @@ ___
 
 ▸ **parseTranscription**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:367
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:359
 
 In charge to load metadata
 
@@ -712,7 +758,7 @@ ___
 
 ▸ **scroll**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:297
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:307
 
 In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
 
@@ -724,7 +770,7 @@ ___
 
 ▸ **scrollToNode**(`scrollNode`: HTMLElement): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:309
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:319
 
 Invoked to scroll to node
 
@@ -742,7 +788,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:420
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:446
 
 Scroll to next or previous searched word
 
@@ -760,7 +806,7 @@ ___
 
 ▸ **scrollToSelectedSegment**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:452
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:478
 
 Invocked on click SYNCHRO button
 
@@ -772,7 +818,7 @@ ___
 
 ▸ **searchWord**(`searchText`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:393
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:385
 
 Search word ans scroll to first result
 
@@ -790,7 +836,7 @@ ___
 
 ▸ **seekToWord**(`e`: MouseEvent): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:118
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:120
 
 handle to seek work with defined tc delta
 
@@ -808,7 +854,7 @@ ___
 
 ▸ **selectSegment**(`karaokeTcDelta`: number): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:274
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:269
 
 In charge to select segment
 
@@ -826,7 +872,7 @@ ___
 
 ▸ **selectWords**(`karaokeTcDelta`: number): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:217
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:211
 
 In charge to select word in time range
 
@@ -844,7 +890,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:490
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:520
 
 if scrolling and active segment is not visible add synchro button
 
