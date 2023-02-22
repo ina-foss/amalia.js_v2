@@ -229,7 +229,7 @@ Name | Type |
 
 ▸ **getDefaultConfig**(): *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
-Defined in src/app/core/plugin/plugin-base.ts:123
+Defined in src/app/core/plugin/plugin-base.ts:117
 
 **Returns:** *[PluginConfigData](../interfaces/_src_app_core_config_model_plugin_config_data_.pluginconfigdata.md)‹T›*
 
@@ -239,7 +239,7 @@ ___
 
 ▸ **init**(): *void*
 
-Defined in src/app/core/plugin/plugin-base.ts:89
+Defined in src/app/core/plugin/plugin-base.ts:83
 
 **Returns:** *void*
 

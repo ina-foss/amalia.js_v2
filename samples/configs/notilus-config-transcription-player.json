@@ -1,9 +1,8 @@
 {
-  "tcOffset": 62000,
+  "tcOffset": 6000,
   "debug": false,
   "player": {
-    "src": "http://localhost:4203/medias/FPVDB07032005.m3u8",
-    "backwardsSrc": "http://localhost:4203/medias/FPVDB07032005-inverse.m3u8",
+    "src": "http://localhost:4203/medias/stock.mp4",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
