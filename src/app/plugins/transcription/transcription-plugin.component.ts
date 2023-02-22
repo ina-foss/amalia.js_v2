@@ -234,7 +234,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         }
     }
 
-    // handle mode 1 || mode 2
+    /**
+     * handle mode 1 || mode 2
+     */
     private handleModeTranscription(elementNodes, karaokeTcDelta) {
         let filteredNodes;
         if (this.pluginConfiguration.data.mode === 1) {
@@ -248,7 +250,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         return filteredNodes;
     }
 
-    // add TranscriptionPluginComponent.SELECTOR_SELECTED to selected words
+    /**
+     * add TranscriptionPluginComponent.SELECTOR_SELECTED to selected words
+     */
     private handleSelectedWordsStyle(filteredNodes, karaokeTcDelta) {
         if (filteredNodes && filteredNodes.length > 0) {
             filteredNodes.forEach(n => {
@@ -257,7 +261,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 if (this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
                     n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                    //
                 }
                 if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
