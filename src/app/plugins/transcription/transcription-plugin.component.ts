@@ -142,9 +142,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.disableSelectedWords();
                 this.disableRemoveSelectedSegment();
             }
-            if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
-                this.selectWords(karaokeTcDelta);
-            }
+
             this.selectSegment(karaokeTcDelta);
         }
     }
@@ -203,12 +201,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
             .forEach(node => {
             node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            /*if (this.pluginConfiguration.data && this.pluginConfiguration.data.progressBar) {
-                const progressBarNode: HTMLElement = node.querySelector(TranscriptionPluginComponent.SELECTOR_PROGRESS_BAR);
-                if (progressBarNode) {
-                    progressBarNode.style.width = '0%';
-                }
-            }*/
         });
     }
 
@@ -217,7 +209,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * @param karaokeTcDelta time code delta
      */
     private selectWords(karaokeTcDelta: number) {
-        const elementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.w'));
+        const node = this.transcriptionElement.nativeElement.querySelector('.segment.selected');
+        const elementNodes = Array.from(node.querySelectorAll<HTMLElement>('.w'));
         if (elementNodes) {
             const filteredNodes = this.handleModeTranscription(elementNodes, karaokeTcDelta);
             if (filteredNodes && filteredNodes.length > 0) {
@@ -299,6 +292,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                        });
                    }
                 });
+                if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
+                    this.selectWords(karaokeTcDelta);
+                }
                 this.scroll();
             }
         }
@@ -325,13 +321,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
             const maxScrollPos = Math.round((2 * this.transcriptionElement.nativeElement.offsetHeight) / 3);
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
-            // const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
-            /*const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
-            const positionB = scrollNode.getBoundingClientRect();
-            //check if active element is not visible
-            const visible = (positionB.top + scrollNode.clientHeight) >= positionA.top &&
-                (positionB.top + scrollNode.clientHeight) <= this.transcriptionElement.nativeElement.clientHeight;*/
-            // in charge of modifying the status of the scroll when reading segment is display area
             const visible = scrollPos < maxScrollPos;
             if (this.ignoreNextScroll && !visible) {
                 this.ignoreNextScroll = false;
@@ -343,17 +332,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.autoScroll) {
                 if (!(visible)) {
                     this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
-                    /*if (!reverseMode) {
-                        this.transcriptionElement.nativeElement.scrollTop =  scrollPos  - minScroll;
-                    } else {
-                        this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
-                        if (scrollPos > scrollNode.clientHeight) {
-                            // this.transcriptionElement.nativeElement.scrollTop = (this.transcriptionElement.nativeElement.clientHeight - scrollNode.clientHeight) + scrollPos;
-
-                        } else {
-                            this.transcriptionElement.nativeElement.scrollTop = scrollPos  - minScroll;
-                        }
-                    }*/
                 }
             }
         }
