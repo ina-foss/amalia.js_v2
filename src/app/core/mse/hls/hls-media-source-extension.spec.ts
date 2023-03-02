@@ -1,10 +1,8 @@
-import {async} from '@angular/core/testing';
 import {HLSMediaSourceExtension} from './hls-media-source-extension';
 import {EventEmitter} from 'events';
 import {PlayerConfigData} from '../../config/model/player-config-data';
 import {DefaultLogger} from '../../logger/default-logger';
 import Hls from 'hls.js';
-import {PlayerEventType} from '../../constant/event-type';
 
 describe('Test HLS Source extension', () => {
     const mediaSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';

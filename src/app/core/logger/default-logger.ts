@@ -16,6 +16,10 @@ export class DefaultLogger implements LoggerInterface {
         this._enabled = enabled || false;
     }
 
+    public status(): boolean {
+        return this._enabled;
+    }
+
     public logLevel(level: string): void {
         try {
             this._logLevel = LoggerLevel.fromString(level);

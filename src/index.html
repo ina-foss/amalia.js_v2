@@ -35,27 +35,47 @@
 <!--</div>-->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-6 p-2" style="height: 500px;">
-            <amalia-player id="player" player-id="PLAYER" config="http://localhost:4203/configs/notilus-config-transcription-player.json">
-
-                <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
-            </amalia-player>
-            <amalia-time-bar player-id="PLAYER" plugin-configuration='{"data":{"theme": "outside"}}'></amalia-time-bar>
-
-        </div>
-        <div class="col-6 p-2" style="height: 500px;">
-            <div style="height: 500px" id="transcription">
-                <amalia-transcription style="border: 1px solid #DDDDDD;" plugin-configuration='{"metadataIds":["254"],"data":{"title":"test","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'/>
-            </div>
-        </div>
-
+        <div class="col-6 p-2" style="height: 500px;" id="player"></div>
     </div>
 </div>
+<!--<div class="container-fluid">-->
+<!--    <div class="row">-->
+<!--        <div class="col-6 p-2" style="height: 500px;">-->
+<!--            <amalia-player id="player" player-id="PLAYER"-->
+<!--                           config="http://localhost:4203/configs/notilus-config-transcription-player.json">-->
+<!--                <amalia-control-bar player-id="PLAYER"></amalia-control-bar>-->
+<!--            </amalia-player>-->
+<!--            <amalia-time-bar player-id="PLAYER" plugin-configuration='{"data":{"theme": "outside"}}'></amalia-time-bar>-->
+
+<!--        </div>-->
+<!--        <div class="col-6 p-2" style="height: 500px;">-->
+<!--            <div style="height: 500px" id="transcription">-->
+<!--                <amalia-transcription style="border: 1px solid #DDDDDD;"-->
+<!--                                      plugin-configuration='{"metadataIds":["254"],"data":{"title":"test","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'/>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         console.log("Dom ready")
-         //document.getElementById('storyboard').addEventListener('click', addStoryboard);
+        loadResource();
+        //document.getElementById('storyboard').addEventListener('click', addStoryboard);
     });
+
+    function loadResource() {
+        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls';
+        fetch(url)
+                .then((response) => response.text())
+                .then((data) => {
+                    let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
+                    playerElement += `config='{"player": {"src" : "${data}","hls": {"enable": true}}}'>`;
+                    playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
+                    document.getElementById("player").innerHTML = playerElement;
+                });
+    }
 
     function addStoryboard() {
         document.getElementById('storyboard').removeEventListener('click', addStoryboard);

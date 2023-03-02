@@ -13,6 +13,7 @@ import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from './constant/event-type';
 import {PreferenceStorageManager} from './storage/preference-storage-manager';
+import {LoggerLevel} from './logger/logger-level';
 
 /**
  * In charge to create player
@@ -23,7 +24,7 @@ export class MediaPlayerElement {
     public defaultLoader: Loader<Array<Metadata>>;
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
-    private readonly preferenceStorageManager: PreferenceStorageManager;
+    private readonly _preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
     public isMetadataLoaded = false;
@@ -31,8 +32,13 @@ export class MediaPlayerElement {
 
     constructor() {
         this.logger = new DefaultLogger('root-player');
-        this.preferenceStorageManager = new PreferenceStorageManager();
+        this._preferenceStorageManager = new PreferenceStorageManager();
         this._eventEmitter = new EventEmitter();
+    }
+
+
+    get preferenceStorageManager(): PreferenceStorageManager {
+        return this._preferenceStorageManager;
     }
 
     /**
@@ -92,8 +98,9 @@ export class MediaPlayerElement {
             this.loadConfiguration(config).then(() => {
                     this.state = PlayerState.INITIALIZED;
                     // Set logger states
-                    const loggerState = this.getConfiguration().debug;
-                    const loggerLevel = this.getConfiguration().logLevel;
+                    const debug = this.preferenceStorageManager.getItem('debug');
+                    const loggerState = debug === null ? this.getConfiguration().debug : true;
+                    const loggerLevel = debug === null ? this.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug);
                     this.logger.state(loggerState);
                     this.logger.logLevel(loggerLevel);
                     this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
@@ -195,7 +202,7 @@ export class MediaPlayerElement {
      * Return thumbnail base url
      * @param tc time code
      */
-    public getThumbnailUrl(tc: number , onHover?: boolean) {
+    public getThumbnailUrl(tc: number, onHover?: boolean) {
         if (this.getConfiguration().thumbnail.enableThumbnail && this.getConfiguration().thumbnail?.baseUrl) {
             const baseUrl = this.getConfiguration().thumbnail.baseUrl;
             const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
