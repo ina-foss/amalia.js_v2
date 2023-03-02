@@ -2,7 +2,8 @@
  * Logger interface
  */
 export interface LoggerInterface {
-    status():boolean;
+    status(): boolean;
+
     /**
      * Set log level
      */
