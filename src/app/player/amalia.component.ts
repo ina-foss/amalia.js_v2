@@ -22,6 +22,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 
 import * as _ from 'lodash';
 import {ControlBarPluginComponent} from '../plugins/control-bar/control-bar-plugin.component';
+import {LoggerLevel} from '../core/logger/logger-level';
 
 @Component({
     selector: 'amalia-player',
@@ -355,28 +356,33 @@ export class AmaliaComponent implements OnInit {
         document.addEventListener('click', this.hideControlsMenuOnClickDocument);
 
     }
+
     @AutoBind
     public handleLoading() {
-       this.inLoading = true;
+        this.inLoading = true;
     }
+
     @AutoBind
     public handleLoadingEnd() {
         this.inLoading = false;
     }
+
     @AutoBind
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
         this.pinned = false;
     }
+
     @AutoBind
     public handlePinnedSliderChange(event) {
         this.pinned = event;
         this.pinnedControlbar = false;
     }
+
     @AutoBind
     private handleSeeking(tc: number) {
         this.logger.debug('handleSeeking');
-        if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1)) {
+        if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1)) {
             this.enablePreviewThumbnail = true;
             const timecode = parseFloat(tc.toFixed(2));
             this.throttleFunc(timecode);
@@ -385,13 +391,14 @@ export class AmaliaComponent implements OnInit {
 
     @AutoBind
     private handleSeeked() {
-        if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() ===  1 && this.enableThumbnail) {
+        if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1 && this.enableThumbnail) {
             const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
             const timecode = parseFloat(tc.toFixed(2));
             this.setPreviewThumbnail(timecode);
         }
 
     }
+
     @AutoBind
     private handlePlay() {
         if (this.enableThumbnail) {
@@ -399,6 +406,7 @@ export class AmaliaComponent implements OnInit {
             this.previewThumbnailUrl = '';
         }
     }
+
     /**
      * Invoked when error event
      * @param event error type
@@ -468,9 +476,12 @@ export class AmaliaComponent implements OnInit {
         this.state = state;
         this.inLoading = false;
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
-        this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail.enableThumbnail || false;
+        this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail?.enableThumbnail || false;
         this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || '16:8';
         this.ratio = this.aspectRatio.replace(':', '-');
+        const debug = this.mediaPlayerElement.preferenceStorageManager.getItem('debug');
+        this.logger.state(debug === null ? this.mediaPlayerElement.getConfiguration().debug : true);
+        this.logger.logLevel(debug === null ? this.mediaPlayerElement.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug));
         this.updatePlayerSizeWithAspectRatio();
     }
 
@@ -493,6 +504,7 @@ export class AmaliaComponent implements OnInit {
         this.mediaPlayer.nativeElement.click();
         this.mediaContainer.nativeElement.focus();
     }
+
     /**
      * Invoked on mouseenter and mouseleave events
      */
@@ -517,11 +529,13 @@ export class AmaliaComponent implements OnInit {
             }
         }
     }
+
     @AutoBind
     public handleKeyDownEvent(event) {
         this.playerHover = true;
         this.emitKeyDownEvent(event);
     }
+
     /**
      * invoked on keydown
      */
@@ -535,11 +549,11 @@ export class AmaliaComponent implements OnInit {
             key = 'espace';
         }
         if (this.playerHover === true) {
-            if (this.listKeys.length ===  0) {
+            if (this.listKeys.length === 0) {
                 this.listKeys.push(key);
                 keys = key;
             }
-            for ( i = 0; i < this.listKeys.length; i++) {
+            for (i = 0; i < this.listKeys.length; i++) {
                 if (this.listKeys[i] !== key) {
                     this.listKeys.push(key);
                     keys += ' + ' + key;
@@ -557,26 +571,31 @@ export class AmaliaComponent implements OnInit {
         this.listKeys = [];
         this.focus();
     }
+
     @AutoBind
     public hideControlsMenuOnClickDocument($event) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.DOCUMENT_CLICK, $event);
     }
+
     // hide controlBar after 3 seconds of mouse inactive
     public startTimer() {
-        this.chrono = setTimeout(this.hideControls , 1800);
+        this.chrono = setTimeout(this.hideControls, 1800);
     }
+
     // reset 3 seconds mouse inactive and start timer again
     public resetTimer() {
         // reset
         clearTimeout(this.chrono);
         this.startTimer();
     }
+
     // hide controls if mouse in inactive since 3 seconds
     @AutoBind
     public hideControls() {
         // this.playerHover = false;
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
     }
+
     @AutoBind
     public scrollPlaybackRateImages($event) {
         let rewinding = false;
@@ -596,6 +615,7 @@ export class AmaliaComponent implements OnInit {
             self.displayImages(framesPerSecond, ms, rewinding);
         }, ms);
     }
+
     @AutoBind
     public clearInterval() {
         if (this.intervalImages) {
@@ -608,10 +628,11 @@ export class AmaliaComponent implements OnInit {
             // this.tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         }
     }
+
     @AutoBind
-    public displayImages(framesPerSecond , ms , rewinding) {
+    public displayImages(framesPerSecond, ms, rewinding) {
         const frames = framesPerSecond / (1000 / ms);
-        if (rewinding === false ) {
+        if (rewinding === false) {
             this.tc = this.tc + (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
         } else {
             this.tc = this.tc - (frames / this.mediaPlayerElement.getMediaPlayer().framerate);
@@ -629,6 +650,7 @@ export class AmaliaComponent implements OnInit {
             clearInterval(this.intervalImages);
         }
     }
+
     public loopImages(tc) {
         this.showImage(tc).then(time => {
             const dif = 250 - Number(time);
@@ -636,23 +658,24 @@ export class AmaliaComponent implements OnInit {
             setTimeout(() => this.loopImages(tc), r);
         });
     }
+
     @AutoBind
     public showImage(tc) {
-            let prevImg;
-            return new Promise(resolve => {
-                const url = this.mediaPlayerElement.getThumbnailUrl(tc);
-                if (prevImg === url) {
-                    resolve(0);
-                }
-                const t =  new Date().getTime();
-                this.previewThumbnailElement.nativeElement.onload = () => {
-                    prevImg = url;
-                    const tm = new Date().getTime();
-                    const diff = Number(tm - t);
-                    resolve(diff);
-                };
-                this.previewThumbnailElement.nativeElement.onerror = () => resolve(0);
-                this.thumbnailBlobVideo = url;
-            });
+        let prevImg;
+        return new Promise(resolve => {
+            const url = this.mediaPlayerElement.getThumbnailUrl(tc);
+            if (prevImg === url) {
+                resolve(0);
+            }
+            const t = new Date().getTime();
+            this.previewThumbnailElement.nativeElement.onload = () => {
+                prevImg = url;
+                const tm = new Date().getTime();
+                const diff = Number(tm - t);
+                resolve(diff);
+            };
+            this.previewThumbnailElement.nativeElement.onerror = () => resolve(0);
+            this.thumbnailBlobVideo = url;
+        });
     }
 }

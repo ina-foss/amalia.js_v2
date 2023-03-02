@@ -39,7 +39,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         }
         if (!config.hls.config) {
             config.hls.config = Hls.DefaultConfig;
-            config.hls.config.debug = false;
+            config.hls.config.debug = this.logger.status();
         }
         // config.hls.config.fLoader = HlsCustomFLoader;
         this.hlsPlayer = new Hls(config.hls.config);
@@ -163,7 +163,6 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      */
     @AutoBind
     private handleAudioChannelChange(event) {
-        // (this.config.hls.config.pLoader as HlsCustomFLoader).audioChannel = 2;
         this.logger.debug('Manifest loaded', event);
     }
     getConfig() {
