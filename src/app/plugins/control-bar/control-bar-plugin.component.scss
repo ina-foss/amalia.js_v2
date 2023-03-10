@@ -5,6 +5,7 @@
   font-family: $amalia-font-family !important;
   font-size: $amalia-font-size !important;
   font-weight: normal;
+
   .icon {
     color: white;
   }
@@ -22,11 +23,13 @@
     background-size: contain;
     background-position: center;
     z-index: $amalia-ctrl-bar-z-index;
+
     .thumbnail {
       height: 100%;
       width: 100%;
-      background-size: 100%,100%;
+      background-size: 100%, 100%;
     }
+
     .tc-thumbnail {
       font-size: 14px;
       background: rgba(34, 34, 34, 0.9);
@@ -93,11 +96,13 @@
         }
       }
     }
+
     &.pinned {
       .amalia-svg-pin-size {
         background: black;
       }
     }
+
     &.activated, &:hover, &.pinned {
       .control-bar {
         display: flex;
@@ -146,12 +151,15 @@
       position: relative;
       padding: 0;
       margin: 0 5px 0 5px;
+
       &.show {
         display: unset;
       }
+
       &.menu {
         width: 25px;
       }
+
       &.text {
         color: $amalia-player-bg-color1;
       }
@@ -166,6 +174,7 @@
         text-align: center;
         font-size: 12px;
         font-weight: bold;
+
         &.show {
           visibility: visible;
         }
@@ -176,6 +185,7 @@
         position: relative;
         cursor: pointer;
         height: 100%;
+
         .value {
           top: 12px;
           text-align: center;
@@ -207,6 +217,7 @@
           padding: 0;
           margin: 0;
           top: 0;
+          left: 0;
           position: absolute;
           background: transparent;
           opacity: 1;
@@ -372,8 +383,10 @@
         right: 10%;
         // top: -133px;
         bottom: 50px;
+
         &.on {
           display: block;
+
           ul {
             background-color: $amalia-ctrl-bar-bg-color;
             padding: 0;
@@ -382,6 +395,7 @@
             width: 180px;
             position: relative;
             bottom: 23px;
+
             & > li:not(:first-child) {
               text-align: left;
               display: block;
@@ -448,6 +462,7 @@
           bottom: 23px;
           position: relative;
           background-color: $amalia-ctrl-bar-bg-color;
+
           .channel-volume-control {
             .channel-volume-control-left,
             .channel-volume-control-mid,
@@ -559,25 +574,31 @@
     &.activated {
       height: 50px;
       display: block;
+
       .slider {
         height: 50px;
         width: 95%;
+
         > div {
           display: none;
+
           &.selected {
             display: block;
             height: 50px;
+
             .playback-rate-values {
               padding: 0;
               margin: 0 0 0 10px;
               position: relative;
               list-style-type: none;
+
               .playbackrate-value {
                 text-align: center;
                 display: inline-table;
                 color: $amalia-ctrl-bar-pslider-bg-color;
                 cursor: pointer;
                 width: calc(100% / 17);
+
                 &:before {
                   content: "";
                   width: 6px;
@@ -590,18 +611,23 @@
                   display: block;
                   margin: 0 auto 0;
                 }
+
                 &.active, &:hover {
                   font-weight: bold;
                   color: white;
                 }
+
                 &.first {
                   text-align: left;
+
                   &:before {
                     margin-left: 0;
                   }
                 }
+
                 &.last {
                   text-align: right;
+
                   &:before {
                     margin-right: 0;
                   }
@@ -612,6 +638,7 @@
 
         }
       }
+
       .thumb {
         padding: 0;
         margin: 0 0 0 10px;
@@ -621,6 +648,7 @@
         height: 1px;
         display: block !important;
         top: -17px;
+
         &:before {
           top: -3px;
           display: block;
@@ -635,7 +663,8 @@
           z-index: 2101;
           touch-action: none;
           user-select: none;
-          .line , .second-line , .last-line {
+
+          .line, .second-line, .last-line {
             width: 1px;
             height: 4px;
             background: #fff;
@@ -643,26 +672,32 @@
             top: 2px;
             border: none;
           }
+
           .line {
             left: 4px;
           }
+
           .second-line {
             left: 7px;
           }
+
           .last-line {
             left: 10px;
           }
         }
 
       }
+
       .menu-slider {
-          visibility: visible;
-          width: 42px;
-          height: 50px;
-          border-left: 2px solid var(--amalia-border-buttons-bg-color, #1a0c0c);
-          border-top: 2px solid var(--amalia-border-buttons-bg-color, #1a0c0c);
+        visibility: visible;
+        width: 42px;
+        height: 50px;
+        border-left: 2px solid var(--amalia-border-buttons-bg-color, #1a0c0c);
+        border-top: 2px solid var(--amalia-border-buttons-bg-color, #1a0c0c);
+
         .menu {
           display: none;
+
           &.on {
             display: block;
             position: absolute;
@@ -671,18 +706,21 @@
             height: 55px;
             bottom: 45px;
             right: 0;
+
             > div {
               padding-left: 15px;
               cursor: pointer;
               font-size: 14px;
               line-height: 20px;
               padding-top: 5px;
+
               &.selected {
                 color: #00b0e8;
               }
             }
           }
         }
+
         .amalia-svg-switch-size {
           width: 25px;
           height: 16px;
@@ -710,6 +748,7 @@
           z-index: 2100;
           border: 0;
           border-radius: 0;
+
           &::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -718,7 +757,7 @@
             background: $amalia-primary-color;
             cursor: grab;
             position: relative;
-            top : -9px;
+            top: -9px;
           }
 
           &::-moz-range-thumb {
@@ -745,23 +784,29 @@
             z-index: 2070;
             margin-top: 0px;
             cursor: pointer;
+
             &.equal {
               width: 5.5% !important;
+
               &::after {
                 width: 5.5%;
               }
             }
+
             &.active {
               //color: $amalia-ctrl-bar-pslider-bg-color-hover;
               color: white;
               font-weight: bold;
+
               &::after {
                 display: none;
               }
             }
+
             &.last::after {
               text-align: right;
             }
+
             &.first::after {
               text-align: left;
             }
@@ -781,17 +826,20 @@
         }
       }
     }
+
     &.s, &.ms {
       display: none;
     }
 
-    }
+  }
+
   .menu-slider {
     visibility: hidden;
     position: absolute;
     bottom: 0px;
     right: 0px;
   }
+
   .controls-reduced-container {
     display: none;
 
@@ -803,6 +851,7 @@
       z-index: $amalia-ctrl-bar-z-index;
       top: calc(50% - 17px);
       left: calc(50% - 17px);
+
       .icon {
         height: 32px;
         width: 32px;
@@ -813,12 +862,14 @@
 
   .controls-menu {
     display: none;
+
     &.m, &.sm {
       display: none;
       position: absolute;
       z-index: $amalia-volume-bar-z-index;
       bottom: 73px;
       right: 10px;
+
       &.pinned {
         bottom: 110px;
       }
@@ -834,6 +885,7 @@
         margin: 0;
         width: max-content;
         padding: 0 10px 0 10px;
+
         li {
           text-align: left;
           display: block;
@@ -843,25 +895,30 @@
           color: white;
           position: relative;
           background-color: $amalia-ctrl-bar-bg-color;
+
           .text-right {
             float: right;
             margin-right: 5px;
             margin-left: 30px;
           }
+
           &.subtitle.on, &.aspect-ratio.on {
             .ratio {
               display: none;
             }
+
             .amalia-svg-right-size {
               float: left;
               transform: rotate(180deg);
             }
           }
+
           &:hover {
             background-color: rgba(255, 255, 255, 0.45);
 
             ul {
               background-color: $amalia-ctrl-bar-bg-color;
+
               li {
                 // padding: 0;
               }
@@ -896,6 +953,7 @@
               background-color: $amalia-ctrl-bar-bg-color;
               margin: 0;
               padding: 0;
+
               li {
                 padding-left: 31px;
               }
@@ -942,20 +1000,25 @@
       }
     }
   }
+
   .time-label {
     position: absolute;
     height: 25px;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.45) 57.88%, rgba(0, 0, 0, 0.6) 100%);
+
     & > span {
       display: inline-block;
     }
+
     &.s {
       display: none;
-      &.activated,&.pinned {
+
+      &.activated, &.pinned {
         display: none;
       }
     }
-    &.activated,&.pinned {
+
+    &.activated, &.pinned {
       text-align: right;
       height: 25px;
       width: 100%;
@@ -967,17 +1030,21 @@
       font-size: 12px;
       bottom: 56px;
       line-height: 25px;
+
       .time-duration {
         margin-right: 18px;
       }
+
       .time-current {
         margin-right: 3px;
       }
     }
+
     &.pinned {
       bottom: 106px;
     }
   }
+
   // hack for firefox
   @-moz-document url-prefix() {
     .playback-rate-labels {
