@@ -187,7 +187,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:169
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:168
 
 **Returns:** *object & object & object & object & object & object & object & object & object & object & object & object & object & object*
 
@@ -263,7 +263,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:172
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:171
 
 **Parameters:**
 

@@ -33,6 +33,7 @@ In charge to outputs a message to the web console
 * [log](_src_app_core_logger_default_logger_.defaultlogger.md#private-log)
 * [logLevel](_src_app_core_logger_default_logger_.defaultlogger.md#loglevel)
 * [state](_src_app_core_logger_default_logger_.defaultlogger.md#state)
+* [status](_src_app_core_logger_default_logger_.defaultlogger.md#status)
 * [trace](_src_app_core_logger_default_logger_.defaultlogger.md#trace)
 * [warn](_src_app_core_logger_default_logger_.defaultlogger.md#warn)
 
@@ -86,7 +87,7 @@ Defined in src/app/core/logger/default-logger.ts:9
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:81
+Defined in src/app/core/logger/default-logger.ts:85
 
 **Parameters:**
 
@@ -105,7 +106,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:85
+Defined in src/app/core/logger/default-logger.ts:89
 
 **Parameters:**
 
@@ -124,7 +125,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:89
+Defined in src/app/core/logger/default-logger.ts:93
 
 **Parameters:**
 
@@ -143,7 +144,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:93
+Defined in src/app/core/logger/default-logger.ts:97
 
 **Parameters:**
 
@@ -160,7 +161,7 @@ ___
 
 ▸ **log**(`level`: [LoggerLevel](../enums/_src_app_core_logger_logger_level_.loggerlevel.md), `log`: [LoggerData](../interfaces/_src_app_core_logger_logger_data_.loggerdata.md)): *void*
 
-Defined in src/app/core/logger/default-logger.ts:40
+Defined in src/app/core/logger/default-logger.ts:44
 
 Outputs the message to the web console
 
@@ -181,7 +182,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:19
+Defined in src/app/core/logger/default-logger.ts:23
 
 **Parameters:**
 
@@ -199,7 +200,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:28
+Defined in src/app/core/logger/default-logger.ts:32
 
 **Parameters:**
 
@@ -211,13 +212,25 @@ Name | Type |
 
 ___
 
+###  status
+
+▸ **status**(): *boolean*
+
+*Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
+
+Defined in src/app/core/logger/default-logger.ts:19
+
+**Returns:** *boolean*
+
+___
+
 ###  trace
 
 ▸ **trace**(`msg`: string, `data?`: any): *void*
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:98
+Defined in src/app/core/logger/default-logger.ts:102
 
 **Parameters:**
 
@@ -236,7 +249,7 @@ ___
 
 *Implementation of [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/logger/default-logger.ts:102
+Defined in src/app/core/logger/default-logger.ts:106
 
 **Parameters:**
 

@@ -22,6 +22,7 @@ Logger interface
 * [info](_src_app_core_logger_logger_interface_.loggerinterface.md#info)
 * [logLevel](_src_app_core_logger_logger_interface_.loggerinterface.md#loglevel)
 * [state](_src_app_core_logger_logger_interface_.loggerinterface.md#state)
+* [status](_src_app_core_logger_logger_interface_.loggerinterface.md#status)
 * [trace](_src_app_core_logger_logger_interface_.loggerinterface.md#trace)
 * [warn](_src_app_core_logger_logger_interface_.loggerinterface.md#warn)
 
@@ -31,7 +32,7 @@ Logger interface
 
 ▸ **debug**(`msg`: string, `data?`: any): *void*
 
-Defined in src/app/core/logger/logger-interface.ts:28
+Defined in src/app/core/logger/logger-interface.ts:29
 
 In charge to call Log with log type
 
@@ -50,7 +51,7 @@ ___
 
 ▸ **error**(`msg`: string, `data?`: any): *void*
 
-Defined in src/app/core/logger/logger-interface.ts:49
+Defined in src/app/core/logger/logger-interface.ts:50
 
 In charge to call Log with log type
 
@@ -69,7 +70,7 @@ ___
 
 ▸ **fatal**(`msg`: string, `data?`: any): *void*
 
-Defined in src/app/core/logger/logger-interface.ts:56
+Defined in src/app/core/logger/logger-interface.ts:57
 
 In charge to call Log with log type
 
@@ -88,7 +89,7 @@ ___
 
 ▸ **info**(`msg`: string, `data?`: any): *void*
 
-Defined in src/app/core/logger/logger-interface.ts:35
+Defined in src/app/core/logger/logger-interface.ts:36
 
 In charge to call Log with log type
 
@@ -107,7 +108,7 @@ ___
 
 ▸ **logLevel**(`level`: string): *void*
 
-Defined in src/app/core/logger/logger-interface.ts:9
+Defined in src/app/core/logger/logger-interface.ts:10
 
 Set log level
 
@@ -125,7 +126,7 @@ ___
 
 ▸ **state**(`state`: boolean): *any*
 
-Defined in src/app/core/logger/logger-interface.ts:14
+Defined in src/app/core/logger/logger-interface.ts:15
 
 Set log state
 
@@ -139,11 +140,21 @@ Name | Type |
 
 ___
 
+###  status
+
+▸ **status**(): *boolean*
+
+Defined in src/app/core/logger/logger-interface.ts:5
+
+**Returns:** *boolean*
+
+___
+
 ###  trace
 
 ▸ **trace**(`msg`: string, `data?`: any): *void*
 
-Defined in src/app/core/logger/logger-interface.ts:21
+Defined in src/app/core/logger/logger-interface.ts:22
 
 In charge to call Log with log type
 
@@ -162,7 +173,7 @@ ___
 
 ▸ **warn**(`msg`: string, `data?`: any): *void*
 
-Defined in src/app/core/logger/logger-interface.ts:42
+Defined in src/app/core/logger/logger-interface.ts:43
 
 In charge to call Log with log type
 
