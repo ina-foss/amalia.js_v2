@@ -26,6 +26,7 @@ Specified custom loader when uses switch channel audio,  loader  retry to load a
 * [_audioChannel](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#_audiochannel)
 * [context](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#context)
 * [getCacheAge](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#optional-getcacheage)
+* [getResponseHeader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#optional-getresponseheader)
 * [stats](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#stats)
 
 ### Accessors
@@ -70,7 +71,7 @@ ___
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[context](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#context)*
 
-Defined in node_modules/hls.js/dist/hls.js.d.ts:2092
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2277
 
 ___
 
@@ -80,7 +81,7 @@ ___
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[getCacheAge](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#optional-getcacheage)*
 
-Defined in node_modules/hls.js/dist/hls.js.d.ts:2091
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2275
 
 `getCacheAge()` is called by hls.js to get the duration that a given object
 has been sitting in a cache proxy when playing live.  If implemented,
@@ -96,13 +97,33 @@ For HTTP based loaders, this should return the contents of the "age" header.
 
 ___
 
+### `Optional` getResponseHeader
+
+• **getResponseHeader**? : *function*
+
+*Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[getResponseHeader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#optional-getresponseheader)*
+
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2276
+
+#### Type declaration:
+
+▸ (`name`: string): *string | null*
+
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`name` | string |
+
+___
+
 ###  stats
 
 • **stats**: *LoaderStats*
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[stats](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#stats)*
 
-Defined in node_modules/hls.js/dist/hls.js.d.ts:2093
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2278
 
 ## Accessors
 
@@ -134,7 +155,7 @@ Name | Type |
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[abort](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#abort)*
 
-Defined in node_modules/hls.js/dist/hls.js.d.ts:2080
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2264
 
 **Returns:** *void*
 
@@ -146,7 +167,7 @@ ___
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[destroy](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#destroy)*
 
-Defined in node_modules/hls.js/dist/hls.js.d.ts:2079
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2263
 
 **Returns:** *void*
 
@@ -158,7 +179,7 @@ ___
 
 *Inherited from [HlsCustomFLoader](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md).[load](_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md#load)*
 
-Defined in node_modules/hls.js/dist/hls.js.d.ts:2081
+Defined in node_modules/hls.js/dist/hls.js.d.ts:2265
 
 **Parameters:**
 
