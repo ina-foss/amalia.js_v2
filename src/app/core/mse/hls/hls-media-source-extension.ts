@@ -1,12 +1,16 @@
 import {MediaSourceExtension} from '../media-source-extension';
-import Hls from 'hls.js';
+import Hls, {FragmentLoaderContext, Loader, FragmentLoaderConstructor} from 'hls.js';
 import {PlayerConfigData} from '../../config/model/player-config-data';
 import {AmaliaException} from '../../exception/amalia-exception';
 import {AutoBind} from '../../decorator/auto-bind.decorator';
 import {PlayerEventType} from '../../constant/event-type';
 import {EventEmitter} from 'events';
-import {HlsCustomFLoader} from './hls-custom-f-loader';
+import {CustomFragmentLoader} from './hls-custom-f-loader';
 import {LoggerInterface} from '../../logger/logger-interface';
+
+function createCustomFragmentLoader(config: any): Loader<FragmentLoaderContext> {
+    return new CustomFragmentLoader(config);
+}
 
 /**
  * In  charge to handle HSL Media extension
@@ -41,7 +45,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             config.hls.config = Hls.DefaultConfig;
             config.hls.config.debug = this.logger.status();
         }
-        // config.hls.config.fLoader = HlsCustomFLoader;
+        config.hls.config.fLoader = createCustomFragmentLoader as unknown as FragmentLoaderConstructor;
         this.hlsPlayer = new Hls(config.hls.config);
         this.eventEmitter.on(PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
     }
@@ -86,19 +90,20 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             // handle events
             this.hlsPlayer.on(Hls.Events.MANIFEST_PARSED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
-
             if (config.autoplay) {
                 this.mediaElement.play();
             }
         } else {
             this.logger.warn('Error to set source', config.src);
             this.mainMediaSrc = null;
+            this.hlsPlayer.destroy();
         }
     }
 
     getBackwardsSrc(): string | MediaStream | MediaSource | Blob | null {
         return this.backwardsMediaSrc;
     }
+
     switchToMainSrc(): Promise<void> {
         return (this.reverseMode) ? this.switchSrc(this.mainMediaSrc, false) : Promise.resolve();
     }
@@ -116,9 +121,9 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.logger.debug(`Switch src :${src}  ${reverseMode}`);
             this.currentTime = this.mediaElement.currentTime;
             this.duration = this.mediaElement.duration;
-            /*this.mediaElement.pause();
+            this.mediaElement.pause();
             this.hlsPlayer.stopLoad();
-            this.hlsPlayer.detachMedia();*/
+            this.hlsPlayer.detachMedia();
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(src);
             this.reverseMode = reverseMode;
@@ -163,11 +168,14 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      */
     @AutoBind
     private handleAudioChannelChange(event) {
-        this.logger.debug('Manifest loaded', event);
+        this.logger.debug('handleAudioChannelChange', event);
+        this.hlsPlayer.userConfig['audioChannel'] = event + 2;
     }
+
     getConfig() {
         return this.hlsPlayer.config;
     }
+
     setMaxBufferLengthConfig(value) {
         this.hlsPlayer.config.maxBufferLength = value;
     }

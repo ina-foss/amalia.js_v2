@@ -1355,4 +1355,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changeVolumeCanal(this.leftVolumeSlider.nativeElement.value, 'l');
         this.changeVolumeCanal(this.rightVolumeSlider.nativeElement.value, 'r');
     }
+
+    /**
+     * handle change track
+     * @param trackId track id
+     */
+    changeAudioTrack(trackId) {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.AUDIO_CHANNEL_CHANGE, trackId);
+    }
 }

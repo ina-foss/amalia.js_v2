@@ -18,6 +18,7 @@ describe('Test HLS custom loader', () => {
         autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
         , backwardsSrc: backwardSrc
     };
+
     /*const hlsPlayer = new HLSMediaSourceExtension(component, eventEmitter, config, logger);
     hlsPlayer.config.hls.config.fLoader = HlsCustomFLoader;
     const lConfig: LoaderConfig = {timeout: 30, maxRetry: 4, retryDelay: 30, maxRetryDelay: 30};

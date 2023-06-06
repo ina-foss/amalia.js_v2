@@ -66,7 +66,7 @@
     });
 
     function loadResource() {
-        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB07032005.01?type=stream&protocol=hls';
+        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
         const pluginsConfiguration = {
             "CONTROL_BAR-PLAYER": {
                 "data": [
@@ -176,7 +176,11 @@
                         "zone": 3,
                         "data": {
                             "channelMergeVolume": false,
-                            "channelMergerNode": null
+                            "channelMergerNode": null,
+                            "channels": [
+                                {label: "fr", track: 1},
+                                {label: "en", track: 2}
+                            ]
                         },
                         "priority": 1
                     }
@@ -200,7 +204,7 @@
 
     function addStoryboard() {
         document.getElementById('storyboard').removeEventListener('click', addStoryboard);
-        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER2"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start","itemPerLine":5}}'>
+        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start","itemPerLine":5}}'>
                 </amalia-storyboard>`;
     }
 </script>
