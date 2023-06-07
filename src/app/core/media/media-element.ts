@@ -7,6 +7,7 @@ import {PlayerConfigData} from '../config/model/player-config-data';
 import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
 import {DefaultLogger} from '../logger/default-logger';
+
 /**
  * Media element
  */
@@ -39,6 +40,7 @@ export class MediaElement {
     public audioContextSplitter = null;
     public panLeft: GainNode = null;
     public panRight: GainNode = null;
+    public stereoNode: StereoPannerNode = null;
     /**
      * play a video backwards
      */
@@ -60,6 +62,7 @@ export class MediaElement {
      * Force show button play when video is paused (handle playbackrate change by images)
      */
     private force = false;
+
     /**
      * Init media element for handle html video element
      * @param mediaElement html video element
@@ -194,47 +197,63 @@ export class MediaElement {
      * Sets the volume. Accepts an integer between 0 and 100.
      */
     setVolume(volumePercent: number, volumeSide?: string) {
+        const panVolume = this.getPanNodeVolume(volumePercent);
         this.logger.debug(`setVolume change side :${volumeSide} volume: ${volumePercent} with same volume ${this._withMergeVolume}`);
         if (this._withMergeVolume === true) {
             this.volumeLeft = volumePercent;
             this.volumeRight = volumePercent;
-            if (this.audioContext) {
-                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            if (this.audioContext && this.panLeft !== null && this.panRight !== null) {
+                this.panRight.gain.setValueAtTime(panVolume, this.audioContext.currentTime);
+                this.panLeft.gain.setValueAtTime(panVolume, this.audioContext.currentTime);
+            } else if (this.stereoNode) {
+                this.stereoNode.pan.value = this.getPanNodeVolume(volumePercent);
             }
         } else {
+            const vol = Math.max(this.volumeLeft, this.volumeRight);
             this.setVolumeSideValues(volumeSide, volumePercent);
+            this.mediaElement.volume = Math.min(vol / 100, 1);
         }
         if (!this.audioContext) {
             this.mediaElement.volume = Math.min(volumePercent / 100, 1);
         }
     }
+
     setVolumeSideValues(volumeSide, volumePercent) {
+        const panVolume = (volumePercent / 100 - 0.5) * 2;
+        const stereoPanVolume = this.getPanNodeVolume(this.volumeLeft) - this.getPanNodeVolume(this.volumeRight);
         if (volumeSide === 'r') {
             this.volumeRight = volumePercent;
-            if (this.audioContext) {
-                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            if (this.audioContext && this.panRight) {
+                this.panRight.gain.setValueAtTime(panVolume, this.audioContext.currentTime);
+            } else if (this.stereoNode) {
+                this.stereoNode.pan.value = stereoPanVolume;
             }
         } else if (volumeSide === 'l') {
             this.volumeLeft = volumePercent;
-            if (this.audioContext) {
-                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            if (this.audioContext && this.panLeft) {
+                this.panLeft.gain.setValueAtTime(panVolume, this.audioContext.currentTime);
+            } else if (this.stereoNode) {
+                this.stereoNode.pan.value = stereoPanVolume;
             }
         } else {
             this.volumeRight = volumePercent;
             this.volumeLeft = volumePercent;
-            if (this.audioContext) {
-                this.panRight.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
-                this.panLeft.gain.setValueAtTime(volumePercent / 100, this.audioContext.currentTime);
+            if (this.audioContext && this.panLeft && this.panRight) {
+                this.panRight.gain.setValueAtTime(panVolume, this.audioContext.currentTime);
+                this.panLeft.gain.setValueAtTime(panVolume, this.audioContext.currentTime);
+            } else if (this.stereoNode) {
+                this.stereoNode.pan.value = stereoPanVolume;
             }
         }
     }
+
     /*
     Set value of reverseMode
      */
     setReverseMode(value) {
         this.reverseMode = value;
     }
+
     /**
      * Return current position in seconds
      */
@@ -289,6 +308,7 @@ export class MediaElement {
             this.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_CHANGE, speed);
         }
     }
+
     // Change src if negative playbackrate
     private setNegativePlaybackrate(speed) {
         const currentTime = this.getCurrentTime();
@@ -298,7 +318,6 @@ export class MediaElement {
                 this.mse.switchToBackwardsSrc().then(() => {
                     if (this.mediaElement) {
                         this.mediaElement.playbackRate = Math.abs(speed);
-                        // this.setCurrentTime((Math.max(0, duration - currentTime)));
                     }
                 });
             } else {
@@ -307,6 +326,7 @@ export class MediaElement {
         }
         this.switched = true;
     }
+
     // Rewind by interval if backwardSrc is not configured
     private setRewindInterval(speed, currentTime) {
         clearInterval(this.intervalRewind);
@@ -322,6 +342,7 @@ export class MediaElement {
             }
         }, 30);
     }
+
     private setPositivePlaybackrate(speed) {
         if (this.mediaElement) {
             this.mediaElement.playbackRate = Math.abs(speed);
@@ -330,6 +351,7 @@ export class MediaElement {
             }
         }
     }
+
     /**
      * Return true if media is paused
      * @return boolean true is paused
@@ -456,6 +478,7 @@ export class MediaElement {
     private simulatePlay($event) {
         this.force = $event;
     }
+
     /**
      * Invoked when first frame of the media has finished loading.
      */
@@ -587,15 +610,7 @@ export class MediaElement {
         this.logger.info('initAudioChannelMerger');
         this.audioContext = new AudioContext();
         this.mediaElement.crossOrigin = 'anonymous';
-        const source = this.audioContext.createMediaElementSource(this.mediaElement);
-        this.audioContextSplitter = this.audioContext.createChannelSplitter(2);
-        this.panLeft = this.audioContext.createGain();
-        this.panRight = this.audioContext.createGain();
-        // Connect the source to the splitter
-        source.connect(this.audioContextSplitter, 0, 0);
-        // Connect splitter' outputs to each Gain Nodes
-        this.audioContextSplitter.connect(this.panLeft, 0);
-        this.audioContextSplitter.connect(this.panRight, 1);
+
     }
 
     /**
@@ -604,6 +619,15 @@ export class MediaElement {
     public setupAudioNodes(data: any) {
         if (this.audioContext) {
             if (data.channelMergerNode !== null) {
+                const source = this.audioContext.createMediaElementSource(this.mediaElement);
+                this.audioContextSplitter = this.audioContext.createChannelSplitter(2);
+                this.panLeft = this.audioContext.createGain();
+                this.panRight = this.audioContext.createGain();
+                // Connect the source to the splitter
+                source.connect(this.audioContextSplitter, 0, 0);
+                // Connect splitter' outputs to each Gain Nodes
+                this.audioContextSplitter.connect(this.panLeft, 0);
+                this.audioContextSplitter.connect(this.panRight, 1);
                 const panner = this.audioContext.createPanner();
                 panner.coneOuterGain = 0.9;
                 panner.coneOuterAngle = 180;
@@ -620,11 +644,6 @@ export class MediaElement {
                 panner.connect(this.audioContext.destination);
             } else {
                 if (data.channelMerger === true) {
-                    // Connect Left and Right Nodes to the output
-                    // Assuming stereo as initial status
-                    this.panLeft.connect(this.audioContext.destination, 0);
-                    this.panRight.connect(this.audioContext.destination, 0);
-                } else {
                     // Create a merger node, to get both signals back together
                     const merger = this.audioContext.createChannelMerger(2);
                     // Connect both channels to the Merger
@@ -632,6 +651,11 @@ export class MediaElement {
                     this.panRight.connect(merger, 0, 1);
                     // Connect the Merger Node to the final audio destination
                     merger.connect(this.audioContext.destination);
+                } else {
+                    // default pan set to 0 - center
+                    this.stereoNode = new StereoPannerNode(this.audioContext, {pan: 0});
+                    const source = this.audioContext.createMediaElementSource(this.mediaElement);
+                    source.connect(this.stereoNode).connect(this.audioContext.destination);
                 }
             }
 
@@ -639,6 +663,14 @@ export class MediaElement {
             this.initAudioChannelMerger();
             this.setupAudioNodes(data);
         }
+    }
+
+    /**
+     * Return pan volume with range -1 to 1
+     * @param volumePercent volume
+     */
+    getPanNodeVolume(volumePercent: number) {
+        return (volumePercent / 100 - 0.5) * 2;
     }
 
 }

@@ -132,7 +132,7 @@
   .storyboard {
     border: 1px solid $amalia-plugin-storyboard-box-border-color;
     flex-wrap: wrap;
-    height: 500px;
+    height: inherit;
     width: inherit;
     display: flex;
     position: relative;
@@ -161,7 +161,6 @@
         border-radius: 5%;
         overflow: hidden;
         border: solid 1px $amalia-plugin-storyboard-bg-color;
-        box-shadow: 0 2px 6px 0 rgba(0,0,0,0.25);
 
         &:hover {
           border-color: $amalia-plugin-storyboard-box-color;
@@ -169,9 +168,11 @@
         &.active {
           border-color: $amalia-plugin-storyboard-box-color;
           background-color: $amalia-plugin-storyboard-box-color;
+          box-shadow: 0 2px 6px 0 rgba(0,0,0,0.25);
           .label {
             background-color: $amalia-plugin-storyboard-box-color;
             color: #FFFFFF;
+            font-weight: bold;
           }
         }
 
