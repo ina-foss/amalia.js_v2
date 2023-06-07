@@ -318,7 +318,6 @@ export class MediaElement {
                 this.mse.switchToBackwardsSrc().then(() => {
                     if (this.mediaElement) {
                         this.mediaElement.playbackRate = Math.abs(speed);
-                        // this.setCurrentTime((Math.max(0, duration - currentTime)));
                     }
                 });
             } else {

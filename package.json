@@ -38,7 +38,7 @@
     "@ina/amalia-model": "^0.2.5",
     "document-register-element": "^1.7.2",
     "dompurify": "^2.0.8",
-    "hls.js": "^1.1.2",
+    "hls.js": "^1.4.3",
     "interactjs": "^1.9.10",
     "lodash": "^4.17.15",
     "ng2-tooltip-directive": "^2.9.22",

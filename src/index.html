@@ -66,7 +66,8 @@
     });
 
     function loadResource() {
-        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB07032005.01?type=stream&protocol=hls';
+        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
+        const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls&rewind=1';
         const pluginsConfiguration = {
             "CONTROL_BAR-PLAYER": {
                 "data": [
@@ -110,11 +111,12 @@
                         "priority": 1
                     },
                     {
-                        "label": "backward-frame",
-                        "icon": "backward-frame",
-                        "control": "backward-frame",
-                        "zone": 2,
-                        "priority": 1
+                        label: 'Retour ralenti (Ctrl + Maj + Flèche gauche)',
+                        icon: 'slow-backward',
+                        control: 'slow-backward',
+                        zone: 2,
+                        priority: 1,
+                        key: 'Control + Shift + ArrowLeft'
                     },
                     {
                         "label": "backward-5seconds",
@@ -176,31 +178,43 @@
                         "zone": 3,
                         "data": {
                             "channelMergeVolume": false,
-                            "channelMergerNode": null
+                            "channelMergerNode": null,
+                            "tracks": [
+                                {label: "ssfr", track: 1},
+                                {label: "essn", track: 2}
+                            ]
                         },
                         "priority": 1
                     }
                 ]
             }
         }
-
-        fetch(url)
+        fetch(rewindUrl)
                 .then((response) => response.text())
-                .then((data) => {
-                    const config = {
-                        player: {"src": data, "hls": {"enable": true}},
-                        pluginsConfiguration
-                    };
-                    let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
-                    playerElement += `config='${JSON.stringify(config)}' >`;
-                    playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
-                    document.getElementById("player").innerHTML = playerElement;
+                .then((rewindData) => {
+                    fetch(url)
+                            .then((response) => response.text())
+                            .then((data) => {
+                                const config = {
+                                    player: {
+                                        src: data,
+                                        hls: {"enable": true},
+                                        crossOrigin: "anonymous",
+                                        backwardsSrc: rewindData
+                                    },
+                                    pluginsConfiguration
+                                };
+                                let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
+                                playerElement += `config='${JSON.stringify(config)}' >`;
+                                playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
+                                document.getElementById("player").innerHTML = playerElement;
+                            });
                 });
     }
 
     function addStoryboard() {
         document.getElementById('storyboard').removeEventListener('click', addStoryboard);
-        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER2"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start","itemPerLine":5}}'>
+        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start","itemPerLine":5}}'>
                 </amalia-storyboard>`;
     }
 </script>

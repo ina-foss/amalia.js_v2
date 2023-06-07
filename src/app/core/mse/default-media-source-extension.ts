@@ -52,6 +52,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
 
     switchToMainSrc(): Promise<void> {
         return new Promise((resolve) => {
+            this.destroy();
             this.mainSource.src = this.mediaSrc;
             this.mediaElement.load();
             this.mediaElement.play().then(() => resolve());
@@ -60,6 +61,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
 
     switchToBackwardsSrc(): Promise<void> {
         return new Promise((resolve) => {
+            this.destroy();
             this.mainSource.src = this.backwardsMediaSrc;
             this.mediaElement.load();
             this.mediaElement.play().then(() => resolve());
@@ -71,6 +73,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
             this.mediaElement
                 .querySelectorAll('source')
                 .forEach(e => e.parentNode.removeChild(e));
+            this.mainSource = document.createElement('source');
         } catch (e) {
             this.logger.warn('Destroy old source');
         }
