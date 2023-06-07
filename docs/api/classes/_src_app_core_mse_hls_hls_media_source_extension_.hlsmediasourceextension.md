@@ -183,13 +183,13 @@ ___
 
 ###  getConfig
 
-▸ **getConfig**(): *object & object & object & object & object & object & object & object & object & object & object & object & object & object*
+▸ **getConfig**(): *object & object & object & object & object & object & object & object & object & object & object & object & object & object & object & object*
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
 Defined in src/app/core/mse/hls/hls-media-source-extension.ts:168
 
-**Returns:** *object & object & object & object & object & object & object & object & object & object & object & object & object & object*
+**Returns:** *object & object & object & object & object & object & object & object & object & object & object & object & object & object & object & object*
 
 ___
 

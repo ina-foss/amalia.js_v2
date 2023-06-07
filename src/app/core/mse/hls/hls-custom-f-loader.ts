@@ -1,39 +1,18 @@
-import Hls from 'hls.js';
+import Hls, {FragmentLoaderContext, Loader, LoaderContext} from 'hls.js';
 
 /**
  * Specified custom loader when uses switch channel audio,  loader  retry to load audio channel segment
- * // TODO fix Audio channel
  */
-export class HlsCustomFLoader extends Hls.DefaultConfig.loader {
-    constructor(config) {
+export class CustomFragmentLoader extends (Hls.DefaultConfig.loader as new (config: any) => Loader<FragmentLoaderContext>) implements Loader<FragmentLoaderContext> {
+
+    constructor(config: any) {
         super(config);
-        const load = this.load.bind(this);
-        // tslint:disable-next-line:no-shadowed-variable
-        this.load = (context, config, callbacks) => {
-            context.url = context.url.replace(/(\/seg-\d+-v\d+-a)\d+(\.ts)/i, '$1' + this._audioChannel + '$2');
-            const originalCallback = callbacks;
-            const onSuccess = callbacks.onSuccess;
-            // tslint:disable-next-line:no-shadowed-variable
-            callbacks.onSuccess = (response, stats, context, networkDetails) => {
-                if ((response.data as ArrayBuffer).byteLength === 0) {
-                    setTimeout(() => {
-                        load(context, config, originalCallback);
-                    }, 500);
-                } else {
-                    onSuccess(response, stats, context, networkDetails);
-                }
-            };
-            load(context, config, callbacks);
-        };
     }
 
-    public _audioChannel = 1;
-
-    get audioChannel(): number {
-        return this._audioChannel;
+    load(context: LoaderContext, loaderConfig: any, callbacks: any) {
+        const audioChannel = loaderConfig.loadPolicy.audioChannel || 1;
+        context.url = context.url.replace(/(\/seg-\d+-v\d+-a)\d+(\.ts)/i, '$1' + audioChannel + '$2');
+        super.load(context, loaderConfig, callbacks);
     }
 
-    set audioChannel(value: number) {
-        this._audioChannel = value;
-    }
 }
