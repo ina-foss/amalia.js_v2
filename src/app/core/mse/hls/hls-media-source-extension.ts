@@ -169,7 +169,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     @AutoBind
     private handleAudioChannelChange(event) {
         this.logger.debug('handleAudioChannelChange', event);
-        this.hlsPlayer.userConfig['audioChannel'] = event + 2;
+        this.hlsPlayer.config.fragLoadPolicy.default['audioChannel'] = event;
     }
 
     getConfig() {
