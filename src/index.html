@@ -7,6 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+    .content{
+        position: relative;
+        display: grid;
+        height: calc(100vh - 100px);
+        column-gap: 5px;
+        row-gap: 5px;
+        grid-auto-rows: minmax(300px, auto);
+        transition: all ease-in-out 0.25s;
+    }
+    </style>
 </head>
 <body>
 
@@ -33,10 +44,9 @@
 <!--        </div>-->
 <!--    </div>-->
 <!--</div>-->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-6 p-2" style="height: 500px;" id="player"></div>
-    </div>
+<div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
+        <div style="grid-area: 1 / 1 / 2 / 3" id="player"></div>
+        <div style="grid-area: 1 / 3 / 3 / 3" id="storyboard">storyboard</div>
 </div>
 <!--<div class="container-fluid">-->
 <!--    <div class="row">-->
@@ -62,12 +72,12 @@
     document.addEventListener('DOMContentLoaded', function () {
         console.log("Dom ready")
         loadResource();
-        //document.getElementById('storyboard').addEventListener('click', addStoryboard);
+        document.getElementById('storyboard').addEventListener('click', addStoryboard);
     });
 
     function loadResource() {
-        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
-        const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls&rewind=1';
+        const url = 'https://front.wsmedia.sas.ina/wsmedia/av:flux:tv:art:20230322T205738:3600?type=stream&protocol=hls';
+        const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/av:flux:tv:art:20230322T205738:3600?type=stream&protocol=hls&rewind=1';
         const pluginsConfiguration = {
             "CONTROL_BAR-PLAYER": {
                 "data": [
@@ -180,8 +190,10 @@
                             "channelMergeVolume": false,
                             "channelMergerNode": null,
                             "tracks": [
-                                {label: "ssfr", track: 1},
-                                {label: "essn", track: 2}
+                                {label: "fr", track: 1},
+                                {label: "fr2", track: 2},
+                                {label: "QAA", track: 3},
+                                {label: "DEP", track: 4}
                             ]
                         },
                         "priority": 1
