@@ -7,7 +7,7 @@ import {PlayerEventType} from '../../constant/event-type';
 import {EventEmitter} from 'events';
 import {CustomFragmentLoader} from './hls-custom-f-loader';
 import {LoggerInterface} from '../../logger/logger-interface';
-
+/* tslint:disable:no-string-literal */
 function createCustomFragmentLoader(config: any): Loader<FragmentLoaderContext> {
     return new CustomFragmentLoader(config);
 }
@@ -180,3 +180,4 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         this.hlsPlayer.config.maxBufferLength = value;
     }
 }
+/* tslint:enable:no-string-literal */
