@@ -132,7 +132,7 @@
   .storyboard {
     border: 1px solid $amalia-plugin-storyboard-box-border-color;
     flex-wrap: wrap;
-    height: inherit;
+    height: $amalia-plugin-storyboard-height;
     width: inherit;
     display: flex;
     position: relative;

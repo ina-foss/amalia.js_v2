@@ -64,3 +64,4 @@ samples/medias/*.*
 
 # Skip tests folder
 .tests/
+.angular/
