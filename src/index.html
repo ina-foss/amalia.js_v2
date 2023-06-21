@@ -47,6 +47,7 @@
 <div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
         <div style="grid-area: 1 / 1 / 2 / 3" id="player"></div>
         <div style="grid-area: 1 / 3 / 3 / 3" id="storyboard">storyboard</div>
+        <div style="grid-area: 2 / 3 / 3 / 1" id="timeline">timeline</div>
 </div>
 <!--<div class="container-fluid">-->
 <!--    <div class="row">-->
@@ -73,11 +74,12 @@
         console.log("Dom ready")
         loadResource();
         document.getElementById('storyboard').addEventListener('click', addStoryboard);
+        document.getElementById('timeline').addEventListener('click', addTimeline);
     });
 
     function loadResource() {
-        const url = 'https://front.wsmedia.sas.ina/wsmedia/av:flux:tv:art:20230322T205738:3600?type=stream&protocol=hls';
-        const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/av:flux:tv:art:20230322T205738:3600?type=stream&protocol=hls&rewind=1';
+        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
+        const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls&rewind=1';
         const pluginsConfiguration = {
             "CONTROL_BAR-PLAYER": {
                 "data": [
@@ -208,12 +210,21 @@
                             .then((response) => response.text())
                             .then((data) => {
                                 const config = {
+                                    debug: true,
+                                    logLevel: "debug",
+                                    timeFormat: "f",
+                                    tcOffset: 3000,
                                     player: {
                                         src: data,
                                         hls: {"enable": true},
                                         crossOrigin: "anonymous",
                                         backwardsSrc: rewindData
                                     },
+                                    dataSources: [
+                                        {
+                                            "url": "http://localhost:4203/metadata/timelines.json"
+                                        }
+                                    ],
                                     pluginsConfiguration
                                 };
                                 let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
@@ -229,6 +240,12 @@
         document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start","itemPerLine":5}}'>
                 </amalia-storyboard>`;
     }
+
+    function addTimeline() {
+        document.getElementById('timeline').removeEventListener('click', addTimeline);
+        document.getElementById('timeline').innerHTML = `<amalia-timeline player-id="PLAYER" plugin-configuration='{"metadataIds":null}'></amalia-timeline>`;
+    }
+
 </script>
 </body>
 </html>

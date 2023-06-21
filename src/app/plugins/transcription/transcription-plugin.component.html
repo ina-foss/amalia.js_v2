@@ -1,9 +1,3 @@
-<!--<div class="header" #header *ngIf="pluginConfiguration && pluginConfiguration.data.title">
-    <div class="resume">
-        <h3 class="heading">{{pluginConfiguration.data?.title}}</h3>
-        <p *ngIf="pluginConfiguration.data?.description">{{pluginConfiguration.data?.description}}</p>
-    </div>
-</div>-->
 <div *ngIf="transcriptions && transcriptions.length>0; then transcriptionBlock; else emptyBlock"></div>
 <div class="search-block" (keyup)="handleShortcut($event)" (click)="searchWord(searchText.value);">
     <div class="search-text">
