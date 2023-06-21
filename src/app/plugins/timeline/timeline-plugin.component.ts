@@ -24,7 +24,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public title: string;
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
-    public listOfBlocks: Array<{ id?: string, label?: string, expendable: boolean, defaultColor?: string, displayState: boolean, data: Array<TimelineLocalisation> }>;
+    public listOfBlocks: Array<{
+        id?: string,
+        label?: string,
+        expendable: boolean,
+        defaultColor?: string,
+        displayState: boolean,
+        data: Array<TimelineLocalisation>
+    }>;
     public enableDragDrop = false;
     public configIsOpen = false;
     public currentTime = 0;
@@ -145,12 +152,21 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
         this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
     }
+
     // Handle metadata properties
     private handleMetadataProperties(listOfMetadata, metadataManager) {
         listOfMetadata.forEach((metadata) => {
             let listOfLocalisations = null;
             try {
                 listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
+                listOfLocalisations.forEach(l => {
+                    if (l.tcIn) {
+                        l.tcIn += this.tcOffset;
+                    }
+                    if (l.tcOut) {
+                        l.tcOut += this.tcOffset;
+                    }
+                });
             } catch (e) {
                 this.logger.warn('Error to parse metadata');
             }
