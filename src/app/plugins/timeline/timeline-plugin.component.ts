@@ -74,7 +74,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private blocksIsOpen = false;
     private lastSelectedColorIdx = -1;
     private blocksDisplayStates: Map<string, boolean> = new Map<string, boolean>();
-    private managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION];
+    private managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION,  DataType.FACES_RECOGNITION];
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, TimelinePluginComponent.PLUGIN_NAME);
@@ -187,7 +187,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     public callSeek(tc: number) {
         this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
-        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc-this.tcOffset);
     }
 
     /**

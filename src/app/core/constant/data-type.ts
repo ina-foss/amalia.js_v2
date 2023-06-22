@@ -9,7 +9,8 @@ export enum DataType {
     /*
     Audio Segmentation
      */
-    AUDIO_SEGMENTATION = 'AUDIO_SEGMENTATION'
+    AUDIO_SEGMENTATION = 'AUDIO_SEGMENTATION',
 
+    FACES_RECOGNITION = 'FACES_RECOGNITION'
 
 }
