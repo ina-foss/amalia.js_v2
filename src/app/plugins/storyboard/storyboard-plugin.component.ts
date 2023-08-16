@@ -154,6 +154,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.selectThumbnail();
         }
         const lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
+        this.selectedTc = this.currentTime;
         if (this.currentTime > lastTc) {
             const clientHeight = this.storyboardElement.nativeElement.clientHeight;
             const elementStyle = this.storyboardElement.nativeElement.style;
