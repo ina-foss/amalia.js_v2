@@ -85,8 +85,8 @@ describe('Test Media element', () => {
     it('Test Volume', () => {
         component.setVolume(50);
         expect(component.getVolume()).toEqual(50);
-        component.setVolume(20, 'r');
-        expect(component.getVolume('r')).toEqual(20);
+        component.setVolume(26, 'r');
+        expect(component.getVolume('r')).toEqual(26);
         component.setVolume(60, 'l');
         expect(component.getVolume('l')).toEqual(60);
         component.withMergeVolume = true;
