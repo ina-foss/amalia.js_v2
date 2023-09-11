@@ -824,7 +824,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * get value
-     * @param event mousevent
+     * @param event click event
      */
     public getMouseValue(event) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
@@ -834,7 +834,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse up
-     * @param event
+     * @param event  click event
      */
     public handleProgressBarMouseUp(event) {
         this.inSliding = false;
