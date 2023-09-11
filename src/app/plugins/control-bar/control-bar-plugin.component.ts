@@ -834,7 +834,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse up
-     * @param value mouse event
+     * @param event
      */
     public handleProgressBarMouseUp(event) {
         this.inSliding = false;
@@ -1162,6 +1162,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public unmute() {
         this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
         this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+        if (this.volumeLeft < 50 || this.volumeRight < 50) {
+            this.mediaPlayerElement.getMediaPlayer().setVolume(50, 'r');
+            this.mediaPlayerElement.getMediaPlayer().setVolume(50, 'l');
+            this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
+            this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+        }
         return this.mediaPlayerElement.getMediaPlayer().unmute();
     }
 
@@ -1392,7 +1398,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * In charge to handle click volume
      */
-    handleClickVolume() {
+    handleMuteUnmuteVolume() {
         const vol = this.mediaPlayerElement.getMediaPlayer().getVolume();
         if (vol === 0) {
             this.unmute();
