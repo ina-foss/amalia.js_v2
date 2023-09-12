@@ -138,13 +138,13 @@
                          (mouseenter)="hideAll();enableVolumeSlider=true; openVolume(c.data)" #volumeButton>
                         <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
                              class="amalia-svg-volume-on-size icon"
-                             (click)="handleClickVolume()"
+                             (click)="handleMuteUnmuteVolume()"
                              #volumeMute>
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                         </svg>
                         <svg *ngIf="volumeLeft == 0 && volumeRight == 0"
                              class="amalia-svg-volume-off-size icon"
-                             (click)="handleClickVolume()"
+                             (click)="handleMuteUnmuteVolume()"
                              #volumeUnmute>
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                         </svg>
@@ -154,8 +154,8 @@
                                 <div class="header-list">Volume (m)</div>
                                 <div class="channel-volume-control">
                                     <div class="channel-volume-control-left">
-                                        <div
-                                                class="channel-volume-icon">
+                                        <div (click)="handleMuteUnmuteVolume()"
+                                             class="channel-volume-icon">
                                             <svg *ngIf="volumeLeft > 0"
                                                  class="amalia-svg-volume-on-size icon">
                                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
@@ -181,8 +181,8 @@
                                         </div>
                                     </div>
                                     <div class="channel-volume-control-right">
-                                        <div
-                                                class="channel-volume-icon">
+                                        <div (click)="handleMuteUnmuteVolume()"
+                                             class="channel-volume-icon">
                                             <svg *ngIf="volumeRight > 0"
                                                  class="amalia-svg-volume-on-size icon">
                                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>

@@ -8,15 +8,15 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
-    .content{
-        position: relative;
-        display: grid;
-        height: calc(100vh - 100px);
-        column-gap: 5px;
-        row-gap: 5px;
-        grid-auto-rows: minmax(300px, auto);
-        transition: all ease-in-out 0.25s;
-    }
+        .content {
+            position: relative;
+            display: grid;
+            height: calc(100vh - 100px);
+            column-gap: 5px;
+            row-gap: 5px;
+            grid-auto-rows: minmax(300px, auto);
+            transition: all ease-in-out 0.25s;
+        }
     </style>
 </head>
 <body>
@@ -45,9 +45,9 @@
 <!--    </div>-->
 <!--</div>-->
 <div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
-        <div style="grid-area: 1 / 1 / 2 / 3" id="player"></div>
-        <div style="grid-area: 1 / 3 / 3 / 3" id="storyboard">storyboard</div>
-        <div style="grid-area: 2 / 3 / 3 / 1" id="timeline">timeline</div>
+    <div style="grid-area: 1 / 1 / 2 / 3" id="player"></div>
+    <div style="grid-area: 1 / 3 / 3 / 3" id="storyboard">storyboard</div>
+    <div style="grid-area: 2 / 3 / 3 / 1" id="timeline">timeline</div>
 </div>
 <!--<div class="container-fluid">-->
 <!--    <div class="row">-->
@@ -78,8 +78,11 @@
     });
 
     function loadResource() {
-        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
-        const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls&rewind=1';
+        // const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
+        // const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls&rewind=1';
+        const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls';
+        const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls&rewind=1';
+
         const pluginsConfiguration = {
             "CONTROL_BAR-PLAYER": {
                 "data": [
@@ -203,36 +206,37 @@
                 ]
             }
         }
-        fetch(rewindUrl)
-                .then((response) => response.text())
-                .then((rewindData) => {
-                    fetch(url)
-                            .then((response) => response.text())
-                            .then((data) => {
-                                const config = {
-                                    debug: true,
-                                    logLevel: "debug",
-                                    timeFormat: "f",
-                                    tcOffset: 3000,
-                                    player: {
-                                        src: data,
-                                        hls: {"enable": true},
-                                        crossOrigin: "anonymous",
-                                        backwardsSrc: rewindData
-                                    },
-                                    dataSources: [
-                                        {
-                                            "url": "http://localhost:4203/metadata/timelines.json"
-                                        }
-                                    ],
-                                    pluginsConfiguration
-                                };
-                                let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
-                                playerElement += `config='${JSON.stringify(config)}' >`;
-                                playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
-                                document.getElementById("player").innerHTML = playerElement;
-                            });
-                });
+        // fetch(rewindUrl)
+        //         .then((response) => response.text())
+        //         .then((rewindData) => {
+        //             fetch(url)
+        //                     .then((response) => response.text())
+        //                     .then((data) => {
+        const config = {
+            debug: true,
+            logLevel: "info",
+            timeFormat: "f",
+            tcOffset: 3000,
+            player: {
+                // src: data,
+                src: "http://localhost:4203/medias/outputlm.mp4",
+                // hls: {"enable": true},
+                crossOrigin: "anonymous",
+                // backwardsSrc: rewindData
+            },
+            dataSources: [
+                {
+                    "url": "http://localhost:4203/metadata/timelines.json"
+                }
+            ],
+            pluginsConfiguration
+        };
+        let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
+        playerElement += `config='${JSON.stringify(config)}' >`;
+        playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
+        document.getElementById("player").innerHTML = playerElement;
+        // });
+        // });
     }
 
     function addStoryboard() {
