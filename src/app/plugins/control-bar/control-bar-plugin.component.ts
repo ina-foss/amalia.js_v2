@@ -1398,12 +1398,24 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * In charge to handle click volume
      */
-    handleMuteUnmuteVolume() {
+    handleMuteUnmuteVolume(side = '') {
         const vol = this.mediaPlayerElement.getMediaPlayer().getVolume();
-        if (vol === 0) {
-            this.unmute();
+        if (side === '') {
+            if (vol === 0) {
+                this.unmute();
+            } else {
+                this.mute();
+            }
         } else {
-            this.mute();
+            if (side === 'r') {
+                const oldVolumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
+                this.volumeRight = (oldVolumeRight === 0) ? 50 : 0;
+                this.changeVolume( this.volumeRight, side);
+            } else if (side === 'l') {
+                const oldVolumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+                this.volumeLeft = (oldVolumeLeft === 0) ? 50 : 0;
+                this.changeVolume( this.volumeLeft, side);
+            }
         }
     }
 
