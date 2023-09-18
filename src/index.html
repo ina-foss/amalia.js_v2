@@ -206,37 +206,37 @@
                 ]
             }
         }
-        // fetch(rewindUrl)
-        //         .then((response) => response.text())
-        //         .then((rewindData) => {
-        //             fetch(url)
-        //                     .then((response) => response.text())
-        //                     .then((data) => {
-        const config = {
-            debug: true,
-            logLevel: "info",
-            timeFormat: "f",
-            tcOffset: 3000,
-            player: {
-                // src: data,
-                src: "http://localhost:4203/medias/outputlm.mp4",
-                // hls: {"enable": true},
-                crossOrigin: "anonymous",
-                // backwardsSrc: rewindData
-            },
-            dataSources: [
-                {
-                    "url": "http://localhost:4203/metadata/timelines.json"
-                }
-            ],
-            pluginsConfiguration
-        };
-        let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
-        playerElement += `config='${JSON.stringify(config)}' >`;
-        playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
-        document.getElementById("player").innerHTML = playerElement;
-        // });
-        // });
+        fetch(rewindUrl)
+                .then((response) => response.text())
+                .then((rewindData) => {
+                    fetch(url)
+                            .then((response) => response.text())
+                            .then((data) => {
+                                const config = {
+                                    debug: true,
+                                    logLevel: "info",
+                                    timeFormat: "f",
+                                    tcOffset: 3000,
+                                    player: {
+                                        src: data,
+                                        // src: "http://localhost:4203/medias/outputlm.mp4",
+                                        hls: {"enable": true},
+                                        crossOrigin: "anonymous",
+                                        backwardsSrc: rewindData
+                                    },
+                                    dataSources: [
+                                        {
+                                            "url": "http://localhost:4203/metadata/timelines.json"
+                                        }
+                                    ],
+                                    pluginsConfiguration
+                                };
+                                let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
+                                playerElement += `config='${JSON.stringify(config)}' >`;
+                                playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
+                                document.getElementById("player").innerHTML = playerElement;
+                            });
+                });
     }
 
     function addStoryboard() {
