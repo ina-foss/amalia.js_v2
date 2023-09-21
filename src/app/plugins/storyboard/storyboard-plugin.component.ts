@@ -123,9 +123,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         }
         // this.init();
     }
+
     @ViewChild('storyboardElement')
     set ele2(v: ElementRef) {
-        if ( !this.storyboardElement) {
+        if (!this.storyboardElement) {
             this.storyboardElement = v;
             this.init();
         }
@@ -144,6 +145,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         }
         return size;
     }
+
     /**
      * Handle time change
      */
@@ -211,11 +213,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public handleScroll(ignoreNextScroll?: boolean) {
         if (this.itemPerLine) {
             if (this.storyboardElement && this.storyboardElement.nativeElement.children.length > 0) {
+                this.updateScrollHeight()
                 const clientHeight = this.storyboardElement.nativeElement.clientHeight;
                 const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
                 const elementStyle = this.storyboardElement.nativeElement.style;
-                this.heightThumbnail = this.storyboardElement.nativeElement.firstElementChild.clientHeight;
-                this.itemPerLine = Math.floor(this.storyboardElement.nativeElement.clientWidth / this.storyboardElement.nativeElement.firstElementChild.clientWidth);
                 Object.assign(elementStyle, {
                     transform: `translateY(${scrollTop}px)`
                 });
@@ -225,8 +226,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             } else {
                 const is = 0;
                 const ie = is + this.itemPerLine;
-                // const scrollTop = this.storyboardElement.nativeElement.scrollTop;
-
                 this.listOfThumbnailFilter = this.listOfThumbnail.slice(is, ie);
             }
         }
@@ -298,6 +297,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.listOfThumbnail = _.range(0, this.duration, interval);
         // close menu
         this.openIntervalList = false;
+        this.updateScrollHeight();
         this.handleScroll(false);
         this.selectThumbnail();
     }
@@ -309,7 +309,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         if (this.storyboardElement) {
             const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
             const thumbnailFilteredNodes = thumbnailElementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
             if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
                 thumbnailFilteredNodes.forEach(thumbnailNode => {
                     this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
@@ -326,17 +326,45 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
                 if (this.activeThumbnail != null) {
                     this.activeThumbnail.classList.add('active');
-                    this.heightThumbnail = this.storyboardElement.nativeElement.firstElementChild.clientHeight;
-                    const totalThumbnail = this.listOfThumbnail.length;
-                    this.itemPerLine = Math.floor(this.storyboardElement.nativeElement.clientWidth / this.storyboardElement.nativeElement.firstElementChild.clientWidth);
-                    const storyBoardHeight = this.heightThumbnail * (totalThumbnail / this.itemPerLine);
-                    Object.assign(this.scrollElement.nativeElement.style, {
-                        height: `${storyBoardHeight}px`
-                    });
-                    this.logger.info(`totalThumbnail : ${totalThumbnail} itemPerLine: ${this.itemPerLine}`);
+                    this.updateScrollHeight();
                 }
             }
         }
+    }
+
+    /**
+     * In charge to update scroll height
+     * @private
+     */
+    private updateScrollHeight() {
+        if (this.storyboardElement) {
+            const totalThumbnail = this.listOfThumbnail.length;
+            this.heightThumbnail = this.storyboardElement.nativeElement.firstElementChild.getBoundingClientRect().height;
+            const itemPos = this.storyboardElement.nativeElement.firstElementChild.getBoundingClientRect().top;
+            let itemPerLine = 0;
+            for (let i = 0; i < this.storyboardElement.nativeElement.children.length; i++) {
+                const top = this.storyboardElement.nativeElement.children.item(i).getBoundingClientRect().top
+                if (itemPos === top) {
+                    itemPerLine++
+                } else {
+                    break;
+                }
+            }
+            this.itemPerLine = itemPerLine;
+            const nbLines = (totalThumbnail / this.itemPerLine);
+            const storyBoardHeight = (this.heightThumbnail + 3) * (nbLines);
+            Object.assign(this.scrollElement.nativeElement.style, {
+                height: `${storyBoardHeight}px`
+            });
+            this.logger.info(`totalThumbnail : ${totalThumbnail} itemPerLine: ${this.itemPerLine} -${itemPerLine} heightThumbnail:${this.heightThumbnail}`);
+        }
+    }
+
+    public handleThumbnailSizeChange(size: 'medium' | 'large') {
+        this.size = size;
+        setTimeout(() => {
+            this.updateThumbnailSize();
+        }, 250);
     }
 
     /**
@@ -344,25 +372,24 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * @param thumbnailNode element to scroll
      */
     private scrollToThumbnail(thumbnailNode: HTMLElement) {
-            const scrollPos = thumbnailNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
-            const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
-            const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
-            const positionB = thumbnailNode.getBoundingClientRect();
-            // check if active element is not visible
-            const visible = (positionB.top + thumbnailNode.clientHeight) >= positionA.top &&
+        const scrollPos = thumbnailNode.offsetTop - this.storyboardElement.nativeElement.offsetTop;
+        const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+        const positionA = this.storyboardElement.nativeElement.getBoundingClientRect();
+        const positionB = thumbnailNode.getBoundingClientRect();
+        // check if active element is not visible
+        const visible = (positionB.top + thumbnailNode.clientHeight) >= positionA.top &&
                 (positionB.top + thumbnailNode.clientHeight) <= this.storyboardElement.nativeElement.clientHeight;
-            if (!(visible)) {
-                if (!reverseMode) {
-                    this.storyboardElement.nativeElement.scrollTop = scrollPos;
+        if (!(visible)) {
+            if (!reverseMode) {
+                this.storyboardElement.nativeElement.scrollTop = scrollPos;
+            } else {
+                if (scrollPos > thumbnailNode.clientHeight) {
+                    this.storyboardElement.nativeElement.scrollTop = (this.storyboardElement.nativeElement.clientHeight - thumbnailNode.clientHeight) + scrollPos;
                 } else {
-                    if (scrollPos > thumbnailNode.clientHeight) {
-                        this.storyboardElement.nativeElement.scrollTop = (this.storyboardElement.nativeElement.clientHeight - thumbnailNode.clientHeight) + scrollPos;
-                    } else {
-                        this.storyboardElement.nativeElement.scrollTop = scrollPos;
-                    }
-
+                    this.storyboardElement.nativeElement.scrollTop = scrollPos;
                 }
             }
+        }
     }
 
     /**
