@@ -10,6 +10,72 @@
     color: white;
   }
 
+  .tooltip{
+    position:relative;
+    display: inline-block;
+  }
+  .tooltip[data-title]:hover:after {
+    content: attr(data-title);
+
+    padding: 2px 2px;
+    color: #fff;
+    position: absolute;
+
+    font-family: $amalia-font-family !important;
+    font-size: 11px;
+    left: -100%;
+    top: -110%;
+    white-space: nowrap;
+    border-radius: 5px;
+    background:black;
+    z-index: $amalia-ctrl-bar-z-index;
+
+  }
+  .tooltip[data-title]:hover:before {
+    content: "";
+    position: absolute;
+    transform: rotate(45deg);
+    background-color: black;
+    padding: 5px;
+    z-index: 1;
+    left: 0;
+    top: -70%;
+  }
+
+  //test
+  div#tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  div#tooltip:hover:after {
+    content: attr(data-title);
+
+    padding: 2px 2px;
+    color: #fff;
+    position: absolute;
+
+    font-family: $amalia-font-family !important;
+    font-size: 11px;
+    left: -100%;
+    top: -110%;
+    white-space: nowrap;
+    border-radius: 5px;
+    background:red;
+    z-index: $amalia-ctrl-bar-z-index;
+
+  }
+  div#tooltip:hover:before {
+    content: "";
+    position: absolute;
+    transform: rotate(45deg);
+    background-color: red;
+    padding: 5px;
+    z-index: 1;
+    left: 0;
+    top: -70%;
+  }
+
+
   .thumbnail-container {
     position: absolute;
     width: 172px;
