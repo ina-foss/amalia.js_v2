@@ -32,7 +32,7 @@
                 <!-- ngSwitch by controls-->
                 <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
                     <!-- play pause mode-->
-                    <div data-title="play / pause"
+                    <div [attr.data-title]="c.label"
                          [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          (click)="controlClicked(c.control);hideAll()" *ngSwitchCase="'playPause'"
                          class="play-pause control tooltip" [attr.aria-label]="c.label"
@@ -93,9 +93,9 @@
                         {{currentPlaybackRate}}x
                     </div>
                     <!--Download-->
-                    <div tooltip="{{c.label}}"
+                    <div data-title="{{c.label}}"
                          [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         *ngSwitchCase="'download'" class="control download" [attr.aria-label]="c.label"
+                         *ngSwitchCase="'download'" class="control download tooltip" [attr.aria-label]="c.label"
                          [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <a target="_blank" (click)="buildUrlWithTc(ctl,c);hideAll()" #ctl>
                             <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
