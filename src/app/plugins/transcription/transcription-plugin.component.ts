@@ -433,13 +433,32 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
 
             transcriptionFilteredSegment.annotations.forEach(a => {
+                let index = 0;
                 const t = segmentFilteredNodes.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
                 t.forEach(node => {
-                    if (TextUtils.hasSearchText(node.textContent, a.label)) {
-                        listOfNamedEntitesNodes.push(node as HTMLElement);
-                        listOfNamedEntitesNodes.forEach(e => {
-                            e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
-                        });
+                    index+=1;
+                    if(a.label.includes(' ')){
+                        const tabLabel=a.label.split(' ');
+                        tabLabel.forEach(i=>{
+                            if (TextUtils.hasSearchText(node.textContent, i)) {
+                                if(TextUtils.hasSearchText(t.item(index).textContent, tabLabel[tabLabel.findIndex(elem => elem == i)+1])) {
+                                    listOfNamedEntitesNodes.push(node as HTMLElement);
+                                    listOfNamedEntitesNodes.push(t[index] as HTMLElement);
+
+                                    listOfNamedEntitesNodes.forEach(e => {
+                                        e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
+                                    });
+                                }
+                            }
+                        })
+                    }
+                    else {
+                        if (TextUtils.hasSearchText(node.textContent, a.label)) {
+                            listOfNamedEntitesNodes.push(node as HTMLElement);
+                            listOfNamedEntitesNodes.forEach(e => {
+                                e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
+                            });
+                        }
                     }
                 });
             });
