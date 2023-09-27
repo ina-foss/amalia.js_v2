@@ -29,9 +29,9 @@
     <div class="col-3 storyboard-size">
         <div class="first"></div>
         <div class="size medium" tooltip='{{msgMedium}}' [ngClass]="{'selected':size == 'medium'}"
-             (click)="size = 'medium'"></div>
+             (click)="handleThumbnailSizeChange('medium')"></div>
         <div class="size large" tooltip='{{msgLarge}}' [ngClass]="{'selected':size == 'large'}"
-             (click)="size = 'large'"></div>
+             (click)="handleThumbnailSizeChange('large')"></div>
         <div class="last"></div>
     </div>
 </div>

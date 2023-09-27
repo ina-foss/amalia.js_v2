@@ -168,9 +168,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private disableSelectedWords() {
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            });
+                .forEach(node => {
+                    node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                });
     }
 
     /**
@@ -179,14 +179,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private disableRemoveSelectedSegment() {
         // remove selected segment
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            });
+                .forEach(node => {
+                    node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                });
         // Remove activated world
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`))
-            .forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
-            });
+                .forEach(node => {
+                    node.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
+                });
     }
 
     /**
@@ -195,16 +195,16 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private disableRemoveAllSelectedNodes() {
         // remove selected word
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
-                if (!node.parentElement.parentElement.classList.contains(TranscriptionPluginComponent.SELECTOR_SELECTED)) {
-                    node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                }
-            });
+                .forEach(node => {
+                    if (!node.parentElement.parentElement.classList.contains(TranscriptionPluginComponent.SELECTOR_SELECTED)) {
+                        node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                    }
+                });
         // remove selected segment
         Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            });
+                .forEach(node => {
+                    node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                });
     }
 
     /**
@@ -221,12 +221,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
                     // add active to parent segment
                     if (this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
+                            && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
                         n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     }
                     this.handleSelectedWordsStyle(filteredNodes, karaokeTcDelta);
                     if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
+                            && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
                         n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                     }
                 });
@@ -241,11 +241,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         let filteredNodes;
         if (this.pluginConfiguration.data.mode === 1) {
             filteredNodes = elementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                            && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
         } else {
             filteredNodes = elementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
         }
         return filteredNodes;
     }
@@ -259,11 +259,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
                 // add active to parent segment
                 if (this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
+                        && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
                     n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 }
                 if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
+                        && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 }
             });
@@ -277,8 +277,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
         if (segmentElementNodes) {
             const segmentFilteredNodes = segmentElementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                            && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
             if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
                 segmentFilteredNodes.forEach(segmentNode => {
                     const tcIn = Math.round(parseFloat(segmentNode.getAttribute('data-tcin')));
@@ -313,7 +313,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private scroll() {
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
-            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+                .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode && this.displaySynchro === false) {
             this.scrollToNode(scrollNode);
         }
@@ -373,7 +373,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             handleMetadataIds.forEach((metadataId) => {
                 this.logger.info(`get metadata for ${metadataId}`);
                 const transcriptionLocalisations = metadataManager
-                    .getTranscriptionLocalisations(metadataId, this.pluginConfiguration.data.parseLevel, this.pluginConfiguration.data.withSubLocalisations);
+                        .getTranscriptionLocalisations(metadataId, this.pluginConfiguration.data.parseLevel, this.pluginConfiguration.data.withSubLocalisations);
                 if (transcriptionLocalisations && transcriptionLocalisations.length > 0) {
                     this.transcriptions = this.transcriptions.concat(transcriptionLocalisations);
                 }
@@ -424,24 +424,24 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const segmentElementNode = this.transcriptionElement.nativeElement.querySelector<HTMLElement>('.segment .selected');
         if (segmentElementNode != null) {
             const transcriptionFilteredSegment = this.transcriptions
-                .find(node => Math.round(node.tcIn) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcin')))
-                    && Math.round(node.tcOut) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcout'))));
+                    .find(node => Math.round(node.tcIn) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcin')))
+                            && Math.round(node.tcOut) === Math.round(parseFloat(segmentElementNode.getAttribute('data-tcout'))));
 
             const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
             const segmentFilteredNodes = segmentElementNodes
-                .find(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+                    .find(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
+                            && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
 
             transcriptionFilteredSegment.annotations.forEach(a => {
                 let index = 0;
                 const t = segmentFilteredNodes.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
                 t.forEach(node => {
-                    index+=1;
-                    if(a.label.includes(' ')){
-                        const tabLabel=a.label.split(' ');
-                        tabLabel.forEach(i=>{
+                    index += 1;
+                    if (a.label.includes(' ')) {
+                        const tabLabel = a.label.split(' ');
+                        tabLabel.forEach(i => {
                             if (TextUtils.hasSearchText(node.textContent, i)) {
-                                if(TextUtils.hasSearchText(t.item(index).textContent, tabLabel[tabLabel.findIndex(elem => elem == i)+1])) {
+                                if (TextUtils.hasSearchText(t.item(index).textContent, tabLabel[tabLabel.findIndex(elem => elem === i) + 1])) {
                                     listOfNamedEntitesNodes.push(node as HTMLElement);
                                     listOfNamedEntitesNodes.push(t[index] as HTMLElement);
 
@@ -450,9 +450,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                                     });
                                 }
                             }
-                        })
-                    }
-                    else {
+                        });
+                    } else {
                         if (TextUtils.hasSearchText(node.textContent, a.label)) {
                             listOfNamedEntitesNodes.push(node as HTMLElement);
                             listOfNamedEntitesNodes.forEach(e => {
@@ -503,7 +502,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     @AutoBind
     public scrollToSelectedSegment() {
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
-            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+                .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
@@ -549,7 +548,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public updateSynchro() {
         let visible;
         const selector = '.' + TranscriptionPluginComponent.SELECTOR_SEGMENT + ' > .' + TranscriptionPluginComponent.SELECTOR_SUBSEGMENT
-            + ' > ' + '.text > .' + TranscriptionPluginComponent.SELECTOR_WORD + '.' + TranscriptionPluginComponent.SELECTOR_SELECTED;
+                + ' > ' + '.text > .' + TranscriptionPluginComponent.SELECTOR_WORD + '.' + TranscriptionPluginComponent.SELECTOR_SELECTED;
         const activeNode: HTMLElement = this.transcriptionElement.nativeElement.querySelector(selector);
         if (activeNode) {
             const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();

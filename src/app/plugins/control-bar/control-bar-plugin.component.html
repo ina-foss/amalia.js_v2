@@ -154,7 +154,7 @@
                                 <div class="header-list">Volume (m)</div>
                                 <div class="channel-volume-control">
                                     <div class="channel-volume-control-left">
-                                        <div (click)="handleMuteUnmuteVolume()"
+                                        <div (click)="handleMuteUnmuteVolume('l')"
                                              class="channel-volume-icon">
                                             <svg *ngIf="volumeLeft > 0"
                                                  class="amalia-svg-volume-on-size icon">
@@ -181,7 +181,7 @@
                                         </div>
                                     </div>
                                     <div class="channel-volume-control-right">
-                                        <div (click)="handleMuteUnmuteVolume()"
+                                        <div (click)="handleMuteUnmuteVolume('r')"
                                              class="channel-volume-icon">
                                             <svg *ngIf="volumeRight > 0"
                                                  class="amalia-svg-volume-on-size icon">
