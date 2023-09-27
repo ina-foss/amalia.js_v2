@@ -213,7 +213,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public handleScroll(ignoreNextScroll?: boolean) {
         if (this.itemPerLine) {
             if (this.storyboardElement && this.storyboardElement.nativeElement.children.length > 0) {
-                this.updateScrollHeight()
+                this.updateScrollHeight();
                 const clientHeight = this.storyboardElement.nativeElement.clientHeight;
                 const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
                 const elementStyle = this.storyboardElement.nativeElement.style;
@@ -334,7 +334,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
     /**
      * In charge to update scroll height
-     * @private
+     *
      */
     private updateScrollHeight() {
         if (this.storyboardElement) {
@@ -343,9 +343,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             const itemPos = this.storyboardElement.nativeElement.firstElementChild.getBoundingClientRect().top;
             let itemPerLine = 0;
             for (let i = 0; i < this.storyboardElement.nativeElement.children.length; i++) {
-                const top = this.storyboardElement.nativeElement.children.item(i).getBoundingClientRect().top
+                const top = this.storyboardElement.nativeElement.children.item(i).getBoundingClientRect().top;
                 if (itemPos === top) {
-                    itemPerLine++
+                    itemPerLine++;
                 } else {
                     break;
                 }

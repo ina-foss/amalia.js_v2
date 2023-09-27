@@ -220,7 +220,11 @@
                                     player: {
                                         src: data,
                                         // src: "http://localhost:4203/medias/outputlm.mp4",
-                                        hls: {"enable": true},
+                                        hls: {
+                                            "enable": true, data: {
+                                                debug: false
+                                            }
+                                        },
                                         crossOrigin: "anonymous",
                                         backwardsSrc: rewindData
                                     },
