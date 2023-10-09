@@ -30,7 +30,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public scrollElement: ElementRef<HTMLElement>;
     @ViewChild('headerElement', {static: false})
     public headerElement: ElementRef<HTMLElement>;
-    public currentTime: number;
+    public currentTime = 0;
     /**
      * Media duration
      */
@@ -121,6 +121,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
         }
+        this.handleTimeChange();
         // this.init();
     }
 
@@ -152,22 +153,39 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     @AutoBind
     public handleTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (this.storyboardElement && this.displaySynchro === false) {
-            this.selectThumbnail();
-        }
         const lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
+        const firstTc = this.listOfThumbnailFilter[0];
         this.selectedTc = this.currentTime;
         if (this.currentTime > lastTc) {
+            this.updateScrollHeight();
             const clientHeight = this.storyboardElement.nativeElement.clientHeight;
-            const elementStyle = this.storyboardElement.nativeElement.style;
             const start = this.listOfThumbnail.indexOf(lastTc);
             const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
-            const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
-            Object.assign(elementStyle, {
+            this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+            const scrollTop=((this.listOfThumbnail.indexOf(lastTc)/this.itemPerLine)*this.heightThumbnail);
+            const element = this.storyboardElement.nativeElement.parentElement;
+            element.scrollTop=scrollTop;
+            Object.assign(element, {
                 transform: `translateY(${scrollTop}px)`
             });
-            this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+
         }
+        if (this.currentTime < firstTc) {
+            this.updateScrollHeight();
+            const clientHeight = this.storyboardElement.nativeElement.clientHeight;
+            const end = this.listOfThumbnail.indexOf(firstTc);
+            const start = end - (clientHeight / this.heightThumbnail) * this.itemPerLine;
+            this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+            const scrollTop=(this.listOfThumbnail.indexOf(firstTc)/this.itemPerLine)*this.heightThumbnail;
+            const element = this.storyboardElement.nativeElement.parentElement;
+            element.scrollTop=scrollTop;
+            Object.assign(element, {
+                transform: `translateY(${scrollTop}px)`
+            });
+        }
+        //if (this.storyboardElement && this.displaySynchro === false) {
+            this.selectThumbnail();
+        //}
     }
 
     /**
@@ -326,7 +344,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
                 if (this.activeThumbnail != null) {
                     this.activeThumbnail.classList.add('active');
-                    this.updateScrollHeight();
+                    // this.updateScrollHeight();
                 }
             }
         }
@@ -351,7 +369,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 }
             }
             this.itemPerLine = itemPerLine;
-            const nbLines = (totalThumbnail / this.itemPerLine);
+            const nbLines = Math.round(totalThumbnail / this.itemPerLine);
             const storyBoardHeight = (this.heightThumbnail + 3) * (nbLines);
             Object.assign(this.scrollElement.nativeElement.style, {
                 height: `${storyBoardHeight}px`
