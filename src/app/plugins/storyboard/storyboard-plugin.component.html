@@ -41,7 +41,7 @@
         <div (click)="seekToTc(tc)" class="thumbnail {{size}} {{sizeThumbnail}}"
              *ngFor="let tc of listOfThumbnailFilter; last as isLast; first as isFirst;"
              [ngClass]="{'first': isFirst,'last':isLast}" [attr.data-tc]="tc">
-            <img src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy"/>
+            <img data-max-retry="5" data-retry="0" (error)="waitAndReload($event)" src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy"/>
             <div *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</div>
         </div>
     </div>

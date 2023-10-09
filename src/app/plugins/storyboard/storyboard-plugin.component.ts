@@ -414,4 +414,22 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public toggleList() {
         this.openIntervalList = !this.openIntervalList;
     }
+
+    waitAndReload(event) {
+
+        const originalSrc = event.target.src;
+
+        if (parseInt(event.target.getAttribute('data-retry'), 10) !== parseInt(event.target.getAttribute('data-max-retry'), 10)) {
+
+            event.target.setAttribute('data-retry', parseInt(event.target.getAttribute('data-retry'), 10) + 1);
+
+            event.target.src = '/assets/images/placeholder.png';
+
+            setTimeout(() => {
+                event.target.src = originalSrc;
+            }, 2000);
+        } else {
+            event.target.src = '/assets/images/placeholder.png';
+        }
+    }
 }
