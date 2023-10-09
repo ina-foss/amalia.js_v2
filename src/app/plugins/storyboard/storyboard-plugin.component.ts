@@ -159,32 +159,33 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         if (this.currentTime > lastTc) {
             this.updateScrollHeight();
             const clientHeight = this.storyboardElement.nativeElement.clientHeight;
-            const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
-            // scrollTop=(this.listOfThumbnail.indexOf(lastTc)/this.itemPerLine)*this.heightThumbnail;
-            const elementStyle = this.storyboardElement.nativeElement.style;
-            Object.assign(elementStyle, {
-                transform: `translateY(${scrollTop}px)`
-            });
             const start = this.listOfThumbnail.indexOf(lastTc);
             const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
             this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+            const scrollTop=((this.listOfThumbnail.indexOf(lastTc)/this.itemPerLine)*this.heightThumbnail);
+            const element = this.storyboardElement.nativeElement.parentElement;
+            element.scrollTop=scrollTop;
+            Object.assign(element, {
+                transform: `translateY(${scrollTop}px)`
+            });
+
         }
         if (this.currentTime < firstTc) {
             this.updateScrollHeight();
             const clientHeight = this.storyboardElement.nativeElement.clientHeight;
-            const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
-            // scrollTop=(this.listOfThumbnail.indexOf(firstTc)/this.itemPerLine)*this.heightThumbnail;
-            const elementStyle = this.storyboardElement.nativeElement.style;
-            Object.assign(elementStyle, {
-                transform: `translateY(${scrollTop}px)`
-            });
             const end = this.listOfThumbnail.indexOf(firstTc);
             const start = end - (clientHeight / this.heightThumbnail) * this.itemPerLine;
             this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+            const scrollTop=(this.listOfThumbnail.indexOf(firstTc)/this.itemPerLine)*this.heightThumbnail;
+            const element = this.storyboardElement.nativeElement.parentElement;
+            element.scrollTop=scrollTop;
+            Object.assign(element, {
+                transform: `translateY(${scrollTop}px)`
+            });
         }
-        if (this.storyboardElement && this.displaySynchro === false) {
+        //if (this.storyboardElement && this.displaySynchro === false) {
             this.selectThumbnail();
-        }
+        //}
     }
 
     /**
