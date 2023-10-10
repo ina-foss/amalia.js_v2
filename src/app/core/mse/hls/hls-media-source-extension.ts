@@ -45,6 +45,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             config.hls.config = Hls.DefaultConfig;
             config.hls.config.debug = this.logger.status();
         }
+        config.hls.config.enableWorker = false;
         config.hls.config.fLoader = createCustomFragmentLoader as unknown as FragmentLoaderConstructor;
         this.hlsPlayer = new Hls(config.hls.config);
         this.eventEmitter.on(PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
