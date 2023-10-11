@@ -26,7 +26,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     private logger: LoggerInterface;
     public readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
-    private readonly hlsPlayer: Hls;
+    private hlsPlayer: Hls;
 
 
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, config: PlayerConfigData, logger: LoggerInterface) {
@@ -47,6 +47,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         }
         config.hls.config.enableWorker = false;
         config.hls.config.fLoader = createCustomFragmentLoader as unknown as FragmentLoaderConstructor;
+        this.config.hls = config.hls;
         this.hlsPlayer = new Hls(config.hls.config);
         this.eventEmitter.on(PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
     }
@@ -123,8 +124,8 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.currentTime = this.mediaElement.currentTime;
             this.duration = this.mediaElement.duration;
             this.mediaElement.pause();
-            this.hlsPlayer.stopLoad();
-            this.hlsPlayer.detachMedia();
+            this.destroy();
+            this.hlsPlayer = new Hls(this.config.hls.config);
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(src);
             this.reverseMode = reverseMode;
