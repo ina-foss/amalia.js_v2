@@ -7,6 +7,7 @@ import {PlayerEventType} from '../../constant/event-type';
 import {EventEmitter} from 'events';
 import {CustomFragmentLoader} from './hls-custom-f-loader';
 import {LoggerInterface} from '../../logger/logger-interface';
+
 /* tslint:disable:no-string-literal */
 function createCustomFragmentLoader(config: any): Loader<FragmentLoaderContext> {
     return new CustomFragmentLoader(config);
@@ -84,7 +85,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.mainMediaSrc = (!HLSMediaSourceExtension.isUrl(config.src)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.src}` : config.src;
             if (typeof config.backwardsSrc === 'string') {
                 this.backwardsMediaSrc = (!HLSMediaSourceExtension.isUrl(config.backwardsSrc))
-                    ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
+                        ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
             }
             this.logger.debug('Hls string source', this.mainMediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
@@ -125,6 +126,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.duration = this.mediaElement.duration;
             this.mediaElement.pause();
             this.destroy();
+            this.config.hls.config.startPosition = this.currentTime;
             this.hlsPlayer = new Hls(this.config.hls.config);
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(src);
@@ -182,4 +184,5 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         this.hlsPlayer.config.maxBufferLength = value;
     }
 }
+
 /* tslint:enable:no-string-literal */
