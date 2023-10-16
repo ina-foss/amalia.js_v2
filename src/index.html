@@ -294,9 +294,11 @@
                                             enable: true,
                                             config: {
                                                 debug: true,
-                                                maxBufferLength: 12,
+                                                maxBufferLength: 10,
                                                 maxMaxBufferLength: 60,
                                                 backBufferLength: 0,
+                                                fragLoadingMaxRetry: 3,
+                                                fragLoadingRetryDelay: 1000,
                                                 enableWorker: false
                                             }
                                         },
