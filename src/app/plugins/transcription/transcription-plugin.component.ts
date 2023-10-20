@@ -302,7 +302,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                     this.selectWords(karaokeTcDelta);
                 }
-                this.scroll();
             }
         }
         this.getNamedEntities(karaokeTcDelta);

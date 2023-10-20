@@ -90,8 +90,6 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.logger.debug('Hls string source', this.mainMediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(this.mainMediaSrc);
-            // handle events
-            this.hlsPlayer.on(Hls.Events.MANIFEST_PARSED, this.handleOnManifestLoaded);
             this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
             if (config.autoplay) {
                 this.mediaElement.play();
@@ -126,11 +124,15 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.duration = this.mediaElement.duration;
             this.mediaElement.pause();
             this.destroy();
-            this.config.hls.config.startPosition = this.currentTime;
+            this.reverseMode = reverseMode;
+            if (this.reverseMode) {
+                this.config.hls.config.startPosition = Math.max(0, this.duration - this.currentTime);
+            }else {
+                this.config.hls.config.startPosition = this.currentTime;
+            }
             this.hlsPlayer = new Hls(this.config.hls.config);
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(src);
-            this.reverseMode = reverseMode;
             resolve();
         });
     }
@@ -152,17 +154,6 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         } else if (event.fatal === true && !this.reverseMode) {
             this.hlsPlayer.destroy();
             this.eventEmitter.emit(PlayerEventType.ERROR);
-        }
-    }
-
-    /**
-     * Invoked when manifest loaded
-     */
-    @AutoBind
-    private handleOnManifestLoaded() {
-        this.logger.debug('Manifest loaded');
-        if (this.reverseMode) {
-            this.hlsPlayer.startLoad(Math.max(0, this.duration - this.currentTime));
         }
     }
 
