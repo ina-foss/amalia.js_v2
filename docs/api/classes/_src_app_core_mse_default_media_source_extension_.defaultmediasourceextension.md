@@ -123,7 +123,7 @@ Defined in src/app/core/mse/default-media-source-extension.ts:12
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/default-media-source-extension.ts:69
+Defined in src/app/core/mse/default-media-source-extension.ts:71
 
 **Returns:** *void*
 
@@ -147,7 +147,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/default-media-source-extension.ts:84
+Defined in src/app/core/mse/default-media-source-extension.ts:87
 
 **Returns:** *[PlayerConfigData](../interfaces/_src_app_core_config_model_player_config_data_.playerconfigdata.md)*
 
@@ -171,7 +171,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/default-media-source-extension.ts:80
+Defined in src/app/core/mse/default-media-source-extension.ts:83
 
 **Parameters:**
 
@@ -187,7 +187,7 @@ ___
 
 ▸ **setMaxBufferLengthConfig**(): *any*
 
-Defined in src/app/core/mse/default-media-source-extension.ts:87
+Defined in src/app/core/mse/default-media-source-extension.ts:90
 
 **Returns:** *any*
 
@@ -217,7 +217,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/default-media-source-extension.ts:61
+Defined in src/app/core/mse/default-media-source-extension.ts:62
 
 **Returns:** *Promise‹void›*
 
