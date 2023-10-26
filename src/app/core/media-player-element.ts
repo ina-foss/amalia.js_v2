@@ -238,6 +238,7 @@ export class MediaPlayerElement {
         } else if (this.width >= mWidth && this.width < lWidth) {
             displayState = 'm';
         }
+
         return displayState;
     }
 }
