@@ -529,7 +529,7 @@ ___
 
 ▸ **clearSearchList**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:500
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:517
 
 clear seach list onclick
 
@@ -591,7 +591,7 @@ ___
 
 ▸ **getNamedEntities**(`karaokeTcDelta`: number): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:422
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:421
 
 Search named entities
 
@@ -627,7 +627,7 @@ ___
 
 ▸ **handleMetadataLoaded**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:359
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:358
 
 Invoked on metadata loaded
 
@@ -671,7 +671,7 @@ ___
 
 ▸ **handleScroll**(`ignoreNextScroll?`: boolean): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:350
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:349
 
 handle scroll event
 
@@ -708,7 +708,7 @@ ___
 
 ▸ **handleShortcut**(`event`: any): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:515
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:532
 
 handleShortcut on search button
 
@@ -750,7 +750,7 @@ ___
 
 ▸ **parseTranscription**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:366
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:365
 
 In charge to load metadata
 
@@ -762,7 +762,7 @@ ___
 
 ▸ **scroll**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:314
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:313
 
 In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
 
@@ -774,7 +774,7 @@ ___
 
 ▸ **scrollToNode**(`scrollNode`: HTMLElement): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:326
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:325
 
 Invoked to scroll to node
 
@@ -792,7 +792,7 @@ ___
 
 ▸ **scrollToSearchedWord**(`direction`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:453
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:470
 
 Scroll to next or previous searched word
 
@@ -810,7 +810,7 @@ ___
 
 ▸ **scrollToSelectedSegment**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:485
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:502
 
 Invocked on click SYNCHRO button
 
@@ -822,7 +822,7 @@ ___
 
 ▸ **searchWord**(`searchText`: string): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:392
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:391
 
 Search word ans scroll to first result
 
@@ -894,7 +894,7 @@ ___
 
 ▸ **updateSynchro**(): *void*
 
-Defined in src/app/plugins/transcription/transcription-plugin.component.ts:530
+Defined in src/app/plugins/transcription/transcription-plugin.component.ts:547
 
 if scrolling and active segment is not visible add synchro button
 

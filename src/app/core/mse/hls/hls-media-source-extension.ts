@@ -127,7 +127,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.reverseMode = reverseMode;
             if (this.reverseMode) {
                 this.config.hls.config.startPosition = Math.max(0, this.duration - this.currentTime);
-            }else {
+            } else {
                 this.config.hls.config.startPosition = this.currentTime;
             }
             this.hlsPlayer = new Hls(this.config.hls.config);

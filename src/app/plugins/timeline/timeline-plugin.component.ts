@@ -530,7 +530,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * Update mouse position
      * @param event mouse event
      */
-    updateMouseEvent(event) {
+    updateMouseEvent(event: any) {
         const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
         const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
         this.selectionPosition.x = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
