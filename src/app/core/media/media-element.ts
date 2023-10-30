@@ -228,7 +228,7 @@ export class MediaElement {
     /*
     Set value of reverseMode
      */
-    setReverseMode(value) {
+    setReverseMode(value: boolean) {
         this.reverseMode = value;
     }
 
@@ -288,10 +288,9 @@ export class MediaElement {
     }
 
     // Change src if negative playbackrate
-    private setNegativePlaybackrate(speed) {
+    private setNegativePlaybackrate(speed: number) {
         const currentTime = this.getCurrentTime();
         if (this.switched === false) {
-            // this.pause();
             if (this.mse.getBackwardsSrc()) {
                 this.mse.switchToBackwardsSrc().then(() => {
                     if (this.mediaElement) {
@@ -301,12 +300,17 @@ export class MediaElement {
             } else {
                 this.setRewindInterval(speed, currentTime);
             }
+        } else {
+            if (this.mediaElement) {
+                this.mediaElement.playbackRate = Math.abs(speed);
+            }
+            this.switched = true;
         }
-        this.switched = true;
+
     }
 
     // Rewind by interval if backwardSrc is not configured
-    private setRewindInterval(speed, currentTime) {
+    private setRewindInterval(speed: number, currentTime: number) {
         clearInterval(this.intervalRewind);
         this.intervalRewind = setInterval(() => {
             // this.mediaElement.playbackRate = 1;
@@ -321,7 +325,7 @@ export class MediaElement {
         }, 30);
     }
 
-    private setPositivePlaybackrate(speed) {
+    private setPositivePlaybackrate(speed: number) {
         if (this.mediaElement) {
             this.mediaElement.playbackRate = Math.abs(speed);
             if (speed === 1) {
@@ -453,8 +457,8 @@ export class MediaElement {
      * Simulate play on playback change by images
      */
     @AutoBind
-    private simulatePlay($event) {
-        this.force = $event;
+    private simulatePlay(event) {
+        this.force = event;
     }
 
     /**
@@ -566,11 +570,11 @@ export class MediaElement {
      * Return current image
      * @param scale max 1=> 100%
      */
-    private getCurrentImage(scale) {
+    private getCurrentImage(scale: number) {
         try {
             const videoContent = this.mediaElement;
             const canvas: HTMLCanvasElement = document.createElement('canvas');
-            scale = (scale) ? Math.min(1, parseFloat(scale)) : 1;
+            scale = (scale) ? Math.min(1, scale) : 1;
             canvas.width = videoContent.videoWidth * scale;
             canvas.height = videoContent.videoHeight * scale;
             canvas.getContext('2d').drawImage(videoContent, 0, 0, canvas.width, canvas.height);

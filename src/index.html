@@ -283,7 +283,7 @@
                             .then((response) => response.text())
                             .then((data) => {
                                 const config = {
-                                    debug: true,
+                                    debug: false,
                                     logLevel: "info",
                                     timeFormat: "f",
                                     tcOffset: 3000,
@@ -293,7 +293,7 @@
                                         hls: {
                                             enable: true,
                                             config: {
-                                                debug: true,
+                                                debug: false,
                                                 maxBufferLength: 10,
                                                 maxMaxBufferLength: 60,
                                                 backBufferLength: 0,
