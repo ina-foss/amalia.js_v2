@@ -44,12 +44,16 @@
 <!--        </div>-->
 <!--    </div>-->
 <!--</div>-->
-<div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
+<div class="content">
+    <div id="player"></div>
+
+</div>
+<!--<div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
     <div style="grid-area: 1 / 1 / 2 / 3" id="player"></div>
     <div style="grid-area: 1 / 3 / 3 / 3" id="storyboard">storyboard</div>
     <div style="grid-area: 2 / 3 / 3 / 1" id="timeline">timeline</div>
 </div>
-<!--<div class="container-fluid">-->
+<div class="container-fluid">-->
 <!--    <div class="row">-->
 <!--        <div class="col-6 p-2" style="height: 500px;">-->
 <!--            <amalia-player id="player" player-id="PLAYER"-->
@@ -100,9 +104,16 @@
                         data: {
                             href: ""
                         },
-                        priority: 2,
+                        priority: 3,
                         key: 'd',
                     },
+                    /*{
+                      "label": "Sous titres",
+                      "control": "subtitles",
+                      "icon": "subtitle",
+                      "zone": 3,
+                      "priority": 3
+                    },*/
                     {
                         label: 'Playback rate custom steps',
                         control: 'playbackRateCustomSteps'
@@ -152,14 +163,7 @@
                         priority: 1,
                         key: 'ArrowLeft'
                     },
-                    {
-                        label: 'Retour 1 seconde par 1 seconde',
-                        icon: 'backward-second',
-                        control: 'backward-second',
-                        zone: 2,
-                        priority: 1,
-                        key: 'ArrowLeft'
-                    },
+
                     {
                         label: 'Retour ralenti',
                         icon: 'slow-backward',
@@ -207,14 +211,7 @@
                         priority: 1,
                         key: 'ArrowRight'
                     },
-                    {
-                        label: 'Avance 1 seconde par 1 seconde',
-                        icon: 'forward-second',
-                        control: 'forward-second',
-                        zone: 2,
-                        priority: 1,
-                        key: 'ArrowRight'
-                    },
+
                     {
                         label: 'Avance image par image',
                         icon: 'forward-frame',
@@ -244,7 +241,7 @@
                         control: 'toggleFullScreen',
                         icon: 'fullscreen',
                         zone: 3,
-                        priority: 2,
+                        priority: 1,
                         key: 'f'
                     },
                     {
@@ -268,11 +265,17 @@
                         control: 'displaySlider',
                         icon: 'slider',
                         zone: 3,
-                        priority: 1,
+                        priority: 2,
                         order: 1,
                         key: 'v',
+                    },
+                    {
+                        label:'Plus doptions',
+                        control: 'menu',
+                        icon: 'dots',
+                        zone: 3,
+                        key: 'r'
                     }
-
                 ]
             }
         }

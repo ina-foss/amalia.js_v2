@@ -105,7 +105,7 @@
                     </div>
                     <!--Forward Images-->
                     <div tooltip="{{c.label}}"
-                         [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
+                         [ngClass]="{'show':(c.priority === 1 )  ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          *ngSwitchCase="'images-forward'" class="control images-forward" [attr.aria-label]="c.label"
                          [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="nextPlaybackRateImages(c.data.speed)">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
