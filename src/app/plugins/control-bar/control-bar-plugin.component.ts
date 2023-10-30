@@ -120,19 +120,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Volume left side
      */
     public volumeLeft = 50;
-    /**
-     * Old Volume left side
-     */
-    public oldVolumeLeft = 50;
 
     /**
      * Volume right side
      */
     public volumeRight = 50;
-    /**
-     * Old Volume right side
-     */
-    public oldVolumeRight = 50;
 
     /**
      * Selected aspectRatio
@@ -673,13 +665,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.currentTime = this.duration - this.currentTime;
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
         } else {
-            // this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
             if (this.playbackrateByImages) {
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
             } else {
-                // this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
                 this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
             }
         }
@@ -973,7 +963,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.currentPlaybackRate = value;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
         setTimeout(() => this.selectActivePlaybackrate(), 10);
-        // this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
     }
 
     @AutoBind
@@ -1003,7 +992,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     // update Subtitle position & subtitle label {
     @AutoBind
     public updateSubtitleInfos() {
-        let j;
+        let j: number;
         for (let i = 0; i < this.listOfSubtitles.length; i++) {
             if (this.subtitlePosition === this.listOfSubtitles[i].key) {
                 if (i === this.listOfSubtitles.length - 1) {
@@ -1410,11 +1399,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             if (side === 'r') {
                 const oldVolumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
                 this.volumeRight = (oldVolumeRight === 0) ? 50 : 0;
-                this.changeVolume( this.volumeRight, side);
+                this.changeVolume(this.volumeRight, side);
             } else if (side === 'l') {
                 const oldVolumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
                 this.volumeLeft = (oldVolumeLeft === 0) ? 50 : 0;
-                this.changeVolume( this.volumeLeft, side);
+                this.changeVolume(this.volumeLeft, side);
             }
         }
     }
@@ -1423,7 +1412,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * handle change track
      * @param trackId track id
      */
-    changeAudioTrack(trackId) {
+    changeAudioTrack(trackId: any) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.AUDIO_CHANNEL_CHANGE, trackId);
         this.selectedTrack = trackId;
     }
