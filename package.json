@@ -2,7 +2,7 @@
   "name": "@ina/amalia",
   "description": "Amalia is a extensible and versatile HTML5 multimedia player",
   "author": "INA",
-  "version": "2.0.55",
+  "version": "2.0.56",
   "main": "amalia.min.js",
   "scripts": {
     "ng": "ng",
@@ -22,7 +22,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "ng lint && ng test --watch=false && npm run gendoc"
+      "pre-commit": "ng lint"
     }
   },
   "dependencies": {

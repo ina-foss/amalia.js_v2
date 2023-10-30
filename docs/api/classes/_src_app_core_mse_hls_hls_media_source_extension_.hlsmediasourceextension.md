@@ -40,7 +40,6 @@ In  charge to handle HSL Media extension
 * [getSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#getsrc)
 * [handleAudioChannelChange](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleaudiochannelchange)
 * [handleError](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#handleerror)
-* [handleOnManifestLoaded](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-handleonmanifestloaded)
 * [setMaxBufferLengthConfig](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setmaxbufferlengthconfig)
 * [setSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#setsrc)
 * [switchSrc](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md#private-switchsrc)
@@ -54,7 +53,7 @@ In  charge to handle HSL Media extension
 
 \+ **new HLSMediaSourceExtension**(`mediaElement`: HTMLVideoElement, `eventEmitter`: EventEmitter, `config`: [PlayerConfigData](../interfaces/_src_app_core_config_model_player_config_data_.playerconfigdata.md), `logger`: [LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)): *[HLSMediaSourceExtension](_src_app_core_mse_hls_hls_media_source_extension_.hlsmediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:25
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:30
 
 **Parameters:**
 
@@ -73,7 +72,7 @@ Name | Type |
 
 • **backwardsMediaSrc**: *string*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:20
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:25
 
 ___
 
@@ -81,7 +80,7 @@ ___
 
 • **config**: *[PlayerConfigData](../interfaces/_src_app_core_config_model_player_config_data_.playerconfigdata.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:21
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:26
 
 ___
 
@@ -89,7 +88,7 @@ ___
 
 • **currentTime**: *number*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:17
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:22
 
 ___
 
@@ -97,7 +96,7 @@ ___
 
 • **duration**: *number*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:18
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:23
 
 ___
 
@@ -105,7 +104,7 @@ ___
 
 • **eventEmitter**: *EventEmitter*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:24
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:29
 
 ___
 
@@ -113,7 +112,7 @@ ___
 
 • **hlsPlayer**: *Hls*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:25
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:30
 
 ___
 
@@ -121,7 +120,7 @@ ___
 
 • **logger**: *[LoggerInterface](../interfaces/_src_app_core_logger_logger_interface_.loggerinterface.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:22
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:27
 
 ___
 
@@ -129,7 +128,7 @@ ___
 
 • **mainMediaSrc**: *string*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:19
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:24
 
 ___
 
@@ -137,7 +136,7 @@ ___
 
 • **mediaElement**: *HTMLVideoElement*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:23
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:28
 
 ___
 
@@ -145,7 +144,7 @@ ___
 
 • **reverseMode**: *boolean* = false
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:16
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:21
 
 ___
 
@@ -153,7 +152,7 @@ ___
 
 ▪ **DEFAULT_HEADER_BASE64**: *string* = "data:application/vnd.apple.mpegurl;base64,"
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:15
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:20
 
 ## Methods
 
@@ -163,7 +162,7 @@ Defined in src/app/core/mse/hls/hls-media-source-extension.ts:15
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:129
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:140
 
 **Returns:** *void*
 
@@ -175,7 +174,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:99
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:104
 
 **Returns:** *string | MediaStream | MediaSource | Blob | null*
 
@@ -187,7 +186,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:168
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:170
 
 **Returns:** *object & object & object & object & object & object & object & object & object & object & object & object & object & object & object & object*
 
@@ -199,7 +198,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:67
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:74
 
 Return media source
 
@@ -231,7 +230,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:139
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:150
 
 Invoked when error events
 
@@ -245,25 +244,13 @@ Name | Type |
 
 ___
 
-### `Private` handleOnManifestLoaded
-
-▸ **handleOnManifestLoaded**(): *void*
-
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:153
-
-Invoked when manifest loaded
-
-**Returns:** *void*
-
-___
-
 ###  setMaxBufferLengthConfig
 
 ▸ **setMaxBufferLengthConfig**(`value`: any): *void*
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:171
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:174
 
 **Parameters:**
 
@@ -281,7 +268,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:76
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:83
 
 Invoked to set hls source
 When you set not valid url, we add default base 64 header
@@ -300,7 +287,7 @@ ___
 
 ▸ **switchSrc**(`src`: string, `reverseMode`: boolean): *Promise‹void›*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:114
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:120
 
 Media source
 
@@ -321,7 +308,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:106
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:112
 
 **Returns:** *Promise‹void›*
 
@@ -333,7 +320,7 @@ ___
 
 *Implementation of [MediaSourceExtension](../interfaces/_src_app_core_mse_media_source_extension_.mediasourceextension.md)*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:102
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:108
 
 **Returns:** *Promise‹void›*
 
@@ -343,7 +330,7 @@ ___
 
 ▸ **isUrl**(`value`: string): *boolean*
 
-Defined in src/app/core/mse/hls/hls-media-source-extension.ts:55
+Defined in src/app/core/mse/hls/hls-media-source-extension.ts:62
 
 Is valid url
 

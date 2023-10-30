@@ -119,9 +119,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.sizeThumbnail = this.getWindowWidth();
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleTimeChange);
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
         }
-        this.handleTimeChange();
+        this.handleSeeked();
         // this.init();
     }
 
@@ -152,6 +152,17 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     @AutoBind
     public handleTimeChange() {
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        if (this.storyboardElement && this.displaySynchro === false) {
+            this.selectThumbnail();
+        }
+    }
+
+    /**
+     * Handle seek
+     */
+    @AutoBind
+    public handleSeeked() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         const lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
         const firstTc = this.listOfThumbnailFilter[0];

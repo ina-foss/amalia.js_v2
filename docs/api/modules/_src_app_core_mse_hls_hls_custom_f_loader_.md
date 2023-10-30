@@ -6,4 +6,4 @@
 
 ### Classes
 
-* [HlsCustomFLoader](../classes/_src_app_core_mse_hls_hls_custom_f_loader_.hlscustomfloader.md)
+* [CustomFragmentLoader](../classes/_src_app_core_mse_hls_hls_custom_f_loader_.customfragmentloader.md)

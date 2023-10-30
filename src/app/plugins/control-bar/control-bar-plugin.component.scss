@@ -65,14 +65,14 @@
     right: 0;
     user-select: none;
 
-    &.s {
-      display: none;
-    }
-
-    &.m, &.sm {
+    &.m, &.sm ,&.s{
       .column {
         flex: none;
-
+        .control{
+          .amalia-svg-forward-end-size, .amalia-svg-backward-start-size {
+            display: none;
+          }
+        }
         &.mid {
           flex: 1;
         }
@@ -83,7 +83,7 @@
       }
     }
 
-    &.sm {
+    &.sm, &.s {
       .column {
         .control {
           .amalia-svg-pin-size {
@@ -91,6 +91,26 @@
           }
 
           .amalia-svg-slider-size {
+            display: none;
+          }
+
+          .amalia-svg-forward-frame-size, .amalia-svg-backward-frame-size{
+            display: none;
+          }
+        }
+      }
+    }
+    &.s {
+      .column {
+        display: none;
+        .control {
+          .amalia-svg-backward-size,.amalia-svg-forward-size {
+            display: none;
+          }
+          .amalia-svg-slow-backward-size,.amalia-svg-slow-forward-size {
+            display: none;
+          }
+          .amalia-svg-screenshot-size {
             display: none;
           }
         }
@@ -890,7 +910,7 @@
   .controls-menu {
     display: none;
 
-    &.m, &.sm {
+    &.m, &.sm, &.s {
       display: none;
       position: absolute;
       z-index: $amalia-volume-bar-z-index;
