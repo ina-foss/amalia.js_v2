@@ -97,6 +97,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public ignoreNextScroll = false;
     public activeThumbnail: any;
     public selectedTc = 0;
+    public selectedIntervalitem = 0;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
@@ -194,9 +195,30 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 transform: `translateY(${scrollTop}px)`
             });
         }
-        // if (this.storyboardElement && this.displaySynchro === false) {
-        this.selectThumbnail();
-        // }
+        if (this.storyboardElement) {
+            const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
+            const thumbnailFilteredNodes = thumbnailElementNodes
+                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
+            if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
+                thumbnailFilteredNodes.forEach(thumbnailNode => {
+                    this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
+                    if (this.activeThumbnail) {
+                        this.activeThumbnail.classList.remove('active');
+                    }
+                    thumbnailNode.classList.add('active');
+                    Object.assign(this.storyboardElement.nativeElement.parentElement.dataset, {
+                        scrollTop: this.storyboardElement.nativeElement.parentElement.scrollTop,
+                    });
+                    this.scrollToThumbnail(thumbnailNode);
+                });
+            } else {
+                this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
+                if (this.activeThumbnail != null) {
+                    this.activeThumbnail.classList.add('active');
+                    // this.updateScrollHeight();
+                }
+            }
+        }
     }
 
     /**
@@ -259,6 +281,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             }
         }
         this.updateSynchro();
+        setTimeout(() => {
+            this.selectThumbnail();
+        }, 800);
     }
 
     /**
@@ -320,6 +345,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public updateThumbnailSize() {
         let interval: number = this.selectedInterval[1];
+        this.selectedIntervalitem = interval;
         if (this.selectedInterval[0] === 'frame') {
             interval = (1 / this.fps) * interval;
         }
@@ -336,9 +362,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public selectThumbnail() {
         if (this.storyboardElement) {
+            const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
             const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
             const thumbnailFilteredNodes = thumbnailElementNodes
-                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
+                    .filter(node => (
+                            currentTime >= parseFloat(node.getAttribute('data-tc') )
+                            && currentTime <= (parseFloat(node.getAttribute('data-tc')) + this.selectedIntervalitem)
+                    ));
             if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
                 thumbnailFilteredNodes.forEach(thumbnailNode => {
                     this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
@@ -349,14 +379,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                     Object.assign(this.storyboardElement.nativeElement.parentElement.dataset, {
                         scrollTop: this.storyboardElement.nativeElement.parentElement.scrollTop,
                     });
-                    this.scrollToThumbnail(thumbnailNode);
+                    // this.scrollToThumbnail(thumbnailNode);
                 });
-            } else {
-                this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
-                if (this.activeThumbnail != null) {
-                    this.activeThumbnail.classList.add('active');
-                    // this.updateScrollHeight();
-                }
             }
         }
     }
