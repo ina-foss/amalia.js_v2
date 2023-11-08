@@ -739,7 +739,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Invoked on change playback rate
      */
-    public onChangePlaybackRate(value) {
+    public onChangePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
         if (this.currentPlaybackRate < 1 && this.currentPlaybackRate > -1) {
             this.currentPlaybackRateSlider = (this.currentPlaybackRate);
@@ -818,8 +818,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public getMouseValue(event) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-        const value = (event.offsetX / containerWidth) * 100;
-        return value;
+        return (event.offsetX / containerWidth) * 100;
     }
 
     /**
