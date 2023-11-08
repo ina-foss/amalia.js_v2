@@ -13,6 +13,11 @@
       "enableThumbnail": true,
       "tcParam": "tc"
     },
+  "displaySizes": {
+    "large": 1020,
+    "medium": 820,
+    "small": 640
+  },
     "dataSources": [
       {
         "url": "http://localhost:4201/metadata/jt-d.json"
