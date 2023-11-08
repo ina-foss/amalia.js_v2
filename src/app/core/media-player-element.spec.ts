@@ -56,6 +56,7 @@ describe('Test Media player element', () => {
         const obj = document.createElement('video');
         mpe.setMediaPlayer(obj);
         const mediaPlayer = new MediaElement(obj, eventEmitter);
+        mpe.configurationManager.configData = configData;
         expect(mpe.getMediaPlayer()).toEqual(mediaPlayer);
         mpe.toggleFullscreen(obj);
         mpe.setMediaPlayerWidth(620);
@@ -67,7 +68,6 @@ describe('Test Media player element', () => {
         configurationManager.load(configData).then(() => {
             expect(configurationManager.getCoreConfig().player.ratio).toContain('16:9');
         });
-        mpe.configurationManager.configData = configData;
         // mpe.loadConfiguration(configData);
         expect(mpe.getThumbnailUrl(140)).toEqual('https://picsum.photos/id/237/200/300?tc=140');
         expect(mpe.getThumbnailUrl(180, true)).toEqual('https://picsum.photos/id/237/200/300?width=170&tc=180');
