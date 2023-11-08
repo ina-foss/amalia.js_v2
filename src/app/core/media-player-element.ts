@@ -228,9 +228,9 @@ export class MediaPlayerElement {
      */
     public getDisplayState() {
         let displayState = 'l';
-        const lWidth = 1020;
-        const sWidth = 640;
-        const mWidth = 820;
+        const lWidth = this.getConfiguration().displaySizes?.large ?? 1020;
+        const sWidth = this.getConfiguration().displaySizes?.small ?? 640;
+        const mWidth = this.getConfiguration().displaySizes?.medium ?? 820;
         if (this.width < sWidth) {
             displayState = 's';
         } else if (this.width >= sWidth && this.width < mWidth) {
@@ -238,7 +238,6 @@ export class MediaPlayerElement {
         } else if (this.width >= mWidth && this.width < lWidth) {
             displayState = 'm';
         }
-
         return displayState;
     }
 }

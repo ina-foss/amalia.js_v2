@@ -26,4 +26,9 @@ export interface ConfigData {
     };
     debug?: boolean;
     logLevel?: string;
+    displaySizes?: {
+        large?: number,
+        medium?: number,
+        small?: number
+    };
 }
