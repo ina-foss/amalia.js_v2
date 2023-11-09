@@ -195,7 +195,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * State of controlBar
      */
-    public activated = true;
+    public activated = false;
     /**
      * display state (s/m/l)
      */
