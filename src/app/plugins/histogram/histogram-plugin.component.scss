@@ -10,7 +10,7 @@
   justify-content: space-between;
   height: 100%;
   width: 100%;
-  z-index: 2;
+  z-index: $amalia-plugin-histogram-zindex;
   font-family: $amalia-font-family !important;
   font-size: $amalia-font-size !important;
   font-weight: normal;
