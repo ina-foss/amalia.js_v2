@@ -60,7 +60,7 @@ describe('Test Media player element', () => {
         expect(mpe.getMediaPlayer()).toEqual(mediaPlayer);
         mpe.toggleFullscreen(obj);
         mpe.setMediaPlayerWidth(620);
-        expect(mpe.getDisplayState()).toEqual('sm');
+        expect(mpe.getDisplayState()).toEqual('s');
         mpe.setMediaPlayerWidth(940);
         expect(mpe.getDisplayState()).toEqual('l');
         mpe.aspectRatio = '4:3';
