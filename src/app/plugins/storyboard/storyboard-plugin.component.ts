@@ -158,6 +158,14 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
     public handleTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+
+        const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
+
+        const thumbnailFilteredNodes = thumbnailElementNodes
+                .filter(node => (
+                        this.currentTime >= parseFloat(node.getAttribute('data-tc'))
+                        && this.currentTime <= (parseFloat(node.getAttribute('data-tc')) + this.selectedIntervalitem)
+                ));
         if (this.storyboardElement
                 && (this.usedSelectedtc + this.selectedIntervalitem <= this.currentTime || this.selectedTc === 0)) {
             this.selectedTc = this.currentTime;
@@ -432,6 +440,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                     });
                     // this.scrollToThumbnail(thumbnailNode);
                 });
+                this.usedSelectedtc = Number(thumbnailFilteredNodes[0].dataset.tc);
             }
         }
     }
@@ -506,7 +515,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.storyboardElement.nativeElement.parentElement.scrollTo({behavior: 'smooth', top: scrollTop});
         if (withSeek) {
             setTimeout(() => {
-                this.seekToTc(this.selectedTc);
+                this.seekToTc(this.currentTime);
             }, 800);
         }
         this.displaySynchro = false;
