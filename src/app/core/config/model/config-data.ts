@@ -29,6 +29,7 @@ export interface ConfigData {
     displaySizes?: {
         large?: number,
         medium?: number,
-        small?: number
+        small?: number,
+        xsmall?: number
     };
 }
