@@ -98,6 +98,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public activeThumbnail: any;
     public selectedTc = 0;
     public selectedIntervalitem = 0;
+    public usedSelectedtc = 0;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
@@ -154,10 +155,60 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Handle time change
      */
     @AutoBind
+
     public handleTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (this.storyboardElement && this.displaySynchro === false) {
+
+        const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
+
+        const thumbnailFilteredNodes = thumbnailElementNodes
+                .filter(node => (
+                        this.currentTime >= parseFloat(node.getAttribute('data-tc'))
+                        && this.currentTime <= (parseFloat(node.getAttribute('data-tc')) + this.selectedIntervalitem)
+                ));
+        if (this.storyboardElement
+                && (this.usedSelectedtc + this.selectedIntervalitem <= this.currentTime || this.selectedTc === 0)) {
+            this.selectedTc = this.currentTime;
+            this.usedSelectedtc = this.selectedTc;
             this.selectThumbnail();
+            this.updateSynchro();
+            this.displaySynchro = false;
+            let firstTc = this.listOfThumbnailFilter[0];
+            let lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
+            if (this.currentTime > lastTc) {
+                const ltf = this.listOfThumbnail
+                        .filter(node => this.currentTime >= node);
+                lastTc = ltf[ltf.length - 1];
+                firstTc = ltf[ltf.length - 1 - this.itemPerLine];
+                this.selectedTc = this.currentTime;
+                if (this.currentTime > lastTc) {
+                    this.updateScrollHeight();
+                    const clientHeight = this.storyboardElement.nativeElement.clientHeight;
+                    const start = this.listOfThumbnail.indexOf(lastTc);
+                    const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
+                    this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+                    const scrollTop = ((this.listOfThumbnail.indexOf(lastTc) / this.itemPerLine) * this.heightThumbnail);
+                    const element = this.storyboardElement.nativeElement.parentElement;
+                    element.scrollTop = scrollTop;
+                    Object.assign(element, {
+                        transform: `translateY(${scrollTop}px)`
+                    });
+
+                }
+                if (this.currentTime < firstTc) {
+                    this.updateScrollHeight();
+                    const clientHeight = this.storyboardElement.nativeElement.clientHeight;
+                    const end = this.listOfThumbnail.indexOf(firstTc);
+                    const start = end - (clientHeight / this.heightThumbnail) * this.itemPerLine;
+                    this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+                    const scrollTop = (this.listOfThumbnail.indexOf(firstTc) / this.itemPerLine) * this.heightThumbnail;
+                    const element = this.storyboardElement.nativeElement.parentElement;
+                    element.scrollTop = scrollTop;
+                    Object.assign(element, {
+                        transform: `translateY(${scrollTop}px)`
+                    });
+                }
+            }
         }
     }
 
@@ -171,7 +222,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         let firstTc = this.listOfThumbnailFilter[0];
         if (this.currentTime !== 0 && (this.storyboardElement)) {
             const ltf = this.listOfThumbnail
-                .filter(node => this.currentTime >= node);
+                    .filter(node => this.currentTime >= node);
             lastTc = ltf[ltf.length - 1];
             firstTc = ltf[ltf.length - 1 - this.itemPerLine];
             this.selectedTc = this.currentTime;
@@ -205,7 +256,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             if (this.storyboardElement) {
                 const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
                 const thumbnailFilteredNodes = thumbnailElementNodes
-                    .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
+                        .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tc')));
                 if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
                     thumbnailFilteredNodes.forEach(thumbnailNode => {
                         this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
@@ -218,13 +269,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                         });
                         this.scrollToThumbnail(thumbnailNode);
                     });
-                } else {
+                } /*else {
                     this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.first');
                     if (this.activeThumbnail != null) {
                         this.activeThumbnail.classList.add('active');
                         // this.updateScrollHeight();
                     }
-                }
+                }*/
             }
         }
     }
@@ -373,10 +424,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
             const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
             const thumbnailFilteredNodes = thumbnailElementNodes
-                .filter(node => (
-                    currentTime >= parseFloat(node.getAttribute('data-tc'))
-                    && currentTime <= (parseFloat(node.getAttribute('data-tc')) + this.selectedIntervalitem)
-                ));
+                    .filter(node => (
+                            currentTime >= parseFloat(node.getAttribute('data-tc'))
+                            && currentTime <= (parseFloat(node.getAttribute('data-tc')) + this.selectedIntervalitem)
+                    ));
             if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
                 thumbnailFilteredNodes.forEach(thumbnailNode => {
                     this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
@@ -389,6 +440,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                     });
                     // this.scrollToThumbnail(thumbnailNode);
                 });
+                this.usedSelectedtc = Number(thumbnailFilteredNodes[0].dataset.tc);
             }
         }
     }
@@ -439,7 +491,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         const positionB = thumbnailNode.getBoundingClientRect();
         // check if active element is not visible
         const visible = (positionB.top + thumbnailNode.clientHeight) >= positionA.top &&
-            (positionB.top + thumbnailNode.clientHeight) <= this.storyboardElement.nativeElement.clientHeight;
+                (positionB.top + thumbnailNode.clientHeight) <= this.storyboardElement.nativeElement.clientHeight;
         if (!(visible)) {
             if (!reverseMode) {
                 this.storyboardElement.nativeElement.scrollTop = scrollPos;
@@ -463,10 +515,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.storyboardElement.nativeElement.parentElement.scrollTo({behavior: 'smooth', top: scrollTop});
         if (withSeek) {
             setTimeout(() => {
-                this.seekToTc(this.selectedTc);
+                this.seekToTc(this.currentTime);
             }, 800);
         }
-
+        this.displaySynchro = false;
     }
 
     /**
