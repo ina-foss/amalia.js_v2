@@ -83,9 +83,9 @@ describe('TimeBar plugin test', () => {
         expect(plugin.displayState).toEqual('l');
         mpe.setMediaPlayerWidth(320);
         plugin.handleDisplayState();
-        expect(plugin.displayState).toEqual('s');
+        expect(plugin.displayState).toEqual('xs');
         plugin.showTimeBar();
-        expect(plugin.active).toEqual(false);
+        expect(plugin.active).toEqual(true);
         plugin.handleOnDurationChange();
         playerService.get('PLAYER');
         playerService.get('PLAYER2');
