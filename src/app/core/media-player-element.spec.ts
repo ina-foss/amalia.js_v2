@@ -62,7 +62,7 @@ describe('Test Media player element', () => {
         mpe.setMediaPlayerWidth(620);
         expect(mpe.getDisplayState()).toEqual('s');
         mpe.setMediaPlayerWidth(940);
-        expect(mpe.getDisplayState()).toEqual('m');
+        expect(mpe.getDisplayState()).toEqual('l');
         mpe.aspectRatio = '4:3';
         mpe.metadataManager = mpe._metadataManager;
         configurationManager.load(configData).then(() => {

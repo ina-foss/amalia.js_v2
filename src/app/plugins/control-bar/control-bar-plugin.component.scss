@@ -45,7 +45,7 @@
       text-align: center;
     }
 
-    &.s {
+    &.s ,&xs {
       display: none;
     }
 
@@ -65,7 +65,7 @@
     right: 0;
     user-select: none;
 
-    &.m, &.sm ,&.s{
+    &.m, &.sm ,&.s ,&xs{
       .column {
         flex: none;
         .control{
@@ -83,7 +83,7 @@
       }
     }
 
-    &.sm, &.s {
+    &.sm, &.s ,&xs {
       .column {
         .control {
           .amalia-svg-pin-size {
@@ -100,7 +100,7 @@
         }
       }
     }
-    &.s {
+    &.xs {
       .column {
         display: none;
         .control {
@@ -111,6 +111,18 @@
             display: none;
           }
           .amalia-svg-screenshot-size {
+            display: none;
+          }
+        }
+      }
+    }
+    &.s {
+      .column {
+        .control {
+          .amalia-svg-backward-size,.amalia-svg-forward-size {
+            display: none;
+          }
+          .amalia-svg-slow-backward-size,.amalia-svg-slow-forward-size {
             display: none;
           }
         }
@@ -874,7 +886,7 @@
       }
     }
 
-    &.s, &.ms {
+    &.s, &.ms ,&.xs {
       display: none;
     }
 
@@ -890,7 +902,7 @@
   .controls-reduced-container {
     display: none;
 
-    &.s.activated {
+    &.xs.activated {
       display: block;
       height: 34px;
       line-height: 34px;
@@ -910,7 +922,7 @@
   .controls-menu {
     display: none;
 
-    &.m, &.sm, &.s {
+    &.m, &.sm, &.s, &.xs {
       display: none;
       position: absolute;
       z-index: $amalia-volume-bar-z-index;
@@ -1057,7 +1069,7 @@
       display: inline-block;
     }
 
-    &.s {
+    &.s ,&xs {
       display: none;
 
       &.activated, &.pinned {

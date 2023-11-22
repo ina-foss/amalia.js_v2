@@ -15,11 +15,12 @@
       "tcParam": "tc",
       "width": 170
     },
-  "displaySizes": {
-    "large": 1020,
-    "medium": 820,
-    "small": 640
-  },
+    "displaySizes": {
+        "large": 940,
+        "medium": 740,
+        "small": 640,
+        "xsmall": 340
+    },
     "dataSources": [
       {
         "url": "http://localhost:4201/metadata/jt-d.json"
