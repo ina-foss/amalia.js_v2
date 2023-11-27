@@ -99,6 +99,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public selectedTc = 0;
     public selectedIntervalitem = 0;
     public usedSelectedtc = 0;
+    public stopScroll = false;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
@@ -120,7 +121,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.initStoryboard();
             }
             this.sizeThumbnail = this.getWindowWidth();
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
+            // this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleDurationChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleTimeChange);
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
         }
@@ -131,7 +132,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
     @ViewChild('storyboardElement')
     set ele2(v: ElementRef) {
-        if (!this.storyboardElement) {
+        if (!this.storyboardElement && !this.stopScroll) {
             this.storyboardElement = v;
             this.init();
         }
@@ -158,14 +159,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
     public handleTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-
-        const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
-
-        const thumbnailFilteredNodes = thumbnailElementNodes
-                .filter(node => (
-                        this.currentTime >= parseFloat(node.getAttribute('data-tc'))
-                        && this.currentTime <= (parseFloat(node.getAttribute('data-tc')) + this.selectedIntervalitem)
-                ));
         if (this.storyboardElement
                 && (this.usedSelectedtc + this.selectedIntervalitem <= this.currentTime || this.selectedTc === 0)) {
             this.selectedTc = this.currentTime;
@@ -176,6 +169,72 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             let firstTc = this.listOfThumbnailFilter[0];
             let lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
             if (this.currentTime > lastTc) {
+                const ltf = this.listOfThumbnail
+                        .filter(node => this.currentTime >= node);
+                lastTc = ltf[ltf.length - 1];
+                firstTc = ltf[ltf.length - 1 - this.itemPerLine];
+                this.selectedTc = this.currentTime;
+                if (this.currentTime > lastTc) {
+                    this.updateScrollHeight();
+                    const clientHeight = this.storyboardElement.nativeElement.clientHeight;
+                    const start = this.listOfThumbnail.indexOf(lastTc);
+                    const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
+                    this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+                    const scrollTop = ((this.listOfThumbnail.indexOf(lastTc) / this.itemPerLine) * this.heightThumbnail);
+                    const element = this.storyboardElement.nativeElement.parentElement;
+                    element.scrollTop = scrollTop;
+                    Object.assign(element, {
+                        transform: `translateY(${scrollTop}px)`
+                    });
+
+                }
+                if (this.currentTime < firstTc) {
+                    this.updateScrollHeight();
+                    const clientHeight = this.storyboardElement.nativeElement.clientHeight;
+                    const end = this.listOfThumbnail.indexOf(firstTc);
+                    const start = end - (clientHeight / this.heightThumbnail) * this.itemPerLine;
+                    this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+                    const scrollTop = (this.listOfThumbnail.indexOf(firstTc) / this.itemPerLine) * this.heightThumbnail;
+                    const element = this.storyboardElement.nativeElement.parentElement;
+                    element.scrollTop = scrollTop;
+                    Object.assign(element, {
+                        transform: `translateY(${scrollTop}px)`
+                    });
+                }
+            }
+        } else if (this.storyboardElement && (this.usedSelectedtc - this.selectedIntervalitem >= this.currentTime || this.currentTime === 0)) {
+            this.selectedTc = this.currentTime;
+            this.usedSelectedtc = this.selectedTc;
+            {
+                if (this.storyboardElement) {
+                    const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+                    const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
+                    const thumbnailFilteredNodes = thumbnailElementNodes
+                            .filter(node => (
+                                    currentTime <= parseFloat(node.getAttribute('data-tc'))
+                                    && currentTime >= (parseFloat(node.getAttribute('data-tc')) - this.selectedIntervalitem)
+                            ));
+                    if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
+                        thumbnailFilteredNodes.forEach(thumbnailNode => {
+                            this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
+                            if (this.activeThumbnail) {
+                                this.activeThumbnail.classList.remove('active');
+                            }
+                            thumbnailNode.classList.add('active');
+                            Object.assign(this.storyboardElement.nativeElement.parentElement.dataset, {
+                                scrollTop: this.storyboardElement.nativeElement.parentElement.scrollTop,
+                            });
+                        });
+                        this.usedSelectedtc = Number(thumbnailFilteredNodes[0].dataset.tc);
+                    }
+                }
+
+            }
+            this.updateSynchro();
+            this.displaySynchro = false;
+            let firstTc = this.listOfThumbnailFilter[0];
+            let lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
+            if (this.currentTime < firstTc) {
                 const ltf = this.listOfThumbnail
                         .filter(node => this.currentTime >= node);
                 lastTc = ltf[ltf.length - 1];
@@ -441,6 +500,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                     // this.scrollToThumbnail(thumbnailNode);
                 });
                 this.usedSelectedtc = Number(thumbnailFilteredNodes[0].dataset.tc);
+                const lastThumbnailFilteredNodes = this.listOfThumbnail[this.listOfThumbnail.length - 1];
+                if (this.usedSelectedtc === lastThumbnailFilteredNodes) {
+                    this.stopScroll = true;
+                }
+
             }
         }
     }
