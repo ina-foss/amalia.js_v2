@@ -352,7 +352,6 @@ export class MediaElement {
      * @param nbFrames number of frame
      */
     moveNextFrame(nbFrames = 1) {
-        this.pause();
         this.setCurrentTime(Math.max(0, this.getCurrentTime() + ((1 / this.framerate) * nbFrames)));
     }
 
@@ -361,7 +360,6 @@ export class MediaElement {
      * @param nbFrames number of frame
      */
     movePrevFrame(nbFrames = 1) {
-        this.pause();
         this.setCurrentTime(Math.max(0, this.getCurrentTime() - ((1 / this.framerate) * nbFrames)));
     }
 
