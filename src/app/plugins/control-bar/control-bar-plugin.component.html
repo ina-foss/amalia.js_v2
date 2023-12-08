@@ -215,8 +215,8 @@
                                     <div class="channel-track" *ngIf="listOfTracks"
                                          (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();"
                                          [ngClass]="{'on':openPisteAudio}" (mouseleave)="activated = true">
-                                        <svg class="amalia-svg-volume-on-size icon">
-                                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+                                        <svg class="amalia-svg-volume-on-size icon" style="height: 20px">
+                                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#piste-audio'"></use>
                                         </svg>
                                         <span class="piste-audio-title">Piste audio</span>
                                         <span class="text-right">{{selectedTrackLabel}}</span>
