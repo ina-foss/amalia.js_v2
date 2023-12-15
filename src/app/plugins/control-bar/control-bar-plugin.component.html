@@ -131,12 +131,12 @@
                         </svg>
                     </div>
                     <!--Volume-->
-                    <div tooltip="{{c.label}}"
-                         [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
-                         *ngSwitchCase="'volume'" class="volume control" [attr.aria-label]="c.label"
-                         [ngStyle]="{'order':c.order ? c.order:'0'}"
-                         (mouseenter)="hideAll();enableVolumeSlider=true; openVolume(c.data)" #volumeButton>
-                        <svg *ngIf="volumeLeft > 0 || volumeRight > 0"
+                    <div
+                            [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
+                            *ngSwitchCase="'volume'" class="volume control" [attr.aria-label]="c.label"
+                            [ngStyle]="{'order':c.order ? c.order:'0'}"
+                            (mouseenter)="hideAll();enableVolumeSlider=true; openVolume(c.data)" #volumeButton>
+                        <svg tooltip="{{c.label}}" *ngIf="volumeLeft > 0 || volumeRight > 0"
                              class="amalia-svg-volume-on-size icon"
                              (click)="handleMuteUnmuteVolume()"
                              #volumeMute>
@@ -149,8 +149,8 @@
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                         </svg>
                         <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
-                             (mouseleave)="enableVolumeSlider=false">
-                            <div class="channel-volume-sliders ">
+                             (mouseleave)="enableVolumeSlider=false;openPisteAudio =false">
+                            <div class="channel-volume-sliders " [hidden]="openPisteAudio">
                                 <div class="header-list">Volume (m)</div>
                                 <div class="channel-volume-control">
                                     <div class="channel-volume-control-left">
@@ -212,14 +212,40 @@
                                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#padlock-close'"></use>
                                         </svg>
                                     </div>
-                                    <div class="channel-track" *ngIf="listOfTracks">
-                                        <ul>
-                                            <li *ngFor="let track of listOfTracks"
-                                                (click)="changeAudioTrack(track.track)"
-                                                [ngClass]="{'selected':selectedTrack==track.track}">{{track.label}}</li>
-                                        </ul>
+                                    <div class="channel-track" *ngIf="listOfTracks"
+                                         (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();"
+                                         [ngClass]="{'on':openPisteAudio}" (mouseleave)="activated = true">
+                                        <svg class="amalia-svg-volume-on-size icon" style="height: 20px">
+                                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#piste-audio'"></use>
+                                        </svg>
+                                        <span class="piste-audio-title">Piste audio</span>
+                                        <span class="text-right">{{selectedTrackLabel}}</span>
+                                        <div class="piste-info-mid">
+                                            <svg class="amalia-svg-right-size icon">
+                                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="list-tracks" *ngIf="openPisteAudio==true" [ngClass]="{'on':openPisteAudio}">
+                                <div class="title" (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();">
+                                    <div class="piste-info-mid">
+                                        <svg class="amalia-svg-right-size icon">
+                                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
+                                        </svg>
+                                    </div>
+                                    <span class="piste-audio-title">Piste audio</span>
+                                </div>
+                                <ul>
+                                    <li *ngFor="let track of listOfTracks"
+                                        (click)="changeAudioTrack(track.track)"
+                                        [ngClass]="{'selected':selectedTrack==track.track}">
+                                        <svg class="amalia-svg-checked-size icon">
+                                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                                        </svg>
+                                        <span>{{track.label}}</span></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
