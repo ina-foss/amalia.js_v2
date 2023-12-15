@@ -45,7 +45,7 @@
       text-align: center;
     }
 
-    &.s ,&xs {
+    &.s, &xs {
       display: none;
     }
 
@@ -65,14 +65,16 @@
     right: 0;
     user-select: none;
 
-    &.m, &.sm ,&.s ,&xs{
+    &.m, &.sm, &.s, &xs {
       .column {
         flex: none;
-        .control{
+
+        .control {
           .amalia-svg-forward-end-size, .amalia-svg-backward-start-size {
             display: none;
           }
         }
+
         &.mid {
           flex: 1;
         }
@@ -83,7 +85,7 @@
       }
     }
 
-    &.sm, &.s ,&xs {
+    &.sm, &.s, &xs {
       .column {
         .control {
           .amalia-svg-pin-size {
@@ -94,35 +96,41 @@
             display: none;
           }
 
-          .amalia-svg-forward-frame-size, .amalia-svg-backward-frame-size{
+          .amalia-svg-forward-frame-size, .amalia-svg-backward-frame-size {
             display: none;
           }
         }
       }
     }
+
     &.xs {
       .column {
         display: none;
+
         .control {
-          .amalia-svg-backward-size,.amalia-svg-forward-size {
+          .amalia-svg-backward-size, .amalia-svg-forward-size {
             display: none;
           }
-          .amalia-svg-slow-backward-size,.amalia-svg-slow-forward-size {
+
+          .amalia-svg-slow-backward-size, .amalia-svg-slow-forward-size {
             display: none;
           }
+
           .amalia-svg-screenshot-size {
             display: none;
           }
         }
       }
     }
+
     &.s {
       .column {
         .control {
-          .amalia-svg-backward-size,.amalia-svg-forward-size {
+          .amalia-svg-backward-size, .amalia-svg-forward-size {
             display: none;
           }
-          .amalia-svg-slow-backward-size,.amalia-svg-slow-forward-size {
+
+          .amalia-svg-slow-backward-size, .amalia-svg-slow-forward-size {
             display: none;
           }
         }
@@ -484,6 +492,7 @@
         right: 10%;
         bottom: 50px;
         // top: -100px;
+        width: 180px;
 
 
         &.on {
@@ -529,28 +538,56 @@
             .channel-track {
               display: flex;
               flex-direction: row;
-              width: 100px;
+              width: auto;
               font-size: 11px;
+              height: 25px;
+              //margin-bottom: 40px;
+              .piste-audio-title {
+                color: #ffffff;
+                font-size: 13px;
+                word-wrap: break-word;
+                margin-top: 3px;
+              }
 
-              ul {
-                list-style: none;
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                padding: 5px;
-                margin: 0;
+              .text-right {
+                float: right;
+                margin-right: 5px;
+                margin-left: 30px;
+                color: #ffffff;
+                font-size: 13px;
+                word-wrap: break-word;
+                margin-top: 3px;
+              }
 
-                li {
-                  list-style: none;
-                  color: white;
-                  padding: 5px;
-                  cursor: pointer;
-                  &.selected {
-                    font-weight: bold;
-                  }
+              .piste-info-mid {
+                position: absolute;
+                right: 0px;
+                line-height: 60px;
+              }
+
+              .icon {
+                width: 16px;
+                height: 16px;
+                position: relative;
+                left: 3px;
+                top: 3px;
+
+                &.amalia-svg-volume-on-size {
+                  margin-right: 10px;
+                }
+
+                &.amalia-svg-right-size {
+                  width: 13px;
+                  height: 15px;
+                  float: right;
+                  margin-right: 5px;
+                  margin-top: 2px;
                 }
               }
 
+              &:hover {
+                background-color: rgba(255, 255, 255, 0.45);
+              }
             }
 
             .channel-volume-icon .icon {
@@ -598,7 +635,7 @@
 
             .ui-slider {
               top: 12px;
-              width: 77px;
+              width: 119px;
               height: 3px;
               background: $amalia-volume-slider-bg;
 
@@ -617,6 +654,90 @@
                   height: 11px;
                   width: 11px;
                   background: white;
+                }
+              }
+            }
+          }
+        }
+
+        .list-tracks {
+          bottom: 23px;
+          position: relative;
+          background-color: var(--amalia-ctrl-bar-bg-color, rgba(34, 34, 34, 0.9));
+
+          .piste-audio-title {
+            color: #ffffff;
+            font-size: 13px;
+            word-wrap: break-word;
+            margin-left: 29px;
+          }
+
+          .piste-info-mid {
+            position: absolute;
+            line-height: 60px;
+            right: 150px;
+            top: 2px;
+          }
+
+          .icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 13px;
+            position: relative;
+            left: 3px;
+            top: 3px;
+
+            &.amalia-svg-right-size {
+              float: left;
+              transform: rotate(180deg);
+            }
+          }
+
+          .title {
+            border-bottom: 1px solid #1A0C0C;
+            height: 30px;
+            text-align: left;
+            margin-bottom: 5px;
+
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.45);
+            }
+          }
+
+          ul {
+            background-color: $amalia-ctrl-bar-bg-color;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+
+            li {
+              text-align: left;
+              display: block;
+              font-size: 12px;
+              line-height: 31px;
+              cursor: pointer;
+              color: white;
+              padding-left: 36px;
+              position: relative;
+
+              > .amalia-svg-checked-size {
+                display: none;
+                height: 25px;
+                position: absolute;
+                width: 20px;
+                left: 5px;
+                top: 3px;
+              }
+
+              &:hover {
+                background-color: rgba(255, 255, 255, 0.45);
+              }
+
+              &.selected {
+                font-weight: bold;
+
+                > .amalia-svg-checked-size {
+                  display: inline;
                 }
               }
             }
@@ -886,7 +1007,7 @@
       }
     }
 
-    &.s, &.ms ,&.xs {
+    &.s, &.ms, &.xs {
       display: none;
     }
 
@@ -1049,7 +1170,7 @@
 
           &.amalia-svg-right-size {
             width: 9px;
-            height: 16px;
+            height: 15px;
             float: right;
             margin-right: 10px;
             float: right;
@@ -1069,7 +1190,7 @@
       display: inline-block;
     }
 
-    &.s ,&xs {
+    &.s, &xs {
       display: none;
 
       &.activated, &.pinned {

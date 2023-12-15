@@ -176,6 +176,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Menu list ratio state
      */
     public enableListRatio = false;
+    public openPisteAudio = false;
     /**
      * position of subtitles
      */
@@ -260,6 +261,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public playbackrateByImages = false;
     public listOfTracks: Array<{ label: string, track: string }> = [];
     public selectedTrack = null;
+    public selectedTrackLabel = '';
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
@@ -1372,6 +1374,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (control.data && control.data?.tracks) {
             this.listOfTracks = control?.data?.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
+            this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
         }
     }
 
@@ -1414,5 +1417,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     changeAudioTrack(trackId: any) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.AUDIO_CHANNEL_CHANGE, trackId);
         this.selectedTrack = trackId;
+        this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
     }
 }

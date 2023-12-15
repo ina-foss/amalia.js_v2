@@ -501,7 +501,7 @@ export class AmaliaComponent implements OnInit {
      */
     public focus() {
         // keypress works only after a click
-        this.mediaPlayer.nativeElement.click();
+        // this.mediaPlayer.nativeElement.click();
         this.mediaContainer.nativeElement.focus();
     }
 
@@ -677,5 +677,9 @@ export class AmaliaComponent implements OnInit {
             this.previewThumbnailElement.nativeElement.onerror = () => resolve(0);
             this.thumbnailBlobVideo = url;
         });
+    }
+
+    public controlClicked($event) {
+        this.mediaPlayerElement.getMediaPlayer().playPause();
     }
 }
