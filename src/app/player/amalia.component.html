@@ -3,8 +3,10 @@
      (mousemove)="resetTimer();displayControlBar(true);focus();playerHover= true;" (load)="startTimer()" (contextmenu)="onContextMenu($event)"
      class="media-player aspect-ratio-{{ratio}}"
      (keydown)="emitKeyDownEvent($event)" (keyup)="emitKeyUpEvent()" (onresize)="handleWindowResize()"
-     [ngClass]="{'pinned' : pinned , 'pinnedControlbar' : pinnedControlbar}" tabindex="0">
-    <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"></video>
+     [ngClass]="{'pinned' : pinned , 'pinnedControlbar' : pinnedControlbar}" tabindex="0"
+     (click)="controlClicked($event)">
+    <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata"
+    ></video>
     <img #previewThumbnail class="preview-thumbnail"
          [hidden]="!enablePreviewThumbnail"
          [src]="thumbnailBlobVideo" alt="video-preview" fetchPriority="high" importance="high"/>
