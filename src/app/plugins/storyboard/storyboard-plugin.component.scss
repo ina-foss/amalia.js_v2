@@ -10,6 +10,9 @@
   flex-direction: column;
   font-family: $amalia-font-family !important;
   font-weight: normal;
+
+
+
   .interval {
     flex: 1;
     display: flex;
@@ -20,12 +23,15 @@
     font-size: 14px;
     letter-spacing: 0;
     line-height: 16px;
+
     .label {
       font-weight: bold;
     }
+
     .tc {
       font-size: 14px;
     }
+
     .selected {
       color: $amalia-plugin-storyboard-box-color;
       cursor: pointer;
@@ -42,6 +48,7 @@
       color: #0086B1;
       position: relative;
       top: 3px;
+
       &.active {
         transform: rotate(180deg);
       }
@@ -58,13 +65,15 @@
       right: 0;
       margin-left: -50px;
       top: 24px;
-      box-shadow: 0 1px 1px 0 rgba(0,0,0,0.22);
+      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
       border: 1px solid $amalia-plugin-storyboard-box-border-color;
       border-radius: 4px;
       font-size: 14px;
+
       &.active {
         display: block;
       }
+
       li {
         list-style: none;
         padding: 5px 27px;
@@ -97,6 +106,7 @@
     float: left;
     margin-top: 13px;
     margin-inline-start: 20px;
+
     div.size {
       border: solid 1px $amalia-plugin-storyboard-box-color;
       margin-right: 10px;
@@ -129,6 +139,7 @@
     }
 
   }
+
   .storyboard {
     border: 1px solid $amalia-plugin-storyboard-box-border-color;
     flex-wrap: wrap;
@@ -140,6 +151,7 @@
     overflow-y: auto;
     will-change: scroll-position;
     z-index: 1;
+
     .vs-container {
       position: absolute;
       top: 0;
@@ -153,6 +165,7 @@
       align-items: center;
       align-content: flex-start;
       z-index: 2;
+
       .thumbnail {
         position: relative;
         cursor: pointer;
@@ -160,14 +173,19 @@
         border-radius: 4px;
         overflow: hidden;
         border: solid 1px $amalia-plugin-storyboard-bg-color;
-
+        .image {
+          background-image: url("/assets/images/placeholder.png");
+          background-color: transparent;
+        }
         &:hover {
           border-color: $amalia-plugin-storyboard-box-color;
         }
+
         &.active {
           border-color: $amalia-plugin-storyboard-box-color;
           background-color: $amalia-plugin-storyboard-box-color;
-          box-shadow: 0 2px 6px 0 rgba(0,0,0,0.25);
+          box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.25);
+
           .label {
             background-color: $amalia-plugin-storyboard-box-color;
             color: #FFFFFF;
@@ -209,11 +227,13 @@
 
       }
     }
+
     .vs-scroll {
       transform-origin: 0 0;
       flex: 0 0 auto;
       display: flex;
       scroll-behavior: smooth;
+
       &.active {
         display: block;
       }
@@ -225,11 +245,13 @@
     right: 25px;
     bottom: 8px;
     display: none;
+
     &.active {
       display: block;
       position: absolute;
       z-index: 1;
     }
+
     .icon {
       width: 32px;
       height: 32px;
@@ -243,22 +265,26 @@
       }
     }
   }
+
   .storyboard-container {
     width: 100%;
     overflow-x: scroll;
     overflow-y: hidden;
+
     .horizontal-storyboard {
       width: max-content;
       display: flex;
       flex-direction: row;
-      background : #F2F5F9;
-      border-top : 24px solid #F2F5F9;
-      border-bottom : 24px solid #F2F5F9;
+      background: #F2F5F9;
+      border-top: 24px solid #F2F5F9;
+      border-bottom: 24px solid #F2F5F9;
+
       .thumbnail {
         width: 225px;
         height: 126px;
         border-radius: 4px;
         margin-right: 85px;
+
         > img {
           width: 225px;
           height: 126px;
@@ -266,12 +292,14 @@
         }
       }
     }
+
     .horizontal-interval {
       width: max-content;
       height: 40px;
       background-color: #80C2D8;
       display: flex;
       flex-direction: row;
+
       .label {
         text-align: center;
         position: relative;
@@ -280,6 +308,7 @@
         line-height: 20px;
         width: 225px;
         margin-right: 85px;
+
         .unity {
           width: 1px;
           height: 12px;
@@ -289,29 +318,35 @@
       }
     }
   }
+
   //scrollBar style
   ::-webkit-scrollbar-track {
     border: 1px solid $amalia-plugin-storyboard-box-border-color;
     padding: 2px 0;
   }
+
   ::-webkit-scrollbar {
     width: 10px;
   }
+
   ::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: $amalia-plugin-storyboard-box-color;
   }
+
   .interval-h {
     font-size: 14px;
     height: 60px;
     background: #fff;
     width: 100%;
+
     .selected {
       font-weight: bold;
       color: $amalia-plugin-storyboard-box-color;
       cursor: pointer;
     }
+
     .tc {
       font-size: 14px;
     }
@@ -321,12 +356,14 @@
       height: 10px;
       margin-left: 10px;
     }
+
     .label {
       position: absolute;
       margin: 0;
       line-height: 16px;
       right: 15px;
     }
+
     > ul {
       list-style: none;
       position: absolute;
@@ -336,6 +373,7 @@
       padding: 0;
       top: 10px;
       right: 13px;
+
       li {
         list-style: none;
         padding: 5px 20px 5px 20px;

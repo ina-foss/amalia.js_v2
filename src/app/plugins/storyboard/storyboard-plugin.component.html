@@ -5,8 +5,11 @@
                   *ngIf="(selectedInterval[1] < 60 && selectedInterval[0] == 'tc') || selectedInterval[0] == 'frame'">{{selectedInterval[1]}}&nbsp;</span>
             <span class="selected"
                   *ngIf="(selectedInterval[1] >= 60 && selectedInterval[0] == 'tc')">{{selectedInterval[1] |tcFormat:'minutes'}}&nbsp;</span>
-            <span class="selected" *ngIf="selectedInterval[1] > 0 && selectedInterval[1] < 60 && selectedInterval[0] == 'tc'">{{second}}<span *ngIf="selectedInterval[1] > 1">s</span></span>
-            <span class="selected" *ngIf="selectedInterval[1] >= 60 && selectedInterval[0] == 'tc'">{{minute}}<span *ngIf="selectedInterval[1] > 60">s</span></span>
+            <span class="selected"
+                  *ngIf="selectedInterval[1] > 0 && selectedInterval[1] < 60 && selectedInterval[0] == 'tc'">{{second}}
+                <span *ngIf="selectedInterval[1] > 1">s</span></span>
+            <span class="selected" *ngIf="selectedInterval[1] >= 60 && selectedInterval[0] == 'tc'">{{minute}}<span
+                    *ngIf="selectedInterval[1] > 60">s</span></span>
             <span class="selected" *ngIf="selectedInterval[0] == 'frame'"> {{images}} </span>
             <svg class="amalia-svg-down icon" [ngClass]="{'active':openIntervalList}">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
@@ -35,19 +38,25 @@
         <div class="last"></div>
     </div>
 </div>
-<div class="storyboard" (scroll)="handleScroll(true)">
+<div class="storyboard" (scroll)="handleScroll()">
     <div class="vs-scroll" #scrollElement></div>
     <div class="vs-container" #storyboardElement>
         <div (click)="seekToTc(tc)" class="thumbnail {{size}} {{sizeThumbnail}}"
              *ngFor="let tc of listOfThumbnailFilter; last as isLast; first as isFirst;"
              [ngClass]="{'first': isFirst,'last':isLast}" [attr.data-tc]="tc">
-            <img data-max-retry="5" data-retry="0" (error)="waitAndReload($event)" src="{{baseUrl+tc}}" alt="{{tc|tcFormat:displayFormat:fps}}" loading="lazy"/>
+            <img data-max-retry="5" data-retry="0" class="image"
+                 loading="lazy"
+                 (error)="waitAndReload($event)"
+                 src="/assets/images/placeholder.png"
+                 [attr.data-imgsrc]="baseUrl+tc"
+                 alt="{{tc|tcFormat:displayFormat:fps}}"
+            />
             <div *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</div>
         </div>
     </div>
 </div>
 <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}"
-     (click)="scrollToActiveThumbnail(selectedTc,true,true)">
+     (click)="scrollToActiveThumbnail(selectedTc,true)">
     <svg class="amalia-svg-auto-scroll-size icon">
         <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#new_refresh'"></use>
     </svg>
