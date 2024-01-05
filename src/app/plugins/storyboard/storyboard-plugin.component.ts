@@ -38,7 +38,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * thumbnail size
      */
-    public size: 'medium' | 'large' = 'medium';
+    public size: 'medium' | 'large' = 'large';
     /**
      * Display format specifier h|m|s|f|ms|mms
      */
@@ -163,7 +163,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     private getWindowWidth(): string {
         const width = window.innerWidth;
-        let size;
+        let size: string;
         if (width <= 1280) {
             size = 'm';
         } else {
@@ -183,7 +183,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             let firstTc = this.listOfThumbnailFilter[0];
             this.selectedTc = this.currentTime;
             const isForward = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
-            const outRange = (isForward) ? this.selectedTc > lastTc && this.selectedTc > firstTc : this.selectedTc < firstTc && this.selectedTc < lastTc;
+            const outRange = (isForward) ? !(firstTc < this.selectedTc && this.selectedTc < lastTc) : this.selectedTc < firstTc && this.selectedTc < lastTc;
             if (outRange) {
                 const seekTc = this.getNearSeekTc(this.selectedTc);
                 if (isForward) {
@@ -204,9 +204,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                     thumbnailNode.classList.add('active');
                 });
             }
-            if (isForward && outRange) {
+            if (isForward && outRange && this.displaySynchro === false) {
                 this.updateScrollForTimeCode(lastTc, isForward);
-            } else if (!isForward && outRange) {
+            } else if (!isForward && outRange && this.displaySynchro === false) {
                 this.updateScrollForTimeCode(firstTc, isForward);
             }
         }
