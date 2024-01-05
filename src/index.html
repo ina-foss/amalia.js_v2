@@ -44,16 +44,23 @@
 <!--        </div>-->
 <!--    </div>-->
 <!--</div>-->
-<div class="content">
-    <div id="player"></div>
-
-</div>
-<!--<div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
+<!--<div class="container-fluid">&ndash;&gt;-->
+<!--    <div class="row">-->
+<!--        <div class="col-6 p-2" style="height: 500px;">-->
+<!--            <div id="player"></div>-->
+<!--        </div>-->
+<!--        <div class="col-6 p-2" style="height: 500px;">-->
+<!--            <div id="player"></div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
     <div style="grid-area: 1 / 1 / 2 / 3" id="player"></div>
     <div style="grid-area: 1 / 3 / 3 / 3" id="storyboard">storyboard</div>
     <div style="grid-area: 2 / 3 / 3 / 1" id="timeline">timeline</div>
 </div>
-<div class="container-fluid">-->
+
+<!--<div class="container-fluid">&ndash;&gt;-->
 <!--    <div class="row">-->
 <!--        <div class="col-6 p-2" style="height: 500px;">-->
 <!--            <amalia-player id="player" player-id="PLAYER"-->
@@ -129,7 +136,7 @@
                         key: 'c',
                         zone: 1,
                         order: 2,
-                        data: { 'tcParam': 'start','href': '' },
+                        data: {'tcParam': 'start', 'href': ''},
                         priority: 1
                     },
                     {
@@ -234,7 +241,7 @@
                         zone: 3,
                         priority: 1,
                         key: 'm',
-                        data: { 'channelMergeVolume': false, 'channelMergerNode': '' },
+                        data: {'channelMergeVolume': false, 'channelMergerNode': ''},
                     },
                     {
                         label: 'Plein écran',
@@ -270,7 +277,7 @@
                         key: 'v',
                     },
                     {
-                        label:'Plus doptions',
+                        label: 'Plus doptions',
                         control: 'menu',
                         icon: 'dots',
                         zone: 3,
@@ -286,7 +293,7 @@
                             .then((response) => response.text())
                             .then((data) => {
                                 const config = {
-                                    debug: false,
+                                    debug: true,
                                     logLevel: "info",
                                     timeFormat: "f",
                                     tcOffset: 3000,
@@ -325,7 +332,7 @@
 
     function addStoryboard() {
         document.getElementById('storyboard').removeEventListener('click', addStoryboard);
-        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER"  plugin-configuration='{"data":{"baseUrl":"https://fakeimg.pl/250x100/","theme":"v","tcParam":"start","itemPerLine":5}}'>
+        document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER"  plugin-configuration='{"data":{"baseUrl":"https://image.wsmedia.i.sas.ina/thumbs/VBgozLdgTD9terBfYwaw_dr7sqlSR4kfQGpTWz6jNxkBM97OnKCvLeUHM8-BYR3fp43HNhXcb_F_KCf6sB1oqMx-drnlQRSQ85VNmu1ZJynONhh8IAXymGlZ-iEYALH9f4LuLlWiH_6b0yniUdMn6qczlUrnfrkV9BcC6SKszssKDwrYyxR6CQzBD3xRslvNJJYaM7hI0T6Yd0gGzylvI5ywfni_iHDVIRqk_sgShw5xt4o-2fleWfgZ8vaeGz79zNJ8kh9oDkgMfKM_-I2eOPjJHHeyi7FZoS700C7n2LdJ7_mIh6v03Mv2kvjoVeHrayeQZ9-i21JDpKGL6TOnxt6RZxzbGEhdgCaINCgVZJ4BW9xlaftS4uUBIFlaLt31GjldFN8dSnWgPGTkerR8dfTX6XXQBDB_wBj2IiA422Hiw8-oriVAOjbnfiEc2HpzWWPP_-p407wH9NT8R-b9Tb7jWmwrb6jKakl3Lw67n6OXj6wymONv47uuIRki_b7h7z3lNHgxkWGxAvJn4axqKNP4N179g3hD8x8GLQUJ7DruBekEunkXdUB7W2AGh_hU1t3g9ie2tI5BLlAfojWei1kCZ8v04_djectBHtN5ka_LH-pF5wLIK8FukJEWotkkEm4phPoenatpYEW8xZVDPchFDPPVvrLC_euHIU6VTXAOa4LN9K1AP2eh-ZXXxydAaJnpFu_QWrHvcrG6DOqNRLO6Nh2hmxC_rGBg33lGk88vCy1fUuqCLG9jE6157pjCig7ckqAMCbIlC6tFUVtTPdH2lvh7RzhHYg76fnWZXhkVM_Afs9_7tUb1dCGtMa4b30jx7_SZBbJ3TztuN9CUbtNlfw_iNvs0KLR_aQr02j7LjgvRVnUR37fe_pTeHXCr36oco-HQQIts995MKVQjhtqdIMnlbxh1EP2Op5vQAUh20EZA483PFHUXvKV8eEkcOk5M2Qal04RK1cIs0lCww4bynmyWgkSwhU-MAd5fS1I/sl_iv/84Ev5lYLL2BmeVxWhaNmvg/sl_hm/","theme":"v","tcParam":"start","itemPerLine":5}}'>
                 </amalia-storyboard>`;
     }
 
