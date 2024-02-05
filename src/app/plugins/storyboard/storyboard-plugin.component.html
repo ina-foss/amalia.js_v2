@@ -7,7 +7,7 @@
                   *ngIf="(selectedInterval[1] >= 60 && selectedInterval[0] == 'tc')">{{selectedInterval[1] |tcFormat:'minutes'}}&nbsp;</span>
             <span class="selected"
                   *ngIf="selectedInterval[1] > 0 && selectedInterval[1] < 60 && selectedInterval[0] == 'tc'">{{second}}
-                <span *ngIf="selectedInterval[1] > 1">s</span></span>
+                <span class="second-span" *ngIf="selectedInterval[1] > 1">s</span></span>
             <span class="selected" *ngIf="selectedInterval[1] >= 60 && selectedInterval[0] == 'tc'">{{minute}}<span
                     *ngIf="selectedInterval[1] > 60">s</span></span>
             <span class="selected" *ngIf="selectedInterval[0] == 'frame'"> {{images}} </span>
