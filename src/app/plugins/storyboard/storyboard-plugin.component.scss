@@ -12,8 +12,11 @@
   font-weight: normal;
 
 
-
+.row {
+  height: 35px;
+}
   .interval {
+    margin-top: -7px;
     flex: 1;
     display: flex;
     text-align: center;
@@ -39,6 +42,10 @@
       letter-spacing: 0;
       line-height: 16px;
       font-weight: normal;
+      .second-span {
+        margin: -4px;
+        padding: 0;
+      }
     }
 
     .amalia-svg-down.icon {
@@ -64,7 +71,7 @@
       padding: 0;
       right: 0;
       margin-left: -50px;
-      top: 24px;
+      top: 21px;
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
       border: 1px solid $amalia-plugin-storyboard-box-border-color;
       border-radius: 4px;
@@ -104,7 +111,7 @@
     align-items: flex-end;
     justify-content: center;
     float: left;
-    margin-top: 13px;
+    margin-top: 7px;
     margin-inline-start: 20px;
 
     div.size {

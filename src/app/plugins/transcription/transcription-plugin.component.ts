@@ -52,7 +52,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public listOfSearchedNodes: Array<HTMLElement>;
     private searchedWordIndex = 0;
     public displaySynchro = false;
-
+    private lastSelectedNode = null;
     constructor(playerService: MediaPlayerService) {
         super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
     }
@@ -134,7 +134,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     @AutoBind
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
+        if (this.currentTime && this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             if (this.pluginConfiguration.data.mode === 1) {
                 this.disableRemoveAllSelectedNodes();
@@ -142,7 +142,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.disableSelectedWords();
                 this.disableRemoveSelectedSegment();
             }
-
             this.selectSegment(karaokeTcDelta);
         }
     }
@@ -273,6 +272,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * In charge to select segment
      */
+
     private selectSegment(karaokeTcDelta: number) {
         const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
         if (segmentElementNodes) {
@@ -303,6 +303,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     this.selectWords(karaokeTcDelta);
                 }
             }
+            if (this.lastSelectedNode !== segmentFilteredNodes[0]) {
+                this.lastSelectedNode = segmentFilteredNodes;
+                this.scroll();
+            }
         }
         this.getNamedEntities(karaokeTcDelta);
     }
@@ -315,6 +319,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode && this.displaySynchro === false) {
             this.scrollToNode(scrollNode);
+        } else {
+            this.displaySynchro = false;
         }
     }
 
@@ -330,6 +336,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const visible = scrollPos < maxScrollPos;
             if (this.ignoreNextScroll && !visible) {
                 this.ignoreNextScroll = false;
+                this.displaySynchro = false;
             }
             if (this.currentTime === 0) {
                 this.transcriptionElement.nativeElement.scrollTop = 0;
@@ -565,11 +572,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.displaySynchro = false;
             }
         } else {
-            if (this.ignoreNextScroll) {
+            /*if (this.ignoreNextScroll) {
                 this.displaySynchro = true;
             } else {
                 this.displaySynchro = false;
-            }
+            }*/
         }
     }
 }
