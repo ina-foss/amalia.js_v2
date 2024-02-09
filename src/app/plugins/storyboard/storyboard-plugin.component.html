@@ -51,7 +51,7 @@
                  [attr.data-imgsrc]="baseUrl+tc"
                  alt="{{tc|tcFormat:displayFormat:fps}}"
             />
-            <div *ngIf="enableLabel" class="label">{{tc|tcFormat:displayFormat:fps}}</div>
+            <div *ngIf="enableLabel" class="label">{{tc+tcOffset|tcFormat:displayFormat:fps}}</div>
         </div>
     </div>
 </div>
