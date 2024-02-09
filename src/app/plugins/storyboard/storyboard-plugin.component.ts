@@ -218,13 +218,12 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         if (this.listOfThumbnail) {
             for (const item of this.listOfThumbnail) {
                 if (item > tc) {
-                    const t=this.listOfThumbnail.indexOf(item);
-                    return this.listOfThumbnail[t-1];
-                }
-                else if(item == tc ||
-                        this.listOfThumbnail[this.listOfThumbnail.length-2] + this.selectedIntervalitem == item &&
-                        item < this.listOfThumbnail[this.listOfThumbnail.length-1] + this.selectedIntervalitem){
-                    return item
+                    const t = this.listOfThumbnail.indexOf(item);
+                    return this.listOfThumbnail[t - 1];
+                } else if (item === tc ||
+                        this.listOfThumbnail[this.listOfThumbnail.length - 2] + this.selectedIntervalitem === item &&
+                        item < this.listOfThumbnail[this.listOfThumbnail.length - 1] + this.selectedIntervalitem) {
+                    return item;
                 }
             }
         }
@@ -304,12 +303,12 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 const clientHeight = this.storyboardElement.nativeElement.clientHeight;
                 const scrollTop = this.storyboardElement.nativeElement.parentElement.scrollTop;
                 const elementStyle = this.storyboardElement.nativeElement.style;
-                const maxScroll=(this.listOfThumbnail.length/Math.trunc((clientHeight/this.heightThumbnail)*this.itemPerLine))*clientHeight
-                if(scrollTop <= maxScroll){
+                const maxScroll = (this.listOfThumbnail.length / Math.trunc((clientHeight / this.heightThumbnail) * this.itemPerLine)) * clientHeight;
+                if (scrollTop <= maxScroll) {
                     Object.assign(elementStyle, {
                         transform: `translateY(${scrollTop}px)`
                     });
-                 }
+                }
                 const start = (scrollTop / this.heightThumbnail) * this.itemPerLine;
                 const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
                 this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);

@@ -52,7 +52,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public listOfSearchedNodes: Array<HTMLElement>;
     private searchedWordIndex = 0;
     public displaySynchro = false;
-
+    private lastSelectedNode = null;
     constructor(playerService: MediaPlayerService) {
         super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
     }
@@ -272,7 +272,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * In charge to select segment
      */
-    private lastSelectedNode = null;
+
     private selectSegment(karaokeTcDelta: number) {
         const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
         if (segmentElementNodes) {
@@ -303,8 +303,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     this.selectWords(karaokeTcDelta);
                 }
             }
-            if(this.lastSelectedNode != segmentFilteredNodes[0]){
-                this.lastSelectedNode=segmentFilteredNodes;
+            if (this.lastSelectedNode !== segmentFilteredNodes[0]) {
+                this.lastSelectedNode = segmentFilteredNodes;
                 this.scroll();
             }
         }
@@ -319,9 +319,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
         if (scrollNode && this.displaySynchro === false) {
             this.scrollToNode(scrollNode);
-        }
-        else {
-            this.displaySynchro === false
+        } else {
+            this.displaySynchro = false;
         }
     }
 
