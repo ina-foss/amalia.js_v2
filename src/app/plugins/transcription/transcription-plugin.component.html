@@ -47,9 +47,9 @@
     <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
             <div class="timecode" (click)="callSeek(t.tcIn)">
-                <div class="tcin">{{t.tcIn|tcFormat:tcDisplayFormat}}</div>
+                <div class="tcin">{{t.tcIn+tcOffset|tcFormat:tcDisplayFormat}}</div>
                 <div class="separator"></div>
-                <div class="tcout">{{t.tcOut|tcFormat:tcDisplayFormat}}</div>
+                <div class="tcout">{{t.tcOut+tcOffset|tcFormat:tcDisplayFormat}}</div>
             </div>
 
             <div class="named-entities" *ngIf="t.annotations.length>0" >
