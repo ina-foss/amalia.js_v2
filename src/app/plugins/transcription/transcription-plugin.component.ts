@@ -321,9 +321,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         if (scrollNode && this.displaySynchro === false) {
             this.scrollToNode(scrollNode);
             this.displaySynchro = false;
-        } else {
+        } /*else {
             this.displaySynchro = false;
-        }
+        }*/
     }
 
     /**
@@ -573,12 +573,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             } else {
                 this.displaySynchro = false;
             }
-        } else {
+        } /*else {
             if (this.ignoreNextScroll) {
                 this.displaySynchro = false;
             } else {
                 this.displaySynchro = true;
             }
-        }
+        }*/
     }
 }
