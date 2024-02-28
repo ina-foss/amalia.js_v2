@@ -866,7 +866,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change playback rate
      */
     private prevPlaybackRate() {
-        this.inverse= true;
+        this.inverse = true;
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
