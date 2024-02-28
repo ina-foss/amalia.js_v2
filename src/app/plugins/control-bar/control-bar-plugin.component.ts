@@ -536,7 +536,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'backward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
+                this.mediaPlayerElement.getMediaPlayer().pause();
                 mediaPlayer.movePrevFrame(frames);
+                this.mediaPlayerElement.getMediaPlayer().play();
                 break;
             case 'backward-second':
                 frames = mediaPlayer.framerate;
@@ -562,7 +564,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'forward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
+                this.mediaPlayerElement.getMediaPlayer().pause();
                 mediaPlayer.moveNextFrame(frames);
+                this.mediaPlayerElement.getMediaPlayer().play();
                 break;
             case 'forward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
@@ -862,6 +866,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change playback rate
      */
     private prevPlaybackRate() {
+        this.inverse= true;
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
