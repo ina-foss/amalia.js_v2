@@ -29,14 +29,17 @@ export class HttpConfigLoader implements Loader<ConfigData> {
     load(url: any): Promise<ConfigData> {
         return new Promise<ConfigData>((resolve, reject) => {
             this.httpClient.get(url)
-                .toPromise()
-                .then(
-                    res => {
-                        this.logger.info('Config loaded', res);
-                        resolve(this.converter.convert(res));
-                    },
-                    error => {
-                        this.logger.info('Config loaded', error);
+                    .toPromise()
+                    .then(
+                            res => {
+                                this.logger.info('Config loaded', res);
+                                resolve(this.converter.convert(res));
+                            },
+                            error => {
+                                this.logger.info('Config loaded', error);
+                                reject('ERROR_LOAD_HTTP');
+                            })
+                    .catch(() => {
                         reject('ERROR_LOAD_HTTP');
                     });
         });

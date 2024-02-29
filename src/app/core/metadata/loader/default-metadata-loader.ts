@@ -42,18 +42,21 @@ export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
                 });
             }
             this.httpClient.get(url, {headers: new HttpHeaders(httpHeaders)})
-                .toPromise()
-                .then(
-                    res => {
-                        this.logger.info('Metadata loaded ...');
-                        if (res) {
-                            resolve(this.mapResponse(res));
-                        } else {
-                            reject(PlayerErrorCode.ERROR_TO_CONVERT_METADATA);
-                        }
-                    },
-                    error => {
-                        this.logger.error('Error to load metadata ...', error);
+                    .toPromise()
+                    .then(
+                            res => {
+                                this.logger.info('Metadata loaded ...');
+                                if (res) {
+                                    resolve(this.mapResponse(res));
+                                } else {
+                                    reject(PlayerErrorCode.ERROR_TO_CONVERT_METADATA);
+                                }
+                            },
+                            error => {
+                                this.logger.error('Error to load metadata ...', error);
+                                reject(PlayerErrorCode.METADATA_HTTP_LOAD_ERROR);
+                            })
+                    .catch(() => {
                         reject(PlayerErrorCode.METADATA_HTTP_LOAD_ERROR);
                     });
         });
