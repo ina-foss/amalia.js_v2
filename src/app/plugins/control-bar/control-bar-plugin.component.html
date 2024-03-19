@@ -11,7 +11,7 @@
          [ngClass]="{'pinned' :pinned}"
          *ngIf="enableThumbnail" [ngStyle]="{'left':thumbnailPosition + 'px'}">
         <img #thumbnail class="thumbnail" alt="thumbnail" src=""/>
-        <div class="tc-thumbnail">{{tcThumbnail|tcFormat:'f'}}</div>
+        <div class="tc-thumbnail">{{tcThumbnail+tcOffset|tcFormat:'f'}}</div>
     </div>
     <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated ,'pinned' :pinnedSlider}">
         <div class="control-bar" (mouseover)="handlePlayerMouseHover()" (mouseleave)="enableVolumeSlider=false"

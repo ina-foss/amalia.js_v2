@@ -266,7 +266,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
         super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
         this.thumbnailService = thumbnailService;
-        this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, {trailing: false});
+        this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
 
     @AutoBind
@@ -331,7 +331,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (!this.inSliding && !isNaN(this.currentTime)) {
-            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(2));
+            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(6));
         }
         if (this.inverse === false) {
             this.time = this.currentTime;
@@ -800,7 +800,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
             const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
             const value = this.getMouseValue(event);
-            const tc = parseFloat((value * this.duration / 100).toFixed(2));
+            const tc = parseFloat((value * this.duration / 100).toFixed(6));
             if (isFinite(tc)) {
                 this.tcThumbnail = tc;
                 this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
@@ -845,8 +845,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public updateThumbnail(event: MouseEvent) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-        const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(2));
-        const currentTime = parseFloat(tc.toFixed(2));
+        const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(6));
+        const currentTime = parseFloat(tc.toFixed(6));
         const url = this.mediaPlayerElement.getThumbnailUrl(currentTime, true);
         if (isFinite(tc)) {
             this.setThumbnail(url, currentTime);
