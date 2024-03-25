@@ -53,6 +53,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private searchedWordIndex = 0;
     public displaySynchro = false;
     private lastSelectedNode = null;
+    private prevSearchValue = "";
 
     constructor(playerService: MediaPlayerService) {
         super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
@@ -540,8 +541,29 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * */
     public handleShortcut(event) {
         if (event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== '') {
-            this.searchWord(this.searchText.nativeElement.value);
-            this.searching = true;
+            if(this.prevSearchValue !== this.searchText.nativeElement.value){
+                this.prevSearchValue = this.searchText.nativeElement.value;
+                this.clearSearchList();
+                this.searchWord(this.searchText.nativeElement.value);
+                this.searching = true;
+            } else{
+                if (this.listOfSearchedNodes && this.listOfSearchedNodes.length !== 0 && this.searchedWordIndex!== null) {
+                    let direction='down'
+                    if(this.searchedWordIndex === 0)
+                    {
+                        direction = 'down'
+                    }
+                    if(this.searchedWordIndex ===this.listOfSearchedNodes.length)
+                    {
+                        direction = 'up'
+                    }
+                    this.scrollToSearchedWord(direction);
+                    this.searching = false;
+                } else {
+                    this.searchWord(this.searchText.nativeElement.value);
+                    this.searching = true;
+                }
+            }
         }
         if (event.key === TranscriptionPluginComponent.BACKSPACE_KEY && this.searchText.nativeElement.value !== '') {
             this.clearSearchList();
