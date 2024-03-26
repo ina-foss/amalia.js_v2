@@ -46,10 +46,19 @@
 <ng-template #transcriptionBlock>
     <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
+            <div class="copybutton tooltip" (click)="copy(t)">
+                <span class="tooltiptext">Copier la transcription</span>
+                    <div class="copy-icon"  >
+                        <svg class="icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#copy'"></use>
+                        </svg>
+
+                    </div>
+            </div>
             <div class="timecode" (click)="callSeek(t.tcIn)">
-                <div class="tcin">{{t.tcIn+tcOffset|tcFormat:tcDisplayFormat}}</div>
+                <div class="tcin">{{ t.tcIn + tcOffset|tcFormat:tcDisplayFormat }}</div>
                 <div class="separator"></div>
-                <div class="tcout">{{t.tcOut+tcOffset|tcFormat:tcDisplayFormat}}</div>
+                <div class="tcout">{{ t.tcOut + tcOffset|tcFormat:tcDisplayFormat }}</div>
             </div>
 
             <div class="named-entities" *ngIf="t.annotations.length>0" >

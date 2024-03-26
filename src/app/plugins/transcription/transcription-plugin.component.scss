@@ -93,6 +93,64 @@
             }
           }
         }
+        .copybutton{
+          position: relative;
+          display: inline-block;
+          float: right;
+          margin: 5px 5px 5px 0;
+          width: 23px;
+          height: 23px;
+          border-radius: 50%;
+          background-color:#FFFFFF;
+            .copy-icon {
+              display: block;
+              height: 23px;
+              width: 23px;
+              position: absolute;
+              cursor: pointer;
+              z-index: 2;
+              border-radius: 50%;
+              .icon {
+                height: 23px;
+                width: 23px;
+                color:  $amalia-plugin-transcription-search-icons;
+                border-radius: 50%;
+              }
+            }
+        }
+      }
+
+      .copybutton{
+        position: relative;
+        display: inline-block;
+        float: right;
+        margin: 5px 5px 5px 0;
+        width: 23px;
+        height: 23px;
+        border-radius: 50%;
+        &:hover {
+          .copy-icon {
+            display: block;
+            height: 23px;
+            width: 23px;
+            position: absolute;
+            cursor: pointer;
+            z-index: 2;
+            border-radius: 50%;
+            .icon {
+              height: 23px;
+              width: 23px;
+              color:  $amalia-plugin-transcription-search-icons;
+              border-radius: 50%;
+              &:hover {
+                display: block;
+                border-radius: 50%;
+                background-color: $amalia-plugin-transcription-tc-hover !important;
+                color : #FFFFFF;
+              }
+            }
+          }
+        }
       }
       .timecode {
         display: flex;
@@ -348,7 +406,32 @@
     }
   }
 
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
 
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 88px;
+    height: 22px;
+    background-color: #4B5563;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: -5px 0;
+    font-family: 'Lato';
+    font-size: 8px;
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    right: 115%;
+    white-space:nowrap;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
 }
 
 
