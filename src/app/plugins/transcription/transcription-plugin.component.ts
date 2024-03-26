@@ -93,6 +93,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 
+    public copy(localisation:any){
+        window.navigator.clipboard.writeText(localisation.text).then(
+                () => {
+                }
+        );
+
+    }
+
     /**
      * Return default config
      */
