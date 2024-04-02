@@ -210,4 +210,8 @@ export enum PlayerEventType {
      * STOP Simulate Play
      */
     PLAYER_STOP_SIMULATE_PLAY = 'ina.player.STOP_SIMULATE_PLAY',
+    /**
+     * COPY text
+     */
+    PLAYER_COPY_BOARD = 'ina.player.COPY_BOARD',
 }

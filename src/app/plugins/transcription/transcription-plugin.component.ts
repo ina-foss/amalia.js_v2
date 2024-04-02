@@ -10,6 +10,7 @@ import {DEFAULT} from '../../core/constant/default';
 import {TextUtils} from '../../core/utils/text-utils';
 import {MediaPlayerService} from '../../service/media-player-service';
 import * as _ from 'lodash';
+import {EventEmitter} from "events";
 
 @Component({
     selector: 'amalia-transcription',
@@ -54,7 +55,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public displaySynchro = false;
     private lastSelectedNode = null;
     private prevSearchValue = "";
-
     constructor(playerService: MediaPlayerService) {
         super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
     }
@@ -96,6 +96,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public copy(localisation:any){
         window.navigator.clipboard.writeText(localisation.text).then(
                 () => {
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, localisation);
                 }
         );
 
