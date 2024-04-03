@@ -159,7 +159,7 @@
 
         .tcin , .tcout {
           color: #727070;
-          font-family: "Trebuchet Regular";
+          font-family: $amalia-font-family-lato;
           font-size: 14px;
           font-weight: bold;
           letter-spacing: 0.1px;
@@ -203,7 +203,7 @@
           padding-left: 10px;
           margin-right: 10px;
           color: #4A4A4A;
-          font-family: "Trebuchet MS";
+          font-family: $amalia-font-family-lato;
           font-size: 12px;
           letter-spacing: 0.09px;
           line-height: 14px;
@@ -228,7 +228,7 @@
 
       .text {
         color: #727070;
-        font-family: "Trebuchet MS";
+        font-family: $amalia-font-family-lato;
         font-size: 14px;
         letter-spacing: 0.1px;
         line-height: 20px;
@@ -283,7 +283,7 @@
           height: 42px;
           border: 1px solid $amalia-plugin-transcription-input-border;
           border-radius: 4px;
-          font-family: "Trebuchet MS";
+          font-family: $amalia-font-family-lato;
           font-size: 14px;
           letter-spacing: 0.1px;
           line-height: 20px;
@@ -297,7 +297,7 @@
         }
         .search-result {
           color: #A6A8A9;
-          font-family: "Trebuchet MS";
+          font-family: $amalia-font-family-lato;
           font-size: 12px;
           letter-spacing: 0.09px;
           line-height: 14px;
@@ -420,7 +420,7 @@
     text-align: center;
     border-radius: 6px;
     padding: -5px 0;
-    font-family: 'Lato';
+    font-family: $amalia-font-family-lato;
     font-size: 8px;
     position: absolute;
     z-index: 1;
