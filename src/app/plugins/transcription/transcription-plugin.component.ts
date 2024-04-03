@@ -596,7 +596,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (!(top && bottom)) {
                 visible = false;
             }
-            // display button synchro if active node is not visible
+            // display  button synchro if active node is not visible
             if (visible === false) {
                 this.displaySynchro = true;
             } else {
