@@ -96,6 +96,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public copy(localisation: any) {
         window.navigator.clipboard.writeText(localisation.text).then(
                 () => {
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, localisation);
                 }
         );
 
@@ -595,7 +596,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (!(top && bottom)) {
                 visible = false;
             }
-            // display button synchro if active node is not visible
+            // display  button synchro if active node is not visible
             if (visible === false) {
                 this.displaySynchro = true;
             } else {
