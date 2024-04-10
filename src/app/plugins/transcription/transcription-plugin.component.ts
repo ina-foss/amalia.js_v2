@@ -10,12 +10,14 @@ import {DEFAULT} from '../../core/constant/default';
 import {TextUtils} from '../../core/utils/text-utils';
 import {MediaPlayerService} from '../../service/media-player-service';
 import * as _ from 'lodash';
-import {FormatUtils} from "../../core/utils/format-utils";
+import {FormatUtils} from '../../core/utils/format-utils';
+
 export class TcFormatPipe implements PipeTransform {
     transform(tc: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = null, defaultFps: number = 25) {
         return FormatUtils.formatTime(tc, format, defaultFps);
     }
 }
+
 @Component({
     selector: 'amalia-transcription',
     templateUrl: './transcription-plugin.component.html',
@@ -59,7 +61,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public displaySynchro = false;
     private lastSelectedNode = null;
     private prevSearchValue = '';
-    public tcFormatPipe= new TcFormatPipe();
+    public tcFormatPipe = new TcFormatPipe();
+
     constructor(playerService: MediaPlayerService) {
         super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
     }
@@ -99,10 +102,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     public copy(localisation: any) {
-        const tcOffset=this.mediaPlayerElement.getConfiguration()?.tcOffset;
-        const tcIn=this.tcFormatPipe.transform(localisation.tcIn + tcOffset,this.tcDisplayFormat);
-        const tcOut=this.tcFormatPipe.transform(localisation.tcOut + tcOffset,this.tcDisplayFormat);
-        const copiedText="[" + tcIn + "]["+tcOut+"]\n\n"+localisation.text;
+        const tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset;
+        const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
+        const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
+        const copiedText = '[' + tcIn + '][' + tcOut + ']\n\n' + localisation.text;
         window.navigator.clipboard.writeText(copiedText).then(
                 () => {
                     this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, localisation);

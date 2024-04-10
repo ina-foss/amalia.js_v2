@@ -117,9 +117,54 @@
                 border-radius: 50%;
               }
             }
+          &:hover {
+            .copy-icon {
+              display: block;
+              height: 23px;
+              width: 23px;
+              position: absolute;
+              cursor: pointer;
+              z-index: 2;
+              border-radius: 50%;
+              .icon {
+                height: 23px;
+                width: 23px;
+                color:  $amalia-plugin-transcription-search-icons;
+                border-radius: 50%;
+                &:hover {
+                  display: block;
+                  border-radius: 50%;
+                  background-color: #FFFFFF !important;
+                  color : $amalia-plugin-transcription-tc-hover;
+                }
+              }
+            }
+          }
         }
       }
-
+      &:hover {
+        .copy-icon {
+          display: block;
+          height: 23px;
+          width: 23px;
+          position: absolute;
+          cursor: pointer;
+          z-index: 2;
+          border-radius: 50%;
+          .icon {
+            height: 23px;
+            width: 23px;
+            color:  $amalia-plugin-transcription-search-icons;
+            border-radius: 50%;
+            &:hover {
+              display: block;
+              border-radius: 50%;
+              background-color: #FFFFFF !important;
+              color : $amalia-plugin-transcription-tc-hover;
+            }
+          }
+        }
+      }
       .copybutton{
         position: relative;
         display: inline-block;
@@ -413,7 +458,7 @@
 
   .tooltip .tooltiptext {
     visibility: hidden;
-    width: 88px;
+    width: 125px;
     height: 22px;
     background-color: #4B5563;
     color: #fff;
@@ -421,7 +466,7 @@
     border-radius: 6px;
     padding: -5px 0;
     font-family: $amalia-font-family-lato;
-    font-size: 8px;
+    font-size: 12px;
     position: absolute;
     z-index: 1;
     top: 0px;
