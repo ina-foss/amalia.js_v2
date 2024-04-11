@@ -575,8 +575,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     if (this.searchedWordIndex === this.listOfSearchedNodes.length) {
                         direction = 'up';
                     }
+                    this.searching = true;
                     this.scrollToSearchedWord(direction);
-                    this.searching = false;
                 } else {
                     this.searchWord(this.searchText.nativeElement.value);
                     this.searching = true;
