@@ -97,7 +97,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Pinned Controls state
      */
-    public pinnedSlider = false;
+    public pinnedSlider = true;
     /**
      * Pinned slider state
      */
