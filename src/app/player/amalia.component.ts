@@ -1,4 +1,14 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
 import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
 import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
@@ -224,6 +234,17 @@ export class AmaliaComponent implements OnInit {
      */
     public errorMessage;
 
+    /**
+     * attribut qui definit une image a afficher lorsque la video est en cours de chargement,<br/>
+     * ou jusqu'a ce que l'utilisateur ne joue la video.
+     */
+    public videoPoster = '';
+    public posterBackgound = {
+        'amalia-player-bg-color1': false,
+        'amalia-primary-color': false,
+        ' amalia-secondary-color': false
+    };
+
     constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, sanitizer: DomSanitizer) {
         this.httpClient = httpClient;
         this.sanitizer = sanitizer;
@@ -247,8 +268,8 @@ export class AmaliaComponent implements OnInit {
             // set media player in charge to player video or audio files
             this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
             this.mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
-                .then((state) => this.onInitConfig(state))
-                .catch((state) => this.onErrorInitConfig(state));
+                    .then((state) => this.onInitConfig(state))
+                    .catch((state) => this.onErrorInitConfig(state));
             // bind events
             this.bindEvents();
             // set mediaPlayer width for responsive grid
@@ -479,6 +500,11 @@ export class AmaliaComponent implements OnInit {
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail?.enableThumbnail || false;
         this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || '16:8';
         this.ratio = this.aspectRatio.replace(':', '-');
+        this.videoPoster = this.mediaPlayerElement.getConfiguration().player.poster || '';
+
+        if (this.videoPoster && this.mediaPlayerElement.getConfiguration().player.posterBackground) {
+            this.posterBackgound['' + this.mediaPlayerElement.getConfiguration().player.posterBackground] = true;
+        }
         const debug = this.mediaPlayerElement.preferenceStorageManager.getItem('debug');
         this.logger.state(debug === null ? this.mediaPlayerElement.getConfiguration().debug : true);
         this.logger.logLevel(debug === null ? this.mediaPlayerElement.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug));
