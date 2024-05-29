@@ -97,7 +97,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Pinned Controls state
      */
-    public pinnedSlider = true;
+    public pinnedSlider = false;
     /**
      * Pinned slider state
      */
@@ -292,6 +292,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (fixedControlBar) {
             this.fixControlBar();
         }
+        // pinned controls
+        const pinnedControlBarWithControls = this.pluginConfiguration.pinnedControls;
+        if (pinnedControlBarWithControls) {
+            this.pinControls();
+        }
+
         // Init Events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);

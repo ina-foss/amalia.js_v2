@@ -5,12 +5,14 @@
      (contextmenu)="onContextMenu($event)"
      class="media-player aspect-ratio-{{ratio}}"
      (keydown)="emitKeyDownEvent($event)" (keyup)="emitKeyUpEvent()" (onresize)="handleWindowResize()"
-     [ngClass]="{'pinned' : pinned , 'pinnedControlbar' : pinnedControlbar,
-'amalia-player-bg-color1' :videoPoster && posterBackgound['amalia-player-bg-color1'],
-'amalia-primary-color' :videoPoster && posterBackgound['amalia-primary-color'],
-'amalia-secondary-color':videoPoster && posterBackgound['amalia-secondary-color']}" tabindex="0"
+     [ngClass]="{'pinned' : pinned,
+     'pinnedControlbar' : pinnedControlbar,
+     'amalia-player-bg-color1' : posterBackgound['amalia-player-bg-color1'],
+     'amalia-primary-color' : posterBackgound['amalia-primary-color'],
+     'amalia-secondary-color': posterBackgound['amalia-secondary-color']}" tabindex="0"
      (click)="controlClicked($event)">
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata" [poster]="videoPoster"
+           [ngClass]="{'poster-icon' : videoPoster !== ''}"
     ></video>
     <img #previewThumbnail class="preview-thumbnail"
          [hidden]="!enablePreviewThumbnail"

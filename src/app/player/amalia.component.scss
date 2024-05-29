@@ -28,6 +28,13 @@
     background-color: $amalia-secondary-color;
   }
 
+  .poster-icon {
+    width: 100px !important;
+    height: 100px !important;
+    left: calc(50% - 50px) !important;
+    top: calc(50% - 50px) !important;
+  }
+
   .media-player {
     position: relative;
     height: 100%;
@@ -42,6 +49,12 @@
         position: relative;
         height: 100% !important;
       }
+      video.poster-icon {
+        width: 100px !important;
+        height: 100px !important;
+        left: calc(50% - 50px) !important;
+        top: calc(50% - 50px + 53px) !important;
+      }
     }
 
     &.pinnedControlbar {
@@ -51,6 +64,12 @@
       video.player {
         position: relative;
         height: 100% !important;
+      }
+      video.poster-icon {
+        width: 100px !important;
+        height: 100px !important;
+        left: calc(50% - 50px) !important;
+        top: calc(50% - 50px + 31.5px) !important;
       }
     }
 
