@@ -502,8 +502,10 @@ export class AmaliaComponent implements OnInit {
         this.ratio = this.aspectRatio.replace(':', '-');
         this.videoPoster = this.mediaPlayerElement.getConfiguration().player.poster || '';
 
-        if (this.videoPoster && this.mediaPlayerElement.getConfiguration().player.posterBackground) {
-            this.posterBackgound['' + this.mediaPlayerElement.getConfiguration().player.posterBackground] = true;
+        if (this.videoPoster !== '') {
+            if (this.mediaPlayerElement.getConfiguration().player.posterBackground) {
+                this.posterBackgound['' + this.mediaPlayerElement.getConfiguration().player.posterBackground] = true;
+            }
         }
         const debug = this.mediaPlayerElement.preferenceStorageManager.getItem('debug');
         this.logger.state(debug === null ? this.mediaPlayerElement.getConfiguration().debug : true);
