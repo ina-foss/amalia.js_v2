@@ -292,6 +292,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (fixedControlBar) {
             this.fixControlBar();
         }
+        // pinned controls
+        const pinnedControlBarWithControls = this.pluginConfiguration.pinnedControls;
+        if (pinnedControlBarWithControls) {
+            this.pinControls();
+        }
+
         // Init Events
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -552,6 +558,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.pause();
                 mediaPlayer.movePrevFrame(1);
                 break;
+            case 'backward-1h':
+                mediaPlayer.setCurrentTime((mediaPlayer.getCurrentTime() - 3600));
+                break;
             case 'backward-start':
                 this.changePlaybackRate(1);
                 mediaPlayer.seekToBegin();
@@ -571,6 +580,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             case 'forward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
                 mediaPlayer.moveNextFrame(frames);
+                break;
+            case 'forward-1h':
+                mediaPlayer.setCurrentTime((mediaPlayer.getCurrentTime() + 3600));
                 break;
             case 'forward-second':
                 frames = mediaPlayer.framerate;

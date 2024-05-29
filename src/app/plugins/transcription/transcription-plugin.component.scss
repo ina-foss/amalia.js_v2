@@ -335,6 +335,10 @@
           color: $amalia-plugin-timeline-actions-border-color;
           padding-left: 26px;
           z-index: 1;
+          -moz-user-select: none; /* Firefox */
+          -webkit-user-select: none; /* Chrome, Safari, Opéra */
+          -ms-user-select: none; /* Internet explorer */
+          user-select: none;
           &.active {
             font-style: normal;
             color: #222222;
@@ -351,6 +355,10 @@
           right: 40px;
           height: 14px;
           color: $amalia-plugin-timeline-primary-color;
+          -moz-user-select: none; /* Firefox */
+          -webkit-user-select: none; /* Chrome, Safari, Opéra */
+          -ms-user-select: none; /* Internet explorer */
+          user-select: none;
         }
         .clear-icon{
           height: 16px;
@@ -404,6 +412,7 @@
 
         .up{
           display: none;
+          height: 100%;
           .icon {
             height: 16px;
             width: 16px;
@@ -420,6 +429,7 @@
         }
         .down {
           display: none;
+          height: 100%;
           .icon {
             height: 16px;
             width: 16px;

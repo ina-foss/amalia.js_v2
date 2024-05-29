@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="22px" viewBox="0 0 24 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-339.000000, -215.000000)" fill="#FFFFFF">
+            <g transform="translate(339.000000, 215.000000)">
+                <g>
+                    <g fill-rule="nonzero" fill="currentColor">
+                        <path d="M4.36363636,0 L0,4.36363636 L4.36363636,8.72727273 L4.36363636,5.09090909 L11.2727273,5.09090909 C13.0760327,5.09090909 14.5454545,6.56033091 14.5454545,8.36363636 C14.5454545,10.1669418 13.0760327,11.6363636 11.2727273,11.6363636 L10.1818182,11.6363636 L10.1818182,13.0909091 L11.2727273,13.0909091 C13.8694218,13.0909091 16,10.9603309 16,8.36363636 C16,5.76694218 13.8694218,3.63636364 11.2727273,3.63636364 L4.36363636,3.63636364 L4.36363636,0 Z"
+                              transform="translate(8.000000, 6.545455) scale(-1, 1) translate(-8.000000, -6.545455) "></path>
+                    </g>
+                    <text font-family="TrebuchetMS, Trebuchet MS" fill="currentColor" font-size="14" font-weight="normal">
+                        <tspan x="9.15820312" y="21">1h</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

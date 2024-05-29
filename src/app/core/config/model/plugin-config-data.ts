@@ -4,4 +4,5 @@ export interface PluginConfigData<T> {
     data: T;
     metadataIds?: Array<string>;
     fixed?: boolean;
+    pinnedControls?: boolean;
 }
