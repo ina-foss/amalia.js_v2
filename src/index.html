@@ -84,8 +84,8 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         console.log("Dom ready")
-        //loadResource();
-        loadFluxAudioResource();
+        loadResource();
+       // loadFluxAudioResource();
         document.getElementById('storyboard').addEventListener('click', addStoryboard);
         document.getElementById('timeline').addEventListener('click', addTimeline);
     });
@@ -147,6 +147,14 @@
                         zone: 1,
                         priority: 1,
                         order: 3
+                    },
+                    {
+                        label: 'heure précédente',
+                        icon: 'backward-1h',
+                        control: 'backward-1h',
+                        zone: 2,
+                        priority: 1,
+                        key: 'alt + shift + ArrowLeft'
                     },
                     {
                         label: 'Aller au début du média',
@@ -238,6 +246,14 @@
                         key: 'Shift + ArrowRight'
                     },
                     {
+                        label: 'heure suivante',
+                        icon: 'forward-1h',
+                        control: 'forward-1h',
+                        zone: 2,
+                        priority: 1,
+                        key: 'alt + shift + ArrowRight'
+                    },
+                    {
                         label: 'Désactiver le son',
                         control: 'volume',
                         zone: 3,
@@ -285,7 +301,8 @@
                         zone: 3,
                         key: 'r'
                     }
-                ]
+                ],
+                pinnedControls: true,
             }
         }
         fetch(rewindUrl)
