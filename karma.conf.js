@@ -45,7 +45,13 @@ module.exports = function (config) {
                 flags: ['–no-sandbox', '–disable-setuid-sandbox', '–disable-gpu']
             }
         },
-        browsers: ['ChromeHeadlessCI'],
+        browsers: ['Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
+        customLaunchers: {
+            ChromeHeadlessCI: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox']
+            }
+        },
         singleRun: false,
         restartOnFileChange: true
     });

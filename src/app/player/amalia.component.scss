@@ -42,13 +42,6 @@
     margin: 0 auto 0;
 
     &.pinned {
-      height: calc(100% - 106px);
-      position: inherit;
-
-      video.player {
-        position: relative;
-        height: 100% !important;
-      }
       video.poster-icon {
         width: 100px !important;
         height: 100px !important;
@@ -58,13 +51,6 @@
     }
 
     &.pinnedControlbar {
-      height: calc(100% - 63px);
-      position: inherit;
-
-      video.player {
-        position: relative;
-        height: 100% !important;
-      }
       video.poster-icon {
         width: 100px !important;
         height: 100px !important;
