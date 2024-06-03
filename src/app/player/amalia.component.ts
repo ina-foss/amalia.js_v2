@@ -196,11 +196,11 @@ export class AmaliaComponent implements OnInit {
      */
     public playerService: MediaPlayerService;
     /**
-     * Pinned ControlBar state
+     * Pinned Slider state
      */
     public pinned = false;
     /**
-     * Pinned Slider state
+     * Pinned ControlBar state
      */
     public pinnedControlbar = false;
     /**
@@ -212,7 +212,11 @@ export class AmaliaComponent implements OnInit {
      */
     @ViewChild('mediaContainer', {static: true})
     public mediaContainer: ElementRef<HTMLElement>;
-
+    /**
+     * Sert à conserver les dimensions du mediaContainer avant qu' il ne passe en mode plein écran.<br/>
+     * Pour ensuite les utiliser lors de la sortie du plein écran
+     */
+    private containerSizeBeforeFullScreen: { width: number, height: number } | undefined;
     /**
      * Amalia player main manager
      */
@@ -319,8 +323,12 @@ export class AmaliaComponent implements OnInit {
         const htmlElement = this.mediaPlayer.nativeElement;
         if (this.aspectRatio && this.aspectRatio !== '') {
             this.ratio = this.aspectRatio.replace(':', '-');
-            const maxWidth = htmlElement.parentElement.offsetWidth;
-            const maxHeight = this.mediaPlayer.nativeElement.parentElement.offsetHeight;
+            const isFullscreen = document.fullscreenElement != null;
+            // Quand nous sortons du mode plein écran, maxWidth est la largeur du parent(mediaContainer) de la balise video(mediaPlayer) avant sa mise en plein écran
+            // sinon, maxWidth est la largeur du parent de la balise video
+            const maxWidth = !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.width : htmlElement.parentElement.offsetWidth;
+            const maxParentHeight = !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.height : htmlElement.parentElement.offsetHeight;
+            const maxHeight = this.pinned ? maxParentHeight - 106 : (this.pinnedControlbar ? maxParentHeight - 63 : maxParentHeight);
             const aspectRatio = this.aspectRatio ? parseFloat(this.aspectRatio.split(':')[0]) / parseFloat(this.aspectRatio.split(':')[1]) : 16 / 9;
             let w = Math.max(maxHeight * aspectRatio, maxWidth);
             let h = w / aspectRatio;
@@ -392,12 +400,14 @@ export class AmaliaComponent implements OnInit {
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
         this.pinned = false;
+        this.updatePlayerSizeWithAspectRatio();
     }
 
     @AutoBind
     public handlePinnedSliderChange(event) {
         this.pinned = event;
         this.pinnedControlbar = false;
+        this.updatePlayerSizeWithAspectRatio();
     }
 
     @AutoBind
@@ -549,13 +559,27 @@ export class AmaliaComponent implements OnInit {
      */
     @AutoBind
     public handleFullScreenChange() {
+        const isFullscreen = document.fullscreenElement !== null;
+        if (!isFullscreen) {
+            this.containerSizeBeforeFullScreen = {
+                width: this.mediaContainer.nativeElement.offsetWidth,
+                height: this.mediaContainer.nativeElement.offsetHeight
+            };
+        }
+
         const element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
         if (element) {
             const parent = element.offsetParent as HTMLElement;
             if (parent) {
                 this.mediaPlayerElement.toggleFullscreen(parent);
+            } else {
+                this.mediaPlayerElement.toggleFullscreen(element);
             }
         }
+        // Ne pas appeler ici this.updatePlayerSizeWithAspectRatio(),
+        // car l'appli n'aurait pas eu le temps de passer en mode plein écran.
+        // Dès que l'appli passe en mode plein écran, this.updatePlayerSizeWithAspectRatio() est
+        // systématiquement appelée car l'évènement window:resize est déclenché.
     }
 
     @AutoBind
