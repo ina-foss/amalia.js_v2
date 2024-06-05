@@ -34,6 +34,10 @@ $amalia-plugin-subtitle-font-size: var(--amalia-plugin-subtitle-font-size, 1rem)
 $amalia-plugin-subtitle-z-index: var(--amalia-plugin-subtitle-z-index, 3);
 $amalia-plugin-thumbnail-z-index: var(--amalia-plugin-thumbnail-z-index, 3);
 $amalia-timebar-z-index: var(--amalia-timebar-z-index, 3);
+
+//Video background
+$amalia-video-bg-z-index: var(--amalia-video-bg-z-index, 1);
+
 // Control bar back
 $amalia-ctrl-bar-z-index: var(--amalia-ctrl-bar-z-index, 2);
 $amalia-ctrl-bar-bg-color: var(--amalia-ctrl-bar-bg-color, rgba(34, 34, 34, 0.9));

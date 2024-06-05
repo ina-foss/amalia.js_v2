@@ -18,14 +18,17 @@
 
   .amalia-player-bg-color1 {
     background-color: $amalia-player-bg-color1;
+    z-index: $amalia-video-bg-z-index;
   }
 
   .amalia-primary-color {
     background-color: $amalia-primary-color;
+    z-index: $amalia-video-bg-z-index;
   }
 
   .amalia-secondary-color {
     background-color: $amalia-secondary-color;
+    z-index: $amalia-video-bg-z-index;
   }
 
   .poster-icon {
@@ -33,6 +36,7 @@
     height: 100px !important;
     left: calc(50% - 50px) !important;
     top: calc(50% - 50px) !important;
+    z-index: 1;
   }
 
   .media-player {
