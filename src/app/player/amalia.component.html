@@ -17,22 +17,6 @@
     <img #previewThumbnail class="preview-thumbnail"
          [hidden]="!enablePreviewThumbnail"
          [src]="thumbnailBlobVideo" alt="video-preview" fetchPriority="high" importance="high"/>
-    <div *ngIf="inLoading" class="loader">
-        <div class="spinner">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
     <div *ngIf="inError" class="error">
         <svg class="amalia-svg-error-size icon">
             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#error'"></use>
@@ -45,6 +29,15 @@
     <ul>
         <li>Amalia-V{{ version }}</li>
     </ul>
+</div>
+<div *ngIf="inLoading" class="p-progress-spinner" [ngClass]="{'p-progress-spinner-pinned' : pinned,
+     'p-progress-spinner-pinnedControlbar' : pinnedControlbar}"
+     aria-label="loading"
+     aria-busy="true">
+    <svg viewBox="25 25 50 50" class="p-progress-spinner-svg" style="animation-duration: 2s;">
+        <circle cx="50" cy="50" r="20" stroke-miterlimit="10" class="p-progress-spinner-circle" fill="none"
+                stroke-width="3"></circle>
+    </svg>
 </div>
 <ng-content></ng-content>
 

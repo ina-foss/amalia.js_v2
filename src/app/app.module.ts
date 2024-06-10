@@ -17,11 +17,12 @@ import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.component';
 import {SortablejsModule} from 'ngx-sortablejs';
 import {TooltipModule} from 'ng2-tooltip-directive';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
         SortablejsModule.forRoot({
