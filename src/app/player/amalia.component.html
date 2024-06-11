@@ -1,3 +1,13 @@
+
+<div *ngIf="inLoading" class="p-progress-spinner" [ngClass]="{'p-progress-spinner-pinned' : pinned,
+     'p-progress-spinner-pinnedControlbar' : pinnedControlbar}"
+     aria-label="loading"
+     aria-busy="true">
+    <svg viewBox="25 25 50 50" class="p-progress-spinner-svg" style="animation-duration: 2s;">
+        <circle cx="50" cy="50" r="20" stroke-miterlimit="10" class="p-progress-spinner-circle" fill="none"
+                stroke-width="3"></circle>
+    </svg>
+</div>
 <div #mediaContainer (mouseenter)="displayControlBar(true);resetTimer();playerHover= true;"
      (mouseover)="playerHover= true;focus()"
      (mouseout)="displayControlBar(false);playerHover= false"
@@ -29,15 +39,6 @@
     <ul>
         <li>Amalia-V{{ version }}</li>
     </ul>
-</div>
-<div *ngIf="inLoading" class="p-progress-spinner" [ngClass]="{'p-progress-spinner-pinned' : pinned,
-     'p-progress-spinner-pinnedControlbar' : pinnedControlbar}"
-     aria-label="loading"
-     aria-busy="true">
-    <svg viewBox="25 25 50 50" class="p-progress-spinner-svg" style="animation-duration: 2s;">
-        <circle cx="50" cy="50" r="20" stroke-miterlimit="10" class="p-progress-spinner-circle" fill="none"
-                stroke-width="3"></circle>
-    </svg>
 </div>
 <ng-content></ng-content>
 
