@@ -24,68 +24,21 @@
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
     <h5 class="my-0 mr-md-auto font-weight-normal">Showcase Amalia</h5>
 </div>
-
-<!--<div class="container-fluid">-->
-<!--    <div class="row" style="height: 555px;width: 90%">-->
-<!--        <div class="col-6 p-2" style="height: 500px;width: 90%;float: left">-->
-<!--            <amalia-time-bar player-id="PLAYER"></amalia-time-bar>-->
-<!--            <amalia-player id="PLAYER" player-id="PLAYER"-->
-<!--                           config="http://localhost:4203/configs/notilus-config-transcription-player.json">-->
-<!--                <amalia-control-bar style="display: block" id="controlbar"-->
-<!--                                    player-id="PLAYER"></amalia-control-bar>-->
-<!--            </amalia-player>-->
-<!--        </div>-->
-<!--        <div class="col-6 p-2" style="height: 500px;">-->
-<!--            <div class="col-6 p-2" style="height: 500px;">-->
-<!--                <div style="width: 700px;height: 500px" id="transcription">-->
-<!--                    <amalia-transcription plugin-configuration='{"metadataIds":["6737"],"data":{"title":"test","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<div class="container-fluid">&ndash;&gt;-->
-<!--    <div class="row">-->
-<!--        <div class="col-6 p-2" style="height: 500px;">-->
-<!--            <div id="player"></div>-->
-<!--        </div>-->
-<!--        <div class="col-6 p-2" style="height: 500px;">-->
-<!--            <div id="player"></div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
 <div class="content" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr;">
     <div style="grid-area: 1 / 1 / 2 / 3" id="player"></div>
     <div style="grid-area: 1 / 3 / 3 / 3" id="storyboard">storyboard</div>
     <div style="grid-area: 2 / 3 / 3 / 1" id="timeline">timeline</div>
 </div>
-
-<!--<div class="container-fluid">&ndash;&gt;-->
-<!--    <div class="row">-->
-<!--        <div class="col-6 p-2" style="height: 500px;">-->
-<!--            <amalia-player id="player" player-id="PLAYER"-->
-<!--                           config="http://localhost:4203/configs/notilus-config-transcription-player.json">-->
-<!--                <amalia-control-bar player-id="PLAYER"></amalia-control-bar>-->
-<!--            </amalia-player>-->
-<!--            <amalia-time-bar player-id="PLAYER" plugin-configuration='{"data":{"theme": "outside"}}'></amalia-time-bar>-->
-
-<!--        </div>-->
-<!--        <div class="col-6 p-2" style="height: 500px;">-->
-<!--            <div style="height: 500px" id="transcription">-->
-<!--                <amalia-transcription style="border: 1px solid #DDDDDD;"-->
-<!--                                      plugin-configuration='{"metadataIds":["254"],"data":{"title":"test","description":"test", "parseLevel": 1,"progressBar":true, "autoScroll":true,"withSubLocalisations": true}}'/>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--    </div>-->
-<!--</div>-->
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         console.log("Dom ready")
-        loadResource();
-       // loadFluxAudioResource();
+        // loadResource();
+        //loadFluxAudioResource();
+        loadStockAudioResource().then(() => {
+            console.log('Done');
+        }).catch(error => {
+            console.log("Error", error);
+        });
         document.getElementById('storyboard').addEventListener('click', addStoryboard);
         document.getElementById('timeline').addEventListener('click', addTimeline);
     });
@@ -348,8 +301,41 @@
                             });
                 });
     }
-function loadFluxAudioResource() {
-        const config={
+
+    const createPlayer = (config) => {
+
+        const playerId = "PLAYER";
+        const playerContainer = document.getElementById("player");
+        const player = document.createElement('amalia-player');
+        player.setAttribute('player-id', playerId);
+        player.setAttribute('id', `ajs-${playerId}`);
+        player.setAttribute('config', JSON.stringify(config));
+        player.setAttribute('class', `${'timebar'}`);
+        player.setAttribute('type', 'audio');
+        // Create control bar
+        const controlBar = document.createElement('amalia-control-bar');
+        controlBar.setAttribute('player-id', playerId);
+        const controlBarPluginConfig = {pinnedControls: true};
+        controlBar.setAttribute('plugin-configuration', JSON.stringify(controlBarPluginConfig));
+        player.appendChild(controlBar);
+        playerContainer.appendChild(player);
+
+        //timebar
+        const timebar = document.createElement('amalia-time-bar');
+        timebar.setAttribute('player-id', playerId);
+        const pluginConfig = {
+            "data": {
+                "timeFormat": "hours",
+                "theme": "outside"
+            }
+        };
+        timebar.setAttribute('plugin-configuration', JSON.stringify(pluginConfig));
+        playerContainer.appendChild(timebar);
+        return player;
+    }
+
+    function loadFluxAudioResource() {
+        const config = {
             "tcOffset": 21600,
             "player": {
                 "backwardsSrc": "",
@@ -542,34 +528,77 @@ function loadFluxAudioResource() {
             }
         };
 
-    const playerId="PLAYER";
-    const playerContainer = document.getElementById("player");
-    const player=document.createElement('amalia-player');
-    player.setAttribute('player-id', playerId);
-    player.setAttribute('id', `ajs-${playerId}`);
-    player.setAttribute('config', JSON.stringify(config));
-    player.setAttribute('class', `${'timebar'}`);
-    player.setAttribute('type', 'audio');
-    // Create control bar
-    const controlBar = document.createElement('amalia-control-bar');
-    controlBar.setAttribute('player-id', playerId);
-    const controlBarPluginConfig={pinnedControls:true};
-    controlBar.setAttribute('plugin-configuration', JSON.stringify(controlBarPluginConfig));
-    player.appendChild(controlBar);
-    playerContainer.appendChild(player);
-
-    //timebar
-    const timebar = document.createElement('amalia-time-bar');
-    timebar.setAttribute('player-id', playerId);
-    const pluginConfig={
-        "data": {
-            "timeFormat": "hours",
-            "theme": "outside"
-        }
-    };
-    timebar.setAttribute('plugin-configuration', JSON.stringify(pluginConfig));
-    playerContainer.appendChild(timebar);
+        createPlayer(config);
     }
+
+    async function loadStockAudioResource() {
+        const playerId = "PLAYER";
+        const response = await fetch('http://localhost:4203/configs/base-config-stock-audio-with-histogram.json');
+        const config = await response.json();
+
+        const playerContainer = document.getElementById("player");
+        const player = document.createElement('amalia-player');
+        player.setAttribute('player-id', playerId);
+        player.setAttribute('id', `ajs-${playerId}`);
+        player.setAttribute('config', JSON.stringify(config));
+        player.setAttribute('class', `${'timebar'}`);
+        player.setAttribute('type', 'audio');
+        // Create control bar
+        const controlBar = document.createElement('amalia-control-bar');
+        controlBar.setAttribute('player-id', playerId);
+        const controlBarPluginConfig = {pinnedControls: true};
+        controlBar.setAttribute('plugin-configuration', JSON.stringify(controlBarPluginConfig));
+        player.appendChild(controlBar);
+
+        //Histogram
+        const histo_config = {
+            "metadataIds": [
+                "waveform-1024-0",
+                "waveform-1024-1",
+                "waveform-4096-0",
+                "waveform-4096-1"
+            ],
+            "data": {
+                "withFocus": true,
+                "enableMirror": false,
+                "labels": [
+                    "",
+                    "",
+                    "Canal Gauche",
+                    "Canal Droit"
+                ],
+                "zoomMetadataIdx": [
+                    2,
+                    3
+                ],
+                "focusMin": 10,
+                "focusMax": 40,
+                "focusMinOffset": 10,
+                "focusMaxOffset": 90
+            }
+        }
+        const histo = document.createElement('amalia-histogram');
+        histo.setAttribute('player-id', playerId);
+        histo.setAttribute('plugin-configuration', JSON.stringify(histo_config));
+        player.appendChild(histo);
+
+        playerContainer.appendChild(player);
+
+        //timebar
+        const timebar = document.createElement('amalia-time-bar');
+        timebar.setAttribute('player-id', playerId);
+        const pluginConfig = {
+            "data": {
+                "timeFormat": "hours",
+                "theme": "outside"
+            }
+        };
+        timebar.setAttribute('plugin-configuration', JSON.stringify(pluginConfig));
+        playerContainer.appendChild(timebar);
+
+
+    }
+
     function addStoryboard() {
         document.getElementById('storyboard').removeEventListener('click', addStoryboard);
         document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER"  plugin-configuration='{"data":{"baseUrl":"https://image.wsmedia.i.sas.ina/thumbs/VBgozLdgTD9terBfYwaw_dr7sqlSR4kfQGpTWz6jNxkBM97OnKCvLeUHM8-BYR3fp43HNhXcb_F_KCf6sB1oqMx-drnlQRSQ85VNmu1ZJynONhh8IAXymGlZ-iEYALH9f4LuLlWiH_6b0yniUdMn6qczlUrnfrkV9BcC6SKszssKDwrYyxR6CQzBD3xRslvNJJYaM7hI0T6Yd0gGzylvI5ywfni_iHDVIRqk_sgShw5xt4o-2fleWfgZ8vaeGz79zNJ8kh9oDkgMfKM_-I2eOPjJHHeyi7FZoS700C7n2LdJ7_mIh6v03Mv2kvjoVeHrayeQZ9-i21JDpKGL6TOnxt6RZxzbGEhdgCaINCgVZJ4BW9xlaftS4uUBIFlaLt31GjldFN8dSnWgPGTkerR8dfTX6XXQBDB_wBj2IiA422Hiw8-oriVAOjbnfiEc2HpzWWPP_-p407wH9NT8R-b9Tb7jWmwrb6jKakl3Lw67n6OXj6wymONv47uuIRki_b7h7z3lNHgxkWGxAvJn4axqKNP4N179g3hD8x8GLQUJ7DruBekEunkXdUB7W2AGh_hU1t3g9ie2tI5BLlAfojWei1kCZ8v04_djectBHtN5ka_LH-pF5wLIK8FukJEWotkkEm4phPoenatpYEW8xZVDPchFDPPVvrLC_euHIU6VTXAOa4LN9K1AP2eh-ZXXxydAaJnpFu_QWrHvcrG6DOqNRLO6Nh2hmxC_rGBg33lGk88vCy1fUuqCLG9jE6157pjCig7ckqAMCbIlC6tFUVtTPdH2lvh7RzhHYg76fnWZXhkVM_Afs9_7tUb1dCGtMa4b30jx7_SZBbJ3TztuN9CUbtNlfw_iNvs0KLR_aQr02j7LjgvRVnUR37fe_pTeHXCr36oco-HQQIts995MKVQjhtqdIMnlbxh1EP2Op5vQAUh20EZA483PFHUXvKV8eEkcOk5M2Qal04RK1cIs0lCww4bynmyWgkSwhU-MAd5fS1I/sl_iv/84Ev5lYLL2BmeVxWhaNmvg/sl_hm/","theme":"v","tcParam":"start","itemPerLine":5}}'>
