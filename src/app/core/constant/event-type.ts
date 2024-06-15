@@ -167,6 +167,10 @@ export enum PlayerEventType {
      */
     PINNED_SLIDER_CHANGE = 'ina.player.PINNED_SLIDER_CHANGE',
     /**
+     * Invocked when click on pin controlbar
+     */
+    CONTROL_BAR_TOGGLED = 'ina.player.CONTROL_BAR_TOGGLED',
+    /**
      * Invocked on keydown when the mouse is over the player
      */
     KEYDOWN = 'ina.player.KEYDOWN',
