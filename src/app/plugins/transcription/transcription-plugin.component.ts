@@ -4,7 +4,7 @@ import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {TranscriptionConfig} from '../../core/config/model/transcription-config';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {Utils} from '../../core/utils/utils';
 import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {DEFAULT} from '../../core/constant/default';
 import {TextUtils} from '../../core/utils/text-utils';
@@ -64,7 +64,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public tcFormatPipe = new TcFormatPipe();
 
     constructor(playerService: MediaPlayerService) {
-        super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = TranscriptionPluginComponent.PLUGIN_NAME;
     }
 
     ngOnInit(): void {
@@ -397,7 +398,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const metadataManager = this.mediaPlayerElement.metadataManager;
         this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`);
         // Check if metadata is initialized
-        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+        if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
             this.transcriptions = new Array<TranscriptionLocalisation>();
             handleMetadataIds.forEach((metadataId) => {
                 this.logger.info(`get metadata for ${metadataId}`);
@@ -556,25 +557,27 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         });
     }
 
+    private isHandleShortCutNeeded(event): boolean {
+        return event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== ''
+    }
+
+    private isScrollToNextWordNeeded(): boolean {
+        return this.listOfSearchedNodes && this.listOfSearchedNodes.length !== 0 && this.searchedWordIndex !== null;
+    }
+
     /***
      * handleShortcut on search button
      * */
     public handleShortcut(event) {
-        if (event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== '') {
+        if (this.isHandleShortCutNeeded(event)) {
             if (this.prevSearchValue !== this.searchText.nativeElement.value) {
                 this.prevSearchValue = this.searchText.nativeElement.value;
                 this.clearSearchList();
                 this.searchWord(this.searchText.nativeElement.value);
                 this.searching = true;
             } else {
-                if (this.listOfSearchedNodes && this.listOfSearchedNodes.length !== 0 && this.searchedWordIndex !== null) {
-                    let direction = 'down';
-                    if (this.searchedWordIndex === 0) {
-                        direction = 'down';
-                    }
-                    if (this.searchedWordIndex === this.listOfSearchedNodes.length) {
-                        direction = 'up';
-                    }
+                if (this.isScrollToNextWordNeeded()) {
+                    let direction = this.computeDirection();
                     this.searching = true;
                     this.scrollToSearchedWord(direction);
                 } else {
@@ -587,6 +590,17 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.clearSearchList();
             this.typing = false;
         }
+    }
+
+    private computeDirection = () => {
+        let direction = 'down';
+        if (this.searchedWordIndex === 0) {
+            direction = 'down';
+        }
+        if (this.searchedWordIndex === this.listOfSearchedNodes.length) {
+            direction = 'up';
+        }
+        return direction;
     }
 
     /**

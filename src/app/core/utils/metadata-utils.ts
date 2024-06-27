@@ -3,7 +3,7 @@
  */
 import {Metadata} from '@ina/amalia-model';
 import {TranscriptionLocalisation} from '../metadata/model/transcription-localisation';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {Utils} from './utils';
 import {FormatUtils} from './format-utils';
 import {Histogram} from '../metadata/model/histogram';
 import {TimelineLocalisation} from '../metadata/model/timeline-localisation';
@@ -64,7 +64,7 @@ export class MetadataUtils {
             thumb: (l.thumb) ? l.thumb : '',
             tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin)  : l.tcin,
             tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
-            text: (l.data && l.data.text && isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
+            text: (l.data && l.data.text && Utils.isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
             subLocalisations,
             annotations
         });
@@ -78,7 +78,7 @@ export class MetadataUtils {
         const histograms: Array<Histogram> = new Array<Histogram>();
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
-                if (l.data.hasOwnProperty('histogram') && l.data.histogram && isArrayLike(l.data.histogram)) {
+                if (l.data.hasOwnProperty('histogram') && l.data.histogram && Utils.isArrayLike(l.data.histogram)) {
                     l.data.histogram.forEach((h) => {
                         h.id = metadata.id;
                         histograms.push(h as Histogram);

@@ -5,7 +5,7 @@ import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {BaseUtils} from '../../core/utils/base-utils';
 import {HistogramConfig} from '../../core/config/model/histogram-config';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {Utils} from '../../core/utils/utils';
 import {Histogram} from '../../core/metadata/model/histogram';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {HttpClient} from '@angular/common/http';
@@ -103,7 +103,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
 
     constructor(httpClient: HttpClient, playerService: MediaPlayerService) {
-        super(playerService, HistogramPluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = HistogramPluginComponent.PLUGIN_NAME;
         this.httpClient = httpClient;
         if (!this.httpClient) {
             throw new AmaliaException('Error to implement http config loader');
@@ -243,7 +244,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds} ${labels} Zoom:  ${zoomMetadataIdx}`);
         // Check if metadata is initialized
-        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+        if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
             if (metadataManager.getHistograms(handleMetadataIds).length > 0) {
                 this.histogramsList = metadataManager.getHistograms(handleMetadataIds);
                 this.drawHistograms(this.histogramsList, labels, zoomMetadataIdx);

@@ -46,7 +46,7 @@
                         </svg>
                     </div>
                     <!--FullScreen Button -->
-                    <div tooltip="{{c.label}}" autoPlacement='false'
+                    <div tooltip="{{c.label}}" [autoPlacement]='false'
                          [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3) && displayState ==='l')||(c.priority === 2 && displayState ==='m')}"
                          (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
                          class="toggleFullScreen control" [attr.aria-label]="c.label"

@@ -22,14 +22,13 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
             "assets": [
               "src/assets"
             ],
             "styles": [],
             "scripts": [
               {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
+                "input": "node_modules/@ungap/custom-elements/es.js"
               }
             ]
           },
@@ -44,7 +43,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -68,18 +66,18 @@
         "serve": {
           "builder": "ngx-build-plus:dev-server",
           "options": {
-            "browserTarget": "amalia:build"
+            "buildTarget": "amalia:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "amalia:build:production"
+              "buildTarget": "amalia:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "amalia:build"
+            "buildTarget": "amalia:build"
           }
         },
         "test": {
@@ -99,17 +97,14 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
+            "builder": "@angular-eslint/builder:lint",
+            "options": {
+                "lintFilePatterns": [
+                    "src/**/*.ts",
+                    "src/**/*.html"
+                ]
+            }
+
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
@@ -125,6 +120,5 @@
         }
       }
     }
-  },
-  "defaultProject": "amalia"
+  }
 }

@@ -3,7 +3,7 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {Utils} from '../../core/utils/utils';
 import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {SubtitleConfig} from '../../core/config/model/subtitle-config';
 import * as _ from 'lodash';
@@ -30,7 +30,8 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
      */
     public displayState;
     constructor(playerService: MediaPlayerService) {
-        super(playerService, SubtitlesPluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = SubtitlesPluginComponent.PLUGIN_NAME;
     }
 
     ngOnInit(): void {
@@ -89,7 +90,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
         const metadataManager = this.mediaPlayerElement.metadataManager;
         this.logger.info(`Metadata loaded subtitle handle metadata ids: ${handleMetadataIds}`);
         // Check if metadata is initialized
-        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+        if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
             this.transcriptions = new Array<TranscriptionLocalisation>();
             handleMetadataIds.forEach((metadataId) => {
                 this.logger.info(`get metadata for ${metadataId}`);
@@ -114,7 +115,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
                     && currentTime < l.tcOut + tcDelta;
             });
             if (listOfTranscription && listOfTranscription.length) {
-                let texts = _.map(listOfTranscription, 'text');
+                let texts: any = _.map(listOfTranscription, 'text');
                 texts = _.trim(texts);
                 this.subTitle = texts.toString();
             } else {

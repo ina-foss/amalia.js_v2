@@ -4,7 +4,7 @@ import {ConfigurationManager} from '../config/configuration-manager';
 import {LoggerInterface} from '../logger/logger-interface';
 import {ConfigDataSource} from '../config/model/config-data-source';
 import {Loader} from '../loader/loader';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {Utils} from '../utils/utils';
 import {MetadataUtils} from '../utils/metadata-utils';
 import {TranscriptionLocalisation} from './model/transcription-localisation';
 import {Histogram} from './model/histogram';
@@ -33,7 +33,7 @@ export class MetadataManager {
     public init(): Promise<void> {
         return new Promise((resolve) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
-            if (dataSources && isArrayLike<Array<ConfigDataSource>>(dataSources)) {
+            if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
                 this.toLoadData = dataSources.length;
                 dataSources.forEach(dataSource => {
                     this.loadDataSource(dataSource, resolve)
@@ -65,7 +65,7 @@ export class MetadataManager {
      * @returns listOfMetadataById
      */
     public getMetadataByType(metadataType: string): Array<Metadata> {
-        return _.filter([...this.listOfMetadata.values()], {type: metadataType});
+        return _.filter<Metadata>([...this.listOfMetadata.values()], {type: metadataType});
     }
 
     /**
@@ -165,7 +165,7 @@ export class MetadataManager {
      * @param listOfMetadata list of metadata
      */
     private onMetadataLoaded(listOfMetadata: Array<Metadata>, completed) {
-        if (listOfMetadata && isArrayLike<Metadata>(listOfMetadata)) {
+        if (listOfMetadata && Utils.isArrayLike<Metadata>(listOfMetadata)) {
             for (const metadata of listOfMetadata) {
                 try {
                     this.addMetadata(metadata);

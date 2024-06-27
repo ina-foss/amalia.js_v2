@@ -1,7 +1,7 @@
 import {MediaPlayerElement} from '../media-player-element';
 import {PluginConfigData} from '../config/model/plugin-config-data';
 import {DefaultLogger} from '../logger/default-logger';
-import {Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, Optional} from '@angular/core';
 import {PlayerEventType} from '../constant/event-type';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {AmaliaException} from '../exception/amalia-exception';
@@ -9,6 +9,10 @@ import {AmaliaException} from '../exception/amalia-exception';
 /**
  * Base class for create plugin
  */
+@Component({
+    selector: 'amalia-base-plugin',
+    template: '<div></div>',
+})
 export abstract class PluginBase<T> implements OnInit {
 
     @Input()
@@ -54,21 +58,21 @@ export abstract class PluginBase<T> implements OnInit {
     @Input()
     public pluginInstance = '';
     public mediaPlayerElement: MediaPlayerElement;
+    @Input({required: true})
     protected pluginName: string;
-    protected readonly logger: DefaultLogger;
+    protected logger: DefaultLogger;
 
     /**
      * Plugin base constructor
      * @param playerService player service
      * @param pluginName plugin name, user for get configuration
      */
-    protected constructor(playerService: MediaPlayerService, pluginName) {
+    protected constructor(playerService: MediaPlayerService) {
         this.playerService = playerService;
-        this.pluginName = pluginName;
-        this.logger = new DefaultLogger(`${this.pluginName}`);
     }
 
     ngOnInit(): void {
+        this.logger = new DefaultLogger(`${this.pluginName}`);
         this.mediaPlayerElement = this.playerService.get(this.playerId);
         if (!this.mediaPlayerElement) {
             throw new AmaliaException(`Error to init plugin ${this.pluginName} (player id : ${this.playerId}).`);
