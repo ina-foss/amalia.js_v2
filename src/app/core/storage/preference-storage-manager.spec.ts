@@ -1,10 +1,10 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {PreferenceStorageManager} from './preference-storage-manager';
 
 describe('Test Storage Manager', () => {
     let injector: TestBed;
     const component = new PreferenceStorageManager();
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [],
             declarations: [],

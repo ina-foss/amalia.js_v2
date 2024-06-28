@@ -1,4 +1,4 @@
-import {async, fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
+import {waitForAsync, fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
 import {ConfigurationManager} from './configuration-manager';
 import {ConfigData} from './model/config-data';
 import {PlayerConfigData} from './model/player-config-data';
@@ -12,6 +12,7 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {AmaliaException} from '../exception/amalia-exception';
 import {LoggerInterface} from '../logger/logger-interface';
 import {DefaultConfigLoader} from './loader/default-config-loader';
+
 describe('ConfigurationManager', () => {
     let injector: TestBed;
     let httpClient: HttpClient;
@@ -20,7 +21,7 @@ describe('ConfigurationManager', () => {
     const mediaSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
     const backwardSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
     const configUrl = './tests/assets/config-mpe.json';
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             declarations: [],

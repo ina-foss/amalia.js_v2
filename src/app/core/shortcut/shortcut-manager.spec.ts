@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {DefaultLogger} from '../logger/default-logger';
@@ -19,7 +19,7 @@ describe('Test Shortcut manager', () => {
     const logger = new DefaultLogger();
     let configurationManager;
     const mediaSrc = 'https://www.w3schools.com/html/mov_bbb.mp4';
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             declarations: [],

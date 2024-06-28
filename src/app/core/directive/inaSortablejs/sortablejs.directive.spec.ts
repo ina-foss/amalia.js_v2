@@ -19,10 +19,8 @@ describe('SortablejsDirective', () => {
         TestBed.configureTestingModule({
             declarations: [
                 TestComponent1,
-            ],
-            imports: [
-                SortablejsDirective,
-            ],
+                SortablejsDirective
+            ]
         }).compileComponents();
     }));
 

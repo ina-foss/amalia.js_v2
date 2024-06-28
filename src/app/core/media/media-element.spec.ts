@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {MediaElement} from './media-element';
 import {EventEmitter} from 'events';
 import {PlayerConfigData} from '../config/model/player-config-data';
@@ -20,7 +20,7 @@ describe('Test Media element', () => {
         autoplay: true, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: srcMedia,
         backwardsSrc: backSrc , hls: {enable: true}
     };
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             declarations: [],

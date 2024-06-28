@@ -9,6 +9,7 @@ module.exports = function (config) {
             require('karma-jasmine'),
             require('karma-chrome-launcher'),
             require('karma-jasmine-html-reporter'),
+            require('karma-coverage'),
             require('karma-junit-reporter'),
             require('karma-htmlfile-reporter'),
             require('karma-coverage-istanbul-reporter'),
@@ -39,17 +40,17 @@ module.exports = function (config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
+        browsers: ['ChromeHeadlessNoSandbox'],
+        // you can define custom flags
         customLaunchers: {
-            ChromeHeadlessCI: {
+            ChromeHeadlessNoSandbox: {
                 base: 'ChromeHeadless',
-                flags: ['–no-sandbox', '–disable-setuid-sandbox', '–disable-gpu']
-            }
-        },
-        browsers: ['Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
-        customLaunchers: {
-            ChromeHeadlessCI: {
-                base: 'ChromeHeadless',
-                flags: ['--no-sandbox']
+                flags: [
+                    '--no-sandbox',
+                    '--disable-gpu',
+                    '--disable-web-security',
+                    '--disable-setuid-sandbox'
+                ]
             }
         },
         singleRun: false,
