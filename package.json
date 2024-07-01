@@ -15,7 +15,7 @@
         "build": "npm run build:icon && npm run build:component",
         "publish": "cp -r package-public.json dist/amalia/package.json && cd dist/amalia && npm publish",
         "test-watch": "ng test  --code-coverage",
-        "test": "ng test --watch=false --code-coverage --browsers=ChromeHeadlessCI --include src/app/core/utils/utils.spec.ts",
+        "test": "ng test --watch=false --code-coverage --browsers=ChromeHeadlessCI",
         "sonar": "node sonar.conf.js",
         "lint": "ng lint",
         "e2e": "ng e2e"
@@ -76,6 +76,7 @@
         "karma-jasmine": "~5.1.0",
         "karma-jasmine-html-reporter": "~2.1.0",
         "karma-junit-reporter": "^2.0.1",
+        "karma-verbose-reporter": "^0.0.8",
         "sonarqube-scanner": "^4.0.1",
         "svg-sprite": "^2.0.4",
         "ts-node": "^10.9.2",

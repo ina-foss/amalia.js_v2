@@ -66,6 +66,7 @@ describe('TimeBar plugin test', () => {
         const mediaPlayer = new MediaElement(obj, eventEmitter);
         expect(mpe.getMediaPlayer()).toEqual(mediaPlayer);
         mpe.setMediaPlayerWidth(1980);
+        playerService.players.set('PLAYER', mpe);
         const plugin = new TimeBarPluginComponent(playerService);
         expect(plugin.getDefaultConfig()).toEqual(configPlugin);
         plugin.playerId = 'PLAYER';
