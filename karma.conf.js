@@ -40,7 +40,7 @@ module.exports = function (config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['ChromeHeadlessNoSandbox'],
+        browsers: ['ChromeHeadlessNoSandbox', 'Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
         // you can define custom flags
         customLaunchers: {
             ChromeHeadlessNoSandbox: {
@@ -51,9 +51,13 @@ module.exports = function (config) {
                     '--disable-web-security',
                     '--disable-setuid-sandbox'
                 ]
+            },
+            ChromeHeadlessCI: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox']
             }
         },
-        singleRun: false,
+        singleRun: true,
         restartOnFileChange: true
     });
 };

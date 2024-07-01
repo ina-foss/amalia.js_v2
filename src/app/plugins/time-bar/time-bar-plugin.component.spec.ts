@@ -71,7 +71,7 @@ describe('TimeBar plugin test', () => {
         plugin.playerId = 'PLAYER';
         plugin.pluginInstance = 'PLAYER';
         plugin.mediaPlayerElement = mpe;
-        plugin.init();
+        plugin.ngOnInit();
         plugin.hideTimeBar();
         expect(plugin.active).toEqual(false);
         plugin.showTimeBar();
