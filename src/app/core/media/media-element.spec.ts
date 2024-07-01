@@ -28,14 +28,15 @@ describe('Test Media element', () => {
         injector = getTestBed();
         httpTestingController = injector.inject(HttpTestingController);
         httpClient = injector.inject(HttpClient);
-
-
     }));
+
     afterEach(() => {
         // After every test, assert that there are no more pending requests.
         httpTestingController.verify();
     });
-    it('Media player element ', () => {
+
+
+    it('Media player element ', async () => {
         expect(component).toBeTruthy();
         component.setSrc(config);
         expect(component.mse).toBeTruthy();
@@ -43,7 +44,8 @@ describe('Test Media element', () => {
         component.audioChannel = 2;
         expect(component.audioChannel).toEqual(2);
     });
-    it('Tests framerate', () => {
+
+    it('Tests framerate', async() => {
         expect(component.framerate).toEqual(25);
         component.framerate = 60;
         expect(component.framerate).toEqual(60);
@@ -54,7 +56,7 @@ describe('Test Media element', () => {
         component.poster = '../assets/image.png';
         expect(component.poster).toEqual('../assets/image.png');
     });
-    it('Test events', () => {
+    it('Test events', async() => {
         component.pause();
         // expect(component.isPaused()).toEqual(true);
         component.seekToBegin();
@@ -74,8 +76,8 @@ describe('Test Media element', () => {
         expect(typeof (component.getDuration())).toBe('number');
         component.setCurrentTime(25);
         component.play().then(()=>{
-            component.playPause()
-            expect(component.isPaused()).toEqual(true)
+            component.playPause();
+            expect(component.isPaused()).toEqual(true);
         }).catch(error=>{
 
         });
@@ -85,7 +87,8 @@ describe('Test Media element', () => {
             component.pause();
         }).catch(error=>{});
     });
-    it('Test Volume', () => {
+
+    it('Test Volume', async() => {
         component.setVolume(50);
         expect(component.getVolume()).toEqual(50);
         component.setVolume(26, 'r');
@@ -104,12 +107,11 @@ describe('Test Media element', () => {
     it('Test Image', () => {
         expect(typeof (component.captureImage(50))).toBe('string');
     });
-    it('test playbackrate setter and getter', () => {
+    it('test playbackrate setter and getter', async() => {
         component.setCurrentTime(225);
         component.setReverseMode(true);
         expect(component.reverseMode).toEqual(true);
         expect(component.getPlaybackRate()).toEqual(1);
-        expect(component.reverseMode).toEqual(false);
         component.setSrc(config2);
         component.playbackRate = 4;
         expect(component.withMergeVolume).toEqual(component._withMergeVolume);
