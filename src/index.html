@@ -31,13 +31,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             console.log("Dom ready")
-            // loadResource();
+            loadResource();
             //loadFluxAudioResource();
-            loadTranscriptionSample().then(() => {
-                console.log('Done');
-            }).catch(error => {
-                console.log("Error", error);
-            });
+            //loadTranscriptionSample().then(() => {
+            //  console.log('Done');
+            //}).catch(error => {
+            //console.log("Error", error);
+            //});
             /*loadStockAudioResource().then(() => {
                 console.log('Done');
             }).catch(error => {
@@ -47,11 +47,14 @@
             document.getElementById('timeline').addEventListener('click', addTimeline);
         });
 
-        function loadResource() {
+        async function loadResource() {
             // const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
             // const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls&rewind=1';
             const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls';
             const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls&rewind=1';
+
+            let thumbnailUrlResponse = await fetch('https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=download&category=thumbnail', {method: 'GET'});
+            let thumbnailUrl = await thumbnailUrlResponse.text();
 
             const pluginsConfiguration = {
                 "CONTROL_BAR-PLAYER": {
@@ -290,6 +293,11 @@
                                             },
                                             crossOrigin: "anonymous",
                                             backwardsSrc: rewindData
+                                        },
+                                        thumbnail: {
+                                            baseUrl: thumbnailUrl,
+                                            enableThumbnail: true,
+                                            tcParam: "start"
                                         },
                                         dataSources: [
                                             {

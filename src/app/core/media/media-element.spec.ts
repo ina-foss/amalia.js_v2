@@ -73,14 +73,17 @@ describe('Test Media element', () => {
         component.seekToEnd();
         expect(typeof (component.getDuration())).toBe('number');
         component.setCurrentTime(25);
-        component.play().then(()=>{}).catch(error=>{});
-        //--component.playPause();
-        // expect(component.isPaused()).toEqual(true);
-        //--component.pause();
-        // expect(component.isPaused()).toEqual(true);
+        component.play().then(()=>{
+            component.playPause()
+            expect(component.isPaused()).toEqual(true)
+        }).catch(error=>{
+
+        });
         component.stop();
         expect(component.getCurrentTime()).toEqual(0);
-        component.play().then(()=>{}).catch(error=>{});
+        component.play().then(()=>{
+            component.pause();
+        }).catch(error=>{});
     });
     it('Test Volume', () => {
         component.setVolume(50);
@@ -105,14 +108,12 @@ describe('Test Media element', () => {
         component.setCurrentTime(225);
         component.setReverseMode(true);
         expect(component.reverseMode).toEqual(true);
-        component.pause();
         expect(component.getPlaybackRate()).toEqual(1);
         expect(component.reverseMode).toEqual(false);
         component.setSrc(config2);
         component.playbackRate = 4;
         expect(component.withMergeVolume).toEqual(component._withMergeVolume);
-        component.pause(true);
-        // expect(component.isPaused()).toEqual(true);
+
     });
 });
 
