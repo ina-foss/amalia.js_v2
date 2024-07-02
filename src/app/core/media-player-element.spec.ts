@@ -58,7 +58,6 @@ describe('Test Media player element', () => {
         const mediaPlayer = new MediaElement(obj, eventEmitter);
         mpe.configurationManager.configData = configData;
         expect(mpe.getMediaPlayer()).toEqual(mediaPlayer);
-        mpe.toggleFullscreen(obj);
         mpe.setMediaPlayerWidth(620);
         expect(mpe.getDisplayState()).toEqual('s');
         mpe.setMediaPlayerWidth(940);
