@@ -31,13 +31,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             console.log("Dom ready")
-            loadResource();
+            //loadResource();
             //loadFluxAudioResource();
-            //loadTranscriptionSample().then(() => {
-            //  console.log('Done');
-            //}).catch(error => {
-            //console.log("Error", error);
-            //});
+            loadTranscriptionSample().then(() => {
+             console.log('Done');
+            }).catch(error => {
+            console.log("Error", error);
+            });
             /*loadStockAudioResource().then(() => {
                 console.log('Done');
             }).catch(error => {
