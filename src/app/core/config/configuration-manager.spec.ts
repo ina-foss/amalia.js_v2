@@ -73,7 +73,7 @@ describe('ConfigurationManager', () => {
                             .toThrow(new AmaliaException(`Error to get configuration for plugin 'plugin-test'.`));
                 }
             } catch (e) {
-
+                // log error
             }
 
             expect(() => configurationManager.getPluginConfiguration('test1'))

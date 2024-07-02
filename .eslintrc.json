@@ -19,6 +19,7 @@
                 "no-prototype-builtins": "off",
                 "no-useless-escape": "off",
                 "no-extra-semi": "off",
+                "@angular-eslint/use-lifecycle-interface": "off",
                 "@typescript-eslint/no-duplicate-enum-values": "off",
                 "@typescript-eslint/no-namespace": "off",
                 "@typescript-eslint/no-var-requires": "off",
