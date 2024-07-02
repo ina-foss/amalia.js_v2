@@ -15,7 +15,7 @@
         "build": "npm run build:icon && npm run build:component",
         "publish": "cp -r package-public.json dist/amalia/package.json && cd dist/amalia && npm publish",
         "test-watch": "ng test  --code-coverage",
-        "test": "ng test --watch=false --code-coverage --browsers=ChromeHeadlessCI",
+        "test": "ng test --watch=false --code-coverage --browsers=ChromeHeadlessCI --include src/app/core/utils/utils.spec.ts",
         "sonar": "node sonar.conf.js",
         "lint": "ng lint",
         "e2e": "ng e2e"
