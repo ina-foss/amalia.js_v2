@@ -283,6 +283,8 @@
           margin-right: 3px;
           &.activated {
             color: black;
+            font-style: italic;
+            font-weight: bold;
           }
           &.named-entity {
             color: #0086B1;
@@ -305,6 +307,7 @@
           }
           &:hover {
             font-weight: bold;
+            text-decoration: underline;
           }
         }
       }
