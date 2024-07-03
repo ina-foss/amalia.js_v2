@@ -283,36 +283,30 @@
         background-color: $amalia-plugin-timeline-font-color;
         width: calc(100% - 18px);
 
-        .title {
-          display: block;
-          font-weight: bold;
-          font-size: 14px;
-          line-height: 20px;
-          color: $amalia-plugin-timeline-header-font-color;
-        }
-
-        .text {
-          color: #727070;
-          font-family: $amalia-font-family-lato;
-          font-size: 14px;
-          letter-spacing: 0.1px;
-          line-height: 20px;
-
-          .w {
-            cursor: pointer;
-            float: left;
-            margin-right: 3px;
-
-            &.activated {
-              color: black;
-            }
-
-            &.named-entity {
-              color: #0086B1;
-            }
-
-            &.selected-text {
-              background-color: $amalia-plugin-transcription-tc-hover !important;
+      .text {
+        color: #727070;
+        font-family: $amalia-font-family-lato;
+        font-size: 14px;
+        letter-spacing: 0.1px;
+        line-height: 20px;
+        .w {
+          cursor: pointer;
+          float: left;
+          margin-right: 3px;
+          &.activated {
+            color: black;
+            font-style: italic;
+            font-weight: bold;
+          }
+          &.named-entity {
+            color: #0086B1;
+          }
+          &.selected-text {
+            background-color: $amalia-plugin-transcription-tc-hover !important;
+            color: $amalia-plugin-transcription-tc-hover;
+            color : #fff;
+            &.selected {
+              background-color: $amalia-plugin-transcription-tc-hover;
               color: $amalia-plugin-transcription-tc-hover;
               color: #fff;
 
@@ -326,14 +320,13 @@
                 }
               }
             }
-
-            &.founded-text {
-              background-color: $amalia-plugin-timeline-text-founded-color;
-            }
-
-            &:hover {
-              font-weight: bold;
-            }
+          }
+          &.founded-text {
+            background-color: $amalia-plugin-timeline-text-founded-color;
+          }
+          &:hover {
+            font-weight: bold;
+            text-decoration: underline;
           }
         }
       }
