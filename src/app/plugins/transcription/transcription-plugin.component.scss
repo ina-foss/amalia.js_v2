@@ -94,7 +94,6 @@
           .named-entity {
             color: $amalia-plugin-transcription-named-entity-tc;
             font-weight: 700;
-            margin-bottom: 2px;
 
             &:hover {
               background-color: $amalia-plugin-transcription-tc-hover !important;
@@ -252,7 +251,7 @@
       .named-entities {
         display: block;
         overflow: hidden;
-        padding: 5px;
+        padding: 5px 5px 0 5px;
         border-radius: 4px;
         background-color: $amalia-plugin-timeline-font-color;
         box-shadow: 0 -1px 10px 0 rgba(0, 0, 0, 0.15);
@@ -268,7 +267,7 @@
           padding-right: 10px;
           padding-left: 10px;
           margin-right: 10px;
-          margin-bottom: 2px;
+          margin-bottom: 5px;
           color: $amalia-plugin-transcription-named-entity-tc;
           font-weight: 700;
           font-family: $amalia-font-family-lato;
