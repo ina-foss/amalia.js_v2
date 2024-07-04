@@ -19,7 +19,7 @@ export class TextUtils {
             let normalizeSearchText = searchText.trim().toLocaleLowerCase();
             normalizeText = this.removeDiacritics(normalizeText);
             normalizeSearchText = this.removeDiacritics(normalizeSearchText);
-            const searchRegexp = new RegExp('(^' + normalizeSearchText + '\\w*)', 'i');
+            const searchRegexp = new RegExp('(.*' + normalizeSearchText + '.*)', 'i');
             // const searchRegexp = new RegExp(searchText.normalize('NFC').toLocaleLowerCase(), 'i');
             return normalizeText.search(searchRegexp) !== -1;
         }
