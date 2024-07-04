@@ -318,7 +318,7 @@
             }
 
             &.selected-text {
-              background-color: $amalia-plugin-transcription-tc-hover !important;
+              background-color: $amalia-plugin-transcription-selected-text-color !important;
               color: #fff;
 
               &.selected {
@@ -332,7 +332,7 @@
             }
 
             &.founded-text {
-              background-color: $amalia-plugin-timeline-text-founded-color;
+              background-color: $amalia-plugin-transcription-text-founded-color;
             }
 
             &:hover {
