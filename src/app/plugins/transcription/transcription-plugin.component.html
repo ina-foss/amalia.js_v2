@@ -59,7 +59,7 @@
             <div class="named-entities" *ngIf="t.annotations.length>0">
                 <button class="named-entity" *ngFor="let a of t.annotations" data-toggle="tooltip"
                         data-placement="bottom"
-                        title="{{'ID métier : ' + a.id +'\n'+ 'Type de l\'annotation :' + a.type}}">{{ a.label }}
+                        title="{{a.conceptIdWikidata?('ID wikidata: ' + a.conceptIdWikidata +'\n'): '' }}{{ 'Type: ' + a.conceptScheme}}">{{ a.label }}
                 </button>
             </div>
 
