@@ -1642,9 +1642,14 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Françoise Dorin",
+                                    "matchedText": "Françoise Dorin",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.291",
+                                    "type": "Type de générique",
+                                    "label": "Françoise Dorin",
+                                    "conceptIdWikidata": "Q3086464",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Françoise_Dorin",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -3054,9 +3059,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Quique",
+                                    "matchedText": "Quique",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Quique",
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -3536,14 +3544,29 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Neuilly-sur-Seine",
+                                    "matchedText": "Neuilly-sur-Seine",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "5.124",
+                                    "type": "Type de générique",
+                                    "label": "Neuilly-sur-Seine",
+                                    "conceptIdWikidata": "Q48958",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Neuilly-sur-Seine",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/9/9f/Metro-Paris-ligne-1-Pont-de.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/9/9f/Metro-Paris-ligne-1-Pont-de.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e5/Neuilly_3.JPG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Olivier Véran",
+                                    "matchedText": "Olivier Véran",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "4.507",
+                                    "type": "Type de générique",
+                                    "label": "Olivier Véran",
+                                    "conceptIdWikidata": "Q3332699",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Olivier_Véran",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -3913,34 +3936,65 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Français",
+                                    "matchedText": "Français",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.177",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Jean Castex",
+                                    "id": "000009dnvh",
+                                    "score": "6.352",
+                                    "type": "Type de générique",
                                     "label": "Jean Castex",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q3171170",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Jean_Castex",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Oise",
+                                    "matchedText": "Oise",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "3.07",
+                                    "type": "Type de générique",
+                                    "label": "Oise (département)",
+                                    "conceptIdWikidata": "Q12675",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Oise_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/5/5d/Carte_France_D%25C3%25A9partement_60.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Pierre Antoine Cazabonne",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Pierre Antoine Cazabonne",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "Marine Pujol Nathalie",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Marine Pujol Nathalie",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": " Oise",
+                                    "matchedText": " Oise",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Oise",
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -6450,14 +6504,26 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Français",
+                                    "matchedText": "Français",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.177",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Thierry",
+                                    "matchedText": "Thierry",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Thierry",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -7632,9 +7698,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Thierry",
+                                    "matchedText": "Thierry",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Thierry",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -8644,19 +8713,34 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Français",
+                                    "matchedText": "Français",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.129",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Julien Roux marine Pujol",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Julien Roux marine Pujol",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Alix Ponsart",
+                                    "matchedText": "Alix Ponsart",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Alix Ponsart",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -9421,49 +9505,93 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Mathieu",
+                                    "matchedText": "Mathieu",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Mathieu",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "Taverny",
+                                    "id": "000009dnvh",
+                                    "score": "3.964",
+                                    "type": "Type de générique",
                                     "label": "Taverny",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q275589",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Taverny",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/68/Taverny_map.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Oise",
+                                    "matchedText": "Oise",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "3.07",
+                                    "type": "Type de générique",
+                                    "label": "Oise (département)",
+                                    "conceptIdWikidata": "Q12675",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Oise_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/5/5d/Carte_France_D%25C3%25A9partement_60.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Chambly",
+                                    "matchedText": "Chambly",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.734",
+                                    "type": "Type de générique",
+                                    "label": "Chambly (Oise)",
+                                    "conceptIdWikidata": "Q669309",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Chambly_(Oise)",
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Oise",
+                                    "matchedText": "Oise",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "3.07",
+                                    "type": "Type de générique",
+                                    "label": "Oise (département)",
+                                    "conceptIdWikidata": "Q12675",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Oise_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/5/5d/Carte_France_D%25C3%25A9partement_60.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Mathieu",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Mathieu",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "Yuriko",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Yuriko",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "Val-d Oise",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Val-d Oise",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": " Oise",
+                                    "matchedText": " Oise",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Oise",
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -10488,9 +10616,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Yuriko",
+                                    "matchedText": "Yuriko",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Yuriko",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -10835,19 +10966,41 @@
                         "data": {
                             "annotations": [
                                 {
+                                    "matchedText": "Paris",
+                                    "id": "000009dnvh",
+                                    "score": "5.449",
+                                    "type": "Type de générique",
                                     "label": "Paris",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q90",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Paris",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/00/Louvre_2007_02_24_c.jpg",
+                                        "http://i.images.cdn.fotopedia.com/44b07140-31be-4710-8902-978f0878c427-hd/World_Heritage_Sites/Europe/Western_Europe/France/Paris_Banks_of_the_Seine/Ile_de_la_Cite/Notre_Dame_de_Paris/Notre_Dame_de_Paris.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/00/Louvre_2007_02_24_c.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Orléans",
+                                    "id": "000009dnvh",
+                                    "score": "3.162",
+                                    "type": "Type de générique",
                                     "label": "Orléans",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q6548",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Orléans",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/c2/Orleans.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/4/49/France_Orleans_panorama_01.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Paolo",
+                                    "matchedText": "Paolo",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Paolo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -12222,9 +12375,18 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Orléans",
+                                    "matchedText": "Orléans",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "3.162",
+                                    "type": "Type de générique",
+                                    "label": "Orléans",
+                                    "conceptIdWikidata": "Q6548",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Orléans",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/c2/Orleans.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/4/49/France_Orleans_panorama_01.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -13839,24 +14001,50 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Français",
+                                    "matchedText": "Français",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.113",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Boulogne-sur-Mer",
+                                    "id": "000009dnvh",
+                                    "score": "5.225",
+                                    "type": "Type de générique",
                                     "label": "Boulogne-sur-Mer",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q81997",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Boulogne-sur-Mer",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/7/73/Carte_France_D%25C3%25A9partement_62.png",
+                                        "http://upload.wikimedia.org/wikipedia/en/7/73/Carte_France_D%25C3%25A9partement_62.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/c4/Boulogne_sur_Mer_hotel_de_ville.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/2a/Boulogne_sur_Mer_Palais_de_Justice.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Marion",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Marion",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Pierre Hummer",
+                                    "matchedText": "Pierre Hummer",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Pierre Hummer",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -14876,9 +15064,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Gauthier",
+                                    "matchedText": "Gauthier",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Gauthier",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -16263,9 +16454,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Gauthier",
+                                    "matchedText": "Gauthier",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Gauthier",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -18660,9 +18854,18 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Français",
+                                    "matchedText": "Français",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.109",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -18982,34 +19185,72 @@
                         "data": {
                             "annotations": [
                                 {
+                                    "matchedText": "Mathieu",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Mathieu",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "française",
+                                    "matchedText": "française",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
-                                },
-                                {
-                                    "label": "États-Unis",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
-                                },
-                                {
+                                    "score": "8.981",
+                                    "type": "Type de générique",
                                     "label": "France",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Washington",
+                                    "matchedText": "États-Unis",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "12.54",
+                                    "type": "Type de générique",
+                                    "label": "États-Unis",
+                                    "conceptIdWikidata": "Q30",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/États-Unis",
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "France",
+                                    "id": "000009dnvh",
+                                    "score": "9.745",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
+                                },
+                                {
+                                    "matchedText": "Washington",
+                                    "id": "000009dnvh",
+                                    "score": "19.7",
+                                    "type": "Type de générique",
+                                    "label": "Washington (district de Columbia)",
+                                    "conceptIdWikidata": "Q61",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Washington_(district_de_Columbia)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/1/13/WashMonument_WhiteHouse.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/en/9/97/DCmontage2.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
+                                },
+                                {
+                                    "matchedText": "Axel Monnier Julia",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Axel Monnier Julia",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -19579,9 +19820,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.415",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -21026,14 +21275,26 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "poisson",
+                                    "matchedText": "poisson",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.356",
+                                    "type": "Type de générique",
+                                    "label": "Poisson",
+                                    "conceptIdWikidata": "Q152",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Poisson",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/23/Georgia_Aquarium_-_Giant_Grouper_edit.jpg"
+                                    ]
                                 },
                                 {
-                                    "label": "États-Unis",
+                                    "matchedText": "États-Unis",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "12.54",
+                                    "type": "Type de générique",
+                                    "label": "États-Unis",
+                                    "conceptIdWikidata": "Q30",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/États-Unis",
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -21833,9 +22094,18 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Washington",
+                                    "matchedText": "Washington",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "19.7",
+                                    "type": "Type de générique",
+                                    "label": "Washington (district de Columbia)",
+                                    "conceptIdWikidata": "Q61",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Washington_(district_de_Columbia)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/1/13/WashMonument_WhiteHouse.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/en/9/97/DCmontage2.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -22075,9 +22345,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.415",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -23122,14 +23400,22 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "américain",
+                                    "matchedText": "américain",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "11.56",
+                                    "type": "Type de générique",
+                                    "label": "États-Unis",
+                                    "conceptIdWikidata": "Q30",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/États-Unis",
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Tchoubaïs",
+                                    "matchedText": "Tchoubaïs",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Tchoubaïs",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -23969,29 +24255,58 @@
                         "data": {
                             "annotations": [
                                 {
+                                    "matchedText": "France",
+                                    "id": "000009dnvh",
+                                    "score": "9.78",
+                                    "type": "Type de générique",
                                     "label": "France",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Macron",
+                                    "matchedText": "Macron",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.92",
+                                    "type": "Type de générique",
+                                    "label": "Emmanuel Macron",
+                                    "conceptIdWikidata": "Q3052772",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Emmanuel_Macron",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "France",
+                                    "id": "000009dnvh",
+                                    "score": "9.78",
+                                    "type": "Type de générique",
                                     "label": "France",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Olivier Stammbach",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Olivier Stammbach",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Mathilde Véron",
+                                    "matchedText": "Mathilde Véron",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Mathilde Véron",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -24801,9 +25116,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Jacques Richer Revit",
+                                    "matchedText": "Jacques Richer Revit",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Jacques Richer Revit",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -27663,9 +27981,19 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Paris",
+                                    "matchedText": "Paris",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "5.432",
+                                    "type": "Type de générique",
+                                    "label": "Paris",
+                                    "conceptIdWikidata": "Q90",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Paris",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/00/Louvre_2007_02_24_c.jpg",
+                                        "http://i.images.cdn.fotopedia.com/44b07140-31be-4710-8902-978f0878c427-hd/World_Heritage_Sites/Europe/Western_Europe/France/Paris_Banks_of_the_Seine/Ile_de_la_Cite/Notre_Dame_de_Paris/Notre_Dame_de_Paris.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/00/Louvre_2007_02_24_c.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -28545,19 +28873,34 @@
                         "data": {
                             "annotations": [
                                 {
+                                    "matchedText": "Marseille",
+                                    "id": "000009dnvh",
+                                    "score": "11.05",
+                                    "type": "Type de générique",
                                     "label": "Marseille",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q23482",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Marseille",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/d/d8/Vieux_port_de_Marseille_2.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/74/Marseille_Old_Port.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Mathieu Perrot",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Mathieu Perrot",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Sylvain Farjon",
+                                    "matchedText": "Sylvain Farjon",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Sylvain Farjon",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -29327,9 +29670,18 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Marseille",
+                                    "matchedText": "Marseille",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "11.05",
+                                    "type": "Type de générique",
+                                    "label": "Marseille",
+                                    "conceptIdWikidata": "Q23482",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Marseille",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/d/d8/Vieux_port_de_Marseille_2.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/74/Marseille_Old_Port.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -29599,9 +29951,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "la mer Méditerranée",
+                                    "matchedText": "la mer Méditerranée",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "19.45",
+                                    "type": "Type de générique",
+                                    "label": "Mer Méditerranée",
+                                    "conceptIdWikidata": "Q4918",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Mer_Méditerranée",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/61/Mediterranian_Sea_16.61811E_38.99124N.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -31241,19 +31601,39 @@
                         "data": {
                             "annotations": [
                                 {
+                                    "matchedText": "Huveaune",
+                                    "id": "000009dnvh",
+                                    "score": "4.574",
+                                    "type": "Type de générique",
                                     "label": "Huveaune",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q667130",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Huveaune",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/c8/SourcesHuveaune.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Marseillais",
+                                    "matchedText": "Marseillais",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "11.47",
+                                    "type": "Type de générique",
+                                    "label": "Marseille",
+                                    "conceptIdWikidata": "Q23482",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Marseille",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/d/d8/Vieux_port_de_Marseille_2.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/74/Marseille_Old_Port.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "fleuve Huveaune",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "fleuve Huveaune",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -32178,9 +32558,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "mer Méditerranée",
+                                    "matchedText": "mer Méditerranée",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "19.45",
+                                    "type": "Type de générique",
+                                    "label": "Mer Méditerranée",
+                                    "conceptIdWikidata": "Q4918",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Mer_Méditerranée",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/61/Mediterranian_Sea_16.61811E_38.99124N.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -33405,19 +33793,38 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "fourmi",
+                                    "matchedText": "fourmi",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "3.676",
+                                    "type": "Type de générique",
+                                    "label": "Fourmi",
+                                    "conceptIdWikidata": "Q7386",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Fourmi",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Meat_eater_ant_feeding_on_honey02.jpg/800px-Meat_eater_ant_feeding_on_honey02.jpg"
+                                    ]
                                 },
                                 {
-                                    "label": "ville de Marseille",
+                                    "matchedText": "ville de Marseille",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "5.215",
+                                    "type": "Type de générique",
+                                    "label": "Marseille",
+                                    "conceptIdWikidata": "Q23482",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Marseille",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/d/d8/Vieux_port_de_Marseille_2.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/74/Marseille_Old_Port.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Karim",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Karim",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -33977,14 +34384,20 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Valentin Desprès Valérie Darmont",
+                                    "matchedText": "Valentin Desprès Valérie Darmont",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Valentin Desprès Valérie Darmont",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Marimbert",
+                                    "matchedText": "Marimbert",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Marimbert",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -38159,24 +38572,44 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "région",
+                                    "matchedText": "région",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.973",
+                                    "type": "Type de générique",
+                                    "label": "Région française",
+                                    "conceptIdWikidata": "Q36784",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Région_française",
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "région parisienne",
+                                    "matchedText": "région parisienne",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.258",
+                                    "type": "Type de générique",
+                                    "label": "Île-de-France",
+                                    "conceptIdWikidata": "Q13917",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Île-de-France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e4/Paris_metropolitan_area.gif",
+                                        "http://upload.wikimedia.org/wikipedia/commons/4/4e/%25C3%258Ele-de-France_map.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": " Henri Dreyfus",
+                                    "matchedText": " Henri Dreyfus",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Henri Dreyfus",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "William Villemin",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "William Villemin",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -38971,9 +39404,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Technique",
+                                    "matchedText": "Technique",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Technique",
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -39768,14 +40204,31 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Lyon",
+                                    "matchedText": "Lyon",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "6.398",
+                                    "type": "Type de générique",
+                                    "label": "Lyon",
+                                    "conceptIdWikidata": "Q456",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Lyon",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/fr/d/dd/Lyon_vue_depuis_fourviere.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/04/Vues_de_Lyon_2.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "genre",
+                                    "matchedText": "genre",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.999",
+                                    "type": "Type de générique",
+                                    "label": "Genre (biologie)",
+                                    "conceptIdWikidata": "Q34740",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Genre_(biologie)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/9/96/Scientific_classification.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/9/96/Scientific_classification.png"
+                                    ]
                                 }
                             ],
                             "text": [
@@ -41545,9 +41998,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Bruno",
+                                    "matchedText": "Bruno",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Bruno",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -43182,39 +43638,75 @@
                         "data": {
                             "annotations": [
                                 {
+                                    "matchedText": "Grenoble",
+                                    "id": "000009dnvh",
+                                    "score": "3.514",
+                                    "type": "Type de générique",
                                     "label": "Grenoble",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q1289",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Grenoble",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/4/4a/Grenoble.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/cd/Grenoble_july_2009.JPG",
+                                        "http://upload.wikimedia.org/wikipedia/commons/3/3d/Pano_Grenoble.JPG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Nordahl Lelandais",
+                                    "id": "000009dnvh",
+                                    "score": "2.739",
+                                    "type": "Type de générique",
                                     "label": "Nordahl Lelandais",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q46832086",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Nordahl_Lelandais",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Rimbaud",
+                                    "matchedText": "Rimbaud",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.758",
+                                    "type": "Type de générique",
+                                    "label": "Arthur Rimbaud",
+                                    "conceptIdWikidata": "Q493",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Arthur_Rimbaud",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/3/35/Arthur_Rimbaud_01.PNG",
+                                        "http://upload.wikimedia.org/wikipedia/commons/d/d1/Carjat_Arthur_Rimbaud_1872_n2.jpg"
+                                    ],
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "Anne Barriet",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Anne Barriet",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Jean-Yves Mey",
+                                    "matchedText": "Jean-Yves Mey",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Jean-Yves Mey",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -44484,9 +44976,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -44726,9 +45221,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "maïs",
+                                    "matchedText": "maïs",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.174",
+                                    "type": "Type de générique",
+                                    "label": "Maïs",
+                                    "conceptIdWikidata": "Q11575",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Maïs",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Zea_mays.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/c4/Koeh-283.jpg"
+                                    ]
                                 }
                             ],
                             "text": [
@@ -44958,9 +45461,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Jennifer",
+                                    "matchedText": "Jennifer",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -45440,14 +45946,22 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Nordahl Lelandais",
+                                    "matchedText": "Nordahl Lelandais",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.739",
+                                    "type": "Type de générique",
+                                    "label": "Nordahl Lelandais",
+                                    "conceptIdWikidata": "Q46832086",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Nordahl_Lelandais",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -45897,9 +46411,18 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "serpent",
+                                    "matchedText": "serpent",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.267",
+                                    "type": "Type de générique",
+                                    "label": "Serpentes",
+                                    "conceptIdWikidata": "Q2102",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Serpentes",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/4/44/Antaresia_maculosa.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/8/89/Couleuvre_rayee_qc.JPG",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/76/Coast_Garter_Snake.jpg"
+                                    ]
                                 }
                             ],
                             "text": [
@@ -46929,19 +47452,35 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "maïs",
+                                    "matchedText": "maïs",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.174",
+                                    "type": "Type de générique",
+                                    "label": "Maïs",
+                                    "conceptIdWikidata": "Q11575",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Maïs",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Zea_mays.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/c4/Koeh-283.jpg"
+                                    ]
                                 },
                                 {
+                                    "matchedText": "Nordahl Lelandais",
+                                    "id": "000009dnvh",
+                                    "score": "2.739",
+                                    "type": "Type de générique",
                                     "label": "Nordahl Lelandais",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q46832086",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Nordahl_Lelandais",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Maëlys Jennifer D' Araujo",
+                                    "matchedText": "Maëlys Jennifer D' Araujo",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -48531,14 +49070,22 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Nordahl Lelandais",
+                                    "matchedText": "Nordahl Lelandais",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.739",
+                                    "type": "Type de générique",
+                                    "label": "Nordahl Lelandais",
+                                    "conceptIdWikidata": "Q46832086",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Nordahl_Lelandais",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -48758,9 +49305,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Jennifer",
+                                    "matchedText": "Jennifer",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -48960,19 +49510,32 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "chien",
+                                    "matchedText": "chien",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.236",
+                                    "type": "Type de générique",
+                                    "label": "Chien",
+                                    "conceptIdWikidata": "Q144",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Chien",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/a/ab/Wikilabrador_jardin.JPG"
+                                    ]
                                 },
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -50217,14 +50780,22 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Nordahl Lelandais",
+                                    "matchedText": "Nordahl Lelandais",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.739",
+                                    "type": "Type de générique",
+                                    "label": "Nordahl Lelandais",
+                                    "conceptIdWikidata": "Q46832086",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Nordahl_Lelandais",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -50564,9 +51135,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Jennifer D' Araujo",
+                                    "matchedText": "Jennifer D' Araujo",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -50816,9 +51390,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Maëlys",
+                                    "matchedText": "Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -51963,9 +52540,14 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "à Maëlys",
+                                    "matchedText": "à Maëlys",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.803",
+                                    "type": "Type de générique",
+                                    "label": "Affaire Maëlys",
+                                    "conceptIdWikidata": "Q38937818",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Affaire_Maëlys",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -52045,9 +52627,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Jennifer",
+                                    "matchedText": "Jennifer",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -52187,19 +52772,36 @@
                         "data": {
                             "annotations": [
                                 {
+                                    "matchedText": "Chien",
+                                    "id": "000009dnvh",
+                                    "score": "1.236",
+                                    "type": "Type de générique",
                                     "label": "Chien",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q144",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Chien",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/a/ab/Wikilabrador_jardin.JPG"
+                                    ]
                                 },
                                 {
-                                    "label": "chien",
+                                    "matchedText": "chien",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.236",
+                                    "type": "Type de générique",
+                                    "label": "Chien",
+                                    "conceptIdWikidata": "Q144",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Chien",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/a/ab/Wikilabrador_jardin.JPG"
+                                    ]
                                 },
                                 {
+                                    "matchedText": "Éva",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Éva",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -53099,9 +53701,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Jennifer",
+                                    "matchedText": "Jennifer",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Maëlys Jennifer D '' Araujo",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -53436,34 +54041,85 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "la Grèce",
+                                    "matchedText": "la Grèce",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "15.68",
+                                    "type": "Type de générique",
+                                    "label": "Grèce",
+                                    "conceptIdWikidata": "Q41",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Grèce",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/f/f0/Gr-map-HE.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/60/Location_Greece_EU_Europe.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "la Turquie",
+                                    "matchedText": "la Turquie",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "20.94",
+                                    "type": "Type de générique",
+                                    "label": "Turquie",
+                                    "conceptIdWikidata": "Q43",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Turquie",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/6a/Map_of_the_Republic_of_Turkey.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/f/f8/Late_Ottoman_Flag_1844-1922.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Europe",
+                                    "id": "000009dnvh",
+                                    "score": "5.177",
+                                    "type": "Type de générique",
                                     "label": "Europe",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q46",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Europe",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/6a/Europesatelliteorthographic101.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e9/LocationEurope.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e9/LocationEurope.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/b/b1/Europe_satellite_globe.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Athènes",
+                                    "id": "000009dnvh",
+                                    "score": "10.09",
+                                    "type": "Type de générique",
                                     "label": "Athènes",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q1524",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Athènes",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/5/53/Acropole1.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Istanbul",
+                                    "id": "000009dnvh",
+                                    "score": "9.871",
+                                    "type": "Type de générique",
                                     "label": "Istanbul",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q406",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Istanbul",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e4/Istambul_and_Bosporus_big.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e4/Istambul_and_Bosporus_big.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e0/Topkapi_Palace_Hagia_Sophia_Blue_Mosque.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/65/Istanbul_Montage_with_AgiaSophia.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Sophie Chevallon",
+                                    "matchedText": "Sophie Chevallon",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Sophie Chevallon",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -54128,29 +54784,66 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "grecque",
+                                    "matchedText": "grecque",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "15.68",
+                                    "type": "Type de générique",
+                                    "label": "Grèce",
+                                    "conceptIdWikidata": "Q41",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Grèce",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/f/f0/Gr-map-HE.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/60/Location_Greece_EU_Europe.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Athènes",
+                                    "id": "000009dnvh",
+                                    "score": "10.09",
+                                    "type": "Type de générique",
                                     "label": "Athènes",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q1524",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Athènes",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/5/53/Acropole1.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "grec",
+                                    "matchedText": "grec",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.482",
+                                    "type": "Type de générique",
+                                    "label": "Grèce",
+                                    "conceptIdWikidata": "Q41",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Grèce",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/f/f0/Gr-map-HE.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/60/Location_Greece_EU_Europe.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Athènes",
+                                    "id": "000009dnvh",
+                                    "score": "10.09",
+                                    "type": "Type de générique",
                                     "label": "Athènes",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q1524",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Athènes",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/5/53/Acropole1.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Paul immaculée",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Paul immaculée",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -55615,14 +56308,34 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Turquie",
+                                    "matchedText": "Turquie",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "20.94",
+                                    "type": "Type de générique",
+                                    "label": "Turquie",
+                                    "conceptIdWikidata": "Q43",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Turquie",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/6a/Map_of_the_Republic_of_Turkey.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/f/f8/Late_Ottoman_Flag_1844-1922.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Istanbul",
+                                    "matchedText": "Istanbul",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.871",
+                                    "type": "Type de générique",
+                                    "label": "Istanbul",
+                                    "conceptIdWikidata": "Q406",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Istanbul",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e4/Istambul_and_Bosporus_big.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e4/Istambul_and_Bosporus_big.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e0/Topkapi_Palace_Hagia_Sophia_Blue_Mosque.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/65/Istanbul_Montage_with_AgiaSophia.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -56197,9 +56910,20 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Istanbul",
+                                    "matchedText": "Istanbul",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "9.871",
+                                    "type": "Type de générique",
+                                    "label": "Istanbul",
+                                    "conceptIdWikidata": "Q406",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Istanbul",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e4/Istambul_and_Bosporus_big.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e4/Istambul_and_Bosporus_big.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/e/e0/Topkapi_Palace_Hagia_Sophia_Blue_Mosque.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/6/65/Istanbul_Montage_with_AgiaSophia.jpg"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -56609,29 +57333,54 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Français",
+                                    "matchedText": "Français",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "6.248",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "palmiers",
+                                    "matchedText": "palmiers",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.058",
+                                    "type": "Type de générique",
+                                    "label": "Arecaceae",
+                                    "conceptIdWikidata": "Q14080",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Arecaceae",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/7a/1859-Martinique.web.jpg"
+                                    ]
                                 },
                                 {
+                                    "matchedText": "bourguignon",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "bourguignon",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
+                                    "matchedText": "Thierry Marquez",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Thierry Marquez",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
-                                    "label": "Vincent à Belhanda",
+                                    "matchedText": "Vincent à Belhanda",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Vincent à Belhanda",
+                                    "conceptScheme": "Personnes physiques"
                                 }
                             ],
                             "text": [
@@ -57371,19 +58120,39 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Ain",
+                                    "matchedText": "Ain",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.538",
+                                    "type": "Type de générique",
+                                    "label": "Ain (département)",
+                                    "conceptIdWikidata": "Q3083",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Ain_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/5/5f/Carte_France_D%25C3%25A9partement_01.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/d/da/Pr%25C3%25A9fecture.Ain.JPG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "tomates",
+                                    "matchedText": "tomates",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "11.07",
+                                    "type": "Type de générique",
+                                    "label": "Tomate",
+                                    "conceptIdWikidata": "Q23501",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Tomate",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/02/Heirloom_tomatoes.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/8/88/Bright_red_tomato_and_cross_section02.jpg"
+                                    ]
                                 },
                                 {
+                                    "matchedText": "Romain",
+                                    "id": "000009dnvh",
+                                    "score": "0.5",
+                                    "type": "Type de générique",
                                     "label": "Romain",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -57843,9 +58612,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "tomates",
+                                    "matchedText": "tomates",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "11.07",
+                                    "type": "Type de générique",
+                                    "label": "Tomate",
+                                    "conceptIdWikidata": "Q23501",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Tomate",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/02/Heirloom_tomatoes.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/8/88/Bright_red_tomato_and_cross_section02.jpg"
+                                    ]
                                 }
                             ],
                             "text": [
@@ -58420,9 +59197,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.246",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -58562,9 +59347,12 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Romain",
+                                    "matchedText": "Romain",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Romain",
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -59249,9 +60037,18 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Français",
+                                    "matchedText": "Français",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "6.38",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -59561,9 +60358,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.246",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -59733,14 +60538,30 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.246",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.246",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -60640,14 +61461,30 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.246",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "cher",
+                                    "matchedText": "cher",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "1.246",
+                                    "type": "Type de générique",
+                                    "label": "Cher (département)",
+                                    "conceptIdWikidata": "Q3286",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Cher_(département)",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/6/62/Carte_France_D%25C3%25A9partement_18.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -61237,9 +62074,17 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "Mais",
+                                    "matchedText": "Mais",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "2.423",
+                                    "type": "Type de générique",
+                                    "label": "Maïs",
+                                    "conceptIdWikidata": "Q11575",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Maïs",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Zea_mays.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/c/c4/Koeh-283.jpg"
+                                    ]
                                 }
                             ],
                             "text": [
@@ -62084,9 +62929,18 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "France",
+                                    "matchedText": "France",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "7.402",
+                                    "type": "Type de générique",
+                                    "label": "France",
+                                    "conceptIdWikidata": "Q142",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/France",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/28/Location_France_EU_Europe.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/71/EUR_location_FRA.PNG"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -62346,39 +63200,93 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "label": "karité",
+                                    "matchedText": "karité",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "5.871",
+                                    "type": "Type de générique",
+                                    "label": "Karité",
+                                    "conceptIdWikidata": "Q1348567",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Karité",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/4/48/Shea_nuts_on_tree_in_Sudan.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/7f/Vitellaria_paradoxa_MS4195.JPG"
+                                    ]
                                 },
                                 {
+                                    "matchedText": "Afrique",
+                                    "id": "000009dnvh",
+                                    "score": "4.061",
+                                    "type": "Type de générique",
                                     "label": "Afrique",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q15",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Afrique",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/21/Africa_satellite_orthographic.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/0f/LocationAfrica.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/21/Africa_satellite_orthographic.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/0f/LocationAfrica.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/0f/LocationAfrica.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/21/Africa_satellite_orthographic.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/2/21/Africa_satellite_orthographic.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/0f/LocationAfrica.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/0/0f/LocationAfrica.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "karité",
+                                    "matchedText": "karité",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "5.871",
+                                    "type": "Type de générique",
+                                    "label": "Karité",
+                                    "conceptIdWikidata": "Q1348567",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Karité",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/commons/4/48/Shea_nuts_on_tree_in_Sudan.jpg",
+                                        "http://upload.wikimedia.org/wikipedia/commons/7/7f/Vitellaria_paradoxa_MS4195.JPG"
+                                    ]
                                 },
                                 {
+                                    "matchedText": "Michaël Guigou",
+                                    "id": "000009dnvh",
+                                    "score": "2.415",
+                                    "type": "Type de générique",
                                     "label": "Michaël Guigou",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q445935",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Michaël_Guigou",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "Vincent Perrot",
+                                    "id": "000009dnvh",
+                                    "score": "2.215",
+                                    "type": "Type de générique",
                                     "label": "Vincent Perrot",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q3559786",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Vincent_Perrot",
+                                    "conceptScheme": "Personnes physiques"
                                 },
                                 {
+                                    "matchedText": "Ghana",
+                                    "id": "000009dnvh",
+                                    "score": "10.58",
+                                    "type": "Type de générique",
                                     "label": "Ghana",
-                                    "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "conceptIdWikidata": "Q117",
+                                    "conceptIdWikipedia": "http://fr.wikipedia.org/wiki/Ghana",
+                                    "urlImage": [
+                                        "http://upload.wikimedia.org/wikipedia/en/4/47/Ghana_in_au.png",
+                                        "http://upload.wikimedia.org/wikipedia/commons/d/dc/LocationGhana.png"
+                                    ],
+                                    "conceptScheme": "Lieux"
                                 },
                                 {
-                                    "label": "Afrique de l' Ouest",
+                                    "matchedText": "Afrique de l' Ouest",
                                     "id": "000009dnvh",
-                                    "type": "Type de générique"
+                                    "score": "0.5",
+                                    "type": "Type de générique",
+                                    "label": "Afrique de l'  Ouest",
+                                    "conceptScheme": "Lieux"
                                 }
                             ],
                             "text": [
@@ -63365,7 +64273,7 @@
     "type": "text",
     "algorithm": "vrbs_part 2.7",
     "processor": "vrbs_trans.fre 6.2",
-    "processed": 1718962450,
+    "processed": 1720449960,
     "version": 1,
-    "id": "transcription-vrbs_part"
+    "id": "1"
 }

@@ -255,7 +255,7 @@
         border-radius: 4px;
         background-color: $amalia-plugin-timeline-font-color;
         box-shadow: 0 -1px 10px 0 rgba(0, 0, 0, 0.15);
-        margin-bottom: 3px;
+        margin-bottom: 2px;
         width: calc(100% - 8px);
 
         .named-entity {
@@ -264,9 +264,9 @@
           border: 1px solid #D9D9D9;
           border-radius: 100px;
           background-color: #FFFFFF;
-          padding-right: 10px;
-          padding-left: 10px;
-          margin-right: 10px;
+          padding-right: 8px;
+          padding-left: 8px;
+          margin-right: 5px;
           margin-bottom: 5px;
           color: $amalia-plugin-transcription-named-entity-tc;
           font-weight: 700;
@@ -280,10 +280,10 @@
       .subsegment {
         display: block;
         overflow: hidden;
-        padding: 10px;
+        padding: 5px 10px 5px 5px;
         border-radius: 4px;
         background-color: $amalia-plugin-timeline-font-color;
-        width: calc(100% - 18px);
+        width: calc(100% - 12px);
 
         .title {
           display: block;
