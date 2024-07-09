@@ -11,6 +11,22 @@
   flex-direction: column;
   height: 100%;
 
+  // style scrollbar
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border: 1px solid #ddd;
+    background-color: #fff;
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #0086B1;
+  }
+
   .transcription {
     display: block;
     margin: 0;
@@ -23,21 +39,6 @@
     min-height: 0;
     scrollbar-color: #0086B1 #DDD;
     scrollbar-width: thin;
-    // style scrollbar
-    &::-webkit-scrollbar {
-      width: 12px;
-    }
-
-    &::-webkit-scrollbar-track {
-      border: 1px solid #ddd;
-      background-color: #fff;
-      background-clip: content-box;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      border-radius: 5px;
-      background-color: #0086B1;
-    }
 
     .segment {
       display: block;
@@ -329,11 +330,11 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding-right: 5px;
+    padding-right: 15px;
 
     div {
       &.search-text {
-        width: 70%;
+        width: 75%;
         padding: 5px;
         position: relative;
         z-index: 1;
@@ -474,7 +475,8 @@
     .auto-scroll {
       position: relative;
       display: none;
-
+      height: 32px;
+      
       &.active {
         display: block;
         z-index: 2;
