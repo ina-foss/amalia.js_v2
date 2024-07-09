@@ -38,6 +38,12 @@
                    [ngClass]="{'active' : active === true}"
                    #searchText>
         </div>
+        <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}"
+             (click)="scrollToSelectedSegment()">
+            <svg class="amalia-svg-auto-scroll-size icon">
+                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#new_refresh'"></use>
+            </svg>
+        </div>
     </div>
     <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
@@ -81,12 +87,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}"
-         (click)="scrollToSelectedSegment()">
-        <svg class="amalia-svg-auto-scroll-size icon">
-            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#new_refresh'"></use>
-        </svg>
     </div>
 </ng-template>
 <ng-template #emptyBlock>Error to find transcription</ng-template>
