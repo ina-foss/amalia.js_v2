@@ -10,6 +10,7 @@ export interface TranscriptionLocalisation {
 
 export interface TranscriptionAnnotation {
     label: string,
+    matchedText: string,
     id: string,
     type: string,
     conceptIdWikidata: string,
