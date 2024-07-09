@@ -644,19 +644,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(segment => Math.round(tr.tcIn) === Math.round(parseFloat(segment.getAttribute('data-tcin')))
                     && Math.round(tr.tcOut) === Math.round(parseFloat(segment.getAttribute('data-tcout'))));
             tr.annotations.forEach(a => {
-                if (a.label.includes(' ')) {
-                    const tabLabel = a.label.split(' ');
+                if (a.matchedText.includes(' ')) {
+                    const matchedTextArray = a.matchedText.split(' ');
                     let firstWordMatchIndex = -1;
                     segmentElementNodesForCurrentTranscription.forEach((segmentElementNode, nbNode) => {
                         console.log('nbNode', nbNode);
                         const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
                         wordElementNodes.forEach((node, nodeIndex) => {
-                            if (node.textContent && TextUtils.hasSearchText(node.textContent, tabLabel[0])) {
+                            if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedTextArray[0])) {
                                 let allMatched = true;
                                 let arrayOfMatchingWords = [];
                                 arrayOfMatchingWords.push(node);
                                 firstWordMatchIndex = nodeIndex;
-                                tabLabel.forEach((value, pos) => {
+                                matchedTextArray.forEach((value, pos) => {
                                     if (pos > 0) {
                                         const nextNode = wordElementNodes[nodeIndex + pos];
                                         if (allMatched && nextNode && nextNode.textContent && TextUtils.hasSearchText(nextNode.textContent, value)) {
@@ -680,7 +680,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                     segmentElementNodesForCurrentTranscription.forEach((segmentElementNode) => {
                         const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
                         wordElementNodes.forEach((node) => {
-                            if (node.textContent && TextUtils.hasSearchText(node.textContent, a.label)) {
+                            if (node.textContent && TextUtils.hasSearchText(node.textContent, a.matchedText)) {
                                 listOfNamedEntitesNodes.add(node as HTMLElement);
 
                             }
