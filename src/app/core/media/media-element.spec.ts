@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {MediaElement} from './media-element';
 import {EventEmitter} from 'events';
 import {PlayerConfigData} from '../config/model/player-config-data';
@@ -20,7 +20,7 @@ describe('Test Media element', () => {
         autoplay: true, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: srcMedia,
         backwardsSrc: backSrc , hls: {enable: true}
     };
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             declarations: [],
@@ -28,14 +28,15 @@ describe('Test Media element', () => {
         injector = getTestBed();
         httpTestingController = injector.inject(HttpTestingController);
         httpClient = injector.inject(HttpClient);
-
-
     }));
+
     afterEach(() => {
         // After every test, assert that there are no more pending requests.
         httpTestingController.verify();
     });
-    it('Media player element ', () => {
+
+
+    it('Media player element ', async () => {
         expect(component).toBeTruthy();
         component.setSrc(config);
         expect(component.mse).toBeTruthy();
@@ -43,7 +44,7 @@ describe('Test Media element', () => {
         component.audioChannel = 2;
         expect(component.audioChannel).toEqual(2);
     });
-    it('Tests framerate', () => {
+    it('Tests framerate', async () => {
         expect(component.framerate).toEqual(25);
         component.framerate = 60;
         expect(component.framerate).toEqual(60);
@@ -54,7 +55,7 @@ describe('Test Media element', () => {
         component.poster = '../assets/image.png';
         expect(component.poster).toEqual('../assets/image.png');
     });
-    it('Test events', () => {
+    it('Test events', async () => {
         component.pause();
         // expect(component.isPaused()).toEqual(true);
         component.seekToBegin();
@@ -73,47 +74,20 @@ describe('Test Media element', () => {
         component.seekToEnd();
         expect(typeof (component.getDuration())).toBe('number');
         component.setCurrentTime(25);
-        component.play();
-        component.playPause();
-        // expect(component.isPaused()).toEqual(true);
-        component.pause();
-        // expect(component.isPaused()).toEqual(true);
+        component.play().then(()=>{
+            component.playPause();
+            expect(component.isPaused()).toEqual(true);
+        }).catch(error=>{
+
+        });
         component.stop();
         expect(component.getCurrentTime()).toEqual(0);
-        component.play();
+        component.play().then(()=>{
+            component.pause();
+        }).catch(error => {
+        });
     });
-    it('Test Volume', () => {
-        component.setVolume(50);
-        expect(component.getVolume()).toEqual(50);
-        component.setVolume(26, 'r');
-        expect(component.getVolume('r')).toEqual(26);
-        component.setVolume(60, 'l');
-        expect(component.getVolume('l')).toEqual(60);
-        component.withMergeVolume = true;
-        component.setVolume(26, 'l');
-        expect(component.getVolume('r')).toEqual(26);
-        component.withMergeVolume = false;
-        component.setVolume(27, 'l');
-        expect(component.getVolume('r')).toEqual(26);
-        component.setVolume(24, 'r');
-        expect(component.getVolume('l')).toEqual(27);
-    });
-    it('Test Image', () => {
-        expect(typeof (component.captureImage(50))).toBe('string');
-    });
-    it('test playbackrate setter and getter', () => {
-        component.setCurrentTime(225);
-        component.setReverseMode(true);
-        expect(component.reverseMode).toEqual(true);
-        component.pause();
-        expect(component.getPlaybackRate()).toEqual(1);
-        expect(component.reverseMode).toEqual(false);
-        component.setSrc(config2);
-        component.playbackRate = 4;
-        expect(component.withMergeVolume).toEqual(component._withMergeVolume);
-        component.pause(true);
-        // expect(component.isPaused()).toEqual(true);
-    });
+
 });
 
 

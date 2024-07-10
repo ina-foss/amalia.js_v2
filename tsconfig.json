@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "resolveJsonModule": true,
     "outDir": "./dist/out-tsc",
@@ -9,10 +9,11 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "ES2022",
+    "module": "ES2022",
+    "useDefineForClassFields": false,
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -20,7 +21,7 @@
       "node"
     ],
     "lib": [
-      "es2018",
+      "ES2022",
       "dom"
     ]
   },

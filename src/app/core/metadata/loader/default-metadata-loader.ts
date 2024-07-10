@@ -5,7 +5,7 @@ import {LoggerInterface} from '../../logger/logger-interface';
 import {PlayerErrorCode} from '../../constant/error-type';
 import {Loader} from '../../loader/loader';
 import {Converter} from '../../converter/converter';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {Utils} from '../../utils/utils';
 
 /**
  * In charge to load http resource
@@ -68,7 +68,7 @@ export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
      */
     private mapResponse(data: any): Array<Metadata> {
         const listOfMetadata = new Array<Metadata>();
-        if (isArrayLike<Metadata>(data)) {
+        if (Utils.isArrayLike<Metadata>(data)) {
             for (const m in data) {
                 if (data.hasOwnProperty(m)) {
                     listOfMetadata.push(this.converter.convert(data[m]));

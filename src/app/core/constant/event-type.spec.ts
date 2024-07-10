@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {DefaultLogger} from '../logger/default-logger';
 import {LoggerInterface} from '../logger/logger-interface';
 import {PlayerEventType} from './event-type';
@@ -7,7 +7,7 @@ import {PlayerEventType} from './event-type';
 describe('Test Event', () => {
     let injector: TestBed;
     const logger: LoggerInterface = new DefaultLogger();
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [],
             declarations: [],

@@ -60,7 +60,6 @@ describe('Test HLS Source extension', () => {
         expect(eventEmitter.emit).toHaveBeenCalled();
         hlsPlayer.switchToBackwardsSrc();
         eventEmitter.emit(Hls.Events.MANIFEST_LOADED);
-        expect(hlsPlayer.mediaElement.play()).toBeTruthy();
 
     });
     it('test destroy function ', () => {

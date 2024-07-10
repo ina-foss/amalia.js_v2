@@ -9,10 +9,12 @@ module.exports = function (config) {
             require('karma-jasmine'),
             require('karma-chrome-launcher'),
             require('karma-jasmine-html-reporter'),
+            require('karma-coverage'),
             require('karma-junit-reporter'),
             require('karma-htmlfile-reporter'),
             require('karma-coverage-istanbul-reporter'),
-            require('@angular-devkit/build-angular/plugins/karma')
+            require('@angular-devkit/build-angular/plugins/karma'),
+            require('karma-verbose-reporter')
         ],
         client: {
             clearContext: true // leave Jasmine Spec Runner output visible in browser
@@ -22,7 +24,7 @@ module.exports = function (config) {
             reports: ['html', 'lcovonly', 'text-summary'],
             fixWebpackSourcePaths: true
         },
-        reporters: ['progress', 'junit', 'html', 'kjhtml'],
+        reporters: ['progress', 'junit', 'html', 'kjhtml', 'verbose'],
         junitReporter: {
             outputDir: '.tests/surefire-reports/'
         },
@@ -39,14 +41,24 @@ module.exports = function (config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
+        browsers: ['ChromeHeadlessNoSandbox', 'Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
+        // you can define custom flags
         customLaunchers: {
+            ChromeHeadlessNoSandbox: {
+                base: 'ChromeHeadless',
+                flags: [
+                    '--no-sandbox',
+                    '--disable-gpu',
+                    '--disable-web-security',
+                    '--disable-setuid-sandbox'
+                ]
+            },
             ChromeHeadlessCI: {
                 base: 'ChromeHeadless',
-                flags: ['–no-sandbox', '–disable-setuid-sandbox', '–disable-gpu']
+                flags: ['--no-sandbox','--autoplay-policy=no-user-gesture-required']
             }
         },
-        browsers: ['ChromeHeadlessCI'],
-        singleRun: false,
+        singleRun: true,
         restartOnFileChange: true
     });
 };

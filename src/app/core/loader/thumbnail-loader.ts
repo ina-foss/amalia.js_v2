@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AmaliaException} from '../exception/amalia-exception';
-import {Loader} from '../loader/loader';
+import {Loader} from './loader';
 
 /**
  * in charge to get thumbnail
@@ -26,7 +26,7 @@ export class ThumbnailLoader implements Loader<any> {
                 .then(
                     res => {
                         const windowUrl = window.URL;
-                        const blob = windowUrl.createObjectURL(res);
+                        const blob = windowUrl.createObjectURL(res as Blob);
                         resolve(blob);
                     },
                     error => {

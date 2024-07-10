@@ -1,10 +1,10 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, OnInit, PipeTransform, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, PipeTransform, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {TranscriptionConfig} from '../../core/config/model/transcription-config';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {Utils} from '../../core/utils/utils';
 import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {DEFAULT} from '../../core/constant/default';
 import {TextUtils} from '../../core/utils/text-utils';
@@ -24,7 +24,7 @@ export class TcFormatPipe implements PipeTransform {
     styleUrls: ['./transcription-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements OnInit {
+export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements OnInit, AfterViewInit {
     public static PLUGIN_NAME = 'TRANSCRIPTION';
     public static KARAOKE_TC_DELTA = 0.250;
     public static SELECTOR_SEGMENT = 'segment';
@@ -64,7 +64,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public tcFormatPipe = new TcFormatPipe();
 
     constructor(playerService: MediaPlayerService) {
-        super(playerService, TranscriptionPluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = TranscriptionPluginComponent.PLUGIN_NAME;
     }
 
     ngOnInit(): void {
@@ -397,7 +398,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const metadataManager = this.mediaPlayerElement.metadataManager;
         this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`);
         // Check if metadata is initialized
-        if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+        if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
             this.transcriptions = new Array<TranscriptionLocalisation>();
             handleMetadataIds.forEach((metadataId) => {
                 this.logger.info(`get metadata for ${metadataId}`);
@@ -556,25 +557,27 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         });
     }
 
+    private isHandleShortCutNeeded(event): boolean {
+        return event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== ''
+    }
+
+    private isScrollToNextWordNeeded(): boolean {
+        return this.listOfSearchedNodes && this.listOfSearchedNodes.length !== 0 && this.searchedWordIndex !== null;
+    }
+
     /***
      * handleShortcut on search button
      * */
     public handleShortcut(event) {
-        if (event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== '') {
+        if (this.isHandleShortCutNeeded(event)) {
             if (this.prevSearchValue !== this.searchText.nativeElement.value) {
                 this.prevSearchValue = this.searchText.nativeElement.value;
                 this.clearSearchList();
                 this.searchWord(this.searchText.nativeElement.value);
                 this.searching = true;
             } else {
-                if (this.listOfSearchedNodes && this.listOfSearchedNodes.length !== 0 && this.searchedWordIndex !== null) {
-                    let direction = 'down';
-                    if (this.searchedWordIndex === 0) {
-                        direction = 'down';
-                    }
-                    if (this.searchedWordIndex === this.listOfSearchedNodes.length) {
-                        direction = 'up';
-                    }
+                if (this.isScrollToNextWordNeeded()) {
+                    let direction = this.computeDirection();
                     this.searching = true;
                     this.scrollToSearchedWord(direction);
                 } else {
@@ -587,6 +590,17 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.clearSearchList();
             this.typing = false;
         }
+    }
+
+    private computeDirection = () => {
+        let direction = 'down';
+        if (this.searchedWordIndex === 0) {
+            direction = 'down';
+        }
+        if (this.searchedWordIndex === this.listOfSearchedNodes.length) {
+            direction = 'up';
+        }
+        return direction;
     }
 
     /**
@@ -620,5 +634,67 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.displaySynchro = true;
             }
         }*/
+    }
+
+    private handleMatchedTextStyle() {
+        const listOfNamedEntitesNodes = new Set<HTMLElement>();
+        const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+
+        this.transcriptions.forEach(tr => {
+            const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(segment => Math.round(tr.tcIn) === Math.round(parseFloat(segment.getAttribute('data-tcin')))
+                    && Math.round(tr.tcOut) === Math.round(parseFloat(segment.getAttribute('data-tcout'))));
+            tr.annotations.forEach(a => {
+                if (a.matchedText.includes(' ')) {
+                    const matchedTextArray = a.matchedText.split(' ');
+                    let firstWordMatchIndex = -1;
+                    segmentElementNodesForCurrentTranscription.forEach((segmentElementNode, nbNode) => {
+                        console.log('nbNode', nbNode);
+                        const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                        wordElementNodes.forEach((node, nodeIndex) => {
+                            if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedTextArray[0])) {
+                                let allMatched = true;
+                                let arrayOfMatchingWords = [];
+                                arrayOfMatchingWords.push(node);
+                                firstWordMatchIndex = nodeIndex;
+                                matchedTextArray.forEach((value, pos) => {
+                                    if (pos > 0) {
+                                        const nextNode = wordElementNodes[nodeIndex + pos];
+                                        if (allMatched && nextNode && nextNode.textContent && TextUtils.hasSearchText(nextNode.textContent, value)) {
+                                            arrayOfMatchingWords.push(nextNode);
+                                        } else {
+                                            allMatched = false;
+                                            arrayOfMatchingWords = [];
+                                        }
+                                    }
+                                });
+                                if (allMatched) {
+                                    arrayOfMatchingWords.forEach(wordNode => {
+                                        listOfNamedEntitesNodes.add(wordNode);
+                                    })
+                                }
+
+                            }
+                        });
+                    });
+                } else {
+                    segmentElementNodesForCurrentTranscription.forEach((segmentElementNode) => {
+                        const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                        wordElementNodes.forEach((node) => {
+                            if (node.textContent && TextUtils.hasSearchText(node.textContent, a.matchedText)) {
+                                listOfNamedEntitesNodes.add(node as HTMLElement);
+
+                            }
+                        });
+                    });
+                }
+            });
+        });
+        listOfNamedEntitesNodes.forEach(e => {
+            e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
+        });
+    }
+
+    ngAfterViewInit(): void {
+        this.handleMatchedTextStyle();
     }
 }

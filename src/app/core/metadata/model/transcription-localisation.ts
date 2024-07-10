@@ -5,5 +5,14 @@ export interface TranscriptionLocalisation {
     tcIn: number;
     tcOut: number;
     subLocalisations?: Array<TranscriptionLocalisation>;
-    annotations?: Array<{label: string, id: string, type: string}>;
+    annotations?: Array<TranscriptionAnnotation>;
+}
+
+export interface TranscriptionAnnotation {
+    label: string,
+    matchedText: string,
+    id: string,
+    type: string,
+    conceptIdWikidata: string,
+    conceptScheme: string
 }

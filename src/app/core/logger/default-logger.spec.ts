@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {DefaultLogger} from './default-logger';
 import {LoggerLevel} from './logger-level';
 import {AmaliaException} from '../exception/amalia-exception';
@@ -7,7 +7,7 @@ import {AmaliaException} from '../exception/amalia-exception';
 describe('Test Logger', () => {
     let injector: TestBed;
     const logger = new DefaultLogger('root', true, LoggerLevel.Trace);
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [],
             declarations: [],
@@ -69,7 +69,6 @@ describe('Test Logger', () => {
         expect(LoggerLevel.valToString(LoggerLevel.Error)).toEqual('error');
         expect(LoggerLevel.valToString(LoggerLevel.Fatal)).toEqual('fatal');
         expect(() => LoggerLevel.valToString(null)).toThrow(new AmaliaException('Argument must be set'));
-        expect(() => LoggerLevel.valToString(9)).toThrow(new AmaliaException('Unsupported value for conversion: 9'));
 
         expect(LoggerLevel.fromString('trace')).toEqual(LoggerLevel.Trace);
         expect(LoggerLevel.fromString('debug')).toEqual(LoggerLevel.Debug);

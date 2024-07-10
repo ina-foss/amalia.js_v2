@@ -264,7 +264,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public selectedTrackLabel = '';
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
-        super(playerService, ControlBarPluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
         this.thumbnailService = thumbnailService;
         this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
@@ -625,8 +626,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param componentName compoent name
      */
     public hasComponentWithoutZone(componentName: string): boolean {
-        const control = _.find(this.pluginConfiguration.data, {control: componentName});
-        return (control);
+        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: componentName});
+        return (control !== undefined && control !== null);
     }
 
     /**
@@ -635,7 +636,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public getControlsByZone(zone: number): Array<ControlBarConfig> {
         if (this.elements) {
-            return _.filter(this.elements, {zone});
+            return _.filter<ControlBarConfig>(this.elements, {zone});
         }
         return null;
     }
@@ -643,7 +644,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
         if (this.elements) {
             this.elements = _.orderBy(this.elements, ['order']);
-            return _.filter(this.elements, {priority, zone});
+            return _.filter<ControlBarConfig>(this.elements, {priority, zone});
         }
         return null;
     }
@@ -1387,7 +1388,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     initTracks() {
-        const control = _.find(this.pluginConfiguration.data, {control: 'volume'});
+        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: 'volume'});
         if (control.data && control.data?.tracks) {
             this.listOfTracks = control?.data?.tracks;
             this.selectedTrack = this.listOfTracks[0].track;

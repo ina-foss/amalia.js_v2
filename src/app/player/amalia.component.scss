@@ -18,14 +18,17 @@
 
   .amalia-player-bg-color1 {
     background-color: $amalia-player-bg-color1;
+    z-index: $amalia-video-bg-z-index !important;
   }
 
   .amalia-primary-color {
     background-color: $amalia-primary-color;
+    z-index: $amalia-video-bg-z-index !important;
   }
 
   .amalia-secondary-color {
     background-color: $amalia-secondary-color;
+    z-index: $amalia-video-bg-z-index !important;
   }
 
   .poster-icon {
@@ -33,6 +36,7 @@
     height: 100px !important;
     left: calc(50% - 50px) !important;
     top: calc(50% - 50px) !important;
+    z-index: 1;
   }
 
   .media-player {
@@ -42,34 +46,20 @@
     margin: 0 auto 0;
 
     &.pinned {
-      height: calc(100% - 106px);
-      position: inherit;
-
-      video.player {
-        position: relative;
-        height: 100% !important;
-      }
       video.poster-icon {
         width: 100px !important;
         height: 100px !important;
         left: calc(50% - 50px) !important;
-        top: calc(50% - 50px + 53px) !important;
+        top: calc(50% - 50px - 53px) !important;
       }
     }
 
     &.pinnedControlbar {
-      height: calc(100% - 63px);
-      position: inherit;
-
-      video.player {
-        position: relative;
-        height: 100% !important;
-      }
       video.poster-icon {
         width: 100px !important;
         height: 100px !important;
         left: calc(50% - 50px) !important;
-        top: calc(50% - 50px + 31.5px) !important;
+        top: calc(50% - 50px - 31.5px) !important;
       }
     }
 
@@ -142,134 +132,93 @@
     }
   }
 
-  .loader {
-    .spinner {
-      top: 45%;
-      margin: 0 auto 0;
-      height: 80px;
-      width: 80px;
-      position: relative;
-
-      div {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        background: $amalia-primary-color;
-        border-radius: 50%;
-        animation: spin 1.2s linear infinite;
-
-        &:nth-child(1) {
-          animation-delay: 0s;
-          top: 37px;
-          left: 66px;
-        }
-
-        &:nth-child(2) {
-          animation-delay: -0.1s;
-          top: 22px;
-          left: 62px;
-        }
-
-        &:nth-child(3) {
-          animation-delay: -0.2s;
-          top: 11px;
-          left: 52px;
-        }
-
-        &:nth-child(4) {
-          animation-delay: -0.3s;
-          top: 7px;
-          left: 37px;
-        }
-
-        &:nth-child(5) {
-          animation-delay: -0.4s;
-          top: 11px;
-          left: 22px;
-        }
-
-        &:nth-child(6) {
-          animation-delay: -0.5s;
-          top: 22px;
-          left: 11px;
-        }
-
-        &:nth-child(7) {
-          animation-delay: -0.6s;
-          top: 37px;
-          left: 7px;
-        }
-
-        &:nth-child(8) {
-          animation-delay: -0.7s;
-          top: 52px;
-          left: 11px;
-        }
-
-        &:nth-child(9) {
-          animation-delay: -0.8s;
-          top: 62px;
-          left: 22px;
-        }
-
-        &:nth-child(10) {
-          animation-delay: -0.9s;
-          top: 66px;
-          left: 37px;
-        }
-
-        &:nth-child(11) {
-          animation-delay: -1s;
-          top: 62px;
-          left: 52px;
-        }
-
-        &:nth-child(12) {
-          animation-delay: -1.1s;
-          top: 52px;
-          left: 62px;
-        }
-      }
-    }
-  }
-
-  .tooltip {
+  .p-progress-spinner {
     position: absolute;
-    z-index: $amalia-volume-bar-z-index;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: block;
-    margin: 5px;
-    word-wrap: break-word;
-    opacity: 0;
-
-    &.show {
-      opacity: $amalia-tooltip-opacity;
-      z-index: 5;
-    }
-
-    .tooltip-arrow {
-      position: absolute;
-      display: block;
-      width: 20px;
-      height: 20px;
-
-      &::before {
-        position: absolute;
-        content: "";
-        border-color: transparent;
-        border-style: solid;
-      }
-    }
+    background: url("../../assets/images/headphones.svg") center/100px no-repeat, $amalia-primary-color;
+    z-index: $amalia-loading-plugin-histogram-z-index;
   }
 
-  @keyframes spin {
-    0%, 20%, 80%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.5);
-    }
+  .p-progress-spinner-pinned {
+    height: calc(100% - 106px);
   }
 
+  .p-progress-spinner-pinnedControlbar {
+    height: calc(100% - 63px);
+  }
+
+  .p-progress-spinner-svg {
+    position: absolute;
+    display: inline;
+    animation: p-progress-spinner-rotate 2s linear infinite;
+    transform-origin: center center;
+    height: 50px;
+    width: 50px;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px + 60px);
+  }
+
+  .p-progress-spinner-circle {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: 0;
+    stroke: white;
+    animation: p-progress-spinner-dash 1.5s ease-in-out infinite;
+    stroke-linecap: round
+  }
 }
+
+@keyframes p-progress-spinner-rotate {
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes p-progress-spinner-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px
+  }
+  to {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px
+  }
+}
+
+.tooltip {
+  position: absolute;
+  z-index: $amalia-volume-bar-z-index;
+  display: block;
+  margin: 5px;
+  word-wrap: break-word;
+  opacity: 0;
+
+  &.show {
+    opacity: $amalia-tooltip-opacity;
+    z-index: 5;
+  }
+
+  .tooltip-arrow {
+    position: absolute;
+    display: block;
+    width: 20px;
+    height: 20px;
+
+    &::before {
+      position: absolute;
+      content: "";
+      border-color: transparent;
+      border-style: solid;
+    }
+  }
+}
+
 
 

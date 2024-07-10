@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {FormatUtils} from './format-utils';
 import {DEFAULT} from '../constant/default';
 import {AmaliaException} from '../exception/amalia-exception';
@@ -6,7 +6,7 @@ import {AmaliaException} from '../exception/amalia-exception';
 
 describe('Test Format utils', () => {
     let injector: TestBed;
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [],
             declarations: [],

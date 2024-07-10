@@ -1,4 +1,4 @@
-import {async, getTestBed, TestBed} from '@angular/core/testing';
+import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {TimeBarPluginComponent} from './time-bar-plugin.component';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ConfigurationManager} from '../../core/config/configuration-manager';
@@ -35,7 +35,7 @@ describe('TimeBar plugin test', () => {
     const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     const configData = require('tests/assets/config-mpe.json');
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             declarations: [],
@@ -66,12 +66,13 @@ describe('TimeBar plugin test', () => {
         const mediaPlayer = new MediaElement(obj, eventEmitter);
         expect(mpe.getMediaPlayer()).toEqual(mediaPlayer);
         mpe.setMediaPlayerWidth(1980);
+        playerService.players.set('PLAYER', mpe);
         const plugin = new TimeBarPluginComponent(playerService);
         expect(plugin.getDefaultConfig()).toEqual(configPlugin);
         plugin.playerId = 'PLAYER';
         plugin.pluginInstance = 'PLAYER';
         plugin.mediaPlayerElement = mpe;
-        plugin.init();
+        plugin.ngOnInit();
         plugin.hideTimeBar();
         expect(plugin.active).toEqual(false);
         plugin.showTimeBar();

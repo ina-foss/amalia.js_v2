@@ -1,4 +1,4 @@
-import {async, fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
+import {waitForAsync, fakeAsync, getTestBed, TestBed, tick} from '@angular/core/testing';
 import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {DefaultLogger} from '../logger/default-logger';
@@ -32,7 +32,7 @@ describe('Test Metadata manager', () => {
     let configData: ConfigData;
     const logger = new DefaultLogger();
     let metadataManager: MetadataManager = null;
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             declarations: [],

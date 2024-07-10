@@ -8,8 +8,8 @@ import interact from 'interactjs';
 import {Options} from 'sortablejs';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {DataType} from '../../core/constant/data-type';
-import {isArrayLike} from 'rxjs/internal-compatibility';
-import {TimelineLocalisation} from '../../core/metadata/model/timeline-localisation';
+import {Utils} from '../../core/utils/utils';
+import {TimeLineBlock, TimelineLocalisation} from '../../core/metadata/model/timeline-localisation';
 import * as _ from 'lodash';
 import {Metadata} from '@ina/amalia-model';
 
@@ -24,14 +24,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public title: string;
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
-    public listOfBlocks: Array<{
-        id?: string,
-        label?: string,
-        expendable: boolean,
-        defaultColor?: string,
-        displayState: boolean,
-        data: Array<TimelineLocalisation>
-    }>;
+    public listOfBlocks: Array<TimeLineBlock>;
     public enableDragDrop = false;
     public configIsOpen = false;
     public currentTime = 0;
@@ -77,7 +70,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION];
 
     constructor(playerService: MediaPlayerService) {
-        super(playerService, TimelinePluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = TimelinePluginComponent.PLUGIN_NAME;
     }
 
     ngOnInit(): void {
@@ -134,7 +128,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         } else {
             this.logger.info(` Metadata loaded timeline ${handleMetadataIds}`, this.pluginConfiguration);
             // Check if metadata is initialized
-            if (metadataManager && handleMetadataIds && isArrayLike<string>(handleMetadataIds)) {
+            if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
                 handleMetadataIds.forEach((metadataId) => {
                     const metadata = metadataManager.getMetadata(metadataId);
                     if (metadata) {
@@ -411,7 +405,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (handleMetadataIds) {
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
                 const metadata = metadataManager.getMetadata(metadataId);
-                const blockMetadata: any = _.find(this.listOfBlocks, {id: metadataId});
+                const blockMetadata: any = _.find<TimeLineBlock>(this.listOfBlocks, {id: metadataId});
                 const baseColor = (metadata?.viewControl?.color) ? metadata.viewControl.color : blockMetadata.defaultColor;
                 let localisations = null;
                 try {

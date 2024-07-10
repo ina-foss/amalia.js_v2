@@ -102,7 +102,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
 
 
     constructor(playerService: MediaPlayerService) {
-        super(playerService, StoryboardPluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = StoryboardPluginComponent.PLUGIN_NAME;
         this.listOfThumbnailFilter = [];
         this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
         this.throttleTimeChange = _.throttle(this.handleSeeked, StoryboardPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
@@ -172,18 +173,27 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         return size;
     }
 
+    private isHandleSeekNeeded(): boolean {
+        return this.currentTime !== 0 && (this.storyboardElement && this.storyboardElement.nativeElement.children.length > 0);
+    }
+
+    private getOutRange(isForward: boolean, firstTc: number, lastTc: number): boolean {
+        return (isForward) ? !(firstTc < this.selectedTc && this.selectedTc < lastTc) : this.selectedTc < firstTc && this.selectedTc < lastTc;
+    }
+
     /**
      * Handle seek
      */
     @AutoBind
     public handleSeeked() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (this.currentTime !== 0 && (this.storyboardElement && this.storyboardElement.nativeElement.children.length > 0)) {
+
+        if (this.isHandleSeekNeeded()) {
             let lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
             let firstTc = this.listOfThumbnailFilter[0];
             this.selectedTc = this.currentTime;
             const isForward = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
-            const outRange = (isForward) ? !(firstTc < this.selectedTc && this.selectedTc < lastTc) : this.selectedTc < firstTc && this.selectedTc < lastTc;
+            const outRange = this.getOutRange(isForward, firstTc, lastTc);
             if (outRange) {
                 const seekTc = this.getNearSeekTc(this.selectedTc);
                 if (isForward) {

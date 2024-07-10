@@ -15,18 +15,16 @@ import {MediaPlayerService} from './service/media-player-service';
 import {ThumbnailService} from './service/thumbnail-service';
 import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.component';
-import {SortablejsModule} from 'ngx-sortablejs';
-import {TooltipModule} from 'ng2-tooltip-directive';
-
+import {TooltipModule} from 'ng2-tooltip-directive-major-angular-updates';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.directive";
 
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
-        SortablejsModule.forRoot({
-            animation: 150
-        }),
         TooltipModule
     ],
     declarations: [
@@ -39,13 +37,14 @@ import {TooltipModule} from 'ng2-tooltip-directive';
         SubtitlesPluginComponent,
         StoryboardPluginComponent,
         HistogramPluginComponent,
-        TimelinePluginComponent
+        TimelinePluginComponent,
+        SortablejsDirective
     ],
     providers: [
         MediaPlayerService,
         ThumbnailService
     ],
-    entryComponents: [AmaliaComponent],
+
     bootstrap: [],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA

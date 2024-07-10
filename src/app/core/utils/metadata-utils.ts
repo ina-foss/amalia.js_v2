@@ -2,8 +2,8 @@
  * Utils for format
  */
 import {Metadata} from '@ina/amalia-model';
-import {TranscriptionLocalisation} from '../metadata/model/transcription-localisation';
-import {isArrayLike} from 'rxjs/internal-compatibility';
+import {TranscriptionAnnotation, TranscriptionLocalisation} from '../metadata/model/transcription-localisation';
+import {Utils} from './utils';
 import {FormatUtils} from './format-utils';
 import {Histogram} from '../metadata/model/histogram';
 import {TimelineLocalisation} from '../metadata/model/timeline-localisation';
@@ -20,7 +20,7 @@ export class MetadataUtils {
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
                 MetadataUtils.parseTranscriptionLocalisations(l, localisations, parseLevel, withSubLocalisations,
-                    new Array<{ label: string, id: string, type: string }>() );
+                    new Array<TranscriptionAnnotation>() );
             });
         }
         return localisations;
@@ -32,22 +32,23 @@ export class MetadataUtils {
      * @param localisations transcription
      * @param parseLevel parse level
      * @param withSubLocalisations true for parse sub localisation
+     * @param annotationsLoc
      */
     public static parseTranscriptionLocalisations(l: any, localisations: Array<TranscriptionLocalisation>, parseLevel: number,
-                                                  withSubLocalisations: boolean, annotationsLoc: Array<{ label: string, id: string, type: string }>): void {
+                                                  withSubLocalisations: boolean, annotationsLoc: Array<TranscriptionAnnotation>): void {
         if (l.tcin && l.tcout && l.data && l.data.text && l.tclevel === parseLevel) {
             const subLocalisations = new Array<TranscriptionLocalisation>();
             if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && withSubLocalisations) {
                 l.sublocalisations.localisation.forEach((subl) => {
                     MetadataUtils.parseTranscriptionLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations,
-                        new Array<{ label: string, id: string, type: string }>());
+                        new Array<TranscriptionAnnotation>());
                 });
             }
             MetadataUtils.pushTranscriptionLocalisations(l, localisations, subLocalisations, annotationsLoc);
         }
         if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && l.tclevel <= parseLevel) {
             l.sublocalisations.localisation.forEach((subl) => {
-                const annotations = new Array<{ label: string, id: string, type: string }>();
+                const annotations = new Array<TranscriptionAnnotation>();
                 if (subl.data.annotations && subl.data.annotations.length > 0) {
                     subl.data.annotations.forEach(a => {
                         annotations.push(a);
@@ -64,7 +65,7 @@ export class MetadataUtils {
             thumb: (l.thumb) ? l.thumb : '',
             tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin)  : l.tcin,
             tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
-            text: (l.data && l.data.text && isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
+            text: (l.data && l.data.text && Utils.isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
             subLocalisations,
             annotations
         });
@@ -78,7 +79,7 @@ export class MetadataUtils {
         const histograms: Array<Histogram> = new Array<Histogram>();
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
-                if (l.data.hasOwnProperty('histogram') && l.data.histogram && isArrayLike(l.data.histogram)) {
+                if (l.data.hasOwnProperty('histogram') && l.data.histogram && Utils.isArrayLike(l.data.histogram)) {
                     l.data.histogram.forEach((h) => {
                         h.id = metadata.id;
                         histograms.push(h as Histogram);

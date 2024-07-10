@@ -61,7 +61,8 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      */
     public theme: 'inside' | 'outside';
     constructor(playerService: MediaPlayerService) {
-        super(playerService, TimeBarPluginComponent.PLUGIN_NAME);
+        super(playerService);
+        this.pluginName = TimeBarPluginComponent.PLUGIN_NAME;
     }
 
     ngOnInit(): void {
