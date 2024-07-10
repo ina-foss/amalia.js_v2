@@ -11,22 +11,6 @@
   flex-direction: column;
   height: 100%;
 
-  // style scrollbar
-  &::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  &::-webkit-scrollbar-track {
-    border: 1px solid #ddd;
-    background-color: #fff;
-    background-clip: content-box;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: #0086B1;
-  }
-
   .transcription {
     display: block;
     margin: 0;
@@ -37,8 +21,22 @@
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 0;
-    scrollbar-color: #0086B1 #DDD;
-    scrollbar-width: thin;
+
+    //scrollBar style
+    &::-webkit-scrollbar-track {
+      border: 1px solid $amalia-plugin-storyboard-box-border-color;
+      padding: 2px 0;
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+      background-color: $amalia-plugin-storyboard-box-color;
+    }
 
     .segment {
       display: block;
