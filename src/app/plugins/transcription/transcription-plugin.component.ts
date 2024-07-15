@@ -467,8 +467,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 const t = segmentFilteredNodes.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
                 t.forEach(node => {
                     index += 1;
-                    if (a.label.includes(' ')) {
-                        const tabLabel = a.label.split(' ');
+                    if (a.matchedText.includes(' ')) {
+                        const tabLabel = a.matchedText.split(' ');
                         tabLabel.forEach(i => {
                             if (TextUtils.hasSearchText(node.textContent, i)) {
                                 if (TextUtils.hasSearchText(t.item(index).textContent, tabLabel[tabLabel.findIndex(elem => elem === i) + 1])) {
@@ -482,7 +482,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                             }
                         });
                     } else {
-                        if (TextUtils.hasSearchText(node.textContent, a.label)) {
+                        if (TextUtils.hasSearchText(node.textContent, a.matchedText)) {
                             listOfNamedEntitesNodes.push(node as HTMLElement);
                             listOfNamedEntitesNodes.forEach(e => {
                                 e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
