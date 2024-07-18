@@ -1,0 +1,17 @@
+@import '../../../core/styles/variables';
+@import '../../../core/styles/typo';
+
+:host{
+  .segment-title{
+  }
+  .segment-tc{}
+  .segment-categories{}
+  .segment-description{}
+  .segment-keywords{}
+  .new-segment-actions{}
+  .read-only-segment{}
+  .readonly-segment-tc{}
+  .readonly-segment-categories{}
+  .readonly-segment-keywords{}
+  .readonly-segment-description{}
+}

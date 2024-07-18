@@ -1,0 +1,11 @@
+<div>
+    <p-button label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()"></p-button>
+</div>
+<div *ngIf="editNewSegmentActivated" class="new-segment-edit">
+    <amalia-segment [segment]="newSegment" [displayMode]="'new'" (actionEmitter)="manageSegment($event)" (createSegment)="createNewSegment($event)"/>
+</div>
+<div class="segments">
+    <div class="segment" *ngFor="let segment of segmentsInfo.data">
+<amalia-segment [segment]="segment" [displayMode]="'readonly'" (actionEmitter)="manageSegment($event)"/>
+    </div>
+</div>
