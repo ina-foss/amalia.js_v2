@@ -25,7 +25,18 @@
                         "assets": [
                             "src/assets"
                         ],
-                        "styles": [],
+                        "styles": [
+                            "src/styles.scss",
+                            "node_modules/primeicons/primeicons.css",
+                            "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+                            "node_modules/primeng/resources/primeng.min.css",
+                            "node_modules/primeng/resources/primeng.css"
+                        ],
+                        "stylePreprocessorOptions": {
+                            "includePaths": [
+                                "node_modules/"
+                            ]
+                        },
                         "scripts": [
                             {
                                 "input": "node_modules/@ungap/custom-elements/es.js"
@@ -95,7 +106,11 @@
                             "src/assets"
                         ],
                         "styles": [
-                            "src/styles.scss"
+                            "src/styles.scss",
+                            "node_modules/primeicons/primeicons.css",
+                            "node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+                            "node_modules/primeng/resources/primeng.min.css",
+                            "node_modules/primeng/resources/primeng.css"
                         ],
                         "scripts": []
                     }
@@ -125,6 +140,6 @@
         }
     },
     "cli": {
-      "analytics": false
+        "analytics": false
     }
 }

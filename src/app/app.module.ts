@@ -18,6 +18,15 @@ import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.compon
 import {TooltipModule} from 'ng2-tooltip-directive-major-angular-updates';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.directive";
+import {AnnotationPluginComponent} from './plugins/annotation/annotation-plugin.component';
+import {ButtonModule} from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ChipsModule } from 'primeng/chips';
+import { SegmentComponent } from './plugins/annotation/segment/segment.component';
+import { PanelModule } from 'primeng/panel';
+import { AvatarModule } from 'primeng/avatar';
 
 @NgModule({
     imports: [
@@ -25,7 +34,14 @@ import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.dir
         BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
-        TooltipModule
+        TooltipModule,
+        ButtonModule,
+        InputTextModule,
+        FloatLabelModule,
+        InputTextareaModule,
+        ChipsModule,
+        PanelModule,
+        AvatarModule
     ],
     declarations: [
         AmaliaComponent,
@@ -38,7 +54,9 @@ import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.dir
         StoryboardPluginComponent,
         HistogramPluginComponent,
         TimelinePluginComponent,
-        SortablejsDirective
+        SortablejsDirective,
+        AnnotationPluginComponent,
+        SegmentComponent
     ],
     providers: [
         MediaPlayerService,
@@ -83,5 +101,7 @@ export class AppModule {
         const timelinePluginComponent = createCustomElement(TimelinePluginComponent, {injector: this.injector});
         customElements.define('amalia-timeline', timelinePluginComponent);
 
+        const annotationPluginComponent = createCustomElement(AnnotationPluginComponent, {injector: this.injector});
+        customElements.define('amalia-annotation', annotationPluginComponent);
     }
 }

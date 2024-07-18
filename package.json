@@ -2,7 +2,7 @@
     "name": "@ina/amalia",
     "description": "Amalia is a extensible and versatile HTML5 multimedia player",
     "author": "INA",
-    "version": "2.1.3",
+    "version": "2.1.4",
     "main": "amalia.min.js",
     "scripts": {
         "ng": "ng",
@@ -43,6 +43,8 @@
         "lodash": "^4.17.21",
         "ng2-tooltip-directive-major-angular-updates": "^2.12.1",
         "ngx-build-plus": "^18.0.0",
+        "primeicons": "^7.0.0",
+        "primeng": "^17.18.4",
         "rxjs": "~7.8.0",
         "s": "^1.0.0",
         "sortablejs": "^1.15.2",
