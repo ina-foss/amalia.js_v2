@@ -12,7 +12,7 @@
         "gendoc-md": "typedoc --plugin typedoc-plugin-markdown --out docs/api-md src --ignoreCompilerErrors --name Amalia --readme ./docs/README.md",
         "build:component": "ng build --configuration production --output-hashing none && node build-web-component.js",
         "build:icon": "svg-sprite -C svg-sprite.config.json src/styles/svgs/*.svg",
-        "build": "npm run build:icon && npm run build:component",
+        "build": "ng lint && npm run build:icon && npm run build:component",
         "publish": "cp -r package-public.json dist/amalia/package.json && cd dist/amalia && npm publish",
         "test-watch": "ng test  --code-coverage",
         "test": "ng test --watch=false --code-coverage --browsers=ChromeHeadlessCI",
