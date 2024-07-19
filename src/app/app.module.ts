@@ -25,8 +25,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ChipsModule } from 'primeng/chips';
 import { SegmentComponent } from './plugins/annotation/segment/segment.component';
-import { PanelModule } from 'primeng/panel';
 import { AvatarModule } from 'primeng/avatar';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
     imports: [
@@ -40,7 +40,7 @@ import { AvatarModule } from 'primeng/avatar';
         FloatLabelModule,
         InputTextareaModule,
         ChipsModule,
-        PanelModule,
+        CardModule,
         AvatarModule
     ],
     declarations: [

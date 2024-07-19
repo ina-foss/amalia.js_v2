@@ -1,5 +1,5 @@
 <div *ngIf="displayMode!=='readonly'">
-    <p-panel [toggleable]="true">
+    <p-card>
         <ng-template pTemplate="header">
             <div class="card flex justify-content-center segment-title">
                 <p-floatLabel>
@@ -42,15 +42,18 @@
                 <label for="keywords">Mots-clés</label>
             </p-floatLabel>
         </div>
-        <div class="new-segment-actions">
-            <p-button id="btnannuler" label="Annuler" icon="pi pi-times" (click)="cancelNewSegmentCreation()"/>
-            <p-button id="btnvalider" label="Valider" icon="pi pi-check" (click)="createNewSegment()"/>
-        </div>
-    </p-panel>
+        <ng-template pTemplate="footer">
+            <div class="new-segment-actions">
+                <p-button id="btnannuler" label="Annuler" icon="pi pi-times" (click)="cancelNewSegmentCreation()"/>
+                <p-button id="btnvalider" label="Valider" icon="pi pi-check" (click)="createNewSegment()"/>
+            </div>
+        </ng-template>
+
+    </p-card>
 </div>
 <div *ngIf="displayMode==='readonly'">
     <div class="read-only-segment card">
-        <p-panel [toggleable]="true">
+        <p-card>
             <ng-template pTemplate="header">
                 <div class="flex align-items-center gap-2">
                     <span class="font-bold">{{ segment.label }}</span>
@@ -83,6 +86,6 @@
                               pInputTextarea
                               [autoResize]="true" readonly></textarea></div>
             </div>
-        </p-panel>
+        </p-card>
     </div>
 </div>

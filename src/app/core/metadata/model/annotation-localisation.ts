@@ -1,3 +1,5 @@
+import {Localisation} from "@ina/amalia-model";
+
 export interface AnnotationLocalisation {
     label?: string;
     thumb?: string;

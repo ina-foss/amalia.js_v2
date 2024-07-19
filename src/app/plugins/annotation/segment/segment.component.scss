@@ -1,17 +1,40 @@
 @import '../../../core/styles/variables';
 @import '../../../core/styles/typo';
 
-:host{
-  .segment-title{
+:host {
+  .segment-title {
+    &input {
+      width: 100%;
+    }
   }
-  .segment-tc{}
-  .segment-categories{}
-  .segment-description{}
-  .segment-keywords{}
-  .new-segment-actions{}
-  .read-only-segment{}
-  .readonly-segment-tc{}
-  .readonly-segment-categories{}
-  .readonly-segment-keywords{}
-  .readonly-segment-description{}
+
+  .segment-tc {
+  }
+
+  .segment-categories {
+  }
+
+  .segment-description {
+  }
+
+  .segment-keywords {
+  }
+
+  .new-segment-actions {
+  }
+
+  .read-only-segment {
+  }
+
+  .readonly-segment-tc {
+  }
+
+  .readonly-segment-categories {
+  }
+
+  .readonly-segment-keywords {
+  }
+
+  .readonly-segment-description {
+  }
 }
