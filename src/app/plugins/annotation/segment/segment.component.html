@@ -1,58 +1,57 @@
 <div *ngIf="displayMode!=='readonly'">
-    <p-card>
-        <ng-template pTemplate="header">
+    <div class="editable-segment">
+        <p-card>
             <div class="card flex justify-content-center segment-title">
                 <p-floatLabel>
                     <input pInputText id="title" [(ngModel)]="segment.label"/>
                     <label for="title">Titre du segment</label>
                 </p-floatLabel>
             </div>
-        </ng-template>
-
-        <div class="segment-tc">
-            <div class="flex flex-column gap-2">
-                <label for="tcDebut">TC Début</label>
-                <input pInputText id="tcDebut" [(ngModel)]="segment.tcIn"/>
+            <div class="segment-tc">
+                <div class="flex flex-column gap-2">
+                    <label for="tcDebut">TC Début</label>
+                    <input pInputText id="tcDebut" [(ngModel)]="segment.tcIn"/>
+                </div>
+                <div class="flex flex-column gap-2">
+                    <label for="tcFin">TC Fin</label>
+                    <input pInputText id="tcFin" [(ngModel)]="segment.tcOut"/>
+                </div>
+                <div class="flex flex-column gap-2">
+                    <label for="tcDuree">TC Fin</label>
+                    <input pInputText id="tcDuree" [(ngModel)]="segment.tc"/>
+                </div>
             </div>
-            <div class="flex flex-column gap-2">
-                <label for="tcFin">TC Fin</label>
-                <input pInputText id="tcFin" [(ngModel)]="segment.tcOut"/>
+            <div class="segment-details">
+                <div class="segment-categories">
+                    <p-floatLabel>
+                        <p-chips id="categories" [(ngModel)]="segment.categories"/>
+                        <label for="categories">Catégories</label>
+                    </p-floatLabel>
+                </div>
+                <div class="segment-description">
+                    <p-floatLabel>
+                             <textarea id="description" [(ngModel)]="segment.description" rows="5" cols="30"
+                                       pInputTextarea
+                                       [autoResize]="true"></textarea>
+                        <label for="description">Description</label>
+                    </p-floatLabel>
+                </div>
+                <div class="segment-keywords">
+                    <p-floatLabel>
+                        <p-chips id="keywords" [(ngModel)]="segment.keywords"/>
+                        <label for="keywords">Mots-clés</label>
+                    </p-floatLabel>
+                </div>
             </div>
-            <div class="flex flex-column gap-2">
-                <label for="tcDuree">TC Fin</label>
-                <input pInputText id="tcDuree" [(ngModel)]="segment.tc"/>
-            </div>
-        </div>
-        <div class="segment-categories">
-            <p-floatLabel>
-                <p-chips id="categories" [(ngModel)]="segment.categories"/>
-                <label for="categories">Catégories</label>
-            </p-floatLabel>
-        </div>
-        <div class="segment-description">
-            <p-floatLabel>
-                <textarea id="description" [(ngModel)]="segment.description" rows="5" cols="30" pInputTextarea
-                          [autoResize]="true"></textarea>
-                <label for="description">Description</label>
-            </p-floatLabel>
-        </div>
-        <div class="segment-keywords">
-            <p-floatLabel>
-                <p-chips id="keywords" [(ngModel)]="segment.keywords"/>
-                <label for="keywords">Mots-clés</label>
-            </p-floatLabel>
-        </div>
-        <ng-template pTemplate="footer">
-            <div class="new-segment-actions">
+            <ng-template pTemplate="footer">
                 <p-button id="btnannuler" label="Annuler" icon="pi pi-times" (click)="cancelNewSegmentCreation()"/>
                 <p-button id="btnvalider" label="Valider" icon="pi pi-check" (click)="createNewSegment()"/>
-            </div>
-        </ng-template>
-
-    </p-card>
+            </ng-template>
+        </p-card>
+    </div>
 </div>
 <div *ngIf="displayMode==='readonly'">
-    <div class="read-only-segment card">
+    <div class="read-only-segment">
         <p-card>
             <ng-template pTemplate="header">
                 <div class="flex align-items-center gap-2">

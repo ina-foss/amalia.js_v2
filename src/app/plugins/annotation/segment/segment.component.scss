@@ -1,27 +1,84 @@
 @import '../../../core/styles/variables';
 @import '../../../core/styles/typo';
 
-:host {
-  .segment-title {
-    &input {
+:host ::ng-deep {
+  .editable-segment {
+    .p-card {
+      border-radius: 6px;
+      border: 1px solid $colors-primitive-primary-color;
+      /* card/shadow */
+      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    }
+
+    .p-card-body {
+      padding: $spacings-border-radius-radius-md 17.5px;
+      row-gap: 0;
+    }
+
+    .p-card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .p-card-footer {
+      display: flex;
+      height: 63px;
+      padding: $spacings-border-radius-radius-md 0;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 7px;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+
+    .segment-title {
+      input {
+        width: 100%;
+      }
+    }
+
+    .segment-tc {
+      display: flex;
+      flex-direction: row;
       width: 100%;
+    }
+
+    .segment-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacings-space-space-sm;
+      align-items: stretch;
+
+      .p-chips, .p-chips-multiple-container, textarea {
+        width: 100%;
+      }
+
+      .segment-categories {
+      }
+
+      .segment-description {
+      }
+
+      .segment-keywords {
+      }
+
+    }
+
+    .new-segment-actions {
+    }
+
+    .p-float-label input:focus ~ label,
+    .p-float-label input.p-filled ~ label,
+    .p-float-label textarea:focus ~ label,
+    .p-float-label textarea.p-filled ~ label,
+    .p-float-label .p-inputwrapper-focus ~ label,
+    .p-float-label .p-inputwrapper-filled ~ label {
+      display: none;
     }
   }
 
-  .segment-tc {
-  }
-
-  .segment-categories {
-  }
-
-  .segment-description {
-  }
-
-  .segment-keywords {
-  }
-
-  .new-segment-actions {
-  }
 
   .read-only-segment {
   }
@@ -37,4 +94,7 @@
 
   .readonly-segment-description {
   }
+
+
 }
+

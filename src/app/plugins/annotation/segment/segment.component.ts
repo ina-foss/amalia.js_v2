@@ -4,7 +4,7 @@ import {AnnotationLocalisation} from "../../../core/metadata/model/annotation-lo
 @Component({
     selector: 'amalia-segment',
     templateUrl: './segment.component.html',
-    styleUrl: './segment.component.scss'
+    styleUrl: './segment.component.scss',
 })
 export class SegmentComponent implements OnInit {
     @Input()
