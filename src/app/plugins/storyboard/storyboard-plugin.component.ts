@@ -181,6 +181,24 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         return (isForward) ? !(firstTc < this.selectedTc && this.selectedTc < lastTc) : this.selectedTc < firstTc && this.selectedTc < lastTc;
     }
 
+    private computeFirstTc(outRange, selectedTc, isForward, firstTc) {
+        if (outRange && !isForward) {
+            return this.getNearSeekTc(selectedTc);
+        }
+        return firstTc;
+    }
+
+    private computeLastTc(outRange, selectedTc, isForward, lastTc) {
+        if (outRange && isForward) {
+            return this.getNearSeekTc(this.selectedTc);
+        }
+        return lastTc;
+    }
+
+    private predicateIsNodeTcInRange(currentTime) {
+        return node => (currentTime >= parseFloat(node.getAttribute('data-tc')) && parseFloat(node.getAttribute('data-tc')) <= currentTime);
+    }
+
     /**
      * Handle seek
      */
@@ -194,17 +212,12 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.selectedTc = this.currentTime;
             const isForward = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
             const outRange = this.getOutRange(isForward, firstTc, lastTc);
-            if (outRange) {
-                const seekTc = this.getNearSeekTc(this.selectedTc);
-                if (isForward) {
-                    lastTc = seekTc;
-                } else {
-                    firstTc = seekTc;
-                }
-            }
+            lastTc = this.computeLastTc(outRange, this.selectedTc, isForward, lastTc);
+            firstTc = this.computeFirstTc(outRange, this.selectedTc, isForward, firstTc);
+
             const thumbnailElementNodes = Array.from(this.storyboardElement.nativeElement.querySelectorAll<HTMLElement>('.thumbnail'));
             const thumbnailFilteredNodes = thumbnailElementNodes
-                    .filter(node => (this.currentTime >= parseFloat(node.getAttribute('data-tc')) && parseFloat(node.getAttribute('data-tc')) <= this.currentTime));
+                    .filter(this.predicateIsNodeTcInRange(this.currentTime));
             if (thumbnailFilteredNodes && thumbnailFilteredNodes.length > 0) {
                 thumbnailFilteredNodes.forEach(thumbnailNode => {
                     this.activeThumbnail = this.storyboardElement.nativeElement.querySelector('.thumbnail.active');
