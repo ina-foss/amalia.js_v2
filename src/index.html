@@ -31,13 +31,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             console.log("Dom ready")
-            //loadResource();
-            //loadFluxAudioResource();
-            loadTranscriptionSample().then(() => {
-                console.log('Done');
-            }).catch(error => {
-                console.log("Error", error);
-            });
+            loadResource();
+            // //loadFluxAudioResource();
+            // loadTranscriptionSample().then(() => {
+            //     console.log('Done');
+            // }).catch(error => {
+            //     console.log("Error", error);
+            // });
             /*loadStockAudioResource().then(() => {
                 console.log('Done');
             }).catch(error => {
@@ -301,7 +301,10 @@
                                         },
                                         dataSources: [
                                             {
-                                                "url": "http://localhost:4203/metadata/transcription.json"
+                                                "url": "http://localhost:4203/metadata/transcription-whisper.packmsg",
+                                                "headers": [
+                                                    "Content-Type:application/x-msgpack;charset=UTF-8",
+                                                ]
                                             }
                                         ],
                                         pluginsConfiguration
@@ -633,7 +636,7 @@
 
             const pluginConfig = {
                 "metadataIds": [
-                    "1"
+                    "transcription-whisper"
                 ],
                 "data": {
                     "title": "Transcription",

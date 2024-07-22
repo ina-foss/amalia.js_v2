@@ -6,6 +6,7 @@ import {PlayerErrorCode} from '../../constant/error-type';
 import {Loader} from '../../loader/loader';
 import {Converter} from '../../converter/converter';
 import {Utils} from '../../utils/utils';
+import * as msgpack from "msgpack-lite";
 
 /**
  * In charge to load http resource
@@ -31,6 +32,7 @@ export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
     load(url: string, headers: Array<string>): Promise<Array<Metadata>> {
         return new Promise<Array<Metadata>>((resolve, reject) => {
             const httpHeaders = {};
+            let responseType = null;
             if (headers) {
                 headers.forEach((h) => {
                     if (h.indexOf(':') !== -1) {
@@ -39,13 +41,20 @@ export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
                     } else {
                         httpHeaders[h] = '';
                     }
+                    if (h.indexOf("x-msgpack") !== -1) {
+                        responseType = "arraybuffer";
+                    }
                 });
             }
-            this.httpClient.get(url, {headers: new HttpHeaders(httpHeaders)})
+            this.httpClient.get(url, {headers: new HttpHeaders(httpHeaders), responseType: responseType})
                     .toPromise()
                     .then(
                             res => {
                                 this.logger.info('Metadata loaded ...');
+                                if(responseType == "arraybuffer"){
+                                    res = msgpack.decode(new Uint8Array(res));
+                                    this.logger.info('msgpack decode metadata loaded ...');
+                                }
                                 if (res) {
                                     resolve(this.mapResponse(res));
                                 } else {
