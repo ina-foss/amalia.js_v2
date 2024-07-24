@@ -27,6 +27,7 @@ import { ChipsModule } from 'primeng/chips';
 import { SegmentComponent } from './plugins/annotation/segment/segment.component';
 import { AvatarModule } from 'primeng/avatar';
 import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { CardModule } from 'primeng/card';
         InputTextareaModule,
         ChipsModule,
         CardModule,
-        AvatarModule
+        AvatarModule,
+        DividerModule
     ],
     declarations: [
         AmaliaComponent,

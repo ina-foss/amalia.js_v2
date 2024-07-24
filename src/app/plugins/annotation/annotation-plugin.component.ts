@@ -12,7 +12,11 @@ import {AnnotationInfo, AnnotationLocalisation} from "../../core/metadata/model/
 })
 export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnInit {
     public static PLUGIN_NAME = 'ANNOTATION';
-    public segmentsInfo: AnnotationInfo = null;
+    public segmentsInfo: AnnotationInfo = {
+        id: new Date() as unknown as string,
+        label: 'Annotation',
+        data: new Array<AnnotationLocalisation>()
+    };
     public newSegment: AnnotationLocalisation = {
         displayMode: "new", selected: false,
         tc: "0",
@@ -29,7 +33,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     public ngOnInit() {
         super.ngOnInit();
-        this.initializeNewSegment();
     }
 
     constructor(playerService: MediaPlayerService) {
@@ -38,13 +41,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public initializeNewSegment() {
-        if (this.segmentsInfo == null) {
-            this.segmentsInfo = {
-                id: new Date() as unknown as string,
-                label: 'Annotation',
-                data: new Array<AnnotationLocalisation>()
-            };
-        }
+        this.newSegment = {
+            label: 'Segment sans titre',
+            displayMode: "new", selected: false,
+            tc: "0",
+            tcIn: "0", tcOut: "0"
+        };
         this.editNewSegmentActivated = true;
     }
 
@@ -75,22 +77,27 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.cancelNewSegmentCreation();
                 return;
             case 'clone':
-                let newSegmentCopy: AnnotationLocalisation = {
-                    displayMode: "new",
-                    selected: true,
-                    tc: "",
-                    tcIn: "",
-                    tcOut: ""
-                };
-                const sourceSegment = this.segmentsInfo.data.find(segment => segment.selected);
-                Object.assign(newSegmentCopy, sourceSegment);
-                if (newSegmentCopy) {
-                    sourceSegment.selected = false;
-                    newSegmentCopy.displayMode = "new";
-                }
+                this.cloneSegment();
+                return;
             case 'remove':
                 this.segmentsInfo.data = this.segmentsInfo.data.filter(segment => !segment.selected);
+                return;
+        }
+    }
 
+    private cloneSegment = () => {
+        let newSegmentCopy: AnnotationLocalisation = {
+            displayMode: "new",
+            selected: true,
+            tc: "",
+            tcIn: "",
+            tcOut: ""
+        };
+        const sourceSegment = this.segmentsInfo.data.find(segment => segment.selected);
+        Object.assign(newSegmentCopy, sourceSegment);
+        if (newSegmentCopy) {
+            sourceSegment.selected = false;
+            newSegmentCopy.displayMode = "new";
         }
     }
 }

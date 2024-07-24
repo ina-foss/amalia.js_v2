@@ -1,5 +1,19 @@
+<div class="annotation-content">
 <div class="header">
-    <p-button label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()" size="small" ></p-button>
+    <div>
+        <p-button class="highlight" label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()"
+                  size="small"></p-button>
+        <p-button label="Début" icon="pi pi-clock" size="small"></p-button>
+        <p-button label="Fin" icon="pi pi-clock" size="small"></p-button>
+    </div>
+    <div>
+        <p-button label="" icon="pi pi-download" size="small"></p-button>
+        <p-button label="" icon="pi pi-save" size="small"></p-button>
+    </div>
+
+</div>
+<div *ngIf="!editNewSegmentActivated && segmentsInfo.data.length === 0" class="annotation-empty-text">Veuillez cliquer sur “Ajouter un segment” pour
+    débuter la segmentation du média.
 </div>
 <div *ngIf="editNewSegmentActivated" class="new-segment-edit">
     <amalia-segment [segment]="newSegment" [displayMode]="'new'" (actionEmitter)="manageSegment($event)"
@@ -9,4 +23,5 @@
     <div class="segment" *ngFor="let segment of segmentsInfo.data">
         <amalia-segment [segment]="segment" [displayMode]="'readonly'" (actionEmitter)="manageSegment($event)"/>
     </div>
+</div>
 </div>

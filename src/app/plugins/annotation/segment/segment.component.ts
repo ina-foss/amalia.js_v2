@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
 
 @Component({
@@ -6,7 +6,7 @@ import {AnnotationLocalisation} from "../../../core/metadata/model/annotation-lo
     templateUrl: './segment.component.html',
     styleUrl: './segment.component.scss',
 })
-export class SegmentComponent implements OnInit {
+export class SegmentComponent {
     @Input()
     public segment: AnnotationLocalisation;
     @Input()
@@ -16,12 +16,11 @@ export class SegmentComponent implements OnInit {
     @Output()
     public createSegment: EventEmitter<AnnotationLocalisation> = new EventEmitter<AnnotationLocalisation>();
 
-    ngOnInit(): void {
-    }
 
     public createNewSegment() {
+        const tmpSegment: AnnotationLocalisation = Object.assign({}, this.segment);
         this.actionEmitter.emit("create");
-        this.createSegment.emit(this.segment);
+        this.createSegment.emit(tmpSegment);
     }
 
     public editSegment() {

@@ -1,7 +1,7 @@
 <div *ngIf="displayMode!=='readonly'">
     <div class="editable-segment">
         <p-card>
-            <div class="card flex justify-content-center segment-title">
+            <div class="segment-title">
                 <p-floatLabel>
                     <input pInputText id="title" [(ngModel)]="segment.label"/>
                     <label for="title">Titre du segment</label>
@@ -44,8 +44,10 @@
                 </div>
             </div>
             <ng-template pTemplate="footer">
-                <p-button id="btnannuler" label="Annuler" icon="pi pi-times" (click)="cancelNewSegmentCreation()"/>
-                <p-button id="btnvalider" label="Valider" icon="pi pi-check" (click)="createNewSegment()"/>
+                <p-button id="btnannuler" label="Annuler" icon="pi pi-times-circle" (click)="cancelNewSegmentCreation()"
+                          size=""/>
+                <p-button class="highlight" id="btnvalider" label="Valider" icon="pi pi-check"
+                          (click)="createNewSegment()"/>
             </ng-template>
         </p-card>
     </div>
@@ -54,31 +56,43 @@
     <div class="read-only-segment">
         <p-card>
             <ng-template pTemplate="header">
-                <div class="flex align-items-center gap-2">
-                    <span class="font-bold">{{ segment.label }}</span>
+                <div class="segment-title">
+                    {{ segment.label }}
+                </div>
+                <div class="header-buttons">
+                    <p-button class="p-panel-header-icon p-link mr-2" id="btnedit" icon="pi pi-pencil"
+                              (click)="editSegment()"/>
+                    <p-button class="p-panel-header-icon p-link mr-2" id="btnclone" icon="pi pi-clone"
+                              (click)="cloneSegment()"/>
+                    <p-button class="p-panel-header-icon p-link mr-2" id="btnremove" icon="pi pi-trash"
+                              (click)="removeSegment()"/>
                 </div>
             </ng-template>
-            <ng-template pTemplate="icons">
-                <p-button class="p-panel-header-icon p-link mr-2" id="btnedit" icon="pi pi-pencil"
-                          (click)="editSegment()"/>
-                <p-button class="p-panel-header-icon p-link mr-2" id="btnclone" icon="pi pi-clone"
-                          (click)="cloneSegment()"/>
-                <p-button class="p-panel-header-icon p-link mr-2" id="btnremove" icon="pi pi-trash"
-                          (click)="removeSegment()"/>
-            </ng-template>
-
+            <p-divider/>
             <div class="m-0">
-                <div class="readonly-segment-tc">
-                    <div>Début: {{ segment.tcIn }}</div>
-                    <div>Fin: {{ segment.tcOut }}</div>
-                    <div>Durée: {{ segment.tc }}</div>
+                <div class="readonly-segment-info">
+                    <div class="readonly-segment-thumbnail-block">
+                        <div class="readonly-segment-thumbnail"><img alt="Thumbnail"/></div>
+                        <div class="readonly-segment-camera-button">
+                            <p-button icon="pi pi-camera"/>
+                        </div>
+                    </div>
+                    <div class="readonly-segment-info-content">
+                        <div class="readonly-segment-tc">
+                            <div>Début: {{ segment.tcIn }}</div>
+                            <div>Fin: {{ segment.tcOut }}</div>
+                            <div>Durée: {{ segment.tc }}</div>
+                        </div>
+                        <div class="readonly-segment-categories">
+                            <p-chips id="readonly_categories" [(ngModel)]="segment.categories"/>
+                        </div>
+                        <div class="readonly-segment-keywords">
+                            <p-chips id="readonly_keywords" [(ngModel)]="segment.keywords"/>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="readonly-segment-categories">
-                    <p-chips id="readonly_categories" [(ngModel)]="segment.categories"/>
-                </div>
-                <div class="readonly-segment-keywords">
-                    <p-chips id="readonly_keywords" [(ngModel)]="segment.keywords"/>
-                </div>
+
                 <div class="readonly-segment-description">
                     <textarea id="readonly_description"
                               [(ngModel)]="segment.description" rows="5" cols="30"

@@ -3,11 +3,13 @@
 
 :host ::ng-deep {
   .editable-segment {
+    margin-bottom: $spacings-space-space-sm;
+
     .p-card {
       border-radius: 6px;
       border: 1px solid $colors-primitive-primary-color;
       /* card/shadow */
-      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
     }
 
     .p-card-body {
@@ -49,7 +51,6 @@
       flex-direction: column;
       align-items: flex-start;
       gap: $spacings-space-space-sm;
-      align-items: stretch;
 
       .p-chips, .p-chips-multiple-container, textarea {
         width: 100%;
@@ -79,20 +80,113 @@
     }
   }
 
-
   .read-only-segment {
-  }
+    display: flex;
+    height: 193px;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: 100%;
+    margin-bottom: $spacings-space-space-sm;
 
-  .readonly-segment-tc {
-  }
+    p-card {
+      width: 100%
+    }
 
-  .readonly-segment-categories {
-  }
+    .p-card {
+      border-radius: 6px;
+      border: 1px solid $colors-primitive-primary-color;
+      /* card/shadow */
+      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+      padding: $spacings-border-radius-radius-md 17.5px;
+    }
 
-  .readonly-segment-keywords {
-  }
+    .p-card-header {
+      display: flex;
+      justify-content: space-between;
+    }
 
-  .readonly-segment-description {
+    .segment-title {
+      overflow: hidden;
+      color: $panel-content-color;
+      text-overflow: ellipsis;
+      font-family: $amalia-font-family-lato;
+      font-size: 21px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: $spacings-space-space-sm;
+    }
+
+    .p-card-body {
+      padding: 0;
+    }
+
+    .p-card-content {
+      gap: $spacings-space-space-sm;
+    }
+
+    .readonly-segment-info {
+      display: flex;
+      flex-direction: row;
+
+      .readonly-segment-thumbnail-block {
+        position: relative;
+        width: 165px;
+        height: 111px;
+
+        .readonly-segment-thumbnail {
+          position: absolute;
+          flex-shrink: 0;
+          background: url("/assets/images/placeholder.png") lightgray -23.528px 0px / 118.519% 100% no-repeat;
+          width: 100%;
+          height: 100%;
+        }
+
+        .readonly-segment-camera-button {
+          position: relative;
+          display: flex;
+          width: 33px;
+          height: 33px;
+          padding: 10.5px 0;
+          justify-content: center;
+          align-items: center;
+          flex-shrink: 0;
+          float: right;
+
+          .p-button {
+            border-radius: 28px;
+            width: 33px;
+            height: 33px;
+          }
+
+        }
+      }
+
+      .readonly-segment-info-content {
+        display: flex;
+        flex-direction: column;
+
+        .readonly-segment-tc {
+          display: flex;
+          flex-direction: row;
+        }
+
+        .readonly-segment-categories {
+        }
+
+        .readonly-segment-keywords {
+        }
+      }
+    }
+
+    .readonly-segment-description {
+    }
   }
 
 
