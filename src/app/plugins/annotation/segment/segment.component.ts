@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
+import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
 
 @Component({
     selector: 'amalia-segment',
@@ -12,30 +12,26 @@ export class SegmentComponent {
     @Input()
     public displayMode: "new" | "edit" | "readonly" = "readonly";
     @Output()
-    public actionEmitter: EventEmitter<string> = new EventEmitter<string>();
-    @Output()
-    public createSegment: EventEmitter<AnnotationLocalisation> = new EventEmitter<AnnotationLocalisation>();
+    public actionEmitter: EventEmitter<AnnotationAction> = new EventEmitter<AnnotationAction>();
 
-
-    public createNewSegment() {
-        const tmpSegment: AnnotationLocalisation = Object.assign({}, this.segment);
-        this.actionEmitter.emit("create");
-        this.createSegment.emit(tmpSegment);
+    public validateNewSegment() {
+        this.actionEmitter.emit({type: "validate", payload: this.segment});
     }
 
     public editSegment() {
-        this.actionEmitter.emit("edit");
+        this.actionEmitter.emit({type: "edit", payload: this.segment});
     }
 
     public cancelNewSegmentCreation() {
-        this.actionEmitter.emit("cancel");
+        this.actionEmitter.emit({type: "cancel", payload: this.segment});
     }
 
     public cloneSegment() {
-        this.actionEmitter.emit("clone");
+        const tmpSegment: AnnotationLocalisation = Object.assign({}, this.segment);
+        this.actionEmitter.emit({type: "clone", payload: tmpSegment});
     }
 
     public removeSegment() {
-        this.actionEmitter.emit("remove");
+        this.actionEmitter.emit({type: "remove", payload: this.segment});
     }
 }

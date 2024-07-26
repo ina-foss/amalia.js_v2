@@ -1,5 +1,3 @@
-import {Localisation} from "@ina/amalia-model";
-
 export interface AnnotationLocalisation {
     label?: string;
     thumb?: string;
@@ -16,5 +14,10 @@ export interface AnnotationLocalisation {
 export interface AnnotationInfo {
     id: string,
     label?: string,
-    data: Array<AnnotationLocalisation>
+    data: Set<AnnotationLocalisation>
+}
+
+export interface AnnotationAction {
+    type: "validate" | "edit" | "cancel" | "clone" | "remove";
+    payload: AnnotationLocalisation;
 }

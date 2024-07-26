@@ -1,6 +1,6 @@
 <div *ngIf="displayMode!=='readonly'">
     <div class="editable-segment">
-        <p-card>
+        <p-card [class]="{'segment-selected':segment.selected}">
             <div class="segment-title">
                 <p-floatLabel>
                     <input pInputText id="title" [(ngModel)]="segment.label"/>
@@ -45,16 +45,16 @@
             </div>
             <ng-template pTemplate="footer">
                 <p-button id="btnannuler" label="Annuler" icon="pi pi-times-circle" (click)="cancelNewSegmentCreation()"
-                          size=""/>
+                          size="small"/>
                 <p-button class="highlight" id="btnvalider" label="Valider" icon="pi pi-check"
-                          (click)="createNewSegment()"/>
+                          (click)="validateNewSegment()" size="small"/>
             </ng-template>
         </p-card>
     </div>
 </div>
 <div *ngIf="displayMode==='readonly'">
-    <div class="read-only-segment">
-        <p-card>
+    <div class="readonly-segment">
+        <p-card [class]="{'segment-selected':segment.selected}">
             <ng-template pTemplate="header">
                 <div class="segment-title">
                     {{ segment.label }}
@@ -79,25 +79,38 @@
                     </div>
                     <div class="readonly-segment-info-content">
                         <div class="readonly-segment-tc">
-                            <div>Début: {{ segment.tcIn }}</div>
-                            <div>Fin: {{ segment.tcOut }}</div>
-                            <div>Durée: {{ segment.tc }}</div>
+                            <div class="readonly-segment-tc-item">Début: {{ segment.tcIn }}</div>
+                            <div class="readonly-segment-tc-item">Fin: {{ segment.tcOut }}</div>
+                            <div class="readonly-segment-tc-item">Durée: {{ segment.tc }}</div>
                         </div>
+                        <p-divider/>
                         <div class="readonly-segment-categories">
-                            <p-chips id="readonly_categories" [(ngModel)]="segment.categories"/>
+                            <ng-container *ngIf="segment.categories && segment.categories.length > 0">
+                                <p-chip *ngFor="let category of segment.categories" [label]="category"/>
+                            </ng-container>
+                            <ng-container *ngIf="!segment.categories || segment.categories.length === 0">
+                                Catégories: aucune
+                            </ng-container>
                         </div>
                         <div class="readonly-segment-keywords">
-                            <p-chips id="readonly_keywords" [(ngModel)]="segment.keywords"/>
+                            <ng-container *ngIf="segment.keywords && segment.keywords.length > 0">
+                                <p-chip *ngFor="let keyword of segment.keywords" [label]="keyword"/>
+                            </ng-container>
+                            <ng-container *ngIf="!segment.keywords || segment.keywords.length === 0">
+                                Mots-clés: aucun
+                            </ng-container>
                         </div>
+                        <ng-container
+                                *ngIf="!segment.description || segment.description.length === 0 || segment.description.trim().length === 0">
+                            <div class="readonly-segment-description-empty">Description: aucune</div>
+                        </ng-container>
                     </div>
 
                 </div>
-
-                <div class="readonly-segment-description">
-                    <textarea id="readonly_description"
-                              [(ngModel)]="segment.description" rows="5" cols="30"
-                              pInputTextarea
-                              [autoResize]="true" readonly></textarea></div>
+                <div *ngIf="segment.description && segment.description.length !== 0 && segment.description.trim().length !== 0"
+                     class="readonly-segment-description">
+                    {{ segment.description }}
+                </div>
             </div>
         </p-card>
     </div>

@@ -3,7 +3,7 @@ import {PluginBase} from "../../core/plugin/plugin-base";
 import {PluginConfigData} from "../../core/config/model/plugin-config-data";
 import {AnnotationConfig} from "../../core/config/model/annotation-config";
 import {MediaPlayerService} from "../../service/media-player-service";
-import {AnnotationInfo, AnnotationLocalisation} from "../../core/metadata/model/annotation-localisation";
+
 
 @Component({
     selector: 'amalia-annotation',
@@ -15,14 +15,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public segmentsInfo: AnnotationInfo = {
         id: new Date() as unknown as string,
         label: 'Annotation',
-        data: new Array<AnnotationLocalisation>()
+        data: new Set<AnnotationLocalisation>()
     };
-    public newSegment: AnnotationLocalisation = {
-        displayMode: "new", selected: false,
-        tc: "0",
-        tcIn: "0", tcOut: "0"
-    };
-    public editNewSegmentActivated = false;
+
+    public segmentBeforeEdition: AnnotationLocalisation;
 
     getDefaultConfig(): PluginConfigData<AnnotationConfig> {
         return {
@@ -41,63 +37,95 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public initializeNewSegment() {
-        this.newSegment = {
+        this.unselectAllSegments();
+        const segmentToBeAdded: AnnotationLocalisation = {
             label: 'Segment sans titre',
-            displayMode: "new", selected: false,
-            tc: "0",
-            tcIn: "0", tcOut: "0"
+            displayMode: "readonly", selected: true,
+            tc: "00:00:00:00",
+            tcIn: "00:00:00:00", tcOut: "00:00:00:00"
         };
-        this.editNewSegmentActivated = true;
+        this.segmentsInfo.data.add(segmentToBeAdded);
     }
 
-    public editSegment() {
-        const selectedSegment = this.segmentsInfo.data.find(segment => segment.selected);
-        if (selectedSegment) {
-            selectedSegment.displayMode = "edit";
+    public editSegment(segment) {
+        if (segment) {
+            this.segmentBeforeEdition = {
+                label: '',
+                thumb: '',
+                tcIn: '',
+                tcOut: '',
+                tc: '',
+                categories: new Array<string>(),
+                description: '',
+                keywords: new Array<string>(),
+                selected: false,
+                displayMode: "readonly"
+            };
+            Object.assign(this.segmentBeforeEdition, segment);
+            segment.displayMode = "edit";
         }
     }
 
-    public createNewSegment(event: AnnotationLocalisation) {
-        this.editNewSegmentActivated = false;
-        this.segmentsInfo.data.push(event);
+    public unselectAllSegments() {
+        this.segmentsInfo?.data?.forEach(segment => segment.selected = false);
     }
 
-    public cancelNewSegmentCreation() {
-        this.editNewSegmentActivated = false;
+    public saveSegment(segment) {
+        segment.selected = true;
+        segment.displayMode = "readonly";
+        //code to save the segmentsIfo into the persistence unit
     }
 
-    manageSegment(event: string) {
-        switch (event) {
-            case 'create':
+    public cancelNewSegmentEdition(segment) {
+        if (this.segmentBeforeEdition) {
+            Object.assign(segment, this.segmentBeforeEdition)
+        }
+        segment.displayMode = "readonly";
+    }
+
+    public removeSegment(segment) {
+        this.unselectAllSegments();
+        this.segmentsInfo.data.delete(segment);
+    }
+
+    manageSegment(event) {
+        switch (event.type) {
+            case 'validate':
+                this.saveSegment(event.payload);
                 return;
             case 'edit':
-                this.editSegment();
+                this.editSegment(event.payload);
                 return;
             case 'cancel':
-                this.cancelNewSegmentCreation();
+                this.cancelNewSegmentEdition(event.payload);
                 return;
             case 'clone':
-                this.cloneSegment();
+                this.cloneSegment(event.payload);
                 return;
             case 'remove':
-                this.segmentsInfo.data = this.segmentsInfo.data.filter(segment => !segment.selected);
+                this.removeSegment(event.payload);
                 return;
         }
     }
 
-    private cloneSegment = () => {
-        let newSegmentCopy: AnnotationLocalisation = {
+    private cloneSegment(sourceSegment: AnnotationLocalisation) {
+        const newSegmentCopy: AnnotationLocalisation = {
             displayMode: "new",
             selected: true,
             tc: "",
             tcIn: "",
             tcOut: ""
         };
-        const sourceSegment = this.segmentsInfo.data.find(segment => segment.selected);
         Object.assign(newSegmentCopy, sourceSegment);
         if (newSegmentCopy) {
             sourceSegment.selected = false;
             newSegmentCopy.displayMode = "new";
+            this.segmentsInfo.data.add(newSegmentCopy);
         }
+    }
+
+    public selectSegment(event: AnnotationLocalisation) {
+        this.unselectAllSegments();
+        event.selected = true;
     }
 }

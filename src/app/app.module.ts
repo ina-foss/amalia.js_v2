@@ -20,14 +20,15 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.directive";
 import {AnnotationPluginComponent} from './plugins/annotation/annotation-plugin.component';
 import {ButtonModule} from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputTextareaModule } from 'primeng/inputtextarea';
-import { ChipsModule } from 'primeng/chips';
-import { SegmentComponent } from './plugins/annotation/segment/segment.component';
-import { AvatarModule } from 'primeng/avatar';
-import { CardModule } from 'primeng/card';
-import { DividerModule } from 'primeng/divider';
+import {InputTextModule} from 'primeng/inputtext';
+import {FloatLabelModule} from 'primeng/floatlabel';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {ChipsModule} from 'primeng/chips';
+import {SegmentComponent} from './plugins/annotation/segment/segment.component';
+import {AvatarModule} from 'primeng/avatar';
+import {CardModule} from 'primeng/card';
+import {DividerModule} from 'primeng/divider';
+import {ChipModule} from "primeng/chip";
 
 @NgModule({
     imports: [
@@ -41,6 +42,7 @@ import { DividerModule } from 'primeng/divider';
         FloatLabelModule,
         InputTextareaModule,
         ChipsModule,
+        ChipModule,
         CardModule,
         AvatarModule,
         DividerModule
