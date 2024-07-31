@@ -29,6 +29,10 @@ import {AvatarModule} from 'primeng/avatar';
 import {CardModule} from 'primeng/card';
 import {DividerModule} from 'primeng/divider';
 import {ChipModule} from "primeng/chip";
+import {ToastModule} from 'primeng/toast';
+import {FileService} from "./service/file.service";
+import {MessageService} from "primeng/api";
+
 
 @NgModule({
     imports: [
@@ -45,7 +49,8 @@ import {ChipModule} from "primeng/chip";
         ChipModule,
         CardModule,
         AvatarModule,
-        DividerModule
+        DividerModule,
+        ToastModule
     ],
     declarations: [
         AmaliaComponent,
@@ -64,7 +69,9 @@ import {ChipModule} from "primeng/chip";
     ],
     providers: [
         MediaPlayerService,
-        ThumbnailService
+        ThumbnailService,
+        FileService,
+        MessageService
     ],
 
     bootstrap: [],

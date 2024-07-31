@@ -174,6 +174,17 @@
           }
         }
 
+        .readonly-segment-thumbnail-no-background {
+          position: absolute;
+          flex-shrink: 0;
+          width: 165px;
+          height: 111px;
+
+          img {
+            width: 165px;
+          }
+        }
+
         .p-button {
           float: right;
         }

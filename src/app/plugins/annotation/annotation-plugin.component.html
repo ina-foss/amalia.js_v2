@@ -4,13 +4,13 @@
             <p-button class="highlight" label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()"
                       size="small"></p-button>
             <ng-container *ngIf="segmentsInfo.data.length !== 0">
-                <p-button class="no-highlight" label="Début" icon="pi pi-clock" size="small"></p-button>
-                <p-button class="no-highlight" label="Fin" icon="pi pi-clock" size="small"></p-button>
+                <p-button class="no-highlight" label="Début" (click)="setTcIn()" icon="pi pi-clock" size="small"></p-button>
+                <p-button class="no-highlight" label="Fin" (click)="setTcOut()" icon="pi pi-clock" size="small"></p-button>
             </ng-container>
         </div>
         <div  *ngIf="segmentsInfo.data.length !== 0">
-            <p-button   class="no-highlight no-outline" icon="pi pi-download" size="small" text="true"></p-button>
-            <p-button   class="no-highlight no-outline" icon="pi pi-save" size="small" text="true"></p-button>
+            <p-button   class="no-highlight no-outline" (click)="downloadSegments()" icon="pi pi-download" size="small" text="true"></p-button>
+            <p-button   class="no-highlight no-outline" (click)="saveSegments()" icon="pi pi-save" size="small" text="true"></p-button>
         </div>
     </div>
     <div *ngIf="segmentsInfo.data.length === 0" class="annotation-empty-text">Veuillez cliquer
@@ -22,6 +22,7 @@
         <div class="segment" *ngFor="let segment of segmentsInfo.data">
             <amalia-segment [segment]="segment" [displayMode]="segment.displayMode"
                             (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"/>
+            <p-toast />
         </div>
     </div>
 </div>

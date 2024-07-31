@@ -11,6 +11,8 @@ import {Utils} from "../../core/utils/utils";
 import * as _ from "lodash";
 import {FormatUtils} from "../../core/utils/format-utils";
 import {ThumbnailService} from "../../service/thumbnail-service";
+import {MessageService} from "primeng/api";
+import {FileService} from "../../service/file.service";
 
 export class TcFormatPipe implements PipeTransform {
     transform(tc: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = null, defaultFps: number = 25) {
@@ -45,10 +47,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public tcFormatPipe = new TcFormatPipe();
     @ViewChild('annotationElement', {static: false})
     public annotationElement: ElementRef<HTMLElement>;
-    /**
-     * Handle thumbnail
-     */
-    private readonly thumbnailService: ThumbnailService;
 
     @AutoBind
     init() {
@@ -66,7 +64,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             }
         }
         if (this.mediaPlayerElement.isMetadataLoaded) {
-            // this.parseTranscription();
+            this.parseAnnotation();
         }
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleOnTimeChange);
@@ -143,7 +141,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 segmentFilteredNodes.forEach(segmentNode => {
                     const tcIn = Math.round(parseFloat(segmentNode.getAttribute('data-tcin')));
                     const tcOut = Math.round(parseFloat(segmentNode.getAttribute('data-tcout')));
-                    const percentWidth = ((Math.round(this.currentTime) - tcIn) * 100) / (tcOut - tcIn);
                     segmentNode.classList.add(AnnotationPluginComponent.SELECTOR_SELECTED);
                 });
 
@@ -235,10 +232,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         super.ngOnInit();
     }
 
-    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
+    constructor(playerService: MediaPlayerService, private thumbnailService: ThumbnailService, private messageService: MessageService, private fileService: FileService) {
         super(playerService);
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
-        this.thumbnailService = thumbnailService;
     }
 
     public initializeNewSegment() {
@@ -331,10 +327,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             tcOut: ""
         };
         const indexOfSourceElement = this.segmentsInfo.data.indexOf(sourceSegment);
-        Object.assign(newSegmentCopy, sourceSegment, {displayMode : "readonly", label:'Copie de ' + sourceSegment.label, selected:true});
+        Object.assign(newSegmentCopy, sourceSegment, {
+            displayMode: "readonly",
+            label: 'Copie de ' + sourceSegment.label,
+            selected: true
+        });
         sourceSegment.selected = false;
-         this.segmentsInfo.data.splice(indexOfSourceElement + 1, 0, newSegmentCopy);
-      }
+        this.segmentsInfo.data.splice(indexOfSourceElement + 1, 0, newSegmentCopy);
+    }
 
     public selectSegment(event: AnnotationLocalisation) {
         this.unselectAllSegments();
@@ -371,5 +371,48 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             // display  button synchro if active node is not visible
             this.displaySynchro = visible === false;
         }
+    }
+
+    public setTcIn() {
+        const selectedSegment = this.segmentsInfo.data.find(seg => seg.selected);
+        if (selectedSegment) {
+            const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+            const segmentTcOut = FormatUtils.convertTcToSeconds(selectedSegment.tcOut)
+            if (mediaTc > segmentTcOut) {
+                this.displaySnackBar('le TC IN doit être inférieur au TC OUT et compris entre le TC IN et le TC OUT de l\'intégral');
+            } else {
+                selectedSegment.tcIn = FormatUtils.formatTime(mediaTc, this.tcDisplayFormat, this.fps);
+                const tcOut = FormatUtils.convertTcToSeconds(selectedSegment.tcOut);
+                selectedSegment.tc = FormatUtils.formatTime(tcOut - mediaTc, this.tcDisplayFormat, this.fps);
+            }
+        }
+    }
+
+    public setTcOut() {
+        const selectedSegment = this.segmentsInfo.data.find(seg => seg.selected);
+        if (selectedSegment) {
+            const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+            const segmentTcIn = FormatUtils.convertTcToSeconds(selectedSegment.tcIn)
+            if (mediaTc < segmentTcIn) {
+                this.displaySnackBar('Le TC OUT doit être supérieur au TC IN et compris entre le TC IN et le TC OUT du fichier intégral');
+            } else {
+                selectedSegment.tcOut = FormatUtils.formatTime(mediaTc, this.tcDisplayFormat, this.fps);
+                selectedSegment.tc = FormatUtils.formatTime(mediaTc - segmentTcIn, this.tcDisplayFormat, this.fps);
+            }
+        }
+
+    }
+
+    public downloadSegments() {
+        const textFileContent = JSON.stringify(this.segmentsInfo);
+        this.fileService.downloadFile(textFileContent, this.segmentsInfo.label + Date.now() + '.json');
+    }
+
+    public saveSegments() {
+        console.log("to be implemented");
+    }
+
+    private displaySnackBar(msgContent) {
+        this.messageService.add({severity: 'error', summary: 'Error', detail: msgContent});
     }
 }

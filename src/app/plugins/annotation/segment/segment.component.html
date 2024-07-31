@@ -62,19 +62,20 @@
                 </div>
                 <div class="header-buttons">
                     <p-button id="btnedit" icon="pi pi-pencil"
-                              (click)="editSegment()" [text]="true" severity="secondary"/>
+                              (click)="editSegment()" [text]="true" severity="secondary" tooltip="Editer"/>
                     <p-button id="btnclone" icon="pi pi-clone"
-                              (click)="cloneSegment()" [text]="true" severity="secondary"/>
+                              (click)="cloneSegment()" [text]="true" severity="secondary" tooltip="Dupliquer un segment"/>
                     <p-button id="btnremove" icon="pi pi-trash"
-                              (click)="removeSegment()" [text]="true" severity="danger"/>
+                              (click)="removeSegment()" [text]="true" severity="danger" tooltip="Supprimer"/>
                 </div>
             </ng-template>
             <p-divider/>
             <div>
                 <div class="readonly-segment-info">
                     <div class="readonly-segment-thumbnail-block">
-                        <div class="readonly-segment-thumbnail"><img class="thumbnail" alt="thumbnail"
-                                                                     [src]="segment.thumb"/></div>
+                        <div [ngClass]="{'readonly-segment-thumbnail': !segment.thumb, 'readonly-segment-thumbnail-no-background':segment.thumb}">
+                            <img class="thumbnail" alt="thumbnail"
+                                 [src]="segment.thumb"/></div>
                         <p-button icon="pi pi-camera" rounded="true" outlined="true" size="small" severity="secondary"/>
                     </div>
                     <div class="readonly-segment-info-content">
