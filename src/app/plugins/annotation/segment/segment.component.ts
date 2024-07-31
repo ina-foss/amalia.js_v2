@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
 
 @Component({
@@ -14,6 +14,7 @@ export class SegmentComponent {
     @Output()
     public actionEmitter: EventEmitter<AnnotationAction> = new EventEmitter<AnnotationAction>();
 
+
     public validateNewSegment() {
         this.actionEmitter.emit({type: "validate", payload: this.segment});
     }
@@ -27,8 +28,7 @@ export class SegmentComponent {
     }
 
     public cloneSegment() {
-        const tmpSegment: AnnotationLocalisation = Object.assign({}, this.segment);
-        this.actionEmitter.emit({type: "clone", payload: tmpSegment});
+        this.actionEmitter.emit({type: "clone", payload: this.segment});
     }
 
     public removeSegment() {

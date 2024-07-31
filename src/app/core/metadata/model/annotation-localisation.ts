@@ -14,7 +14,7 @@ export interface AnnotationLocalisation {
 export interface AnnotationInfo {
     id: string,
     label?: string,
-    data: Set<AnnotationLocalisation>
+    data: Array<AnnotationLocalisation>
 }
 
 export interface AnnotationAction {

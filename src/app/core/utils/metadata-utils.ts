@@ -7,6 +7,7 @@ import {Utils} from './utils';
 import {FormatUtils} from './format-utils';
 import {Histogram} from '../metadata/model/histogram';
 import {TimelineLocalisation} from '../metadata/model/timeline-localisation';
+import {AnnotationLocalisation} from "../metadata/model/annotation-localisation";
 
 export class MetadataUtils {
     /**
@@ -25,7 +26,67 @@ export class MetadataUtils {
         }
         return localisations;
     }
+    /**
+     * Return list of transcription
+     * @param metadata localisation
+     * @param parseLevel parse level
+     * @param withSubLocalisations true for parse sub localisation
+     */
+    public static getAnnotationLocalisations(metadata: Metadata, parseLevel: number = 1, withSubLocalisations = false): Array<AnnotationLocalisation> {
+        const localisations: Array<AnnotationLocalisation> = new Array<AnnotationLocalisation>();
+        if (metadata && metadata.localisation) {
+            metadata.localisation.forEach((l) => {
+                MetadataUtils.parseAnnotationLocalisations(l, localisations, parseLevel, withSubLocalisations,
+                        new Array<AnnotationLocalisation>() );
+            });
+        }
+        return localisations;
+    }
 
+    /**
+     * In charge to parse transcription
+     * @param l localisation
+     * @param localisations transcription
+     * @param parseLevel parse level
+     * @param withSubLocalisations true for parse sub localisation
+     * @param annotationsLoc
+     */
+    public static parseAnnotationLocalisations(l: any, localisations: Array<AnnotationLocalisation>, parseLevel: number,
+                                                  withSubLocalisations: boolean, annotationsLoc: Array<AnnotationLocalisation>): void {
+        if (l.tcin && l.tcout && l.data && l.data.text && l.tclevel === parseLevel) {
+            const subLocalisations = new Array<AnnotationLocalisation>();
+            if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && withSubLocalisations) {
+                l.sublocalisations.localisation.forEach((subl) => {
+                    MetadataUtils.parseAnnotationLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations,
+                            new Array<AnnotationLocalisation>());
+                });
+            }
+            MetadataUtils.pushAnnotationLocalisations(l, localisations, subLocalisations, annotationsLoc);
+        }
+        if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && l.tclevel <= parseLevel) {
+            l.sublocalisations.localisation.forEach((subl) => {
+                const annotations = new Array<AnnotationLocalisation>();
+                if (subl.data.annotations && subl.data.annotations.length > 0) {
+                    subl.data.annotations.forEach(a => {
+                        annotations.push(a);
+                    });
+                }
+                MetadataUtils.parseAnnotationLocalisations(subl, localisations, parseLevel, withSubLocalisations, annotations);
+            });
+        }
+    }
+    // push transcription localisations
+    private static pushAnnotationLocalisations(l, localisations, subLocalisations, annotations) {
+        localisations.push({
+            label: (l.label) ? l.label : '',
+            thumb: (l.thumb) ? l.thumb : '',
+            tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin)  : l.tcin,
+            tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
+            text: (l.data && l.data.text && Utils.isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
+            subLocalisations,
+            annotations
+        });
+    }
     /**
      * In charge to parse transcription
      * @param l localisation

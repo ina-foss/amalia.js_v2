@@ -3,22 +3,22 @@
         <div>
             <p-button class="highlight" label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()"
                       size="small"></p-button>
-            <ng-container *ngIf="segmentsInfo.data.size !== 0">
-                <p-button label="Début" icon="pi pi-clock" size="small"></p-button>
-                <p-button label="Fin" icon="pi pi-clock" size="small"></p-button>
+            <ng-container *ngIf="segmentsInfo.data.length !== 0">
+                <p-button class="no-highlight" label="Début" icon="pi pi-clock" size="small"></p-button>
+                <p-button class="no-highlight" label="Fin" icon="pi pi-clock" size="small"></p-button>
             </ng-container>
         </div>
-        <div  *ngIf="segmentsInfo.data.size !== 0">
-            <p-button label="" icon="pi pi-download" size="small"></p-button>
-            <p-button label="" icon="pi pi-save" size="small"></p-button>
+        <div  *ngIf="segmentsInfo.data.length !== 0">
+            <p-button   class="no-highlight no-outline" icon="pi pi-download" size="small" text="true"></p-button>
+            <p-button   class="no-highlight no-outline" icon="pi pi-save" size="small" text="true"></p-button>
         </div>
     </div>
-    <div *ngIf="segmentsInfo.data.size === 0" class="annotation-empty-text">Veuillez cliquer
+    <div *ngIf="segmentsInfo.data.length === 0" class="annotation-empty-text">Veuillez cliquer
         sur “Ajouter un segment” pour
         débuter la segmentation du média.
     </div>
 
-    <div class="segments">
+    <div class="segments" #annotationElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let segment of segmentsInfo.data">
             <amalia-segment [segment]="segment" [displayMode]="segment.displayMode"
                             (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"/>

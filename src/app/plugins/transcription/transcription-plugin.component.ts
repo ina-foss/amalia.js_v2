@@ -416,7 +416,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     /**
-     * Search word ans scroll to first result
+     * Search word and scroll to first result
      */
     @AutoBind
     public searchWord(searchText: string) {

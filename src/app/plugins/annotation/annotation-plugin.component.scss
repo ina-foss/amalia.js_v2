@@ -17,13 +17,21 @@
     }
   }
 
-  .p-button {
-    border-radius: 4px;
-    border: 1px solid $colors-primitive-primary-color;
-    background: white;
-    color: $colors-primitive-primary-color;
+  .no-highlight {
+    .p-button {
+      border-radius: 4px;
+      border: 1px solid $colors-primitive-primary-color;
+      background: white;
+      color: $colors-primitive-primary-color;
+    }
   }
-
+  .no-highlight.no-outline {
+    .p-button {
+      background: white;
+      color: $colors-primitive-primary-color;
+      border-style: none;
+    }
+  }
   .highlight {
     .p-button {
       background: $colors-primitive-primary-color;

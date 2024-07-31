@@ -44,7 +44,8 @@
                 </div>
             </div>
             <ng-template pTemplate="footer">
-                <p-button id="btnannuler" label="Annuler" icon="pi pi-times-circle" (click)="cancelNewSegmentCreation()"
+                <p-button id="btnannuler" class="no-highlight" label="Annuler" icon="pi pi-times-circle"
+                          (click)="cancelNewSegmentCreation()"
                           size="small"/>
                 <p-button class="highlight" id="btnvalider" label="Valider" icon="pi pi-check"
                           (click)="validateNewSegment()" size="small"/>
@@ -60,22 +61,21 @@
                     {{ segment.label }}
                 </div>
                 <div class="header-buttons">
-                    <p-button class="p-panel-header-icon p-link mr-2" id="btnedit" icon="pi pi-pencil"
-                              (click)="editSegment()"/>
-                    <p-button class="p-panel-header-icon p-link mr-2" id="btnclone" icon="pi pi-clone"
-                              (click)="cloneSegment()"/>
-                    <p-button class="p-panel-header-icon p-link mr-2" id="btnremove" icon="pi pi-trash"
-                              (click)="removeSegment()"/>
+                    <p-button id="btnedit" icon="pi pi-pencil"
+                              (click)="editSegment()" [text]="true" severity="secondary"/>
+                    <p-button id="btnclone" icon="pi pi-clone"
+                              (click)="cloneSegment()" [text]="true" severity="secondary"/>
+                    <p-button id="btnremove" icon="pi pi-trash"
+                              (click)="removeSegment()" [text]="true" severity="danger"/>
                 </div>
             </ng-template>
             <p-divider/>
-            <div class="m-0">
+            <div>
                 <div class="readonly-segment-info">
                     <div class="readonly-segment-thumbnail-block">
-                        <div class="readonly-segment-thumbnail"><img alt="Thumbnail"/></div>
-                        <div class="readonly-segment-camera-button">
-                            <p-button icon="pi pi-camera"/>
-                        </div>
+                        <div class="readonly-segment-thumbnail"><img class="thumbnail" alt="thumbnail"
+                                                                     [src]="segment.thumb"/></div>
+                        <p-button icon="pi pi-camera" rounded="true" outlined="true" size="small" severity="secondary"/>
                     </div>
                     <div class="readonly-segment-info-content">
                         <div class="readonly-segment-tc">

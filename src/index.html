@@ -12,7 +12,7 @@
             display: grid;
             height: calc(100vh - 100px);
             column-gap: 5px;
-            row-gap: 5px;
+            row-gap: 15px;
             grid-auto-rows: minmax(300px, auto);
             transition: all ease-in-out 0.25s;
         }
@@ -24,9 +24,9 @@
     <h5 class="my-0 mr-md-auto font-weight-normal">Showcase Amalia</h5>
 </div>
 <div class="content" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr 1fr;">
-    <div style="grid-area: 1 / 1 / 1" id="player"></div>
-    <div style="grid-area: 2 / 1 /  1" id="transcription">Transcription</div>
-    <div style="grid-area: 1 / 2 / 2" id="annotation">Annotation</div>
+    <div style="grid-area: 1 / 1 / 2 / 2" id="player"></div>
+    <div style="grid-area: 2 / 1 /  3 / 2" id="transcription">Transcription</div>
+    <div style="grid-area: 1 / 2 / 3 / 3" id="annotation">Annotation</div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             console.log("Dom ready")
@@ -545,7 +545,7 @@
         async function loadTranscriptionSample() {
             const response = await fetch('http://localhost:4203/metadata/transcription_tf1_vocapia.json');
             const config = await response.json();
-            //createPlayer(config);
+            createPlayer(config);
         }
 
         async function loadStockAudioResource() {
