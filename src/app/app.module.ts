@@ -31,7 +31,8 @@ import {DividerModule} from 'primeng/divider';
 import {ChipModule} from "primeng/chip";
 import {ToastModule} from 'primeng/toast';
 import {FileService} from "./service/file.service";
-import {MessageService} from "primeng/api";
+import {MessageService, ConfirmationService} from "primeng/api";
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import {MessageService} from "primeng/api";
         CardModule,
         AvatarModule,
         DividerModule,
-        ToastModule
+        ToastModule,
+        ConfirmDialogModule
     ],
     declarations: [
         AmaliaComponent,
@@ -71,7 +73,8 @@ import {MessageService} from "primeng/api";
         MediaPlayerService,
         ThumbnailService,
         FileService,
-        MessageService
+        MessageService,
+        ConfirmationService
     ],
 
     bootstrap: [],

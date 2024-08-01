@@ -34,4 +34,7 @@ export class SegmentComponent {
     public removeSegment() {
         this.actionEmitter.emit({type: "remove", payload: this.segment});
     }
+    public updateThumbnail(){
+        this.actionEmitter.emit({type: "updatethumbnail", payload: this.segment});
+    }
 }

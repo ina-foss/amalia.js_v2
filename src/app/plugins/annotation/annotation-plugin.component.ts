@@ -11,7 +11,7 @@ import {Utils} from "../../core/utils/utils";
 import * as _ from "lodash";
 import {FormatUtils} from "../../core/utils/format-utils";
 import {ThumbnailService} from "../../service/thumbnail-service";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
 
 export class TcFormatPipe implements PipeTransform {
@@ -32,6 +32,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public static SELECTOR_SELECTED = 'selected';
 
     public segmentsInfo: AnnotationInfo = {
+        creationUser: "", idMedia: "",
         id: new Date() as unknown as string,
         label: 'Annotation',
         data: new Array<AnnotationLocalisation>()
@@ -47,6 +48,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public tcFormatPipe = new TcFormatPipe();
     @ViewChild('annotationElement', {static: false})
     public annotationElement: ElementRef<HTMLElement>;
+
 
     @AutoBind
     init() {
@@ -139,8 +141,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                             && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
             if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
                 segmentFilteredNodes.forEach(segmentNode => {
-                    const tcIn = Math.round(parseFloat(segmentNode.getAttribute('data-tcin')));
-                    const tcOut = Math.round(parseFloat(segmentNode.getAttribute('data-tcout')));
                     segmentNode.classList.add(AnnotationPluginComponent.SELECTOR_SELECTED);
                 });
 
@@ -232,7 +232,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         super.ngOnInit();
     }
 
-    constructor(playerService: MediaPlayerService, private thumbnailService: ThumbnailService, private messageService: MessageService, private fileService: FileService) {
+    constructor(private confirmationService: ConfirmationService, playerService: MediaPlayerService, private thumbnailService: ThumbnailService, private messageService: MessageService, private fileService: FileService) {
         super(playerService);
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
     }
@@ -294,8 +294,23 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public removeSegment(segment) {
-        this.unselectAllSegments();
-        this.segmentsInfo.data = this.segmentsInfo.data.filter(seg => seg !== segment);
+        this.confirmationService.confirm({
+            target: undefined,
+            message: 'Etes-vous sûr de vouloir supprimer le segment ' + segment.label,
+            header: 'Confirmation',
+            icon: 'pi pi-exclamation-triangle',
+            acceptIcon: "none",
+            rejectIcon: "none",
+            rejectButtonStyleClass: "p-button-text",
+            accept: () => {
+                this.unselectAllSegments();
+                this.segmentsInfo.data = this.segmentsInfo.data.filter(seg => seg !== segment);
+            },
+            reject: () => {
+
+            }
+        });
+
     }
 
     manageSegment(event) {
@@ -314,6 +329,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 return;
             case 'remove':
                 this.removeSegment(event.payload);
+                return;
+            case 'updatethumbnail':
+                this.updatethumbnail(event.payload);
                 return;
         }
     }
@@ -409,10 +427,26 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public saveSegments() {
+        this.segmentsInfo.idMedia = '';
+        this.segmentsInfo.creationUser = '';
+        this.segmentsInfo.lastModificationUser = '';
         console.log("to be implemented");
     }
 
-    private displaySnackBar(msgContent) {
+    public displaySnackBar(msgContent) {
         this.messageService.add({severity: 'error', summary: 'Error', detail: msgContent});
+    }
+
+    public updatethumbnail(segment) {
+        console.log('updatethumbnail');
+        this.unselectAllSegments();
+        segment.selected = true;
+        const tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const url = this.mediaPlayerElement.getThumbnailUrl(tcIn, false);
+        this.thumbnailService.getThumbnail(url, tcIn).then((blob) => {
+            if (typeof (blob) !== 'undefined') {
+                segment.thumb = blob;
+            }
+        });
     }
 }

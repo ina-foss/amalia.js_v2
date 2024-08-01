@@ -12,12 +12,15 @@ export interface AnnotationLocalisation {
 }
 
 export interface AnnotationInfo {
+    lastModificationUser?: string;
+    creationUser: string;
+    idMedia: string;
     id: string,
     label?: string,
     data: Array<AnnotationLocalisation>
 }
 
 export interface AnnotationAction {
-    type: "validate" | "edit" | "cancel" | "clone" | "remove";
+    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail";
     payload: AnnotationLocalisation;
 }
