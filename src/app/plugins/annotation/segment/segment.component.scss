@@ -9,7 +9,13 @@
     }
   }
 
+
   .editable-segment {
+
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
 
     .p-card {
       border-radius: 6px;
@@ -96,6 +102,11 @@
     flex-shrink: 0;
     align-self: stretch;
     width: 100%;
+
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
 
     p-card {
       width: 100%
@@ -209,7 +220,6 @@
             color: $global-textColor;
 
             /* card/content/typography */
-            font-family: $amalia-font-family-lato;
             font-size: 14px;
             font-style: normal;
             font-weight: 400;
@@ -250,7 +260,6 @@
         white-space: nowrap;
         border: none;
         /* text-base/regular/lineheight-150 */
-        font-family: Lato;
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
