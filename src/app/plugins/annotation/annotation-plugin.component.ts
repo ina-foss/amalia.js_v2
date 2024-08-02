@@ -45,7 +45,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     private lastSelectedNode = null;
     public segmentBeforeEdition: AnnotationLocalisation;
     public currentTime: number;
-    public tcFormatPipe = new TcFormatPipe();
     @ViewChild('annotationElement', {static: false})
     public annotationElement: ElementRef<HTMLElement>;
 
@@ -295,22 +294,24 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     public removeSegment(segment) {
         this.confirmationService.confirm({
-            target: undefined,
-            message: 'Etes-vous sûr de vouloir supprimer le segment ' + segment.label,
+            message: 'Etes-vous sûr de vouloir supprimer le segment [' + segment.label + ']',
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
-            acceptIcon: "none",
-            rejectIcon: "none",
             rejectButtonStyleClass: "p-button-text",
             accept: () => {
                 this.unselectAllSegments();
                 this.segmentsInfo.data = this.segmentsInfo.data.filter(seg => seg !== segment);
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Confirmation',
+                    detail: 'Le segment a bien été supprimé.', key: 'br',
+                    life: 3000
+                });
             },
             reject: () => {
-
+                //we do nothing
             }
         });
-
     }
 
     manageSegment(event) {
@@ -430,7 +431,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.segmentsInfo.idMedia = '';
         this.segmentsInfo.creationUser = '';
         this.segmentsInfo.lastModificationUser = '';
-        console.log("to be implemented");
     }
 
     public displaySnackBar(msgContent) {
@@ -438,7 +438,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public updatethumbnail(segment) {
-        console.log('updatethumbnail');
         this.unselectAllSegments();
         segment.selected = true;
         const tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();

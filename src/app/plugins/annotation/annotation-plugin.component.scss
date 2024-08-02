@@ -22,6 +22,13 @@
     }
   }
 
+  p-confirmDialog {
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
+  }
+
   .no-highlight {
     .p-button {
       border-radius: 4px;
@@ -30,6 +37,7 @@
       color: $colors-primitive-primary-color;
     }
   }
+
   .no-highlight.no-outline {
     .p-button {
       background: white;
@@ -37,12 +45,12 @@
       border-style: none;
     }
   }
+
   .highlight {
     .p-button {
       background: $colors-primitive-primary-color;
       color: white;
     }
-
   }
 
   .annotation-empty-text {
