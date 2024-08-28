@@ -114,6 +114,9 @@ export class SegmentComponent {
 
     public setTc() {
         this.segment.tc = this.segment.tcOut - this.segment.tcIn;
+        if (this.segment.tc < 0) {
+            this.segment.tc = 0;
+        }
     }
 
     public displaySnackBar(msgContent) {
