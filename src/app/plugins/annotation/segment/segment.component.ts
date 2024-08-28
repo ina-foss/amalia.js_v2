@@ -173,7 +173,7 @@ export class SegmentComponent {
             //categories
             const categoriesFormControl = this.segmentForm.form.controls['categories'];
             if (categoriesFormControl) {
-                const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(400)).subscribe(value => {
+                const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(400)).subscribe(() => {
                     this.segment.property = this.property();
                 });
                 this.formChangesSubscriptions.push(categoriesSubscription);
@@ -181,7 +181,7 @@ export class SegmentComponent {
             //keywords
             const keywordsFormControl = this.segmentForm.form.controls['keywords'];
             if (keywordsFormControl) {
-                const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(400)).subscribe(value => {
+                const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(400)).subscribe(() => {
                     this.segment.property = this.property();
                 });
                 this.formChangesSubscriptions.push(keywordsSubscription);
