@@ -1,23 +1,32 @@
 export interface AnnotationLocalisation {
+    id?: string;
     label?: string;
     thumb?: string;
-    tcIn: string;
-    tcOut: string;
-    tc: string;
-    categories?: Array<string>;
+    tcIn: number;
+    tcOut: number;
+    tc: number;
+    tcOffset?: number;
+    data: {
+        lastModificationUser?: string;
+        creationUser?: string;
+        selected?: boolean;
+        displayMode?: "new" | "edit" | "readonly";
+        startDate?: Date;
+        endDate?: Date;
+        tcThumbnail?: string,
+        codeChannel?: string,
+        idmChannel?: string,
+        labelChannel?: string,
+        itemBusinessIdentifier?: string;
+        tcMax?: number;
+    };
+    property?: {
+        key: string;
+        value: string;
+    }[];
     description?: string;
-    keywords?: Array<string>;
-    selected: boolean;
-    displayMode: "new" | "edit" | "readonly";
-}
-
-export interface AnnotationInfo {
-    lastModificationUser?: string;
-    creationUser: string;
-    idMedia: string;
-    id: string,
-    label?: string,
-    data: Array<AnnotationLocalisation>
+    tclevel?: number;
+    subLocalisations?: Array<AnnotationLocalisation>;
 }
 
 export interface AnnotationAction {

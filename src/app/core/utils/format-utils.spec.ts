@@ -86,7 +86,10 @@ describe('Test Format utils', () => {
         expect(FormatUtils.formatTime(3600 + (48 * 60) + 58 + (1 / customFps * 25), 'f', customFps)).toContain('01:48:58:25');
         expect(FormatUtils.formatTime(3600 + (48 * 60) + 58 + (1 / customFps * 50), 'f', customFps)).toContain('01:48:58:50');
         expect(FormatUtils.formatTime(3600 + (48 * 60) + 58 + (1 / customFps * 60), 'f', customFps)).toContain('01:48:59:00');
-        expect(FormatUtils.formatTime(3600 + (48 * 60) + 58 + (1 / customFps * 61), 'f', customFps)).toContain('01:48:59:01');
+        expect(FormatUtils.formatTime(1, 'f', customFps)).toContain('00:00:01:00');
+        expect(FormatUtils.formatTime(1 + (1 / customFps * 61), 'f', customFps)).toContain('00:00:02:01');
+        expect(FormatUtils.formatTime(1, 'f', defaultFps)).toContain('00:00:01:00');
+        expect(FormatUtils.formatTime(1 + (1 / defaultFps * 26), 'f', defaultFps)).toContain('00:00:02:01');
     });
     it('Test Format string', () => {
         expect(FormatUtils.formatString('{0} is {1} {2}', 'This', 'formatting', 'hack')).toContain('This is formatting hack');

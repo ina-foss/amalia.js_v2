@@ -3,25 +3,25 @@
         <div>
             <p-button class="highlight" label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()"
                       size="small"></p-button>
-            <ng-container *ngIf="segmentsInfo.data.length !== 0">
+            <ng-container *ngIf="segmentsInfo.subLocalisations.length !== 0">
                 <p-button class="no-highlight" label="Début" (click)="setTcIn()" icon="pi pi-clock"
                           size="small"></p-button>
                 <p-button class="no-highlight" label="Fin" (click)="setTcOut()" icon="pi pi-clock"
                           size="small"></p-button>
             </ng-container>
         </div>
-        <div *ngIf="segmentsInfo.data.length !== 0">
+        <div *ngIf="segmentsInfo.subLocalisations.length !== 0">
             <p-button class="no-highlight no-outline" (click)="downloadSegments()" icon="pi pi-download" size="small"
                       text="true"></p-button>
             <p-button class="no-highlight no-outline" (click)="saveSegments()" icon="pi pi-save" size="small"
                       text="true"></p-button>
         </div>
     </div>
-    <div *ngIf="segmentsInfo.data.length === 0" class="annotation-empty-text">Veuillez cliquer
+    <div *ngIf="segmentsInfo.subLocalisations.length === 0" class="annotation-empty-text">Veuillez cliquer
         sur “Ajouter un segment” pour
         débuter la segmentation du média.
     </div>
-    <p-toast position="bottom-right" key="br" />
+    <p-toast position="bottom-right" key="br"/>
     <div class="card flex justify-content-center">
         <p-confirmDialog #cd>
             <ng-template pTemplate="headless" let-message>
@@ -46,8 +46,9 @@
         </p-confirmDialog>
     </div>
     <div class="segments" #annotationElement (scroll)="handleScroll(true)">
-        <div class="segment" *ngFor="let segment of segmentsInfo.data">
-            <amalia-segment [segment]="segment" [displayMode]="segment.displayMode"
+        <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations">
+            <amalia-segment [segment]="segment" [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
+                            [fps]="fps"
                             (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"/>
         </div>
     </div>

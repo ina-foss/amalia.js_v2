@@ -1,24 +1,17 @@
-import {Component, ElementRef, OnInit, PipeTransform, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {PluginBase} from "../../core/plugin/plugin-base";
 import {PluginConfigData} from "../../core/config/model/plugin-config-data";
 import {AnnotationConfig} from "../../core/config/model/annotation-config";
 import {MediaPlayerService} from "../../service/media-player-service";
 import {DEFAULT} from "../../core/constant/default";
-import {AnnotationInfo, AnnotationLocalisation} from "../../core/metadata/model/annotation-localisation";
+import {AnnotationLocalisation} from "../../core/metadata/model/annotation-localisation";
 import {AutoBind} from "../../core/decorator/auto-bind.decorator";
 import {PlayerEventType} from "../../core/constant/event-type";
 import {Utils} from "../../core/utils/utils";
 import * as _ from "lodash";
-import {FormatUtils} from "../../core/utils/format-utils";
 import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
-
-export class TcFormatPipe implements PipeTransform {
-    transform(tc: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = null, defaultFps: number = 25) {
-        return FormatUtils.formatTime(tc, format, defaultFps);
-    }
-}
 
 @Component({
     selector: 'amalia-annotation',
@@ -31,12 +24,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public static SELECTOR_SEGMENT = 'segment';
     public static SELECTOR_SELECTED = 'selected';
 
-    public segmentsInfo: AnnotationInfo = {
-        creationUser: "", idMedia: "",
-        id: new Date() as unknown as string,
-        label: 'Annotation',
-        data: new Array<AnnotationLocalisation>()
-    };
+    public segmentsInfo: AnnotationLocalisation = {data: {}, tc: 0, tcIn: 0, tcOut: 0, subLocalisations: []};
     public tcDisplayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's';
     public fps = DEFAULT.FPS;
     public autoScroll = true;
@@ -85,12 +73,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 const annotationLocalisations = metadataManager
                         .getAnnotationLocalisations(metadataId, this.pluginConfiguration.data.parseLevel, this.pluginConfiguration.data.withSubLocalisations);
                 if (annotationLocalisations && annotationLocalisations.length > 0) {
-                    this.segmentsInfo.data = this.segmentsInfo.data.concat(annotationLocalisations);
+                    this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations);
                 }
             });
             // Add sort by tcin
-            if (this.segmentsInfo.data) {
-                this.segmentsInfo.data = _.sortBy(this.segmentsInfo.data, ['tcIn']);
+            if (this.segmentsInfo.subLocalisations) {
+                this.segmentsInfo.subLocalisations = _.sortBy(this.segmentsInfo.subLocalisations, ['tcIn']);
             }
         }
     }
@@ -239,49 +227,41 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public initializeNewSegment() {
         this.unselectAllSegments();
         const tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        const formattedTcIn = FormatUtils.formatTime(tcIn, this.tcDisplayFormat, this.fps);
         const url = this.mediaPlayerElement.getThumbnailUrl(tcIn, false);
-
+        const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         const segmentToBeAdded: AnnotationLocalisation = {
             label: 'Segment sans titre',
-            displayMode: "readonly", selected: true,
-            tc: FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps),
-            tcIn: formattedTcIn, tcOut: formattedTcIn
+            data: {
+                displayMode: "readonly",
+                selected: true,
+                tcMax: maxDuration,
+            },
+            tc: 0,
+            tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset: this.tcOffset
         };
         this.thumbnailService.getThumbnail(url, tcIn).then((blob) => {
             if (typeof (blob) !== 'undefined') {
                 segmentToBeAdded.thumb = blob;
             }
         });
-        this.segmentsInfo.data.push(segmentToBeAdded);
+        this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
     }
 
     public editSegment(segment) {
         if (segment) {
-            this.segmentBeforeEdition = {
-                label: '',
-                thumb: '',
-                tcIn: '',
-                tcOut: '',
-                tc: '',
-                categories: new Array<string>(),
-                description: '',
-                keywords: new Array<string>(),
-                selected: false,
-                displayMode: "readonly"
-            };
-            Object.assign(this.segmentBeforeEdition, segment);
-            segment.displayMode = "edit";
+            this.segmentBeforeEdition = structuredClone(segment);
+            segment.data.displayMode = "edit";
+            console.log('segment', segment);
         }
     }
 
     public unselectAllSegments() {
-        this.segmentsInfo?.data?.forEach(segment => segment.selected = false);
+        this.segmentsInfo?.subLocalisations?.forEach(segment => segment.data.selected = false);
     }
 
     public saveSegment(segment) {
-        segment.selected = true;
-        segment.displayMode = "readonly";
+        segment.data.selected = true;
+        segment.data.displayMode = "readonly";
         //code to save the segmentsIfo into the persistence unit
     }
 
@@ -289,7 +269,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (this.segmentBeforeEdition) {
             Object.assign(segment, this.segmentBeforeEdition)
         }
-        segment.displayMode = "readonly";
+        segment.data.displayMode = "readonly";
     }
 
     public removeSegment(segment) {
@@ -300,7 +280,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             rejectButtonStyleClass: "p-button-text",
             accept: () => {
                 this.unselectAllSegments();
-                this.segmentsInfo.data = this.segmentsInfo.data.filter(seg => seg !== segment);
+                this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.filter(seg => seg !== segment);
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Confirmation',
@@ -338,26 +318,18 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     private cloneSegment(sourceSegment: AnnotationLocalisation) {
-        const newSegmentCopy: AnnotationLocalisation = {
-            displayMode: "readonly",
-            selected: true,
-            tc: "",
-            tcIn: "",
-            tcOut: ""
-        };
-        const indexOfSourceElement = this.segmentsInfo.data.indexOf(sourceSegment);
-        Object.assign(newSegmentCopy, sourceSegment, {
-            displayMode: "readonly",
-            label: 'Copie de ' + sourceSegment.label,
-            selected: true
-        });
-        sourceSegment.selected = false;
-        this.segmentsInfo.data.splice(indexOfSourceElement + 1, 0, newSegmentCopy);
+        const indexOfSourceElement = this.segmentsInfo.subLocalisations.indexOf(sourceSegment);
+        const newSegmentCopy = structuredClone(sourceSegment);
+        newSegmentCopy.data.displayMode = "readonly";
+        newSegmentCopy.data.selected = true;
+        newSegmentCopy.label = 'Copie de ' + sourceSegment.label;
+        sourceSegment.data.selected = false;
+        this.segmentsInfo.subLocalisations.splice(indexOfSourceElement + 1, 0, newSegmentCopy);
     }
 
     public selectSegment(event: AnnotationLocalisation) {
         this.unselectAllSegments();
-        event.selected = true;
+        event.data.selected = true;
     }
 
     /**
@@ -392,31 +364,37 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
     }
 
+    private setTc(segment) {
+        segment.tc = segment.tcOut - segment.tcIn;
+    }
+
     public setTcIn() {
-        const selectedSegment = this.segmentsInfo.data.find(seg => seg.selected);
+        const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
         if (selectedSegment) {
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-            const segmentTcOut = FormatUtils.convertTcToSeconds(selectedSegment.tcOut)
+            const segmentTcOut = selectedSegment.tcOut;
             if (mediaTc > segmentTcOut) {
                 this.displaySnackBar('le TC IN doit être inférieur au TC OUT et compris entre le TC IN et le TC OUT de l\'intégral');
             } else {
-                selectedSegment.tcIn = FormatUtils.formatTime(mediaTc, this.tcDisplayFormat, this.fps);
-                const tcOut = FormatUtils.convertTcToSeconds(selectedSegment.tcOut);
-                selectedSegment.tc = FormatUtils.formatTime(tcOut - mediaTc, this.tcDisplayFormat, this.fps);
+                //set tcIn
+                selectedSegment.tcIn = mediaTc;
+                //set tc
+                this.setTc(selectedSegment);
             }
         }
     }
 
     public setTcOut() {
-        const selectedSegment = this.segmentsInfo.data.find(seg => seg.selected);
+        const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
         if (selectedSegment) {
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-            const segmentTcIn = FormatUtils.convertTcToSeconds(selectedSegment.tcIn)
-            if (mediaTc < segmentTcIn) {
+            if (mediaTc < selectedSegment.tcIn) {
                 this.displaySnackBar('Le TC OUT doit être supérieur au TC IN et compris entre le TC IN et le TC OUT du fichier intégral');
             } else {
-                selectedSegment.tcOut = FormatUtils.formatTime(mediaTc, this.tcDisplayFormat, this.fps);
-                selectedSegment.tc = FormatUtils.formatTime(mediaTc - segmentTcIn, this.tcDisplayFormat, this.fps);
+                //set tcOut
+                selectedSegment.tcOut = mediaTc;
+                //set tc
+                this.setTc(selectedSegment);
             }
         }
 
@@ -428,18 +406,18 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public saveSegments() {
-        this.segmentsInfo.idMedia = '';
-        this.segmentsInfo.creationUser = '';
-        this.segmentsInfo.lastModificationUser = '';
+        this.segmentsInfo.data.itemBusinessIdentifier = '';
+        this.segmentsInfo.data.creationUser = '';
+        this.segmentsInfo.data.lastModificationUser = '';
     }
 
     public displaySnackBar(msgContent) {
-        this.messageService.add({severity: 'error', summary: 'Error', detail: msgContent});
+        this.messageService.add({severity: 'error', summary: 'Error', detail: msgContent, key: 'br'});
     }
 
     public updatethumbnail(segment) {
         this.unselectAllSegments();
-        segment.selected = true;
+        segment.data.selected = true;
         const tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         const url = this.mediaPlayerElement.getThumbnailUrl(tcIn, false);
         this.thumbnailService.getThumbnail(url, tcIn).then((blob) => {
