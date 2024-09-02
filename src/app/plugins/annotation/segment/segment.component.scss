@@ -1,0 +1,278 @@
+@import '../../../core/styles/variables';
+@import '../../../core/styles/typo';
+
+:host ::ng-deep {
+
+  .segment-selected {
+    .p-card {
+      border: 1px solid $colors-primitive-primary-color;
+    }
+  }
+  .progress-bar {
+    height: 4px;
+    background-color: #007ad9;
+    top: 0;
+    position: absolute;
+  }
+
+  .editable-segment {
+
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
+
+    .p-card {
+      border-radius: 6px;
+      /* card/shadow */
+      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    }
+
+    .p-card-body {
+      padding: $spacings-border-radius-radius-md 17.5px;
+      row-gap: 0;
+    }
+
+    .p-card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .p-card-footer {
+      display: flex;
+      height: 63px;
+      padding: $spacings-border-radius-radius-md 0;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 7px;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+
+    .segment-title {
+      input {
+        width: 100%;
+      }
+    }
+
+    .segment-tc {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+
+    .segment-details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $spacings-space-space-sm;
+
+      .p-chips, .p-chips-multiple-container, textarea {
+        width: 100%;
+      }
+
+      .segment-categories {
+        width: 100%;
+      }
+
+      .segment-description {
+        width: 100%;
+      }
+
+      .segment-keywords {
+        width: 100%;
+      }
+
+    }
+
+    .new-segment-actions {
+    }
+
+    .p-float-label input:focus ~ label,
+    .p-float-label input.p-filled ~ label,
+    .p-float-label textarea:focus ~ label,
+    .p-float-label textarea.p-filled ~ label,
+    .p-float-label .p-inputwrapper-focus ~ label,
+    .p-float-label .p-inputwrapper-filled ~ label {
+      display: none;
+    }
+  }
+
+  .readonly-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: 100%;
+
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
+
+    p-card {
+      width: 100%
+    }
+
+    .p-card {
+      border-radius: 6px;
+      /* card/shadow */
+      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+      padding: $spacings-border-radius-radius-md 17.5px;
+    }
+
+    .p-card-header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .segment-title {
+      overflow: hidden;
+      color: $panel-content-color;
+      text-overflow: ellipsis;
+      font-family: $amalia-font-family-lato;
+      font-size: 21px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: $spacings-space-space-sm;
+
+      .p-button {
+        background: white;
+        color: $colors-primitive-primary-color;
+        border-style: none;
+      }
+
+      .p-button-danger {
+        color: red;
+      }
+    }
+
+    .p-divider.p-divider-horizontal {
+      margin: 0;
+    }
+
+    .p-card-body {
+      padding: 0;
+    }
+
+    .p-card-content {
+      gap: $spacings-space-space-sm;
+    }
+
+    .readonly-segment-info {
+      display: flex;
+      flex-direction: row;
+      gap: $spacings-space-space-sm;
+
+      .readonly-segment-thumbnail-block {
+        position: relative;
+        width: 165px;
+        flex-shrink: 0;
+
+        .readonly-segment-thumbnail {
+          position: absolute;
+          flex-shrink: 0;
+          background: url("/assets/images/placeholder.png") lightgray 0 0 / 100% 100% no-repeat;
+          width: 165px;
+          height: 111px;
+
+          img {
+            width: 165px;
+          }
+        }
+
+        .readonly-segment-thumbnail-no-background {
+          position: absolute;
+          flex-shrink: 0;
+          width: 165px;
+          height: 111px;
+
+          img {
+            width: 165px;
+          }
+        }
+
+        .p-button {
+          float: right;
+        }
+      }
+
+      .readonly-segment-info-content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        .readonly-segment-tc {
+          display: flex;
+          flex-direction: row;
+
+          .readonly-segment-tc-item {
+            display: flex;
+            width: 143px;
+            height: 46px;
+            flex-direction: column;
+            justify-content: center;
+
+            color: $global-textColor;
+
+            /* card/content/typography */
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 150%; /* 21px */
+          }
+        }
+
+        .readonly-segment-categories {
+          display: flex;
+          gap: $spacings-space-space-sm;
+          margin-bottom: $spacings-space-space-sm;
+
+          p-chip {
+            margin-top: $spacings-space-space-sm;
+          }
+        }
+
+        .readonly-segment-keywords {
+          display: flex;
+          gap: $spacings-space-space-sm;
+          margin-bottom: $spacings-space-space-sm;
+        }
+      }
+    }
+
+    .readonly-segment-description-empty {
+      margin-bottom: $spacings-space-space-sm;
+    }
+
+    .readonly-segment-description {
+      width: 100%;
+
+      textarea {
+        width: 100%;
+        overflow: hidden;
+        color: $global-textColor;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border: none;
+        /* text-base/regular/lineheight-150 */
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 150%; /* 21px */
+      }
+    }
+  }
+
+
+}
+

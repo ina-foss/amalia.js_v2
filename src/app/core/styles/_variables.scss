@@ -1,3 +1,11 @@
+// Spacings
+$spacings-space-space-sm: var(--spacings-space-space-sm, 6px);
+$spacings-border-radius-radius-md: var(--spacings-border-radius-radius-md, 8px);
+$colors-primitive-primary-color: var(--colors-primitive-primary-color, #0B7698);
+$global-textColor: var(--global-textColor, #4B5563);
+$panel-content-color: var(--panel-content-color,#4B5563);
+$Light-grey-3: var(--Light-grey-3, #F7F7F7);
+
 // Colors
 $amalia-primary-color: var(--amalia-primary-color, #0086B1);
 $amalia-secondary-color: var(--amalia-secondary-color, #34495E);
@@ -97,8 +105,6 @@ $amalia-plugin-timeline-header-bg-color: var(--amalia-plugin-timeline-header-bg-
 $amalia-plugin-timeline-header-font-color: var(--amalia-plugin-timeline-header-font-color, #222222);
 $amalia-plugin-timeline-segment-bg-color: var(--amalia-plugin-timeline-segment-bg-color, #F3F3F3);
 $amalia-plugin-timeline-text-founded-color: var(--amalia-plugin-timeline-text-founded-color, #D8D8D8);
-
-
 
 
 /**

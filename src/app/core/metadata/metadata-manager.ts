@@ -10,6 +10,7 @@ import {TranscriptionLocalisation} from './model/transcription-localisation';
 import {Histogram} from './model/histogram';
 import {TimelineLocalisation} from './model/timeline-localisation';
 import * as _ from 'lodash';
+import {AnnotationLocalisation} from "./model/annotation-localisation";
 
 /**
  * In charge to handle metadata
@@ -112,7 +113,23 @@ export class MetadataManager {
         }
         return null;
     }
-
+    /**
+     * Return annotation metadata
+     * @param metadataId metadata
+     * @param parseLevel parse level default 1
+     * @param withSubLocalisations sub localisation default false
+     */
+    public getAnnotationLocalisations(metadataId: string, parseLevel: number = 1, withSubLocalisations = false): Array<AnnotationLocalisation> | null {
+        try {
+            const metadata = this.getMetadata(metadataId);
+            if (metadata) {
+                return MetadataUtils.getAnnotationLocalisations(metadata, parseLevel, withSubLocalisations);
+            }
+        } catch (e) {
+            this.logger.warn(`Error to find metadata : ${metadataId}`);
+        }
+        return null;
+    }
     /**
      * Get timeline metadata block
      * @param metadataId metadata id

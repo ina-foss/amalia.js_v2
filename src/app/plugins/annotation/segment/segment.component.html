@@ -1,0 +1,136 @@
+<form #segmentForm="ngForm">
+    <div *ngIf="displayMode()!=='readonly'">
+        <p-toast position="bottom-right" key="segment"/>
+        <div class="editable-segment">
+            <p-card [class]="{'segment-selected':segment.data.selected}">
+                <div class="segment-title">
+                    <p-floatLabel>
+                        <input pInputText id="title" name="title" [(ngModel)]="segment.label"/>
+                        <label for="title">Titre du segment</label>
+                    </p-floatLabel>
+                </div>
+                <div class="segment-tc gap-2">
+                    <div class="flex flex-column gap-2">
+                        <label for="tcIn">TC Début</label>
+                        <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted"
+                        />
+                    </div>
+                    <div class="flex flex-column gap-2">
+                        <label for="tcOut">TC Fin</label>
+                        <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted"
+                        />
+                    </div>
+                    <div class="flex flex-column gap-2">
+                        <label for="tc">Durée</label>
+                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted"
+                        />
+                    </div>
+                </div>
+                <div class="segment-details">
+                    <div class="segment-categories">
+                        <p-floatLabel>
+                            <p-chips id="categories" name="categories" [(ngModel)]="categories"/>
+                            <label for="categories">Catégories</label>
+                        </p-floatLabel>
+                    </div>
+                    <div class="segment-description">
+                        <p-floatLabel>
+                             <textarea id="description" name="description" [(ngModel)]="segment.description" rows="5"
+                                       cols="30"
+                                       pInputTextarea
+                                       [autoResize]="true"></textarea>
+                            <label for="description">Description</label>
+                        </p-floatLabel>
+                    </div>
+                    <div class="segment-keywords">
+                        <p-floatLabel>
+                            <p-chips id="keywords" name="keywords" [(ngModel)]="keywords"/>
+                            <label for="keywords">Mots-clés</label>
+                        </p-floatLabel>
+                    </div>
+                </div>
+                <ng-template pTemplate="footer">
+                    <p-button id="btnannuler" class="no-highlight" label="Annuler" icon="pi pi-times-circle"
+                              (click)="cancelNewSegmentCreation()"
+                              size="small"/>
+                    <p-button class="highlight" id="btnvalider" label="Valider" icon="pi pi-check"
+                              (click)="validateNewSegment()" size="small"
+                              [disabled]="segmentForm.touched && segmentForm.invalid"/>
+                </ng-template>
+            </p-card>
+        </div>
+    </div>
+    <div *ngIf="displayMode()==='readonly'">
+        <div class="readonly-segment">
+            <p-card [class]="{'segment-selected':segment.data.selected}">
+                <ng-template pTemplate="header">
+                    <div class="segment-title">
+                        {{ segment.label }}
+                    </div>
+                    <div class="header-buttons">
+                        <p-button id="btnedit" icon="pi pi-pencil"
+                                  (click)="editSegment()" [text]="true" severity="secondary" tooltip="Editer"/>
+                        <p-button id="btnclone" icon="pi pi-clone"
+                                  (click)="cloneSegment()" [text]="true" severity="secondary"
+                                  tooltip="Dupliquer un segment"/>
+                        <p-button id="btnremove" icon="pi pi-trash"
+                                  (click)="removeSegment()" [text]="true" severity="danger" tooltip="Supprimer"/>
+                    </div>
+                </ng-template>
+                <p-divider/>
+                <div>
+                    <div class="readonly-segment-info">
+                        <div class="readonly-segment-thumbnail-block">
+                            <div [ngClass]="{'readonly-segment-thumbnail': !segment.thumb, 'readonly-segment-thumbnail-no-background':segment.thumb}">
+                                <img class="thumbnail" alt="thumbnail"
+                                     [src]="segment.thumb"/></div>
+                            <p-button icon="pi pi-camera" (click)="updateThumbnail()"
+                                      tooltip="Sélectionner une imagette" rounded="true" outlined="true"
+                                      size="small"
+                                      severity="secondary"/>
+                        </div>
+                        <div class="readonly-segment-info-content">
+                            <div class="readonly-segment-tc">
+                                <div class="readonly-segment-tc-item">
+                                    Début: {{ segment.tcIn | tcFormat:tcDisplayFormat }}
+                                </div>
+                                <div class="readonly-segment-tc-item">
+                                    Fin: {{ segment.tcOut | tcFormat:tcDisplayFormat }}
+                                </div>
+                                <div class="readonly-segment-tc-item">
+                                    Durée: {{ segment.tc |tcFormat:tcDisplayFormat }}
+                                </div>
+                            </div>
+                            <p-divider/>
+                            <div class="readonly-segment-categories">
+                                <ng-container *ngIf="categories().length > 0">
+                                    <p-chip *ngFor="let category of categories()" [label]="category"/>
+                                </ng-container>
+                                <ng-container *ngIf="categories().length === 0">
+                                    Catégories: aucune
+                                </ng-container>
+                            </div>
+                            <div class="readonly-segment-keywords">
+                                <ng-container *ngIf="keywords().length > 0">
+                                    <p-chip *ngFor="let keyword of keywords()" [label]="keyword"/>
+                                </ng-container>
+                                <ng-container *ngIf="keywords().length === 0">
+                                    Mots-clés: aucun
+                                </ng-container>
+                            </div>
+                            <ng-container
+                                    *ngIf="!segment.description || segment.description.length === 0 || segment.description.trim().length === 0">
+                                <div class="readonly-segment-description-empty">Description: aucune</div>
+                            </ng-container>
+                        </div>
+
+                    </div>
+                    <div *ngIf="segment.description && segment.description.length !== 0 && segment.description.trim().length !== 0"
+                         class="readonly-segment-description">
+                        {{ segment.description }}
+                    </div>
+                </div>
+            </p-card>
+        </div>
+    </div>
+</form>

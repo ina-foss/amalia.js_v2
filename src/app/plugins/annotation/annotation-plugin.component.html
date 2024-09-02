@@ -1,0 +1,56 @@
+<div class="annotation-content">
+    <div class="header">
+        <div>
+            <p-button class="highlight" label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()"
+                      size="small"></p-button>
+            <ng-container *ngIf="segmentsInfo.subLocalisations.length !== 0">
+                <p-button class="no-highlight" label="Début" (click)="setTcIn()" icon="pi pi-clock"
+                          size="small"></p-button>
+                <p-button class="no-highlight" label="Fin" (click)="setTcOut()" icon="pi pi-clock"
+                          size="small"></p-button>
+            </ng-container>
+        </div>
+        <div *ngIf="segmentsInfo.subLocalisations.length !== 0">
+            <p-button class="no-highlight no-outline" (click)="downloadSegments()" icon="pi pi-download" size="small"
+                      text="true"></p-button>
+            <p-button class="no-highlight no-outline" (click)="saveSegments()" icon="pi pi-save" size="small"
+                      text="true"></p-button>
+        </div>
+    </div>
+    <div *ngIf="segmentsInfo.subLocalisations.length === 0" class="annotation-empty-text">Veuillez cliquer
+        sur “Ajouter un segment” pour
+        débuter la segmentation du média.
+    </div>
+    <p-toast position="bottom-right" key="br"/>
+    <div class="card flex justify-content-center">
+        <p-confirmDialog #cd>
+            <ng-template pTemplate="headless" let-message>
+                <div class="flex flex-column align-items-center p-1 surface-overlay border-round">
+                    <span class="font-bold text-2xl block">{{ message.header }}</span>
+                    <p class="mb-0">{{ message.message }}</p>
+                    <div class="flex align-items-center gap-2 mt-2">
+                        <p-button
+                                [label]="message.rejectLabel"
+                                (click)="cd.reject()"
+                                class="p-button-outlined no-highlight" size="small" icon="pi pi-times-circle">
+                        </p-button>
+                        <p-button
+                                [label]="message.acceptLabel"
+                                (click)="cd.accept()"
+                                class="highlight" size="small" icon="pi pi-check"
+                        >
+                        </p-button>
+                    </div>
+                </div>
+            </ng-template>
+        </p-confirmDialog>
+    </div>
+    <div class="segments scrollable-content" #annotationElement (scroll)="handleScroll(true)">
+        <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations">
+            <amalia-segment [segment]="segment" [tcIn]="segment.tcIn" [tcOut]="segment.tcOut"
+                            [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
+                            [fps]="fps"
+                            (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"/>
+        </div>
+    </div>
+</div>

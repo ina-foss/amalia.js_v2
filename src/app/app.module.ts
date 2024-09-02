@@ -18,6 +18,22 @@ import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.compon
 import {TooltipModule} from 'ng2-tooltip-directive-major-angular-updates';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.directive";
+import {AnnotationPluginComponent} from './plugins/annotation/annotation-plugin.component';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {FloatLabelModule} from 'primeng/floatlabel';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {ChipsModule} from 'primeng/chips';
+import {SegmentComponent} from './plugins/annotation/segment/segment.component';
+import {AvatarModule} from 'primeng/avatar';
+import {CardModule} from 'primeng/card';
+import {DividerModule} from 'primeng/divider';
+import {ChipModule} from "primeng/chip";
+import {ToastModule} from 'primeng/toast';
+import {FileService} from "./service/file.service";
+import {MessageService, ConfirmationService} from "primeng/api";
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @NgModule({
     imports: [
@@ -25,7 +41,19 @@ import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.dir
         BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
-        TooltipModule
+        TooltipModule,
+        ButtonModule,
+        InputTextModule,
+        FloatLabelModule,
+        InputTextareaModule,
+        ChipsModule,
+        ChipModule,
+        CardModule,
+        AvatarModule,
+        DividerModule,
+        ToastModule,
+        ConfirmDialogModule,
+        ProgressBarModule
     ],
     declarations: [
         AmaliaComponent,
@@ -38,11 +66,16 @@ import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.dir
         StoryboardPluginComponent,
         HistogramPluginComponent,
         TimelinePluginComponent,
-        SortablejsDirective
+        SortablejsDirective,
+        AnnotationPluginComponent,
+        SegmentComponent
     ],
     providers: [
         MediaPlayerService,
-        ThumbnailService
+        ThumbnailService,
+        FileService,
+        MessageService,
+        ConfirmationService
     ],
 
     bootstrap: [],
@@ -83,5 +116,7 @@ export class AppModule {
         const timelinePluginComponent = createCustomElement(TimelinePluginComponent, {injector: this.injector});
         customElements.define('amalia-timeline', timelinePluginComponent);
 
+        const annotationPluginComponent = createCustomElement(AnnotationPluginComponent, {injector: this.injector});
+        customElements.define('amalia-annotation', annotationPluginComponent);
     }
 }
