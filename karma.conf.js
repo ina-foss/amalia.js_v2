@@ -19,29 +19,24 @@ module.exports = function (config) {
         client: {
             clearContext: true // leave Jasmine Spec Runner output visible in browser
         },
-        coverageIstanbulReporter: {
-            dir: require('path').join(__dirname, './coverage/amalia'),
-            reports: ['html', 'lcovonly', 'text-summary'],
-            fixWebpackSourcePaths: true
-        },
-        reporters: ['progress', 'junit', 'html', 'kjhtml', 'verbose'],
+        coverageReporter: {
+            dir: require('path').join(__dirname, 'coverage'), reports: ['html', 'lcovonly'],
+            subdir: '.',
+            reporters: [
+              { type: 'html' },
+              { type: 'lcovonly' },
+              { type: 'text-summary' }
+            ],
+          },
+        reporters: ['progress', 'coverage','junit','kjhtml'],
         junitReporter: {
-            outputDir: '.tests/surefire-reports/'
-        },
-        htmlReporter: {
-            outputFile: '.tests/units.html',
-            // Optional
-            pageTitle: 'Unit Tests Amalia',
-            groupSuites: true,
-            useCompactStyle: true,
-            useLegacyStyle: true,
-            showOnlyFailed: false
+            outputDir: 'target/surefire-reports/'
         },
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['ChromeHeadlessNoSandbox', 'Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
+        browsers: [ 'Chrome', 'ChromeHeadlessCI'],
         // you can define custom flags
         customLaunchers: {
             ChromeHeadlessNoSandbox: {

@@ -41,7 +41,8 @@
                             {
                                 "input": "node_modules/@ungap/custom-elements/es.js"
                             }
-                        ]
+                        ],
+                        "sourceMap": false
                     },
                     "configurations": {
                         "production": {
@@ -71,6 +72,9 @@
                                     "maximumError": "300kb"
                                 }
                             ]
+                        },
+                        "development": {
+                            "sourceMap": true
                         }
                     }
                 },
@@ -82,6 +86,9 @@
                     "configurations": {
                         "production": {
                             "buildTarget": "amalia:build:production"
+                        },
+                        "development": {
+                            "buildTarget": "amalia:build:development"
                         }
                     }
                 },
