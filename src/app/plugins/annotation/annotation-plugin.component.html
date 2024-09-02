@@ -30,24 +30,25 @@
                     <p class="mb-0">{{ message.message }}</p>
                     <div class="flex align-items-center gap-2 mt-2">
                         <p-button
-                                label="Supprimer"
+                                [label]="message.rejectLabel"
+                                (click)="cd.reject()"
+                                class="p-button-outlined no-highlight" size="small" icon="pi pi-times-circle">
+                        </p-button>
+                        <p-button
+                                [label]="message.acceptLabel"
                                 (click)="cd.accept()"
                                 class="highlight" size="small" icon="pi pi-check"
                         >
-                        </p-button>
-                        <p-button
-                                label="Annuler"
-                                (click)="cd.reject()"
-                                class="p-button-outlined no-highlight" size="small" icon="pi pi-times-circle">
                         </p-button>
                     </div>
                 </div>
             </ng-template>
         </p-confirmDialog>
     </div>
-    <div class="segments" #annotationElement (scroll)="handleScroll(true)">
+    <div class="segments scrollable-content" #annotationElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations">
-            <amalia-segment [segment]="segment" [tcIn]="segment.tcIn" [tcOut]="segment.tcOut" [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
+            <amalia-segment [segment]="segment" [tcIn]="segment.tcIn" [tcOut]="segment.tcOut"
+                            [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
                             [fps]="fps"
                             (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"/>
         </div>

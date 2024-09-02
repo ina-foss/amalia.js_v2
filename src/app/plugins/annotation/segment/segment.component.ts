@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     Component,
     computed,
     effect,
@@ -28,8 +27,6 @@ export class SegmentComponent {
     @Input({required: true})
     public segment: AnnotationLocalisation;
     @Input()
-    public displayMode: "new" | "edit" | "readonly" = "readonly";
-    @Input()
     public tcDisplayFormat: 's' | 'f' = 'f';
     @Input()
     public fps = DEFAULT.FPS;
@@ -37,6 +34,7 @@ export class SegmentComponent {
     //InputSignals
     public tcIn = input<number>(0);
     public tcOut = input<number>(0);
+    public displayMode = input<"new" | "edit" | "readonly">("readonly");
 
     //Outputs
     @Output()
@@ -71,6 +69,16 @@ export class SegmentComponent {
         effect(() => {
             this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
             this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
+        });
+        effect(() => {
+            if (this.displayMode() !== "readonly") {
+                this.activateEdition();
+            } else {
+                this.formChangesSubscriptions.forEach(subscription => {
+                    subscription.unsubscribe();
+                });
+                this.formChangesSubscriptions = [];
+            }
         });
     }
 
@@ -180,12 +188,11 @@ export class SegmentComponent {
 
     }
 
-    public editSegment() {
+    private activateEdition() {
         this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
         this.tcInFormatted = FormatUtils.formatTime(this.segment.tcIn, this.tcDisplayFormat, this.fps);
         this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
-        this.displayMode = "edit";
-        this.actionEmitter.emit({type: "edit", payload: this.segment});
+
         setTimeout(() => {
             //tcout edition
             const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
@@ -249,16 +256,14 @@ export class SegmentComponent {
                 this.formChangesSubscriptions.push(keywordsSubscription);
             }
         }, 400);
+    }
 
+    public editSegment() {
+        this.actionEmitter.emit({type: "edit", payload: this.segment});
     }
 
     public cancelNewSegmentCreation() {
         this.actionEmitter.emit({type: "cancel", payload: this.segment});
-        this.displayMode = "readonly";
-        this.formChangesSubscriptions.forEach(subscription => {
-            subscription.unsubscribe();
-        });
-        this.formChangesSubscriptions = [];
     }
 
     public cloneSegment() {

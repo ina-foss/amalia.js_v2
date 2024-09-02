@@ -249,9 +249,34 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     public editSegment(segment) {
         if (segment) {
-            this.segmentBeforeEdition = structuredClone(segment);
-            segment.data.displayMode = "edit";
-            console.log('segment', segment);
+            const editing = this.segmentsInfo?.subLocalisations?.find((segment => segment.data.displayMode !== "readonly"));
+            if (editing && editing !== segment) {
+                this.confirmationService.confirm({
+                    message: 'Etes-vous sûr de vouloir annuler les modifications du segment [' + editing.label + ']',
+                    header: 'Confirmation',
+                    icon: 'pi pi-exclamation-triangle',
+                    rejectButtonStyleClass: "p-button-text",
+                    rejectLabel: "Non",
+                    acceptLabel: "Oui",
+                    accept: () => {
+                        this.cancelNewSegmentEdition(editing);
+                        this.segmentBeforeEdition = structuredClone(segment);
+                        segment.data.displayMode = "edit";
+                        editing.data.selected = false;
+                        segment.data.selected = true;
+
+                    },
+                    reject: () => {
+                        editing.data.selected = true;
+                        segment.data.selected = false;
+                    }
+                });
+            } else {
+                this.segmentBeforeEdition = structuredClone(segment);
+                this.unselectAllSegments();
+                segment.data.selected = true;
+                segment.data.displayMode = "edit";
+            }
         }
     }
 
@@ -278,6 +303,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             rejectButtonStyleClass: "p-button-text",
+            rejectLabel: "Annuler",
+            acceptLabel: "Supprimer",
             accept: () => {
                 this.unselectAllSegments();
                 this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.filter(seg => seg !== segment);

@@ -1,5 +1,5 @@
 <form #segmentForm="ngForm">
-    <div *ngIf="displayMode!=='readonly'">
+    <div *ngIf="displayMode()!=='readonly'">
         <p-toast position="bottom-right" key="segment"/>
         <div class="editable-segment">
             <p-card [class]="{'segment-selected':segment.data.selected}">
@@ -60,7 +60,7 @@
             </p-card>
         </div>
     </div>
-    <div *ngIf="displayMode==='readonly'">
+    <div *ngIf="displayMode()==='readonly'">
         <div class="readonly-segment">
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <ng-template pTemplate="header">
