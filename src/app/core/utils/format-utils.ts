@@ -76,8 +76,8 @@ export class FormatUtils {
         return time;
     }
 
-    public static convertFormattedTcToSeconds(tc: string, format: 's' | 'f' | 'seconds' = 'f', defaultFps: number = 25): number {
-        const timeFormatPattern = format === 'f' ? /^(?:(?:(?:([01]\d|2[0-3]):)([0-5]\d):)([0-5]\d:)(2[0-4]|[01]\d))$/ : /^(?:(?:([01]\d|2[0-3]):)([0-5]\d):)([0-5]\d)$/;
+    public static convertFormattedTcToSeconds(tc: string, format: 's' | 'f' = 'f', defaultFps: number = 25): number {
+        const timeFormatPattern = format === 'f' ? /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d:)(\d{2})$/ : /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
         let time = null;
         // regex patter to search on
         // return the matching date string

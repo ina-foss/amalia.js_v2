@@ -33,7 +33,7 @@ import {ToastModule} from 'primeng/toast';
 import {FileService} from "./service/file.service";
 import {MessageService, ConfirmationService} from "primeng/api";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @NgModule({
     imports: [
@@ -52,7 +52,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
         AvatarModule,
         DividerModule,
         ToastModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        ProgressBarModule
     ],
     declarations: [
         AmaliaComponent,

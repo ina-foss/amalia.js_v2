@@ -1,6 +1,6 @@
 <form #segmentForm="ngForm">
     <div *ngIf="displayMode!=='readonly'">
-        <p-toast position="bottom-right" key="br"/>
+        <p-toast position="bottom-right" key="segment"/>
         <div class="editable-segment">
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <div class="segment-title">
@@ -13,17 +13,17 @@
                     <div class="flex flex-column gap-2">
                         <label for="tcIn">TC Début</label>
                         <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted"
-                               />
+                        />
                     </div>
                     <div class="flex flex-column gap-2">
                         <label for="tcOut">TC Fin</label>
                         <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted"
-                               />
+                        />
                     </div>
                     <div class="flex flex-column gap-2">
                         <label for="tc">Durée</label>
                         <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted"
-                               />
+                        />
                     </div>
                 </div>
                 <div class="segment-details">
@@ -85,7 +85,8 @@
                                 <img class="thumbnail" alt="thumbnail"
                                      [src]="segment.thumb"/></div>
                             <p-button icon="pi pi-camera" (click)="updateThumbnail()"
-                                      tooltip="Sélectionner une imagette" rounded="true" outlined="true" size="small"
+                                      tooltip="Sélectionner une imagette" rounded="true" outlined="true"
+                                      size="small"
                                       severity="secondary"/>
                         </div>
                         <div class="readonly-segment-info-content">

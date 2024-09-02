@@ -2,6 +2,10 @@
 @import '../../core/styles/typo';
 
 :host ::ng-deep {
+  .annotation-content {
+    height: 100%;
+  }
+
   .header {
     display: flex;
     justify-content: space-between;

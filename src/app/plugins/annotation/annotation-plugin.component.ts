@@ -285,7 +285,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     severity: 'success',
                     summary: 'Confirmation',
                     detail: 'Le segment a bien été supprimé.', key: 'br',
-                    life: 3000
+                    life: 1500
                 });
             },
             reject: () => {
@@ -418,12 +418,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public updatethumbnail(segment) {
         this.unselectAllSegments();
         segment.data.selected = true;
-        const tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        const url = this.mediaPlayerElement.getThumbnailUrl(tcIn, false);
-        this.thumbnailService.getThumbnail(url, tcIn).then((blob) => {
-            if (typeof (blob) !== 'undefined') {
-                segment.thumb = blob;
-            }
-        });
+        segment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
+        segment.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
     }
+
 }

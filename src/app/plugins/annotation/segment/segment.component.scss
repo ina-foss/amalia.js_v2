@@ -8,7 +8,12 @@
       border: 1px solid $colors-primitive-primary-color;
     }
   }
-
+  .progress-bar {
+    height: 4px;
+    background-color: #007ad9;
+    top: 0;
+    position: absolute;
+  }
 
   .editable-segment {
 

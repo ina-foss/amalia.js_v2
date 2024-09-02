@@ -1,10 +1,21 @@
-import {Component, computed, EventEmitter, Input, Output, signal, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    computed,
+    effect,
+    EventEmitter,
+    input,
+    Input,
+    Output,
+    signal,
+    ViewChild
+} from '@angular/core';
 import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
 import {AbstractControl, NgForm, ValidatorFn} from "@angular/forms";
 import {debounceTime, Subscription} from "rxjs";
 import {FormatUtils} from "../../../core/utils/format-utils";
 import {DEFAULT} from "../../../core/constant/default";
-import {MessageService} from "primeng/api";
+import {MessageService, Message} from "primeng/api";
 
 
 @Component({
@@ -13,24 +24,36 @@ import {MessageService} from "primeng/api";
     styleUrl: './segment.component.scss',
 })
 export class SegmentComponent {
+    //Inputs
     @Input({required: true})
-    public segment!: AnnotationLocalisation;
+    public segment: AnnotationLocalisation;
     @Input()
     public displayMode: "new" | "edit" | "readonly" = "readonly";
-    @Output()
-    public actionEmitter: EventEmitter<AnnotationAction> = new EventEmitter<AnnotationAction>();
-    @ViewChild('segmentForm')
-    public segmentForm: NgForm;
     @Input()
-    public tcDisplayFormat: 's' | 'f' | 'seconds' = 'f';
+    public tcDisplayFormat: 's' | 'f' = 'f';
     @Input()
     public fps = DEFAULT.FPS;
-    public timeFormatPattern = this.tcDisplayFormat === 'f' ? /^(?:(?:(?:([01]\d|2[0-3]):)([0-5]\d):)([0-5]\d:)(2[0-4]|[01]\d))$/ : /^(?:(?:([01]\d|2[0-3]):)([0-5]\d):)([0-5]\d)$/;
-    private formChangesSubscriptions: Subscription[] = [];
 
+    //InputSignals
+    public tcIn = input<number>(0);
+    public tcOut = input<number>(0);
+
+    //Outputs
+    @Output()
+    public actionEmitter: EventEmitter<AnnotationAction> = new EventEmitter<AnnotationAction>();
+
+    //ViewChilds
+    @ViewChild('segmentForm')
+    public segmentForm: NgForm;
+
+    public timeFormatPattern = this.tcDisplayFormat === 'f' ? /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d:)(\d{2})$/ : /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+    private formChangesSubscriptions: Subscription[] = [];
     public tcInFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
     public tcOutFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
     public tcFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
+    public messageSubscription: Subscription;
+
+    //Signals
     public categories = signal([]);
     public keywords = signal([]);
     public property = computed(() => {
@@ -41,11 +64,14 @@ export class SegmentComponent {
         this.keywords().forEach(keyword => {
             prop.push({key: 'keywords', value: keyword});
         });
-        console.log('property', prop);
         return prop;
     })
 
     constructor(private messageService: MessageService) {
+        effect(() => {
+            this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
+            this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
+        });
     }
 
     private checkTcIn(control: AbstractControl) {
@@ -81,9 +107,7 @@ export class SegmentComponent {
     }
 
     tcValidators(forTC: "tcIn" | "tcOut" | "tc"): ValidatorFn {
-        this.timeFormatPattern = this.tcDisplayFormat === 'f' ? /^(?:(?:(?:([01]\d|2[0-3]):)([0-5]\d):)([0-5]\d:)(2[0-4]|[01]\d))$/ : /^(?:(?:([01]\d|2[0-3]):)([0-5]\d):)([0-5]\d)$/;
         return (control: AbstractControl): { [key: string]: any } | null => {
-            console.log('forTC', forTC, control.value);
             let result = null;
             if (this.timeFormatPattern.test(control.value)) {
                 let tcMax = this.segment.data.tcMax ? this.segment.data.tcMax : Number.MAX_VALUE;
@@ -113,14 +137,47 @@ export class SegmentComponent {
     }
 
     public setTc() {
-        this.segment.tc = this.segment.tcOut - this.segment.tcIn;
-        if (this.segment.tc < 0) {
-            this.segment.tc = 0;
+        //Pour éviter de modifier le tc lorsque les tcIn et out ne sont pas corrects (null ou négatifs)
+        if (this.segment.tcOut >= 0 && this.segment.tcIn >= 0) {
+            const tc = this.segment.tcOut - this.segment.tcIn;
+            //On ne modifie le tc du segment que lorsque la différence est positive
+            if (tc >= 0) {
+                this.segment.tc = tc;
+                this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
+            }
         }
     }
 
     public displaySnackBar(msgContent) {
-        this.messageService.add({severity: 'error', summary: 'Error', detail: msgContent, key: 'br'});
+        //life: 1500,
+        this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: msgContent,
+            key: 'segment',
+            data: {progress: 100} // initial progress value (life/ interval timeout)*2
+        });
+    }
+
+    private listenToNewMessageCreation() {
+        this.messageSubscription = this.messageService.messageObserver.subscribe({
+            next: (message: Message) => {
+                if (message.key === 'segment') {
+                    const interval = setInterval(() => {
+                        if (message.data?.progress) {
+                            message.data.progress -= 1;
+                            if (message.data.progress <= 0) {
+                                clearInterval(interval);
+                            }
+                        } else {
+                            clearInterval(interval);
+                        }
+                    }, 100);
+                }
+            }, error: err => {
+            }
+        });
+
     }
 
     public editSegment() {
@@ -134,13 +191,13 @@ export class SegmentComponent {
             const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
             if (tcOutFormControl) {
                 tcOutFormControl.addValidators(this.tcValidators("tcOut"));
-                const tcOutSubscription = tcOutFormControl.valueChanges.pipe(debounceTime(200)).subscribe(value => {
-                    console.log('this.segment.tcOut', this.segment.tcOut);
-                    console.log('tcOutFormatted', this.tcOutFormatted);
-                    console.log('tcOutFormattedValue', value);
-                    this.segment.tcOut = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
-                    this.setTc();
-                    this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
+                const tcOutSubscription = tcOutFormControl.valueChanges.pipe(debounceTime(400)).subscribe(value => {
+                    const tcOut = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
+                    if (tcOut >= 0) {
+                        this.segment.tcOut = tcOut;
+                        this.setTc();
+                    }
+
                 });
                 this.formChangesSubscriptions.push(tcOutSubscription);
             }
@@ -149,12 +206,12 @@ export class SegmentComponent {
             const tcInFormControl = this.segmentForm.form.controls['tcIn'];
             if (tcInFormControl) {
                 tcInFormControl.addValidators(this.tcValidators("tcIn"));
-                const tcInSubscription = tcInFormControl.valueChanges.pipe(debounceTime(200)).subscribe(value => {
-                    console.log('this.segment.tcIn', this.segment.tcIn);
-                    console.log('tcInFormattedValue', value);
-                    this.segment.tcIn = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
-                    this.setTc();
-                    this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
+                const tcInSubscription = tcInFormControl.valueChanges.pipe(debounceTime(400)).subscribe(value => {
+                    const tcIn = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
+                    if (tcIn >= 0) {
+                        this.segment.tcIn = tcIn;
+                        this.setTc();
+                    }
                 });
                 this.formChangesSubscriptions.push(tcInSubscription);
             }
@@ -163,13 +220,15 @@ export class SegmentComponent {
             const tcFormControl = this.segmentForm.form.controls['tc'];
             if (tcFormControl) {
                 tcFormControl.addValidators(this.tcValidators("tc"));
-                const tcSubscription = tcFormControl.valueChanges.pipe(debounceTime(200)).subscribe(value => {
-                    console.log('this.segment.tc', this.segment.tc);
-                    console.log('tcFormatted', this.tcFormatted);
-                    console.log('tcFormattedValue', value);
-                    this.segment.tc = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
-                    this.segment.tcOut = this.segment.tcIn + this.segment.tc;
-                    this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
+                const tcSubscription = tcFormControl.valueChanges.pipe(debounceTime(400)).subscribe(value => {
+                    const tc = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
+                    if (tc >= 0) {
+                        this.segment.tc = tc;
+                        if (this.segment.tcIn + this.segment.tc >= 0) {
+                            this.segment.tcOut = this.segment.tcIn + this.segment.tc;
+                            this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
+                        }
+                    }
                 });
                 this.formChangesSubscriptions.push(tcSubscription);
             }
@@ -213,4 +272,5 @@ export class SegmentComponent {
     public updateThumbnail() {
         this.actionEmitter.emit({type: "updatethumbnail", payload: this.segment});
     }
+
 }

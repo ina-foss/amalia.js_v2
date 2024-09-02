@@ -47,7 +47,7 @@
     </div>
     <div class="segments" #annotationElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations">
-            <amalia-segment [segment]="segment" [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
+            <amalia-segment [segment]="segment" [tcIn]="segment.tcIn" [tcOut]="segment.tcOut" [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
                             [fps]="fps"
                             (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"/>
         </div>
