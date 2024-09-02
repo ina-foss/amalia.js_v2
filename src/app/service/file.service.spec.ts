@@ -6,7 +6,9 @@ describe('FileService', () => {
   let service: FileService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+        imports:[], providers:[FileService]
+    });
     service = TestBed.inject(FileService);
   });
 
