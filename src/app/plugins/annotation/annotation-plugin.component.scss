@@ -1,9 +1,12 @@
 @import '../../core/styles/variables';
 @import '../../core/styles/typo';
+@import '../../../styles.scss';
 
-:host ::ng-deep {
+
+:host {
+
   .annotation-content {
-    height: 100%;
+    height: 95%;
   }
 
   .header {
@@ -73,7 +76,7 @@
   .segments {
     display: flex;
     flex-direction: column;
-    gap: $spacings-space-space-sm;
+    gap: $amalia-spacings-space-space-sm;
     height: 100%;
     align-items: center;
   }
