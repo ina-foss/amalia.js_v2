@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PluginBase} from "../../core/plugin/plugin-base";
 import {PluginConfigData} from "../../core/config/model/plugin-config-data";
 import {AnnotationConfig} from "../../core/config/model/annotation-config";
@@ -16,7 +16,8 @@ import {FileService} from "../../service/file.service";
 @Component({
     selector: 'amalia-annotation',
     templateUrl: './annotation-plugin.component.html',
-    styleUrls: ['./annotation-plugin.component.scss']
+    styleUrls: ['./annotation-plugin.component.scss'],
+    encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnInit {
     public static PLUGIN_NAME = 'ANNOTATION';
