@@ -246,6 +246,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             }
         });
         this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
+            type: 'init',
+            payload: segmentToBeAdded
+        });
     }
 
     public editSegment(segment) {
@@ -326,26 +330,34 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         switch (event.type) {
             case 'validate':
                 this.saveSegment(event.payload);
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 return;
             case 'edit':
                 this.editSegment(event.payload);
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_EDITING, event);
                 return;
             case 'cancel':
                 this.cancelNewSegmentEdition(event.payload);
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_CANCEL_EDITING, event);
                 return;
             case 'clone':
-                this.cloneSegment(event.payload);
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
+                    type: event.type,
+                    payload: this.cloneSegment(event.payload)
+                });
                 return;
             case 'remove':
                 this.removeSegment(event.payload);
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_REMOVE, event);
                 return;
             case 'updatethumbnail':
                 this.updatethumbnail(event.payload);
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 return;
         }
     }
 
-    private cloneSegment(sourceSegment: AnnotationLocalisation) {
+    private cloneSegment(sourceSegment: AnnotationLocalisation): AnnotationLocalisation {
         const indexOfSourceElement = this.segmentsInfo.subLocalisations.indexOf(sourceSegment);
         const newSegmentCopy = structuredClone(sourceSegment);
         newSegmentCopy.data.displayMode = "readonly";
@@ -353,6 +365,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         newSegmentCopy.label = 'Copie de ' + sourceSegment.label;
         sourceSegment.data.selected = false;
         this.segmentsInfo.subLocalisations.splice(indexOfSourceElement + 1, 0, newSegmentCopy);
+        return newSegmentCopy;
     }
 
     public selectSegment(event: AnnotationLocalisation) {

@@ -16,6 +16,8 @@ export interface AnnotationLocalisation {
         tcThumbnail?: string,
         codeChannel?: string,
         idmChannel?: string,
+        idWsmedia?:string,
+        idmSet?:string,
         labelChannel?: string,
         itemBusinessIdentifier?: string;
         tcMax?: number;

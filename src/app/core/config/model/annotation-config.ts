@@ -20,4 +20,8 @@ export interface AnnotationConfig {
     label: string;
     labelSynchro: string;
     key?: string;
+    /**
+     * Custom data control
+     */
+    data?: any;
 }
