@@ -177,7 +177,7 @@ export class MetadataManager {
                             const listOfAnnotations = listOfMetadata.map(metadata => {
                                 const localisation = metadata.localisation;
                                 const subLocalisations = localisation[0].sublocalisations;
-                                return subLocalisations[0].localisation;
+                                return subLocalisations[0].localisation[0];
                             });
                             const metaDataToBeLoaded = [{id: 'annotations', localisation: listOfAnnotations}];
                             this.onMetadataLoaded(metaDataToBeLoaded, completed);
