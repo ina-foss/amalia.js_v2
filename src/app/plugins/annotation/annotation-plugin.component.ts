@@ -72,7 +72,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             handleMetadataIds.forEach((metadataId) => {
                 this.logger.info(`get metadata for ${metadataId}`);
                 const annotationLocalisations = metadataManager
-                        .getAnnotationLocalisations(metadataId, this.pluginConfiguration.data.parseLevel, this.pluginConfiguration.data.withSubLocalisations);
+                        .getAnnotationLocalisations(metadataId);
                 if (annotationLocalisations && annotationLocalisations.length > 0) {
                     this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations);
                 }
