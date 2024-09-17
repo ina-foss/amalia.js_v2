@@ -38,7 +38,7 @@ export class MetadataManager {
                 this.toLoadData = dataSources.length;
                 dataSources.forEach(dataSource => {
                     this.loadDataSource(dataSource, resolve)
-                        .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                            .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                 });
                 // resolve() called on complete
             } else {
@@ -113,6 +113,7 @@ export class MetadataManager {
         }
         return null;
     }
+
     /**
      * Return annotation metadata
      * @param metadataId metadata
@@ -130,6 +131,7 @@ export class MetadataManager {
         }
         return null;
     }
+
     /**
      * Get timeline metadata block
      * @param metadataId metadata id
@@ -167,15 +169,34 @@ export class MetadataManager {
      */
     private async loadDataSource(loadData: ConfigDataSource, completed) {
         if (loadData && loadData.url) {
+            let annotationMetadata = false;
+            try {
+                annotationMetadata = !!this.configurationManager?.getPluginConfiguration('annotations');
+            } catch (e: any) {
+                //Do nothing
+            }
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
-                .load(loadData.url, loadData.headers)
-                .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata, completed))
-                .catch(() => this.errorToLoadMetadata(loadData.url, completed));
+                    .load(loadData.url, loadData.headers)
+                    .then(listOfMetadata => {
+                        if (annotationMetadata) {
+                            const listOfAnnotations = listOfMetadata.map(metadata => {
+                                const localisation = metadata.localisation;
+                                const subLocalisations = localisation[0].sublocalisations;
+                                return subLocalisations[0].localisation;
+                            });
+                            this.onMetadataLoaded(listOfAnnotations, completed);
+                        } else {
+                            this.onMetadataLoaded(listOfMetadata, completed);
+                        }
+
+                    })
+                    .catch(() => this.errorToLoadMetadata(loadData.url, completed));
         } else {
             this.logger.warn('Error to load data source');
         }
     }
+
 
     /**
      * Called on metadata loaded

@@ -259,7 +259,7 @@ export class SegmentComponent {
     }
 
     public editSegment() {
-        this.actionEmitter.emit({type: "edit", payload: this.segment});console.log('edit segment', this.segment);
+        this.actionEmitter.emit({type: "edit", payload: this.segment});
     }
 
     public cancelNewSegmentCreation() {
