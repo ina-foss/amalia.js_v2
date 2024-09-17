@@ -180,7 +180,7 @@ export class MetadataManager {
                                 const subLocalisations = localisation[0].sublocalisations;
                                 return subLocalisations[0].localisation;
                             });
-                            const metaDataToBeLoaded = [{id: 'annotations', localisations: listOfAnnotations}];
+                            const metaDataToBeLoaded = [{id: 'annotations', localisation: listOfAnnotations}];
                             this.onMetadataLoaded(metaDataToBeLoaded, completed);
                         } else {
                             this.onMetadataLoaded(listOfMetadata, completed);

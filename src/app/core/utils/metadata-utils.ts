@@ -44,7 +44,7 @@ export class MetadataUtils {
     }
 
     /**
-     * In charge to parse transcription
+     * In charge to parse annotations
      * @param l localisation
      * @param localisations transcription
      * @param parseLevel parse level
@@ -75,14 +75,13 @@ export class MetadataUtils {
             });
         }
     }
-    // push transcription localisations
+    // push annotation localisations
     private static pushAnnotationLocalisations(l, localisations, subLocalisations, annotations) {
         localisations.push({
             label: (l.label) ? l.label : '',
             thumb: (l.thumb) ? l.thumb : '',
             tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin)  : l.tcin,
             tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
-            text: (l.data && l.data.text && Utils.isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
             subLocalisations,
             annotations
         });
