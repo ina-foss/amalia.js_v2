@@ -169,12 +169,7 @@ export class MetadataManager {
      */
     private async loadDataSource(loadData: ConfigDataSource, completed) {
         if (loadData && loadData.url) {
-            let annotationMetadata = false;
-            try {
-                annotationMetadata = !!this.configurationManager?.getPluginConfiguration('annotations');
-            } catch (e: any) {
-                //Do nothing
-            }
+            let annotationMetadata = !!loadData.headers.find(key => key.includes('forAnnotations:'));
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
                     .load(loadData.url, loadData.headers)
@@ -185,7 +180,8 @@ export class MetadataManager {
                                 const subLocalisations = localisation[0].sublocalisations;
                                 return subLocalisations[0].localisation;
                             });
-                            this.onMetadataLoaded(listOfAnnotations, completed);
+                            const metaDataToBeLoaded = [{id: 'annotations', localisations: listOfAnnotations}];
+                            this.onMetadataLoaded(metaDataToBeLoaded, completed);
                         } else {
                             this.onMetadataLoaded(listOfMetadata, completed);
                         }
