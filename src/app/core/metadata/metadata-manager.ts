@@ -117,14 +117,12 @@ export class MetadataManager {
     /**
      * Return annotation metadata
      * @param metadataId metadata
-     * @param parseLevel parse level default 1
-     * @param withSubLocalisations sub localisation default false
      */
-    public getAnnotationLocalisations(metadataId: string, parseLevel: number = 1, withSubLocalisations = false): Array<AnnotationLocalisation> | null {
+    public getAnnotationLocalisations(metadataId: string): Array<AnnotationLocalisation> | null {
         try {
             const metadata = this.getMetadata(metadataId);
             if (metadata) {
-                return MetadataUtils.getAnnotationLocalisations(metadata, parseLevel, withSubLocalisations);
+                return MetadataUtils.getAnnotationLocalisations(metadata);
             }
         } catch (e) {
             this.logger.warn(`Error to find metadata : ${metadataId}`);
@@ -134,8 +132,8 @@ export class MetadataManager {
 
     /**
      * Get timeline metadata block
-     * @param metadataId metadata id
      * @throws AmaliaException
+     * @param metadata
      */
     public getTimelineLocalisations(metadata: Metadata): Array<TimelineLocalisation> {
         return MetadataUtils.getTimelineLocalisations(metadata);
@@ -166,6 +164,7 @@ export class MetadataManager {
     /**
      * In charge to load data
      * @param loadData ConfigDataSource
+     * @param completed
      */
     private async loadDataSource(loadData: ConfigDataSource, completed) {
         if (loadData && loadData.url) {
@@ -197,6 +196,7 @@ export class MetadataManager {
     /**
      * Called on metadata loaded
      * @param listOfMetadata list of metadata
+     * @param completed
      */
     private onMetadataLoaded(listOfMetadata: Array<Metadata>, completed) {
         if (listOfMetadata && Utils.isArrayLike<Metadata>(listOfMetadata)) {
