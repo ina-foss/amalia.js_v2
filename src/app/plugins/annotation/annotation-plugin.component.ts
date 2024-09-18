@@ -241,15 +241,16 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset: this.tcOffset
         };
         this.thumbnailService.getThumbnail(url, tcIn).then((blob) => {
-            if (typeof (blob) !== 'undefined') {
-                segmentToBeAdded.thumb = blob;
-            }
-        });
-        this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
-            type: 'init',
-            payload: segmentToBeAdded
-        });
+                    if (typeof (blob) !== 'undefined') {
+                        segmentToBeAdded.thumb = blob;
+                    }
+                    this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
+                        type: 'init',
+                        payload: segmentToBeAdded
+                    });
+                }
+        );
     }
 
     public editSegment(segment) {
@@ -376,7 +377,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     /**
      * handle scroll event
      */
-    public handleScroll(ignoreNextScroll?: boolean) {
+    public handleScroll(ignoreNextScroll ?: boolean) {
         this.ignoreNextScroll = true;
         setTimeout(() => this.updateSynchro(), 350);
     }
