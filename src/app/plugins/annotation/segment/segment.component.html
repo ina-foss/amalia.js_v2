@@ -83,7 +83,7 @@
                         <div class="readonly-segment-thumbnail-block">
                             <div [ngClass]="{'readonly-segment-thumbnail': !segment.thumb, 'readonly-segment-thumbnail-no-background':segment.thumb}">
                                 <img class="thumbnail" alt="thumbnail"
-                                     [src]="segment.thumb"/></div>
+                                     [src]="segment.data.thumbnailViewUrl"/></div>
                             <p-button icon="pi pi-camera" (click)="updateThumbnail()"
                                       tooltip="Sélectionner une imagette" rounded="true" outlined="true"
                                       size="small"

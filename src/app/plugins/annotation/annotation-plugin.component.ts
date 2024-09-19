@@ -12,6 +12,7 @@ import * as _ from "lodash";
 import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
+import {BaseUtils} from "../../core/utils/base-utils";
 
 @Component({
     selector: 'amalia-annotation',
@@ -225,7 +226,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
     }
 
-    public initializeNewSegment() {
+    public async initializeNewSegment() {
         this.unselectAllSegments();
         const tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         const url = this.mediaPlayerElement.getThumbnailUrl(tcIn, false);
@@ -236,21 +237,18 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 displayMode: "readonly",
                 selected: true,
                 tcMax: maxDuration,
+                tcThumbnail: tcIn,
             },
             tc: 0,
             tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset: this.tcOffset
         };
-        this.thumbnailService.getThumbnail(url, tcIn).then((blob) => {
-                    if (typeof (blob) !== 'undefined') {
-                        segmentToBeAdded.thumb = blob;
-                    }
-                    this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
-                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
-                        type: 'init',
-                        payload: segmentToBeAdded
-                    });
-                }
-        );
+        segmentToBeAdded.thumb = await this.thumbnailService.getThumbnailAsBlob(url);
+        segmentToBeAdded.data.thumbnailViewUrl = BaseUtils.getEncodedImage(segmentToBeAdded.thumb);
+        this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
+            type: 'init',
+            payload: segmentToBeAdded
+        });
     }
 
     public editSegment(segment) {
@@ -457,11 +455,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.messageService.add({severity: 'error', summary: 'Error', detail: msgContent, key: 'br'});
     }
 
-    public updatethumbnail(segment) {
+    public async updatethumbnail(segment) {
         this.unselectAllSegments();
         segment.data.selected = true;
-        segment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
+        segment.data.thumbnailViewUrl = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
         segment.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        segment.thumb = await this.thumbnailService.getThumbnailAsBlob(segment.data.thumbnailViewUrl);
     }
 
 }
