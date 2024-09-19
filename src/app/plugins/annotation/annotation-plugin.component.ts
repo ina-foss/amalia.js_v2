@@ -353,8 +353,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_REMOVE, event);
                 return;
             case 'updatethumbnail':
-                const segmentBeforeThumbUpdate = this.updatethumbnail(event.payload);
-                event.payload = {segment: event.payload, segmentBeforeEdition: segmentBeforeThumbUpdate};
+                event.payload = {segment: event.payload, segmentBeforeEdition: this.updatethumbnail(event.payload)};
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 return;
         }
