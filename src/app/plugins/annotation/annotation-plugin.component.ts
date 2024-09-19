@@ -12,7 +12,6 @@ import * as _ from "lodash";
 import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
-import {BaseUtils} from "../../core/utils/base-utils";
 
 @Component({
     selector: 'amalia-annotation',
@@ -229,7 +228,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public async initializeNewSegment() {
         this.unselectAllSegments();
         const tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        const url = this.mediaPlayerElement.getThumbnailUrl(tcIn, false);
         const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration();
         const segmentToBeAdded: AnnotationLocalisation = {
             label: 'Segment sans titre',
@@ -242,8 +240,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             tc: 0,
             tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset: this.tcOffset
         };
-        segmentToBeAdded.thumb = await this.thumbnailService.getThumbnailAsBlob(url);
-        segmentToBeAdded.data.thumbnailViewUrl = BaseUtils.getEncodedImage(segmentToBeAdded.thumb);
+
+        //Thumbnail
+        segmentToBeAdded.data.thumbnailViewUrl = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
+        segmentToBeAdded.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        segmentToBeAdded.thumb = await this.thumbnailService.getThumbnailAsBlob(segmentToBeAdded.data.thumbnailViewUrl);
+
         this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
             type: 'init',
@@ -329,6 +331,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         switch (event.type) {
             case 'validate':
                 this.saveSegment(event.payload);
+                event.payload = {segment: event.payload, segmentBeforeEdition: this.segmentBeforeEdition};
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 return;
             case 'edit':
@@ -350,7 +353,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_REMOVE, event);
                 return;
             case 'updatethumbnail':
-                this.updatethumbnail(event.payload);
+                const segmentBeforeThumbUpdate = this.updatethumbnail(event.payload);
+                event.payload = {segment: event.payload, segmentBeforeEdition: segmentBeforeThumbUpdate};
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 return;
         }
@@ -455,12 +459,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.messageService.add({severity: 'error', summary: 'Error', detail: msgContent, key: 'br'});
     }
 
-    public async updatethumbnail(segment) {
+    public async updatethumbnail(segment): Promise<AnnotationLocalisation> {
+        const segmentBeforeEdition = structuredClone(segment);
         this.unselectAllSegments();
         segment.data.selected = true;
         segment.data.thumbnailViewUrl = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
         segment.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         segment.thumb = await this.thumbnailService.getThumbnailAsBlob(segment.data.thumbnailViewUrl);
+        return segmentBeforeEdition;
     }
 
 }
