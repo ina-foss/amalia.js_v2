@@ -34,22 +34,4 @@ export class ThumbnailLoader implements Loader<any> {
                             });
         });
     }
-
-    loadAsBlob(url: any): Promise<string> {
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json'
-        });
-        return new Promise<any>((resolve, reject) => {
-            this.httpClient.get(url,
-                    {headers, responseType: 'blob' as 'json'})
-                    .toPromise()
-                    .then(
-                            res => {
-                                resolve(res);
-                            },
-                            error => {
-                                reject('ERROR_LOAD_THUMBNAIL');
-                            });
-        });
-    }
 }

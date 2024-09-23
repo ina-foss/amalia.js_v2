@@ -6,7 +6,10 @@
 :host {
 
   .annotation-content {
-    height: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
   }
 
   .header {
@@ -79,6 +82,13 @@
     gap: $amalia-spacings-space-space-sm;
     height: 100%;
     align-items: center;
+
+    .segment-empty {
+      bottom: 0;
+      position: relative;
+      max-height:34px;
+      min-height: 34px;
+    }
   }
 
   .scrollable-content {
@@ -104,7 +114,7 @@
   }
 
   .scrollable-content::-webkit-scrollbar-thumb:hover {
-    background:$amalia-primary-color; /* Couleur de la poignée au survol */
+    background: $amalia-primary-color; /* Couleur de la poignée au survol */
   }
 
   .segment {

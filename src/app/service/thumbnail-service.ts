@@ -29,9 +29,7 @@ export class ThumbnailService {
         if (typeof (this.listThumbnails[tc]) === 'undefined') {
             return this.loadThumbnail(url, tc);
         }
-        return new Promise((resolve) => {
-            resolve(this.listThumbnails[tc][ThumbnailService.key]);
-        });
+        return Promise.resolve(this.listThumbnails[tc][ThumbnailService.key]);
     }
 
     /**
@@ -44,23 +42,6 @@ export class ThumbnailService {
                     .then(blob => {
                         this.listThumbnails[tc] = {url, blob};
                         resolve(blob.toString());
-                    })
-                    .catch(error => {
-                        this.logger.warn('Error to load image', error);
-                    });
-        });
-    }
-
-    /**
-     * call api to get blob not converted in string
-     * @param url
-     */
-    getThumbnailAsBlob(url): Promise<string> {
-        return new Promise((resolve, reject) => {
-            this.loader
-                    .loadAsBlob(url)
-                    .then(blob => {
-                        resolve(blob);
                     })
                     .catch(error => {
                         this.logger.warn('Error to load image', error);

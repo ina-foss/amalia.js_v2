@@ -18,7 +18,6 @@ export interface AnnotationLocalisation {
         tcInParent?: number;
         tcOutParent?: number;
         tcThumbnail?: number,
-        thumbnailViewUrl?:string,
         codeChannel?: string,
         idmChannel?: string,
         idWsmedia?: string,

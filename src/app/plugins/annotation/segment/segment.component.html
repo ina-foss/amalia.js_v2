@@ -12,18 +12,15 @@
                 <div class="segment-tc gap-2">
                     <div class="flex flex-column gap-2">
                         <label for="tcIn">TC Début</label>
-                        <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted"
-                        />
+                        <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted" (blur)="doCheckTcIn()"/>
                     </div>
                     <div class="flex flex-column gap-2">
                         <label for="tcOut">TC Fin</label>
-                        <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted"
-                        />
+                        <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted"  (blur)="doCheckTcOut()"/>
                     </div>
                     <div class="flex flex-column gap-2">
                         <label for="tc">Durée</label>
-                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted"
-                        />
+                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted" (blur)="doCheckTc()"/>
                     </div>
                 </div>
                 <div class="segment-details">
@@ -83,7 +80,7 @@
                         <div class="readonly-segment-thumbnail-block">
                             <div [ngClass]="{'readonly-segment-thumbnail': !segment.thumb, 'readonly-segment-thumbnail-no-background':segment.thumb}">
                                 <img class="thumbnail" alt="thumbnail"
-                                     [src]="segment.data.thumbnailViewUrl"/></div>
+                                     [src]="segment.thumb"/></div>
                             <p-button icon="pi pi-camera" (click)="updateThumbnail()"
                                       tooltip="Sélectionner une imagette" rounded="true" outlined="true"
                                       size="small"

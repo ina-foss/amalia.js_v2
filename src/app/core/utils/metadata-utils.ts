@@ -35,7 +35,12 @@ export class MetadataUtils {
         const localisations: Array<AnnotationLocalisation> = new Array<AnnotationLocalisation>();
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
-                const annotation: AnnotationLocalisation = {data: {}, tc: 0, tcIn: 0, tcOut: 0};
+                const annotation: AnnotationLocalisation = {
+                    data: {},
+                    tc: 0,
+                    tcIn: 0,
+                    tcOut: 0
+                };
                 annotation.id = l.id;
                 annotation.label = l.label;
                 annotation.tcIn = (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin;
@@ -43,7 +48,7 @@ export class MetadataUtils {
                 annotation.description = l.description;
                 annotation.thumb = l.thumb;
                 annotation.data = structuredClone(l.data);
-                annotation.data.displayMode="readonly";
+                annotation.data.displayMode = "readonly";
                 annotation.property = structuredClone(l.property);
                 localisations.push(annotation);
             });
