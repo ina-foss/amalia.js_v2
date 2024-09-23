@@ -21,72 +21,41 @@ export class MetadataUtils {
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
                 MetadataUtils.parseTranscriptionLocalisations(l, localisations, parseLevel, withSubLocalisations,
-                    new Array<TranscriptionAnnotation>() );
-            });
-        }
-        return localisations;
-    }
-    /**
-     * Return list of transcription
-     * @param metadata localisation
-     * @param parseLevel parse level
-     * @param withSubLocalisations true for parse sub localisation
-     */
-    public static getAnnotationLocalisations(metadata: Metadata, parseLevel: number = 1, withSubLocalisations = false): Array<AnnotationLocalisation> {
-        const localisations: Array<AnnotationLocalisation> = new Array<AnnotationLocalisation>();
-        if (metadata && metadata.localisation) {
-            metadata.localisation.forEach((l) => {
-                MetadataUtils.parseAnnotationLocalisations(l, localisations, parseLevel, withSubLocalisations,
-                        new Array<AnnotationLocalisation>() );
+                        new Array<TranscriptionAnnotation>());
             });
         }
         return localisations;
     }
 
     /**
-     * In charge to parse transcription
-     * @param l localisation
-     * @param localisations transcription
-     * @param parseLevel parse level
-     * @param withSubLocalisations true for parse sub localisation
-     * @param annotationsLoc
+     * Return list of transcription
+     * @param metadata localisation
      */
-    public static parseAnnotationLocalisations(l: any, localisations: Array<AnnotationLocalisation>, parseLevel: number,
-                                                  withSubLocalisations: boolean, annotationsLoc: Array<AnnotationLocalisation>): void {
-        if (l.tcin && l.tcout && l.data && l.data.text && l.tclevel === parseLevel) {
-            const subLocalisations = new Array<AnnotationLocalisation>();
-            if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && withSubLocalisations) {
-                l.sublocalisations.localisation.forEach((subl) => {
-                    MetadataUtils.parseAnnotationLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations,
-                            new Array<AnnotationLocalisation>());
-                });
-            }
-            MetadataUtils.pushAnnotationLocalisations(l, localisations, subLocalisations, annotationsLoc);
-        }
-        if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && l.tclevel <= parseLevel) {
-            l.sublocalisations.localisation.forEach((subl) => {
-                const annotations = new Array<AnnotationLocalisation>();
-                if (subl.data.annotations && subl.data.annotations.length > 0) {
-                    subl.data.annotations.forEach(a => {
-                        annotations.push(a);
-                    });
-                }
-                MetadataUtils.parseAnnotationLocalisations(subl, localisations, parseLevel, withSubLocalisations, annotations);
+    public static getAnnotationLocalisations(metadata: Metadata): Array<AnnotationLocalisation> {
+        const localisations: Array<AnnotationLocalisation> = new Array<AnnotationLocalisation>();
+        if (metadata && metadata.localisation) {
+            metadata.localisation.forEach((l) => {
+                const annotation: AnnotationLocalisation = {
+                    data: {},
+                    tc: 0,
+                    tcIn: 0,
+                    tcOut: 0
+                };
+                annotation.id = l.id;
+                annotation.label = l.label;
+                annotation.tcIn = (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin;
+                annotation.tcOut = (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout;
+                annotation.description = l.description;
+                annotation.thumb = l.thumb;
+                annotation.data = structuredClone(l.data);
+                annotation.data.displayMode = "readonly";
+                annotation.property = structuredClone(l.property);
+                localisations.push(annotation);
             });
         }
+        return localisations;
     }
-    // push transcription localisations
-    private static pushAnnotationLocalisations(l, localisations, subLocalisations, annotations) {
-        localisations.push({
-            label: (l.label) ? l.label : '',
-            thumb: (l.thumb) ? l.thumb : '',
-            tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin)  : l.tcin,
-            tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
-            text: (l.data && l.data.text && Utils.isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
-            subLocalisations,
-            annotations
-        });
-    }
+
     /**
      * In charge to parse transcription
      * @param l localisation
@@ -102,7 +71,7 @@ export class MetadataUtils {
             if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && withSubLocalisations) {
                 l.sublocalisations.localisation.forEach((subl) => {
                     MetadataUtils.parseTranscriptionLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations,
-                        new Array<TranscriptionAnnotation>());
+                            new Array<TranscriptionAnnotation>());
                 });
             }
             MetadataUtils.pushTranscriptionLocalisations(l, localisations, subLocalisations, annotationsLoc);
@@ -119,12 +88,13 @@ export class MetadataUtils {
             });
         }
     }
+
     // push transcription localisations
     private static pushTranscriptionLocalisations(l, localisations, subLocalisations, annotations) {
         localisations.push({
             label: (l.label) ? l.label : '',
             thumb: (l.thumb) ? l.thumb : '',
-            tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin)  : l.tcin,
+            tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin,
             tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
             text: (l.data && l.data.text && Utils.isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
             subLocalisations,
@@ -181,6 +151,7 @@ export class MetadataUtils {
             }
         }
     }
+
     // push timelineLocalisation
     private static pushTimelineLocalisation(localisation, timelineLocalisations) {
         const tl: TimelineLocalisation = {

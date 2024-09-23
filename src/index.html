@@ -29,26 +29,18 @@
     <div style="grid-area: 1 / 2 / 3 / 3" id="annotation">Annotation</div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            console.log("Dom ready")
-            //loadResource();
-            //loadFluxAudioResource();
+            console.log("Dom ready");
+
             loadTranscriptionSample().then(() => {
                 console.log('Done');
             }).catch(error => {
                 console.log("Error", error);
             });
-            /*loadStockAudioResource().then(() => {
-                console.log('Done');
-            }).catch(error => {
-                console.log("Error", error);
-            });*/
             document.getElementById('transcription').addEventListener('click', addTranscription);
             document.getElementById('annotation').addEventListener('click', addAnnotation);
         });
 
         async function loadResource() {
-            // const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls';
-            // const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:MGVDD00014226-FTS.01?type=stream&protocol=hls&rewind=1';
             const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls';
             const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls&rewind=1';
 
@@ -301,6 +293,9 @@
                                         dataSources: [
                                             {
                                                 "url": "http://localhost:4203/metadata/transcription.json"
+                                            },
+                                            {
+                                                "url": "https://notilus.api.d.sas.ina/notilusDossier/segments/stock?itemBusinessIdentifier=KPCAA790118.03&tcin=0&tcout=90000&format=AMALIA:forAnnotations"
                                             }
                                         ],
                                         pluginsConfiguration
@@ -549,11 +544,11 @@
             let thumbnailUrlResponse = await fetch(config.thumbnail.baseUrl, {method: 'GET'});
             config.thumbnail.baseUrl = await thumbnailUrlResponse.text();
 
-            let srcUrlResponse=  await fetch(config.player.src,{method: 'GET'});
+            let srcUrlResponse = await fetch(config.player.src, {method: 'GET'});
             config.player.src = await srcUrlResponse.text();
 
-            let backwardsSrcResponse= await fetch(config.player.backwardsSrc,{method:'GET'});
-            config.player.backwardsSrc = await fetch(backwardsSrcResponse.text());
+            let backwardsSrcResponse = await fetch(config.player.backwardsSrc, {method: 'GET'});
+            config.player.backwardsSrc = await fetch(backwardsSrcResponse?.text());
 
             createPlayer(config);
         }

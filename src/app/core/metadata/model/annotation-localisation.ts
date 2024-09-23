@@ -13,9 +13,15 @@ export interface AnnotationLocalisation {
         displayMode?: "new" | "edit" | "readonly";
         startDate?: Date;
         endDate?: Date;
-        tcThumbnail?: string,
+        startDateParent?: string;
+        endDateParent?: string;
+        tcInParent?: number;
+        tcOutParent?: number;
+        tcThumbnail?: number,
         codeChannel?: string,
         idmChannel?: string,
+        idWsmedia?: string,
+        idmSet?: string,
         labelChannel?: string,
         itemBusinessIdentifier?: string;
         tcMax?: number;

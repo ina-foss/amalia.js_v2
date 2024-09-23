@@ -38,7 +38,7 @@ export class MetadataManager {
                 this.toLoadData = dataSources.length;
                 dataSources.forEach(dataSource => {
                     this.loadDataSource(dataSource, resolve)
-                        .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                            .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                 });
                 // resolve() called on complete
             } else {
@@ -113,27 +113,27 @@ export class MetadataManager {
         }
         return null;
     }
+
     /**
      * Return annotation metadata
      * @param metadataId metadata
-     * @param parseLevel parse level default 1
-     * @param withSubLocalisations sub localisation default false
      */
-    public getAnnotationLocalisations(metadataId: string, parseLevel: number = 1, withSubLocalisations = false): Array<AnnotationLocalisation> | null {
+    public getAnnotationLocalisations(metadataId: string): Array<AnnotationLocalisation> | null {
         try {
             const metadata = this.getMetadata(metadataId);
             if (metadata) {
-                return MetadataUtils.getAnnotationLocalisations(metadata, parseLevel, withSubLocalisations);
+                return MetadataUtils.getAnnotationLocalisations(metadata);
             }
         } catch (e) {
             this.logger.warn(`Error to find metadata : ${metadataId}`);
         }
         return null;
     }
+
     /**
      * Get timeline metadata block
-     * @param metadataId metadata id
      * @throws AmaliaException
+     * @param metadata
      */
     public getTimelineLocalisations(metadata: Metadata): Array<TimelineLocalisation> {
         return MetadataUtils.getTimelineLocalisations(metadata);
@@ -164,27 +164,52 @@ export class MetadataManager {
     /**
      * In charge to load data
      * @param loadData ConfigDataSource
+     * @param completed
      */
     private async loadDataSource(loadData: ConfigDataSource, completed) {
         if (loadData && loadData.url) {
+            this.logger.info("loadDataSource", loadData.headers);
+            let annotationMetadata = !!loadData.headers?.find(key => key.includes('forAnnotations:'));
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
-                .load(loadData.url, loadData.headers)
-                .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata, completed))
-                .catch(() => this.errorToLoadMetadata(loadData.url, completed));
+                    .load(loadData.url, loadData.headers)
+                    .then(listOfMetadata => {
+                        this.logger.info("listOfMetadata", listOfMetadata);
+                        if (annotationMetadata) {
+                            const listOfAnnotations = listOfMetadata.map(metadata => {
+                                const localisation = metadata.localisation;
+                                const subLocalisations = localisation[0].sublocalisations;
+                                return subLocalisations[0].localisation[0];
+                            });
+                            const metaDataToBeLoaded = [{id: 'annotations', localisation: listOfAnnotations}];
+                            this.logger.debug("annotations", listOfAnnotations);
+                            this.onMetadataLoaded(metaDataToBeLoaded, completed);
+                        } else {
+                            this.onMetadataLoaded(listOfMetadata, completed);
+                        }
+
+                    })
+                    .catch(() => this.errorToLoadMetadata(loadData.url, completed));
         } else {
             this.logger.warn('Error to load data source');
         }
     }
 
+
     /**
      * Called on metadata loaded
      * @param listOfMetadata list of metadata
+     * @param completed
      */
     private onMetadataLoaded(listOfMetadata: Array<Metadata>, completed) {
+        this.logger.debug("onMetadataLoaded listOfMetadata completed",
+                {
+                    listOfMetadata, completed
+                });
         if (listOfMetadata && Utils.isArrayLike<Metadata>(listOfMetadata)) {
             for (const metadata of listOfMetadata) {
                 try {
+                    this.logger.debug("onMetadataLoaded addMetaData", metadata);
                     this.addMetadata(metadata);
                 } catch (e) {
                     this.logger.warn('Error to add metadata', metadata);

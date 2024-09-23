@@ -12,18 +12,15 @@
                 <div class="segment-tc gap-2">
                     <div class="flex flex-column gap-2">
                         <label for="tcIn">TC Début</label>
-                        <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted"
-                        />
+                        <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted" (blur)="doCheckTcIn()"/>
                     </div>
                     <div class="flex flex-column gap-2">
                         <label for="tcOut">TC Fin</label>
-                        <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted"
-                        />
+                        <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted"  (blur)="doCheckTcOut()"/>
                     </div>
                     <div class="flex flex-column gap-2">
                         <label for="tc">Durée</label>
-                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted"
-                        />
+                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted" (blur)="doCheckTc()"/>
                     </div>
                 </div>
                 <div class="segment-details">
