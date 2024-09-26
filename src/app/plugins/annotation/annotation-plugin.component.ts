@@ -53,9 +53,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
                 this.autoScroll = true;
             }
         }
-        if (this.mediaPlayerElement.isMetadataLoaded) {
-            this.parseAnnotation();
-        }
+        this.mediaPlayerElement.metadataManager.reloadDataSource('forAnnotations:').then(() => {
+            this.handleMetadataLoaded();
+        });
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
     }
 

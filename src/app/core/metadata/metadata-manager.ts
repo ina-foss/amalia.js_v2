@@ -47,6 +47,25 @@ export class MetadataManager {
         });
     }
 
+    public reloadDataSource(headerKey: string) {
+        return new Promise((resolve) => {
+            const dataSources = this.configurationManager.getCoreConfig().dataSources;
+            if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
+                this.toLoadData = dataSources.length;
+                dataSources.forEach(dataSource => {
+                    let annotationMetadata = !!dataSource.headers?.find(key => key.includes(headerKey));
+                    if (annotationMetadata) {
+                        this.loadDataSource(dataSource, resolve)
+                                .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                    }
+                });
+                // resolve() called on complete
+            } else {
+                this.logger.info('Can\'t find data sources');
+            }
+        });
+    }
+
     /**
      * Get Metadata block
      * @param metadataId metadata id
