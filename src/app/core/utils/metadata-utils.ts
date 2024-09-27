@@ -21,12 +21,11 @@ export class MetadataUtils {
         if (metadata && metadata.localisation) {
             metadata.localisation.forEach((l) => {
                 MetadataUtils.parseTranscriptionLocalisations(l, localisations, parseLevel, withSubLocalisations,
-                        new Array<TranscriptionAnnotation>());
+                    new Array<TranscriptionAnnotation>() );
             });
         }
         return localisations;
     }
-
     /**
      * Return list of transcription
      * @param metadata localisation
@@ -50,6 +49,7 @@ export class MetadataUtils {
                 annotation.data = structuredClone(l.data);
                 annotation.data.displayMode = "readonly";
                 annotation.property = structuredClone(l.property);
+                annotation.tc = annotation.tcOut - annotation.tcIn;
                 localisations.push(annotation);
             });
         }

@@ -25,18 +25,19 @@
 </div>
 <div class="content" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr 1fr;">
     <div style="grid-area: 1 / 1 / 2 / 2" id="player"></div>
-    <div style="grid-area: 2 / 1 /  3 / 2" id="transcription">Transcription</div>
+    <div style="grid-area: 2 / 1 /  3 / 2" id="timeline">Timeline</div>
     <div style="grid-area: 1 / 2 / 3 / 3" id="annotation">Annotation</div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             console.log("Dom ready");
 
-            loadTranscriptionSample().then(() => {
+          //  loadTranscriptionSample().then(() => {
+            loadTimelineSample().then(() => {
                 console.log('Done');
             }).catch(error => {
                 console.log("Error", error);
             });
-            document.getElementById('transcription').addEventListener('click', addTranscription);
+            document.getElementById('timeline').addEventListener('click', addTimeline);
             document.getElementById('annotation').addEventListener('click', addAnnotation);
         });
 
@@ -548,7 +549,28 @@
             config.player.src = await srcUrlResponse.text();
 
             let backwardsSrcResponse = await fetch(config.player.backwardsSrc, {method: 'GET'});
-            config.player.backwardsSrc = await fetch(backwardsSrcResponse?.text());
+            const backwardsSrcResponseText = backwardsSrcResponse?.text();
+            if (backwardsSrcResponseText) {
+                config.player.backwardsSrc = await fetch(backwardsSrcResponseText);
+            }
+
+            createPlayer(config);
+        }
+        async function loadTimelineSample() {
+            const response = await fetch('http://localhost:4203/metadata/timeline_player_config_sample.json');
+            const config = await response.json();
+
+            let thumbnailUrlResponse = await fetch(config.thumbnail.baseUrl, {method: 'GET'});
+            config.thumbnail.baseUrl = await thumbnailUrlResponse.text();
+
+            let srcUrlResponse = await fetch(config.player.src, {method: 'GET'});
+            config.player.src = await srcUrlResponse.text();
+
+            let backwardsSrcResponse = await fetch(config.player.backwardsSrc, {method: 'GET'});
+            const backwardsSrcResponseText = backwardsSrcResponse?.text();
+            if (backwardsSrcResponseText) {
+                config.player.backwardsSrc = await fetch(backwardsSrcResponseText);
+            }
 
             createPlayer(config);
         }
