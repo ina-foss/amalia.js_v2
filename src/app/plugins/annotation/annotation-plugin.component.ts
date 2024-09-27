@@ -122,7 +122,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
         this.unselectAllSegments();
         let tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         tcIn = tcIn + this.tcOffset;
-        const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
         const segmentToBeAdded: AnnotationLocalisation = {
             label: 'Segment sans titre',
             data: {
@@ -296,9 +296,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
         if (selectedSegment) {
             const segmentBeforeEdition = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
-            const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+            const maxTcOut = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
             const segmentTcOut = selectedSegment.tcOut;
-            if (mediaTc > segmentTcOut && mediaTc <= maxDuration) {
+            if (mediaTc > segmentTcOut && mediaTc <= maxTcOut) {
                 selectedSegment.tcOut = mediaTc;
                 selectedSegment.tcIn = mediaTc;
                 this.setTc(selectedSegment);
@@ -306,7 +306,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
                     type: 'setTcIn',
                     payload: {segment: selectedSegment, segmentBeforeEdition}
                 });
-            } else if (mediaTc <= maxDuration) {
+            } else if (mediaTc <= maxTcOut) {
                 //set tcIn
                 selectedSegment.tcIn = mediaTc;
                 //set tc
@@ -323,11 +323,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
 
     public setTcOut() {
         const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
-        const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        const maxTcOut = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
         if (selectedSegment) {
             const segmentBeforeEdition = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
-            if (mediaTc < selectedSegment.tcIn || mediaTc > maxDuration) {
+            if (mediaTc < selectedSegment.tcIn || mediaTc > maxTcOut) {
                 this.displaySnackBar('Le TC OUT doit être supérieur au TC IN et compris entre le TC IN et le TC OUT du fichier intégral');
             } else {
                 //set tcOut
