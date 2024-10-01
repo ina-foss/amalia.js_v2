@@ -35,7 +35,7 @@ export class MetadataManager {
         return new Promise((resolve) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
-                this.toLoadData = 1;
+                this.toLoadData = dataSources.length;
                 dataSources.forEach(dataSource => {
                     this.loadDataSource(dataSource, resolve)
                             .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
