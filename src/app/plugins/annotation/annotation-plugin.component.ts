@@ -12,6 +12,9 @@ import * as _ from "lodash";
 import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
+import {interval, Observable, of, takeWhile} from "rxjs";
+import {switchMap} from "rxjs/operators";
+
 
 @Component({
     selector: 'amalia-annotation',
@@ -38,6 +41,31 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
     @ViewChild('annotationElement', {static: false})
     public annotationElement: ElementRef<HTMLElement>;
 
+    public mediaPlayerElementReady(): Observable<boolean> {
+        return of(this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && (this.mediaPlayerElement.getConfiguration().tcOffset != undefined));
+    }
+
+    public waitForMediaElementToLoad(): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            interval(10).pipe( // Vérifier toutes les 10 millisecondes
+                    switchMap(() => this.mediaPlayerElementReady()),
+                    takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
+            ).subscribe({
+                next: (conditionMet) => {
+                    if (conditionMet) {
+                        this.logger.info('tcOffset bien renseigné sur le mediaplayer element');
+                        resolve(this.mediaPlayerElement.getConfiguration().tcOffset);
+                    }
+                },
+                error: () => {
+                    reject(0);
+                },
+                complete: () => {
+                    this.logger.info('tcOffset bien renseigné')
+                }
+            });
+        });
+    }
 
     @AutoBind
     init() {
@@ -56,7 +84,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
         this.mediaPlayerElement.metadataManager.reloadDataSource('forAnnotations:').then(() => {
             this.handleMetadataLoaded();
         });
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.waitForMediaElementToLoad().then(tcOffset => {
+            this.tcOffset = tcOffset;
+        });
     }
 
     /**
@@ -119,30 +149,32 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
     }
 
     public initializeNewSegment() {
-        this.unselectAllSegments();
-        let tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        tcIn = tcIn + this.tcOffset;
-        const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
-        const segmentToBeAdded: AnnotationLocalisation = {
-            label: 'Segment sans titre',
-            data: {
-                displayMode: "readonly",
-                selected: true,
-                tcMax: maxDuration,
-                tcThumbnail: tcIn
-            },
-            tc: 0,
-            tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset: this.tcOffset
-        };
+        this.waitForMediaElementToLoad().then(tcOffset => {
+            this.unselectAllSegments();
+            let tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+            tcIn = tcIn + this.tcOffset;
+            const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
+            const segmentToBeAdded: AnnotationLocalisation = {
+                label: 'Segment sans titre',
+                data: {
+                    displayMode: "readonly",
+                    selected: true,
+                    tcMax: maxDuration,
+                    tcThumbnail: tcIn
+                },
+                tc: 0,
+                tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset
+            };
 
-        //Thumbnail
-        segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
-        segmentToBeAdded.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+            //Thumbnail
+            segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
+            segmentToBeAdded.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
 
-        this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
-            type: 'init',
-            payload: segmentToBeAdded
+            this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
+                type: 'init',
+                payload: segmentToBeAdded
+            });
         });
     }
 
