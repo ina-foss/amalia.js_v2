@@ -35,7 +35,7 @@ export class MetadataManager {
         return new Promise((resolve) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
-                this.toLoadData = dataSources.length;
+                this.toLoadData = 1;
                 dataSources.forEach(dataSource => {
                     this.loadDataSource(dataSource, resolve)
                             .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
@@ -48,20 +48,31 @@ export class MetadataManager {
     }
 
     public reloadDataSource(headerKey: string) {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve, reject) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
-                this.toLoadData = dataSources.length;
+                this.toLoadData = 0;
                 dataSources.forEach(dataSource => {
-                    let annotationMetadata = !!dataSource.headers?.find(key => key.includes(headerKey));
-                    if (annotationMetadata) {
-                        this.loadDataSource(dataSource, resolve)
-                                .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                    if (dataSource.headers?.find(key => key.includes(headerKey))) {
+                        this.toLoadData++;
                     }
                 });
+                this.logger.debug(`Data source : sources to be loaded: ${this.toLoadData}`);
+                if (this.toLoadData !== 0) {
+                    dataSources.forEach(dataSource => {
+                        let annotationMetadata = !!dataSource.headers?.find(key => key.includes(headerKey));
+                        if (annotationMetadata) {
+                            this.loadDataSource(dataSource, resolve)
+                                    .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                        }
+                    });
+                } else {
+                    resolve();
+                }
                 // resolve() called on complete
             } else {
                 this.logger.info('Can\'t find data sources');
+                reject();
             }
         });
     }
@@ -221,10 +232,7 @@ export class MetadataManager {
      * @param completed
      */
     private onMetadataLoaded(listOfMetadata: Array<Metadata>, completed) {
-        this.logger.debug("onMetadataLoaded listOfMetadata completed",
-                {
-                    listOfMetadata, completed
-                });
+        this.logger.debug("onMetadataLoaded listOfMetadata completed", listOfMetadata);
         if (listOfMetadata && Utils.isArrayLike<Metadata>(listOfMetadata)) {
             for (const metadata of listOfMetadata) {
                 try {
