@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PluginBase} from "../../core/plugin/plugin-base";
 import {PluginConfigData} from "../../core/config/model/plugin-config-data";
 import {AnnotationConfig} from "../../core/config/model/annotation-config";
@@ -12,9 +12,7 @@ import * as _ from "lodash";
 import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
-import {interval, Observable, of, takeWhile} from "rxjs";
-import {switchMap} from "rxjs/operators";
-
+import {interval, Observable, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
 
 @Component({
     selector: 'amalia-annotation',
@@ -22,10 +20,10 @@ import {switchMap} from "rxjs/operators";
     styleUrls: ['./annotation-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
+export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnDestroy, OnInit {
     public static PLUGIN_NAME = 'ANNOTATION';
     public static KARAOKE_TC_DELTA = 0.250;
-
+    subscriptionToWaitForMediaElementToLoad: Subscription;
     public segmentsInfo: AnnotationLocalisation = {
         data: {},
         tc: 0,
@@ -40,31 +38,49 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
     public currentTime: number;
     @ViewChild('annotationElement', {static: false})
     public annotationElement: ElementRef<HTMLElement>;
+    public dataLoading: boolean = true;
 
+    @AutoBind
     public mediaPlayerElementReady(): Observable<boolean> {
-        return of(this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && (this.mediaPlayerElement.getConfiguration().tcOffset != undefined));
+        if (this.mediaPlayerElement && (this.mediaPlayerElement.getMediaPlayer()) && (this.mediaPlayerElement.getConfiguration()) && (this.mediaPlayerElement.getConfiguration().tcOffset !== undefined)) {
+            return of(true);
+        } else {
+            return of(false);
+        }
+
     }
 
-    public waitForMediaElementToLoad(): Promise<number> {
-        return new Promise<number>((resolve, reject) => {
-            interval(10).pipe( // Vérifier toutes les 10 millisecondes
-                    switchMap(() => this.mediaPlayerElementReady()),
-                    takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
-            ).subscribe({
-                next: (conditionMet) => {
-                    if (conditionMet) {
-                        this.logger.info('tcOffset bien renseigné sur le mediaplayer element');
-                        resolve(this.mediaPlayerElement.getConfiguration().tcOffset);
-                    }
-                },
-                error: () => {
-                    reject(0);
-                },
-                complete: () => {
-                    this.logger.info('tcOffset bien renseigné')
+    @AutoBind
+    public waitForMediaElementToLoad(action: any): void {
+        this.subscriptionToWaitForMediaElementToLoad = interval(10).pipe(// Vérifier toutes les 10 millisecondes
+                switchMap(() => this.mediaPlayerElementReady()), takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
+                , takeUntil(timer(500))).subscribe({
+            next: (conditionMet) => {
+                if (conditionMet) {
+                    action(this.mediaPlayerElement.getConfiguration().tcOffset);
                 }
-            });
+            },
+            complete: () => this.logger.info('Plugin Annotation', 'tcOffset bien renseigné')
         });
+    }
+
+    @AutoBind
+    public setTcOffset(tcOffset: number) {
+        this.logger.debug("setTcOffset");
+        this.tcOffset = tcOffset
+        this.dataLoading = false;
+    }
+
+    ngOnInit(): void {
+        try {
+            super.ngOnInit();
+        } catch (e) {
+            this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
+        }
+        this.mediaPlayerElement.metadataManager.reloadDataSource('forAnnotations:').then(() => {
+            this.handleMetadataLoaded();
+        });
+        this.waitForMediaElementToLoad(this.setTcOffset.bind(this));
     }
 
     @AutoBind
@@ -81,12 +97,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
                 this.autoScroll = true;
             }
         }
-        this.mediaPlayerElement.metadataManager.reloadDataSource('forAnnotations:').then(() => {
-            this.handleMetadataLoaded();
-        });
-        this.waitForMediaElementToLoad().then(tcOffset => {
-            this.tcOffset = tcOffset;
-        });
     }
 
     /**
@@ -149,32 +159,35 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
     }
 
     public initializeNewSegment() {
-        this.waitForMediaElementToLoad().then(tcOffset => {
-            this.unselectAllSegments();
-            let tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-            tcIn = tcIn + this.tcOffset;
-            const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
-            const segmentToBeAdded: AnnotationLocalisation = {
-                label: 'Segment sans titre',
-                data: {
-                    displayMode: "readonly",
-                    selected: true,
-                    tcMax: maxDuration,
-                    tcThumbnail: tcIn
-                },
-                tc: 0,
-                tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset
-            };
+        this.waitForMediaElementToLoad(this.initSegmentData.bind(this));
+    }
 
-            //Thumbnail
-            segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
-            segmentToBeAdded.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+    @AutoBind
+    public initSegmentData(tcOffset: number) {
+        this.unselectAllSegments();
+        let tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        tcIn = tcIn + tcOffset;
+        const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
+        const segmentToBeAdded: AnnotationLocalisation = {
+            label: 'Segment sans titre',
+            data: {
+                displayMode: "readonly",
+                selected: true,
+                tcMax: maxDuration,
+                tcThumbnail: tcIn
+            },
+            tc: 0,
+            tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset
+        };
 
-            this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
-                type: 'init',
-                payload: segmentToBeAdded
-            });
+        //Thumbnail
+        segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
+        segmentToBeAdded.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+
+        this.segmentsInfo.subLocalisations.push(segmentToBeAdded);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, {
+            type: 'init',
+            payload: segmentToBeAdded
         });
     }
 
@@ -397,6 +410,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> {
         segment.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         segment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
         return segmentBeforeEdition;
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscriptionToWaitForMediaElementToLoad) {
+            this.subscriptionToWaitForMediaElementToLoad.unsubscribe();
+        }
     }
 
 }
