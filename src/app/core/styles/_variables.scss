@@ -25,6 +25,8 @@ $amalia-tooltip-opacity: var(--amalia-tooltip-opacity, .9);
 $amalia-error-z-index: var(--amalia-error-z-index, 6);
 $amalia-volume-slider-bg: var(--amalia-volume-slider-bg, rgb(255, 255, 255, 0.4));
 
+$amalia-plugin-colors-semantic-error-state: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
+
 $amalia-plugin-transcription-bg: var(--amalia-plugin-transcription-bg, #555);
 $amalia-plugin-transcription-bg-hover: var(--amalia-plugin-transcription-bg-hover, #dfeef3);
 $amalia-plugin-transcription-header: var(--amalia-plugin-transcription-header, #0086B1);
