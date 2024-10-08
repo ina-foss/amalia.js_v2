@@ -197,7 +197,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public completeSegmentData(tcOffset: number) {
         this.segmentsInfo.subLocalisations.forEach(localisation => {
             localisation.tcOffset = tcOffset;
-            localisation.data.tcMax = this.mediaPlayerElement.getMediaPlayer().getDuration();
+            localisation.data.tcMax = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
         })
     }
 
