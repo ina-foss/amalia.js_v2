@@ -12,7 +12,7 @@ import * as _ from "lodash";
 import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
-import {interval, Observable, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
+import {interval, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
 
 @Component({
     selector: 'amalia-annotation',
@@ -41,26 +41,27 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public dataLoading: boolean = true;
 
     @AutoBind
-    public mediaPlayerElementReady(): Observable<boolean> {
-        if (this.mediaPlayerElement && (this.mediaPlayerElement.getMediaPlayer()) && (this.mediaPlayerElement.getConfiguration()) && (this.mediaPlayerElement.getConfiguration().tcOffset !== undefined)) {
-            return of(true);
-        } else {
-            return of(false);
-        }
-
+    public mediaPlayerElementReady(): boolean {
+        return !!(this.mediaPlayerElement) && !!(this.mediaPlayerElement.getMediaPlayer()) && !!(this.mediaPlayerElement.getConfiguration()) && !!(this.mediaPlayerElement.getConfiguration().tcOffset);
     }
 
     @AutoBind
     public waitForMediaElementToLoad(action: any): void {
         this.subscriptionToWaitForMediaElementToLoad = interval(10).pipe(// Vérifier toutes les 10 millisecondes
-                switchMap(() => this.mediaPlayerElementReady()), takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
-                , takeUntil(timer(500))).subscribe({
-            next: (conditionMet) => {
-                if (conditionMet) {
+                switchMap(() => of(this.mediaPlayerElementReady())), takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
+                , takeUntil(timer(30000))).subscribe({
+            next: () => {
+                if (this.mediaPlayerElementReady()) {
                     action(this.mediaPlayerElement.getConfiguration().tcOffset);
                 }
             },
-            complete: () => this.logger.info('Plugin Annotation', 'tcOffset bien renseigné')
+            complete: () => {
+                if (this.mediaPlayerElementReady()) {
+                    this.logger.info('Plugin Annotation', 'tcOffset bien renseigné');
+                } else {
+                    this.logger.info('Plugin Annotation', 'tcOffset n\' a pas  été renseigné');
+                }
+            }
         });
     }
 
@@ -116,6 +117,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                         .getAnnotationLocalisations(metadataId);
                 if (annotationLocalisations && annotationLocalisations.length > 0) {
                     this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations);
+                    this.waitForMediaElementToLoad(this.completeSegmentData.bind(this));
                 }
                 // Add sort by tcin
                 if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
@@ -159,7 +161,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public initializeNewSegment() {
-        this.   waitForMediaElementToLoad(this.initSegmentData.bind(this));
+        this.waitForMediaElementToLoad(this.initSegmentData.bind(this));
     }
 
     @AutoBind
@@ -189,6 +191,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             type: 'init',
             payload: segmentToBeAdded
         });
+    }
+
+    @AutoBind
+    public completeSegmentData(tcOffset: number) {
+        this.segmentsInfo.subLocalisations.forEach(localisation => {
+            localisation.tcOffset = tcOffset;
+            localisation.data.tcMax = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        })
     }
 
     public editSegment(segment) {

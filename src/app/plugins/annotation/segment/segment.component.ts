@@ -359,7 +359,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     }
 
     public setIsDescriptionTruncated() {
-        interval(2).pipe(// Vérifier toutes les 10 millisecondes
+        interval(2).pipe(// Vérifier toutes les 2 millisecondes
                 switchMap(() => of(this.readOnlyDescriptionReady())),
                 takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
                 takeUntil(timer(2000))
