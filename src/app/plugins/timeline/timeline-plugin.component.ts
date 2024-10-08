@@ -67,7 +67,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private blocksIsOpen = false;
     private lastSelectedColorIdx = -1;
     private blocksDisplayStates: Map<string, boolean> = new Map<string, boolean>();
-    private managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION];
+    private managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE];
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
