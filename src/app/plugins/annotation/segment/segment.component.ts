@@ -1,7 +1,8 @@
 import {
+    AfterViewInit,
     Component,
     computed,
-    effect,
+    effect, ElementRef,
     EventEmitter,
     input,
     Input, OnInit,
@@ -10,7 +11,7 @@ import {
 } from '@angular/core';
 import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
 import {AbstractControl, NgForm} from "@angular/forms";
-import {debounceTime, of, Subscription} from "rxjs";
+import {debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer} from "rxjs";
 import {FormatUtils} from "../../../core/utils/format-utils";
 import {DEFAULT} from "../../../core/constant/default";
 import {MessageService} from "primeng/api";
@@ -21,7 +22,7 @@ import {switchMap} from 'rxjs/operators';
     templateUrl: './segment.component.html',
     styleUrl: './segment.component.scss',
 })
-export class SegmentComponent implements OnInit {
+export class SegmentComponent implements OnInit, AfterViewInit {
     //Inputs
     @Input({required: true})
     public segment: AnnotationLocalisation;
@@ -42,6 +43,14 @@ export class SegmentComponent implements OnInit {
     //ViewChilds
     @ViewChild('segmentForm')
     public segmentForm: NgForm;
+    @ViewChild('titlediv')
+    public titlediv: ElementRef;
+    @ViewChild('descp')
+    public descp: ElementRef;
+
+    public isEllipsed: boolean = false;
+    public isDescriptionCollapsed: boolean = true;
+    public isDescriptionTruncated: boolean = false;
 
     public timeFormatPattern = this.tcDisplayFormat === 'f' ? /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d:)(\d{2})$/ : /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
     private formChangesSubscriptions: Subscription[] = [];
@@ -86,6 +95,8 @@ export class SegmentComponent implements OnInit {
 
     public validateNewSegment() {
         this.actionEmitter.emit({type: "validate", payload: this.segment});
+        this.setIsEllipsed();
+        this.setIsDescriptionTruncated();
     }
 
     public setTc() {
@@ -280,6 +291,18 @@ export class SegmentComponent implements OnInit {
                 });
                 this.formChangesSubscriptions.push(keywordsSubscription);
             }
+            //title
+            const titleFormControl = this.segmentForm.form.controls['title'];
+            if (titleFormControl) {
+                const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
+                    if (value.length > 250) {
+                        titleFormControl.setErrors({'Error': true})
+                    } else {
+                        titleFormControl.setErrors(null);
+                    }
+                });
+                this.formChangesSubscriptions.push(titleChangesSubscription);
+            }
         }, 200);
     }
 
@@ -306,6 +329,56 @@ export class SegmentComponent implements OnInit {
     ngOnInit(): void {
         this.categories.set(this.segment.property?.filter(prop => prop.key === "category").map(prop => prop.value) ?? []);
         this.keywords.set(this.segment.property?.filter(prop => prop.key === "keyword").map(prop => prop.value) ?? []);
+    }
+
+    ngAfterViewInit(): void {
+        this.setIsEllipsed();
+        this.setIsDescriptionTruncated();
+    }
+
+    public readOnlyTitleReady(): boolean {
+        return !!(this.titlediv && this.titlediv.nativeElement);
+    }
+
+    public readOnlyDescriptionReady(): boolean {
+        return !!(this.descp && this.descp.nativeElement);
+    }
+
+    public setIsEllipsed() {
+        interval(2).pipe(// Vérifier toutes les 2 millisecondes
+                switchMap(() => of(this.readOnlyTitleReady())),
+                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+                takeUntil(timer(2000))
+        ).subscribe({
+            next: () => {
+                if (this.readOnlyTitleReady()) {
+                    this.isEllipsed = this.titlediv.nativeElement.scrollWidth > this.titlediv.nativeElement.clientWidth;
+                }
+            }
+        });
+    }
+
+    public setIsDescriptionTruncated() {
+        interval(2).pipe(// Vérifier toutes les 10 millisecondes
+                switchMap(() => of(this.readOnlyDescriptionReady())),
+                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+                takeUntil(timer(2000))
+        ).subscribe({
+            next: () => {
+                if (this.readOnlyDescriptionReady()) {
+                    this.descp.nativeElement.getBoundingClientRect();
+                    const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
+                    const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
+                    this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 4);
+                }
+            }
+        });
+    }
+
+
+    public toggleDescription(event: Event) {
+        event.preventDefault();
+        this.isDescriptionCollapsed = !this.isDescriptionCollapsed;
     }
 
 }
