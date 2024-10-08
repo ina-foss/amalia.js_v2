@@ -3,7 +3,7 @@ import {
     Component,
     computed,
     effect, ElementRef,
-    EventEmitter, HostListener,
+    EventEmitter,
     input,
     Input, OnInit,
     Output, signal,
@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
 import {AbstractControl, NgForm} from "@angular/forms";
-import {debounceTime, interval, Observable, of, Subscription, takeUntil, takeWhile, timer} from "rxjs";
+import {debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer} from "rxjs";
 import {FormatUtils} from "../../../core/utils/format-utils";
 import {DEFAULT} from "../../../core/constant/default";
 import {MessageService} from "primeng/api";
@@ -96,6 +96,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public validateNewSegment() {
         this.actionEmitter.emit({type: "validate", payload: this.segment});
         this.setIsEllipsed();
+        this.setIsDescriptionTruncated();
     }
 
     public setTc() {
@@ -332,24 +333,44 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.setIsEllipsed();
+        this.setIsDescriptionTruncated();
     }
 
-    public readOnlyElementsReady(): Observable<boolean> {
-        return of(this.titlediv.nativeElement && this.descp.nativeElement);
+    public readOnlyTitleReady(): boolean {
+        return !!(this.titlediv && this.titlediv.nativeElement);
     }
 
-    @HostListener('mouseenter', ['$event'])
-    private setIsEllipsed() {
-        interval(5).pipe(// Vérifier toutes les 10 millisecondes
-                switchMap(() => this.readOnlyElementsReady()), takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
-                , takeUntil(timer(100))).subscribe({
+    public readOnlyDescriptionReady(): boolean {
+        return !!(this.descp && this.descp.nativeElement);
+    }
+
+    public setIsEllipsed() {
+        interval(2).pipe(// Vérifier toutes les 2 millisecondes
+                switchMap(() => of(this.readOnlyTitleReady())),
+                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+                takeUntil(timer(2000))
+        ).subscribe({
             next: () => {
-                this.isEllipsed = this.titlediv.nativeElement.scrollWidth > this.titlediv.nativeElement.clientWidth;
+                if (this.readOnlyTitleReady()) {
+                    this.isEllipsed = this.titlediv.nativeElement.scrollWidth > this.titlediv.nativeElement.clientWidth;
+                }
+            }
+        });
+    }
 
-                this.descp.nativeElement.getBoundingClientRect();
-                const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
-                const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
-                this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 4);
+    public setIsDescriptionTruncated() {
+        interval(2).pipe(// Vérifier toutes les 10 millisecondes
+                switchMap(() => of(this.readOnlyDescriptionReady())),
+                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+                takeUntil(timer(2000))
+        ).subscribe({
+            next: () => {
+                if (this.readOnlyDescriptionReady()) {
+                    this.descp.nativeElement.getBoundingClientRect();
+                    const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
+                    const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
+                    this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 4);
+                }
             }
         });
     }

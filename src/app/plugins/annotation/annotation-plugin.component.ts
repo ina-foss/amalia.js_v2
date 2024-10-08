@@ -159,7 +159,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public initializeNewSegment() {
-        this.waitForMediaElementToLoad(this.initSegmentData.bind(this));
+        this.   waitForMediaElementToLoad(this.initSegmentData.bind(this));
     }
 
     @AutoBind

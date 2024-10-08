@@ -282,6 +282,7 @@
 
     p {
       white-space: pre-wrap;
+      word-wrap: break-word;
       margin: 0;
       line-height: 150%; /* 21px */
     }
@@ -301,12 +302,15 @@
       .withShadowUp {
         max-height: 12px;
         cursor: pointer;
+        bottom: calc(-1 * $amalia-spacings-space-space-sm);
+        position: relative;
       }
 
       .withShadowDown {
-        margin-top: 0;
         max-height: 12px;
         cursor: pointer;
+        bottom: calc(-1 * $amalia-spacings-space-space-sm);
+        position: relative;
       }
 
       .icon {
