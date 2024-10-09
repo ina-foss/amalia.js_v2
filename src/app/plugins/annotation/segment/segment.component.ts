@@ -74,7 +74,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
         });
         return prop;
-    })
+    });
+    public propertyBeforeEdition: { key: string; value: string }[] = [];
+    private editionAlreadyActivated: boolean = false;
 
     constructor(private messageService: MessageService) {
         effect(() => {
@@ -245,78 +247,85 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     }
 
     private activateEdition() {
-        this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
-        this.tcInFormatted = FormatUtils.formatTime(this.segment.tcIn, this.tcDisplayFormat, this.fps);
-        this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
-        setTimeout(() => {
-            //tcout edition
-            const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
-            if (tcOutFormControl) {
-                const tcOutSubscription = tcOutFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                    return of(this.tcValidators("tcOut", value));
-                })).subscribe(value => {
-                    this.afterTcOutValidation(value, tcOutFormControl);
-                });
-                this.formChangesSubscriptions.push(tcOutSubscription);
-            }
+        if(!this.editionAlreadyActivated) {
+            this.propertyBeforeEdition = structuredClone(this.property());
+            this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
+            this.tcInFormatted = FormatUtils.formatTime(this.segment.tcIn, this.tcDisplayFormat, this.fps);
+            this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
+            setTimeout(() => {
+                //tcout edition
+                const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
+                if (tcOutFormControl) {
+                    const tcOutSubscription = tcOutFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
+                        return of(this.tcValidators("tcOut", value));
+                    })).subscribe(value => {
+                        this.afterTcOutValidation(value, tcOutFormControl);
+                    });
+                    this.formChangesSubscriptions.push(tcOutSubscription);
+                }
 
-            //tcIn edition
-            const tcInFormControl = this.segmentForm.form.controls['tcIn'];
-            if (tcInFormControl) {
-                const tcInSubscription = tcInFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                    return of(this.tcValidators("tcIn", value));
-                })).subscribe(value => {
-                    this.afterTcInValidation(value, tcInFormControl);
-                });
-                this.formChangesSubscriptions.push(tcInSubscription);
-            }
-            //tc edition
-            const tcFormControl = this.segmentForm.form.controls['tc'];
-            if (tcFormControl) {
-                const tcSubscription = tcFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                    return of(this.tcValidators("tc", value));
-                })).subscribe(value => {
-                    this.afterTcValidation(value, tcFormControl);
-                });
-                this.formChangesSubscriptions.push(tcSubscription);
-            }
-            //categories
-            const categoriesFormControl = this.segmentForm.form.controls['categories'];
-            if (categoriesFormControl) {
-                const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(800)).subscribe(() => {
-                    this.segment.property = this.property();
-                });
-                this.formChangesSubscriptions.push(categoriesSubscription);
-            }
-            //keywords
-            const keywordsFormControl = this.segmentForm.form.controls['keywords'];
-            if (keywordsFormControl) {
-                const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(800)).subscribe(() => {
-                    this.segment.property = this.property();
-                });
-                this.formChangesSubscriptions.push(keywordsSubscription);
-            }
-            //title
-            const titleFormControl = this.segmentForm.form.controls['title'];
-            if (titleFormControl) {
-                const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
-                    if (value.length > 250) {
-                        titleFormControl.setErrors({'Error': true})
-                    } else {
-                        titleFormControl.setErrors(null);
-                    }
-                });
-                this.formChangesSubscriptions.push(titleChangesSubscription);
-            }
-        }, 200);
+                //tcIn edition
+                const tcInFormControl = this.segmentForm.form.controls['tcIn'];
+                if (tcInFormControl) {
+                    const tcInSubscription = tcInFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
+                        return of(this.tcValidators("tcIn", value));
+                    })).subscribe(value => {
+                        this.afterTcInValidation(value, tcInFormControl);
+                    });
+                    this.formChangesSubscriptions.push(tcInSubscription);
+                }
+                //tc edition
+                const tcFormControl = this.segmentForm.form.controls['tc'];
+                if (tcFormControl) {
+                    const tcSubscription = tcFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
+                        return of(this.tcValidators("tc", value));
+                    })).subscribe(value => {
+                        this.afterTcValidation(value, tcFormControl);
+                    });
+                    this.formChangesSubscriptions.push(tcSubscription);
+                }
+                //categories
+                const categoriesFormControl = this.segmentForm.form.controls['categories'];
+                if (categoriesFormControl) {
+                    const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(800)).subscribe(() => {
+                        this.segment.property = this.property();
+                    });
+                    this.formChangesSubscriptions.push(categoriesSubscription);
+                }
+                //keywords
+                const keywordsFormControl = this.segmentForm.form.controls['keywords'];
+                if (keywordsFormControl) {
+                    const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(800)).subscribe(() => {
+                        this.segment.property = this.property();
+                    });
+                    this.formChangesSubscriptions.push(keywordsSubscription);
+                }
+                //title
+                const titleFormControl = this.segmentForm.form.controls['title'];
+                if (titleFormControl) {
+                    const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
+                        if (value.length > 250) {
+                            titleFormControl.setErrors({'Error': true})
+                        } else {
+                            titleFormControl.setErrors(null);
+                        }
+                    });
+                    this.formChangesSubscriptions.push(titleChangesSubscription);
+                }
+            }, 200);
+            this.editionAlreadyActivated = true;
+        }
     }
 
     public editSegment() {
+        this.editionAlreadyActivated = false;
         this.actionEmitter.emit({type: "edit", payload: this.segment});
     }
 
     public cancelNewSegmentCreation() {
         this.actionEmitter.emit({type: "cancel", payload: this.segment});
+        this.setCategoriesFromProperty(this.propertyBeforeEdition);
+        this.setKeywordsFromProperty(this.propertyBeforeEdition);
     }
 
     public cloneSegment() {
@@ -331,9 +340,17 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.actionEmitter.emit({type: "updatethumbnail", payload: this.segment});
     }
 
+    public setCategoriesFromProperty(props) {
+        this.categories.set(props?.filter(prop => prop.key === "category").map(prop => prop.value) ?? []);
+    }
+
+    public setKeywordsFromProperty(props) {
+        this.keywords.set(props?.filter(prop => prop.key === "keyword").map(prop => prop.value) ?? []);
+    }
+
     ngOnInit(): void {
-        this.categories.set(this.segment.property?.filter(prop => prop.key === "category").map(prop => prop.value) ?? []);
-        this.keywords.set(this.segment.property?.filter(prop => prop.key === "keyword").map(prop => prop.value) ?? []);
+        this.setCategoriesFromProperty(this.segment.property);
+        this.setKeywordsFromProperty(this.segment.property);
     }
 
     ngAfterViewInit(): void {
