@@ -94,9 +94,14 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     }
 
     public validateNewSegment() {
-        this.actionEmitter.emit({type: "validate", payload: this.segment});
-        this.setIsEllipsed();
-        this.setIsDescriptionTruncated();
+        this.doCheckTcIn();
+        this.doCheckTcOut();
+        this.doCheckTc();
+        if (this.segmentForm.valid) {
+            this.actionEmitter.emit({type: "validate", payload: this.segment});
+            this.setIsEllipsed();
+            this.setIsDescriptionTruncated();
+        }
     }
 
     public setTc() {
