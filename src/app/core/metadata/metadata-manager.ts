@@ -62,7 +62,7 @@ export class MetadataManager {
                     dataSources.forEach(dataSource => {
                         let annotationMetadata = !!dataSource.headers?.find(key => key.includes(headerKey));
                         if (annotationMetadata) {
-                            this.loadDataSource(dataSource, resolve)
+                            this.loadDataSource(dataSource, resolve, reject)
                                     .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                         }
                     });
@@ -195,8 +195,9 @@ export class MetadataManager {
      * In charge to load data
      * @param loadData ConfigDataSource
      * @param completed
+     * @param reject
      */
-    private async loadDataSource(loadData: ConfigDataSource, completed) {
+    private async loadDataSource(loadData: ConfigDataSource, completed, reject?: any) {
         if (loadData && loadData.url) {
             this.logger.info("loadDataSource", loadData.headers);
             let annotationMetadata = !!loadData.headers?.find(key => key.includes('forAnnotations:'));
@@ -219,7 +220,12 @@ export class MetadataManager {
                         }
 
                     })
-                    .catch(() => this.errorToLoadMetadata(loadData.url, completed));
+                    .catch((err) => {
+                        this.errorToLoadMetadata(loadData.url, completed);
+                        if (reject && annotationMetadata) {
+                            reject({url: loadData.url, error: err});
+                        }
+                    });
         } else {
             this.logger.warn('Error to load data source');
         }
