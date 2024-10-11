@@ -47,8 +47,8 @@ export class MetadataManager {
         });
     }
 
-    public reloadDataSource(headerKey: string) {
-        return new Promise<void>((resolve, reject) => {
+    public reloadDataSource(headerKey: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
                 this.toLoadData = 0;
@@ -67,12 +67,12 @@ export class MetadataManager {
                         }
                     });
                 } else {
-                    resolve();
+                    resolve(undefined);
                 }
                 // resolve() called on complete
             } else {
                 this.logger.info('Can\'t find data sources');
-                reject();
+                reject('Can\'t find data sources');
             }
         });
     }
@@ -221,9 +221,10 @@ export class MetadataManager {
 
                     })
                     .catch((err) => {
-                        this.errorToLoadMetadata(loadData.url, completed);
                         if (reject && annotationMetadata) {
                             reject({url: loadData.url, error: err});
+                        } else {
+                            this.errorToLoadMetadata(loadData.url, completed);
                         }
                     });
         } else {

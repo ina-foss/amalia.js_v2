@@ -24,6 +24,7 @@ function isFnParam(obj: any): obj is FnParam {
     return obj && typeof obj === 'object' && 'fn' in obj && 'param' in obj;
 }
 
+
 @Component({
     selector: 'amalia-annotation',
     templateUrl: './annotation-plugin.component.html',
@@ -64,6 +65,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             } else {
                 functionWithParam();
             }
+        }
+    }
+
+    sortAnnotations() {
+        if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
+            this.segmentsInfo.subLocalisations = _.sortBy(this.segmentsInfo.subLocalisations, ['tcIn']);
         }
     }
 
@@ -109,7 +116,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.mediaPlayerElement.metadataManager.reloadDataSource('forAnnotations:').then(() => {
             this.handleMetadataLoaded();
         }).catch((err) => {
-            this.displaySnackBar(err ? err : 'Une erreur technique est survenue, impossible de charger les annotations!', 'error')
+            this.displaySnackBar('Un incident technique empêche le chargement des annotations!', 'error', 10000);
+            this.logger.debug(`Un incident technique empêche le chargement des annotations! Back end injoignable: ${err.url}`);
         });
         this.waitFor(this.mediaPlayerElementReady.bind(this), this.setTcOffset.bind(this),
                 this.logWaitForTcOffsetComplete.bind(this));
@@ -154,9 +162,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     this.waitFor(this.mediaPlayerElementReady.bind(this), this.setSegmentsTcOffsetAndTcMax.bind(this), this.logWaitForTcOffsetComplete.bind(this));
                 }
                 // Add sort by tcin
-                if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
-                    this.segmentsInfo.subLocalisations = _.sortBy(this.segmentsInfo.subLocalisations, ['tcIn']);
-                }
+                this.sortAnnotations();
             });
         }
     }
@@ -200,6 +206,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     @AutoBind
     public initSegmentData() {
+        this.dataLoading = true;
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.unselectAllSegments();
         let tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
@@ -229,13 +236,21 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.waitFor(() => event.status != undefined, undefined, {
             fn: this.addSegmentToSegmentsInfo.bind(this),
             param: event
-        }, 5, 6000);
+        }, 5, 5000);
         this.manageEventResponseStatus(event);
     }
 
     private addSegmentToSegmentsInfo(event) {
         if (event.status === 'success') {
             this.segmentsInfo.subLocalisations.push(event.payload);
+        }
+        this.dataLoading = false;
+    }
+
+    private removeSegmentFromSegmentsInfo(event) {
+        if (event.status === 'success') {
+            const indexOfSegment = this.segmentsInfo.subLocalisations.indexOf(event.payload);
+            this.segmentsInfo.subLocalisations.splice(indexOfSegment, 1);
         }
     }
 
@@ -284,10 +299,13 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.segmentsInfo?.subLocalisations?.forEach(segment => segment.data.selected = false);
     }
 
-    public saveSegment(segment) {
-        segment.data.selected = true;
-        segment.data.displayMode = "readonly";
-        //code to save the segmentsIfo into the persistence unit
+    public saveSegment(event) {
+        if (event.status === 'success') {
+            event.payload.segment.data.selected = true;
+            event.payload.segment.data.displayMode = "readonly";
+            //code to save the segmentsIfo into the persistence unit
+        }
+        this.dataLoading = false;
     }
 
     public cancelNewSegmentEdition(segment) {
@@ -307,11 +325,15 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             acceptLabel: "Supprimer",
             accept: () => {
                 this.unselectAllSegments();
-                const event = {
+                const event: any = {
                     type: 'remove',
-                    payload: {segment, segmentsInfo: this.segmentsInfo}
+                    payload: segment
                 };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_REMOVE, event);
+                this.waitFor(() => event.status != undefined, undefined, {
+                    fn: this.removeSegmentFromSegmentsInfo.bind(this),
+                    param: event
+                }, 5, 5000);
                 this.manageEventResponseStatus(event);
             },
             reject: () => {
@@ -338,9 +360,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     manageSegment(event) {
         switch (event.type) {
             case 'validate':
-                this.saveSegment(event.payload);
                 event.payload = {segment: event.payload, segmentBeforeEdition: this.segmentBeforeEdition};
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
+                this.waitFor(() => event.status === 'success', undefined, {
+                    fn: this.saveSegment.bind(this),
+                    param: event
+                }, 5, 5000);
                 this.manageEventResponseStatus(event);
                 return;
             case 'edit':
@@ -402,19 +427,22 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 selectedSegment.tcOut = mediaTc;
                 selectedSegment.tcIn = mediaTc;
                 this.setTc(selectedSegment);
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, {
+                const event = {
                     type: 'setTcIn',
                     payload: {segment: selectedSegment, segmentBeforeEdition}
-                });
+                };
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
+                this.manageEventResponseStatus(event);
             } else if (mediaTc <= maxTcOut) {
                 //set tcIn
                 selectedSegment.tcIn = mediaTc;
                 //set tc
                 this.setTc(selectedSegment);
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, {
+                const event = {
                     type: 'setTcIn',
                     payload: {segment: selectedSegment, segmentBeforeEdition}
-                });
+                };
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
             } else {
                 this.displaySnackBar('le TC IN doit être compris entre le TC IN et le TC OUT de l\'intégral');
             }
@@ -434,10 +462,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 selectedSegment.tcOut = mediaTc;
                 //set tc
                 this.setTc(selectedSegment);
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, {
+                const event = {
                     type: 'setTcOut',
                     payload: {segment: selectedSegment, segmentBeforeEdition}
-                });
+                };
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
             }
         }
 
@@ -454,13 +483,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.segmentsInfo.data.lastModificationUser = '';
     }
 
-    public displaySnackBar(msgContent, severity?: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary') {
+    public displaySnackBar(msgContent, severity?: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary', life?: number) {
         const _severity = severity ? severity : 'error';
         this.messageService.add({
             severity: _severity,
             summary: TextUtils.capitalizeFirstLetter(_severity),
             detail: msgContent,
-            key: 'br'
+            key: 'br',
+            life: life ?? 1500
         });
     }
 
