@@ -78,6 +78,7 @@
     .segment-tc {
       display: flex;
       flex-direction: row;
+      justify-content: space-between;
       width: 100%;
     }
 
@@ -232,6 +233,7 @@
         .readonly-segment-tc {
           display: flex;
           flex-direction: row;
+          justify-content: space-between;
 
           .readonly-segment-tc-item {
             display: flex;

@@ -14,15 +14,15 @@
                     </small>
                 </div>
                 <div class="segment-tc gap-2">
-                    <div class="flex flex-column gap-2">
-                        <label for="tcIn">TC Début</label>
+                    <div class="flex flex-row align-items-center gap-2">
+                        <label for="tcIn">Début</label>
                         <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted"/>
                     </div>
-                    <div class="flex flex-column gap-2">
-                        <label for="tcOut">TC Fin</label>
+                    <div class="flex flex-row align-items-center gap-2">
+                        <label for="tcOut">Fin</label>
                         <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted"/>
                     </div>
-                    <div class="flex flex-column gap-2">
+                    <div class="flex flex-row align-items-center gap-2">
                         <label for="tc">Durée</label>
                         <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted"/>
                     </div>
@@ -34,6 +34,12 @@
                             <label for="categories">Catégories</label>
                         </p-floatLabel>
                     </div>
+                    <div class="segment-keywords">
+                        <p-floatLabel>
+                            <p-chips id="keywords" name="keywords" [(ngModel)]="keywords"/>
+                            <label for="keywords">Mots-clés</label>
+                        </p-floatLabel>
+                    </div>
                     <div class="segment-description">
                         <p-floatLabel>
                              <textarea id="description" name="description" [(ngModel)]="segment.description" rows="5"
@@ -41,12 +47,6 @@
                                        pInputTextarea
                                        [autoResize]="true"></textarea>
                             <label for="description">Description</label>
-                        </p-floatLabel>
-                    </div>
-                    <div class="segment-keywords">
-                        <p-floatLabel>
-                            <p-chips id="keywords" name="keywords" [(ngModel)]="keywords"/>
-                            <label for="keywords">Mots-clés</label>
                         </p-floatLabel>
                     </div>
                 </div>
