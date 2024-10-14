@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 /**
  * In charge to handle search text
  */
@@ -8,6 +6,7 @@ export class TextUtils {
     public static removeDiacritics(str: string): string {
         return str.normalize('NFD').replace(/\p{Diacritic}/gu, '');
     }
+
     /**
      * Utils in charge search text with normalize
      * @param text main text
@@ -20,9 +19,16 @@ export class TextUtils {
             normalizeText = this.removeDiacritics(normalizeText);
             normalizeSearchText = this.removeDiacritics(normalizeSearchText);
             const searchRegexp = new RegExp('(.*' + normalizeSearchText + '.*)', 'i');
-            // const searchRegexp = new RegExp(searchText.normalize('NFC').toLocaleLowerCase(), 'i');
             return normalizeText.search(searchRegexp) !== -1;
         }
         return false;
+    }
+
+    /**
+     * Mets le premier caractère du mot en majuscule
+     */
+    public static capitalizeFirstLetter(word) {
+        if (!word) return word; // Vérifie si le mot n'est pas vide
+        return word.charAt(0).toUpperCase() + word.slice(1);
     }
 }

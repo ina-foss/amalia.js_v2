@@ -21,7 +21,8 @@ export interface AnnotationConfig {
     labelSynchro: string;
     key?: string;
     /**
-     * Custom data control
+     * delai d'attente de la reponse des services back end
+     * qui gèrent le CRUD des annotations
      */
-    data?: any;
+    timeout?: number;
 }

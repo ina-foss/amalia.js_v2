@@ -47,8 +47,8 @@ export class MetadataManager {
         });
     }
 
-    public reloadDataSource(headerKey: string) {
-        return new Promise<void>((resolve, reject) => {
+    public reloadDataSource(headerKey: string): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
                 this.toLoadData = 0;
@@ -62,17 +62,17 @@ export class MetadataManager {
                     dataSources.forEach(dataSource => {
                         let annotationMetadata = !!dataSource.headers?.find(key => key.includes(headerKey));
                         if (annotationMetadata) {
-                            this.loadDataSource(dataSource, resolve)
+                            this.loadDataSource(dataSource, resolve, reject)
                                     .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                         }
                     });
                 } else {
-                    resolve();
+                    resolve(undefined);
                 }
                 // resolve() called on complete
             } else {
                 this.logger.info('Can\'t find data sources');
-                reject();
+                reject('Can\'t find data sources');
             }
         });
     }
@@ -195,8 +195,9 @@ export class MetadataManager {
      * In charge to load data
      * @param loadData ConfigDataSource
      * @param completed
+     * @param reject
      */
-    private async loadDataSource(loadData: ConfigDataSource, completed) {
+    private async loadDataSource(loadData: ConfigDataSource, completed, reject?: any) {
         if (loadData && loadData.url) {
             this.logger.info("loadDataSource", loadData.headers);
             let annotationMetadata = !!loadData.headers?.find(key => key.includes('forAnnotations:'));
@@ -219,7 +220,13 @@ export class MetadataManager {
                         }
 
                     })
-                    .catch(() => this.errorToLoadMetadata(loadData.url, completed));
+                    .catch((err) => {
+                        if (reject && annotationMetadata) {
+                            reject({url: loadData.url, error: err});
+                        } else {
+                            this.errorToLoadMetadata(loadData.url, completed);
+                        }
+                    });
         } else {
             this.logger.warn('Error to load data source');
         }

@@ -37,6 +37,12 @@
       font-family: $amalia-font-family-lato;
       font-size: 14px;
     }
+
+    .p-dialog {
+      width: 640px;
+      border-radius: 0;
+      padding: 15px;
+    }
   }
 
   .no-highlight {
@@ -86,7 +92,7 @@
     .segment-empty {
       bottom: 0;
       position: relative;
-      max-height:34px;
+      max-height: 34px;
       min-height: 34px;
     }
   }
