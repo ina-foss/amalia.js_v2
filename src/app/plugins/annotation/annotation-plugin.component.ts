@@ -202,12 +202,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     public initializeNewSegment() {
         this.dataLoading = true;
-        this.waitFor(this.mediaPlayerElementReady.bind(this), this.initSegmentData.bind(this), this.logWaitForTcOffsetComplete.bind(this));
+        this.waitFor(this.mediaPlayerElementReady.bind(this), undefined, this.initSegmentData.bind(this));
     }
 
     @AutoBind
     public initSegmentData() {
-        if(this.mediaPlayerElementReady()) {
+        if (this.mediaPlayerElementReady()) {
             const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
             this.unselectAllSegments();
             let tcIn = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
@@ -234,12 +234,15 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 payload: segmentToBeAdded
             };
             this.dataLoading = true;
+            this.cdr.detectChanges();
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, event);
             this.waitFor(() => event.status != undefined, undefined, {
                 fn: this.addSegmentToSegmentsInfo.bind(this),
                 param: event
             }, 5, 10000);
             this.manageEventResponseStatus(event);
+        } else {
+            this.logWaitForTcOffsetComplete();
         }
     }
 
