@@ -1,4 +1,5 @@
 export interface AnnotationConfig {
+    noSpinner?: boolean;
     /**
      * Plugin title
      */
