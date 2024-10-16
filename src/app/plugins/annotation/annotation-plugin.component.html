@@ -46,7 +46,7 @@
         </p-confirmDialog>
     </div>
     <div class="segments scrollable-content" #annotationElement>
-        <div *ngIf="dataLoading" class="card flex justify-content-center spinner-background">
+        <div *ngIf="!noSpinner && dataLoading" class="card flex justify-content-center spinner-background">
             <p-progressSpinner ariaLabel="loading" />
         </div>
         <ng-container>

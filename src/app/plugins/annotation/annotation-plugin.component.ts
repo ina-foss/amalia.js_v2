@@ -52,6 +52,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public annotationElement: ElementRef<HTMLElement>;
     public dataLoading: boolean = true;
     public timeout = 30000;
+    noSpinner: boolean = true;
 
     @AutoBind
     public mediaPlayerElementReady(): boolean {
@@ -136,6 +137,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             if (this.pluginConfiguration.data.autoScroll) {
                 this.autoScroll = true;
             }
+            if (this.pluginConfiguration.data.noSpinner != undefined) {
+                this.noSpinner = this.pluginConfiguration.data.noSpinner;
+            }
+
             if (this.pluginConfiguration.data.timeout) {
                 this.timeout = this.pluginConfiguration.data.timeout;
             }
@@ -401,7 +406,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, _event);
                 this.dataLoading = true;
                 //Nous attendons un retour après l'émission de l'évènement. Quand on a un success, on ajoute le segment cloné
-                const param = {segment: event.payload, index: 0, event: _event};
+                const param = {index: 0, sourceSegment: event.payload, event: _event};
                 param.index = this.segmentsInfo.subLocalisations.indexOf(event.payload) + 1;
                 this.waitFor(() => _event.status === 'success', undefined, {
                     fn: this.addSegmentAtIndex.bind(this),
@@ -437,13 +442,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         newSegmentCopy.data.selected = true;
         newSegmentCopy.label = 'Copie de ' + sourceSegment.label;
         newSegmentCopy.id = undefined;
-        sourceSegment.data.selected = false;
         return newSegmentCopy;
     }
 
-    private addSegmentAtIndex(param: { segment: AnnotationLocalisation; index: number; event: any }) {
+    private addSegmentAtIndex(param: { index: number; sourceSegment: AnnotationLocalisation; event: any }) {
         if (param.event.status === 'success') {
-            this.segmentsInfo.subLocalisations.splice(param.index, 0, param.segment);
+            this.segmentsInfo.subLocalisations.splice(param.index, 0, param.event.payload);
+            param.sourceSegment.data.selected = false;
+            this.cdr.detectChanges();
         }
         this.dataLoading = false;
     }
