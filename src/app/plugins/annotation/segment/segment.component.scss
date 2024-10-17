@@ -276,12 +276,26 @@
           p-chip {
             margin-top: $amalia-spacings-space-space-sm;
           }
+
+          .p-chip-text {
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
         }
 
         .readonly-segment-keywords {
           display: flex;
           gap: $amalia-spacings-space-space-sm;
           margin-bottom: $amalia-spacings-space-space-sm;
+
+          .p-chip-text {
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
         }
       }
     }

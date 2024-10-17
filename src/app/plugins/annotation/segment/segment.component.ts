@@ -442,4 +442,12 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
         });
     }
+
+    displayRemaining(items: string[], minus: number) {
+        let result = '';
+        if (items.length > minus) {
+            result = items.slice(minus).join('; ');
+        }
+        return result;
+    }
 }

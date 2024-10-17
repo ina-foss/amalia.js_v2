@@ -2,7 +2,6 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
-    Input,
     OnDestroy,
     OnInit,
     ViewChild,
@@ -142,7 +141,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         super.init();
         if (this.pluginConfiguration.data) {
             this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
-   
+
             if (this.pluginConfiguration.data.fps) {
                 this.fps = this.pluginConfiguration.data.fps;
             }
