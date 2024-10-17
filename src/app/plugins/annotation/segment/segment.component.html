@@ -30,13 +30,23 @@
                 <div class="segment-details">
                     <div class="segment-categories">
                         <p-floatLabel>
-                            <p-chips id="categories" name="categories" [(ngModel)]="categories"/>
+                            <p-autoComplete id="categories" name="categories" [(ngModel)]="categories"
+                                            [suggestions]="filteredCategories"
+                                            (completeMethod)="searchCategories($event)"
+                                            [multiple]="true" inputId="categories"
+                                            [forceSelection]="true"
+                                            (ngModelChange)="addToAvailableCategories($event)"></p-autoComplete>
                             <label for="categories">Catégories</label>
                         </p-floatLabel>
                     </div>
                     <div class="segment-keywords">
                         <p-floatLabel>
-                            <p-chips id="keywords" name="keywords" [(ngModel)]="keywords"/>
+                            <p-autoComplete id="keywords" name="keywords" [(ngModel)]="keywords"
+                                            [suggestions]="filteredKeywords"
+                                            (completeMethod)="searchKeywords($event)"
+                                            [multiple]="true" inputId="keywords"
+                                            [forceSelection]="true"
+                                            (ngModelChange)="addToAvailableKeywords($event)"></p-autoComplete>
                             <label for="keywords">Mots-clés</label>
                         </p-floatLabel>
                     </div>

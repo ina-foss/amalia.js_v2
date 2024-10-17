@@ -1,4 +1,6 @@
 export interface AnnotationConfig {
+    availableCategories?: string[];
+    availableKeywords?: string[];
     noSpinner?: boolean;
     /**
      * Plugin title

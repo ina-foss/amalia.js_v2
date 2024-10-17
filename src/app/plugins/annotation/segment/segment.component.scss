@@ -88,12 +88,20 @@
       align-items: flex-start;
       gap: $amalia-spacings-space-space-sm;
 
-      .p-chips, .p-chips-multiple-container, textarea {
+      textarea {
         width: 100%;
       }
 
       .segment-categories {
         width: 100%;
+
+        .p-autocomplete {
+          width: 100%
+        }
+
+        .p-autocomplete-multiple-container {
+          width: 100%
+        }
       }
 
       .segment-description {
@@ -102,6 +110,14 @@
 
       .segment-keywords {
         width: 100%;
+
+        .p-autocomplete {
+          width: 100%
+        }
+
+        .p-autocomplete-multiple-container {
+          width: 100%
+        }
       }
 
     }
