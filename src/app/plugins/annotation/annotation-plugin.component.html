@@ -47,14 +47,16 @@
     </div>
     <div class="segments scrollable-content" #annotationElement>
         <div *ngIf="!noSpinner && dataLoading" class="card flex justify-content-center spinner-background">
-            <p-progressSpinner ariaLabel="loading" />
+            <p-progressSpinner ariaLabel="loading"/>
         </div>
         <ng-container>
             <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations">
                 <amalia-segment [segment]="segment" [tcIn]="segment.tcIn" [tcOut]="segment.tcOut"
                                 [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
                                 [fps]="fps"
-                                (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"/>
+                                (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"
+                                [availableCategories]="availableCategories"
+                                [availableKeywords]="availableKeywords"/>
             </div>
         </ng-container>
 

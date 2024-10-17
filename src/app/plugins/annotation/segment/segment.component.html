@@ -30,13 +30,23 @@
                 <div class="segment-details">
                     <div class="segment-categories">
                         <p-floatLabel>
-                            <p-chips id="categories" name="categories" [(ngModel)]="categories"/>
+                            <p-autoComplete id="categories" name="categories" [(ngModel)]="categories"
+                                            [suggestions]="filteredCategories"
+                                            (completeMethod)="searchCategories($event)"
+                                            [multiple]="true" inputId="categories"
+                                            [forceSelection]="true"
+                                            (ngModelChange)="addToAvailableCategories($event)"></p-autoComplete>
                             <label for="categories">Catégories</label>
                         </p-floatLabel>
                     </div>
                     <div class="segment-keywords">
                         <p-floatLabel>
-                            <p-chips id="keywords" name="keywords" [(ngModel)]="keywords"/>
+                            <p-autoComplete id="keywords" name="keywords" [(ngModel)]="keywords"
+                                            [suggestions]="filteredKeywords"
+                                            (completeMethod)="searchKeywords($event)"
+                                            [multiple]="true" inputId="keywords"
+                                            [forceSelection]="true"
+                                            (ngModelChange)="addToAvailableKeywords($event)"></p-autoComplete>
                             <label for="keywords">Mots-clés</label>
                         </p-floatLabel>
                     </div>
@@ -105,7 +115,14 @@
                             <p-divider/>
                             <div class="readonly-segment-categories">
                                 <ng-container *ngIf="categories().length > 0">
-                                    <p-chip *ngFor="let category of categories()" [label]="category"/>
+                                    <ng-container *ngIf="categories().length > 3">
+                                        <p-chip *ngFor="let category of categories().slice(0,3)" [label]="category"/>
+                                        <p-chip [label]=" '+' + (categories().length - 3)"
+                                                [tooltip]="displayRemaining(categories(),3)"/>
+                                    </ng-container>
+                                    <ng-container *ngIf="categories().length <= 3">
+                                        <p-chip *ngFor="let category of categories()" [label]="category"/>
+                                    </ng-container>
                                 </ng-container>
                                 <ng-container *ngIf="categories().length === 0">
                                     Catégories: aucune
@@ -113,7 +130,14 @@
                             </div>
                             <div class="readonly-segment-keywords">
                                 <ng-container *ngIf="keywords().length > 0">
-                                    <p-chip *ngFor="let keyword of keywords()" [label]="keyword"/>
+                                    <ng-container *ngIf="keywords().length > 3">
+                                        <p-chip *ngFor="let keyword of keywords().slice(0,3)" [label]="keyword"/>
+                                        <p-chip [label]=" '+' + (keywords().length - 3)"
+                                                [tooltip]="displayRemaining(keywords(),3)"/>
+                                    </ng-container>
+                                    <ng-container *ngIf="keywords().length <= 3">
+                                        <p-chip *ngFor="let keyword of keywords()" [label]="keyword"/>
+                                    </ng-container>
                                 </ng-container>
                                 <ng-container *ngIf="keywords().length === 0">
                                     Mots-clés: aucun

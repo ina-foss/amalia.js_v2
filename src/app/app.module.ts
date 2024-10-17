@@ -35,6 +35,7 @@ import {MessageService, ConfirmationService} from "primeng/api";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
+import {AutoCompleteModule} from "primeng/autocomplete";
 
 @NgModule({
     imports: [
@@ -55,7 +56,8 @@ import {ProgressSpinnerModule} from "primeng/progressspinner";
         ToastModule,
         ConfirmDialogModule,
         ProgressBarModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        AutoCompleteModule
     ],
     declarations: [
         AmaliaComponent,

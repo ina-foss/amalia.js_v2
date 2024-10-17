@@ -1,5 +1,5 @@
 import {
-    AfterViewInit,
+    AfterViewInit, ChangeDetectorRef,
     Component,
     computed,
     effect, ElementRef,
@@ -16,6 +16,7 @@ import {FormatUtils} from "../../../core/utils/format-utils";
 import {DEFAULT} from "../../../core/constant/default";
 import {MessageService} from "primeng/api";
 import {switchMap} from 'rxjs/operators';
+import {AutoCompleteCompleteEvent} from "primeng/autocomplete";
 
 @Component({
     selector: 'amalia-segment',
@@ -30,6 +31,10 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public tcDisplayFormat: 's' | 'f' = 'f';
     @Input()
     public fps = DEFAULT.FPS;
+    @Input()
+    availableCategories: string[] = [];
+    @Input()
+    availableKeywords: string[] = [];
 
     //InputSignals
     public tcIn = input<number>(0);
@@ -78,7 +83,10 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public propertyBeforeEdition: { key: string; value: string }[] = [];
     private editionAlreadyActivated: boolean = false;
 
-    constructor(private messageService: MessageService) {
+    filteredCategories: string[];
+    filteredKeywords: string[];
+
+    constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
         effect(() => {
             this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
             this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
@@ -247,7 +255,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     }
 
     private activateEdition() {
-        if(!this.editionAlreadyActivated) {
+        if (!this.editionAlreadyActivated) {
             this.propertyBeforeEdition = structuredClone(this.property());
             this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
             this.tcInFormatted = FormatUtils.formatTime(this.segment.tcIn, this.tcDisplayFormat, this.fps);
@@ -403,4 +411,43 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.isDescriptionCollapsed = !this.isDescriptionCollapsed;
     }
 
+    searchCategories($event: AutoCompleteCompleteEvent) {
+        this.filteredCategories = this.availableCategories.filter(item => item.toLowerCase().includes($event.query.toLowerCase())).slice(0, 10);
+        if (this.filteredCategories.length === 0) {
+            this.filteredCategories.push($event.query);
+            this.cdr.detectChanges();
+        }
+    }
+
+    searchKeywords($event: AutoCompleteCompleteEvent) {
+        this.filteredKeywords = this.availableKeywords.filter(item => item.toLowerCase().includes($event.query.toLowerCase())).slice(0, 10);
+        if (this.filteredKeywords.length === 0) {
+            this.filteredKeywords.push($event.query);
+            this.cdr.detectChanges();
+        }
+    }
+
+    addToAvailableCategories($event: any[]) {
+        $event.forEach(element => {
+            if (!this.availableCategories.includes(element)) {
+                this.availableCategories.push(element);
+            }
+        });
+    }
+
+    addToAvailableKeywords($event: any[]) {
+        $event.forEach(element => {
+            if (!this.availableKeywords.includes(element)) {
+                this.availableKeywords.push(element);
+            }
+        });
+    }
+
+    displayRemaining(items: string[], minus: number) {
+        let result = '';
+        if (items.length > minus) {
+            result = items.slice(minus).join('; ');
+        }
+        return result;
+    }
 }

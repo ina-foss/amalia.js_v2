@@ -88,12 +88,20 @@
       align-items: flex-start;
       gap: $amalia-spacings-space-space-sm;
 
-      .p-chips, .p-chips-multiple-container, textarea {
+      textarea {
         width: 100%;
       }
 
       .segment-categories {
         width: 100%;
+
+        .p-autocomplete {
+          width: 100%
+        }
+
+        .p-autocomplete-multiple-container {
+          width: 100%
+        }
       }
 
       .segment-description {
@@ -102,6 +110,14 @@
 
       .segment-keywords {
         width: 100%;
+
+        .p-autocomplete {
+          width: 100%
+        }
+
+        .p-autocomplete-multiple-container {
+          width: 100%
+        }
       }
 
     }
@@ -260,12 +276,26 @@
           p-chip {
             margin-top: $amalia-spacings-space-space-sm;
           }
+
+          .p-chip-text {
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
         }
 
         .readonly-segment-keywords {
           display: flex;
           gap: $amalia-spacings-space-space-sm;
           margin-bottom: $amalia-spacings-space-space-sm;
+
+          .p-chip-text {
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
         }
       }
     }

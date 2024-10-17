@@ -1,4 +1,12 @@
-import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import {PluginBase} from "../../core/plugin/plugin-base";
 import {PluginConfigData} from "../../core/config/model/plugin-config-data";
 import {AnnotationConfig} from "../../core/config/model/annotation-config";
@@ -53,6 +61,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public dataLoading: boolean = true;
     public timeout = 30000;
     noSpinner: boolean = true;
+
+    availableCategories: string[] = [];
+    availableKeywords: string[] = [];
+
 
     @AutoBind
     public mediaPlayerElementReady(): boolean {
@@ -128,9 +140,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     init() {
         super.init();
         if (this.pluginConfiguration.data) {
-            if (this.pluginConfiguration.data) {
-                this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
-            }
+            this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
+
             if (this.pluginConfiguration.data.fps) {
                 this.fps = this.pluginConfiguration.data.fps;
             }
@@ -140,7 +151,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             if (this.pluginConfiguration.data.noSpinner != undefined) {
                 this.noSpinner = this.pluginConfiguration.data.noSpinner;
             }
-
+            if (this.pluginConfiguration.data.availableCategories) {
+                this.availableCategories = this.pluginConfiguration.data.availableCategories;
+            }
+            if (this.pluginConfiguration.data.availableKeywords) {
+                this.availableKeywords = this.pluginConfiguration.data.availableKeywords;
+            }
             if (this.pluginConfiguration.data.timeout) {
                 this.timeout = this.pluginConfiguration.data.timeout;
             }
