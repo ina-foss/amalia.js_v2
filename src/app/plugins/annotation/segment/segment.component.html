@@ -1,6 +1,6 @@
 <form #segmentForm="ngForm">
     <div *ngIf="displayMode()!=='readonly'">
-        <p-toast position="bottom-right" key="segment"/>
+        <p-toast position="bottom-center" key="segment"/>
         <div class="editable-segment">
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <div class="segment-title">

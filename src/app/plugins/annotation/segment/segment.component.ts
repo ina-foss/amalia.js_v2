@@ -174,7 +174,8 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     private checkTc(value: string, tcMax: number) {
         const tc = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
-        if (tc > tcMax) {
+        const tcOffset = this.segment.tcOffset;
+        if ((tc+tcOffset) > tcMax) {
             this.displaySnackBar('La durée du segment doit être inférieure à la durée total du média visionné');
             return null;
         }
