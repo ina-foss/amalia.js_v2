@@ -3,7 +3,7 @@ import {
     Component,
     computed,
     effect, ElementRef,
-    EventEmitter,
+    EventEmitter, HostListener,
     input,
     Input, OnInit,
     Output, signal,
@@ -52,6 +52,10 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public titlediv: ElementRef;
     @ViewChild('descp')
     public descp: ElementRef;
+    @ViewChild('readOnlyCategoriesDiv')
+    public readOnlyCategoriesDiv: ElementRef;
+    @ViewChild('readOnlyKeywordsDiv')
+    public readOnlyKeywordsDiv: ElementRef;
 
     public isEllipsed: boolean = false;
     public isDescriptionCollapsed: boolean = true;
@@ -85,6 +89,12 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     filteredCategories: string[];
     filteredKeywords: string[];
+    hiddenCategoriesCount: number = 0;
+    hiddenKeywordsCount: number = 0;
+    readonlyCategoriesClassName = 'readonly-segment-categories';
+    readOnlyKeywordsClassName = 'readonly-segment-keywords';
+    hiddenCategoriesSummaryChipId = 'hiddenCategoriesSummaryChip';
+    hiddenKeywordsSummaryChipId = 'hiddenKeywordsSummaryChip';
 
     constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
         effect(() => {
@@ -99,6 +109,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
                     subscription.unsubscribe();
                 });
                 this.formChangesSubscriptions = [];
+                this.updateCategoriesAndKeywordsDisplay();
             }
         });
     }
@@ -364,6 +375,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     ngAfterViewInit(): void {
         this.setIsEllipsed();
         this.setIsDescriptionTruncated();
+        this.updateCategoriesAndKeywordsDisplay();
     }
 
     public readOnlyTitleReady(): boolean {
@@ -446,8 +458,65 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     displayRemaining(items: string[], minus: number) {
         let result = '';
         if (items.length > minus) {
-            result = items.slice(minus).join('; ');
+            result = items.slice(items.length - minus).join('; ');
         }
         return result;
+    }
+
+    @HostListener("window:resize", [])
+    public updateCategoriesAndKeywordsDisplay() {
+        if(this.readOnlyCategoriesDiv && this.readOnlyKeywordsDiv) {
+            this.hiddenCategoriesCount = this.updateDisplay(this.readOnlyCategoriesDiv, this.readonlyCategoriesClassName, this.hiddenCategoriesSummaryChipId);
+            this.hiddenKeywordsCount = this.updateDisplay(this.readOnlyKeywordsDiv, this.readOnlyKeywordsClassName, this.hiddenKeywordsSummaryChipId);
+        }
+    }
+
+    private updateDisplay(readOnlyDiv: ElementRef, readOnlyClassName: string, summaryChipId: string) {
+        const div = readOnlyDiv.nativeElement;
+        const divWidth = div.offsetWidth;
+        const chips = div.querySelectorAll(`.${readOnlyClassName} p-chip`);
+        let totalWidth = 0;
+        let truncateChips: boolean = false;
+        let hiddenChipsCount = 0;
+        const gap = 6;
+
+        //renseigner le style.display à inline-block pour que les p-chip aient un offsetWidth défini
+        chips.forEach((chip: HTMLElement) => {
+            if (chip.id === summaryChipId) {
+                chip.style.display = 'none';
+            } else {
+                chip.style.display = 'inline-block';
+            }
+        });
+
+        //Faut-il tronquer ou non. Pour le savoir, on compare la somme des largeurs des p-chip avec toute la largeur de la div qui les contient
+        chips.forEach((chip: HTMLElement) => {
+            totalWidth += (chip.offsetWidth + gap);
+            if (totalWidth > divWidth) {
+                truncateChips = true;
+                return;
+            }
+        });
+
+        //Si la somme des largeurs des p-chip est plus grande que la largeur de la div contenante,
+        //on se base sur la largeur de la div contenante moins (-) la largeur de la p-chip qui a pour label le résumé
+        if (truncateChips) {
+            totalWidth = 0;
+            let availableWidth = divWidth - 60;
+            chips.forEach((chip: HTMLElement) => {
+                if (chip.id != summaryChipId) {
+                    totalWidth += (chip.offsetWidth + gap);
+                    if (totalWidth > availableWidth) {
+                        chip.style.display = 'none';
+                        hiddenChipsCount++;
+                    } else {
+                        chip.style.display = 'inline-block';
+                    }
+                } else {
+                    chip.style.display = 'inline-block';
+                }
+            });
+        }
+        return hiddenChipsCount;
     }
 }

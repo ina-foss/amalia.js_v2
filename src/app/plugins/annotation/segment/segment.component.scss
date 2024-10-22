@@ -269,12 +269,21 @@
         }
 
         .readonly-segment-categories {
+          position: relative;
+          width: 100%;
           display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
           gap: $amalia-spacings-space-space-sm;
           margin-bottom: $amalia-spacings-space-space-sm;
 
           p-chip {
             margin-top: $amalia-spacings-space-space-sm;
+          }
+
+          .p-chip {
+            background: $colors-primitive-primary-color;
+            color: #fff;
           }
 
           .p-chip-text {
@@ -286,9 +295,17 @@
         }
 
         .readonly-segment-keywords {
+          position: relative;
+          width: 100%;
           display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
           gap: $amalia-spacings-space-space-sm;
           margin-bottom: $amalia-spacings-space-space-sm;
+
+          p-chip {
+            margin-top: $amalia-spacings-space-space-sm;
+          }
 
           .p-chip-text {
             max-width: 300px;
