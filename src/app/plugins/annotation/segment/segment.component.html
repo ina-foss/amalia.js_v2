@@ -113,31 +113,22 @@
                                 </div>
                             </div>
                             <p-divider/>
-                            <div class="readonly-segment-categories">
+                            <div class="readonly-segment-categories" #readOnlyCategoriesDiv>
                                 <ng-container *ngIf="categories().length > 0">
-                                    <ng-container *ngIf="categories().length > 3">
-                                        <p-chip *ngFor="let category of categories().slice(0,3)" [label]="category"/>
-                                        <p-chip [label]=" '+' + (categories().length - 3)"
-                                                [tooltip]="displayRemaining(categories(),3)"/>
-                                    </ng-container>
-                                    <ng-container *ngIf="categories().length <= 3">
-                                        <p-chip *ngFor="let category of categories()" [label]="category"/>
-                                    </ng-container>
+                                    <p-chip *ngFor="let category of categories()" [label]="category"/>
+                                    <p-chip id="hiddenCategoriesSummaryChip"
+                                            [label]=" '+' + hiddenCategoriesCount"
+                                            [tooltip]="displayRemaining(categories(),hiddenCategoriesCount)"/>
                                 </ng-container>
                                 <ng-container *ngIf="categories().length === 0">
                                     Catégories: aucune
                                 </ng-container>
                             </div>
-                            <div class="readonly-segment-keywords">
+                            <div class="readonly-segment-keywords" #readOnlyKeywordsDiv>
                                 <ng-container *ngIf="keywords().length > 0">
-                                    <ng-container *ngIf="keywords().length > 3">
-                                        <p-chip *ngFor="let keyword of keywords().slice(0,3)" [label]="keyword"/>
-                                        <p-chip [label]=" '+' + (keywords().length - 3)"
-                                                [tooltip]="displayRemaining(keywords(),3)"/>
-                                    </ng-container>
-                                    <ng-container *ngIf="keywords().length <= 3">
-                                        <p-chip *ngFor="let keyword of keywords()" [label]="keyword"/>
-                                    </ng-container>
+                                    <p-chip *ngFor="let keyword of keywords()" [label]="keyword"/>
+                                    <p-chip id="hiddenKeywordsSummaryChip" [label]=" '+' + hiddenKeywordsCount"
+                                            [tooltip]="displayRemaining(keywords(),hiddenKeywordsCount)"/>
                                 </ng-container>
                                 <ng-container *ngIf="keywords().length === 0">
                                     Mots-clés: aucun
