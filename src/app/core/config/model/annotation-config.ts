@@ -1,4 +1,7 @@
 export interface AnnotationConfig {
+    thumbNailLink?: string;
+    link?: string;
+    assetId?: string;
     availableCategories?: string[];
     availableKeywords?: string[];
     noSpinner?: boolean;
