@@ -7,6 +7,9 @@ export interface AnnotationLocalisation {
     tc: number;
     tcOffset?: number;
     data: {
+        linkThumbnail?: string;
+        id_media?: string;
+        link?: string;
         lastModificationUser?: string;
         creationUser?: string;
         selected?: boolean;

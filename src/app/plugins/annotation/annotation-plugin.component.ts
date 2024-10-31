@@ -22,6 +22,7 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
 import {interval, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
 import {TextUtils} from "../../core/utils/text-utils";
+import {FormatUtils} from "../../core/utils/format-utils";
 
 interface FnParam {
     fn: any;
@@ -64,6 +65,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     availableCategories: string[] = [];
     availableKeywords: string[] = [];
+    private assetId: string;
+    private link: string;
 
 
     @AutoBind
@@ -151,15 +154,25 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             if (this.pluginConfiguration.data.noSpinner != undefined) {
                 this.noSpinner = this.pluginConfiguration.data.noSpinner;
             }
-            if (this.pluginConfiguration.data.availableCategories) {
-                this.availableCategories = this.pluginConfiguration.data.availableCategories;
-            }
-            if (this.pluginConfiguration.data.availableKeywords) {
-                this.availableKeywords = this.pluginConfiguration.data.availableKeywords;
-            }
-            if (this.pluginConfiguration.data.timeout) {
-                this.timeout = this.pluginConfiguration.data.timeout;
-            }
+            this.setAnnotationsInfoFromConfig();
+        }
+    }
+
+    private setAnnotationsInfoFromConfig = () => {
+        if (this.pluginConfiguration.data.availableCategories) {
+            this.availableCategories = this.pluginConfiguration.data.availableCategories;
+        }
+        if (this.pluginConfiguration.data.availableKeywords) {
+            this.availableKeywords = this.pluginConfiguration.data.availableKeywords;
+        }
+        if (this.pluginConfiguration.data.timeout) {
+            this.timeout = this.pluginConfiguration.data.timeout;
+        }
+        if (this.pluginConfiguration.data.assetId) {
+            this.assetId = this.pluginConfiguration.data.assetId;
+        }
+        if (this.pluginConfiguration.data.link) {
+            this.link = this.pluginConfiguration.data.link;
         }
     }
 
@@ -248,7 +261,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
             //Thumbnail
             segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
-            segmentToBeAdded.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+            segmentToBeAdded.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcOffset) * 1000;
 
             const event: any = {
                 type: 'init',
@@ -436,7 +449,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 return;
             case 'updatethumbnail': {
                 const updatedSegment = structuredClone(event.payload);
-                updatedSegment.data.tcThumbnail = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+                updatedSegment.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset) * 1000;
                 updatedSegment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
                 const segment = event.payload;
                 event.payload = {updatedSegment, segment};
@@ -556,8 +569,33 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public downloadSegments() {
-        const textFileContent = JSON.stringify(this.segmentsInfo);
-        this.fileService.downloadFile(textFileContent, this.segmentsInfo.label + Date.now() + '.json');
+
+        const jsonData = this.segmentsInfo.subLocalisations.map(localisation => {
+                    let tcThumbnail = localisation.data.tcThumbnail - localisation.tcOffset * 1000;
+                    tcThumbnail = parseFloat((tcThumbnail / 1000).toFixed(6));
+                    const row: any = {
+                        "Lien": this.link,
+                        "ID du materiel": this.assetId,
+                        "ID du segment": localisation.id,
+                        "Titre": localisation.label,
+                        "TC_IN": FormatUtils.formatTime(localisation.tcIn, this.tcDisplayFormat, this.fps),
+                        "TC_OUT": FormatUtils.formatTime(localisation.tcOut, this.tcDisplayFormat, this.fps),
+                        "Duree": FormatUtils.formatTime(localisation.tc, this.tcDisplayFormat, this.fps),
+                        "Mots_cles": localisation.property?.filter(value => value.key === 'keyword').map(value => value.value).join('; '),
+                        "Categories": localisation.property?.filter(value => value.key === 'category').map(value => value.value).join('; '),
+                        "Description": localisation.description,
+                        "Lien de l\'imagette": this.mediaPlayerElement?.getThumbnailUrl(tcThumbnail, true)
+                    };
+                    return row;
+                }
+        );
+
+        let assetId = '';
+        if (this.assetId) {
+            assetId = this.assetId.replaceAll(':', '_');
+        }
+
+        this.fileService.exportToExcel(jsonData, 'segmentsInfo_' + assetId + '_' + Date.now());
     }
 
     public saveSegments() {
