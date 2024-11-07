@@ -38,6 +38,10 @@
                                             (ngModelChange)="addToAvailableCategories($event)"></p-autoComplete>
                             <label for="categories">Catégories</label>
                         </p-floatLabel>
+                        <small class="segment-categories-alignment" *ngIf="categories() && categories().length >10"
+                               id="categories-error">
+                            10 Catégories maximum.
+                        </small>
                     </div>
                     <div class="segment-keywords">
                         <p-floatLabel>
@@ -49,6 +53,10 @@
                                             (ngModelChange)="addToAvailableKeywords($event)"></p-autoComplete>
                             <label for="keywords">Mots-clés</label>
                         </p-floatLabel>
+                        <small class="segment-keywords-alignment" *ngIf="keywords() && keywords().length >10"
+                               id="keywords-error">
+                            10 Mots-clés maximum.
+                        </small>
                     </div>
                     <div class="segment-description">
                         <p-floatLabel>
@@ -58,6 +66,11 @@
                                        [autoResize]="true"></textarea>
                             <label for="description">Description</label>
                         </p-floatLabel>
+                        <small class="segment-description-alignment"
+                               *ngIf="segment.description && segment.description.length > 1000"
+                               id="description-error">
+                            1000 caractères maximum.
+                        </small>
                     </div>
                 </div>
                 <ng-template pTemplate="footer">

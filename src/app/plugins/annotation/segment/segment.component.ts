@@ -175,7 +175,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     private checkTc(value: string, tcMax: number) {
         const tc = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
         const tcOffset = this.segment.tcOffset;
-        if ((tc+tcOffset) > tcMax) {
+        if ((tc + tcOffset) > tcMax) {
             this.displaySnackBar('La durée du segment doit être inférieure à la durée total du média visionné');
             return null;
         }
@@ -274,66 +274,110 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
             setTimeout(() => {
                 //tcout edition
-                const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
-                if (tcOutFormControl) {
-                    const tcOutSubscription = tcOutFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                        return of(this.tcValidators("tcOut", value));
-                    })).subscribe(value => {
-                        this.afterTcOutValidation(value, tcOutFormControl);
-                    });
-                    this.formChangesSubscriptions.push(tcOutSubscription);
-                }
-
+                this.activateTcOutEdition();
                 //tcIn edition
-                const tcInFormControl = this.segmentForm.form.controls['tcIn'];
-                if (tcInFormControl) {
-                    const tcInSubscription = tcInFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                        return of(this.tcValidators("tcIn", value));
-                    })).subscribe(value => {
-                        this.afterTcInValidation(value, tcInFormControl);
-                    });
-                    this.formChangesSubscriptions.push(tcInSubscription);
-                }
+                this.activateTcInEdition();
                 //tc edition
-                const tcFormControl = this.segmentForm.form.controls['tc'];
-                if (tcFormControl) {
-                    const tcSubscription = tcFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                        return of(this.tcValidators("tc", value));
-                    })).subscribe(value => {
-                        this.afterTcValidation(value, tcFormControl);
-                    });
-                    this.formChangesSubscriptions.push(tcSubscription);
-                }
+                this.activateTcEdition();
                 //categories
-                const categoriesFormControl = this.segmentForm.form.controls['categories'];
-                if (categoriesFormControl) {
-                    const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(800)).subscribe(() => {
-                        this.segment.property = this.property();
-                    });
-                    this.formChangesSubscriptions.push(categoriesSubscription);
-                }
+                this.activateCategoriesEdition();
                 //keywords
-                const keywordsFormControl = this.segmentForm.form.controls['keywords'];
-                if (keywordsFormControl) {
-                    const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(800)).subscribe(() => {
-                        this.segment.property = this.property();
-                    });
-                    this.formChangesSubscriptions.push(keywordsSubscription);
-                }
+                this.activateKeywordsEdition();
                 //title
-                const titleFormControl = this.segmentForm.form.controls['title'];
-                if (titleFormControl) {
-                    const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
-                        if (value.length > 250) {
-                            titleFormControl.setErrors({'Error': true})
-                        } else {
-                            titleFormControl.setErrors(null);
-                        }
-                    });
-                    this.formChangesSubscriptions.push(titleChangesSubscription);
-                }
+                this.activateTitleEdition();
+                //description
+                this.activateDescriptionEdition();
             }, 200);
             this.editionAlreadyActivated = true;
+        }
+    }
+
+    private activateTcOutEdition = () => {
+        const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
+        if (tcOutFormControl) {
+            const tcOutSubscription = tcOutFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
+                return of(this.tcValidators("tcOut", value));
+            })).subscribe(value => {
+                this.afterTcOutValidation(value, tcOutFormControl);
+            });
+            this.formChangesSubscriptions.push(tcOutSubscription);
+        }
+    }
+    private activateTcInEdition = () => {
+        const tcInFormControl = this.segmentForm.form.controls['tcIn'];
+        if (tcInFormControl) {
+            const tcInSubscription = tcInFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
+                return of(this.tcValidators("tcIn", value));
+            })).subscribe(value => {
+                this.afterTcInValidation(value, tcInFormControl);
+            });
+            this.formChangesSubscriptions.push(tcInSubscription);
+        }
+    }
+    private activateTcEdition = () => {
+        const tcFormControl = this.segmentForm.form.controls['tc'];
+        if (tcFormControl) {
+            const tcSubscription = tcFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
+                return of(this.tcValidators("tc", value));
+            })).subscribe(value => {
+                this.afterTcValidation(value, tcFormControl);
+            });
+            this.formChangesSubscriptions.push(tcSubscription);
+        }
+    }
+    private activateCategoriesEdition = () => {
+        const categoriesFormControl = this.segmentForm.form.controls['categories'];
+        if (categoriesFormControl) {
+            const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
+                this.segment.property = this.property();
+                if (this.categories().length > 10) {
+                    categoriesFormControl.setErrors({'invalid': true});
+                } else {
+                    categoriesFormControl.setErrors(null);
+                }
+            });
+            this.formChangesSubscriptions.push(categoriesSubscription);
+        }
+    }
+    private activateKeywordsEdition = () => {
+        const keywordsFormControl = this.segmentForm.form.controls['keywords'];
+        if (keywordsFormControl) {
+            const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
+                this.segment.property = this.property();
+                if (this.keywords().length > 10) {
+                    keywordsFormControl.setErrors({'invalid': true});
+                } else {
+                    keywordsFormControl.setErrors(null);
+                }
+            });
+            this.formChangesSubscriptions.push(keywordsSubscription);
+
+        }
+    }
+    private activateTitleEdition = () => {
+        const titleFormControl = this.segmentForm.form.controls['title'];
+        if (titleFormControl) {
+            const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
+                if (value.length > 250) {
+                    titleFormControl.setErrors({'Error': true})
+                } else {
+                    titleFormControl.setErrors(null);
+                }
+            });
+            this.formChangesSubscriptions.push(titleChangesSubscription);
+        }
+    }
+    private activateDescriptionEdition = () => {
+        const descriptionFormControl = this.segmentForm.form.controls['description'];
+        if (descriptionFormControl) {
+            const descriptionChangesSubscription = descriptionFormControl.valueChanges.subscribe((value) => {
+                if (value.length > 1000) {
+                    descriptionFormControl.setErrors({'Error': true})
+                } else {
+                    descriptionFormControl.setErrors(null);
+                }
+            });
+            this.formChangesSubscriptions.push(descriptionChangesSubscription);
         }
     }
 
@@ -428,16 +472,28 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.filteredCategories = this.availableCategories.filter(item => item.toLowerCase().includes($event.query.toLowerCase())).slice(0, 10);
         if (this.filteredCategories.length === 0) {
             this.filteredCategories.push($event.query);
-            this.cdr.detectChanges();
+        } else {
+            this.categories().forEach(category => {
+                if (this.filteredCategories.includes(category)) {
+                    this.filteredCategories.splice(this.filteredCategories.indexOf(category), 1);
+                }
+            })
         }
+        this.cdr.detectChanges();
     }
 
     searchKeywords($event: AutoCompleteCompleteEvent) {
         this.filteredKeywords = this.availableKeywords.filter(item => item.toLowerCase().includes($event.query.toLowerCase())).slice(0, 10);
         if (this.filteredKeywords.length === 0) {
             this.filteredKeywords.push($event.query);
-            this.cdr.detectChanges();
+        } else {
+            this.keywords().forEach(keyword => {
+                if (this.filteredKeywords.includes(keyword)) {
+                    this.filteredKeywords.splice(this.filteredKeywords.indexOf(keyword), 1);
+                }
+            })
         }
+        this.cdr.detectChanges();
     }
 
     addToAvailableCategories($event: any[]) {
@@ -466,7 +522,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     @HostListener("window:resize", [])
     public updateCategoriesAndKeywordsDisplay() {
-        if(this.readOnlyCategoriesDiv && this.readOnlyKeywordsDiv) {
+        if (this.readOnlyCategoriesDiv && this.readOnlyKeywordsDiv) {
             this.hiddenCategoriesCount = this.updateDisplay(this.readOnlyCategoriesDiv, this.readonlyCategoriesClassName, this.hiddenCategoriesSummaryChipId);
             this.hiddenKeywordsCount = this.updateDisplay(this.readOnlyKeywordsDiv, this.readOnlyKeywordsClassName, this.hiddenKeywordsSummaryChipId);
         }
