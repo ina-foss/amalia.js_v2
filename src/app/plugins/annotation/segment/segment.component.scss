@@ -104,8 +104,20 @@
         }
       }
 
+      .segment-categories-alignment {
+        display: flex;
+        justify-content: flex-end;
+        color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
+      }
+
       .segment-description {
         width: 100%;
+      }
+
+      .segment-description-alignment {
+        display: flex;
+        justify-content: flex-end;
+        color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
       }
 
       .segment-keywords {
@@ -118,6 +130,12 @@
         .p-autocomplete-multiple-container {
           width: 100%
         }
+      }
+
+      .segment-keywords-alignment {
+        display: flex;
+        justify-content: flex-end;
+        color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
       }
 
     }
