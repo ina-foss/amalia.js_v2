@@ -40,8 +40,9 @@
 
     .p-dialog {
       width: 640px;
-      border-radius: 0;
+      border-radius: $amalia-spacings-border-radius-radius-md !important;
       padding: 15px;
+      height: 160px;
     }
   }
 
@@ -143,16 +144,71 @@
   }
 
   .p-progress-spinner-circle {
-      z-index: 9999 !important;
-      stroke-dasharray: 89, 200;
-      stroke-dashoffset: 0;
-      stroke: $amalia-primary-color;
-      animation: p-progress-spinner-dash 1.5s ease-in-out infinite, my-color 6s ease-in-out infinite !important;
-      stroke-linecap: round
-    }
-    @keyframes my-color{
-      to, 0%, 100% {
-        stroke: white
-      }
+    z-index: 9999 !important;
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: 0;
+    stroke: $amalia-primary-color;
+    animation: p-progress-spinner-dash 1.5s ease-in-out infinite, my-color 6s ease-in-out infinite !important;
+    stroke-linecap: round
+  }
+
+  @keyframes my-color {
+    to, 0%, 100% {
+      stroke: white
     }
   }
+
+  .p-toast .p-toast-message.p-toast-message-error {
+    background: white !important;
+    border: solid #ff5757 !important;
+    border-width: 0 0 0 6px !important;
+    color: #ff5757 !important;
+  }
+
+  .p-toast-detail {
+    color: #212529 !important;
+    text-align: justify !important;
+    font-family: $amalia-font-family !important;
+    font-size: 14px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    line-height: normal !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+    margin: 0 !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-summary {
+    display: none !important;
+  }
+
+  .p-toast-message-content {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content {
+    border-left-width: 6px !important;
+    border-left-style: solid !important;
+    background-color: white !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error {
+    border-top-style: none !important;
+    border-right-style: none !important;
+    border-bottom-style: none !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30) !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success {
+    border-top-style: none !important;
+    border-right-style: none !important;
+    border-bottom-style: none !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30) !important;
+  }
+
+  .p-toast-icon-close {
+    color: #232529 !important;
+  }
+}

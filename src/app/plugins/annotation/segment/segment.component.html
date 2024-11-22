@@ -74,10 +74,10 @@
                     </div>
                 </div>
                 <ng-template pTemplate="footer">
-                    <p-button id="btnannuler" class="no-highlight" label="Annuler" icon="pi pi-times-circle"
+                    <p-button id="btnannuler" class="no-highlight" label="Annuler"
                               (click)="cancelNewSegmentCreation()"
                               size="small"/>
-                    <p-button class="highlight" id="btnvalider" label="Valider" icon="pi pi-check"
+                    <p-button class="highlight" id="btnvalider" label="Valider"
                               (click)="validateNewSegment()" size="small"
                               [disabled]="segmentForm.touched && segmentForm.invalid"/>
                 </ng-template>
