@@ -141,7 +141,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         //life: 1500,
         this.messageService.add({
             severity: 'error',
-            summary: 'Error',
+            summary: undefined,
             detail: msgContent,
             key: 'segment',
             data: {progress: 100} // initial progress value (life/ interval timeout)*2

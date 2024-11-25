@@ -39,9 +39,10 @@
     }
 
     .p-dialog {
-      width: 640px;
-      border-radius: 0;
-      padding: 15px;
+      width: 656px;
+      border-radius: $amalia-spacings-border-radius-radius-md !important;
+      padding: 12px 20px;
+      height: 179px;
     }
   }
 
@@ -143,16 +144,74 @@
   }
 
   .p-progress-spinner-circle {
-      z-index: 9999 !important;
-      stroke-dasharray: 89, 200;
-      stroke-dashoffset: 0;
-      stroke: $amalia-primary-color;
-      animation: p-progress-spinner-dash 1.5s ease-in-out infinite, my-color 6s ease-in-out infinite !important;
-      stroke-linecap: round
-    }
-    @keyframes my-color{
-      to, 0%, 100% {
-        stroke: white
-      }
+    z-index: 9999 !important;
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: 0;
+    stroke: $amalia-primary-color;
+    animation: p-progress-spinner-dash 1.5s ease-in-out infinite, my-color 6s ease-in-out infinite !important;
+    stroke-linecap: round
+  }
+
+  @keyframes my-color {
+    to, 0%, 100% {
+      stroke: white
     }
   }
+
+  .p-toast-detail {
+    color: #212529 !important;
+    text-align: justify !important;
+    font-family: $amalia-font-family !important;
+    font-size: 14px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    line-height: normal !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+    margin: 0 !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-summary {
+    display: none !important;
+  }
+
+  .p-toast-message-content {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content {
+    border-left-width: 6px !important;
+    border-left-style: solid !important;
+    background-color: white !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-message-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0.75rem !important;
+    background-color: currentColor !important;
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-icon:not(.p-toast-icon-close-icon) {
+    color: $amalia-icon-text-color !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error {
+    border-style: none !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30) !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success {
+    border-style: none !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30) !important;
+  }
+
+  .p-toast-icon-close {
+    color: $amalia-icon-text-color !important;
+  }
+}

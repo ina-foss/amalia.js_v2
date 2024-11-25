@@ -1,5 +1,6 @@
 @import '../../../core/styles/variables';
 @import '../../../core/styles/typo';
+@import '../../../../styles.scss';
 
 :host ::ng-deep {
 
@@ -7,6 +8,63 @@
     .p-card {
       border: 1px solid $colors-primitive-primary-color;
     }
+  }
+
+  .p-toast-detail {
+    color: #212529 !important;
+    text-align: justify !important;
+    font-family: $amalia-font-family !important;
+    font-size: 14px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    line-height: normal !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+    margin: 0 !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-summary {
+    display: none !important;
+  }
+
+  .p-toast-message-content {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content {
+    border-left-width: 6px !important;
+    border-left-style: solid !important;
+    background-color: white !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-message-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0.75rem !important;
+    background-color: currentColor !important;
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-icon:not(.p-toast-icon-close-icon) {
+    color: $amalia-icon-text-color !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error {
+    border-style: none !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30) !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success {
+    border-style: none !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30) !important;
+  }
+
+  .p-toast-icon-close {
+    color: $amalia-icon-text-color !important;
   }
 
   .progress-bar {
@@ -68,6 +126,22 @@
       }
     }
 
+    .p-inputtext.ng-dirty.ng-invalid {
+      border-color: $amalia-colors-semantic-error-state !important;
+    }
+
+    .p-inputtext:enabled:focus {
+      border: 1px solid $amalia-primary-color;
+      box-shadow: 0 0 0 2.8px $amalia-box-shadow;
+    }
+
+    .p-inputwrapper-focus {
+      .p-inputtext {
+        border: 1px solid $amalia-primary-color;
+        box-shadow: 0 0 0 2.8px $amalia-box-shadow;
+      }
+    }
+
     .segment-title-alignment {
       display: flex;
       justify-content: flex-end;
@@ -107,7 +181,7 @@
       .segment-categories-alignment {
         display: flex;
         justify-content: flex-end;
-        color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
+        color: $amalia-plugin-colors-semantic-error-state;
       }
 
       .segment-description {

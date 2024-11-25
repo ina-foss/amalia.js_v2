@@ -21,7 +21,6 @@ import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
 import {interval, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
-import {TextUtils} from "../../core/utils/text-utils";
 import {FormatUtils} from "../../core/utils/format-utils";
 
 interface FnParam {
@@ -608,7 +607,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         const _severity = severity ? severity : 'error';
         this.messageService.add({
             severity: _severity,
-            summary: TextUtils.capitalizeFirstLetter(_severity),
+            summary: undefined,
             detail: msgContent,
             key: 'br',
             life: life ?? 1500
