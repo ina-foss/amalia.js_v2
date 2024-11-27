@@ -492,7 +492,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public setTcInFn(event: any) {
-        if (event.status === 'success') {
+        const readOnlyMode = (event.payload.segment.data.displayMode === 'readonly');
+        if (event.status === 'success' || !readOnlyMode) {
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tcIn = event.payload.updatedSegment.tcIn;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
@@ -503,6 +504,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public setTcIn() {
         const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
         if (selectedSegment) {
+            const readOnlyMode = (selectedSegment.data.displayMode === 'readonly');
             const updatedSegment = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
             const maxTcOut = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
@@ -519,11 +521,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 };
                 this.dataLoading = true;
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.waitFor(() => event.status != undefined, undefined, {
+                this.waitFor(() => (event.status != undefined || !readOnlyMode), undefined, {
                     fn: this.setTcInFn.bind(this),
                     param: event
                 }, 5, 10000);
-                this.manageEventResponseStatus(event);
+                if (readOnlyMode) {
+                    this.manageEventResponseStatus(event);
+                }
+
             } else {
                 this.displaySnackBar('le TC IN doit être compris entre le TC IN et le TC OUT de l\'intégral');
             }
@@ -531,7 +536,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public setTcOutFn(event: any) {
-        if (event.status === 'success') {
+        const readOnlyMode = (event.payload.segment.data.displayMode === 'readonly');
+        if (event.status === 'success' || !readOnlyMode) {
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
         }
@@ -542,6 +548,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
         const maxTcOut = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
         if (selectedSegment) {
+            const readOnlyMode = (selectedSegment.data.displayMode === 'readonly');
             const updatedSegment = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
             if (mediaTc < selectedSegment.tcIn || mediaTc > maxTcOut) {
@@ -557,11 +564,13 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 };
                 this.dataLoading = true;
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.waitFor(() => event.status != undefined, undefined, {
+                this.waitFor(() => (event.status != undefined || !readOnlyMode), undefined, {
                     fn: this.setTcOutFn.bind(this),
                     param: event
                 }, 5, 10000);
-                this.manageEventResponseStatus(event);
+                if (readOnlyMode) {
+                    this.manageEventResponseStatus(event);
+                }
             }
         }
 
