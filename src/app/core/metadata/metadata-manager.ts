@@ -21,6 +21,7 @@ export class MetadataManager {
     private listOfMetadata: Map<string, Metadata> = new Map<string, Metadata>();
     private toLoadData = 0;
     private readonly defaultLoader: Loader<Array<Metadata>>;
+    public static AUTHORIZATION_HEADER = 'Authorization: Bearer';
 
     constructor(configurationManager: ConfigurationManager, defaultLoader: Loader<Array<Metadata>>, logger: LoggerInterface) {
         this.configurationManager = configurationManager;
@@ -43,6 +44,25 @@ export class MetadataManager {
                 // resolve() called on complete
             } else {
                 this.logger.info('Can\'t find data sources');
+            }
+        });
+    }
+
+    /**
+     * Pour les plugins qui ont besoin de recharger (re-fetcher) leurs métadonnées,
+     * il est nécessaire de renouveller le token d'authorization.
+     * @param token Authorization Bearer
+     */
+    public refreshDataSourceHeaders(token) {
+        const dataSources = this.configurationManager.getCoreConfig().dataSources;
+        dataSources.forEach(data => {
+            const headers = data.headers;
+            if (headers) {
+                headers.forEach((header, index) => {
+                    if (header.includes(MetadataManager.AUTHORIZATION_HEADER)) {
+                        headers[index] = `${MetadataManager.AUTHORIZATION_HEADER} ${token}`;
+                    }
+                })
             }
         });
     }
