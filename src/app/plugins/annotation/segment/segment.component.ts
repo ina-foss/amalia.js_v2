@@ -468,30 +468,46 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.isDescriptionCollapsed = !this.isDescriptionCollapsed;
     }
 
+    private isIncludedInArrayIgnoreCase(array, searchItem) {
+        let result = false;
+        array.forEach(alement => {
+            if (alement.toLowerCase() === searchItem.toLowerCase()) {
+                result = true;
+            }
+        });
+        return result;
+    }
+
     searchCategories($event: AutoCompleteCompleteEvent) {
-        this.filteredCategories = this.availableCategories.filter(item => item.toLowerCase().includes($event.query.toLowerCase())).slice(0, 10);
-        if (this.filteredCategories.length === 0) {
-            this.filteredCategories.push($event.query);
-        } else {
-            this.categories().forEach(category => {
-                if (this.filteredCategories.includes(category)) {
-                    this.filteredCategories.splice(this.filteredCategories.indexOf(category), 1);
-                }
-            })
+        this.filteredCategories = this.availableCategories.filter(item => {
+            //on enlève les catégories déjà sélectionnées en ne tenant pas compte de la casse
+            return !this.isIncludedInArrayIgnoreCase(this.categories(), item);
+        })//on inclut les les options qui contiennent le mot recherché
+                .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
+                //On limite la liste à 10 éléménts
+                .slice(0, 10);
+        // On inclut le mot recherché s'il n'est pas déjà sélectionné, ni déjà dans la liste des availables après filtres
+        let addCurrentQuery = !this.isIncludedInArrayIgnoreCase(this.categories(), $event.query) && !this.isIncludedInArrayIgnoreCase(this.filteredCategories, $event.query);
+        if (addCurrentQuery) {
+            this.filteredCategories = this.filteredCategories.slice(0, 9);
+            this.filteredCategories.splice(0, 0, $event.query);
         }
         this.cdr.detectChanges();
     }
 
     searchKeywords($event: AutoCompleteCompleteEvent) {
-        this.filteredKeywords = this.availableKeywords.filter(item => item.toLowerCase().includes($event.query.toLowerCase())).slice(0, 10);
-        if (this.filteredKeywords.length === 0) {
-            this.filteredKeywords.push($event.query);
-        } else {
-            this.keywords().forEach(keyword => {
-                if (this.filteredKeywords.includes(keyword)) {
-                    this.filteredKeywords.splice(this.filteredKeywords.indexOf(keyword), 1);
-                }
-            })
+        this.filteredKeywords = this.availableKeywords.filter(item => {
+            //on enlève les keywords déjà sélectionnées en ne tenant pas compte de la casse
+            return !this.isIncludedInArrayIgnoreCase(this.keywords(), item);
+        })//on inclut les les options qui contiennent le mot recherché
+                .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
+                //On limite la liste à 10 éléménts
+                .slice(0, 10);
+        // On inclut le mot recherché s'il n'est pas déjà sélectionné, ni déjà dans la liste des availables après filtres
+        let addCurrentQuery = !this.isIncludedInArrayIgnoreCase(this.keywords(), $event.query) && !this.isIncludedInArrayIgnoreCase(this.filteredKeywords, $event.query);
+        if (addCurrentQuery) {
+            this.filteredKeywords = this.filteredKeywords.slice(0, 9);
+            this.filteredKeywords.splice(0, 0, $event.query);
         }
         this.cdr.detectChanges();
     }
