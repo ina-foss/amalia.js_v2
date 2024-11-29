@@ -10,13 +10,13 @@ import {
     ViewChild
 } from '@angular/core';
 import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
-import {AbstractControl, NgForm} from "@angular/forms";
 import {debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer} from "rxjs";
 import {FormatUtils} from "../../../core/utils/format-utils";
 import {DEFAULT} from "../../../core/constant/default";
 import {MessageService} from "primeng/api";
 import {switchMap} from 'rxjs/operators';
 import {AutoCompleteCompleteEvent} from "primeng/autocomplete";
+import {NgForm} from "@angular/forms";
 
 @Component({
     selector: 'amalia-segment',
@@ -66,6 +66,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public tcInFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
     public tcOutFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
     public tcFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
+    public setTcInvoked: boolean = false;
 
     //Signals
     public categories = signal<string[]>([]);
@@ -98,10 +99,6 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
         effect(() => {
-            this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
-            this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
-        });
-        effect(() => {
             if (this.displayMode() !== "readonly") {
                 this.activateEdition();
             } else {
@@ -127,12 +124,15 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public setTc() {
         //Pour éviter de modifier le tc lorsque les tcIn et out ne sont pas corrects (null ou négatifs)
-        if (this.segment.tcOut >= 0 && this.segment.tcIn >= 0) {
+        if (this.segment.tcOut >= 0 && this.segment.tcIn >= 0 && this.segment.tcIn <= this.segment.tcOut) {
             const tc = this.segment.tcOut - this.segment.tcIn;
             //On ne modifie le tc du segment que lorsque la différence est positive
             if (tc >= 0) {
-                this.segment.tc = tc;
+                if (tc !== this.segment.tc) {
+                    this.segment.tc = tc;
+                }
                 this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
+                this.setTcInvoked = true;
             }
         }
     }
@@ -148,36 +148,54 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         });
     }
 
-    private checkTcIn(value: string) {
+    private checkTcIn(value: string, displaySnackBar?: boolean): any {
         const tcIn = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
         const tcOut = FormatUtils.convertFormattedTcToSeconds(this.tcOutFormatted, this.tcDisplayFormat, this.fps);
         const tcOffset = this.segment.tcOffset;
         const tcMax = this.segment.data.tcMax;
 
         if (tcIn > tcOut || tcIn < tcOffset || tcIn > tcMax) {
-            this.displaySnackBar('le TC IN doit être inférieur au TC OUT et compris entre le TC IN et le TC OUT de l\'intégral');
-            return null;
+            if (displaySnackBar === true) {
+                this.displaySnackBar('le TC IN doit être inférieur au TC OUT et compris entre le TC IN et le TC OUT de l\'intégral');
+            }
+            const tcInFormControl = this.segmentForm.form.controls['tcIn'];
+            if (tcInFormControl) {
+                tcInFormControl.setErrors({'Error': true});
+            }
+            return {value, error: true};
         }
         return value;
     }
 
-    private checkTcOut(value: string, tcMax: number) {
+    private checkTcOut(value: string, tcMax: number, displaySnackBar?: boolean): any {
         const tcOut = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
         const tcIn = FormatUtils.convertFormattedTcToSeconds(this.tcInFormatted, this.tcDisplayFormat, this.fps);
         const tcOffset = this.segment.tcOffset;
         if (tcIn > tcOut || tcOut > tcMax || tcOffset > tcOut) {
-            this.displaySnackBar('Le TC OUT doit être supérieur au TC IN et compris entre le TC IN et le TC OUT du fichier intégral');
-            return null;
+            if (displaySnackBar === true) {
+                this.displaySnackBar('Le TC OUT doit être supérieur au TC IN et compris entre le TC IN et le TC OUT du fichier intégral');
+            }
+            const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
+            if (tcOutFormControl) {
+                tcOutFormControl.setErrors({'Error': true});
+            }
+            return {value, error: true};
         }
         return value;
     }
 
-    private checkTc(value: string, tcMax: number) {
+    private checkTc(value: string, tcMax: number, displaySnackBar?: boolean) {
         const tc = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
         const tcOffset = this.segment.tcOffset;
         if ((tc + tcOffset) > tcMax) {
-            this.displaySnackBar('La durée du segment doit être inférieure à la durée total du média visionné');
-            return null;
+            if (displaySnackBar === true) {
+                this.displaySnackBar('La durée du segment doit être inférieure à la durée total du média visionné');
+            }
+            const tcFormControl = this.segmentForm.form.controls['tc'];
+            if (tcFormControl) {
+                tcFormControl.setErrors({'Error': true});
+            }
+            return {value, error: true};
         }
         return value;
     }
@@ -186,7 +204,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         const tcInFormControl = this.segmentForm.form.controls['tcIn'];
         if (tcInFormControl) {
             const value = this.tcValidators("tcIn", tcInFormControl.value);
-            this.afterTcInValidation(value, tcInFormControl);
+            this.afterTcInValidation(value);
         }
     }
 
@@ -194,7 +212,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
         if (tcOutFormControl) {
             const value = this.tcValidators("tcOut", tcOutFormControl.value);
-            this.afterTcOutValidation(value, tcOutFormControl);
+            this.afterTcOutValidation(value);
         }
     }
 
@@ -202,67 +220,102 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         const tcFormControl = this.segmentForm.form.controls['tc'];
         if (tcFormControl) {
             const value = this.tcValidators("tc", tcFormControl.value);
-            this.afterTcValidation(value, tcFormControl);
+            this.afterTcValidation(value);
         }
     }
 
-    tcValidators(forTC: "tcIn" | "tcOut" | "tc", value: string): string | null {
-        let result = null;
+    tcValidators(forTC: "tcIn" | "tcOut" | "tc", value: string, displaySnackBar?: boolean): any {
+        let result: any = {value, error: true, formatError: true};
         if (this.timeFormatPattern.test(value)) {
             let tcMax = this.segment.data.tcMax ? this.segment.data.tcMax : Number.MAX_VALUE;
             switch (forTC) {
                 case "tcIn":
-                    result = this.checkTcIn(value);
+                    result = this.checkTcIn(value, displaySnackBar);
                     break;
                 case "tcOut":
-                    result = this.checkTcOut(value, tcMax);
+                    result = this.checkTcOut(value, tcMax, displaySnackBar);
                     break;
                 case "tc":
-                    result = this.checkTc(value, tcMax);
+                    result = this.checkTc(value, tcMax, displaySnackBar);
                     break;
             }
         } else {
-            this.displaySnackBar(forTC + ': Le format de temps est incorrect');
+            if (displaySnackBar === true) {
+                this.displaySnackBar(forTC + ': Le format de temps est incorrect');
+            }
+            const formControl = this.segmentForm.form.controls[forTC];
+            if (formControl) {
+                formControl.setErrors({'Error': true});
+            }
         }
         return result;
     }
 
-    public afterTcInValidation(value: string, tcInFormControl: AbstractControl<any>) {
-        if (value) {
-            const tcIn = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
+    public resetTcOutFormControlErrors() {
+        let tcMax = this.segment.data.tcMax ? this.segment.data.tcMax : Number.MAX_VALUE;
+        const tcOutCheckResult = this.checkTcOut(this.tcOutFormatted, tcMax, false);
+        if (!tcOutCheckResult.error === true) {
+            const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
+            if (tcOutFormControl) {
+                tcOutFormControl.setErrors(null);
+            }
+        }
+    }
+
+    public resetTcInFormControlErrors() {
+        const tcInCheckResult = this.checkTcIn(this.tcInFormatted, false);
+        if (!tcInCheckResult.error === true) {
+            const tcInFormControl = this.segmentForm.form.controls['tcIn'];
+            if (tcInFormControl) {
+                tcInFormControl.setErrors(null);
+            }
+        }
+    }
+
+    public afterTcInValidation(value: any) {
+        //Nous supposons dans cette fonction que le format de value est correct
+        if (!value.formatError) {
+            const tcIn = FormatUtils.convertFormattedTcToSeconds(value.error ? value.value : value, this.tcDisplayFormat, this.fps);
             if (tcIn >= 0) {
                 this.segment.tcIn = tcIn;
                 this.setTc();
+                this.resetTcOutFormControlErrors();
             }
-        } else {
-            tcInFormControl.setErrors({'Error': true});
         }
     }
 
-    public afterTcOutValidation(value: string, tcOutFormControl: AbstractControl<any>) {
-        if (value) {
-            const tcOut = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
+    public afterTcOutValidation(value: any) {
+        //Nous supposons dans cette fonction que le format de value est correct
+        if (!value.formatError) {
+            const tcOut = FormatUtils.convertFormattedTcToSeconds(value.error ? value.value : value, this.tcDisplayFormat, this.fps);
             if (tcOut >= 0) {
-                this.segment.tcOut = tcOut;
+                if (tcOut !== this.segment.tcOut) {
+                    this.segment.tcOut = tcOut;
+                }
                 this.setTc();
+                this.resetTcInFormControlErrors();
             }
-        } else {
-            tcOutFormControl.setErrors({'Error': true});
         }
     }
 
-    public afterTcValidation(value: string, tcFormControl: AbstractControl<any>) {
-        if (value) {
-            const tc = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
+    public afterTcValidation(value: any) {
+        //Nous supposons dans cette fonction que le format de value est correct
+        if (!value.formatError) {
+            const tc = FormatUtils.convertFormattedTcToSeconds(value.error ? value.value : value, this.tcDisplayFormat, this.fps);
             if (tc >= 0) {
                 this.segment.tc = tc;
-                if (this.segment.tcIn + this.segment.tc >= 0) {
-                    this.segment.tcOut = this.segment.tcIn + this.segment.tc;
-                    this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
+                //Si le tc (durée) a été modifié via setTc, nous ne modifions pas le tcOut.
+                if (this.setTcInvoked !== true) {
+                    if (this.segment.tcIn >= 0 && this.segment.tc >= 0) {
+                        this.segment.tcOut = this.segment.tcIn + this.segment.tc;
+                        this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
+                    }
                 }
             }
-        } else {
-            tcFormControl.setErrors({'Error': true});
+        }
+        //Nous gérons ici le fait que le Tc n'est pas setté via l'ui mais plutôt via setTc
+        if (this.setTcInvoked === true) {
+            this.setTcInvoked = false;
         }
     }
 
@@ -295,34 +348,59 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     private activateTcOutEdition = () => {
         const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
         if (tcOutFormControl) {
+            //Si pendant 2000 ms, le control n'est pas valide, une snackbar apparaît
             const tcOutSubscription = tcOutFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                return of(this.tcValidators("tcOut", value));
-            })).subscribe(value => {
-                this.afterTcOutValidation(value, tcOutFormControl);
+                return of(this.tcValidators("tcOut", value, true));
+            })).subscribe(() => {
+                //On reset l'état valid ou non du control tcInFormatted puisqu'il dépend de tcOut
+                this.resetTcInFormControlErrors();
             });
             this.formChangesSubscriptions.push(tcOutSubscription);
+
+            //A chaque modification de tcOutFormatted - via une assignation ou via l'ui ngModel - nous checkons le tcOut puis modifions le tc (la durée)
+            const tcOutSubscription1 = tcOutFormControl.valueChanges.pipe(switchMap((value) => {
+                return of(this.tcValidators("tcOut", value));
+            })).subscribe(value => {
+                this.afterTcOutValidation(value);
+            });
+            this.formChangesSubscriptions.push(tcOutSubscription1);
         }
     }
     private activateTcInEdition = () => {
         const tcInFormControl = this.segmentForm.form.controls['tcIn'];
         if (tcInFormControl) {
+            //Si pendant 2000 ms, le control n'est pas valide, une snackbar apparaît
             const tcInSubscription = tcInFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                return of(this.tcValidators("tcIn", value));
-            })).subscribe(value => {
-                this.afterTcInValidation(value, tcInFormControl);
+                return of(this.tcValidators("tcIn", value, true));
+            })).subscribe(() => {
+                //On reset l'état valid ou non du control tcOutFormatted puisqu'il dépend de tcIn
+                this.resetTcOutFormControlErrors();
             });
             this.formChangesSubscriptions.push(tcInSubscription);
+            //A chaque modification de tcInFormatted - via une assignation ou via l'ui ngModel - nous checkons le tcIn puis modifions le tc (la durée)
+            const tcInSubscription1 = tcInFormControl.valueChanges.pipe(switchMap((value) => {
+                return of(this.tcValidators("tcIn", value));
+            })).subscribe(value => {
+                this.afterTcInValidation(value);
+            });
+            this.formChangesSubscriptions.push(tcInSubscription1);
         }
     }
     private activateTcEdition = () => {
         const tcFormControl = this.segmentForm.form.controls['tc'];
         if (tcFormControl) {
             const tcSubscription = tcFormControl.valueChanges.pipe(debounceTime(2000), switchMap((value) => {
-                return of(this.tcValidators("tc", value));
-            })).subscribe(value => {
-                this.afterTcValidation(value, tcFormControl);
+                return of(this.tcValidators("tc", value, true));
+            })).subscribe(() => {
             });
             this.formChangesSubscriptions.push(tcSubscription);
+
+            const tcSubscription1 = tcFormControl.valueChanges.pipe(switchMap((value) => {
+                return of(this.tcValidators("tc", value));
+            })).subscribe(value => {
+                this.afterTcValidation(value);
+            });
+            this.formChangesSubscriptions.push(tcSubscription1);
         }
     }
     private activateCategoriesEdition = () => {
@@ -415,6 +493,8 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.setCategoriesFromProperty(this.segment.property);
         this.setKeywordsFromProperty(this.segment.property);
+        this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
+        this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
     }
 
     ngAfterViewInit(): void {

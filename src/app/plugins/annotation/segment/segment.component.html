@@ -88,8 +88,8 @@
         <div class="readonly-segment">
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <ng-template pTemplate="header">
-                    <div #titlediv class="segment-title ellipsis" [title]="isEllipsed?segment.label:''">
-                        {{ segment.label }}
+                    <div #titlediv class="segment-title ellipsis" [tooltip]="isEllipsed?segment.label:''">
+                        {{ (segment.label === '' || segment.label === undefined) ? 'Segment sans titre' : segment.label }}
                     </div>
                     <div class="header-buttons">
                         <p-button id="btnedit" icon="pi pi-pencil"
