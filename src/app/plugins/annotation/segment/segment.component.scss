@@ -317,6 +317,22 @@
           }
         }
 
+        .readonly-segment-no-camera-icon {
+          display: none;
+        }
+
+        .readonly-segment-audioThumbnail {
+          position: absolute;
+          flex-shrink: 0;
+          background: url("/assets/images/headphones.svg") $amalia-primary-color 0 0 / 100% 100% no-repeat;
+          width: 165px;
+          height: 111px;
+
+          img {
+            width: 165px;
+          }
+        }
+
         .readonly-segment-thumbnail-no-background {
           position: absolute;
           flex-shrink: 0;

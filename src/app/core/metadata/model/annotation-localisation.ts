@@ -28,6 +28,7 @@ export interface AnnotationLocalisation {
         labelChannel?: string,
         itemBusinessIdentifier?: string;
         tcMax?: number;
+        category?: string;
     };
     property?: {
         key: string;
