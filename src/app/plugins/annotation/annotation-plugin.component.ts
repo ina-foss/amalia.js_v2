@@ -497,6 +497,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tcIn = event.payload.updatedSegment.tcIn;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
+
         }
         this.dataLoading = false;
     }

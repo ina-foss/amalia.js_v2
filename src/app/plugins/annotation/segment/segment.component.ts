@@ -99,6 +99,13 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
         effect(() => {
+            this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
+        });
+        effect(() => {
+            this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
+        });
+
+        effect(() => {
             if (this.displayMode() !== "readonly") {
                 this.activateEdition();
             } else {
@@ -631,7 +638,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         let totalWidth = 0;
         let truncateChips: boolean = false;
         let hiddenChipsCount = 0;
-        const gap = 6;
+        const gap = 12;
 
         //renseigner le style.display à inline-block pour que les p-chip aient un offsetWidth défini
         chips.forEach((chip: HTMLElement) => {
@@ -655,7 +662,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         //on se base sur la largeur de la div contenante moins (-) la largeur de la p-chip qui a pour label le résumé
         if (truncateChips) {
             totalWidth = 0;
-            let availableWidth = divWidth - 60;
+            let availableWidth = divWidth - 85;
             chips.forEach((chip: HTMLElement) => {
                 if (chip.id != summaryChipId) {
                     totalWidth += (chip.offsetWidth + gap);
@@ -672,4 +679,21 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         }
         return hiddenChipsCount;
     }
+
+    public calculateTextWidth(text: string, font: string): number {
+        const span = document.createElement('span');
+        span.style.font = font;
+        span.style.visibility = 'hidden';
+        span.style.whiteSpace = 'nowrap';
+        span.innerText = text;
+        document.body.appendChild(span);
+        const width = span.offsetWidth;
+        document.body.removeChild(span);
+        return width;
+    }
+
+    public textLatoWidthHigherThan(text: string, width: number) {
+        return this.calculateTextWidth(text, 'Lato') > width;
+    }
+
 }
