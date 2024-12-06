@@ -42,7 +42,6 @@
       width: 656px;
       border-radius: $amalia-spacings-border-radius-radius-md !important;
       padding: 12px 20px;
-      height: 179px;
     }
   }
 
@@ -86,15 +85,15 @@
   .segments {
     display: flex;
     flex-direction: column;
-    gap: $amalia-spacings-space-space-sm;
+    gap: 10px;
     height: 100%;
     align-items: center;
 
     .segment-empty {
       bottom: 0;
       position: relative;
-      max-height: 34px;
-      min-height: 34px;
+      max-height: 60px;
+      min-height: 60px;
     }
   }
 

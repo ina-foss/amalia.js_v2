@@ -249,7 +249,8 @@
       /* card/shadow */
       box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
       filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-      padding: $amalia-spacings-border-radius-radius-md 17.5px;
+      padding: $amalia-spacings-border-radius-lg;
+
     }
 
     .p-card-header {
@@ -285,6 +286,7 @@
 
     .p-divider.p-divider-horizontal {
       margin: 0;
+      height: 1px;
     }
 
     .p-card-body {
@@ -304,6 +306,9 @@
         position: relative;
         width: 165px;
         flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
 
         .readonly-segment-thumbnail {
           position: absolute;
@@ -313,6 +318,7 @@
           height: 111px;
 
           img {
+            margin-top: 12px;
             width: 165px;
           }
         }
@@ -324,11 +330,12 @@
         .readonly-segment-audioThumbnail {
           position: absolute;
           flex-shrink: 0;
-          background: url("/assets/images/headphones.svg") $amalia-primary-color 0 0 / 100% 100% no-repeat;
+          background: url("/assets/images/headphones.svg") $amalia-primary-color 50% 50% / 50% 50% no-repeat;
           width: 165px;
           height: 111px;
 
           img {
+            margin-top: 12px;
             width: 165px;
           }
         }
@@ -340,11 +347,13 @@
           height: 111px;
 
           img {
+            margin-top: 12px;
             width: 165px;
           }
         }
 
         .p-button {
+          margin-top: 12px;
           float: right;
         }
       }
@@ -371,8 +380,8 @@
             /* card/content/typography */
             font-size: 14px;
             font-style: normal;
-            font-weight: 400;
-            line-height: 150%; /* 21px */
+            font-weight: 600;
+            line-height: 112.5%; /* 21px */
           }
         }
 
@@ -381,12 +390,14 @@
           width: 100%;
           display: flex;
           flex-direction: row;
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
           gap: $amalia-spacings-space-space-sm;
-          margin-bottom: $amalia-spacings-space-space-sm;
+          padding: $amalia-spacings-border-radius-sm 0;
+          align-items: center;
 
           p-chip {
-            margin-top: $amalia-spacings-space-space-sm;
+            display: inline-block;
+            padding: 4px 0 0 0 !important;
           }
 
           .p-chip {
@@ -407,12 +418,14 @@
           width: 100%;
           display: flex;
           flex-direction: row;
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
           gap: $amalia-spacings-space-space-sm;
-          margin-bottom: $amalia-spacings-space-space-sm;
+          padding: $amalia-spacings-border-radius-sm 0;
+          align-items: center;
 
           p-chip {
-            margin-top: $amalia-spacings-space-space-sm;
+            display: inline-block;
+            padding: 0 !important;
           }
 
           .p-chip-text {
@@ -426,7 +439,7 @@
     }
 
     .readonly-segment-description-empty {
-      margin-bottom: $amalia-spacings-space-space-sm;
+      padding: 4px 0;
     }
 
     .collapsed {
@@ -447,7 +460,7 @@
     .readonly-segment-description {
       width: 100%;
       margin-bottom: $amalia-spacings-space-space-sm;
-      margin-top: $amalia-spacings-space-space-sm;
+      margin-top: 4px;
 
       .readonly-segment-description-icon {
         display: flex;
