@@ -300,6 +300,10 @@
       flex-direction: row;
       gap: $amalia-spacings-space-space-sm;
 
+      .thumbnail {
+        border-radius: 3px !important;
+      }
+
       .readonly-segment-thumbnail-block {
         position: relative;
         width: 165px;

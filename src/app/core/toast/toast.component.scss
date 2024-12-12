@@ -1,0 +1,97 @@
+@import '../../core/styles/variables';
+
+
+:host ::ng-deep {
+  .p-progressbar {
+    height: 4px !important;
+    max-height: 4px !important;
+  }
+
+  .p-progressbar-determinate {
+    background-color: white !important;
+  }
+
+  .p-progressbar-value-animate {
+    background-color: currentColor;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success {
+    background: #FFF !important;
+    color: #9ADC82 !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error {
+    background: #FFF !important;
+    color:  #FF5757!important;
+  }
+  .p-toast-message-template-content {
+    display: flex;
+    flex-direction: row;
+    padding: var(--spacings-space-space-md, 16px);
+    align-items: center;
+    gap: var(--border-radius-lg, 12px);
+    flex: 1 0 0;
+    background-color: white !important;
+
+    .p-toast-message-template-error-icon {
+      display: flex;
+      width: 32px;
+      height: 32px;
+      padding: var(--spacings-border-radius-radius-sm, 4px);
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacings-space-space-sm, 12px);
+      border-radius: 100px;
+      background: currentColor;
+
+    }
+
+    .p-toast-message-template-success-icon {
+      display: flex;
+      width: 32px;
+      height: 32px;
+      padding: var(--spacings-border-radius-radius-sm, 4px);
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacings-space-space-sm, 12px);
+      border-radius: 100px;
+      background: currentColor;
+    }
+
+    .p-toast-detail {
+      display: flex;
+      padding-left: var(--spacings-space-space-md, 16px);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--border-radius-md, 8px);
+      flex: 1 0 0;
+      color: #212529;
+      text-align: justify;
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+
+    .p-toast-message-template-icon-size {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .p-toast-message-template-close-icon {
+      display: flex;
+      width: 28px;
+      height: 28px;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+  }
+
+  .p-toast-message {
+    border-left-style: none !important;
+  }
+}

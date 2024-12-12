@@ -151,7 +151,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             summary: undefined,
             detail: msgContent,
             key: 'segment',
-            data: {progress: 100} // initial progress value (life/ interval timeout)*2
+            data: {progress: 0} // initial progress value (life/ interval timeout)*2
         });
     }
 

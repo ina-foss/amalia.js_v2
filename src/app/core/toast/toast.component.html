@@ -1,0 +1,25 @@
+<p-toast [position]="position" [key]="key">
+    <ng-template let-message pTemplate="headless" let-closeFn="closeFn">
+        <p-progressBar [value]="message.data.progress" [showValue]="false" styleClass="progress-bar"></p-progressBar>
+        <div class="p-toast-message-template-content">
+            <div *ngIf="message.severity==='error'" class="p-toast-message-template-error-icon">
+                <svg class="p-toast-message-template-icon-size">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#times'"></use>
+                </svg>
+            </div>
+            <div *ngIf="message.severity==='success'" class="p-toast-message-template-success-icon">
+                <svg class="p-toast-message-template-icon-size">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#check'"></use>
+                </svg>
+            </div>
+            <div class="p-toast-detail">
+                {{ message.detail }}
+            </div>
+            <div class="p-toast-message-template-close-icon" (click)="closeFn($event)">
+                <svg class="p-toast-message-template-icon-size">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#times'"></use>
+                </svg>
+            </div>
+        </div>
+    </ng-template>
+</p-toast>

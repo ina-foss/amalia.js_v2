@@ -36,6 +36,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {AutoCompleteModule} from "primeng/autocomplete";
+import {ToastComponent} from "./core/toast/toast.component";
 
 @NgModule({
     imports: [
@@ -57,7 +58,8 @@ import {AutoCompleteModule} from "primeng/autocomplete";
         ConfirmDialogModule,
         ProgressBarModule,
         ProgressSpinnerModule,
-        AutoCompleteModule
+        AutoCompleteModule,
+        ToastComponent
     ],
     declarations: [
         AmaliaComponent,
