@@ -140,7 +140,7 @@
                                             [tooltip]="displayRemaining(categories(),hiddenCategoriesCount)"/>
                                 </ng-container>
                                 <ng-container *ngIf="categories().length === 0">
-                                    Catégories: aucune
+                                    <span class="readonly-segment-no-categories">Catégories: aucune</span>
                                 </ng-container>
                             </div>
                             <div class="readonly-segment-keywords" #readOnlyKeywordsDiv>
@@ -151,7 +151,8 @@
                                             [tooltip]="displayRemaining(keywords(),hiddenKeywordsCount)"/>
                                 </ng-container>
                                 <ng-container *ngIf="keywords().length === 0">
-                                    Mots-clés: aucun
+                                    <span class="readonly-segment-no-keywords">Mots-clés: aucun</span>
+
                                 </ng-container>
                             </div>
                             <ng-container

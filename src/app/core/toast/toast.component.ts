@@ -36,7 +36,7 @@ export class ToastComponent {
 
     updateProgress(msg: any) {
         msg.data = {progress: 0};
-        const life = msg.life ? msg.life : 3000;
+        const life = msg.life ? msg.life : 5000;
         if (life >= 3500) {
             setTimeout(() => {
                 msg.data.progress = 100;
