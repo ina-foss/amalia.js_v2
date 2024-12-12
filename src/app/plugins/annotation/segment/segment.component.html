@@ -1,6 +1,6 @@
 <form #segmentForm="ngForm">
     <div *ngIf="displayMode()!=='readonly'">
-        <p-toast position="bottom-center" key="segment"/>
+        <amalia-toast position="bottom-center" key="segment"/>
         <div class="editable-segment">
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <div class="segment-title">
@@ -121,13 +121,13 @@
                         <div class="readonly-segment-info-content">
                             <div class="readonly-segment-tc">
                                 <div class="readonly-segment-tc-item">
-                                    Début: {{ segment.tcIn | tcFormat:tcDisplayFormat }}
+                                    Début : {{ segment.tcIn | tcFormat:tcDisplayFormat }}
                                 </div>
                                 <div class="readonly-segment-tc-item">
-                                    Fin: {{ segment.tcOut | tcFormat:tcDisplayFormat }}
+                                    Fin : {{ segment.tcOut | tcFormat:tcDisplayFormat }}
                                 </div>
                                 <div class="readonly-segment-tc-item">
-                                    Durée: {{ segment.tc |tcFormat:tcDisplayFormat }}
+                                    Durée : {{ segment.tc |tcFormat:tcDisplayFormat }}
                                 </div>
                             </div>
                             <p-divider/>

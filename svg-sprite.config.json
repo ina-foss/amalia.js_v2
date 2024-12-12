@@ -1,5 +1,6 @@
 {
     "dest": "src/assets/svgs/",
+    "log": "debug",
     "shape": {
         "dimension": {
             "maxWidth": 50,
@@ -43,7 +44,8 @@
             "render": {
                 "scss": false
             },
-            "example": true
+            "example": true,
+            "sprite": "svg/sprite.symbol.svg"
         }
     }
 }

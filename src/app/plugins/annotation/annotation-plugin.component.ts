@@ -22,6 +22,7 @@ import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
 import {interval, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
 import {FormatUtils} from "../../core/utils/format-utils";
+import {ToastComponent} from "../../core/toast/toast.component";
 
 interface FnParam {
     fn: any;
@@ -58,6 +59,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public currentTime: number;
     @ViewChild('annotationElement', {static: false})
     public annotationElement: ElementRef<HTMLElement>;
+    @ViewChild('toast')
+    public toast: ToastComponent;
     public dataLoading: boolean = true;
     public timeout = 30000;
     noSpinner: boolean = true;
@@ -247,7 +250,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             tcIn = tcIn + tcOffset;
             const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
             const segmentToBeAdded: AnnotationLocalisation = {
-                label: 'Segment sans titre',
+                label: '',
                 data: {
                     displayMode: "readonly",
                     selected: true,
@@ -615,12 +618,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     public displaySnackBar(msgContent, severity?: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary', life?: number) {
         const _severity = severity ? severity : 'error';
-        this.messageService.add({
+
+        this.toast.addMessage({
             severity: _severity,
             summary: undefined,
             detail: msgContent,
             key: 'br',
-            life: life ?? 1500
+            life: life ?? 1500,
+            data: {progress: 0}
         });
     }
 
