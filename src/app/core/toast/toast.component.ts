@@ -20,36 +20,48 @@ export class ToastComponent {
     constructor(private cdr: ChangeDetectorRef, private messageService: MessageService) {
     }
 
-    visible: boolean = false;
     @Input()
     key: string;
     @Input()
     position: ToastPositionType;
 
     public addMessage(msg: any) {
-        if (!this.visible) {
-            this.messageService.add(msg);
-            this.updateProgress(msg);
-            this.visible = true;
-        }
+        this.messageService.add(msg);
+        this.updateProgress(msg);
     }
 
     onConfirm() {
         this.messageService.clear(this.key);
-        this.visible = false;
     }
 
     updateProgress(msg: any) {
         msg.data = {progress: 0};
-        const period = msg.life ? msg.life / 10 : 150;
-        const interval = setInterval(() => {
-            msg.data.progress += 10;
-            if (msg.data.progress >= 220) {
-                clearInterval(interval);
-                this.onConfirm();
-            }
+        const life = msg.life ? msg.life : 3000;
+        if (life >= 3500) {
+            setTimeout(() => {
+                msg.data.progress = 100;
+                this.cdr.detectChanges();
+            }, life - 1000);
+            const period = life / 10;
+            const interval = setInterval(() => {
+                msg.data.progress += 10;
+                this.cdr.detectChanges();
+                if (msg.data.progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, period);
+
+        } else {
+            msg.data.progress = 50;
             this.cdr.markForCheck();
-        }, period);
+            setTimeout(() => {
+                msg.data.progress = 100;
+                this.cdr.detectChanges();
+            }, 50);
+        }
+        setTimeout(() => {
+            this.onConfirm();
+        }, life);
     }
 
 }
