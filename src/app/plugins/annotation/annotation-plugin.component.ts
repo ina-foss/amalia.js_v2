@@ -131,12 +131,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        this.mediaPlayerElement.metadataManager.reloadDataSource('forAnnotations:').then(() => {
-            this.handleMetadataLoaded();
-        }).catch((err) => {
-            this.displaySnackBar('Un incident technique empêche le chargement des annotations!', 'error', 10000);
-            this.logger.debug(`Un incident technique empêche le chargement des annotations! Back end injoignable: ${err.url}`);
-        });
+
         this.waitFor(this.mediaPlayerElementReady.bind(this), this.setTcOffset.bind(this),
                 this.logWaitForTcOffsetComplete.bind(this));
     }
