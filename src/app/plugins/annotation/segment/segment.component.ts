@@ -17,6 +17,7 @@ import {MessageService} from "primeng/api";
 import {switchMap} from 'rxjs/operators';
 import {AutoCompleteCompleteEvent} from "primeng/autocomplete";
 import {NgForm} from "@angular/forms";
+import {ToastComponent} from "../../../core/toast/toast.component";
 
 @Component({
     selector: 'amalia-segment',
@@ -56,6 +57,8 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public readOnlyCategoriesDiv: ElementRef;
     @ViewChild('readOnlyKeywordsDiv')
     public readOnlyKeywordsDiv: ElementRef;
+    @ViewChild('toast')
+    public toast: ToastComponent;
 
     public isEllipsed: boolean = false;
     public isDescriptionCollapsed: boolean = true;
@@ -67,6 +70,21 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public tcOutFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
     public tcFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
     public setTcInvoked: boolean = false;
+    public propertyBeforeEdition: { key: string; value: string }[] = [];
+    private editionAlreadyActivated: boolean = false;
+
+    filteredCategories: string[];
+    filteredKeywords: string[];
+    hiddenCategoriesCount: number = 0;
+    hiddenKeywordsCount: number = 0;
+    readonlyCategoriesClassName = 'readonly-segment-categories';
+    readOnlyKeywordsClassName = 'readonly-segment-keywords';
+    hiddenCategoriesSummaryChipId = 'hiddenCategoriesSummaryChip';
+    hiddenKeywordsSummaryChipId = 'hiddenKeywordsSummaryChip';
+
+    //Constantes
+    public static SEGMENT_SANS_TITRE = 'Segment sans titre';
+    public readonly SEGMENT_SANS_TITRE = SegmentComponent.SEGMENT_SANS_TITRE;
 
     //Signals
     public categories = signal<string[]>([]);
@@ -85,17 +103,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         });
         return prop;
     });
-    public propertyBeforeEdition: { key: string; value: string }[] = [];
-    private editionAlreadyActivated: boolean = false;
 
-    filteredCategories: string[];
-    filteredKeywords: string[];
-    hiddenCategoriesCount: number = 0;
-    hiddenKeywordsCount: number = 0;
-    readonlyCategoriesClassName = 'readonly-segment-categories';
-    readOnlyKeywordsClassName = 'readonly-segment-keywords';
-    hiddenCategoriesSummaryChipId = 'hiddenCategoriesSummaryChip';
-    hiddenKeywordsSummaryChipId = 'hiddenKeywordsSummaryChip';
 
     constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
         effect(() => {
@@ -146,11 +154,12 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public displaySnackBar(msgContent) {
         //life: 1500,
-        this.messageService.add({
+        this.toast.addMessage({
             severity: 'error',
             summary: undefined,
             detail: msgContent,
             key: 'segment',
+            life:5000,
             data: {progress: 0} // initial progress value (life/ interval timeout)*2
         });
     }
@@ -163,7 +172,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
         if (tcIn > tcOut || tcIn < tcOffset || tcIn > tcMax) {
             if (displaySnackBar === true) {
-                this.displaySnackBar('le TC IN doit être inférieur au TC OUT et compris entre le TC IN et le TC OUT de l\'intégral');
+                this.displaySnackBar('le TC Début doit être inférieur au TC Fin et compris entre le TC Début et le TC Fin de l\'intégral');
             }
             const tcInFormControl = this.segmentForm.form.controls['tcIn'];
             if (tcInFormControl) {
@@ -180,7 +189,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         const tcOffset = this.segment.tcOffset;
         if (tcIn > tcOut || tcOut > tcMax || tcOffset > tcOut) {
             if (displaySnackBar === true) {
-                this.displaySnackBar('Le TC OUT doit être supérieur au TC IN et compris entre le TC IN et le TC OUT du fichier intégral');
+                this.displaySnackBar('Le TC Fin doit être supérieur au TC Début et compris entre le TC Début et le TC Fin du fichier intégral');
             }
             const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
             if (tcOutFormControl) {

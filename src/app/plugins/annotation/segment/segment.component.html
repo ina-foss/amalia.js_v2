@@ -1,6 +1,6 @@
 <form #segmentForm="ngForm">
     <div *ngIf="displayMode()!=='readonly'">
-        <amalia-toast position="bottom-center" key="segment"/>
+        <amalia-toast #toast position="bottom-center" key="segment"/>
         <div class="editable-segment">
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <div class="segment-title">
@@ -89,7 +89,7 @@
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <ng-template pTemplate="header">
                     <div #titlediv class="segment-title ellipsis" [tooltip]="isEllipsed?segment.label:''">
-                        {{ (segment.label === '' || segment.label === undefined) ? 'Segment sans titre' : segment.label }}
+                        {{ (segment.label === '' || segment.label === undefined) ? SEGMENT_SANS_TITRE : segment.label }}
                     </div>
                     <div class="header-buttons">
                         <p-button id="btnedit" icon="pi pi-pencil"

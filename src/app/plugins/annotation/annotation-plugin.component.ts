@@ -23,6 +23,7 @@ import {FileService} from "../../service/file.service";
 import {interval, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
 import {FormatUtils} from "../../core/utils/format-utils";
 import {ToastComponent} from "../../core/toast/toast.component";
+import {SegmentComponent} from "./segment/segment.component";
 
 interface FnParam {
     fn: any;
@@ -307,8 +308,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (segment) {
             const editing = this.segmentsInfo?.subLocalisations?.find((editModeSegment => editModeSegment.data.displayMode !== "readonly"));
             if (editing && editing !== segment) {
+                const msg = (editing.label === undefined || editing.label === '') ? SegmentComponent.SEGMENT_SANS_TITRE : editing.label;
                 this.confirmationService.confirm({
-                    message: 'Etes-vous sûr de vouloir annuler les modifications du segment [' + editing.label + ']',
+                    message: `Etes-vous sûr de vouloir annuler les modifications du segment ['${msg} ']`,
                     header: 'Confirmation',
                     icon: 'pi pi-exclamation-triangle',
                     rejectButtonStyleClass: "p-button-text",
@@ -320,6 +322,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                         segment.data.displayMode = "edit";
                         editing.data.selected = false;
                         segment.data.selected = true;
+                        if (segment.label !== undefined && segment.label.includes(SegmentComponent.SEGMENT_SANS_TITRE)) {
+                            segment.label = '';
+                        }
                     },
                     reject: () => {
                         editing.data.selected = true;
@@ -331,6 +336,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.unselectAllSegments();
                 segment.data.selected = true;
                 segment.data.displayMode = "edit";
+                if (segment.label !== undefined && segment.label.includes(SegmentComponent.SEGMENT_SANS_TITRE)) {
+                    segment.label = '';
+                }
             }
         }
     }
@@ -356,8 +364,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public removeSegment(segment) {
+        const msg = (segment.label === undefined || segment.label === '') ? SegmentComponent.SEGMENT_SANS_TITRE : segment.label;
         this.confirmationService.confirm({
-            message: 'Etes-vous sûr de vouloir supprimer le segment [' + segment.label + ']',
+            message: `Etes-vous sûr de vouloir supprimer le segment ['${msg}']`,
             header: 'Confirmation',
             icon: 'pi pi-exclamation-triangle',
             rejectButtonStyleClass: "p-button-text",
@@ -466,7 +475,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         const newSegmentCopy = structuredClone(sourceSegment);
         newSegmentCopy.data.displayMode = "readonly";
         newSegmentCopy.data.selected = true;
-        newSegmentCopy.label = 'Copie de ' + sourceSegment.label;
+        newSegmentCopy.label = (sourceSegment.label === '' || sourceSegment.label === undefined) ? `Copie de ${SegmentComponent.SEGMENT_SANS_TITRE}` : 'Copie de ' + sourceSegment.label;
         newSegmentCopy.id = undefined;
         return newSegmentCopy;
     }
@@ -529,7 +538,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 }
 
             } else {
-                this.displaySnackBar('le TC IN doit être compris entre le TC IN et le TC OUT de l\'intégral');
+                this.displaySnackBar('le TC Début doit être compris entre le TC Début et le TC OUT de l\'intégral');
             }
         }
     }
@@ -551,7 +560,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             const updatedSegment = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
             if (mediaTc < selectedSegment.tcIn || mediaTc > maxTcOut) {
-                this.displaySnackBar('Le TC OUT doit être supérieur au TC IN et compris entre le TC IN et le TC OUT du fichier intégral');
+                this.displaySnackBar('Le TC Fin doit être supérieur au TC Début et compris entre le TC Début et le TC Fin du fichier intégral');
             } else {
                 //set tcOut
                 updatedSegment.tcOut = mediaTc;
@@ -619,7 +628,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             summary: undefined,
             detail: msgContent,
             key: 'br',
-            life: life ?? 1500,
+            life: life ?? 5000,
             data: {progress: 0}
         });
     }
