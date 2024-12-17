@@ -68,7 +68,7 @@ export class MetadataManager {
     }
 
     isClientIdDatasource(datasource, clientId): boolean {
-        const url = new URL(datasource.url);
+        const url = new URL(`${window.location.protocol}//${window.location.host}/${datasource.url}`);
         const dataSourceClientId = url.searchParams.get('clientId');
         return clientId === dataSourceClientId;
     }

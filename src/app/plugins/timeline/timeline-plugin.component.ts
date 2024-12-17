@@ -393,7 +393,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * Called when metadata loaded
      */
     @AutoBind
-    public handleMetadataLoaded() {
+    protected handleMetadataLoaded() {
         this.parseTimelineMetadata();
     }
 

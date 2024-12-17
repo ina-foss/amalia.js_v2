@@ -78,7 +78,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
      * Invoked on metadata loaded
      */
     @AutoBind
-    private handleMetadataLoaded() {
+    protected handleMetadataLoaded() {
         this.refreshMetadata();
     }
 
