@@ -42,9 +42,9 @@ export class ToastComponent {
                 msg.data.progress = 100;
                 this.cdr.detectChanges();
             }, life - 1000);
-            const period = life / 10;
+            const period = life / 50;
             const interval = setInterval(() => {
-                msg.data.progress += 10;
+                msg.data.progress += 2;
                 this.cdr.detectChanges();
                 if (msg.data.progress >= 100) {
                     clearInterval(interval);

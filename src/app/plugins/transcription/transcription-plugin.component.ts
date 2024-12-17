@@ -1,5 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {AfterViewInit, Component, ElementRef, OnInit, PipeTransform, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, PipeTransform, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
@@ -24,7 +24,7 @@ export class TcFormatPipe implements PipeTransform {
     styleUrls: ['./transcription-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements OnInit, AfterViewInit {
+export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements AfterViewInit {
     public static PLUGIN_NAME = 'TRANSCRIPTION';
     public static KARAOKE_TC_DELTA = 0.250;
     public static SELECTOR_SEGMENT = 'segment';
@@ -68,8 +68,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.pluginName = TranscriptionPluginComponent.PLUGIN_NAME;
     }
 
-    ngOnInit(): void {
-        super.ngOnInit();
+    ngOnInit() {
+        try {
+            super.ngOnInit();
+        } catch (e) {
+            this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
+        }
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+            this.init();
+        }
     }
 
     @AutoBind
@@ -378,7 +385,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * Invoked on metadata loaded
      */
     @AutoBind
-    private handleMetadataLoaded() {
+    protected handleMetadataLoaded() {
         this.parseTranscription();
     }
 
@@ -579,36 +586,38 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private handleMatchedTextStyle() {
         const listOfNamedEntitiesNodes = new Set<HTMLElement>();
-        const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+        if (this.transcriptionElement.nativeElement) {
+            const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
 
-        this.transcriptions.forEach(tr => {
-            const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(this.predicateIsNodeTcInTcOutMatching(tr));
-            tr.annotations.forEach(a => {
-                if (a.matchedText.includes(' ')) {
-                    //Matched texte est composé exemple: Emmanuel Macron
-                    const matchedTextArray = a.matchedText.split(' ');
-                    segmentElementNodesForCurrentTranscription.forEach(segmentElementNode => {
-                        const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-                        wordElementNodes.forEach((node, nodeIndex) => {
-                            TranscriptionPluginComponent.matchComposedSearchKey(node, matchedTextArray, wordElementNodes, nodeIndex, listOfNamedEntitiesNodes);
+            this.transcriptions.forEach(tr => {
+                const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(this.predicateIsNodeTcInTcOutMatching(tr));
+                tr.annotations.forEach(a => {
+                    if (a.matchedText.includes(' ')) {
+                        //Matched texte est composé exemple: Emmanuel Macron
+                        const matchedTextArray = a.matchedText.split(' ');
+                        segmentElementNodesForCurrentTranscription.forEach(segmentElementNode => {
+                            const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                            wordElementNodes.forEach((node, nodeIndex) => {
+                                TranscriptionPluginComponent.matchComposedSearchKey(node, matchedTextArray, wordElementNodes, nodeIndex, listOfNamedEntitiesNodes);
+                            });
                         });
-                    });
-                } else {
-                    segmentElementNodesForCurrentTranscription.forEach((segmentElementNode) => {
-                        const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-                        wordElementNodes.forEach((node) => {
-                            if (node.textContent && TextUtils.hasSearchText(node.textContent, a.matchedText)) {
-                                listOfNamedEntitiesNodes.add(node as HTMLElement);
+                    } else {
+                        segmentElementNodesForCurrentTranscription.forEach((segmentElementNode) => {
+                            const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                            wordElementNodes.forEach((node) => {
+                                if (node.textContent && TextUtils.hasSearchText(node.textContent, a.matchedText)) {
+                                    listOfNamedEntitiesNodes.add(node as HTMLElement);
 
-                            }
+                                }
+                            });
                         });
-                    });
-                }
+                    }
+                });
             });
-        });
-        listOfNamedEntitiesNodes.forEach(e => {
-            e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
-        });
+            listOfNamedEntitiesNodes.forEach(e => {
+                e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
+            });
+        }
     }
 
     private static matchComposedSearchKey = (node: Element, matchedTextArray: string[], wordElementNodes: NodeListOf<Element>, nodeIndex: number, listOfNamedEntitiesNodes: Set<HTMLElement>) => {
@@ -643,6 +652,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     ngAfterViewInit(): void {
-        this.handleMatchedTextStyle();
+        this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (this.transcriptions && this.transcriptions.length > 0),
+                this.handleMatchedTextStyle.bind(this),
+                undefined,
+                this.intervalStep,
+                this.timeout,
+                this.setDataLoading.bind(this)));
     }
 }
