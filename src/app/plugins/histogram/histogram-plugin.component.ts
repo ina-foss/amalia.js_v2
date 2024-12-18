@@ -236,7 +236,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * Invoked on metadata loaded
      */
     @AutoBind
-    private handleMetadataLoaded() {
+    protected handleMetadataLoaded() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const zoomMetadataIdx = this.pluginConfiguration.data.zoomMetadataIdx;
         const labels = this.pluginConfiguration.data.labels;
