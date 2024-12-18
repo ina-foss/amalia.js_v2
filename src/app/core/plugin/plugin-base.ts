@@ -1,10 +1,12 @@
 import {MediaPlayerElement} from '../media-player-element';
 import {PluginConfigData} from '../config/model/plugin-config-data';
 import {DefaultLogger} from '../logger/default-logger';
-import {Component, Input, OnInit, Optional} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {PlayerEventType} from '../constant/event-type';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {AmaliaException} from '../exception/amalia-exception';
+import {Subscription} from "rxjs";
+import {Utils} from "../utils/utils";
 
 /**
  * Base class for create plugin
@@ -21,6 +23,12 @@ export abstract class PluginBase<T> implements OnInit {
     public tcOffset;
     public fps;
     public initialized;
+    public dataLoading: boolean = true;
+    public timeout: number = 30000;
+    public intervalStep: number = 5;
+    public noSpinner: boolean = true;
+    public subscriptionToEventsEmitters: Subscription[] = [];
+
     /**
      * This plugin configuration
      */
@@ -33,6 +41,58 @@ export abstract class PluginBase<T> implements OnInit {
     @Input()
     set player(value) {
         this._player = value;
+    }
+
+    public setDataLoading(dataLoading: boolean) {
+        this.dataLoading = dataLoading;
+    }
+
+    logWaitForTcOffsetComplete() {
+        if (this.mediaPlayerElementReady()) {
+            this.logger.info(`Plugin ${this.pluginName}`, 'tcOffset bien renseigné');
+        } else {
+            this.logger.info(`Plugin ${this.pluginName}`, 'tcOffset n\' a pas  été renseigné');
+        }
+    }
+
+    logWaitForMetaDataToBeLoadedComplete() {
+        if (this.metaDataLoaded()) {
+            this.logger.info(`Plugin ${this.pluginName}`, 'Metadonnées chargées.');
+        } else {
+            this.logger.info(`Plugin ${this.pluginName}`, 'Echec de chargment des métadonnées!');
+        }
+    }
+
+    public metaDataLoaded(): boolean {
+        let result: boolean = true;
+        const handleMetadataIds = this.pluginConfiguration?.metadataIds;
+        const metadataManager = this.mediaPlayerElement.metadataManager;
+        this.logger.info(` Metadata loaded ${handleMetadataIds}`);
+        // Check if metadata is initialized
+        if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
+            handleMetadataIds.forEach((metadataId) => {
+                this.logger.info(`checking metadata for ${metadataId}`);
+                if (!metadataManager.hasMetadataKey(metadataId)) {
+                    result = false;
+                }
+            });
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    /**
+     * Retourne vrai si le mediaPlayerElement est initialisé.
+     */
+    public mediaPlayerElementReady(): boolean {
+        return !!(this.mediaPlayerElement) && !!(this.mediaPlayerElement.getMediaPlayer()) && !!(this.mediaPlayerElement.getConfiguration());
+    }
+
+    public setTcOffset() {
+        if (this.mediaPlayerElementReady()) {
+            this.tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset || 0;
+        }
     }
 
     public _pluginConfiguration: PluginConfigData<T>;
@@ -65,7 +125,6 @@ export abstract class PluginBase<T> implements OnInit {
     /**
      * Plugin base constructor
      * @param playerService player service
-     * @param pluginName plugin name, user for get configuration
      */
     protected constructor(playerService: MediaPlayerService) {
         this.playerService = playerService;
@@ -78,10 +137,18 @@ export abstract class PluginBase<T> implements OnInit {
             throw new AmaliaException(`Error to init plugin ${this.pluginName} (player id : ${this.playerId}).`);
         }
         if (!this.mediaPlayerElement.isMetadataLoaded && this.pluginName !== 'STORYBOARD') {
+            //The TIME_BAR and CONTROL_BAR plugins need this
             this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init.bind(this));
         } else {
             this.init();
         }
+    }
+
+    protected handleMetadataLoaded() {
+        // this method 'handleMetadataLoaded' is empty
+        /**
+         * This method is empty because It is called in ngOnInit for all the components inheriting from PluginBase.
+         */
     }
 
     init() {

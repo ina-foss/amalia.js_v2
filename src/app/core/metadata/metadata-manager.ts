@@ -67,21 +67,26 @@ export class MetadataManager {
         });
     }
 
-    public reloadDataSource(headerKey: string): Promise<any> {
+    isClientIdDatasource(datasource, clientId): boolean {
+        const url = new URL(`${window.location.protocol}//${window.location.host}/${datasource.url}`);
+        const dataSourceClientId = url.searchParams.get('clientId');
+        return clientId === dataSourceClientId;
+    }
+
+    public reloadDataSource(clientId: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
                 this.toLoadData = 0;
                 dataSources.forEach(dataSource => {
-                    if (dataSource.headers?.find(key => key.includes(headerKey))) {
+                    if (this.isClientIdDatasource(dataSource, clientId)) {
                         this.toLoadData++;
                     }
                 });
                 this.logger.debug(`Data source : sources to be loaded: ${this.toLoadData}`);
                 if (this.toLoadData !== 0) {
                     dataSources.forEach(dataSource => {
-                        let annotationMetadata = !!dataSource.headers?.find(key => key.includes(headerKey));
-                        if (annotationMetadata) {
+                        if (this.isClientIdDatasource(dataSource, clientId)) {
                             this.loadDataSource(dataSource, resolve, reject)
                                     .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                         }
@@ -108,6 +113,14 @@ export class MetadataManager {
         } else {
             throw new AmaliaException(`Error to get metadata`);
         }
+    }
+
+    /**
+     * hasMetadataKey
+     * @param metadataId metadata id
+     */
+    public hasMetadataKey(metadataId: string) {
+        return metadataId && metadataId !== '' && this.listOfMetadata.has(metadataId);
     }
 
     /**
@@ -220,7 +233,7 @@ export class MetadataManager {
     private async loadDataSource(loadData: ConfigDataSource, completed, reject?: any) {
         if (loadData && loadData.url) {
             this.logger.info("loadDataSource", loadData.headers);
-            let annotationMetadata = !!loadData.headers?.find(key => key.includes('forAnnotations:'));
+            let annotationMetadata = this.isClientIdDatasource(loadData, 'annotations');
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
                     .load(loadData.url, loadData.headers)
