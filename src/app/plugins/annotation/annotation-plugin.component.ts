@@ -3,7 +3,6 @@ import {
     Component,
     ElementRef,
     OnDestroy,
-    OnInit,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -20,20 +19,9 @@ import * as _ from "lodash";
 import {ThumbnailService} from "../../service/thumbnail-service";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FileService} from "../../service/file.service";
-import {interval, of, Subscription, takeWhile, switchMap, takeUntil, timer} from "rxjs";
 import {FormatUtils} from "../../core/utils/format-utils";
 import {ToastComponent} from "../../core/toast/toast.component";
 import {SegmentComponent} from "./segment/segment.component";
-
-interface FnParam {
-    fn: any;
-    param: any;
-}
-
-function isFnParam(obj: any): obj is FnParam {
-    return obj && typeof obj === 'object' && 'fn' in obj && 'param' in obj;
-}
-
 
 @Component({
     selector: 'amalia-annotation',
@@ -41,10 +29,9 @@ function isFnParam(obj: any): obj is FnParam {
     styleUrls: ['./annotation-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnDestroy, OnInit {
+export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnDestroy {
     public static PLUGIN_NAME = 'ANNOTATION';
     public static KARAOKE_TC_DELTA = 0.250;
-    subscriptionToAnnotationsEvents: Subscription[] = [];
 
     public segmentsInfo: AnnotationLocalisation = {
         data: {},
@@ -62,30 +49,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public annotationElement: ElementRef<HTMLElement>;
     @ViewChild('toast')
     public toast: ToastComponent;
-    public dataLoading: boolean = true;
-    public timeout = 30000;
-    noSpinner: boolean = true;
 
     availableCategories: string[] = [];
     availableKeywords: string[] = [];
     private assetId: string;
     private link: string;
-
-
-    @AutoBind
-    public mediaPlayerElementReady(): boolean {
-        return !!(this.mediaPlayerElement) && !!(this.mediaPlayerElement.getMediaPlayer()) && !!(this.mediaPlayerElement.getConfiguration());
-    }
-
-    callFunctionWithParam(functionWithParam: any) {
-        if (functionWithParam) {
-            if (isFnParam(functionWithParam)) {
-                functionWithParam.fn(functionWithParam.param);
-            } else {
-                functionWithParam();
-            }
-        }
-    }
 
     sortAnnotations() {
         if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
@@ -93,53 +61,15 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
     }
 
-    @AutoBind
-    public waitFor(conditionFn: any, nextActionFn?: any, completeActionFn?: any, intervalStep?: number, timeout?: number): void {
-        const _timeout = timeout ?? this.timeout;
-        const _intervalStep = intervalStep ?? 5;
-        const subscription = interval(_intervalStep).pipe(// Vérifier toutes les _intervalStep millisecondes
-                switchMap(() => of(conditionFn())), takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
-                , takeUntil(timer(_timeout))).subscribe({
-            next: () => {
-                this.callFunctionWithParam(nextActionFn);
-            },
-            complete: () => {
-                this.callFunctionWithParam(completeActionFn);
-            }
-        });
-        this.subscriptionToAnnotationsEvents.push(subscription);
-    }
-
-    logWaitForTcOffsetComplete() {
-        if (this.mediaPlayerElementReady()) {
-            this.logger.info('Plugin Annotation', 'tcOffset bien renseigné');
-        } else {
-            this.logger.info('Plugin Annotation', 'tcOffset n\' a pas  été renseigné');
-        }
-        this.dataLoading = false;
-    }
-
-    @AutoBind
-    public setTcOffset() {
-        if (this.mediaPlayerElementReady()) {
-            this.tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset || 0;
-        }
-    }
-
-    ngOnInit(): void {
+    ngOnInit() {
         try {
             super.ngOnInit();
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        this.mediaPlayerElement.metadataManager.reloadDataSource('forAnnotations:').then(() => {
-            this.handleMetadataLoaded();
-        }).catch((err) => {
-            this.displaySnackBar('Un incident technique empêche le chargement des annotations!', 'error', 10000);
-            this.logger.debug(`Un incident technique empêche le chargement des annotations! Back end injoignable: ${err.url}`);
-        });
-        this.waitFor(this.mediaPlayerElementReady.bind(this), this.setTcOffset.bind(this),
-                this.logWaitForTcOffsetComplete.bind(this));
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+            this.init();
+        }
     }
 
     @AutoBind
@@ -182,6 +112,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     /**
      * In charge to load metadata
      */
+    @AutoBind
     private parseAnnotation() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
@@ -196,7 +127,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                         .getAnnotationLocalisations(metadataId);
                 if (annotationLocalisations && annotationLocalisations.length > 0) {
                     this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations);
-                    this.waitFor(this.mediaPlayerElementReady.bind(this), this.setSegmentsTcOffsetAndTcMax.bind(this), this.logWaitForTcOffsetComplete.bind(this));
+                    this.subscriptionToEventsEmitters.push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
+                            this.setSegmentsTcOffsetAndTcMax.bind(this),
+                            this.logWaitForTcOffsetComplete.bind(this),
+                            this.intervalStep,
+                            this.timeout,
+                            this.setDataLoading.bind(this)));
                 }
                 // Add sort by tcin
                 this.sortAnnotations();
@@ -208,7 +144,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
      * Invoked on metadata loaded
      */
     @AutoBind
-    private handleMetadataLoaded() {
+    protected handleMetadataLoaded() {
         this.parseAnnotation();
     }
 
@@ -238,8 +174,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public initializeNewSegment() {
-        this.dataLoading = true;
-        this.waitFor(this.mediaPlayerElementReady.bind(this), undefined, this.initSegmentData.bind(this));
+        this.subscriptionToEventsEmitters.push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
+                undefined,
+                this.initSegmentData.bind(this),
+                this.intervalStep,
+                this.timeout,
+                this.setDataLoading.bind(this)));
     }
 
     @AutoBind
@@ -270,13 +210,15 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 type: 'init',
                 payload: segmentToBeAdded
             };
-            this.dataLoading = true;
             this.cdr.detectChanges();
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, event);
-            this.waitFor(() => event.status != undefined, undefined, {
-                fn: this.addSegmentToSegmentsInfo.bind(this),
-                param: event
-            }, 5, 10000);
+            this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
+                    undefined, {
+                        fn: this.addSegmentToSegmentsInfo.bind(this),
+                        param: event
+                    }, this.intervalStep,
+                    10000,
+                    this.setDataLoading.bind(this)));
             this.manageEventResponseStatus(event);
         } else {
             this.logWaitForTcOffsetComplete();
@@ -384,11 +326,13 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     payload: segment
                 };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_REMOVE, event);
-                this.dataLoading = true;
-                this.waitFor(() => event.status != undefined, undefined, {
-                    fn: this.removeSegmentFromSegmentsInfo.bind(this),
-                    param: event
-                }, 5, 10000);
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
+                        undefined, {
+                            fn: this.removeSegmentFromSegmentsInfo.bind(this),
+                            param: event
+                        }, this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this)));
                 this.manageEventResponseStatus(event);
             },
             reject: () => {
@@ -410,23 +354,29 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     manageEventResponseStatus(event) {
-        this.waitFor(() => event.status != undefined, undefined, {
-            fn: this.displayEventResponseStatus.bind(this),
-            param: event
-        }, 5, 10000);
+        this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
+                undefined,
+                {
+                    fn: this.displayEventResponseStatus.bind(this),
+                    param: event
+                }, this.intervalStep,
+                10000,
+                this.setDataLoading.bind(this)));
     }
 
     manageSegment(event) {
         switch (event.type) {
             case 'validate':
                 event.payload = {segment: event.payload, updatedSegment: this.segmentBeforeEdition};
-                this.dataLoading = true;
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 //après émission de l'évènement, nous attendons que son status soit renseigné avant d'appeler saveSegment
-                this.waitFor(() => event.status != undefined, undefined, {
-                    fn: this.saveSegment.bind(this),
-                    param: event
-                }, 5, 10000);
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
+                        undefined, {
+                            fn: this.saveSegment.bind(this),
+                            param: event
+                        }, this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this)));
                 //On gère ici l'affichage d'un message en réponse au status de l'évènement
                 this.manageEventResponseStatus(event);
                 return;
@@ -444,14 +394,16 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     payload: this.cloneSegment(event.payload)
                 };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, _event);
-                this.dataLoading = true;
                 //Nous attendons un retour après l'émission de l'évènement. Quand on a un success, on ajoute le segment cloné
                 const param = {index: 0, sourceSegment: event.payload, event: _event};
                 param.index = this.segmentsInfo.subLocalisations.indexOf(event.payload) + 1;
-                this.waitFor(() => _event.status === 'success', undefined, {
-                    fn: this.addSegmentAtIndex.bind(this),
-                    param
-                });
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => _event.status === 'success',
+                        undefined, {
+                            fn: this.addSegmentAtIndex.bind(this),
+                            param
+                        }, this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this)));
                 this.manageEventResponseStatus(_event);
             }
                 return;
@@ -464,12 +416,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 updatedSegment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
                 const segment = event.payload;
                 event.payload = {updatedSegment, segment};
-                this.dataLoading = true;
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.waitFor(() => event.status != undefined, undefined, {
-                    fn: this.updatethumbnail.bind(this),
-                    param: event
-                }, 5, 10000);
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
+                        undefined, {
+                            fn: this.updatethumbnail.bind(this),
+                            param: event
+                        }, this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this)));
                 this.manageEventResponseStatus(event);
             }
                 return;
@@ -532,12 +486,16 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     type: 'setTcIn',
                     payload: {updatedSegment, segment: selectedSegment}
                 };
-                this.dataLoading = true;
+
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.waitFor(() => (event.status != undefined || !readOnlyMode), undefined, {
-                    fn: this.setTcInFn.bind(this),
-                    param: event
-                }, 5, 10000);
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined || !readOnlyMode),
+                        undefined,
+                        {
+                            fn: this.setTcInFn.bind(this),
+                            param: event
+                        }, this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this)));
                 if (readOnlyMode) {
                     this.manageEventResponseStatus(event);
                 }
@@ -575,12 +533,15 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     type: 'setTcOut',
                     payload: {updatedSegment, segment: selectedSegment}
                 };
-                this.dataLoading = true;
+
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.waitFor(() => (event.status != undefined || !readOnlyMode), undefined, {
-                    fn: this.setTcOutFn.bind(this),
-                    param: event
-                }, 5, 10000);
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined || !readOnlyMode),
+                        undefined, {
+                            fn: this.setTcOutFn.bind(this),
+                            param: event
+                        }, this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this)));
                 if (readOnlyMode) {
                     this.manageEventResponseStatus(event);
                 }
@@ -593,14 +554,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
         const jsonData = this.segmentsInfo.subLocalisations.map(localisation => {
                     let tcThumbnail = localisation.data.tcThumbnail - localisation.tcOffset * 1000;
-                    tcThumbnail = parseFloat((tcThumbnail / 1000).toFixed(6));
+                    tcThumbnail = parseFloat((tcThumbnail / 1000).toFixed(9));
                     const row: any = {
                         "Lien": this.link,
                         "ID du materiel": this.assetId,
                         "ID du segment": localisation.id,
                         "Titre": localisation.label,
-                        "TC_IN": FormatUtils.formatTime(localisation.tcIn, this.tcDisplayFormat, this.fps),
-                        "TC_OUT": FormatUtils.formatTime(localisation.tcOut, this.tcDisplayFormat, this.fps),
+                        "TC Debut": FormatUtils.formatTime(localisation.tcIn, this.tcDisplayFormat, this.fps),
+                        "TC Fin": FormatUtils.formatTime(localisation.tcOut, this.tcDisplayFormat, this.fps),
                         "Duree": FormatUtils.formatTime(localisation.tc, this.tcDisplayFormat, this.fps),
                         "Mots_cles": localisation.property?.filter(value => value.key === 'keyword').map(value => value.value).join('; '),
                         "Categories": localisation.property?.filter(value => value.key === 'category').map(value => value.value).join('; '),
@@ -649,8 +610,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     ngOnDestroy(): void {
-        if (!!this.subscriptionToAnnotationsEvents && this.subscriptionToAnnotationsEvents.length > 0) {
-            this.subscriptionToAnnotationsEvents.forEach(subscription => {
+        if (!!this.subscriptionToEventsEmitters && this.subscriptionToEventsEmitters.length > 0) {
+            this.subscriptionToEventsEmitters.forEach(subscription => {
                 subscription.unsubscribe();
             });
         }
