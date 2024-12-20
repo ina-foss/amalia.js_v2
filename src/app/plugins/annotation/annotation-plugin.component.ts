@@ -58,6 +58,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     sortAnnotations() {
         if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
             this.segmentsInfo.subLocalisations = _.sortBy(this.segmentsInfo.subLocalisations, ['tcIn']);
+            this.cdr.detectChanges();
         }
     }
 
@@ -228,9 +229,25 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     private addSegmentToSegmentsInfo(event) {
         if (event.status === 'success') {
-            this.segmentsInfo.subLocalisations.push(event.payload);
+            const segment = event.payload;
+            if (this.segmentsInfo.subLocalisations.length === 0) {
+                this.segmentsInfo.subLocalisations.push(event.payload);
+            } else {
+                let insertAt: number = 0;
+                for (let i = this.segmentsInfo.subLocalisations.length - 1; i >= 0; i--) {
+                    if (this.segmentsInfo.subLocalisations[i].tcIn <= segment.tcIn) {
+                        insertAt = i + 1;
+                        break;
+                    }
+                }
+                if (insertAt === this.segmentsInfo.subLocalisations.length) {
+                    this.segmentsInfo.subLocalisations.push(segment);
+                } else {
+                    this.segmentsInfo.subLocalisations.splice(insertAt, 0, segment);
+                }
+            }
+            setTimeout(this.scroll.bind(this), 50);
         }
-        this.dataLoading = false;
     }
 
     private removeSegmentFromSegmentsInfo(event) {
@@ -238,7 +255,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             const indexOfSegment = this.segmentsInfo.subLocalisations.indexOf(event.payload);
             this.segmentsInfo.subLocalisations.splice(indexOfSegment, 1);
         }
-        this.dataLoading = false;
+
     }
 
     @AutoBind
@@ -301,7 +318,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             event.payload.segment.data.displayMode = "readonly";
             //code to save the segmentsIfo into the persistence unit
         }
-        this.dataLoading = false;
+
     }
 
     public cancelNewSegmentEdition(segment) {
@@ -346,7 +363,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (event.status) {
             this.displaySnackBar(event.responseMessage, event.status);
             if (event.status === 'success') {
-                this.sortAnnotations();
                 this.cdr.detectChanges();
             }
         } else {
@@ -445,8 +461,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             this.segmentsInfo.subLocalisations.splice(param.index, 0, param.event.payload);
             param.sourceSegment.data.selected = false;
             this.cdr.detectChanges();
+            setTimeout(this.scroll.bind(this), 50);
         }
-        this.dataLoading = false;
     }
 
     public selectSegment(event: AnnotationLocalisation) {
@@ -466,7 +482,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             event.payload.segment.tc = event.payload.updatedSegment.tc;
 
         }
-        this.dataLoading = false;
+
     }
 
     public setTcIn() {
@@ -513,7 +529,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
         }
-        this.dataLoading = false;
+
     }
 
     public setTcOut() {
@@ -607,31 +623,29 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             event.payload.segment.data.tcThumbnail = event.payload.updatedSegment.data.tcThumbnail;
             event.payload.segment.thumb = event.payload.updatedSegment.thumb;
         }
-        this.dataLoading = false;
+
     }
 
-    private scrollToNode(scrollNode: HTMLElement) {
+    private scrollToNode() {
+        const scrollNode: HTMLElement = this.annotationElement.nativeElement
+                .querySelector('.segment-selected');
         if (scrollNode) {
-            const minScroll = Math.round(this.annotationElement.nativeElement.offsetHeight / 3);
-            const maxScrollPos = Math.round((2 * this.annotationElement.nativeElement.offsetHeight) / 3);
-            const scrollPos = scrollNode.offsetTop - this.annotationElement.nativeElement.offsetTop;
-            const visible = scrollPos < maxScrollPos;
-
-            if (this.currentTime === 0) {
-                this.annotationElement.nativeElement.scrollTop = 0;
-            }
-            if (!visible) {
-                this.annotationElement.nativeElement.scrollTop = scrollPos - minScroll;
-            }
+            scrollNode.scrollIntoView({behavior: "smooth", block: "center"});
+            this.cdr.detectChanges();
+        }
+        const pluginTitle = document.querySelector('.plugin-title');
+        if (pluginTitle) {
+            pluginTitle.scrollIntoView({behavior: "smooth", block: "start"});
         }
     }
 
     private scroll() {
-        const scrollNode: HTMLElement = this.annotationElement.nativeElement
-                .querySelector('segment-selected');
-        if (scrollNode) {
-            this.scrollToNode(scrollNode);
-        }
+        this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (this.annotationElement.nativeElement
+                        .querySelector('.segment-selected') !== null && this.annotationElement.nativeElement
+                        .querySelector('.segment-selected') != undefined),
+                undefined,
+                this.scrollToNode.bind(this),
+                this.intervalStep, 100));
     }
 
     ngOnDestroy(): void {

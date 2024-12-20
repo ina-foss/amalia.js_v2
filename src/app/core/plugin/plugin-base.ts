@@ -55,14 +55,6 @@ export abstract class PluginBase<T> implements OnInit {
         }
     }
 
-    logWaitForMetaDataToBeLoadedComplete() {
-        if (this.metaDataLoaded()) {
-            this.logger.info(`Plugin ${this.pluginName}`, 'Metadonnées chargées.');
-        } else {
-            this.logger.info(`Plugin ${this.pluginName}`, 'Echec de chargment des métadonnées!');
-        }
-    }
-
     public metaDataLoaded(): boolean {
         let result: boolean = true;
         const handleMetadataIds = this.pluginConfiguration?.metadataIds;

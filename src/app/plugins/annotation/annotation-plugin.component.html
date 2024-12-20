@@ -13,8 +13,6 @@
         <div *ngIf="segmentsInfo.subLocalisations.length !== 0">
             <p-button class="no-highlight no-outline" (click)="downloadSegments()" icon="pi pi-download" size="small"
                       text="true"></p-button>
-            <p-button class="no-highlight no-outline" (click)="saveSegments()" icon="pi pi-save" size="small"
-                      text="true"></p-button>
         </div>
     </div>
     <div *ngIf="segmentsInfo.subLocalisations.length === 0" class="annotation-empty-text">Veuillez cliquer
