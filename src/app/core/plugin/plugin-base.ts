@@ -23,7 +23,7 @@ export abstract class PluginBase<T> implements OnInit {
     public tcOffset;
     public fps;
     public initialized;
-    public dataLoading: boolean = true;
+    public dataLoading: boolean = false;
     public timeout: number = 30000;
     public intervalStep: number = 5;
     public noSpinner: boolean = true;
