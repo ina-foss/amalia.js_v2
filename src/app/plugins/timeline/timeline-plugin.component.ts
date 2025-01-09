@@ -75,7 +75,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     ngOnInit(): void {
-        super.ngOnInit();
+        try {
+            super.ngOnInit();
+        } catch (e) {
+            this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
+        }
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+            this.init();
+            this.handleMetadataLoaded();
+        }
     }
 
     /**
