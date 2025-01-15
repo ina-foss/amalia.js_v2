@@ -229,7 +229,7 @@ describe('Test Metadata manager', () => {
     }));
     it('Test MetaDataManager loadDataSourceForPlugin Annotations', fakeAsync(() => {
         configData = require('tests/assets/config-mpe-with-annotations-info.json');
-        const annotation_metadata_url = "https://calypso.api.d.sas.ina/notilusDossier/segments/flux?channel=FR2&startDate=2023-10-10 20:00:00&endDate=2023-10-10 20:30:00&format=AMALIA";
+        const annotation_metadata_url = "https://calypso.api.d.sas.ina/notilusDossier/segments/flux?channel=FR2&startDate=2023-10-10 20:00:00&endDate=2023-10-10 20:30:00&format=AMALIA&clientId=annotations";
         const annotation_metadata_Model = require("tests/assets/metadata/sample-annotation.json");
 
         configurationManager.load(configData).then(() => {

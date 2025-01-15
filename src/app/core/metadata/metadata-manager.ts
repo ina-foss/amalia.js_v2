@@ -72,8 +72,8 @@ export class MetadataManager {
      * Elle est utilisée quand le mode dynamicMetadataPreLoad n'est pas activé cad lors du chargement des métadonnées à la demande.
      * @param plugin ce paramètre correspond au nom du plugin
      */
-    public loadDataSourceForPlugin(plugin: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    public async loadDataSourceForPlugin(plugin: string): Promise<any> {
+        return await new Promise<any>((resolve, reject) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
                 this.toLoadData = 0;
