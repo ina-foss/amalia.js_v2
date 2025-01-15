@@ -114,7 +114,12 @@
       }
     }
   }
-
+  .segment-empty {
+    bottom: 0;
+    position: relative;
+    max-height: 20px;
+    min-height: 20px;
+  }
   .menu {
     position: absolute;
     height: 100%;
