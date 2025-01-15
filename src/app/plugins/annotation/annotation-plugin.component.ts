@@ -30,7 +30,7 @@ import {SegmentComponent} from "./segment/segment.component";
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnDestroy {
-    public static PLUGIN_NAME = 'ANNOTATION';
+    public static PLUGIN_NAME = 'ANNOTATIONS';
     public static KARAOKE_TC_DELTA = 0.250;
 
     public segmentsInfo: AnnotationLocalisation = {
