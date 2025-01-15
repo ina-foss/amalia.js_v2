@@ -67,26 +67,25 @@ export class MetadataManager {
         });
     }
 
-    isClientIdDatasource(datasource, clientId): boolean {
-        const url = new URL(`${window.location.protocol}//${window.location.host}/${datasource.url}`);
-        const dataSourceClientId = url.searchParams.get('clientId');
-        return clientId === dataSourceClientId;
-    }
-
-    public reloadDataSource(clientId: string): Promise<any> {
+    /**
+     * Cette fonction charge les métadonnées pour un plugin en particulier.</br>
+     * Elle est utilisée quand le mode dynamicMetadataPreLoad n'est pas activé cad lors du chargement des métadonnées à la demande.
+     * @param plugin ce paramètre correspond au nom du plugin
+     */
+    public loadDataSourceForPlugin(plugin: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
                 this.toLoadData = 0;
                 dataSources.forEach(dataSource => {
-                    if (this.isClientIdDatasource(dataSource, clientId)) {
+                    if (dataSource.plugin && dataSource.plugin.toUpperCase() === plugin.toUpperCase()) {
                         this.toLoadData++;
                     }
                 });
                 this.logger.debug(`Data source : sources to be loaded: ${this.toLoadData}`);
                 if (this.toLoadData !== 0) {
                     dataSources.forEach(dataSource => {
-                        if (this.isClientIdDatasource(dataSource, clientId)) {
+                        if (dataSource.plugin && dataSource.plugin.toUpperCase() === plugin.toUpperCase()) {
                             this.loadDataSource(dataSource, resolve, reject)
                                     .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                         }
@@ -233,7 +232,7 @@ export class MetadataManager {
     private async loadDataSource(loadData: ConfigDataSource, completed, reject?: any) {
         if (loadData && loadData.url) {
             this.logger.info("loadDataSource", loadData.headers);
-            let annotationMetadata = this.isClientIdDatasource(loadData, 'annotations');
+            let annotationMetadata = loadData.plugin && loadData.plugin === 'annotations';
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
                     .load(loadData.url, loadData.headers)

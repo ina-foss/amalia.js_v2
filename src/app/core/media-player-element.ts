@@ -104,6 +104,7 @@ export class MediaPlayerElement {
                         const loggerLevel = debug === null ? this.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug);
                         this.logger.state(loggerState);
                         this.logger.logLevel(loggerLevel);
+                        this.logger.info(`Config data: ${config}`);
                         this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
                         // Set media source specified by config
                         this.setMediaSource();
@@ -115,6 +116,7 @@ export class MediaPlayerElement {
                     error => {
                         this.state = PlayerState.ERROR_LOAD_CONFIG;
                         this.logger.error('Error to load config', error);
+                        this.logger.info(`Config data: ${config}`);
                         reject(this.state);
                     });
         });
