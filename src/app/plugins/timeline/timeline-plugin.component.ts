@@ -83,6 +83,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
             this.init();
             this.handleMetadataLoaded();
+            this.handleOnDurationChange();
         }
     }
 
