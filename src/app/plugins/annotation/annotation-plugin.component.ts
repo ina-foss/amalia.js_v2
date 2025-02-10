@@ -54,6 +54,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     availableKeywords: string[] = [];
     private assetId: string;
     private link: string;
+    enabledExportButtons: boolean = false;
 
     sortAnnotations() {
         if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
@@ -567,9 +568,30 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     }
 
-    public downloadSegments() {
+    private getFileName = (extension?) => {
+        const assetIdParts = this.assetId.split(':');
+        const currentDateTime = new Date().toISOString().replaceAll(':', '');
+        if (this.assetId.search('stock') != -1) {
+            return `${assetIdParts[1]}_${currentDateTime}${extension}`;
+        } else {
+            return `${assetIdParts[2]}_${assetIdParts[3]}_${currentDateTime}${extension}`;
+        }
+    }
 
-        const jsonData = this.segmentsInfo.subLocalisations.map(localisation => {
+    public downloadSegmentJsonFormat() {
+        const textFileContent = JSON.stringify(this.getJsonDataFromAnnotations());
+        let fileName = this.getFileName('.json');
+        this.fileService.downloadFile(textFileContent, fileName);
+    }
+
+    public downloadSegments() {
+        const jsonData = this.getJsonDataFromAnnotations();
+        let fileName = this.getFileName();
+        this.fileService.exportToExcel(jsonData, fileName);
+    }
+
+    private getJsonDataFromAnnotations = () => {
+        return this.segmentsInfo.subLocalisations.map(localisation => {
                     let tcThumbnail = localisation.data.tcThumbnail - localisation.tcOffset * 1000;
                     tcThumbnail = parseFloat((tcThumbnail / 1000).toFixed(9));
                     const row: any = {
@@ -588,13 +610,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     return row;
                 }
         );
-
-        let assetId = '';
-        if (this.assetId) {
-            assetId = this.assetId.replaceAll(':', '_');
-        }
-
-        this.fileService.exportToExcel(jsonData, 'segmentsInfo_' + assetId + '_' + Date.now());
     }
 
     public saveSegments() {
@@ -656,4 +671,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
     }
 
+    toggleExportMenu() {
+        this.enabledExportButtons = !this.enabledExportButtons;
+    }
 }
