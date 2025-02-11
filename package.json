@@ -93,6 +93,7 @@
         "karma-junit-reporter": "^2.0.1",
         "karma-verbose-reporter": "^0.0.8",
         "msgpack-lite": "^0.1.26",
+        "ngx-build-plus": "^18.0.0",
         "sonarqube-scanner": "^4.0.1",
         "svg-sprite": "^2.0.4",
         "ts-node": "^10.9.2",
