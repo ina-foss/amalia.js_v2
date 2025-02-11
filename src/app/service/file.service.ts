@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {saveAs} from 'file-saver';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'exceljs';
 
 const EXCEL_EXTENSION = '.xlsx';
 
@@ -21,10 +21,14 @@ export class FileService {
     }
 
     public exportToExcel(jsonData: any[], fileName: string): void {
-        const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(jsonData);
-        const workbook: XLSX.WorkBook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        XLSX.writeFile(workbook, `${fileName}${EXCEL_EXTENSION}`);
+        const workbook = new XLSX.Workbook();
+        const worksheet = workbook.addWorksheet('Sheet1');
+        worksheet.addRows(jsonData);
+        workbook.xlsx.writeFile(`${fileName}${EXCEL_EXTENSION}`).then(() => {
+            console.log('Fichier Excel créé avec succès!');
+        }).catch((error) => {
+            console.error('Erreur lors de la création du fichier Excel:', error);
+        });
     }
 
 }
