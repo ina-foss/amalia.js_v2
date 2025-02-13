@@ -571,6 +571,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     private getFileName = (extension?) => {
         const assetIdParts = this.assetId.split(':');
         let currentDateTime = new Date().toISOString().replaceAll(':', '');
+        currentDateTime = currentDateTime.replaceAll('Z', '');
         currentDateTime = currentDateTime.replaceAll('.', 'Z');
         currentDateTime = currentDateTime.replaceAll('-', '');
         if (this.assetId.search('stock') != -1) {
