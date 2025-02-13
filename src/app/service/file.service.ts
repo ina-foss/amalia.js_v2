@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {saveAs} from 'file-saver';
 import * as xlsx from 'json-as-xlsx';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class FileService {
 
     public downloadFile(textFileContent: string, fileName?: string): void {
@@ -12,6 +12,11 @@ export class FileService {
         } else {
             saveAs(blob, 'amalia_download_' + Date.now() + '.json');
         }
+    }
+
+    public callXlsx(data, settings) {
+        const callableXlsx = xlsx as unknown as any;
+        callableXlsx(data, settings);
     }
 
     public exportToExcel(jsonData: any[], fileName: string) {
@@ -25,8 +30,7 @@ export class FileService {
             }),
             content: jsonData
         }];
-        const callableXlsx = xlsx as unknown as any;
-        callableXlsx(data, settings);
+        this.callXlsx(data, settings);
     }
 
 }

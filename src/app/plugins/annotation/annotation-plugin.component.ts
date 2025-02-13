@@ -16,8 +16,7 @@ import {AutoBind} from "../../core/decorator/auto-bind.decorator";
 import {PlayerEventType} from "../../core/constant/event-type";
 import {Utils} from "../../core/utils/utils";
 import * as _ from "lodash";
-import {ThumbnailService} from "../../service/thumbnail-service";
-import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmationService} from "primeng/api";
 import {FileService} from "../../service/file.service";
 import {FormatUtils} from "../../core/utils/format-utils";
 import {ToastComponent} from "../../core/toast/toast.component";
@@ -52,8 +51,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     availableCategories: string[] = [];
     availableKeywords: string[] = [];
-    private assetId: string;
-    private link: string;
+    assetId: string;
+    link: string;
     enabledExportButtons: boolean = false;
 
     sortAnnotations() {
@@ -94,7 +93,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
     }
 
-    private setAnnotationsInfoFromConfig = () => {
+    setAnnotationsInfoFromConfig = () => {
         if (this.pluginConfiguration.data.availableCategories) {
             this.availableCategories = this.pluginConfiguration.data.availableCategories;
         }
@@ -171,7 +170,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         };
     }
 
-    constructor(private confirmationService: ConfirmationService, playerService: MediaPlayerService, private thumbnailService: ThumbnailService, private messageService: MessageService, private fileService: FileService, private cdr: ChangeDetectorRef) {
+    constructor(private confirmationService: ConfirmationService, playerService: MediaPlayerService, private fileService: FileService, private cdr: ChangeDetectorRef) {
         super(playerService);
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
     }
@@ -575,7 +574,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         currentDateTime = currentDateTime.replaceAll('.', 'Z');
         currentDateTime = currentDateTime.replaceAll('-', '');
         if (this.assetId.search('stock') != -1) {
-            return `${assetIdParts[1]}_${currentDateTime}${extension}`;
+            return `${assetIdParts[1]}_${currentDateTime}${extension ?? ''}`;
         } else {
             return `${assetIdParts[2]}_${assetIdParts[3]}_${currentDateTime}${extension ?? ''}`;
         }
