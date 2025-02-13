@@ -22,6 +22,20 @@ import {FormatUtils} from "../../core/utils/format-utils";
 import {ToastComponent} from "../../core/toast/toast.component";
 import {SegmentComponent} from "./segment/segment.component";
 
+export interface ExportColumnsHeader {
+    "Lien": string;
+    "ID du materiel": string;
+    "ID du segment": string;
+    "Titre": string;
+    "TC Debut": string;
+    "TC Fin": string;
+    "Duree": string;
+    "Mots_cles": string;
+    "Categories": string;
+    "Description": string;
+    "Lien de l\'imagette": string
+}
+
 @Component({
     selector: 'amalia-annotation',
     templateUrl: './annotation-plugin.component.html',
@@ -592,7 +606,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.fileService.exportToExcel(jsonData, fileName);
     }
 
-    private getJsonDataFromAnnotations = () => {
+    getJsonDataFromAnnotations = (): ExportColumnsHeader[] => {
         return this.segmentsInfo.subLocalisations.map(localisation => {
                     let tcThumbnail = localisation.data.tcThumbnail - localisation.tcOffset * 1000;
                     tcThumbnail = parseFloat((tcThumbnail / 1000).toFixed(9));

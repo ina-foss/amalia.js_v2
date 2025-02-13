@@ -23,6 +23,13 @@ describe('FileService', () => {
         expect(saveAs).toHaveBeenCalled();
     });
 
+    it('should download a JSON file without a fileName', () => {
+        spyOn(saveAs, 'saveAs');
+        const textFileContent = JSON.stringify({key: 'value'});
+        service.downloadFile(textFileContent);
+        expect(saveAs).toHaveBeenCalled();
+    });
+
     it('should export data to Excel', () => {
         spyOn(service, 'callXlsx');
         const jsonData = [
