@@ -83,7 +83,7 @@ describe('TimelinePluginComponent', () => {
         const mainElement = document.createElement('div');
         const stateControl = document.createElement('div');
         const block = document.createElement('div');
-        block.classList.add('block');
+        block.classList.add('timeline-block');
         mainElement.appendChild(block);
 
         component.toggleAllBlocksState(mainElement, stateControl);
