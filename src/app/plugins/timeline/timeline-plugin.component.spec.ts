@@ -3688,4 +3688,63 @@ describe('TimelinePluginComponent', () => {
         expect(newNode.expanded).toBeTrue();
     });
 
+    it('should handle display blocks', () => {
+        component.listOfBlocks = [
+            {
+                id: 'block1', displayState: false,
+                expendable: false,
+                data: []
+            },
+            {
+                id: 'block2', displayState: false,
+                expendable: false,
+                data: []
+            }
+        ];
+        const node1 = {
+            key: 'key',
+            label: 'block1',
+            children: [],
+            checked: true,
+            expanded: true
+        };
+        component.selectedNodes.set([node1]);
+
+        component.handleDisplayBlocks(true);
+        expect(component.listOfBlocks[0].displayState).toBeFalse();
+        expect(component.listOfBlocks[1].displayState).toBeFalse();
+
+        component.handleDisplayBlocks(false);
+        expect(component.selectedNodes().length).toBe(1);
+    });
+
+    it('should filter nodes', () => {
+        const event = {target: {value: 'test'}};
+        component.nodes = [
+            {label: 'testNode', children: []} as TreeNode,
+            {label: 'otherNode', children: []} as TreeNode
+        ];
+
+        component.filterNodes(event);
+        expect(component.nodes[0].styleClass).toBe('');
+        expect(component.nodes[1].styleClass).toBe('hidden-node');
+    });
+
+    it('should filter node', () => {
+        const node = {label: 'testNode', children: []} as TreeNode;
+        const query = 'test';
+
+        const result = component.filterNode(node, query);
+        expect(result).toBeTrue();
+        expect(node.styleClass).toBe('');
+    });
+
+    it('should toggle filter', () => {
+        component.filterHidden = false;
+        component.toggleFilter();
+        expect(component.filterHidden).toBeTrue();
+
+        component.toggleFilter();
+        expect(component.filterHidden).toBeFalse();
+    });
 });
