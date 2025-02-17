@@ -32,11 +32,13 @@ import {ChipModule} from "primeng/chip";
 import {ToastModule} from 'primeng/toast';
 import {FileService} from "./service/file.service";
 import {MessageService, ConfirmationService} from "primeng/api";
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ProgressBarModule } from 'primeng/progressbar';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ProgressBarModule} from 'primeng/progressbar';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {ToastComponent} from "./core/toast/toast.component";
+import {TreeModule} from 'primeng/tree';
+import {CheckboxModule} from "primeng/checkbox";
 
 @NgModule({
     imports: [
@@ -59,7 +61,9 @@ import {ToastComponent} from "./core/toast/toast.component";
         ProgressBarModule,
         ProgressSpinnerModule,
         AutoCompleteModule,
-        ToastComponent
+        ToastComponent,
+        TreeModule,
+        CheckboxModule
     ],
     declarations: [
         AmaliaComponent,

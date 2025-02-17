@@ -1,5 +1,6 @@
 @import '../../core/styles/typo';
 @import '../../core/styles/variables';
+@import '../../../styles.scss';
 
 :host {
   position: relative;
@@ -13,6 +14,10 @@
   border: 1px solid $amalia-plugin-timeline-border-color;
   align-items: stretch;
   overflow: hidden;
+
+  .hidden-timeline {
+    display: none !important;
+  }
 
   .icon {
     height: 20px;
@@ -114,12 +119,14 @@
       }
     }
   }
+
   .segment-empty {
     bottom: 0;
     position: relative;
     max-height: 20px;
     min-height: 20px;
   }
+
   .menu {
     position: absolute;
     height: 100%;
@@ -139,12 +146,16 @@
 
     .content {
       position: relative;
-      height: 100%;
+      height: 98%;
       width: 60%;
       background-color: $amalia-plugin-timeline-bg-color;
       display: flex;
       flex-direction: column;
       right: -100%;
+
+      .hidden-node {
+        display: none;
+      }
 
       .btn {
         padding: 10px 5px;
@@ -183,8 +194,25 @@
         font-size: 20px;
         font-weight: bold;
         letter-spacing: 0;
-        line-height: 55px;
+        line-height: 45px;
         padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+
+        .p-checkbox-label {
+          padding: 0 16px;
+          margin: 0 8px;
+        }
+
+        .btn-hide-filter {
+          position: absolute;
+          right: 10px;
+          top: 55px;
+        }
+
+        .p-checkbox-box {
+          margin: 0;
+        }
       }
 
       .footer {
@@ -192,11 +220,31 @@
       }
 
       .main {
-        height: calc(100% - 110px);
+        height: 100%;
         width: 100%;
-        background-color: $amalia-plugin-timeline-header-bg-color;
         overflow-y: auto;
+        display: flex;
+        flex-direction: column;
 
+        p-tree {
+          height: 95%;
+        }
+
+        .p-tree {
+          height: 100%;
+        }
+
+        .p-tree-wrapper {
+          height: 100%;
+        }
+
+        .p-tree-container {
+          height: 100%;
+        }
+
+        .p-tree-filter-container {
+          width: 90%;
+        }
 
         ul {
           list-style: none;
@@ -342,7 +390,7 @@
     }
 
 
-    .block {
+    .timeline-block {
       position: relative;
       display: flex;
       flex-direction: column;
