@@ -1,5 +1,14 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    computed,
+    ElementRef,
+    Input,
+    OnInit,
+    signal,
+    ViewChild,
+    ViewEncapsulation, WritableSignal
+} from '@angular/core';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
@@ -12,6 +21,7 @@ import {Utils} from '../../core/utils/utils';
 import {TimeLineBlock, TimelineLocalisation} from '../../core/metadata/model/timeline-localisation';
 import * as _ from 'lodash';
 import {Metadata} from '@ina/amalia-model';
+import {TreeNode} from 'primeng/api/treenode';
 
 @Component({
     selector: 'amalia-timeline',
@@ -41,10 +51,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public isDrawingRectangle = false;
     @Input()
     public colors: Array<string> = [
-        '#1ABC9C', '#f1c40e', '#95A5A6', '#2ECC71',
-        '#E67E21', '#34495E', '#3498DB', '#D8D8D8',
-        '#E74C3C', '#F35CF2', '#8E44AD'
-    ];
+        '#609af8', '#4cd07d', '#eec137', '#ff6259', '#f06bac', '#8183f4', '#41c5b7', '#fa8e42', '#818ea1', '#b975f9', '#35c4dc',
+        '#3b82f6', '#22c55e', '#eab308', '#ff3d32', '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#64748b', '#a855f7', '#06b6d4',
+        '#d0e1fd', '#caf1d8', '#faedc4', '#ffd0ce', '#fad3e7', '#dadafc', '#c7eeea', '#feddc7', '#dadee3', '#ead6fd', '#c3edf5',
+        '#326fd1', '#1da750', '#c79807', '#d9342b', '#c93d82', '#5457cd', '#119c8d', '#d46213', '#556376', '#8f48d2', '#059bb4',
+        '#abc9fb', '#a0e6ba', '#f6de95', '#ffaca7', '#f7b0d3', '#bcbdf9', '#9ae0d9', '#fcc39b', '#bcc3cd', '#dab6fc', '#94e0ed',
+        '#295bac', '#188a42', '#a47d06', '#b32b23', '#a5326b', '#4547a9', '#0e8174', '#ae510f', '#465161', '#763cad', '#047f94',
+        '#85b2f9', '#76db9b', '#f2d066', '#ff8780', '#f38ec0', '#9ea0f6', '#6dd3c8', '#fba86f', '#9fa9b7', '#c996fa', '#65d2e4',
+        '#204887', '#136c34', '#816204', '#8c221c', '#822854', '#363885', '#0b655b', '#893f0c', '#37404c', '#5c2f88', '#036475',
+        '#183462', '#0e4f26', '#5e4803', '#661814', '#5e1d3d', '#282960', '#084a42', '#642e09', '#282e38', '#432263', '#024955',];
     @ViewChild('focusContainer', {static: true})
     public focusContainer: ElementRef<HTMLElement>;
     @ViewChild('mainBlockContainer', {static: true})
@@ -66,8 +81,20 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     private blocksIsOpen = false;
     private lastSelectedColorIdx = -1;
-    private blocksDisplayStates: Map<string, boolean> = new Map<string, boolean>();
-    private managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE];
+    managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE];
+
+    nodes: TreeNode[] = [];
+    selectedNodes: WritableSignal<TreeNode[]> = signal<TreeNode[]>([]);
+    selectedNodesMap = computed(() => {
+                let result = new Map<string, TreeNode>();
+                this.selectedNodes().forEach(selectedNode => {
+                    result.set(selectedNode.key, selectedNode);
+                });
+                return result;
+            }
+    );
+    selectedNodesBeforeChange: TreeNode[] = [];
+    allNodesChecked: boolean = false;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -85,6 +112,48 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.handleMetadataLoaded();
             this.handleOnDurationChange();
         }
+    }
+
+    getNewNodeFromMetadataElement = (metadata: { type: string; }) => {
+        let level1Label: string = '';
+        let icon: string = undefined;
+
+        const segmentationRegExp = new RegExp(DataType.SEGMENTATION, 'g');
+        const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, 'g');
+        const dayScheduleRegExp = new RegExp(DataType.DAY_SCHEDULE, 'g');
+
+        if (segmentationRegExp.test(metadata.type)) {
+            level1Label = metadata.type.replace(new RegExp(DataType.SEGMENTATION, 'g'), 'Segmentation sonore');
+            icon = 'pi pi-fw pi-volume-down';
+        }
+        if (facesRecognitionRegExp.test(metadata.type)) {
+            level1Label = metadata.type.replace(new RegExp(DataType.FACES_RECOGNITION, 'g'), 'Reconnaissance faciale');
+            icon = 'pi pi-fw pi-eye';
+        }
+        if (dayScheduleRegExp.test(metadata.type)) {
+            level1Label = metadata.type.replace(new RegExp(DataType.DAY_SCHEDULE, 'g'), 'Partie journée de  programme');
+            icon = 'pi pi-fw pi-calendar';
+        }
+
+        if (level1Label.endsWith('-')) {
+            level1Label = level1Label.substring(0, level1Label.length - 1);
+        }
+
+        let level1Node: TreeNode = (icon === '') ? {
+            key: metadata.type,
+            label: level1Label,
+            children: [],
+            checked: true,
+            expanded: true
+        } : {
+            key: metadata.type,
+            label: level1Label,
+            children: [],
+            icon,
+            checked: true,
+            expanded: true
+        };
+        return level1Node;
     }
 
     /**
@@ -121,7 +190,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * In charge to parse metadata
      */
-    private parseTimelineMetadata() {
+    parseTimelineMetadata() {
         this.listOfBlocks = [];
         const listOfMetadata: Array<Metadata> = [];
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
@@ -157,7 +226,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     // Handle metadata properties
-    private handleMetadataProperties(listOfMetadata, metadataManager) {
+    handleMetadataProperties(listOfMetadata, metadataManager) {
         listOfMetadata.forEach((metadata) => {
             let listOfLocalisations = null;
             try {
@@ -181,8 +250,34 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 displayState: true,
                 data: listOfLocalisations
             });
+
+            let level1NodeAlreadyAdded: boolean = false;
+            this.nodes.forEach(node => {
+                if (node.key === metadata.type) {
+                    node.children.push(this.getNewChildNodeFromMetadataElement(metadata));
+                    level1NodeAlreadyAdded = true;
+                }
+            });
+            if (!level1NodeAlreadyAdded) {
+                let level1Node = this.getNewNodeFromMetadataElement(metadata);
+                level1Node.children.push(this.getNewChildNodeFromMetadataElement(metadata));
+                this.nodes.push(level1Node);
+            }
         });
+        this.selectedNodes.set(this.getAllNodes(this.nodes));
+        this.allNodesChecked = true;
     }
+
+    getNewChildNodeFromMetadataElement = (metadata) => {
+        return {
+            key: metadata.id,
+            label: (metadata?.label) ? metadata.label : metadata.id,
+            data: {color: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),},
+            checked: true,
+            expanded: true
+        };
+    }
+    filterHidden: boolean = false;
 
     /**
      * Handle call
@@ -300,7 +395,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         } else {
             stateControl.classList.remove('close');
         }
-        const elementNodes = mainElement.querySelectorAll('.block');
+        const elementNodes = mainElement.querySelectorAll('.timeline-block');
         elementNodes.forEach((node) => {
             if (this.blocksIsOpen) {
                 node.classList.add('small');
@@ -311,30 +406,21 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     /**
-     * In charge to store display state change change display state
-     */
-    public changeDisplayState(event: MouseEvent, block: {
-        id?: string, label?: string, expendable: boolean,
-        defaultColor?: string, displayState: boolean, data: Array<TimelineLocalisation>
-    }) {
-        const displayState = (event.target as HTMLInputElement).checked;
-        this.blocksDisplayStates.set(block.id, displayState);
-    }
-
-    /**
      * In charge of save or not display block states
      * @param isValid true for save display block
      */
     public handleDisplayBlocks(isValid) {
         if (isValid) {
             this.listOfBlocks.forEach((block) => {
-                if (this.blocksDisplayStates && this.blocksDisplayStates.has(block.id)) {
-                    block.displayState = this.blocksDisplayStates.get(block.id);
-                }
+                block.displayState = this.selectedNodesMap().has(block.id);
             });
+        } else {
+            this.selectedNodes.set([]);
+            this.selectedNodesBeforeChange.forEach(selectedNodeBeforeChange => {
+                this.selectedNodes().push(selectedNodeBeforeChange);
+            })
         }
-        this.blocksDisplayStates.clear();
-        this.configIsOpen = false;
+        this.toggleConfig();
     }
 
     /**
@@ -540,5 +626,55 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.selectionPosition.y = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
     }
 
+    filterNodes(event: any) {
+        const query = event.target.value.toLowerCase();
+        this.nodes.forEach(node => {
+            this.filterNode(node, query);
+        });
+    }
 
+    filterNode(node: TreeNode, query: string): boolean {
+        let visible = node.label.toLowerCase().includes(query);
+        if (node.children) {
+            node.children.forEach(child => {
+                visible = this.filterNode(child, query) || visible;
+            });
+        }
+        node.styleClass = visible ? '' : 'hidden-node';
+        return visible;
+    }
+
+
+    toggleAllNodes() {
+        if (this.allNodesChecked) {
+            this.selectedNodes.set(this.getAllNodes(this.nodes));
+        } else {
+            this.selectedNodes.set([]);
+        }
+    }
+
+    getAllNodes(nodes: any[]): any[] {
+        let allNodes: any[] = [];
+        for (let node of nodes) {
+            allNodes.push(node);
+            if (node.children) {
+                allNodes = allNodes.concat(this.getAllNodes(node.children));
+            }
+        }
+        return allNodes;
+    }
+
+    toggleConfig() {
+        this.configIsOpen = !this.configIsOpen;
+        if (this.configIsOpen) {
+            this.selectedNodesBeforeChange = [];
+            this.selectedNodes().forEach(selectedNode => {
+                this.selectedNodesBeforeChange.push(selectedNode);
+            });
+        }
+    }
+
+    toggleFilter() {
+        this.filterHidden = !this.filterHidden;
+    }
 }
