@@ -1,0 +1,203 @@
+@import '../../core/styles/variables';
+@import '../../core/styles/typo';
+@import '../../../styles.scss';
+
+
+:host {
+
+  .annotation-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 999;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 60px;
+    align-items: center;
+    border-bottom: 1px solid var(--divider-color, #EDEDED);
+    border-top: 1px solid var(--divider-color, #EDEDED);
+    background: $amalia-plugin-header-bg-color;
+
+    div {
+      display: flex;
+      padding: 12px 18px;
+      gap: 10px;
+    }
+
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
+
+    .export-menu {
+      position: absolute;
+      inset: 0 0 auto auto;
+      transform: translate(0px, 38px);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: $amalia-plugin-header-bg-color;
+      border-radius: $amalia-spacings-border-radius-sm;
+      width: 225px;
+      padding: 5px !important;
+      gap: 0 !important;
+      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+
+      div {
+        padding: 10.5px 17.5px !important;
+        gap: 0 !important;
+      }
+
+      .export-menu-item {
+        cursor: pointer;
+      }
+
+      .export-menu-item:hover {
+        background-color: $amalia-menu-overlay-hover-bg-color;
+      }
+
+      .export-menu-item:not(:last-child) {
+        border-bottom: 1px solid gray;
+      }
+    }
+
+  }
+
+  p-confirmDialog {
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
+
+    .p-dialog {
+      width: 656px;
+      border-radius: $amalia-spacings-border-radius-md !important;
+      padding: 12px 20px;
+    }
+  }
+
+  .no-highlight {
+    .p-button {
+      border-radius: 4px;
+      border: 1px solid $colors-primitive-primary-color;
+      background: white;
+      color: $colors-primitive-primary-color;
+    }
+  }
+
+  .no-highlight.no-outline {
+    .p-button {
+      background: white;
+      color: $colors-primitive-primary-color;
+      border-style: none;
+    }
+  }
+
+  .highlight {
+    .p-button {
+      background: $colors-primitive-primary-color;
+      color: white;
+      border: 1px solid $colors-primitive-primary-color;
+    }
+  }
+
+  .annotation-empty-text {
+    color: $global-textColor;
+    text-align: center;
+
+    /* text-base/regular/lineheight-auto */
+    font-family: $amalia-font-family-lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: 23px;
+  }
+
+  .segments {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    align-items: center;
+    padding-top: 12px;
+
+    .segment-empty {
+      bottom: 0;
+      position: relative;
+      max-height: 60px;
+      min-height: 60px;
+    }
+  }
+
+  .spinner-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9998;
+    width: 100%;
+    height: 100%;
+    background-color: $amalia-primary-color;
+    opacity: 0.7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .scrollable-content {
+    max-height: 100%; /* Définir la hauteur maximale */
+    overflow-y: auto; /* Activer le défilement vertical */
+    overflow-x: clip;
+    position: relative;
+  }
+
+  /* Personnaliser la barre de défilement */
+  .scrollable-content::-webkit-scrollbar {
+    width: 10px; /* Largeur de la barre de défilement */
+  }
+
+  .scrollable-content::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Couleur de la piste */
+    border: 1px solid $amalia-plugin-storyboard-box-border-color;
+    padding: 2px 0;
+  }
+
+  .scrollable-content::-webkit-scrollbar-thumb {
+    border-radius: 5px; /* Arrondir les coins */
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: $amalia-primary-color;
+  }
+
+  .scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: $amalia-primary-color; /* Couleur de la poignée au survol */
+  }
+
+  .segment {
+    position: relative;
+    width: 98%;
+  }
+
+  .p-progress-spinner-circle {
+    z-index: 9999 !important;
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: 0;
+    stroke: $amalia-primary-color;
+    animation: p-progress-spinner-dash 1.5s ease-in-out infinite, my-color 6s ease-in-out infinite !important;
+    stroke-linecap: round
+  }
+
+  @keyframes my-color {
+    to, 0%, 100% {
+      stroke: white
+    }
+  }
+
+}

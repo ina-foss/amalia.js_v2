@@ -837,7 +837,7 @@
                         "data": {
                             "annotations": [
                                 {
-                                    "matchedText": "Chine",
+                                    "matchedText": "chinoise",
                                     "id": "000009dnvh",
                                     "score": "42.64",
                                     "type": "Type de générique",
@@ -853,7 +853,7 @@
                                 }
                             ],
                             "text": [
-                                "dans l' abri . Nous ne savions pas ce qui se passait , on entendait des voix en arabe dire Dieu est grand , a battu les juifs et ils ont essayé d' ouvrir la porte de l' abri . Mon mari et 3 garçons non pas la Chine , la poignée de la porte . Mais là que l' arrivée des éléments"
+                                "dans l' abri . Nous ne savions pas ce qui se passait , on entendait des voix en arabe dire Dieu est grand , a battu les juifs et ils ont essayé d' ouvrir la porte de l' abri . Mon mari et 3 garçons non pas la nationalité chinoise , la poignée de la porte . Mais là que la chine des éléments"
                             ]
                         },
                         "sublocalisations": {
@@ -1341,7 +1341,7 @@
                                 {
                                     "data": {
                                         "text": [
-                                            "Chine"
+                                            "chinoise"
                                         ]
                                     },
                                     "tcin": "00:00:51.650",
@@ -1451,7 +1451,7 @@
                                 {
                                     "data": {
                                         "text": [
-                                            "l'"
+                                            "la"
                                         ]
                                     },
                                     "tcin": "00:00:54.440",
@@ -1461,7 +1461,7 @@
                                 {
                                     "data": {
                                         "text": [
-                                            "arrivée"
+                                            "chine"
                                         ]
                                     },
                                     "tcin": "00:00:54.620",

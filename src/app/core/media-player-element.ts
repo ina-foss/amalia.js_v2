@@ -96,24 +96,29 @@ export class MediaPlayerElement {
         return await new Promise<PlayerState>((resolve, reject) => {
             // load configuration
             this.loadConfiguration(config).then(() => {
-                    this.state = PlayerState.INITIALIZED;
-                    // Set logger states
-                    const debug = this.preferenceStorageManager.getItem('debug');
-                    const loggerState = debug === null ? this.getConfiguration().debug : true;
-                    const loggerLevel = debug === null ? this.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug);
-                    this.logger.state(loggerState);
-                    this.logger.logLevel(loggerLevel);
-                    this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
-                    // Set media source specified by config
-                    this.setMediaSource();
-                    this.loadDataSources().then(() => this.handleMetadataLoaded());
-                    resolve(this.state);
-                },
-                error => {
-                    this.state = PlayerState.ERROR_LOAD_CONFIG;
-                    this.logger.error('Error to load config', error);
-                    reject(this.state);
-                });
+                        this.state = PlayerState.INITIALIZED;
+                        // Set logger states
+                        const debug = this.preferenceStorageManager.getItem('debug');
+                        const dynamicMetadataPreLoad = this.getConfiguration().dynamicMetadataPreLoad;
+                        const loggerState = debug === null ? this.getConfiguration().debug : true;
+                        const loggerLevel = debug === null ? this.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug);
+                        this.logger.state(loggerState);
+                        this.logger.logLevel(loggerLevel);
+                        this.logger.info(`Config data: ${config}`);
+                        this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
+                        // Set media source specified by config
+                        this.setMediaSource();
+                        if (dynamicMetadataPreLoad) {
+                            this.loadDataSources().then(() => this.handleMetadataLoaded());
+                        }
+                        resolve(this.state);
+                    },
+                    error => {
+                        this.state = PlayerState.ERROR_LOAD_CONFIG;
+                        this.logger.error('Error to load config', error);
+                        this.logger.info(`Config data: ${config}`);
+                        reject(this.state);
+                    });
         });
     }
 
@@ -228,19 +233,22 @@ export class MediaPlayerElement {
      */
     public getDisplayState() {
         let displayState = 'l';
-        const lWidth = this.getConfiguration().displaySizes?.large ?? 900;
-        const mWidth = this.getConfiguration().displaySizes?.medium ?? 700;
-        const sWidth = this.getConfiguration().displaySizes?.small ?? 550;
-        const xsWidth = this.getConfiguration().displaySizes?.xsmall ?? 340;
-        if (this.width < xsWidth) {
-            displayState = 'xs';
-        } else if (this.width >= xsWidth && this.width < sWidth) {
-            displayState = 's';
-        } else if (this.width >= sWidth && this.width < mWidth) {
-            displayState = 'sm';
-        } else if (this.width >= mWidth && this.width < lWidth) {
-            displayState = 'm';
+        if (this.getConfiguration()) {
+            const lWidth = this.getConfiguration().displaySizes?.large ?? 900;
+            const mWidth = this.getConfiguration().displaySizes?.medium ?? 700;
+            const sWidth = this.getConfiguration().displaySizes?.small ?? 550;
+            const xsWidth = this.getConfiguration().displaySizes?.xsmall ?? 340;
+            if (this.width < xsWidth) {
+                displayState = 'xs';
+            } else if (this.width >= xsWidth && this.width < sWidth) {
+                displayState = 's';
+            } else if (this.width >= sWidth && this.width < mWidth) {
+                displayState = 'sm';
+            } else if (this.width >= mWidth && this.width < lWidth) {
+                displayState = 'm';
+            }
         }
+
         return displayState;
     }
 }

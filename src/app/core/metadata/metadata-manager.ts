@@ -10,6 +10,7 @@ import {TranscriptionLocalisation} from './model/transcription-localisation';
 import {Histogram} from './model/histogram';
 import {TimelineLocalisation} from './model/timeline-localisation';
 import * as _ from 'lodash';
+import {AnnotationLocalisation} from "./model/annotation-localisation";
 
 /**
  * In charge to handle metadata
@@ -20,6 +21,7 @@ export class MetadataManager {
     private listOfMetadata: Map<string, Metadata> = new Map<string, Metadata>();
     private toLoadData = 0;
     private readonly defaultLoader: Loader<Array<Metadata>>;
+    public static AUTHORIZATION_HEADER = 'Authorization: Bearer';
 
     constructor(configurationManager: ConfigurationManager, defaultLoader: Loader<Array<Metadata>>, logger: LoggerInterface) {
         this.configurationManager = configurationManager;
@@ -37,11 +39,64 @@ export class MetadataManager {
                 this.toLoadData = dataSources.length;
                 dataSources.forEach(dataSource => {
                     this.loadDataSource(dataSource, resolve)
-                        .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                            .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                 });
                 // resolve() called on complete
             } else {
                 this.logger.info('Can\'t find data sources');
+            }
+        });
+    }
+
+    /**
+     * Pour les plugins qui ont besoin de recharger (re-fetcher) leurs métadonnées,
+     * il est nécessaire de renouveller le token d'authorization.
+     * @param token Authorization Bearer
+     */
+    public refreshDataSourceHeaders(token) {
+        const dataSources = this.configurationManager.getCoreConfig().dataSources;
+        dataSources.forEach(data => {
+            const headers = data.headers;
+            if (headers) {
+                headers.forEach((header, index) => {
+                    if (header.includes(MetadataManager.AUTHORIZATION_HEADER)) {
+                        headers[index] = `${MetadataManager.AUTHORIZATION_HEADER} ${token}`;
+                    }
+                })
+            }
+        });
+    }
+
+    /**
+     * Cette fonction charge les métadonnées pour un plugin en particulier.</br>
+     * Elle est utilisée quand le mode dynamicMetadataPreLoad n'est pas activé cad lors du chargement des métadonnées à la demande.
+     * @param plugin ce paramètre correspond au nom du plugin
+     */
+    public async loadDataSourceForPlugin(plugin: string): Promise<any> {
+        return await new Promise<any>((resolve, reject) => {
+            const dataSources = this.configurationManager.getCoreConfig().dataSources;
+            if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
+                this.toLoadData = 0;
+                dataSources.forEach(dataSource => {
+                    if (dataSource.plugin && dataSource.plugin.toUpperCase() === plugin.toUpperCase()) {
+                        this.toLoadData++;
+                    }
+                });
+                this.logger.debug(`Data source : sources to be loaded: ${this.toLoadData}`);
+                if (this.toLoadData !== 0) {
+                    dataSources.forEach(dataSource => {
+                        if (dataSource.plugin && dataSource.plugin.toUpperCase() === plugin.toUpperCase()) {
+                            this.loadDataSource(dataSource, resolve, reject)
+                                    .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
+                        }
+                    });
+                } else {
+                    resolve(undefined);
+                }
+                // resolve() called on complete
+            } else {
+                this.logger.info('Can\'t find data sources');
+                reject('Can\'t find data sources');
             }
         });
     }
@@ -57,6 +112,14 @@ export class MetadataManager {
         } else {
             throw new AmaliaException(`Error to get metadata`);
         }
+    }
+
+    /**
+     * hasMetadataKey
+     * @param metadataId metadata id
+     */
+    public hasMetadataKey(metadataId: string) {
+        return metadataId && metadataId !== '' && this.listOfMetadata.has(metadataId);
     }
 
     /**
@@ -114,9 +177,25 @@ export class MetadataManager {
     }
 
     /**
+     * Return annotation metadata
+     * @param metadataId metadata
+     */
+    public getAnnotationLocalisations(metadataId: string): Array<AnnotationLocalisation> | null {
+        try {
+            const metadata = this.getMetadata(metadataId);
+            if (metadata) {
+                return MetadataUtils.getAnnotationLocalisations(metadata);
+            }
+        } catch (e) {
+            this.logger.warn(`Error to find metadata : ${metadataId}`);
+        }
+        return null;
+    }
+
+    /**
      * Get timeline metadata block
-     * @param metadataId metadata id
      * @throws AmaliaException
+     * @param metadata
      */
     public getTimelineLocalisations(metadata: Metadata): Array<TimelineLocalisation> {
         return MetadataUtils.getTimelineLocalisations(metadata);
@@ -147,27 +226,56 @@ export class MetadataManager {
     /**
      * In charge to load data
      * @param loadData ConfigDataSource
+     * @param completed
+     * @param reject
      */
-    private async loadDataSource(loadData: ConfigDataSource, completed) {
+    private async loadDataSource(loadData: ConfigDataSource, completed, reject?: any) {
         if (loadData && loadData.url) {
+            this.logger.info("loadDataSource", loadData.headers);
+            let annotationMetadata = loadData.plugin && loadData.plugin === 'annotations';
             const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
             loader
-                .load(loadData.url, loadData.headers)
-                .then(listOfMetadata => this.onMetadataLoaded(listOfMetadata, completed))
-                .catch(() => this.errorToLoadMetadata(loadData.url, completed));
+                    .load(loadData.url, loadData.headers)
+                    .then(listOfMetadata => {
+                        this.logger.info("listOfMetadata", listOfMetadata);
+                        if (annotationMetadata) {
+                            const listOfAnnotations = listOfMetadata.map(metadata => {
+                                const localisation = metadata.localisation;
+                                const subLocalisations = localisation[0].sublocalisations;
+                                return subLocalisations[0].localisation[0];
+                            });
+                            const metaDataToBeLoaded = [{id: 'annotations', localisation: listOfAnnotations}];
+                            this.logger.debug("annotations", listOfAnnotations);
+                            this.onMetadataLoaded(metaDataToBeLoaded, completed);
+                        } else {
+                            this.onMetadataLoaded(listOfMetadata, completed);
+                        }
+
+                    })
+                    .catch((err) => {
+                        if (reject && annotationMetadata) {
+                            reject({url: loadData.url, error: err});
+                        } else {
+                            this.errorToLoadMetadata(loadData.url, completed);
+                        }
+                    });
         } else {
             this.logger.warn('Error to load data source');
         }
     }
 
+
     /**
      * Called on metadata loaded
      * @param listOfMetadata list of metadata
+     * @param completed
      */
     private onMetadataLoaded(listOfMetadata: Array<Metadata>, completed) {
+        this.logger.debug("onMetadataLoaded listOfMetadata completed", listOfMetadata);
         if (listOfMetadata && Utils.isArrayLike<Metadata>(listOfMetadata)) {
             for (const metadata of listOfMetadata) {
                 try {
+                    this.logger.debug("onMetadataLoaded addMetaData", metadata);
                     this.addMetadata(metadata);
                 } catch (e) {
                     this.logger.warn('Error to add metadata', metadata);

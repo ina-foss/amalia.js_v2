@@ -218,4 +218,25 @@ export enum PlayerEventType {
      * COPY text
      */
     PLAYER_COPY_BOARD = 'ina.player.COPY_BOARD',
+    /**
+     * Add Annotation
+     */
+    ANNOTATION_ADD = 'ina.annotation.ADD',
+    /**
+     * Update Annotation
+     */
+    ANNOTATION_UPDATE = 'ina.annotation.PATCH',
+    /**
+     * Remove Annotation
+     */
+    ANNOTATION_REMOVE = 'ina.annotation.REMOVE',
+    /**
+     * Annotation en cours d'édition
+     */
+    ANNOTATION_EDITING = 'ina.annotation.EDITING',
+    /**
+     * Annotation édition annulée
+     */
+    ANNOTATION_CANCEL_EDITING = 'ina.annotation.EDITING.CANCELED',
+
 }

@@ -8,6 +8,7 @@ import {ConfigDataSource} from './config-data-source';
 export declare type CallbackHandler = (event: any) => void;
 
 export interface ConfigData {
+    dynamicMetadataPreLoad?: boolean;// si Oui, on charge les metadaonnees des datasources lors du chargement du media
     /**
      * Time code offset handle metadata time code
      */

@@ -18,7 +18,7 @@ export class FormatUtils {
         const fps: number = ((Math.floor((seconds) * 10000) - Math.floor(seconds) * 10000) / 10000) / (1 / defaultFps);
         const hours: number = Math.floor(minute / 60);
         const milliseconds: number = seconds % 60;
-        const h = Math.floor(( minute / 60) % 24);
+        const h = Math.floor((minute / 60) % 24);
         const hStr = h.toFixed().padStart(2, '0');
         seconds = Math.floor(seconds % 60);
         minute = Math.floor(minute % 60);
@@ -52,7 +52,7 @@ export class FormatUtils {
                 formatTime = minute.toString();
                 break;
             case 'hours' :
-                formatTime = hStr + ':' + minuteStr + ':' +  secondsStr + ':' + fpsStr;
+                formatTime = hStr + ':' + minuteStr + ':' + secondsStr + ':' + fpsStr;
                 break;
             default:
                 throw new AmaliaException('Unknown time format');
@@ -71,6 +71,28 @@ export class FormatUtils {
             const hours = Math.floor(result[0]);
             const minutes = Math.floor(result[1]);
             const seconds = parseFloat(result[2]);
+            time = (hours * 60 * 60) + (minutes * 60) + seconds;
+        }
+        return time;
+    }
+
+    public static convertFormattedTcToSeconds(tc: string, format: 's' | 'f' = 'f', defaultFps: number = 25): number {
+        const timeFormatPattern = format === 'f' ? /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d:)(\d{2})$/ : /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+        let time = null;
+        // regex patter to search on
+        // return the matching date string
+        let result;
+        if (timeFormatPattern.test(tc)) {
+            result = tc.split(':');
+            const hours = Math.floor(result[0]);
+            const minutes = Math.floor(result[1]);
+            let seconds = parseFloat(result[2]);
+            if (format === 'f') {
+                seconds = Math.floor(result[2]);
+                const fps = Math.floor(result[3]);
+                const secondsFromFrames = fps / defaultFps;
+                seconds = seconds + secondsFromFrames;
+            }
             time = (hours * 60 * 60) + (minutes * 60) + seconds;
         }
         return time;

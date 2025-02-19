@@ -1,3 +1,15 @@
+// Spacings
+$amalia-spacings-space-space-sm: var(--amalia-spacings-space-space-sm, 12px);
+$amalia-spacings-border-radius-md: var(--spacings-border-radius-radius-md, 8px);
+$amalia-spacings-border-radius-lg: var(--spacings-border-radius-radius-lg, 12px);
+$amalia-spacings-border-radius-sm: var(--spacings-border-radius-radius-sm, 4px);
+
+$colors-primitive-primary-color: var(--colors-primitive-primary-color, #0086B1);
+$global-textColor: var(--global-textColor, #4B5563);
+$panel-content-color: var(--panel-content-color, #4B5563);
+$Light-grey-3: var(--Light-grey-3, #F7F7F7);
+
+
 // Colors
 $amalia-primary-color: var(--amalia-primary-color, #0086B1);
 $amalia-secondary-color: var(--amalia-secondary-color, #34495E);
@@ -5,10 +17,12 @@ $amalia-success-color: var(--amalia-success-color, #20CC61);
 $amalia-info-color: var(--amalia-info-color, #D0B840);
 $amalia-warning-color: var(--amalia-warning-color, #F2711B);
 $amalia-bg-color: var(--amalia-bg-color, rgba(34, 34, 34, 0.9));
-
+$amalia-box-shadow: var(--amalia-box-shadow, #ACE4F5);
 $amalia-player-bg-color: var(--amalia-player-bg-color, black);
 $amalia-player-bg-color1: var(--amalia-player-bg-color1, white);
+$amalia-plugin-header-bg-color: var(--INA-Blanc, #FFF);
 $amalia-player-bg-color2: var(--amalia-player-bg-color2, #E5E5E5);
+$amalia-menu-overlay-hover-bg-color: var(--amalia-menu-overlay-hover-bg-color, #D9D9D9);
 $amalia-default-z-index: var(--amalia-default-z-index, 2);
 $amalia-volume-bar-z-index: var(--amalia-volume-bar-z-index, 3);
 $amalia-context-menu-z-index: var(--amalia-volume-bar-z-index, 5);
@@ -16,6 +30,10 @@ $amalia-tooltip-z-index: var(--amalia-tooltip-z-index, 4);
 $amalia-tooltip-opacity: var(--amalia-tooltip-opacity, .9);
 $amalia-error-z-index: var(--amalia-error-z-index, 6);
 $amalia-volume-slider-bg: var(--amalia-volume-slider-bg, rgb(255, 255, 255, 0.4));
+$amalia-colors-semantic-error-state: var(--amalia-colors-semantic-error-state, #EE4343);
+$amalia-icon-text-color: var(--amalia-icon-text-color, #232529);
+
+$amalia-plugin-colors-semantic-error-state: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
 
 $amalia-plugin-transcription-bg: var(--amalia-plugin-transcription-bg, #555);
 $amalia-plugin-transcription-bg-hover: var(--amalia-plugin-transcription-bg-hover, #dfeef3);
@@ -97,8 +115,6 @@ $amalia-plugin-timeline-header-bg-color: var(--amalia-plugin-timeline-header-bg-
 $amalia-plugin-timeline-header-font-color: var(--amalia-plugin-timeline-header-font-color, #222222);
 $amalia-plugin-timeline-segment-bg-color: var(--amalia-plugin-timeline-segment-bg-color, #F3F3F3);
 $amalia-plugin-timeline-text-founded-color: var(--amalia-plugin-timeline-text-founded-color, #D8D8D8);
-
-
 
 
 /**

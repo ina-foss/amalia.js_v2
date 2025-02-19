@@ -11,6 +11,12 @@
   flex-direction: column;
   height: 100%;
 
+  .segment-empty {
+    bottom: 0;
+    position: relative;
+    min-height: 20px;
+  }
+
   .transcription {
     display: block;
     margin: 0;

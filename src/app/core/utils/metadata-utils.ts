@@ -7,6 +7,7 @@ import {Utils} from './utils';
 import {FormatUtils} from './format-utils';
 import {Histogram} from '../metadata/model/histogram';
 import {TimelineLocalisation} from '../metadata/model/timeline-localisation';
+import {AnnotationLocalisation} from "../metadata/model/annotation-localisation";
 
 export class MetadataUtils {
     /**
@@ -21,6 +22,35 @@ export class MetadataUtils {
             metadata.localisation.forEach((l) => {
                 MetadataUtils.parseTranscriptionLocalisations(l, localisations, parseLevel, withSubLocalisations,
                     new Array<TranscriptionAnnotation>() );
+            });
+        }
+        return localisations;
+    }
+    /**
+     * Return list of transcription
+     * @param metadata localisation
+     */
+    public static getAnnotationLocalisations(metadata: Metadata): Array<AnnotationLocalisation> {
+        const localisations: Array<AnnotationLocalisation> = new Array<AnnotationLocalisation>();
+        if (metadata && metadata.localisation) {
+            metadata.localisation.forEach((l) => {
+                const annotation: AnnotationLocalisation = {
+                    data: {},
+                    tc: 0,
+                    tcIn: 0,
+                    tcOut: 0
+                };
+                annotation.id = l.id;
+                annotation.label = l.label;
+                annotation.tcIn = (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin;
+                annotation.tcOut = (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout;
+                annotation.description = l.description;
+                annotation.thumb = l.thumb;
+                annotation.data = structuredClone(l.data);
+                annotation.data.displayMode = "readonly";
+                annotation.property = structuredClone(l.property);
+                annotation.tc = annotation.tcOut - annotation.tcIn;
+                localisations.push(annotation);
             });
         }
         return localisations;
@@ -41,7 +71,7 @@ export class MetadataUtils {
             if (l.sublocalisations && l.sublocalisations.localisation && l.sublocalisations.localisation.length && withSubLocalisations) {
                 l.sublocalisations.localisation.forEach((subl) => {
                     MetadataUtils.parseTranscriptionLocalisations(subl, subLocalisations, subl.tclevel, withSubLocalisations,
-                        new Array<TranscriptionAnnotation>());
+                            new Array<TranscriptionAnnotation>());
                 });
             }
             MetadataUtils.pushTranscriptionLocalisations(l, localisations, subLocalisations, annotationsLoc);
@@ -58,12 +88,13 @@ export class MetadataUtils {
             });
         }
     }
+
     // push transcription localisations
     private static pushTranscriptionLocalisations(l, localisations, subLocalisations, annotations) {
         localisations.push({
             label: (l.label) ? l.label : '',
             thumb: (l.thumb) ? l.thumb : '',
-            tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin)  : l.tcin,
+            tcIn: (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin,
             tcOut: (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout,
             text: (l.data && l.data.text && Utils.isArrayLike<string>(l.data.text)) ? l.data.text.toString() : '',
             subLocalisations,
@@ -120,6 +151,7 @@ export class MetadataUtils {
             }
         }
     }
+
     // push timelineLocalisation
     private static pushTimelineLocalisation(localisation, timelineLocalisations) {
         const tl: TimelineLocalisation = {
