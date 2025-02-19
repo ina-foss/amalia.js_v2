@@ -111,7 +111,8 @@
                         [binary]="true"
                         inputId="select-segments"
                         (onChange)="toggleAllNodes()"/>
-            <p-button *ngIf="filterHidden" icon="pi pi-search" [rounded]="true" (click)="toggleFilter()"/>
+            <p-button *ngIf="filterHidden" icon="pi pi-search" [rounded]="true" (click)="toggleFilter()"
+                      class="btn-show-filter"/>
             <p-button *ngIf="!filterHidden" icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary"
                       (click)="toggleFilter()" class="btn-hide-filter"/>
         </div>
@@ -135,8 +136,8 @@
             </p-tree>
         </div>
         <div class="footer">
-            <button class="btn cancel" (click)="handleDisplayBlocks(false)">Annuler</button>
-            <button class="btn valid" (click)="handleDisplayBlocks(true)">Valider</button>
+            <p-button class="no-highlight" (click)="handleDisplayBlocks(false)">Annuler</p-button>
+            <p-button class="highlight" (click)="handleDisplayBlocks(true)">Valider</p-button>
         </div>
     </div>
     <div class="segment-empty"></div>
