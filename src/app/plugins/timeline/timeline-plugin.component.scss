@@ -206,6 +206,9 @@
       .p-tree .p-tree-container .p-treenode .p-treenode-content {
         border-radius: 6px;
         background: #F9FAFB;
+      }
+
+      .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
         color: var(--amalia-plugin-timeline-primary-color, #0086B1);
       }
 
