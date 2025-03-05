@@ -1,5 +1,5 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
@@ -18,7 +18,7 @@ import interact from 'interactjs';
     styleUrls: ['./histogram-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit {
+export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit {
     public static PLUGIN_NAME = 'HISTOGRAM';
     public static CURSOR_ELM = 'cursor';
     public static HISTOGRAM_ELM = 'histogram';
@@ -112,8 +112,21 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     ngOnInit(): void {
-        super.ngOnInit();
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        try {
+            super.ngOnInit();
+            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        } catch (e) {
+            this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
+        }
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+            this.init();
+        }
+    }
+
+    ngAfterViewInit(): void {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+            this.handleMetadataLoaded();
+        }
     }
 
     @AutoBind
@@ -127,16 +140,19 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
     }
+
     @AutoBind
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
         this.pinned = false;
     }
+
     @AutoBind
     public handlePinnedSliderChange(event) {
         this.pinned = event;
         this.pinnedControlbar = false;
     }
+
     /**
      * Handle draw histogram return tuple with positive bins and negative bins
      * In charge to create svg paths
@@ -245,8 +261,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds} ${labels} Zoom:  ${zoomMetadataIdx}`);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
-            if (metadataManager.getHistograms(handleMetadataIds).length > 0) {
-                this.histogramsList = metadataManager.getHistograms(handleMetadataIds);
+            const histoList = metadataManager.getHistograms(handleMetadataIds);
+            if (histoList.length > 0) {
+                this.histogramsList = histoList;
                 this.drawHistograms(this.histogramsList, labels, zoomMetadataIdx);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_END);
                 if (this.sliderElement && this.pluginConfiguration.data.withFocus) {
