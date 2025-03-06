@@ -262,7 +262,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         } else {
             this.slideFocus(this.currentTime);
         }
-        this.updateCursors(this.currentTime);
+        this.updateCursors();
     }
 
     /**
