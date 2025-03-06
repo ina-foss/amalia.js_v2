@@ -1,7 +1,7 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing';
 import {HistogramPluginComponent} from './histogram-plugin.component';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {ElementRef} from '@angular/core';
+import {ChangeDetectorRef} from '@angular/core';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {MediaPlayerElement} from "../../core/media-player-element";
@@ -14,124 +14,127 @@ import {DefaultMetadataLoader} from "../../core/metadata/loader/default-metadata
 import {DefaultMetadataConverter} from "../../core/metadata/converter/default-metadata-converter";
 import {HttpClient} from "@angular/common/http";
 import {AmaliaException} from "../../core/exception/amalia-exception";
+import {MediaElement} from "../../core/media/media-element";
 
+const initTestData = (component: HistogramPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
+    mediaPlayerElement = new MediaPlayerElement();
+    logger = new DefaultLogger();
+    component.logger = logger;
+    const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+    mediaPlayerElement.configurationManager = new ConfigurationManager(loader, logger);
+    mediaPlayerElement.configurationManager.configData = {
+        "tcOffset": null,
+        "player": {
+            "backwardsSrc": "",
+            "src": "",
+            "autoplay": false,
+            "crossOrigin": "anonymous"
+        },
+        "thumbnail": {
+            "baseUrl": "",
+            "enableThumbnail": false,
+            "tcParam": "start"
+        },
+        "dataSources": [
+            {
+                "url": "/notilusDossier/segments/stock?itemBusinessIdentifier=95F05001SA0338_01&tcin=0&tcout=28800000&format=AMALIA&clientId=annotations",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "annotations"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=0&format=1024&mid=waveform-1024-0",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=1&format=1024&mid=waveform-1024-1",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=0&format=4096&mid=waveform-4096-0",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=1&format=4096&mid=waveform-4096-1",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            }
+        ],
+        "debug": false,
+        "logLevel": "info",
+        "displaySizes": {
+            "large": 900,
+            "medium": 700,
+            "small": 550,
+            "xsmall": 340
+        }
+    };
+    component.pluginConfiguration = {
+        name: "",
+        "metadataIds": [
+            "waveform-1024-0",
+            "waveform-1024-1",
+            "waveform-4096-0",
+            "waveform-4096-1"
+        ],
+        "data": {
+            "withFocus": true,
+            "enableMirror": false,
+            "zoomMetadataIdx": [
+                2,
+                3
+            ],
+            "labels": [
+                "",
+                "",
+                "Canal Gauche",
+                "Canal Droit"
+            ],
+            "focusMin": 10,
+            "focusMax": 40,
+            "focusMinOffset": 10,
+            "focusMaxOffset": 90
+        }
+    };
+    httpClient = TestBed.inject(HttpClient);
+    const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
+    mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
+    component.mediaPlayerElement = mediaPlayerElement;
+    return mediaPlayerElement;
+}
+const initTestConfig = () => {
+    return async () => {
+        await TestBed.configureTestingModule({
+            declarations: [HistogramPluginComponent],
+            imports: [HttpClientTestingModule],
+            providers: [MediaPlayerService, ChangeDetectorRef]
+        }).compileComponents();
+    };
+}
 describe('HistogramPluginComponent', () => {
     let component: HistogramPluginComponent;
     let fixture: ComponentFixture<HistogramPluginComponent>;
     let httpClient: HttpClient;
     let logger: DefaultLogger;
     let mediaPlayerElement: MediaPlayerElement;
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [HistogramPluginComponent],
-            imports: [HttpClientTestingModule],
-            providers: [MediaPlayerService]
-        }).compileComponents();
-    });
+    beforeEach(initTestConfig());
 
     beforeEach(() => {
         fixture = TestBed.createComponent(HistogramPluginComponent);
         component = fixture.componentInstance;
-        component.sliderElement = new ElementRef(document.createElement('div'));
-        component.histograms = new ElementRef(document.createElement('div'));
-        const parentContainer = document.createElement('div');
-        parentContainer.appendChild(component.sliderElement.nativeElement);
-        parentContainer.appendChild(component.histograms.nativeElement);
-        mediaPlayerElement = new MediaPlayerElement();
-        logger = new DefaultLogger();
-        component.logger = logger;
-        const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
-        mediaPlayerElement.configurationManager = new ConfigurationManager(loader, logger);
-        mediaPlayerElement.configurationManager.configData = {
-            "tcOffset": null,
-            "player": {
-                "backwardsSrc": "",
-                "src": "",
-                "autoplay": false,
-                "crossOrigin": "anonymous"
-            },
-            "thumbnail": {
-                "baseUrl": "",
-                "enableThumbnail": false,
-                "tcParam": "start"
-            },
-            "dataSources": [
-                {
-                    "url": "/notilusDossier/segments/stock?itemBusinessIdentifier=95F05001SA0338_01&tcin=0&tcout=28800000&format=AMALIA&clientId=annotations",
-                    "headers": [
-                        "Authorization: Bearer ..."
-                    ],
-                    "plugin": "annotations"
-                },
-                {
-                    "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=0&format=1024&mid=waveform-1024-0",
-                    "headers": [
-                        "Authorization: Bearer ..."
-                    ],
-                    "plugin": "histogram"
-                },
-                {
-                    "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=1&format=1024&mid=waveform-1024-1",
-                    "headers": [
-                        "Authorization: Bearer ..."
-                    ],
-                    "plugin": "histogram"
-                },
-                {
-                    "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=0&format=4096&mid=waveform-4096-0",
-                    "headers": [
-                        "Authorization: Bearer ..."
-                    ],
-                    "plugin": "histogram"
-                },
-                {
-                    "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=1&format=4096&mid=waveform-4096-1",
-                    "headers": [
-                        "Authorization: Bearer ..."
-                    ],
-                    "plugin": "histogram"
-                }
-            ],
-            "debug": false,
-            "logLevel": "info",
-            "displaySizes": {
-                "large": 900,
-                "medium": 700,
-                "small": 550,
-                "xsmall": 340
-            }
-        };
-        component.pluginConfiguration = {
-            name: "",
-            "metadataIds": [
-                "waveform-1024-0",
-                "waveform-1024-1",
-                "waveform-4096-0",
-                "waveform-4096-1"
-            ],
-            "data": {
-                "withFocus": true,
-                "enableMirror": false,
-                "zoomMetadataIdx": [
-                    2,
-                    3
-                ],
-                "labels": [
-                    "",
-                    "",
-                    "Canal Gauche",
-                    "Canal Droit"
-                ],
-                "focusMin": 10,
-                "focusMax": 40,
-                "focusMinOffset": 10,
-                "focusMaxOffset": 90
-            }
-        };
-        httpClient = TestBed.inject(HttpClient);
-        const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
-        mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
-        component.mediaPlayerElement = mediaPlayerElement;
+        mediaPlayerElement = initTestData(component, mediaPlayerElement, logger, httpClient);
     });
 
     it('should create', () => {
@@ -191,7 +194,6 @@ describe('HistogramPluginComponent', () => {
         expect(handleMetadataLoaded).toHaveBeenCalled();
     });
 
-
     it('handleMetadataLoaded should emit PlayerEventType.ERROR event', () => {
         const emitEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'emit');
         const getDuration = spyOn(component, 'getDuration');
@@ -222,14 +224,30 @@ describe('HistogramPluginComponent', () => {
                 "id": "waveform-4096-0"
             }
         ]);
-        component.handleMetadataLoaded();
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        fixture.detectChanges();
         expect(emitEvent).toHaveBeenCalledWith(PlayerEventType.PLAYER_LOADING_END);
     });
-    it('handleMetadataLoaded should emit PLAYER_LOADING_END event', () => {
-        const emitEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'emit');
+});
+
+describe('HistogramPluginComponent test with fixture.detectChanges', () => {
+    let component: HistogramPluginComponent;
+    let fixture: ComponentFixture<HistogramPluginComponent>;
+    let httpClient: HttpClient;
+    let logger: DefaultLogger;
+    let mediaPlayerElement: MediaPlayerElement;
+    beforeEach(initTestConfig());
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HistogramPluginComponent);
+        component = fixture.componentInstance;
+        mediaPlayerElement = initTestData(component, mediaPlayerElement, logger, httpClient);
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
         const getDuration = spyOn(component, 'getDuration');
-        const getHistoList = spyOn(component.mediaPlayerElement.metadataManager, 'getHistograms');
         getDuration.and.returnValue(14921);
+        const getHistoList = spyOn(component.mediaPlayerElement.metadataManager, 'getHistograms');
         getHistoList.and.returnValue([
             {
                 "posbins": "DA8XFBMTFBISEhIRERETFBcZGBcTExAYHBgbHBkXFRYTExUVExQTEhIWFRMRGRAQFBEXGRgYExoREA4QFRAPFA4PFxcWDxITFRMNERIMCxMUExMdGhIQDxIRFBQTGBkjKB8eFRYXFBcYFhgTDBEODQwPDw4MDREOEBASDgweGhcYFhQTERQaGBgREBQYIBQSEQ4PEBMTExASDxIRCwwNDhcWFBwXIiAZFxwZFxYTFhYUFRoUExYVGCIiHiEfGxkUFRcWFRgZHh4cDxAOEA4NDhIUFRERDxEREBESEBMRFBIUEBISGBgYFxUVExQVGBgXFxYYHBgXEw0YEhEQDxANDg0XGRQaDAsQEBATFRMRERAPDgoNCwwPDA0QDRMXGRcLCQsLDQ4XGBcSEA8QDg4NCg4YFRcWDAwLEwoHDA0MEw8RGRYPEBcXGRYXFxoWFxkVGBUZEhASFhIQDhMWExcUERIXFxgVFg4TExQWFhIWFBQREQ8RExcPFBEbGxodHB4aGRohICAfFBkWHBkWDhAQFQ8TDRQSEBITFBIQDAsPDxcVGR4bHh8bHSIeGhoODg8ODQwOCwsMDQ0ODhEOEQ8NChATDxEYFhEREhYVFRYXFRgRExAYHhsZFhYbEg8ZGRgZGBgYIBwVHSMaFRMcGhgYGRIXFhQTFQ8NDQ8KCAkPDQsKCwkJCAkHCAYICA4KCQoICgkJCQkJBwcICQkICQkMCgsKDAgGCAgHCAoICAUJCgoGCAsKDAwKBgQGBQoKCgUJChASGRwfISAZExEQCwwJDQsMDAwJCggKCggIBwYHCQoKDg4NDAoMCwsKDQ0NCwwJCQcHBwwHBQUGBQgHCAsLCAsLDQsJBAoHCAkJBwUICAcHBQYHDAgGBwoEBAUFBAUFBAICBgQDCAwHCQsIBgYGBgYNCQcHBwcHBQcICAkFBQUFCAgGBQkIBQgGCAgHCAwICgkKCQoKCAYFDwkGBwgHBwcHBQsGBQcFBwcJCAYGBQYKERAODw4PDwkNDBMQEBASEgsKCQgICQ4ICAcHCgsSEg0UDw4RDQ0LCgoKEhAQEQ8ODQsODAwKCQoTDwsOEA8NDg8NDgsNEQwPEg0LEQ4NDAoHBwwUEhAODQwLCw8NCAkICAgJCgkJCA4QDAoKDA8SCwsGBgcHBwkIBwUHCAgHCAkHCQ0LCQoQCgoKCgkJCgsMCgsTEBIREAsKCAgICQsJCw8NDQ4NCgoJCgcHCAYHBwoVCAwMDRERDw4QFg0QDAkMCwoLCAkNEA4RFBMODhAOEQoJCwkMDAoJCAsMBwwKCAkICQgLCAwMCAYJCwgKCwsMCgsNCw0ODgkMDAsJCgoLCwsKCQkJCQwHCAgHBQYFBA==",
@@ -248,7 +266,34 @@ describe('HistogramPluginComponent', () => {
                 "id": "waveform-4096-0"
             }
         ]);
-        component.handleMetaDataLoadedWrapperWithoutAutoBind();
-        expect(emitEvent).toHaveBeenCalledWith(PlayerEventType.PLAYER_LOADING_END);
+        fixture.detectChanges();
+    });
+
+    it('handleHistogramClick should setCurrentTime', () => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        let div = fixture.debugElement.nativeElement.shadowRoot.querySelectorAll('.histogram');
+        const setCurrentTime = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'setCurrentTime');
+        const event = new MouseEvent('click', {
+            cancelable: true,
+            clientX: 35
+        });
+        // Ajoutez les données au dataset de currentTarget
+        div[0].dataset.zTcIn = '10';
+        div[0].dataset.zTcOut = '60';
+        // Déclenchez l'événement
+        div[0].dispatchEvent(event);
+        expect(setCurrentTime).toHaveBeenCalled();
+    });
+    it('handleOnTimeChange should be called', () => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        const getCurrentTime = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime');
+        getCurrentTime.and.returnValue(35);
+        component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
+        expect(getCurrentTime).toHaveBeenCalled();
+
     });
 });

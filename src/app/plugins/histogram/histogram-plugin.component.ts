@@ -1,5 +1,13 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
@@ -105,7 +113,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     logger: DefaultLogger;
 
 
-    constructor(httpClient: HttpClient, playerService: MediaPlayerService) {
+    constructor(httpClient: HttpClient, playerService: MediaPlayerService, private cd: ChangeDetectorRef) {
         super(playerService);
         this.pluginName = HistogramPluginComponent.PLUGIN_NAME;
         this.httpClient = httpClient;
@@ -134,6 +142,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     ngAfterViewInit(): void {
         if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
             this.handleMetaDataLoadedWrapperWithoutAutoBind();
+            this.cd.detectChanges();
         }
     }
 
@@ -425,9 +434,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     /**
      * Update cursor
-     * @param tc time code
      */
-    private updateCursors(tc: number) {
+    private updateCursors() {
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.HISTOGRAM_ELM);
         for (const elementKey in Object.keys(histograms)) {
             if (histograms.hasOwnProperty(elementKey)) {
