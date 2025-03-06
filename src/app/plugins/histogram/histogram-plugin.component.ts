@@ -69,15 +69,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * list of histograms
      */
-    public listOfHistograms: {
-        paths: [string, string];
-        nbBins: number;
-        posMax: number;
-        negMax: number;
-        viewBox: string;
-        label: string,
-        zoom: boolean
-    }[];
+    public listOfHistograms: { paths: [string, string]; nbBins: number; posMax: number; negMax: number; viewBox: string; label: string, zoom: boolean }[];
     /**
      * state of hover cursor
      */
@@ -192,15 +184,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param label histogram label
      */
     public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoom: boolean, label: string):
-            {
-                paths: [string, string],
-                nbBins: number,
-                posMax: number,
-                negMax: number,
-                viewBox: string,
-                label: string,
-                zoom: boolean
-            } {
+        { paths: [string, string], nbBins: number, posMax: number, negMax: number, viewBox: string, label: string, zoom: boolean } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
         if (positiveValues !== null) {
@@ -219,15 +203,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     negativePath += `M${posX},${posMax},L${posX},${posMax + itemPositiveValue}z `;
                 }
             }
-            return {
-                paths: [positivePath, negativePath],
-                nbBins,
-                posMax,
-                negMax,
-                viewBox: `0 0 ${nbBins} ${Math.round(posMax * 2 + 10)}`,
-                label,
-                zoom
-            };
+            return {paths: [positivePath, negativePath], nbBins, posMax, negMax, viewBox: `0 0 ${nbBins} ${Math.round(posMax * 2 + 10)}`, label, zoom};
         }
         return null;
     }
@@ -239,16 +215,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     getDefaultConfig(): PluginConfigData<HistogramConfig> {
         return {
             name: HistogramPluginComponent.PLUGIN_NAME,
-            data: {
-                withFocus: true,
-                enableMirror: false,
-                zoomMetadataIdx: [],
-                labels: [],
-                focusMin: 10,
-                focusMax: 40,
-                focusMinOffset: 10,
-                focusMaxOffset: 90
-            }
+            data: {withFocus: true, enableMirror: false, zoomMetadataIdx: [], labels: [], focusMin: 10, focusMax: 40, focusMinOffset: 10, focusMaxOffset: 90}
         };
     }
 
@@ -260,21 +227,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private drawHistograms(histograms: Array<Histogram>, labels: Array<string>, zoomMetadataIdx: Array<number>) {
         if (histograms && histograms.length > 0) {
-            this.listOfHistograms = new Array<{
-                paths: [string, string],
-                nbBins: number,
-                posMax: number,
-                negMax: number,
-                viewBox: string,
-                label: string,
-                zoom: boolean
-            }>();
+            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, posMax: number, negMax: number, viewBox: string, label: string, zoom: boolean }>();
             let index = 0;
             let label = '';
             histograms.forEach((hData) => {
                 label = labels && labels.hasOwnProperty(index) ? labels[index] : '';
                 const histogram = this.drawHistogram(hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
-                        zoomMetadataIdx.includes(index), label);
+                    zoomMetadataIdx.includes(index), label);
                 if (histogram) {
                     this.listOfHistograms.push(histogram);
                     index++;
