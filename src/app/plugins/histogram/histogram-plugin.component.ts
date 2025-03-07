@@ -3,7 +3,7 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
     Component,
-    ElementRef,
+    ElementRef, OnDestroy,
     OnInit,
     ViewChild,
     ViewEncapsulation
@@ -20,6 +20,8 @@ import {HttpClient} from '@angular/common/http';
 import {AmaliaException} from '../../core/exception/amalia-exception';
 import interact from 'interactjs';
 import {DefaultLogger} from "../../core/logger/default-logger";
+import index from "eslint-plugin-jsdoc";
+import {start} from "node:repl";
 
 @Component({
     selector: 'amalia-histogram',
@@ -27,7 +29,7 @@ import {DefaultLogger} from "../../core/logger/default-logger";
     styleUrls: ['./histogram-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit {
+export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit, OnDestroy {
     public static PLUGIN_NAME = 'HISTOGRAM';
     public static CURSOR_ELM = 'cursor';
     public static HISTOGRAM_ELM = 'histogram';
@@ -77,7 +79,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * list of histograms
      */
-    public listOfHistograms: { paths: [string, string]; nbBins: number; posMax: number; negMax: number; viewBox: string; label: string, zoom: boolean }[];
+    public listOfHistograms: {
+        paths: [string, string];
+        nbBins: number;
+        posMax: number;
+        negMax: number;
+        viewBox: string;
+        label: string,
+        zoom: boolean
+    }[];
     /**
      * state of hover cursor
      */
@@ -193,7 +203,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param label histogram label
      */
     public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoom: boolean, label: string):
-        { paths: [string, string], nbBins: number, posMax: number, negMax: number, viewBox: string, label: string, zoom: boolean } {
+            {
+                paths: [string, string],
+                nbBins: number,
+                posMax: number,
+                negMax: number,
+                viewBox: string,
+                label: string,
+                zoom: boolean
+            } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
         if (positiveValues !== null) {
@@ -212,7 +230,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     negativePath += `M${posX},${posMax},L${posX},${posMax + itemPositiveValue}z `;
                 }
             }
-            return {paths: [positivePath, negativePath], nbBins, posMax, negMax, viewBox: `0 0 ${nbBins} ${Math.round(posMax * 2 + 10)}`, label, zoom};
+            return {
+                paths: [positivePath, negativePath],
+                nbBins,
+                posMax,
+                negMax,
+                viewBox: `0 0 ${nbBins} ${Math.round(posMax * 2 + 10)}`,
+                label,
+                zoom
+            };
         }
         return null;
     }
@@ -224,7 +250,16 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     getDefaultConfig(): PluginConfigData<HistogramConfig> {
         return {
             name: HistogramPluginComponent.PLUGIN_NAME,
-            data: {withFocus: true, enableMirror: false, zoomMetadataIdx: [], labels: [], focusMin: 10, focusMax: 40, focusMinOffset: 10, focusMaxOffset: 90}
+            data: {
+                withFocus: true,
+                enableMirror: false,
+                zoomMetadataIdx: [],
+                labels: [],
+                focusMin: 10,
+                focusMax: 40,
+                focusMinOffset: 10,
+                focusMaxOffset: 90
+            }
         };
     }
 
@@ -236,13 +271,21 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private drawHistograms(histograms: Array<Histogram>, labels: Array<string>, zoomMetadataIdx: Array<number>) {
         if (histograms && histograms.length > 0) {
-            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, posMax: number, negMax: number, viewBox: string, label: string, zoom: boolean }>();
+            this.listOfHistograms = new Array<{
+                paths: [string, string],
+                nbBins: number,
+                posMax: number,
+                negMax: number,
+                viewBox: string,
+                label: string,
+                zoom: boolean
+            }>();
             let index = 0;
             let label = '';
             histograms.forEach((hData) => {
                 label = labels && labels.hasOwnProperty(index) ? labels[index] : '';
                 const histogram = this.drawHistogram(hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
-                    zoomMetadataIdx.includes(index), label);
+                        zoomMetadataIdx.includes(index), label);
                 if (histogram) {
                     this.listOfHistograms.push(histogram);
                     index++;
@@ -499,5 +542,17 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const width = event.currentTarget.offsetWidth;
         const tc = Math.min(tcIn + (event.clientX * duration / width), this.getDuration());
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
+    }
+
+    ngOnDestroy(): void {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.eventEmitter) {
+            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.INIT, this.init);
+            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.INIT, super.init);
+            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        }
     }
 }

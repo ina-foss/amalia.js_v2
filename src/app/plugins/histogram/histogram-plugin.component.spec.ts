@@ -140,6 +140,40 @@ describe('HistogramPluginComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+    it('should destroy', () => {
+        const init = spyOn(component, 'initWrapperWithoutAutoBind');
+        mediaPlayerElement.configurationManager.configData = {
+            ...mediaPlayerElement.configurationManager.configData,
+            dynamicMetadataPreLoad: false
+        };
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        expect(init).toHaveBeenCalled();
+        const mockOff = spyOn(component.mediaPlayerElement.eventEmitter, 'off');
+        component.ngOnDestroy();
+        const expects = mockOff.calls.all();
+        expect(expects[0].args[0]).toEqual(PlayerEventType.TIME_CHANGE);
+        expect(expects[0].args[1].name).toEqual('bound handleOnTimeChange');
+
+        expect(expects[1].args[0]).toEqual(PlayerEventType.DURATION_CHANGE);
+        expect(expects[1].args[1].name).toEqual('bound handleOnDurationChange');
+
+        expect(expects[2].args[0]).toEqual(PlayerEventType.METADATA_LOADED);
+        expect(expects[2].args[1].name).toEqual('bound handleMetadataLoaded');
+
+        expect(expects[3].args[0]).toEqual(PlayerEventType.PLAYER_RESIZED);
+        expect(expects[3].args[1].name).toEqual('bound handleWindowResize');
+
+        expect(expects[4].args[0]).toEqual(PlayerEventType.INIT);
+        expect(expects[4].args[1].name).toEqual('bound init');
+
+        expect(expects[5].args[0]).toEqual(PlayerEventType.INIT);
+        expect(expects[5].args[1].name).toEqual('init');
+
+        expect(expects[6].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(expects[6].args[1].name).toEqual('bound handlePinnedControlbarChange');
+    });
 
     it('ngOnInit should initialize the component', () => {
         const init = spyOn(component, 'initWrapperWithoutAutoBind');
