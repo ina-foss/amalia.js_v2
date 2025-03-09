@@ -136,7 +136,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.logger = new DefaultLogger(`${this.pluginName}`);
         try {
             super.ngOnInit();
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+            this.addListener(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
@@ -162,10 +162,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_BEGIN);
         this.handleDisplayState();
         this.withFocus = this.pluginConfiguration.data.withFocus;
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
     }
 
     /**
@@ -544,15 +544,17 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 
+    @AutoBind
+    public testFunction() {
+        this.tcOffset = 2000;
+        console.log('testing');
+    }
+
     ngOnDestroy(): void {
         if (this.mediaPlayerElement && this.mediaPlayerElement.eventEmitter) {
-            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.INIT, this.init);
-            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.INIT, super.init);
-            this.mediaPlayerElement.eventEmitter.off(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+            this.mapOfListeners.forEach((listOfFunctions, eventType) => {
+                listOfFunctions.forEach((func) => this.mediaPlayerElement.eventEmitter.off(eventType, func));
+            })
         }
     }
 }
