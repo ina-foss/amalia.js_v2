@@ -140,8 +140,7 @@ describe('HistogramPluginComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-    it('should destroy', () => {
-        const init = spyOn(component, 'initWrapperWithoutAutoBind');
+    it('should call eventEmitter.off for registered events', () => {
         mediaPlayerElement.configurationManager.configData = {
             ...mediaPlayerElement.configurationManager.configData,
             dynamicMetadataPreLoad: false
@@ -149,30 +148,62 @@ describe('HistogramPluginComponent', () => {
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
         component.ngOnInit();
-        expect(init).toHaveBeenCalled();
         const mockOff = spyOn(component.mediaPlayerElement.eventEmitter, 'off');
         component.ngOnDestroy();
         const expects = mockOff.calls.all();
-        expect(expects[0].args[0]).toEqual(PlayerEventType.TIME_CHANGE);
-        expect(expects[0].args[1].name).toEqual('bound handleOnTimeChange');
+        expect(expects[0].args[0]).toEqual(PlayerEventType.INIT);  //TIME_CHANGE
+        expect(expects[0].args[1].name).toEqual('bound bound init'); //handleOnTimeChange
 
-        expect(expects[1].args[0]).toEqual(PlayerEventType.DURATION_CHANGE);
-        expect(expects[1].args[1].name).toEqual('bound handleOnDurationChange');
+        expect(expects[1].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(expects[1].args[1].name).toEqual('bound handlePinnedControlbarChange');
 
-        expect(expects[2].args[0]).toEqual(PlayerEventType.METADATA_LOADED);
-        expect(expects[2].args[1].name).toEqual('bound handleMetadataLoaded');
+        expect(expects[2].args[0]).toEqual(PlayerEventType.TIME_CHANGE);
+        expect(expects[2].args[1].name).toEqual('bound handleOnTimeChange');
 
-        expect(expects[3].args[0]).toEqual(PlayerEventType.PLAYER_RESIZED);
-        expect(expects[3].args[1].name).toEqual('bound handleWindowResize');
+        expect(expects[3].args[0]).toEqual(PlayerEventType.DURATION_CHANGE);
+        expect(expects[3].args[1].name).toEqual('bound handleOnDurationChange');
 
-        expect(expects[4].args[0]).toEqual(PlayerEventType.INIT);
-        expect(expects[4].args[1].name).toEqual('bound init');
+        expect(expects[4].args[0]).toEqual(PlayerEventType.METADATA_LOADED);
+        expect(expects[4].args[1].name).toEqual('bound handleMetadataLoaded');
 
-        expect(expects[5].args[0]).toEqual(PlayerEventType.INIT);
-        expect(expects[5].args[1].name).toEqual('init');
+        expect(expects[5].args[0]).toEqual(PlayerEventType.PLAYER_RESIZED);
+        expect(expects[5].args[1].name).toEqual('bound handleWindowResize');
+    });
+    it('should remove events from eventEmitter', () => {
+        mediaPlayerElement.configurationManager.configData = {
+            ...mediaPlayerElement.configurationManager.configData,
+            dynamicMetadataPreLoad: false
+        };
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        const nbListeners_1 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.TIME_CHANGE);
+        expect(nbListeners_1).toBeGreaterThanOrEqual(1);
+        const nbListeners_2 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.DURATION_CHANGE);
+        expect(nbListeners_2).toBeGreaterThanOrEqual(1);
+        const nbListeners_3 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.METADATA_LOADED);
+        expect(nbListeners_3).toBeGreaterThanOrEqual(1);
+        const nbListeners_4 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PLAYER_RESIZED);
+        expect(nbListeners_4).toBeGreaterThanOrEqual(1);
+        const nbListeners_5 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.INIT);
+        expect(nbListeners_5).toBeGreaterThanOrEqual(1);
+        const nbListeners_6 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(nbListeners_6).toBeGreaterThanOrEqual(1);
 
-        expect(expects[6].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
-        expect(expects[6].args[1].name).toEqual('bound handlePinnedControlbarChange');
+        component.ngOnDestroy();
+        const nbListernsAfterDestroy_1 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.TIME_CHANGE);
+        expect(nbListernsAfterDestroy_1).toEqual(0);
+        const nbListernsAfterDestroy_2 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.DURATION_CHANGE);
+        expect(nbListernsAfterDestroy_2).toEqual(0);
+        const nbListernsAfterDestroy_3 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.METADATA_LOADED);
+        expect(nbListernsAfterDestroy_3).toEqual(0);
+        const nbListernsAfterDestroy_4 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PLAYER_RESIZED);
+        expect(nbListernsAfterDestroy_4).toEqual(0);
+        const nbListernsAfterDestroy_5 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.INIT);
+        expect(nbListernsAfterDestroy_5).toEqual(0);
+        const nbListernsAfterDestroy_6 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(nbListernsAfterDestroy_6).toEqual(0);
+
     });
 
     it('ngOnInit should initialize the component', () => {
