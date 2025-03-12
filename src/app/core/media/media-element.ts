@@ -64,6 +64,13 @@ export class MediaElement {
     private force = false;
 
     /**
+     * A map to keep the references to the listeners in order to clean them properly when the component is destroyed.
+     */
+    public mapOfListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
+    public mapOfWindowListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
+    public mapOfDocumentListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
+
+    /**
      * Init media element for handle html video element
      * @param mediaElement html video element
      * @param eventEmitter event emitter
@@ -435,20 +442,20 @@ export class MediaElement {
      * In charge to init player events
      */
     private initPlayerEvents() {
-        this.mediaElement.addEventListener('loadstart', this.handleLoadstart);
-        this.mediaElement.addEventListener('playing', this.handlePlay);
-        this.mediaElement.addEventListener('pause', this.handlePause);
-        this.mediaElement.addEventListener('ended', this.handleEnd);
-        this.mediaElement.addEventListener('durationchange', this.handleDurationchange);
-        this.mediaElement.addEventListener('timeupdate', this.handleTimeupdate);
-        this.mediaElement.addEventListener('volumechange', this.handleVolumeChange);
-        this.mediaElement.addEventListener('seeked', this.handleSeeked);
-        window.addEventListener('resize', this.handleResize);
-        window.addEventListener('resizeend', this.handleResize);
-        this.mediaElement.addEventListener('waiting', this.handleWaiting);
-        this.mediaElement.addEventListener('suspend', this.handleWaiting);
-        document.addEventListener('fullscreenchange ', this.handleFullscreenChange);
-        this.eventEmitter.on(PlayerEventType.PLAYER_SIMULATE_PLAY, this.simulatePlay);
+        this.addListener('loadstart', this.handleLoadstart);
+        this.addListener('playing', this.handlePlay);
+        this.addListener('pause', this.handlePause);
+        this.addListener('ended', this.handleEnd);
+        this.addListener('durationchange', this.handleDurationchange);
+        this.addListener('timeupdate', this.handleTimeupdate);
+        this.addListener('volumechange', this.handleVolumeChange);
+        this.addListener('seeked', this.handleSeeked);
+        this.addWindowListener('resize', this.handleResize);
+        this.addWindowListener('resizeend', this.handleResize);
+        this.addListener('waiting', this.handleWaiting);
+        this.addListener('suspend', this.handleWaiting);
+        this.addDocumentListener('fullscreenchange ', this.handleFullscreenChange);
+        this.addListener(PlayerEventType.PLAYER_SIMULATE_PLAY, this.simulatePlay);
     }
 
     /**
@@ -644,5 +651,38 @@ export class MediaElement {
         }
     }
 
+    addListener(playerEventType, func) {
+        let listOfInitFunctions = this.mapOfListeners.get(playerEventType) ?? [];
+        listOfInitFunctions.push(func);
+        this.mapOfListeners.set(playerEventType, listOfInitFunctions);
+        this.eventEmitter.on(playerEventType, func);
+    }
 
+    addWindowListener(playerEventType, func) {
+        let listOfInitFunctions = this.mapOfWindowListeners.get(playerEventType) ?? [];
+        listOfInitFunctions.push(func);
+        this.mapOfWindowListeners.set(playerEventType, listOfInitFunctions);
+        window.addEventListener(playerEventType, func);
+    }
+
+    addDocumentListener(playerEventType, func) {
+        let listOfInitFunctions = this.mapOfDocumentListeners.get(playerEventType) ?? [];
+        listOfInitFunctions.push(func);
+        this.mapOfDocumentListeners.set(playerEventType, listOfInitFunctions);
+        document.addEventListener(playerEventType, func);
+    }
+
+    unsubscribeListerners(): void {
+        if (this.eventEmitter) {
+            this.mapOfListeners.forEach((listOfFunctions, eventType) => {
+                listOfFunctions.forEach((func) => this.eventEmitter.off(eventType, func));
+            });
+        }
+        this.mapOfWindowListeners.forEach((listOfFunctions, eventType) => {
+            listOfFunctions.forEach((func) => window.removeEventListener(eventType, func));
+        });
+        this.mapOfDocumentListeners.forEach((listOfFunctions, eventType) => {
+            listOfFunctions.forEach((func) => document.removeEventListener(eventType, func));
+        });
+    }
 }

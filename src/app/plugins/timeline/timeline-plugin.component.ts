@@ -182,9 +182,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.parseTimelineMetadata();
             this.handleOnDurationChange();
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
     }
 
     /**

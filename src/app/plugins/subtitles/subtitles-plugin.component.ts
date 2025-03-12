@@ -42,9 +42,9 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     init(): void {
         super.init();
         this.handleDisplayState();
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.POSITION_SUBTITLE_CHANGE, this.changeSubtitlePosition);
+        this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(PlayerEventType.POSITION_SUBTITLE_CHANGE, this.changeSubtitlePosition);
     }
     /**
      * switch container class based on width

@@ -83,13 +83,13 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
             this.labelTcIn = LABEL.START_TC;
             this.labelTcOut = LABEL.END_TC;
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         if (this.theme === 'inside') {
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.hideTimeBar);
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
+            this.addListener(PlayerEventType.PLAYER_MOUSE_LEAVE, this.hideTimeBar);
+            this.addListener(PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
+        this.addListener(PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
     }
     /**
      * switch container class based on width

@@ -123,8 +123,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.initStoryboard();
             }
             this.sizeThumbnail = this.getWindowWidth();
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.throttleTimeChange);
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
+            this.addListener(PlayerEventType.TIME_CHANGE, this.throttleTimeChange);
+            this.addListener(PlayerEventType.SEEKED, this.handleSeeked);
         }
         this.handleSeeked();
     }

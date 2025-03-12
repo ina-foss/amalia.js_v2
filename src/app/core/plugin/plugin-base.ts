@@ -1,7 +1,7 @@
 import {MediaPlayerElement} from '../media-player-element';
 import {PluginConfigData} from '../config/model/plugin-config-data';
 import {DefaultLogger} from '../logger/default-logger';
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {PlayerEventType} from '../constant/event-type';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {AmaliaException} from '../exception/amalia-exception';
@@ -15,7 +15,7 @@ import {Utils} from "../utils/utils";
     selector: 'amalia-base-plugin',
     template: '<div></div>',
 })
-export abstract class PluginBase<T> implements OnInit {
+export abstract class PluginBase<T> implements OnInit, OnDestroy {
 
     @Input()
     public playerId = null;
@@ -137,7 +137,7 @@ export abstract class PluginBase<T> implements OnInit {
         }
     }
 
-    addListener = (playerEventType, func) => {
+    addListener(playerEventType, func) {
         let listOfInitFunctions = this.mapOfListeners.get(playerEventType) ?? [];
         listOfInitFunctions.push(func);
         this.mapOfListeners.set(playerEventType, listOfInitFunctions);
@@ -186,4 +186,12 @@ export abstract class PluginBase<T> implements OnInit {
     }
 
     abstract getDefaultConfig(): PluginConfigData<T>;
+
+    ngOnDestroy(): void {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.eventEmitter) {
+            this.mapOfListeners.forEach((listOfFunctions, eventType) => {
+                listOfFunctions.forEach((func) => this.mediaPlayerElement.eventEmitter.off(eventType, func));
+            })
+        }
+    }
 }

@@ -300,17 +300,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
         // Init Events
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
+        this.addListener(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
+        this.addListener(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
+        this.addListener(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
+        this.addListener(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
+        this.addListener(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(PlayerEventType.KEYDOWN, this.handleShortcuts);
+        this.addListener(PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
+        this.addListener(PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
+        this.addListener(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();

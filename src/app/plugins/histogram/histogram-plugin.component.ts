@@ -29,7 +29,7 @@ import {start} from "node:repl";
     styleUrls: ['./histogram-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit, OnDestroy {
+export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit {
     public static PLUGIN_NAME = 'HISTOGRAM';
     public static CURSOR_ELM = 'cursor';
     public static HISTOGRAM_ELM = 'histogram';
@@ -548,13 +548,5 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     public testFunction() {
         this.tcOffset = 2000;
         console.log('testing');
-    }
-
-    ngOnDestroy(): void {
-        if (this.mediaPlayerElement && this.mediaPlayerElement.eventEmitter) {
-            this.mapOfListeners.forEach((listOfFunctions, eventType) => {
-                listOfFunctions.forEach((func) => this.mediaPlayerElement.eventEmitter.off(eventType, func));
-            })
-        }
     }
 }

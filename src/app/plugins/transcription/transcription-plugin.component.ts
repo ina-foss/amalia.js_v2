@@ -92,14 +92,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             if (this.pluginConfiguration.data.autoScroll) {
                 this.autoScroll = true;
-                this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+                this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
         }
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTranscription();
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleOnTimeChange);
+        this.addListener(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(PlayerEventType.SEEKED, this.handleOnTimeChange);
     }
 
     /**

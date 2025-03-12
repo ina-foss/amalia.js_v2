@@ -251,4 +251,8 @@ export class MediaPlayerElement {
 
         return displayState;
     }
+
+    public unsubscribeListerners() {
+        this.mediaPlayer.unsubscribeListerners();
+    }
 }
