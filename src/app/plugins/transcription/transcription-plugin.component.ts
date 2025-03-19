@@ -10,6 +10,7 @@ import {TextUtils} from '../../core/utils/text-utils';
 import {MediaPlayerService} from '../../service/media-player-service';
 import * as _ from 'lodash';
 import {FormatUtils} from '../../core/utils/format-utils';
+import {DefaultLogger} from "../../core/logger/default-logger";
 
 export class TcFormatPipe implements PipeTransform {
     transform(tc: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = null, defaultFps: number = 25) {
@@ -61,6 +62,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private lastSelectedNode = null;
     private prevSearchValue = '';
     public tcFormatPipe = new TcFormatPipe();
+    logger: DefaultLogger;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -174,6 +176,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             this.selectSegment(karaokeTcDelta);
         }
+    }
+
+    /** @internal */
+    public _handleOnTimeChangeForTesting() {
+        this.handleOnTimeChange();
     }
 
     /**
@@ -389,6 +396,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         if (this.metaDataLoaded()) {
             this.parseTranscription();
         }
+    }
+
+    /** @internal */
+    _handleMetadataLoadedForTesting() {
+        this.handleMetadataLoaded();
     }
 
     /**
@@ -663,4 +675,5 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.timeout,
                 this.setDataLoading.bind(this)));
     }
+
 }

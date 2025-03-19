@@ -540,10 +540,4 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const tc = Math.min(tcIn + (event.clientX * duration / width), this.getDuration());
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
-
-
-    public testFunction() {
-        this.tcOffset = 2000;
-        console.log('testing');
-    }
 }
