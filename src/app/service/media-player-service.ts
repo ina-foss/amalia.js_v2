@@ -7,6 +7,7 @@ import {MediaPlayerElement} from '../core/media-player-element';
 @Injectable()
 export class MediaPlayerService {
     public players = new Map<string, MediaPlayerElement>();
+    public amaliaComponentsCount = new Map<string, number>();
 
     /**
      * In charge to crate instance or return existing instance
@@ -21,5 +22,33 @@ export class MediaPlayerService {
             this.players.set(key, new MediaPlayerElement());
         }
         return this.players.get(key);
+    }
+
+    public delete(key: string) {
+        this.players.delete(key);
+    }
+
+    increment(key: string) {
+        let count = this.amaliaComponentsCount.get(key);
+        if (isNaN(count)) {
+            count = 1;
+        } else {
+            count++;
+        }
+        this.amaliaComponentsCount.set(key, count);
+    }
+
+    decrement(key: string) {
+        let count = this.amaliaComponentsCount.get(key);
+        if (isNaN(count)) {
+            count = 0;
+        } else {
+            count = count - 1;
+        }
+        this.amaliaComponentsCount.set(key, count < 0 ? 0 : count);
+        if (count <= 0) {
+            this.delete(key);
+            this.amaliaComponentsCount.delete(key);
+        }
     }
 }

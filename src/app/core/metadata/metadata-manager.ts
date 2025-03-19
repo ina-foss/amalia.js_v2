@@ -69,7 +69,7 @@ export class MetadataManager {
 
     /**
      * Cette fonction charge les métadonnées pour un plugin en particulier.</br>
-     * Elle est utilisée quand le mode dynamicMetadataPreLoad n'est pas activé cad lors du chargement des métadonnées à la demande.
+     * Elle est utilisée quand le mode loadMetadataOnDemand est activé cad lors du chargement des métadonnées à la demande.
      * @param plugin ce paramètre correspond au nom du plugin
      */
     public async loadDataSourceForPlugin(plugin: string): Promise<any> {

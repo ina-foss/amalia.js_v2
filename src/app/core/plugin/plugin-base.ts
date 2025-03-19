@@ -1,7 +1,7 @@
 import {MediaPlayerElement} from '../media-player-element';
 import {PluginConfigData} from '../config/model/plugin-config-data';
 import {DefaultLogger} from '../logger/default-logger';
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {PlayerEventType} from '../constant/event-type';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {AmaliaException} from '../exception/amalia-exception';
@@ -15,7 +15,7 @@ import {Utils} from "../utils/utils";
     selector: 'amalia-base-plugin',
     template: '<div></div>',
 })
-export abstract class PluginBase<T> implements OnInit {
+export abstract class PluginBase<T> implements OnInit, OnDestroy {
 
     @Input()
     public playerId = null;
@@ -28,7 +28,6 @@ export abstract class PluginBase<T> implements OnInit {
     public intervalStep: number = 5;
     public noSpinner: boolean = true;
     public subscriptionToEventsEmitters: Subscription[] = [];
-    public mapOfListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
 
     /**
      * This plugin configuration
@@ -131,17 +130,14 @@ export abstract class PluginBase<T> implements OnInit {
         }
         if (!this.mediaPlayerElement.isMetadataLoaded && this.pluginName !== 'STORYBOARD') {
             //The TIME_BAR and CONTROL_BAR plugins need this
-            this.addListener(PlayerEventType.INIT, this.init.bind(this));
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.INIT, this.init);
         } else {
             this.init();
         }
     }
 
-    addListener = (playerEventType, func) => {
-        let listOfInitFunctions = this.mapOfListeners.get(playerEventType) ?? [];
-        listOfInitFunctions.push(func);
-        this.mapOfListeners.set(playerEventType, listOfInitFunctions);
-        this.mediaPlayerElement.eventEmitter.on(playerEventType, func);
+    addListener(element: any, playerEventType: PlayerEventType, func: any) {
+        Utils.addListener(this, element, playerEventType, func);
     }
 
     protected handleMetadataLoaded() {
@@ -186,4 +182,8 @@ export abstract class PluginBase<T> implements OnInit {
     }
 
     abstract getDefaultConfig(): PluginConfigData<T>;
+
+    ngOnDestroy(): void {
+        Utils.unsubscribeTargetEventListeners(this);
+    }
 }

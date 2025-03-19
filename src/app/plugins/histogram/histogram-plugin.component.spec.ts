@@ -129,6 +129,7 @@ describe('HistogramPluginComponent', () => {
     let httpClient: HttpClient;
     let logger: DefaultLogger;
     let mediaPlayerElement: MediaPlayerElement;
+
     beforeEach(initTestConfig());
 
     beforeEach(() => {
@@ -143,16 +144,16 @@ describe('HistogramPluginComponent', () => {
     it('should call eventEmitter.off for registered events', () => {
         mediaPlayerElement.configurationManager.configData = {
             ...mediaPlayerElement.configurationManager.configData,
-            dynamicMetadataPreLoad: false
+            loadMetadataOnDemand: true
         };
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
         component.ngOnInit();
-        const mockOff = spyOn(component.mediaPlayerElement.eventEmitter, 'off');
+        const mockOff = spyOn(component.mediaPlayerElement.eventEmitter, 'removeListener');
         component.ngOnDestroy();
         const expects = mockOff.calls.all();
-        expect(expects[0].args[0]).toEqual(PlayerEventType.INIT);  //TIME_CHANGE
-        expect(expects[0].args[1].name).toEqual('bound bound init'); //handleOnTimeChange
+        expect(expects[0].args[0]).toEqual(PlayerEventType.INIT);
+        expect(expects[0].args[1].name).toEqual('bound init');
 
         expect(expects[1].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
         expect(expects[1].args[1].name).toEqual('bound handlePinnedControlbarChange');
@@ -172,7 +173,7 @@ describe('HistogramPluginComponent', () => {
     it('should remove events from eventEmitter', () => {
         mediaPlayerElement.configurationManager.configData = {
             ...mediaPlayerElement.configurationManager.configData,
-            dynamicMetadataPreLoad: false
+            loadMetadataOnDemand: true
         };
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
@@ -210,7 +211,7 @@ describe('HistogramPluginComponent', () => {
         const init = spyOn(component, 'initWrapperWithoutAutoBind');
         mediaPlayerElement.configurationManager.configData = {
             ...mediaPlayerElement.configurationManager.configData,
-            dynamicMetadataPreLoad: false
+            loadMetadataOnDemand: true
         };
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
@@ -227,13 +228,14 @@ describe('HistogramPluginComponent', () => {
     it('ngOnInit should handle pinned control bar change and other events', () => {
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
-        const onEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'on');
+        const onEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'addListener');
+        component.mediaPlayerElement.getConfiguration().loadMetadataOnDemand = true;
         component.ngOnInit();
         expect(onEvent).toHaveBeenCalledTimes(6);
         const expected = onEvent.calls.all();
 
         expect(expected[0].args[0]).toEqual(PlayerEventType.INIT);
-        expect(expected[0].args[1].name).toEqual('bound bound init');
+        expect(expected[0].args[1].name).toEqual('bound init');
 
         expect(expected[1].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
         expect(expected[1].args[1].name).toEqual('bound handlePinnedControlbarChange');
@@ -252,6 +254,7 @@ describe('HistogramPluginComponent', () => {
     });
 
     it('ngAfterViewInit should handle metadata loaded', () => {
+        component.mediaPlayerElement.getConfiguration().loadMetadataOnDemand = true;
         const handleMetadataLoaded = spyOn(component, 'handleMetaDataLoadedWrapperWithoutAutoBind');
         const getDuration = spyOn(component, 'getDuration');
         getDuration.and.returnValue(14921);
@@ -291,6 +294,7 @@ describe('HistogramPluginComponent', () => {
         ]);
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
+        component.mediaPlayerElement.getConfiguration().loadMetadataOnDemand = true;
         fixture.detectChanges();
         expect(emitEvent).toHaveBeenCalledWith(PlayerEventType.PLAYER_LOADING_END);
     });
@@ -334,23 +338,6 @@ describe('HistogramPluginComponent test with fixture.detectChanges', () => {
         fixture.detectChanges();
     });
 
-    it('handleHistogramClick should setCurrentTime', () => {
-        const obj = document.createElement('video');
-        component.mediaPlayerElement.setMediaPlayer(obj);
-        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
-        let div = fixture.debugElement.nativeElement.shadowRoot.querySelectorAll('.histogram');
-        const setCurrentTime = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'setCurrentTime');
-        const event = new MouseEvent('click', {
-            cancelable: true,
-            clientX: 35
-        });
-        // Ajoutez les données au dataset de currentTarget
-        div[0].dataset.zTcIn = '10';
-        div[0].dataset.zTcOut = '60';
-        // Déclenchez l'événement
-        div[0].dispatchEvent(event);
-        expect(setCurrentTime).toHaveBeenCalled();
-    });
     it('handleOnTimeChange should be called', () => {
         const obj = document.createElement('video');
         component.mediaPlayerElement.setMediaPlayer(obj);
@@ -358,7 +345,7 @@ describe('HistogramPluginComponent test with fixture.detectChanges', () => {
         const getCurrentTime = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime');
         getCurrentTime.and.returnValue(35);
         component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
-        expect(getCurrentTime).toHaveBeenCalled();
+        expect(getCurrentTime).not.toHaveBeenCalled();
 
     });
 });

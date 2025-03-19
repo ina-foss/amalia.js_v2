@@ -1,7 +1,6 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {StoryboardConfig} from '../../core/config/model/storyboard-config';
 import * as _ from 'lodash';
@@ -109,7 +108,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.throttleTimeChange = _.throttle(this.handleSeeked, StoryboardPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
 
-    @AutoBind
+
     init() {
         super.init();
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
@@ -123,8 +122,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.initStoryboard();
             }
             this.sizeThumbnail = this.getWindowWidth();
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.throttleTimeChange);
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.throttleTimeChange);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeeked);
         }
         this.handleSeeked();
     }
@@ -202,7 +201,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Handle seek
      */
-    @AutoBind
+
     public handleSeeked() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
 
@@ -351,7 +350,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      *
      * if scrolling and active thumbnail is not visible add synchro button
      */
-    @AutoBind
+
     public updateSynchro() {
         let visible = true;
         const activeNode = this.activeThumbnail;
@@ -387,7 +386,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * @param type type interval
      * @param tc time code
      */
-    @AutoBind
+
     public selectedThumbnailSize(type: string, tc: number) {
         this.selectedInterval = [type, tc];
         this.updateThumbnailSize();

@@ -1,8 +1,7 @@
 import {MediaSourceExtension} from '../media-source-extension';
-import Hls, {FragmentLoaderContext, Loader, FragmentLoaderConstructor} from 'hls.js';
+import Hls, {FragmentLoaderConstructor, FragmentLoaderContext, Loader} from 'hls.js';
 import {PlayerConfigData} from '../../config/model/player-config-data';
 import {AmaliaException} from '../../exception/amalia-exception';
-import {AutoBind} from '../../decorator/auto-bind.decorator';
 import {PlayerEventType} from '../../constant/event-type';
 import {EventEmitter} from 'events';
 import {CustomFragmentLoader} from './hls-custom-f-loader';
@@ -146,7 +145,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     /**
      * Invoked when error events
      */
-    @AutoBind
+
     public handleError(event) {
         this.logger.info('Error to load hls file', event);
         if (event !== 'hlsError') {
@@ -161,7 +160,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
      * Invoked on channel change
      * @param event channel
      */
-    @AutoBind
+
     private handleAudioChannelChange(event) {
         this.logger.debug('handleAudioChannelChange', event);
         this.hlsPlayer.config.fragLoadPolicy.default['audioChannel'] = event;
