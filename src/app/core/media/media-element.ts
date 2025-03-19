@@ -1,12 +1,12 @@
 import {LoggerInterface} from '../logger/logger-interface';
 import {EventEmitter} from 'events';
 import {PlayerEventType} from '../constant/event-type';
-import {AutoBind} from '../decorator/auto-bind.decorator';
 import {MediaSourceExtension} from '../mse/media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
 import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
 import {DefaultLogger} from '../logger/default-logger';
+import {Utils} from "../utils/utils";
 
 /**
  * Media element
@@ -62,13 +62,6 @@ export class MediaElement {
      * Force show button play when video is paused (handle playbackrate change by images)
      */
     private force = false;
-
-    /**
-     * A map to keep the references to the listeners in order to clean them properly when the component is destroyed.
-     */
-    public mapOfListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
-    public mapOfWindowListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
-    public mapOfDocumentListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
 
     /**
      * Init media element for handle html video element
@@ -320,7 +313,6 @@ export class MediaElement {
     private setRewindInterval(speed: number, currentTime: number) {
         clearInterval(this.intervalRewind);
         this.intervalRewind = setInterval(() => {
-            // this.mediaElement.playbackRate = 1;
             if (currentTime === 0) {
                 clearInterval(this.intervalRewind);
                 speed = 1;
@@ -442,26 +434,26 @@ export class MediaElement {
      * In charge to init player events
      */
     private initPlayerEvents() {
-        this.addListener('loadstart', this.handleLoadstart);
-        this.addListener('playing', this.handlePlay);
-        this.addListener('pause', this.handlePause);
-        this.addListener('ended', this.handleEnd);
-        this.addListener('durationchange', this.handleDurationchange);
-        this.addListener('timeupdate', this.handleTimeupdate);
-        this.addListener('volumechange', this.handleVolumeChange);
-        this.addListener('seeked', this.handleSeeked);
-        this.addWindowListener('resize', this.handleResize);
-        this.addWindowListener('resizeend', this.handleResize);
-        this.addListener('waiting', this.handleWaiting);
-        this.addListener('suspend', this.handleWaiting);
-        this.addDocumentListener('fullscreenchange ', this.handleFullscreenChange);
-        this.addListener(PlayerEventType.PLAYER_SIMULATE_PLAY, this.simulatePlay);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_LOADSTART, this.handleLoadstart);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_PLAYING, this.handlePlay);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_PAUSE, this.handlePause);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_ENDED, this.handleEnd);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_DURATIONCHANGE, this.handleDurationchange);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_TIMEUPDATE, this.handleTimeupdate);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_VOLUMECHANGE, this.handleVolumeChange);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_SEEKED, this.handleSeeked);
+        this.addListener(window, PlayerEventType.ELEMENT_RESIZE, this.handleResize);
+        this.addListener(window, PlayerEventType.ELEMENT_RESIZEEND, this.handleResize);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_WAITING, this.handleWaiting);
+        this.addListener(this.mediaElement, PlayerEventType.ELEMENT_SUSPEND, this.handleWaiting);
+        this.addListener(document, PlayerEventType.ELEMENT_FULLSCREENCHANGE, this.handleFullscreenChange);
+        this.addListener(this.eventEmitter, PlayerEventType.PLAYER_SIMULATE_PLAY, this.simulatePlay);
     }
 
     /**
      * Simulate play on playback change by images
      */
-    @AutoBind
+
     private simulatePlay(event) {
         this.force = event;
     }
@@ -469,13 +461,13 @@ export class MediaElement {
     /**
      * Invoked when first frame of the media has finished loading.
      */
-    @AutoBind
+
     private handleLoadstart() {
         if (!this.initialized) {
             this.logger.debug('onLoadstart');
             this.eventEmitter.emit(PlayerEventType.INIT);
             this.logger.info(PlayerEventType.INIT);
-            this.mediaElement.removeEventListener('loadstart', this.handleLoadstart);
+            Utils.unsubscribeTargetedElementEventListeners(this, this.mediaElement, PlayerEventType.ELEMENT_LOADSTART);
             this.initialized = true;
         }
     }
@@ -483,7 +475,7 @@ export class MediaElement {
     /**
      * Invoked when Playback has begun.
      */
-    @AutoBind
+
     private handlePlay() {
         this.eventEmitter.emit(PlayerEventType.PLAYING);
     }
@@ -491,7 +483,7 @@ export class MediaElement {
     /**
      * Invoked when Playback has been paused.
      */
-    @AutoBind
+
     private handlePause() {
         this.logger.debug('handlePause');
         this.eventEmitter.emit(PlayerEventType.PAUSED);
@@ -501,7 +493,7 @@ export class MediaElement {
     /**
      * Invoked when playback has stopped because the end of the media was reached.
      */
-    @AutoBind
+
     private handleEnd() {
         this.logger.debug('handleEnd');
         this.eventEmitter.emit(PlayerEventType.ENDED);
@@ -510,7 +502,7 @@ export class MediaElement {
     /**
      * Invoked when the duration attribute has been updated.
      */
-    @AutoBind
+
     private handleDurationchange() {
         this.logger.debug('handleDurationchange');
         this.eventEmitter.emit(PlayerEventType.DURATION_CHANGE);
@@ -519,7 +511,7 @@ export class MediaElement {
     /**
      * The time indicated by the currentTime attribute has been updated.
      */
-    @AutoBind
+
     private handleTimeupdate() {
         this.logger.debug('handleTimeupdate');
         this.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
@@ -528,7 +520,7 @@ export class MediaElement {
     /**
      * Invoked when a seek operation completed.
      */
-    @AutoBind
+
     private handleSeeked() {
         this.logger.debug('handleSeeked');
         this.eventEmitter.emit(PlayerEventType.SEEKED);
@@ -537,7 +529,7 @@ export class MediaElement {
     /**
      * Invoked when the volume has changed.
      */
-    @AutoBind
+
     private handleVolumeChange() {
         this.logger.debug('handleVolumeChange');
         this.eventEmitter.emit(PlayerEventType.VOLUME_CHANGE);
@@ -547,7 +539,7 @@ export class MediaElement {
     /**
      * Invoked when the fullscreen state changed.
      */
-    @AutoBind
+
     private handleFullscreenChange() {
         this.logger.debug('handleFullscreenChange');
         this.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
@@ -557,7 +549,7 @@ export class MediaElement {
     /**
      * Invoked when  The volume has changed.
      */
-    @AutoBind
+
     private handleWaiting() {
         this.logger.debug('handleWaiting');
     }
@@ -565,7 +557,7 @@ export class MediaElement {
     /**
      * Invoked when player resized
      */
-    @AutoBind
+
     private handleResize() {
         this.logger.debug('Player resized !');
         this.eventEmitter.emit(PlayerEventType.PLAYER_RESIZED);
@@ -651,38 +643,12 @@ export class MediaElement {
         }
     }
 
-    addListener(playerEventType, func) {
-        let listOfInitFunctions = this.mapOfListeners.get(playerEventType) ?? [];
-        listOfInitFunctions.push(func);
-        this.mapOfListeners.set(playerEventType, listOfInitFunctions);
-        this.eventEmitter.on(playerEventType, func);
-    }
-
-    addWindowListener(playerEventType, func) {
-        let listOfInitFunctions = this.mapOfWindowListeners.get(playerEventType) ?? [];
-        listOfInitFunctions.push(func);
-        this.mapOfWindowListeners.set(playerEventType, listOfInitFunctions);
-        window.addEventListener(playerEventType, func);
-    }
-
-    addDocumentListener(playerEventType, func) {
-        let listOfInitFunctions = this.mapOfDocumentListeners.get(playerEventType) ?? [];
-        listOfInitFunctions.push(func);
-        this.mapOfDocumentListeners.set(playerEventType, listOfInitFunctions);
-        document.addEventListener(playerEventType, func);
+    addListener(element: any, playerEventType: PlayerEventType, func: any) {
+        Utils.addListener(this, element, playerEventType, func);
     }
 
     unsubscribeListerners(): void {
-        if (this.eventEmitter) {
-            this.mapOfListeners.forEach((listOfFunctions, eventType) => {
-                listOfFunctions.forEach((func) => this.eventEmitter.off(eventType, func));
-            });
-        }
-        this.mapOfWindowListeners.forEach((listOfFunctions, eventType) => {
-            listOfFunctions.forEach((func) => window.removeEventListener(eventType, func));
-        });
-        this.mapOfDocumentListeners.forEach((listOfFunctions, eventType) => {
-            listOfFunctions.forEach((func) => document.removeEventListener(eventType, func));
-        });
+        this.mse && Utils.unsubscribeTargetEventListeners(this.mse);
+        Utils.unsubscribeTargetEventListeners(this);
     }
 }

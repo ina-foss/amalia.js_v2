@@ -99,7 +99,7 @@ export class MediaPlayerElement {
                         this.state = PlayerState.INITIALIZED;
                         // Set logger states
                         const debug = this.preferenceStorageManager.getItem('debug');
-                        const dynamicMetadataPreLoad = this.getConfiguration().dynamicMetadataPreLoad;
+                        const loadMetadataOnDemand = this.getConfiguration().loadMetadataOnDemand;
                         const loggerState = debug === null ? this.getConfiguration().debug : true;
                         const loggerLevel = debug === null ? this.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug);
                         this.logger.state(loggerState);
@@ -108,7 +108,7 @@ export class MediaPlayerElement {
                         this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
                         // Set media source specified by config
                         this.setMediaSource();
-                        if (dynamicMetadataPreLoad) {
+                        if (!loadMetadataOnDemand) {
                             this.loadDataSources().then(() => this.handleMetadataLoaded());
                         }
                         resolve(this.state);
@@ -126,14 +126,14 @@ export class MediaPlayerElement {
      * Return configuration
      */
     public getConfiguration(): ConfigData {
-        return this.configurationManager.getCoreConfig();
+        return this.configurationManager?.getCoreConfig();
     }
 
     /**
      * Return configuration
      */
     public getPluginConfiguration(pluginName: string): PluginConfigData<any> {
-        return this.configurationManager.getPluginConfiguration(pluginName);
+        return this.configurationManager?.getPluginConfiguration(pluginName);
     }
 
     /**

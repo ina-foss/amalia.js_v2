@@ -3,7 +3,8 @@ import {
     ElementRef,
     EventEmitter,
     HostListener,
-    Input, OnDestroy,
+    Input,
+    OnDestroy,
     OnInit,
     Output,
     ViewChild,
@@ -23,7 +24,6 @@ import {Metadata} from '@ina/amalia-model';
 import {environment} from '../../environments/environment';
 import {PlayerState} from '../core/constant/player-state';
 import {PlayerEventType} from '../core/constant/event-type';
-import {AutoBind} from '../core/decorator/auto-bind.decorator';
 import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 import {BaseUtils} from '../core/utils/base-utils';
 import {MediaPlayerService} from '../service/media-player-service';
@@ -33,6 +33,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import * as _ from 'lodash';
 import {ControlBarPluginComponent} from '../plugins/control-bar/control-bar-plugin.component';
 import {LoggerLevel} from '../core/logger/logger-level';
+import {Utils} from "../core/utils/utils";
 
 @Component({
     selector: 'amalia-player',
@@ -248,12 +249,6 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         'amalia-primary-color': false,
         ' amalia-secondary-color': false
     };
-    /**
-     * A map to keep the references to the listeners in order to clean them properly when the component is destroyed.
-     */
-    public mapOfListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
-    public mapOfDocumentListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = new Map();
-
 
     constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, sanitizer: DomSanitizer) {
         this.httpClient = httpClient;
@@ -269,6 +264,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     public ngOnInit() {
         // Init media player
         this.mediaPlayerElement = this.playerService.get(this.playerId);
+        this.playerService.increment(this.playerId);
         this.state = PlayerState.CREATED;
         this.inLoading = true;
         // init default manager (converter, metadata loader)
@@ -296,7 +292,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * update mediaPlayerWidth on window resize
      */
-    @AutoBind
+
     public handleWindowResize() {
         if (this.mediaContainer) {
             const mediaContainer = this.mediaContainer.nativeElement;
@@ -312,7 +308,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param event mouse event
      * @return return false for disable browser context menu
      */
-    @AutoBind
+
     public onContextMenu(event: MouseEvent) {
         this.contextMenuState = true;
         const defaultMouseMargin = 15;
@@ -395,44 +391,36 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * In charge to bin events
      */
     private bindEvents() {
-        this.addListener(PlayerEventType.SEEKED, this.handleSeeked);
-        this.addListener(PlayerEventType.SEEKING, this.handleSeeking);
-        this.addListener(PlayerEventType.PLAYING, this.handlePlay);
-        this.addListener(PlayerEventType.KEYDOWN_HISTOGRAM, this.handleKeyDownEvent);
-        this.addListener(PlayerEventType.KEYUP_HISTOGRAM, this.emitKeyUpEvent);
-        this.addListener(PlayerEventType.ERROR, this.handleError);
-        this.addListener(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
-        this.addListener(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
-        this.addListener(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
-        this.addListener(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-        this.addListener(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
-        this.addListener(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
-        this.addListener(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
-        this.addListener(PlayerEventType.PLAYER_LOADING_BEGIN, this.handleLoading);
-        this.addListener(PlayerEventType.PLAYER_LOADING_END, this.handleLoadingEnd);
-        this.addListener('contextmenu', this.onContextMenu);
-        document.addEventListener('click', this.hideControlsMenuOnClickDocument);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeeked);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYING, this.handlePlay);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYDOWN_HISTOGRAM, this.handleKeyDownEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYUP_HISTOGRAM, this.emitKeyUpEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ERROR, this.handleError);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_BEGIN, this.handleLoading);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_END, this.handleLoadingEnd);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ELEMENT_CONTEXT_MENU, this.onContextMenu);
+        this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
 
     }
 
-    addDocumentListener(playerEventType, func) {
-        let listOfInitFunctions = this.mapOfDocumentListeners.get(playerEventType) ?? [];
-        listOfInitFunctions.push(func);
-        this.mapOfDocumentListeners.set(playerEventType, listOfInitFunctions);
-        document.addEventListener(playerEventType, func);
-    }
-
-    @AutoBind
     public handleLoading() {
         this.inLoading = true;
     }
 
-    @AutoBind
+
     public handleLoadingEnd() {
         this.inLoading = false;
     }
 
-    @AutoBind
+
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
         this.pinned = false;
@@ -443,7 +431,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         });
     }
 
-    @AutoBind
+
     public handlePinnedSliderChange(event) {
         this.pinned = event;
         this.pinnedControlbar = false;
@@ -454,7 +442,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         });
     }
 
-    @AutoBind
+
     private handleSeeking(tc: number) {
         this.logger.debug('handleSeeking');
         if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1)) {
@@ -464,7 +452,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         }
     }
 
-    @AutoBind
+
     private handleSeeked() {
         if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1 && this.enableThumbnail) {
             const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
@@ -474,7 +462,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
 
     }
 
-    @AutoBind
+
     private handlePlay() {
         if (this.enableThumbnail) {
             this.enablePreviewThumbnail = false;
@@ -486,7 +474,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * Invoked when error event
      * @param event error type
      */
-    @AutoBind
+
     private handleError(event: any) {
         this.inError = true;
         this.errorMessage = event;
@@ -497,7 +485,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * Invoked on aspect ratio change
      * @param event aspect ratio
      */
-    @AutoBind
+
     private handleAspectRatioChange(event) {
         this.logger.debug('handleAspectRatioChange', event);
         this.aspectRatio = event;
@@ -601,7 +589,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * Invoked on fullscreen change
      */
-    @AutoBind
+
     public handleFullScreenChange() {
         const isFullscreen = document.fullscreenElement !== null;
         if (!isFullscreen) {
@@ -634,7 +622,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.containerSizeBeforeFullScreen = undefined;
     }
 
-    @AutoBind
+
     public handleKeyDownEvent(event) {
         this.playerHover = true;
         this.emitKeyDownEvent(event);
@@ -643,7 +631,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * invoked on keydown
      */
-    @AutoBind
+
     public emitKeyDownEvent($event) {
         this.focus();
         let i;
@@ -670,20 +658,20 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         }
     }
 
-    @AutoBind
+
     public emitKeyUpEvent() {
         this.listKeys = [];
         this.focus();
     }
 
-    @AutoBind
+
     public hideControlsMenuOnClickDocument($event) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.DOCUMENT_CLICK, $event);
     }
 
     // hide controlBar after 3 seconds of mouse inactive
     public startTimer() {
-        this.chrono = setTimeout(this.hideControls, 1800);
+        this.chrono = setTimeout(this.hideControls.bind(this), 1800);
     }
 
     // reset 3 seconds mouse inactive and start timer again
@@ -694,12 +682,12 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     }
 
     // hide controls if mouse in inactive since 3 seconds
-    @AutoBind
+
     public hideControls() {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
     }
 
-    @AutoBind
+
     public scrollPlaybackRateImages($event) {
         let rewinding = false;
         let playbackrate = $event;
@@ -719,7 +707,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         }, ms);
     }
 
-    @AutoBind
+
     public clearInterval() {
         if (this.intervalImages) {
             clearInterval(this.intervalImages);
@@ -731,7 +719,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         }
     }
 
-    @AutoBind
+
     public displayImages(framesPerSecond, ms, rewinding) {
         const frames = framesPerSecond / (1000 / ms);
         if (rewinding === false) {
@@ -761,7 +749,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         });
     }
 
-    @AutoBind
+
     public showImage(tc) {
         let prevImg;
         return new Promise(resolve => {
@@ -785,23 +773,14 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.mediaPlayerElement.getMediaPlayer().playPause();
     }
 
-    addListener(playerEventType, func) {
-        let listOfInitFunctions = this.mapOfListeners.get(playerEventType) ?? [];
-        listOfInitFunctions.push(func);
-        this.mapOfListeners.set(playerEventType, listOfInitFunctions);
-        this.mediaPlayerElement.eventEmitter.on(playerEventType, func);
+    addListener(element: any, playerEventType: PlayerEventType, func: any) {
+        Utils.addListener(this, element, playerEventType, func);
     }
 
     ngOnDestroy(): void {
-        if (this.mediaPlayerElement && this.mediaPlayerElement.eventEmitter) {
-            this.mapOfListeners.forEach((listOfFunctions, eventType) => {
-                listOfFunctions.forEach((func) => this.mediaPlayerElement.eventEmitter.off(eventType, func));
-            });
-        }
-        this.mapOfDocumentListeners.forEach((listOfFunctions, eventType) => {
-            listOfFunctions.forEach((func) => document.removeEventListener(eventType, func));
-        });
+        Utils.unsubscribeTargetEventListeners(this);
         this.mediaPlayerElement.unsubscribeListerners();
+        this.playerService.decrement(this.playerId);
     }
 
     /** @internal */
@@ -823,4 +802,5 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     public _handlePlayForTesting() {
         this.handlePlay();
     }
+
 }

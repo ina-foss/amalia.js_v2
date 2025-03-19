@@ -7,9 +7,9 @@ import {
     OnInit,
     signal,
     ViewChild,
-    ViewEncapsulation, WritableSignal
+    ViewEncapsulation,
+    WritableSignal
 } from '@angular/core';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {TimelineConfig} from '../../core/config/model/timeline-config';
@@ -107,7 +107,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
             this.init();
             this.handleMetadataLoaded();
             this.handleOnDurationChange();
@@ -164,7 +164,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return this.colors[this.lastSelectedColorIdx];
     }
 
-    @AutoBind
+
     init() {
         super.init();
         if (this.pluginConfiguration.data) {
@@ -175,16 +175,16 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         }
         this.initFocusResizable(this.focusContainer.nativeElement);
-        this.listOfBlocksContainer.nativeElement.addEventListener('mousedown', this.handleClickToDrawRect);
-        this.listOfBlocksContainer.nativeElement.addEventListener('mouseup', this.handleClickToDrawRect);
-        this.listOfBlocksContainer.nativeElement.addEventListener('mousemove', this.handleMouseMoveToDrawRect);
+        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_DOWN, this.handleClickToDrawRect);
+        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_UP, this.handleClickToDrawRect);
+        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_MOVE, this.handleMouseMoveToDrawRect);
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTimelineMetadata();
             this.handleOnDurationChange();
         }
-        this.addListener(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.addListener(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
     }
 
     /**
@@ -427,7 +427,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * Invoked time change event for :
      * - update progress bar
      */
-    @AutoBind
+
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.refreshTimeCursor();
@@ -436,7 +436,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * Invoked on duration change
      */
-    @AutoBind
+
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
@@ -448,7 +448,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * In charge to change focus container
      */
-    @AutoBind
+
     public handleZoomRangeChange() {
         const focusWidth = this.focusContainer.nativeElement.offsetWidth;
         const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
@@ -487,7 +487,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * Called when metadata loaded
      */
-    @AutoBind
+
     protected handleMetadataLoaded() {
         this.parseTimelineMetadata();
     }
@@ -544,7 +544,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.selectedBlock = null;
     }
 
-    @AutoBind
+
     handleClickToDrawRect(event) {
         if (this.enableZoom) {
             this.isDrawingRectangle = (event.type === 'mousedown');
@@ -606,7 +606,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * handle mouse to draw
      * @param event mouse event
      */
-    @AutoBind
+
     handleMouseMoveToDrawRect(event: MouseEvent) {
         if (this.isDrawingRectangle) {
             this.updateMouseEvent(event);

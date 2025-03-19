@@ -1,7 +1,6 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {AfterViewInit, Component, ElementRef, PipeTransform, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {TranscriptionConfig} from '../../core/config/model/transcription-config';
 import {Utils} from '../../core/utils/utils';
@@ -74,13 +73,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
             this.init();
             this.handleMetadataLoaded();
         }
     }
 
-    @AutoBind
+
     init() {
         super.init();
         if (this.pluginConfiguration.data) {
@@ -92,14 +91,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             if (this.pluginConfiguration.data.autoScroll) {
                 this.autoScroll = true;
-                this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+                this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
             }
         }
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTranscription();
         }
-        this.addListener(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.addListener(PlayerEventType.SEEKED, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleOnTimeChange);
     }
 
     /**
@@ -162,7 +161,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * Invoked time change event for :
      * - update current time
      */
-    @AutoBind
+
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.currentTime && this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
@@ -180,7 +179,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Handle change text on searching input
      */
-    @AutoBind
+
     public handleChangeInput(value) {
         if (value.length > 0) {
             this.typing = true;
@@ -385,7 +384,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Invoked on metadata loaded
      */
-    @AutoBind
+
     protected handleMetadataLoaded() {
         if (this.metaDataLoaded()) {
             this.parseTranscription();
@@ -422,7 +421,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Search word and scroll to first result
      */
-    @AutoBind
+
     public searchWord(searchText: string) {
         this.listOfSearchedNodes = new Array<HTMLElement>();
         if (searchText !== '' && searchText !== this.pluginConfiguration.data.label) {
@@ -451,7 +450,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Scroll to next or previous searched word
      */
-    @AutoBind
+
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
             if (this.listOfSearchedNodes[this.searchedWordIndex]) {
@@ -482,7 +481,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Invocked on click SYNCHRO button
      */
-    @AutoBind
+
     public scrollToSelectedSegment() {
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
                 .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
@@ -497,7 +496,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * clear seach list onclick
      */
-    @AutoBind
+
     public clearSearchList() {
         this.autoScroll = true;
         this.index = 0;
@@ -556,7 +555,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * if scrolling and active segment is not visible add synchro button
      */
-    @AutoBind
+
     public updateSynchro() {
         let visible;
         const selector = '.' + TranscriptionPluginComponent.SELECTOR_SEGMENT + ' > .' + TranscriptionPluginComponent.SELECTOR_SUBSEGMENT

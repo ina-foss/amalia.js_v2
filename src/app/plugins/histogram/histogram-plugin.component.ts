@@ -3,13 +3,12 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
     Component,
-    ElementRef, OnDestroy,
+    ElementRef,
     OnInit,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {BaseUtils} from '../../core/utils/base-utils';
 import {HistogramConfig} from '../../core/config/model/histogram-config';
@@ -20,8 +19,6 @@ import {HttpClient} from '@angular/common/http';
 import {AmaliaException} from '../../core/exception/amalia-exception';
 import interact from 'interactjs';
 import {DefaultLogger} from "../../core/logger/default-logger";
-import index from "eslint-plugin-jsdoc";
-import {start} from "node:repl";
 
 @Component({
     selector: 'amalia-histogram',
@@ -136,11 +133,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.logger = new DefaultLogger(`${this.pluginName}`);
         try {
             super.ngOnInit();
-            this.addListener(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
             this.initWrapperWithoutAutoBind();
         }
     }
@@ -150,22 +147,22 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     ngAfterViewInit(): void {
-        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && !this.mediaPlayerElement.getConfiguration().dynamicMetadataPreLoad) {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
             this.handleMetaDataLoadedWrapperWithoutAutoBind();
             this.cd.detectChanges();
         }
     }
 
-    @AutoBind
+
     init() {
         super.init();
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_BEGIN);
         this.handleDisplayState();
         this.withFocus = this.pluginConfiguration.data.withFocus;
-        this.addListener(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.addListener(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.addListener(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.addListener(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
     }
 
     /**
@@ -179,13 +176,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         return this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 
-    @AutoBind
+
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
         this.pinned = false;
     }
 
-    @AutoBind
+
     public handlePinnedSliderChange(event) {
         this.pinned = event;
         this.pinnedControlbar = false;
@@ -202,7 +199,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param zoom true for enable zoom container
      * @param label histogram label
      */
-    public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoom: boolean, label: string):
+    public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, zoom: boolean, label: string, mirror = false):
             {
                 paths: [string, string],
                 nbBins: number,
@@ -284,8 +281,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             let label = '';
             histograms.forEach((hData) => {
                 label = labels && labels.hasOwnProperty(index) ? labels[index] : '';
-                const histogram = this.drawHistogram(hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
-                        zoomMetadataIdx.includes(index), label);
+                const histogram = this.drawHistogram(hData.posbins, hData.negbins, hData.posmax, hData.negmax,
+                        zoomMetadataIdx.includes(index), label, this.pluginConfiguration.data.enableMirror);
                 if (histogram) {
                     this.listOfHistograms.push(histogram);
                     index++;
@@ -297,7 +294,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * Invoked time change event
      */
-    @AutoBind
+
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.focusMaxOffset === null && this.pluginConfiguration.data.focusMinOffset === null) {
@@ -311,7 +308,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * Invoked on duration change
      */
-    @AutoBind
+
     private handleOnDurationChange() {
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.handleMetadataLoaded();
@@ -322,7 +319,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * Invoked on metadata loaded
      */
-    @AutoBind
+
     handleMetadataLoaded() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const zoomMetadataIdx = this.pluginConfiguration.data.zoomMetadataIdx;
@@ -353,7 +350,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * switch container class based on width
      */
-    @AutoBind
+
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
     }
@@ -361,7 +358,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * update all scales on window resize
      */
-    @AutoBind
+
     public handleWindowResize() {
         this.handleDisplayState();
     }
@@ -369,7 +366,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * slider events
      */
-    @AutoBind
+
     public initSliderEvents() {
         const self = this;
         const container = self.sliderElement.nativeElement;
@@ -544,7 +541,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 
-    @AutoBind
+
     public testFunction() {
         this.tcOffset = 2000;
         console.log('testing');

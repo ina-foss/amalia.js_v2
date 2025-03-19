@@ -1,10 +1,14 @@
-import {AutoBind} from "../decorator/auto-bind.decorator";
 import {interval, of, Subscription, switchMap, takeUntil, takeWhile, timer} from "rxjs";
+import {PlayerEventType} from "../constant/event-type";
+import {EventEmitter} from "events";
 
 interface FnParam {
     fn: any;
     param: any;
 }
+
+
+type MapOfRegisteredListenersPerElement = Map<any, Map<PlayerEventType, Array<(...args: any[]) => void>>>;
 
 export class Utils {
 
@@ -13,6 +17,8 @@ export class Utils {
     private static isFnParam(obj: any): obj is FnParam {
         return obj && typeof obj === 'object' && 'fn' in obj && 'param' in obj;
     }
+
+    public static mapOfRegisteredListenersPerTarget: Map<any, MapOfRegisteredListenersPerElement> = new Map();
 
     private static callFunctionWithParam(functionWithParam: any) {
         if (functionWithParam) {
@@ -24,7 +30,7 @@ export class Utils {
         }
     }
 
-    @AutoBind
+
     public static waitFor(conditionFn: any, nextActionFn?: any, completeActionFn?: any, intervalStep?: number, timeout?: number, setDataLoadingFn?: any): Subscription {
         setDataLoadingFn && setDataLoadingFn(true);
         const _timeout = timeout ?? 30000;
@@ -42,7 +48,61 @@ export class Utils {
         });
     }
 
+    public static addListener(target: any, elementOnTarget: any, playerEventType: PlayerEventType, funcOnTarget: any) {
+        //On récupère la map des event listeners propres à target qui est une instance d'une classe ou d'un composant
+        const mapOfListenersPerElement: MapOfRegisteredListenersPerElement = Utils.mapOfRegisteredListenersPerTarget.get(target) ?? new Map();
+        //On récupère ensuite la map des event listeners propres à un élément (html element, document, window) ou à un eventEmitter
+        const mapOfListeners: Map<PlayerEventType, Array<(...args: any[]) => void>> = mapOfListenersPerElement.get(elementOnTarget) ?? new Map();
+        //On récupère la liste des fonctions cad les event listeners
+        let listOfInitFunctions = mapOfListeners.get(playerEventType) ?? [];
+        const boundFuncOnTarget = funcOnTarget.bind(target);
+        listOfInitFunctions.push(boundFuncOnTarget);
+        mapOfListeners.set(playerEventType, listOfInitFunctions);
+        mapOfListenersPerElement.set(elementOnTarget, mapOfListeners);
+        Utils.mapOfRegisteredListenersPerTarget.set(target, mapOfListenersPerElement);
+        if (elementOnTarget instanceof EventEmitter) {
+            elementOnTarget.addListener(playerEventType, boundFuncOnTarget);
+        } else {
+            elementOnTarget.addEventListener(playerEventType, boundFuncOnTarget);
+        }
+    }
 
+    public static unsubscribeTargetEventListeners(target) {
+        const mapOfListenersPerElement: MapOfRegisteredListenersPerElement = Utils.mapOfRegisteredListenersPerTarget.get(target);
+        mapOfListenersPerElement && mapOfListenersPerElement.forEach((mapOfListeners, elementOnTarget) => {
+            mapOfListeners.forEach((listOfFunctions, eventType) => {
+                listOfFunctions.forEach((func) => {
+                    if (elementOnTarget instanceof EventEmitter) {
+                        elementOnTarget.removeListener(eventType, func);
+                    } else {
+                        elementOnTarget.removeEventListener(eventType, func);
+                    }
+                });
+            });
+            mapOfListeners.clear();
+        });
+        Utils.mapOfRegisteredListenersPerTarget.delete(target);
+    }
+
+    public static unsubscribeTargetedElementEventListeners(target: any, elementOnTarget: any, playerEventType: PlayerEventType) {
+        const mapOfListenersPerElement: MapOfRegisteredListenersPerElement = Utils.mapOfRegisteredListenersPerTarget.get(target);
+        if (mapOfListenersPerElement) {
+            const mapOfListeners = mapOfListenersPerElement.get(elementOnTarget);
+            if (mapOfListeners) {
+                const listOfFunctions = mapOfListeners.get(playerEventType);
+                if (listOfFunctions) {
+                    listOfFunctions.forEach(func => {
+                        if (elementOnTarget instanceof EventEmitter) {
+                            elementOnTarget.removeListener(playerEventType, func);
+                        } else {
+                            elementOnTarget.removeEventListener(playerEventType, func);
+                        }
+                    });
+                    mapOfListeners.delete(playerEventType);
+                }
+            }
+        }
+    }
 }
 
 

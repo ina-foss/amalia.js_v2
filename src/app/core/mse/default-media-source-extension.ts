@@ -1,9 +1,9 @@
 import {MediaSourceExtension} from './media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
-import {AutoBind} from '../decorator/auto-bind.decorator';
 import {PlayerEventType} from '../constant/event-type';
 import {EventEmitter} from 'events';
 import {LoggerInterface} from '../logger/logger-interface';
+import {Utils} from "../utils/utils";
 
 /**
  * In  charge to handle default media sources (Supported by browsers)
@@ -42,7 +42,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
                 this.mediaElement.setAttribute('crossorigin', config.crossOrigin);
             }
             // Error handle
-            this.mainSource.addEventListener('error', this.handleError);
+            Utils.addListener(this, this.mainSource, PlayerEventType.ERROR, this.handleError);
             this.mediaElement.append(this.mainSource);
             if (config.autoplay) {
                 this.mediaElement.play();
@@ -71,22 +71,25 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
     destroy(): void {
         try {
             this.mediaElement
-                .querySelectorAll('source')
-                .forEach(e => e.parentNode.removeChild(e));
+                    .querySelectorAll('source')
+                    .forEach(e => e.parentNode.removeChild(e));
+            Utils.unsubscribeTargetEventListeners(this);
             this.mainSource = document.createElement('source');
         } catch (e) {
             this.logger.warn('Destroy old source');
         }
     }
 
-    @AutoBind
+
     handleError(event): void {
         this.logger.error('Error to load source', event);
         this.eventEmitter.emit(PlayerEventType.ERROR, 'Votre média n\'a pas pu être chargé dans le player');
     }
+
     getConfig() {
         return this.config;
     }
+
     setMaxBufferLengthConfig() {
         return null;
     }

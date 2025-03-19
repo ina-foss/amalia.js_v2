@@ -1,6 +1,8 @@
 import {LoggerInterface} from '../logger/logger-interface';
 import {ConfigurationManager} from '../config/configuration-manager';
 import {Shortcut} from './shortcut';
+import {PlayerEventType} from "../constant/event-type";
+import {Utils} from "../utils/utils";
 
 
 /**
@@ -58,14 +60,14 @@ export class ShortcutManager {
      * Enable listener
      */
     public enableListener() {
-        document.addEventListener('keydown', this.handleEvent);
+        Utils.addListener(this, document, PlayerEventType.ELEMENT_KEYDOWN, this.handleEvent);
     }
 
     /**
      * Disable listener
      */
     public disableListener() {
-        document.removeEventListener('keydown', this.handleEvent);
+        Utils.unsubscribeTargetedElementEventListeners(this, document, PlayerEventType.ELEMENT_KEYDOWN);
     }
 
     /**
@@ -85,10 +87,10 @@ export class ShortcutManager {
         try {
             const definition = this.parseShortcut(shortcut);
             const modifiersMatch =
-                definition.alt === event.altKey &&
-                definition.ctrl === event.ctrlKey &&
-                definition.shift === event.shiftKey &&
-                definition.meta === event.metaKey;
+                    definition.alt === event.altKey &&
+                    definition.ctrl === event.ctrlKey &&
+                    definition.shift === event.shiftKey &&
+                    definition.meta === event.metaKey;
             if (!modifiersMatch) {
                 return false;
             }
