@@ -31,7 +31,7 @@ export class MediaPlayerElement {
     public width: number;
 
     constructor() {
-        this.logger = new DefaultLogger('root-player');
+        this.logger = new DefaultLogger('root-player' + Date.now());
         this._preferenceStorageManager = new PreferenceStorageManager();
         this._eventEmitter = new EventEmitter();
     }
@@ -140,6 +140,7 @@ export class MediaPlayerElement {
      * Set media element
      */
     public setMediaPlayer(mediaPlayer: HTMLVideoElement): void {
+        this.mediaPlayer && this.mediaPlayer.unsubscribeListeners();
         this.mediaPlayer = new MediaElement(mediaPlayer, this._eventEmitter);
         this.logger.debug('set media player', mediaPlayer);
     }
@@ -252,7 +253,7 @@ export class MediaPlayerElement {
         return displayState;
     }
 
-    public unsubscribeListerners() {
-        this.mediaPlayer.unsubscribeListerners();
+    public unsubscribeListeners() {
+        this.mediaPlayer.unsubscribeListeners();
     }
 }

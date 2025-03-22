@@ -24,7 +24,8 @@ export class MediaPlayerService {
         return this.players.get(key);
     }
 
-    public delete(key: string) {
+    private delete(key: string) {
+        this.players.get(key)?.unsubscribeListeners();
         this.players.delete(key);
     }
 
