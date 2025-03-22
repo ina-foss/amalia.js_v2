@@ -2,7 +2,6 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranscriptionPluginComponent} from './transcription-plugin.component';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ElementRef} from '@angular/core';
-import {HistogramPluginComponent} from "../histogram/histogram-plugin.component";
 import {MediaPlayerElement} from "../../core/media-player-element";
 import {DefaultLogger} from "../../core/logger/default-logger";
 import {HttpClient} from "@angular/common/http";

@@ -778,8 +778,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        Utils.unsubscribeTargetEventListeners(this);
-        this.mediaPlayerElement.unsubscribeListerners();
+        Utils.unsubscribeTargetedElementEventListeners(this);
         this.playerService.decrement(this.playerId);
     }
 
