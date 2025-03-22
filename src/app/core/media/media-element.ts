@@ -71,7 +71,7 @@ export class MediaElement {
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
-        this.logger = new DefaultLogger('media-element');
+        this.logger = new DefaultLogger('media-element' + Date.now());
     }
 
     /**
@@ -647,8 +647,8 @@ export class MediaElement {
         Utils.addListener(this, element, playerEventType, func);
     }
 
-    unsubscribeListerners(): void {
-        this.mse && Utils.unsubscribeTargetEventListeners(this.mse);
-        Utils.unsubscribeTargetEventListeners(this);
+    unsubscribeListeners(): void {
+        this.mse && Utils.unsubscribeTargetedElementEventListeners(this.mse);
+        Utils.unsubscribeTargetedElementEventListeners(this);
     }
 }

@@ -73,7 +73,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
             this.mediaElement
                     .querySelectorAll('source')
                     .forEach(e => e.parentNode.removeChild(e));
-            Utils.unsubscribeTargetEventListeners(this);
+            Utils.unsubscribeTargetedElementEventListeners(this, this.mainSource);
             this.mainSource = document.createElement('source');
         } catch (e) {
             this.logger.warn('Destroy old source');

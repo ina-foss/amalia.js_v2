@@ -10,6 +10,7 @@ interface FnParam {
 
 type MapOfRegisteredListenersPerElement = Map<any, Map<PlayerEventType, Array<(...args: any[]) => void>>>;
 
+
 export class Utils {
 
     public static isArrayLike = (<T>(x: any): x is ArrayLike<T> => x && typeof x.length === 'number' && typeof x !== 'function');
@@ -67,9 +68,9 @@ export class Utils {
         }
     }
 
-    public static unsubscribeTargetEventListeners(target) {
+    private static unsubscribeTargetEventListeners(target) {
         const mapOfListenersPerElement: MapOfRegisteredListenersPerElement = Utils.mapOfRegisteredListenersPerTarget.get(target);
-        mapOfListenersPerElement && mapOfListenersPerElement.forEach((mapOfListeners, elementOnTarget) => {
+        mapOfListenersPerElement && mapOfListenersPerElement.forEach((mapOfListeners, elementOnTarget, map) => {
             mapOfListeners.forEach((listOfFunctions, eventType) => {
                 listOfFunctions.forEach((func) => {
                     if (elementOnTarget instanceof EventEmitter) {
@@ -80,29 +81,57 @@ export class Utils {
                 });
             });
             mapOfListeners.clear();
+            map.delete(elementOnTarget);
         });
         Utils.mapOfRegisteredListenersPerTarget.delete(target);
     }
 
-    public static unsubscribeTargetedElementEventListeners(target: any, elementOnTarget: any, playerEventType: PlayerEventType) {
+    private static unsubscribeEventTypeFromElementOnTarget(mapOfListeners: Map<PlayerEventType, Array<(...args: any[]) => void>>, playerEventType: PlayerEventType, elementOnTarget: any) {
+        const listOfFunctions = mapOfListeners.get(playerEventType);
+        if (listOfFunctions) {
+            listOfFunctions.forEach(func => {
+                if (elementOnTarget instanceof EventEmitter) {
+                    elementOnTarget.removeListener(playerEventType, func);
+                } else {
+                    elementOnTarget.removeEventListener(playerEventType, func);
+                }
+            });
+            mapOfListeners.delete(playerEventType);
+        }
+    }
+
+    private static unsubscribeAllEventTypesFromElementOnTarget = (mapOfListeners: Map<PlayerEventType, Array<(...args: any[]) => void>>, elementOnTarget: any) => {
+        mapOfListeners.forEach((listOfFunctions, eventType) => {
+            listOfFunctions.forEach((func) => {
+                if (elementOnTarget instanceof EventEmitter) {
+                    elementOnTarget.removeListener(eventType, func);
+                } else {
+                    elementOnTarget.removeEventListener(eventType, func);
+                }
+            });
+        });
+        mapOfListeners.clear();
+    }
+
+    public static unsubscribeTargetedElementEventListeners(target: any, elementOnTarget?: any, playerEventType?: PlayerEventType) {
         const mapOfListenersPerElement: MapOfRegisteredListenersPerElement = Utils.mapOfRegisteredListenersPerTarget.get(target);
         if (mapOfListenersPerElement) {
-            const mapOfListeners = mapOfListenersPerElement.get(elementOnTarget);
-            if (mapOfListeners) {
-                const listOfFunctions = mapOfListeners.get(playerEventType);
-                if (listOfFunctions) {
-                    listOfFunctions.forEach(func => {
-                        if (elementOnTarget instanceof EventEmitter) {
-                            elementOnTarget.removeListener(playerEventType, func);
-                        } else {
-                            elementOnTarget.removeEventListener(playerEventType, func);
-                        }
-                    });
-                    mapOfListeners.delete(playerEventType);
+            if (elementOnTarget) {
+                const mapOfListeners = mapOfListenersPerElement.get(elementOnTarget);
+                if (mapOfListeners) {
+                    if (playerEventType) {
+                        Utils.unsubscribeEventTypeFromElementOnTarget(mapOfListeners, playerEventType, elementOnTarget);
+                    } else {
+                        Utils.unsubscribeAllEventTypesFromElementOnTarget(mapOfListeners, elementOnTarget);
+                    }
                 }
+            } else {
+                Utils.unsubscribeTargetEventListeners(target);
             }
         }
     }
+
+
 }
 
 

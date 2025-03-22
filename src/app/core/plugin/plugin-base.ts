@@ -184,6 +184,6 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     abstract getDefaultConfig(): PluginConfigData<T>;
 
     ngOnDestroy(): void {
-        Utils.unsubscribeTargetEventListeners(this);
+        Utils.unsubscribeTargetedElementEventListeners(this);
     }
 }
