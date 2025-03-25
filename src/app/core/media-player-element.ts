@@ -91,6 +91,7 @@ export class MediaPlayerElement {
         // Init configuration manager
         this.configurationManager = new ConfigurationManager(configLoader, this.logger);
         // Init metadata manager
+        this.isMetadataLoaded = false;
         this._metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
         // Init player
         return await new Promise<PlayerState>((resolve, reject) => {

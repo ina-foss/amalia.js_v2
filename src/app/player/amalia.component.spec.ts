@@ -129,6 +129,13 @@ describe('AmaliaComponent', () => {
         expect(component.inError).toBeTrue();
         expect(component.errorMessage).toEqual(errorEvent);
     });
+    it('should handle erase error event', () => {
+        fixture.detectChanges();
+        const errorEvent = {message: 'Error Erased'};
+        component._handleEraseErrorForTesting(errorEvent);
+        expect(component.inError).toBeFalse();
+        expect(component.errorMessage).toEqual(errorEvent);
+    });
 
     it('should set preview thumbnail', () => {
         fixture.detectChanges();
