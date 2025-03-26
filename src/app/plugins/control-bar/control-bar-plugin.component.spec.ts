@@ -1,4 +1,4 @@
-import {ComponentFixture, fakeAsync, flush, flushMicrotasks, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ControlBarPluginComponent} from './control-bar-plugin.component';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ThumbnailService} from '../../service/thumbnail-service';
