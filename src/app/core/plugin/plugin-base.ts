@@ -119,7 +119,7 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     public mediaPlayerElement: MediaPlayerElement;
     @Input({required: true})
     protected pluginName: string;
-    protected logger: DefaultLogger;
+    logger: DefaultLogger;
 
     /**
      * Plugin base constructor
