@@ -316,6 +316,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.updateTc();
     }
 
+    private readonly ERROR_MSG_WAVE_FORMS = 'Les formes d\'ondes n\'ont pas pu ètre chargées';
+
     /**
      * Invoked on metadata loaded
      */
@@ -340,8 +342,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     this.logger.info(`Focus is disabled ...`);
                 }
                 this.updateTc();
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERASE_ERROR, this.ERROR_MSG_WAVE_FORMS);
             } else {
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargées');
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, this.ERROR_MSG_WAVE_FORMS);
             }
         }
     }

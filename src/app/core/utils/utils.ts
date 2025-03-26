@@ -57,14 +57,22 @@ export class Utils {
         //On récupère la liste des fonctions cad les event listeners
         let listOfInitFunctions = mapOfListeners.get(playerEventType) ?? [];
         const boundFuncOnTarget = funcOnTarget.bind(target);
-        listOfInitFunctions.push(boundFuncOnTarget);
-        mapOfListeners.set(playerEventType, listOfInitFunctions);
-        mapOfListenersPerElement.set(elementOnTarget, mapOfListeners);
-        Utils.mapOfRegisteredListenersPerTarget.set(target, mapOfListenersPerElement);
-        if (elementOnTarget instanceof EventEmitter) {
-            elementOnTarget.addListener(playerEventType, boundFuncOnTarget);
-        } else {
-            elementOnTarget.addEventListener(playerEventType, boundFuncOnTarget);
+        let funcOnTargetAlreadyAdded = false;
+        listOfInitFunctions.forEach(boundFunc => {
+            if (boundFuncOnTarget.name === boundFunc.name) {
+                funcOnTargetAlreadyAdded = true;
+            }
+        });
+        if (!funcOnTargetAlreadyAdded) {
+            listOfInitFunctions.push(boundFuncOnTarget);
+            mapOfListeners.set(playerEventType, listOfInitFunctions);
+            mapOfListenersPerElement.set(elementOnTarget, mapOfListeners);
+            Utils.mapOfRegisteredListenersPerTarget.set(target, mapOfListenersPerElement);
+            if (elementOnTarget instanceof EventEmitter) {
+                elementOnTarget.addListener(playerEventType, boundFuncOnTarget);
+            } else {
+                elementOnTarget.addEventListener(playerEventType, boundFuncOnTarget);
+            }
         }
     }
 

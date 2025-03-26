@@ -141,7 +141,7 @@ describe('HistogramPluginComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-    it('should call eventEmitter.off for registered events', () => {
+    it('should call eventEmitter.removeListener for registered events', () => {
         mediaPlayerElement.configurationManager.configData = {
             ...mediaPlayerElement.configurationManager.configData,
             loadMetadataOnDemand: true

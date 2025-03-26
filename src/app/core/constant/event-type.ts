@@ -128,6 +128,10 @@ export enum PlayerEventType {
      * Invoked when a media error has occurred.
      */
     ERROR = 'ina.player.ERROR',
+    /**
+     * Invoked when a previous Erroneous situation no longer exists
+     */
+    ERASE_ERROR = 'ina.player.ERASE_ERROR',
 
     /**
      * Invoked when a plugin error has occurred.
@@ -259,5 +263,5 @@ export enum PlayerEventType {
     ELEMENT_WAITING = 'waiting',
     ELEMENT_SUSPEND = 'suspend',
     ELEMENT_FULLSCREENCHANGE = 'fullscreenchange',
-    ELEMENT_KEYDOWN ='keydown',
+    ELEMENT_KEYDOWN = 'keydown'
 }

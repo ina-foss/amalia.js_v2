@@ -397,6 +397,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYDOWN_HISTOGRAM, this.handleKeyDownEvent);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYUP_HISTOGRAM, this.emitKeyUpEvent);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ERROR, this.handleError);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ERASE_ERROR, this.handleEraseError);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
@@ -474,11 +475,20 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * Invoked when error event
      * @param event error type
      */
-
     private handleError(event: any) {
         this.inError = true;
         this.errorMessage = event;
         this.logger.error('Error', event);
+    }
+
+    /**
+     * Invoked when erasing an error event
+     * @param event erase error message
+     */
+    private handleEraseError(event: any) {
+        this.inError = false;
+        this.errorMessage = event;
+        this.logger.info('Erase Error', event);
     }
 
     /**
@@ -795,6 +805,11 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /** @internal */
     public _handleErrorForTesting(event: any) {
         this.handleError(event)
+    }
+
+    /** @internal */
+    public _handleEraseErrorForTesting(event: any) {
+        this.handleEraseError(event)
     }
 
     /** @internal */
