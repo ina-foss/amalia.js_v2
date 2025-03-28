@@ -34,11 +34,8 @@ const initTestData = (component: AmaliaComponent, mediaPlayerElement: MediaPlaye
 describe('AmaliaComponent', () => {
     let component: AmaliaComponent;
     let fixture: ComponentFixture<AmaliaComponent>;
-    let mediaPlayerService: MediaPlayerService;
     let thumbnailService: ThumbnailService;
-    let sanitizer: DomSanitizer;
     let httpClient: HttpClient;
-    let logger: DefaultLogger;
     let mediaPlayerElement: MediaPlayerElement;
 
 
@@ -57,9 +54,7 @@ describe('AmaliaComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(AmaliaComponent);
         component = fixture.componentInstance;
-        mediaPlayerService = TestBed.inject(MediaPlayerService);
         thumbnailService = TestBed.inject(ThumbnailService);
-        sanitizer = TestBed.inject(DomSanitizer);
     });
 
     it('should create', () => {

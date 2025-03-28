@@ -71,7 +71,7 @@ export class MediaElement {
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
-        this.logger = new DefaultLogger('media-element' + Date.now());
+        this.logger = new DefaultLogger('media-element');
     }
 
     /**
