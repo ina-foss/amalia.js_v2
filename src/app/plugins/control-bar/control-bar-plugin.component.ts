@@ -419,7 +419,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse move
-     * @param value mouse event
+     * @param event mouse event
      */
     public handleProgressBarMouseMove(event) {
         if (this.inSliding) {
@@ -784,9 +784,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Handle mouse leave on progress bar
-     * @param event mouse leave
      */
-    public progressBarMouseLeave(event: MouseEvent) {
+    public progressBarMouseLeave() {
         if (this.enableThumbnail && !this.inSliding) {
             this.thumbnailHidden = true;
         }
@@ -812,7 +811,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse down
-     * @param value mouse event
      */
     public handleProgressBarMouseDown() {
         this.inSliding = true;
@@ -947,7 +945,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Return playback step value
      * @param playbackRateStep list of steps
-     * @return return playback step
+     * @param ignoreSetPlaybackrate
+     * @return return playback step if true, does not set the playbackRate on mediaPlayerElement.getMediaPlayer()
      */
     private getPlaybackStepValue(playbackRateStep: Array<number>, ignoreSetPlaybackrate?: boolean): number {
         let playbackRate;
@@ -1374,8 +1373,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     initTracks() {
         const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: 'volume'});
-        if (control.data && control.data?.tracks) {
-            this.listOfTracks = control?.data?.tracks;
+        if (control && control.data && control.data.tracks) {
+            this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
             this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
         }

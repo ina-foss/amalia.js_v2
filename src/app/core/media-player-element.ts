@@ -31,7 +31,7 @@ export class MediaPlayerElement {
     public width: number;
 
     constructor() {
-        this.logger = new DefaultLogger('root-player' + Date.now());
+        this.logger = new DefaultLogger('root-player');
         this._preferenceStorageManager = new PreferenceStorageManager();
         this._eventEmitter = new EventEmitter();
     }
