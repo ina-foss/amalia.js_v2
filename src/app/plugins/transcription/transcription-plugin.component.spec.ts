@@ -149,8 +149,9 @@ describe('TranscriptionPluginComponent', () => {
     });
 
     it('should handle metadata loaded', () => {
-        spyOn(component, '_handleMetadataLoadedForTesting').and.callThrough();
+        spyOn(component, 'metaDataLoaded').and.callThrough();
         component._handleMetadataLoadedForTesting();
+        expect(component.metaDataLoaded).toHaveBeenCalled();
     });
 
     it('should handle time change', () => {

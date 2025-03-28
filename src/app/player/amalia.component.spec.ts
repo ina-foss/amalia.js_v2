@@ -116,8 +116,7 @@ describe('AmaliaComponent', () => {
         fixture.detectChanges();
         component._setEnableThumbnailForTesting(true);
         spyOn(component as any, 'handlePlay').and.callThrough();
-        component._handlePlayForTesting()
-        2;
+        component._handlePlayForTesting();
         expect(component.enablePreviewThumbnail).toBeFalse();
         expect(component.previewThumbnailUrl).toBe('');
     });
@@ -197,10 +196,25 @@ describe('AmaliaComponent', () => {
     });
     it('should handleFullScreenChange', () => {
         fixture.detectChanges();
-
+        component.mediaPlayer.nativeElement.style.display = 'block';
+        const mockToggleFullscreenspyOn = spyOn(component.mediaPlayerElement, 'toggleFullscreen');
+        mockToggleFullscreenspyOn.and.callThrough();
+        const mediaContaineElementParent: HTMLElement = component.mediaContainer.nativeElement.offsetParent as unknown as HTMLElement;
+        const mockRequestFullScreen = spyOn(mediaContaineElementParent, 'requestFullscreen');
+        mockRequestFullScreen.and.resolveTo();
         component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
-
-
+        expect(mockToggleFullscreenspyOn).toHaveBeenCalled();
+    });
+    it('should handleFullScreenChange second path', () => {
+        fixture.detectChanges();
+        component.mediaPlayer.nativeElement.style.display = 'block';
+        component.mediaContainer.nativeElement.style.position = 'fixed';
+        const mockToggleFullscreenspyOn = spyOn(component.mediaPlayerElement, 'toggleFullscreen');
+        mockToggleFullscreenspyOn.and.callThrough();
+        const mockRequestFullScreen = spyOn(component.mediaContainer.nativeElement, 'requestFullscreen');
+        mockRequestFullScreen.and.resolveTo();
+        component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
+        expect(mockToggleFullscreenspyOn).toHaveBeenCalled();
     });
     afterEach(() => {
         fixture.destroy();

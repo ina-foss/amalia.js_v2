@@ -100,33 +100,22 @@ export class AppModule {
         this.injector = injector;
     }
 
+    addCustomElement(component: any, componentSelector: string) {
+        const customElementAmalia = createCustomElement(component, {injector: this.injector});
+        if (!customElements.get(componentSelector)) {
+            customElements.define(componentSelector, customElementAmalia);
+        }
+    }
 
     ngDoBootstrap() {
-        const customElementAmalia = createCustomElement(AmaliaComponent, {injector: this.injector});
-        customElements.define('amalia-player', customElementAmalia);
-
-        const timeBarPlugin = createCustomElement(TimeBarPluginComponent, {injector: this.injector});
-        customElements.define('amalia-time-bar', timeBarPlugin);
-
-        const controlBarPlugin = createCustomElement(ControlBarPluginComponent, {injector: this.injector});
-        customElements.define('amalia-control-bar', controlBarPlugin);
-
-        const transcriptionPlugin = createCustomElement(TranscriptionPluginComponent, {injector: this.injector});
-        customElements.define('amalia-transcription', transcriptionPlugin);
-
-        const subtitlesPluginComponent = createCustomElement(SubtitlesPluginComponent, {injector: this.injector});
-        customElements.define('amalia-subtitles', subtitlesPluginComponent);
-
-        const storyboardPluginComponent = createCustomElement(StoryboardPluginComponent, {injector: this.injector});
-        customElements.define('amalia-storyboard', storyboardPluginComponent);
-
-        const histogramPluginComponent = createCustomElement(HistogramPluginComponent, {injector: this.injector});
-        customElements.define('amalia-histogram', histogramPluginComponent);
-
-        const timelinePluginComponent = createCustomElement(TimelinePluginComponent, {injector: this.injector});
-        customElements.define('amalia-timeline', timelinePluginComponent);
-
-        const annotationPluginComponent = createCustomElement(AnnotationPluginComponent, {injector: this.injector});
-        customElements.define('amalia-annotation', annotationPluginComponent);
+        this.addCustomElement(AmaliaComponent, 'amalia-player');
+        this.addCustomElement(TimeBarPluginComponent, 'amalia-time-bar');
+        this.addCustomElement(ControlBarPluginComponent, 'amalia-control-bar');
+        this.addCustomElement(TranscriptionPluginComponent, 'amalia-transcription');
+        this.addCustomElement(SubtitlesPluginComponent, 'amalia-subtitles');
+        this.addCustomElement(StoryboardPluginComponent, 'amalia-storyboard');
+        this.addCustomElement(HistogramPluginComponent, 'amalia-histogram');
+        this.addCustomElement(TimelinePluginComponent, 'amalia-timeline');
+        this.addCustomElement(AnnotationPluginComponent, 'amalia-annotation');
     }
 }

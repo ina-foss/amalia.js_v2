@@ -1374,8 +1374,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     initTracks() {
         const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: 'volume'});
-        if (control.data && control.data?.tracks) {
-            this.listOfTracks = control?.data?.tracks;
+        if (control && control.data && control.data.tracks) {
+            this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
             this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
         }
