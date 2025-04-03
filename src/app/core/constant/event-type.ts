@@ -128,6 +128,10 @@ export enum PlayerEventType {
      * Invoked when a media error has occurred.
      */
     ERROR = 'ina.player.ERROR',
+    /**
+     * Invoked when a previous Erroneous situation no longer exists
+     */
+    ERASE_ERROR = 'ina.player.ERASE_ERROR',
 
     /**
      * Invoked when a plugin error has occurred.
@@ -238,5 +242,26 @@ export enum PlayerEventType {
      * Annotation édition annulée
      */
     ANNOTATION_CANCEL_EDITING = 'ina.annotation.EDITING.CANCELED',
-
+    /**
+     * An html element event
+     */
+    HTML_ELEMENT_MOUSE_DOWN = 'mousedown',
+    HTML_ELEMENT_MOUSE_UP = 'mouseup',
+    HTML_ELEMENT_MOUSE_MOVE = 'mousemove',
+    ELEMENT_CONTEXT_MENU = 'contextmenu',
+    ELEMENT_CLICK = 'click',
+    ELEMENT_LOADSTART = 'loadstart',
+    ELEMENT_PLAYING = 'playing',
+    ELEMENT_PAUSE = 'pause',
+    ELEMENT_ENDED = 'ended',
+    ELEMENT_DURATIONCHANGE = 'durationchange',
+    ELEMENT_TIMEUPDATE = 'timeupdate',
+    ELEMENT_VOLUMECHANGE = 'volumechange',
+    ELEMENT_SEEKED = 'seeked',
+    ELEMENT_RESIZE = 'resize',
+    ELEMENT_RESIZEEND = 'resizeend',
+    ELEMENT_WAITING = 'waiting',
+    ELEMENT_SUSPEND = 'suspend',
+    ELEMENT_FULLSCREENCHANGE = 'fullscreenchange',
+    ELEMENT_KEYDOWN = 'keydown'
 }

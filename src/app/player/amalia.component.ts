@@ -4,6 +4,7 @@ import {
     EventEmitter,
     HostListener,
     Input,
+    OnDestroy,
     OnInit,
     Output,
     ViewChild,
@@ -23,7 +24,6 @@ import {Metadata} from '@ina/amalia-model';
 import {environment} from '../../environments/environment';
 import {PlayerState} from '../core/constant/player-state';
 import {PlayerEventType} from '../core/constant/event-type';
-import {AutoBind} from '../core/decorator/auto-bind.decorator';
 import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
 import {BaseUtils} from '../core/utils/base-utils';
 import {MediaPlayerService} from '../service/media-player-service';
@@ -33,6 +33,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import * as _ from 'lodash';
 import {ControlBarPluginComponent} from '../plugins/control-bar/control-bar-plugin.component';
 import {LoggerLevel} from '../core/logger/logger-level';
+import {Utils} from "../core/utils/utils";
 
 @Component({
     selector: 'amalia-player',
@@ -40,7 +41,7 @@ import {LoggerLevel} from '../core/logger/logger-level';
     styleUrls: ['./amalia.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class AmaliaComponent implements OnInit {
+export class AmaliaComponent implements OnInit, OnDestroy {
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
     /**
      * version of player
@@ -263,6 +264,7 @@ export class AmaliaComponent implements OnInit {
     public ngOnInit() {
         // Init media player
         this.mediaPlayerElement = this.playerService.get(this.playerId);
+        this.playerService.increment(this.playerId);
         this.state = PlayerState.CREATED;
         this.inLoading = true;
         // init default manager (converter, metadata loader)
@@ -290,7 +292,7 @@ export class AmaliaComponent implements OnInit {
     /**
      * update mediaPlayerWidth on window resize
      */
-    @AutoBind
+
     public handleWindowResize() {
         if (this.mediaContainer) {
             const mediaContainer = this.mediaContainer.nativeElement;
@@ -306,7 +308,7 @@ export class AmaliaComponent implements OnInit {
      * @param event mouse event
      * @return return false for disable browser context menu
      */
-    @AutoBind
+
     public onContextMenu(event: MouseEvent) {
         this.contextMenuState = true;
         const defaultMouseMargin = 15;
@@ -389,37 +391,37 @@ export class AmaliaComponent implements OnInit {
      * In charge to bin events
      */
     private bindEvents() {
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKED, this.handleSeeked);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.SEEKING, this.handleSeeking);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYING, this.handlePlay);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN_HISTOGRAM, this.handleKeyDownEvent);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYUP_HISTOGRAM, this.emitKeyUpEvent);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ERROR, this.handleError);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_LOADING_BEGIN, this.handleLoading);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_LOADING_END, this.handleLoadingEnd);
-        this.mediaPlayerElement.eventEmitter.on('contextmenu', this.onContextMenu);
-        document.addEventListener('click', this.hideControlsMenuOnClickDocument);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeeked);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYING, this.handlePlay);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYDOWN_HISTOGRAM, this.handleKeyDownEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYUP_HISTOGRAM, this.emitKeyUpEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ERROR, this.handleError);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ERASE_ERROR, this.handleEraseError);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_CLEAR_INTERVAL, this.clearInterval);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.FULLSCREEN_STATE_CHANGE, this.handleFullScreenChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.scrollPlaybackRateImages);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_BEGIN, this.handleLoading);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_END, this.handleLoadingEnd);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ELEMENT_CONTEXT_MENU, this.onContextMenu);
+        this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
 
     }
 
-    @AutoBind
     public handleLoading() {
         this.inLoading = true;
     }
 
-    @AutoBind
+
     public handleLoadingEnd() {
         this.inLoading = false;
     }
 
-    @AutoBind
+
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
         this.pinned = false;
@@ -430,7 +432,7 @@ export class AmaliaComponent implements OnInit {
         });
     }
 
-    @AutoBind
+
     public handlePinnedSliderChange(event) {
         this.pinned = event;
         this.pinnedControlbar = false;
@@ -441,7 +443,7 @@ export class AmaliaComponent implements OnInit {
         });
     }
 
-    @AutoBind
+
     private handleSeeking(tc: number) {
         this.logger.debug('handleSeeking');
         if (this.enableThumbnail && (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1)) {
@@ -451,7 +453,7 @@ export class AmaliaComponent implements OnInit {
         }
     }
 
-    @AutoBind
+
     private handleSeeked() {
         if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1 && this.enableThumbnail) {
             const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
@@ -461,7 +463,7 @@ export class AmaliaComponent implements OnInit {
 
     }
 
-    @AutoBind
+
     private handlePlay() {
         if (this.enableThumbnail) {
             this.enablePreviewThumbnail = false;
@@ -473,7 +475,6 @@ export class AmaliaComponent implements OnInit {
      * Invoked when error event
      * @param event error type
      */
-    @AutoBind
     private handleError(event: any) {
         this.inError = true;
         this.errorMessage = event;
@@ -481,10 +482,20 @@ export class AmaliaComponent implements OnInit {
     }
 
     /**
+     * Invoked when erasing an error event
+     * @param event erase error message
+     */
+    private handleEraseError(event: any) {
+        this.inError = false;
+        this.errorMessage = event;
+        this.logger.info('Erase Error', event);
+    }
+
+    /**
      * Invoked on aspect ratio change
      * @param event aspect ratio
      */
-    @AutoBind
+
     private handleAspectRatioChange(event) {
         this.logger.debug('handleAspectRatioChange', event);
         this.aspectRatio = event;
@@ -588,7 +599,7 @@ export class AmaliaComponent implements OnInit {
     /**
      * Invoked on fullscreen change
      */
-    @AutoBind
+
     public handleFullScreenChange() {
         const isFullscreen = document.fullscreenElement !== null;
         if (!isFullscreen) {
@@ -621,7 +632,7 @@ export class AmaliaComponent implements OnInit {
         this.containerSizeBeforeFullScreen = undefined;
     }
 
-    @AutoBind
+
     public handleKeyDownEvent(event) {
         this.playerHover = true;
         this.emitKeyDownEvent(event);
@@ -630,7 +641,7 @@ export class AmaliaComponent implements OnInit {
     /**
      * invoked on keydown
      */
-    @AutoBind
+
     public emitKeyDownEvent($event) {
         this.focus();
         let i;
@@ -657,20 +668,20 @@ export class AmaliaComponent implements OnInit {
         }
     }
 
-    @AutoBind
+
     public emitKeyUpEvent() {
         this.listKeys = [];
         this.focus();
     }
 
-    @AutoBind
+
     public hideControlsMenuOnClickDocument($event) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.DOCUMENT_CLICK, $event);
     }
 
     // hide controlBar after 3 seconds of mouse inactive
     public startTimer() {
-        this.chrono = setTimeout(this.hideControls, 1800);
+        this.chrono = setTimeout(this.hideControls.bind(this), 1800);
     }
 
     // reset 3 seconds mouse inactive and start timer again
@@ -681,12 +692,12 @@ export class AmaliaComponent implements OnInit {
     }
 
     // hide controls if mouse in inactive since 3 seconds
-    @AutoBind
+
     public hideControls() {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
     }
 
-    @AutoBind
+
     public scrollPlaybackRateImages($event) {
         let rewinding = false;
         let playbackrate = $event;
@@ -706,7 +717,7 @@ export class AmaliaComponent implements OnInit {
         }, ms);
     }
 
-    @AutoBind
+
     public clearInterval() {
         if (this.intervalImages) {
             clearInterval(this.intervalImages);
@@ -718,7 +729,7 @@ export class AmaliaComponent implements OnInit {
         }
     }
 
-    @AutoBind
+
     public displayImages(framesPerSecond, ms, rewinding) {
         const frames = framesPerSecond / (1000 / ms);
         if (rewinding === false) {
@@ -748,7 +759,7 @@ export class AmaliaComponent implements OnInit {
         });
     }
 
-    @AutoBind
+
     public showImage(tc) {
         let prevImg;
         return new Promise(resolve => {
@@ -771,4 +782,39 @@ export class AmaliaComponent implements OnInit {
     public controlClicked($event) {
         this.mediaPlayerElement.getMediaPlayer().playPause();
     }
+
+    addListener(element: any, playerEventType: PlayerEventType, func: any) {
+        Utils.addListener(this, element, playerEventType, func);
+    }
+
+    ngOnDestroy(): void {
+        Utils.unsubscribeTargetedElementEventListeners(this);
+        this.playerService.decrement(this.playerId);
+    }
+
+    /** @internal */
+    public _setEnableThumbnailForTesting(value: boolean): void {
+        this.enableThumbnail = value;
+    }
+
+    /** @internal */
+    public _setPreviewThumbnailForTesting(value): void {
+        this.setPreviewThumbnail(value);
+    }
+
+    /** @internal */
+    public _handleErrorForTesting(event: any) {
+        this.handleError(event)
+    }
+
+    /** @internal */
+    public _handleEraseErrorForTesting(event: any) {
+        this.handleEraseError(event)
+    }
+
+    /** @internal */
+    public _handlePlayForTesting() {
+        this.handlePlay();
+    }
+
 }

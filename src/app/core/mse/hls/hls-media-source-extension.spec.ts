@@ -53,6 +53,7 @@ describe('Test HLS Source extension', () => {
         expect(hlsPlayer.reverseMode).toEqual(true);
     });
     it('test handle error ', () => {
+        hlsPlayer.setSrc(config);
         spyOn(eventEmitter, 'emit');
         hlsPlayer.handleError('ERROR');
         expect(eventEmitter.emit).toHaveBeenCalled();

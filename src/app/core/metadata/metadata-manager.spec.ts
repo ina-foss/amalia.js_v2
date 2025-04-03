@@ -17,7 +17,6 @@ import {TimeBarConfig} from '../config/model/time-bar-config';
 import {TimeBarPluginComponent} from '../../plugins/time-bar/time-bar-plugin.component';
 import {MetadataUtils} from '../utils/metadata-utils';
 import {Histogram} from './model/histogram';
-import {TimelinePluginComponent} from "../../plugins/timeline/timeline-plugin.component";
 import {DataType} from "../constant/data-type";
 
 describe('Test Metadata manager', () => {

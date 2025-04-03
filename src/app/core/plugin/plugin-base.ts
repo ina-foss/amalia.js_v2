@@ -1,7 +1,7 @@
 import {MediaPlayerElement} from '../media-player-element';
 import {PluginConfigData} from '../config/model/plugin-config-data';
 import {DefaultLogger} from '../logger/default-logger';
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {PlayerEventType} from '../constant/event-type';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {AmaliaException} from '../exception/amalia-exception';
@@ -15,7 +15,7 @@ import {Utils} from "../utils/utils";
     selector: 'amalia-base-plugin',
     template: '<div></div>',
 })
-export abstract class PluginBase<T> implements OnInit {
+export abstract class PluginBase<T> implements OnInit, OnDestroy {
 
     @Input()
     public playerId = null;
@@ -28,7 +28,14 @@ export abstract class PluginBase<T> implements OnInit {
     public intervalStep: number = 5;
     public noSpinner: boolean = true;
     public subscriptionToEventsEmitters: Subscription[] = [];
-
+    /**
+     * When false, it means that the pluginConfiguration was set through the template's attribute
+     */
+    public pluginConfSetThroughInit: boolean = false;
+    /**
+     * When false, means that the init function was not called yet
+     */
+    public initAlreadyCalled: boolean = false;
     /**
      * This plugin configuration
      */
@@ -112,7 +119,7 @@ export abstract class PluginBase<T> implements OnInit {
     public mediaPlayerElement: MediaPlayerElement;
     @Input({required: true})
     protected pluginName: string;
-    protected logger: DefaultLogger;
+    logger: DefaultLogger;
 
     /**
      * Plugin base constructor
@@ -128,12 +135,15 @@ export abstract class PluginBase<T> implements OnInit {
         if (!this.mediaPlayerElement) {
             throw new AmaliaException(`Error to init plugin ${this.pluginName} (player id : ${this.playerId}).`);
         }
-        if (!this.mediaPlayerElement.isMetadataLoaded && this.pluginName !== 'STORYBOARD') {
-            //The TIME_BAR and CONTROL_BAR plugins need this
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.INIT, this.init.bind(this));
-        } else {
+        if (this.mediaPlayerElement.isMetadataLoaded || this.pluginName === 'STORYBOARD') {
             this.init();
         }
+        //The TIME_BAR and CONTROL_BAR plugins need this
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.INIT, this.init);
+    }
+
+    addListener(element: any, playerEventType: PlayerEventType, func: any) {
+        Utils.addListener(this, element, playerEventType, func);
     }
 
     protected handleMetadataLoaded() {
@@ -145,15 +155,26 @@ export abstract class PluginBase<T> implements OnInit {
 
     init() {
         const defaultConfig = this.getDefaultConfig();
+        if (!this.initAlreadyCalled) {
+            //This code ensures that we identify the case when pluginConf was initialized from an init that is no longer up to date
+            this.pluginConfSetThroughInit = !this.pluginConfiguration;
+        }
         try {
             const customConfig = this.mediaPlayerElement.getPluginConfiguration(`${this.pluginName}-${this.playerId}${this.pluginInstance}`);
             if (customConfig) {
                 if (this.pluginConfiguration) {
-                    this.pluginConfiguration = {
-                        ...defaultConfig,
-                        ...customConfig,
-                        ...this.pluginConfiguration
-                    };
+                    if (this.pluginConfSetThroughInit) {
+                        this.pluginConfiguration = {
+                            ...defaultConfig,
+                            ...customConfig,
+                        };
+                    } else {
+                        this.pluginConfiguration = {
+                            ...defaultConfig,
+                            ...customConfig,
+                            ...this.pluginConfiguration
+                        };
+                    }
                 } else {
                     this.pluginConfiguration = {
                         ...defaultConfig,
@@ -175,7 +196,12 @@ export abstract class PluginBase<T> implements OnInit {
 
         this.tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset || 0;
         this.fps = this.mediaPlayerElement.getConfiguration()?.player.framerate || 25;
+        this.initAlreadyCalled = true;
     }
 
     abstract getDefaultConfig(): PluginConfigData<T>;
+
+    ngOnDestroy(): void {
+        Utils.unsubscribeTargetedElementEventListeners(this);
+    }
 }

@@ -35,7 +35,6 @@ describe('Test Media element', () => {
         httpTestingController.verify();
     });
 
-
     it('Media player element ', async () => {
         expect(component).toBeTruthy();
         component.setSrc(config);

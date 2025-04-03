@@ -1,7 +1,14 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {BaseUtils} from '../../core/utils/base-utils';
 import {HistogramConfig} from '../../core/config/model/histogram-config';
@@ -11,6 +18,7 @@ import {MediaPlayerService} from '../../service/media-player-service';
 import {HttpClient} from '@angular/common/http';
 import {AmaliaException} from '../../core/exception/amalia-exception';
 import interact from 'interactjs';
+import {DefaultLogger} from "../../core/logger/default-logger";
 
 @Component({
     selector: 'amalia-histogram',
@@ -18,7 +26,7 @@ import interact from 'interactjs';
     styleUrls: ['./histogram-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit {
+export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit {
     public static PLUGIN_NAME = 'HISTOGRAM';
     public static CURSOR_ELM = 'cursor';
     public static HISTOGRAM_ELM = 'histogram';
@@ -68,7 +76,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * list of histograms
      */
-    public listOfHistograms: { paths: [string, string]; nbBins: number; posMax: number; negMax: number; viewBox: string; label: string, zoom: boolean }[];
+    public listOfHistograms: {
+        paths: [string, string];
+        nbBins: number;
+        posMax: number;
+        negMax: number;
+        viewBox: string;
+        label: string,
+        zoom: boolean
+    }[];
     /**
      * state of hover cursor
      */
@@ -101,8 +117,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private histogramsList = [];
 
+    logger: DefaultLogger;
 
-    constructor(httpClient: HttpClient, playerService: MediaPlayerService) {
+
+    constructor(httpClient: HttpClient, playerService: MediaPlayerService, private cd: ChangeDetectorRef) {
         super(playerService);
         this.pluginName = HistogramPluginComponent.PLUGIN_NAME;
         this.httpClient = httpClient;
@@ -112,31 +130,64 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     ngOnInit(): void {
-        super.ngOnInit();
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.logger = new DefaultLogger(`${this.pluginName}`);
+        try {
+            super.ngOnInit();
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        } catch (e) {
+            this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
+        }
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
+            this.initWrapperWithoutAutoBind();
+        }
     }
 
-    @AutoBind
+    public handleMetaDataLoadedWrapperWithoutAutoBind() {
+        this.handleMetadataLoaded();
+    }
+
+    ngAfterViewInit(): void {
+        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
+            this.handleMetaDataLoadedWrapperWithoutAutoBind();
+            this.cd.detectChanges();
+        }
+    }
+
+
     init() {
         super.init();
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_BEGIN);
         this.handleDisplayState();
         this.withFocus = this.pluginConfiguration.data.withFocus;
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
     }
-    @AutoBind
+
+    /**
+     * For the tests purposes
+     */
+    initWrapperWithoutAutoBind() {
+        this.init();
+    }
+
+    getDuration = () => {
+        return this.mediaPlayerElement.getMediaPlayer().getDuration();
+    }
+
+
     public handlePinnedControlbarChange(event) {
         this.pinnedControlbar = event;
         this.pinned = false;
     }
-    @AutoBind
+
+
     public handlePinnedSliderChange(event) {
         this.pinned = event;
         this.pinnedControlbar = false;
     }
+
     /**
      * Handle draw histogram return tuple with positive bins and negative bins
      * In charge to create svg paths
@@ -148,8 +199,16 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * @param zoom true for enable zoom container
      * @param label histogram label
      */
-    public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, mirror = false, zoom: boolean, label: string):
-        { paths: [string, string], nbBins: number, posMax: number, negMax: number, viewBox: string, label: string, zoom: boolean } {
+    public drawHistogram(posBins: string, negBins: string, posMax: number, negMax: number, zoom: boolean, label: string, mirror = false):
+            {
+                paths: [string, string],
+                nbBins: number,
+                posMax: number,
+                negMax: number,
+                viewBox: string,
+                label: string,
+                zoom: boolean
+            } {
         const positiveValues = (posBins && posBins !== '') ? BaseUtils.base64DecToArr(posBins) : null;
         const negativeValues = (negBins && negBins !== '') ? BaseUtils.base64DecToArr(negBins) : null;
         if (positiveValues !== null) {
@@ -168,7 +227,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     negativePath += `M${posX},${posMax},L${posX},${posMax + itemPositiveValue}z `;
                 }
             }
-            return {paths: [positivePath, negativePath], nbBins, posMax, negMax, viewBox: `0 0 ${nbBins} ${Math.round(posMax * 2 + 10)}`, label, zoom};
+            return {
+                paths: [positivePath, negativePath],
+                nbBins,
+                posMax,
+                negMax,
+                viewBox: `0 0 ${nbBins} ${Math.round(posMax * 2 + 10)}`,
+                label,
+                zoom
+            };
         }
         return null;
     }
@@ -180,7 +247,16 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     getDefaultConfig(): PluginConfigData<HistogramConfig> {
         return {
             name: HistogramPluginComponent.PLUGIN_NAME,
-            data: {withFocus: true, enableMirror: false, zoomMetadataIdx: [], labels: [], focusMin: 10, focusMax: 40, focusMinOffset: 10, focusMaxOffset: 90}
+            data: {
+                withFocus: true,
+                enableMirror: false,
+                zoomMetadataIdx: [],
+                labels: [],
+                focusMin: 10,
+                focusMax: 40,
+                focusMinOffset: 10,
+                focusMaxOffset: 90
+            }
         };
     }
 
@@ -192,13 +268,21 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     private drawHistograms(histograms: Array<Histogram>, labels: Array<string>, zoomMetadataIdx: Array<number>) {
         if (histograms && histograms.length > 0) {
-            this.listOfHistograms = new Array<{ paths: [string, string], nbBins: number, posMax: number, negMax: number, viewBox: string, label: string, zoom: boolean }>();
+            this.listOfHistograms = new Array<{
+                paths: [string, string],
+                nbBins: number,
+                posMax: number,
+                negMax: number,
+                viewBox: string,
+                label: string,
+                zoom: boolean
+            }>();
             let index = 0;
             let label = '';
             histograms.forEach((hData) => {
                 label = labels && labels.hasOwnProperty(index) ? labels[index] : '';
-                const histogram = this.drawHistogram(hData.posbins, hData.negbins, hData.posmax, hData.negmax, this.pluginConfiguration.data.enableMirror,
-                    zoomMetadataIdx.includes(index), label);
+                const histogram = this.drawHistogram(hData.posbins, hData.negbins, hData.posmax, hData.negmax,
+                        zoomMetadataIdx.includes(index), label, this.pluginConfiguration.data.enableMirror);
                 if (histogram) {
                     this.listOfHistograms.push(histogram);
                     index++;
@@ -210,7 +294,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * Invoked time change event
      */
-    @AutoBind
+
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (this.pluginConfiguration.data.focusMaxOffset === null && this.pluginConfiguration.data.focusMinOffset === null) {
@@ -218,13 +302,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         } else {
             this.slideFocus(this.currentTime);
         }
-        this.updateCursors(this.currentTime);
+        this.updateCursors();
     }
 
     /**
      * Invoked on duration change
      */
-    @AutoBind
+
     private handleOnDurationChange() {
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.handleMetadataLoaded();
@@ -232,21 +316,24 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.updateTc();
     }
 
+    private readonly ERROR_MSG_WAVE_FORMS = 'Les formes d\'ondes n\'ont pas pu ètre chargées';
+
     /**
      * Invoked on metadata loaded
      */
-    @AutoBind
-    protected handleMetadataLoaded() {
+
+    handleMetadataLoaded() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const zoomMetadataIdx = this.pluginConfiguration.data.zoomMetadataIdx;
         const labels = this.pluginConfiguration.data.labels;
         const metadataManager = this.mediaPlayerElement.metadataManager;
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.duration = this.getDuration();
         this.logger.info(` Metadata loaded plugin histogram handle metadata ids:  ${handleMetadataIds} ${labels} Zoom:  ${zoomMetadataIdx}`);
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
-            if (metadataManager.getHistograms(handleMetadataIds).length > 0) {
-                this.histogramsList = metadataManager.getHistograms(handleMetadataIds);
+            const histoList = metadataManager.getHistograms(handleMetadataIds);
+            if (histoList.length > 0) {
+                this.histogramsList = histoList;
                 this.drawHistograms(this.histogramsList, labels, zoomMetadataIdx);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_LOADING_END);
                 if (this.sliderElement && this.pluginConfiguration.data.withFocus) {
@@ -255,8 +342,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                     this.logger.info(`Focus is disabled ...`);
                 }
                 this.updateTc();
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERASE_ERROR, this.ERROR_MSG_WAVE_FORMS);
             } else {
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargées');
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, this.ERROR_MSG_WAVE_FORMS);
             }
         }
     }
@@ -265,7 +353,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * switch container class based on width
      */
-    @AutoBind
+
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
     }
@@ -273,7 +361,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * update all scales on window resize
      */
-    @AutoBind
+
     public handleWindowResize() {
         this.handleDisplayState();
     }
@@ -281,7 +369,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /**
      * slider events
      */
-    @AutoBind
+
     public initSliderEvents() {
         const self = this;
         const container = self.sliderElement.nativeElement;
@@ -351,7 +439,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     private updateTc(): void {
         let zTcIn: number;
         let zTcOut: number;
-        const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        const duration = this.getDuration();
         const width = this.sliderElement.nativeElement.parentElement.offsetWidth;
         const focusWidth = this.sliderElement.nativeElement.offsetWidth;
         const focusLeft = this.sliderElement.nativeElement.offsetLeft;
@@ -370,7 +458,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM);
         if (histograms?.length > 0) {
             const zDuration = zTcOut - zTcIn;
-            const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+            const duration = this.getDuration();
             const zWidth = duration * 100 / zDuration;
             const zLeft = zTcIn * zWidth / duration;
             for (const elementKey in Object.keys(histograms)) {
@@ -389,14 +477,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     /**
      * Update cursor
-     * @param tc time code
      */
-    private updateCursors(tc: number) {
+    private updateCursors() {
         const histograms = this.histograms.nativeElement.getElementsByClassName(HistogramPluginComponent.HISTOGRAM_ELM);
         for (const elementKey in Object.keys(histograms)) {
             if (histograms.hasOwnProperty(elementKey)) {
                 let tcIn = 0;
-                let tcOut = this.mediaPlayerElement.getMediaPlayer().getDuration();
+                let tcOut = this.getDuration();
                 const element: any = histograms.item(Number(elementKey));
                 if (element.classList.contains(HistogramPluginComponent.ZOOM_HISTOGRAM_ELM)) {
                     tcIn = (parseFloat(element.dataset.zTcIn) || 0);
@@ -418,7 +505,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         if (this.sliderElement && this.inResizing === false) {
             const elm = this.sliderElement.nativeElement;
             const containerWidthPercent = elm.offsetWidth * 100 / elm.parentElement.offsetWidth;
-            const leftPercent = tc * 100 / this.mediaPlayerElement.getMediaPlayer().getDuration();
+            const leftPercent = tc * 100 / this.getDuration();
             this.sliderElement.nativeElement.style.left = `${Math.min(Math.max(leftPercent - containerWidthPercent / 2, 0), 100 - containerWidthPercent)}%`;
         }
         this.updateTc();
@@ -433,7 +520,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const {focusMinOffset, focusMaxOffset} = this.pluginConfiguration.data;
             const elm = this.sliderElement.nativeElement;
             const containerWidthPercent = (elm.offsetWidth * 100 / elm.parentElement.offsetWidth) * (focusMaxOffset / 100);
-            const tcLeftPercent = tc * 100 / this.mediaPlayerElement.getMediaPlayer().getDuration();
+            const tcLeftPercent = tc * 100 / this.getDuration();
             const posLeft = (elm.offsetLeft * 100) / elm.parentElement.offsetWidth;
             const start = posLeft + (containerWidthPercent * (focusMinOffset / 100));
             const end = posLeft + containerWidthPercent;
@@ -450,10 +537,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      */
     public handleHistogramClick(event) {
         const tcIn = (parseFloat(event.currentTarget.dataset.zTcIn) || 0);
-        const tcOut = (parseFloat(event.currentTarget.dataset.zTcOut) || this.mediaPlayerElement.getMediaPlayer().getDuration());
+        const tcOut = (parseFloat(event.currentTarget.dataset.zTcOut) || this.getDuration());
         const duration = tcOut - tcIn;
         const width = event.currentTarget.offsetWidth;
-        const tc = Math.min(tcIn + (event.clientX * duration / width), this.mediaPlayerElement.getMediaPlayer().getDuration());
+        const tc = Math.min(tcIn + (event.clientX * duration / width), this.getDuration());
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
     }
 }

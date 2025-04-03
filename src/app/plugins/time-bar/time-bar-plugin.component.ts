@@ -1,7 +1,6 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {TimeBarConfig} from '../../core/config/model/time-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {DEFAULT} from '../../core/constant/default';
@@ -60,6 +59,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * theme
      */
     public theme: 'inside' | 'outside';
+
     constructor(playerService: MediaPlayerService) {
         super(playerService);
         this.pluginName = TimeBarPluginComponent.PLUGIN_NAME;
@@ -69,7 +69,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
         super.ngOnInit();
     }
 
-    @AutoBind
+
     init() {
         super.init();
         this.handleDisplayState();
@@ -83,26 +83,27 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
             this.labelTcIn = LABEL.START_TC;
             this.labelTcOut = LABEL.END_TC;
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         if (this.theme === 'inside') {
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.hideTimeBar);
-            this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_LEAVE, this.hideTimeBar);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
         }
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
     }
+
     /**
      * switch container class based on width
      */
-    @AutoBind
+
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
     }
-    @AutoBind
+
     public hideTimeBar() {
         this.active = false;
     }
-    @AutoBind
+
     public showTimeBar() {
         if (this.displayState !== 's') {
             this.active = true;
@@ -110,6 +111,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
             this.active = false;
         }
     }
+
     /**
      * Return default config
      */
@@ -121,7 +123,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Invoked time change event for :
      * - update current time
      */
-    @AutoBind
+
     public handleOnTimeChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
@@ -130,11 +132,11 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * Invoked on duration change
      */
-    @AutoBind
+
     public handleOnDurationChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.startTc = (tcOffset) ? tcOffset : 0;
         this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.durationTimeBar = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset :  this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.durationTimeBar = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset : this.mediaPlayerElement.getMediaPlayer().getDuration();
     }
 }

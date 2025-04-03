@@ -1,18 +1,10 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    OnDestroy,
-    ViewChild,
-    ViewEncapsulation
-} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation} from '@angular/core';
 import {PluginBase} from "../../core/plugin/plugin-base";
 import {PluginConfigData} from "../../core/config/model/plugin-config-data";
 import {AnnotationConfig} from "../../core/config/model/annotation-config";
 import {MediaPlayerService} from "../../service/media-player-service";
 import {DEFAULT} from "../../core/constant/default";
 import {AnnotationLocalisation} from "../../core/metadata/model/annotation-localisation";
-import {AutoBind} from "../../core/decorator/auto-bind.decorator";
 import {PlayerEventType} from "../../core/constant/event-type";
 import {Utils} from "../../core/utils/utils";
 import * as _ from "lodash";
@@ -88,7 +80,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
     }
 
-    @AutoBind
+
     init() {
         super.init();
         if (this.pluginConfiguration.data) {
@@ -128,7 +120,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     /**
      * In charge to load metadata
      */
-    @AutoBind
+
     private parseAnnotation() {
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
@@ -159,7 +151,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     /**
      * Invoked on metadata loaded
      */
-    @AutoBind
+
     protected handleMetadataLoaded() {
         this.parseAnnotation();
     }
@@ -198,7 +190,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.setDataLoading.bind(this)));
     }
 
-    @AutoBind
+
     public initSegmentData() {
         if (this.mediaPlayerElementReady()) {
             const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
@@ -272,7 +264,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     }
 
-    @AutoBind
+
     public setSegmentsTcOffsetAndTcMax() {
         if (this.mediaPlayerElementReady()) {
             const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset || 0;

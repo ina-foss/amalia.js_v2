@@ -1,17 +1,7 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    Input,
-    OnDestroy,
-    Output,
-    ViewChild,
-    ViewEncapsulation
-} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {ControlBarConfig} from '../../core/config/model/control-bar-config';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
@@ -270,7 +260,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
 
-    @AutoBind
     init() {
         super.init();
         this.elements = this.pluginConfiguration.data;
@@ -300,17 +289,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
         // Init Events
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.KEYDOWN, this.handleShortcuts);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYDOWN, this.handleShortcuts);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
@@ -323,7 +312,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Invoked on duration change
      */
-    @AutoBind
+
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.time = this.currentTime;
@@ -334,7 +323,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked time change event for :
      * - update progress bar
      */
-    @AutoBind
+
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (!this.inSliding && !isNaN(this.currentTime)) {
@@ -350,7 +339,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * SIMULATE SEEKING
      */
-    @AutoBind
+
     public handlePlaybackRateChangeByImages() {
         this.playbackrateByImages = true;
     }
@@ -366,7 +355,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on playback change
      * @param playbackRate playback rate
      */
-    @AutoBind
+
     private handlePlaybackRateChange(playbackRate: number) {
         this.logger.info('Handle playback rate change', playbackRate);
         if (this.mediaPlayerElement.getMediaPlayer().isPaused() && playbackRate !== 1) {
@@ -376,7 +365,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (playbackRate === 1) {
             setTimeout(() => this.selectActivePlaybackrate(), 10);
         }
-        // setTimeout(() => this.selectActivePlaybackrate(), 10);
         if (this.currentPlaybackRate >= 1 || this.currentPlaybackRate <= -1) {
             this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
         } else {
@@ -388,7 +376,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on aspect ratio change
      * @param event aspect ratio
      */
-    @AutoBind
+
     private handleAspectRatioChange(event) {
         this.aspectRatio = event;
     }
@@ -397,7 +385,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked player mouse enter event for :
      * - animate controlBar
      */
-    @AutoBind
+
     private handlePlayerMouseenter() {
         this.activated = true;
     }
@@ -406,7 +394,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked player mouse leave event for :
      * - animate controlBar
      */
-    @AutoBind
+
     private handlePlayerMouseleave() {
         this.activated = false;
     }
@@ -414,7 +402,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Update displayState on windowResize
      */
-    @AutoBind
+
     public handleWindowResize() {
         this.handleDisplayState();
         // handle full screen on esc press
@@ -424,14 +412,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Apply shortcut if exists on keydown
      */
-    @AutoBind
+
     public handleShortcuts(event) {
         this.applyShortcut(event);
     }
 
     /**
      * Progress bar on mouse move
-     * @param value mouse event
+     * @param event mouse event
      */
     public handleProgressBarMouseMove(event) {
         if (this.inSliding) {
@@ -454,7 +442,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.callback.emit(control);
     }
 
-    @AutoBind
+
     public hideControlsMenuOnClickDocument() {
         // click outside the player
         if (this.enableMenu) {
@@ -514,7 +502,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked player with specified control function name
      * @param control control name
      */
-    @AutoBind
+
     public controlClicked(control: string) {
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
@@ -671,7 +659,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked on mouse move
      * @param value change value
      */
-    @AutoBind
+
     public moveSliderCursor(value: any) {
         this.logger.info('moveSliderCursor ', value);
         this.progressBarValue = value;
@@ -698,7 +686,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Tooltip tag is append after footer (ng2-directive-tooltip)
      * in fullscreen only the player is target , this function move the tooltip target from body to containerControlbar
      */
-    @AutoBind
+
     public changeTooltipEmplacement() {
         if (this.fullScreenMode === true) {
             setTimeout(() => {
@@ -714,7 +702,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * switch container class based on width
      */
-    @AutoBind
+
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
         // Controls priority 3
@@ -749,7 +737,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * get default aspect ratio
      */
-    @AutoBind
+
     public getDefaultAspectRatio() {
         this.defaultRatio = this.mediaPlayerElement.aspectRatio;
         this.aspectRatio = this.defaultRatio;
@@ -796,9 +784,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Handle mouse leave on progress bar
-     * @param event mouse leave
      */
-    public progressBarMouseLeave(event: MouseEvent) {
+    public progressBarMouseLeave() {
         if (this.enableThumbnail && !this.inSliding) {
             this.thumbnailHidden = true;
         }
@@ -824,7 +811,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     /**
      * Progress bar on mouse down
-     * @param value mouse event
      */
     public handleProgressBarMouseDown() {
         this.inSliding = true;
@@ -866,7 +852,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
-    @AutoBind
+
     public setThumbnail(url, currentTime) {
         this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
             if (typeof (blob) !== 'undefined') {
@@ -905,7 +891,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change playback rate
      * When playbackrate >= 6 display images
      */
-    @AutoBind
+
     public nextPlaybackRateImages(speed) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         if (this.getPlaybackStepValue(this.forwardPlaybackRateStep, true) < speed) {
@@ -921,7 +907,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change playback rate
      * When playbackrate >= speed configuration display images
      */
-    @AutoBind
+
     public previousPlaybackRateImages(speed) {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
         if (this.getPlaybackStepValue(this.backwardPlaybackRateStep, true) > speed) {
@@ -959,7 +945,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Return playback step value
      * @param playbackRateStep list of steps
-     * @return return playback step
+     * @param ignoreSetPlaybackrate
+     * @return return playback step if true, does not set the playbackRate on mediaPlayerElement.getMediaPlayer()
      */
     private getPlaybackStepValue(playbackRateStep: Array<number>, ignoreSetPlaybackrate?: boolean): number {
         let playbackRate;
@@ -984,7 +971,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         setTimeout(() => this.selectActivePlaybackrate(), 10);
     }
 
-    @AutoBind
+
     public handlePlayerMouseHover() {
         this.activated = true;
     }
@@ -993,7 +980,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * update position subtitle onclick
      * @param subtitlePosition subtitle position
      */
-    @AutoBind
+
     public updateSubtitlePosition(subtitlePosition?: string) {
         if (typeof (subtitlePosition) === 'undefined') {
             this.updateSubtitleInfos();
@@ -1009,7 +996,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     // update Subtitle position & subtitle label {
-    @AutoBind
+
     public updateSubtitleInfos() {
         let j: number;
         for (let i = 0; i < this.listOfSubtitles.length; i++) {
@@ -1105,7 +1092,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 let baseUrl = c.data.href;
                 const tcParam = c.data?.tcParam || 'tc';
                 baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + currentTime : baseUrl + '&' + tcParam + '=' + currentTime;
-                // window.open(baseUrl, 'Download');
                 window.location.href = baseUrl;
             }
         }
@@ -1114,7 +1100,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * change slider displayed
      */
-    @AutoBind
+
     public changeSlider() {
         if (this.selectedSlider === 'slider1') {
             this.selectedSlider = 'slider2';
@@ -1127,7 +1113,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * switch timeCode display onclick
      */
-    @AutoBind
+
     public switchDisplayCurrentTime() {
         if (this.inverse === true) {
             this.inverse = false;
@@ -1139,7 +1125,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
 
-    @AutoBind
     public hideAll(control?) {
         if (this.enableMenu && control !== 'menu') {
             this.enableMenu = !this.enableMenu;
@@ -1198,7 +1183,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.maxCursor = this.posPlaybackrates.length;
     }
 
-    @AutoBind
+
     public initDragThumb() {
         // init drag slider
         const selected: HTMLElement = this.controlBarContainer.nativeElement
@@ -1276,7 +1261,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                     event.target.setAttribute('data-x', position.x);
                     if (Number(playbackrate) !== 0) {
                         event.stopImmediatePropagation();
-                        // self.mediaPlayerElement.getMediaPlayer().playbackRate = Number(playbackrate);
                         this.changePlaybackrate(playbackrate);
                     }
                 }
@@ -1324,7 +1308,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
-    @AutoBind
+
     public togglePlaybackrate(value) {
         let pr;
         if (Math.sign(value) === 1) {
@@ -1340,7 +1324,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
-    @AutoBind
+
     public changePlaybackrate(pr, click?) {
         if (pr !== 0) {
             if (Math.sign(pr) === 1) {
@@ -1360,7 +1344,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * AutoBind Select Playbackrate
      */
-    @AutoBind
+
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
         const selected: HTMLElement = this.controlBarContainer.nativeElement
@@ -1375,7 +1359,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /***
      * toggle Volume
      */
-    @AutoBind
+
     private toggleVolume() {
         this.volumeButton.nativeElement.click();
         if (this.volumeLeft > 0 || this.volumeRight > 0) {
@@ -1389,8 +1373,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     initTracks() {
         const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: 'volume'});
-        if (control.data && control.data?.tracks) {
-            this.listOfTracks = control?.data?.tracks;
+        if (control && control.data && control.data.tracks) {
+            this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
             this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
         }

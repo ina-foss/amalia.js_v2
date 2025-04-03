@@ -1,7 +1,6 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {PlayerEventType} from '../../core/constant/event-type';
-import {AutoBind} from '../../core/decorator/auto-bind.decorator';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {Utils} from '../../core/utils/utils';
 import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
@@ -38,18 +37,18 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
         super.ngOnInit();
     }
 
-    @AutoBind
+
     init(): void {
         super.init();
         this.handleDisplayState();
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.mediaPlayerElement.eventEmitter.on(PlayerEventType.POSITION_SUBTITLE_CHANGE, this.changeSubtitlePosition);
+        this.addListener(this.mediaPlayerElement.eventEmitter,PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter,PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(this.mediaPlayerElement.eventEmitter,PlayerEventType.POSITION_SUBTITLE_CHANGE, this.changeSubtitlePosition);
     }
     /**
      * switch container class based on width
      */
-    @AutoBind
+
     public handleDisplayState() {
         this.displayState = this.mediaPlayerElement.getDisplayState();
     }
@@ -68,7 +67,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
      * Invoked time change event for :
      * - update current time
      */
-    @AutoBind
+
     private handleOnTimeChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.updateSubtitleContent();
@@ -77,7 +76,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     /**
      * Invoked on metadata loaded
      */
-    @AutoBind
+
     protected handleMetadataLoaded() {
         this.refreshMetadata();
     }
@@ -128,7 +127,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     /**
      * Invoked when user change subtitle position
      */
-    @AutoBind
+
     private changeSubtitlePosition(event) {
         this.logger.debug('Change position subtitles', event);
         this.posSubtitle = event;
