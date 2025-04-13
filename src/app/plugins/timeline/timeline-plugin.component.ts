@@ -1,4 +1,4 @@
-import {PluginBase} from '../../core/plugin/plugin-base';
+import { PluginBase } from '../../core/plugin/plugin-base';
 import {
     Component,
     computed,
@@ -10,18 +10,18 @@ import {
     ViewEncapsulation,
     WritableSignal
 } from '@angular/core';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {TimelineConfig} from '../../core/config/model/timeline-config';
+import { PluginConfigData } from '../../core/config/model/plugin-config-data';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { TimelineConfig } from '../../core/config/model/timeline-config';
 import interact from 'interactjs';
-import {Options} from 'sortablejs';
-import {PlayerEventType} from '../../core/constant/event-type';
-import {DataType} from '../../core/constant/data-type';
-import {Utils} from '../../core/utils/utils';
-import {TimeLineBlock, TimelineLocalisation} from '../../core/metadata/model/timeline-localisation';
+import { Options } from 'sortablejs';
+import { PlayerEventType } from '../../core/constant/event-type';
+import { DataType } from '../../core/constant/data-type';
+import { Utils } from '../../core/utils/utils';
+import { TimeLineBlock, TimelineLocalisation } from '../../core/metadata/model/timeline-localisation';
 import * as _ from 'lodash';
-import {Metadata} from '@ina/amalia-model';
-import {TreeNode} from 'primeng/api/treenode';
+import { Metadata } from '@ina/amalia-model';
+import { TreeNode } from 'primeng/api/treenode';
 
 @Component({
     selector: 'amalia-timeline',
@@ -60,15 +60,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         '#85b2f9', '#76db9b', '#f2d066', '#ff8780', '#f38ec0', '#9ea0f6', '#6dd3c8', '#fba86f', '#9fa9b7', '#c996fa', '#65d2e4',
         '#204887', '#136c34', '#816204', '#8c221c', '#822854', '#363885', '#0b655b', '#893f0c', '#37404c', '#5c2f88', '#036475',
         '#183462', '#0e4f26', '#5e4803', '#661814', '#5e1d3d', '#282960', '#084a42', '#642e09', '#282e38', '#432263', '#024955',];
-    @ViewChild('focusContainer', {static: true})
+    @ViewChild('focusContainer', { static: true })
     public focusContainer: ElementRef<HTMLElement>;
-    @ViewChild('mainBlockContainer', {static: true})
+    @ViewChild('mainBlockContainer', { static: true })
     public mainBlockContainer: ElementRef<HTMLElement>;
-    @ViewChild('listOfBlocksContainer', {static: true})
+    @ViewChild('listOfBlocksContainer', { static: true })
     public listOfBlocksContainer: ElementRef<HTMLElement>;
-    @ViewChild('selectedBlockElement', {static: true})
+    @ViewChild('selectedBlockElement', { static: true })
     public selectedBlockElement: any = null;
-    @ViewChild('selectionContainer', {static: true})
+    @ViewChild('selectionContainer', { static: true })
     public selectionContainer: ElementRef<HTMLElement>;
     public selectedBlock: TimelineLocalisation = null;
     public sortableOptions: Options = {
@@ -86,15 +86,24 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     nodes: TreeNode[] = [];
     selectedNodes: WritableSignal<TreeNode[]> = signal<TreeNode[]>([]);
     selectedNodesMap = computed(() => {
-                let result = new Map<string, TreeNode>();
-                this.selectedNodes().forEach(selectedNode => {
-                    result.set(selectedNode.key, selectedNode);
-                });
-                return result;
-            }
+        let result = new Map<string, TreeNode>();
+        this.selectedNodes().forEach(selectedNode => {
+            result.set(selectedNode.key, selectedNode);
+        });
+        return result;
+    }
     );
     selectedNodesBeforeChange: TreeNode[] = [];
     allNodesChecked: boolean = false;
+    showTollbar: boolean = false;
+    checkedSyncro: boolean = false;
+
+    showToolbar() {
+        this.showTollbar = true;
+    }
+    hideToolbar() {
+        this.showTollbar = false;
+    }
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -272,7 +281,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return {
             key: metadata.id,
             label: (metadata?.label) ? metadata.label : metadata.id,
-            data: {color: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),},
+            data: { color: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(), },
             checked: true,
             expanded: true
         };
@@ -313,7 +322,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const container = interact(element);
         container.resizable({
             // resize from all edges and corners
-            edges: {left: true, right: true, bottom: false, top: false},
+            edges: { left: true, right: true, bottom: false, top: false },
             listeners: {
                 move: (event) => {
                     const target = event.target;
@@ -338,7 +347,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 }),
                 // minimum size
                 interact.modifiers.restrictSize({
-                    min: {width: 10, height: null}
+                    min: { width: 10, height: null }
                 })
             ],
             inertia: true
@@ -500,7 +509,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (handleMetadataIds) {
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
                 const metadata = metadataManager.getMetadata(metadataId);
-                const blockMetadata: any = _.find<TimeLineBlock>(this.listOfBlocks, {id: metadataId});
+                const blockMetadata: any = _.find<TimeLineBlock>(this.listOfBlocks, { id: metadataId });
                 const baseColor = (metadata?.viewControl?.color) ? metadata.viewControl.color : blockMetadata.defaultColor;
                 let localisations = null;
                 try {

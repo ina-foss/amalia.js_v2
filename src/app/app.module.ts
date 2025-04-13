@@ -39,6 +39,8 @@ import {AutoCompleteModule} from "primeng/autocomplete";
 import {ToastComponent} from "./core/toast/toast.component";
 import {TreeModule} from 'primeng/tree';
 import {CheckboxModule} from "primeng/checkbox";
+import { ToolbarModule } from 'primeng/toolbar';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
     imports: [
@@ -63,7 +65,9 @@ import {CheckboxModule} from "primeng/checkbox";
         AutoCompleteModule,
         ToastComponent,
         TreeModule,
-        CheckboxModule
+        CheckboxModule,
+        ToolbarModule,
+        InputSwitchModule
     ],
     declarations: [
         AmaliaComponent,
