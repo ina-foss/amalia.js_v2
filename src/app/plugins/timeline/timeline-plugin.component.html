@@ -3,27 +3,23 @@
     <ng-template #toolbar>
         <p-toolbar>
             <div class="p-toolbar-group-start">
-                <div class="synchro-switch flex items-center gap-2">
+                <div class="synchro-switch">
                     <span class="synchro-switch-label">Synchroniser</span><p-inputSwitch [(ngModel)]="checkedSyncro" />
                 </div>
             </div>
             <div class="p-toolbar-group-end">
-                <div class="flex items-center gap-2">
-                    <div (click)="toggleConfig()">
-                        <svg class="amalia-svg-settings-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#settings'"></use>
-                        </svg>
-                        Choisir les segments à afficher
-                    </div>
+                <div class="flex items-center gap-2 toolbar-end-buttons">
+                    <p-button icon="pi pi-search-minus" [rounded]="true" (onClick)="toggleConfig()"></p-button>
+                    <p-button icon="pi pi-filter" [rounded]="true" (onClick)="toggleConfig()"></p-button>
                 </div>
             </div>
         </p-toolbar>
-        <div class="full-width"><p-button icon="pi pi-chevron-up" class="toolbar-toggle-button"
-                (onClick)="hideToolbar()"></p-button></div>
+        <div class="full-width"><p-button icon="pi pi-chevron-up" [rounded]="true" [text]="true"
+                class="toolbar-toggle-button" (onClick)="hideToolbar()"></p-button></div>
     </ng-template>
     <ng-template #hiddenToolbar>
-        <div class="full-width"><p-button icon="pi pi-chevron-down" class="toolbar-toggle-button"
-                (onClick)="showToolbar()"></p-button></div>
+        <div class="full-width"><p-button icon="pi pi-chevron-down" [rounded]="true" [text]="true"
+                class="toolbar-toggle-button" (onClick)="showToolbar()"></p-button></div>
     </ng-template>
 </div>
 

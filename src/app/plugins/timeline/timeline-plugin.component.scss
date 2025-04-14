@@ -31,21 +31,23 @@
     display: flex;
     width: 80px;
     height: 15px;
-    padding: 10.5px 0px;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    overflow: hidden;
   }
 
   .toolbar-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: var(--border-radius-sm, 4px) var(--spacings-border-radius-radius-md, 8px);
-    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.10);
   }
 
   .synchro-switch {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
     .synchro-switch-label {
       color: $amalia-plugin-timeline-primary-color;
       font-family: $amalia-font-family-lato;
@@ -633,13 +635,31 @@
       height: 50px;
     }
   }
-}
 
-:host ::ng-deep {
+  /* try without ng-deep */
+  
+  p-toolbar {
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.10) !important;
+  }
+
   .p-button.p-button-icon-only {
     padding: 0 !important;
     background-color: white !important;
     color: $amalia-plugin-timeline-primary-color !important;
     border: none !important;
+  }
+
+  .p-toolbar-group-end {
+    .toolbar-end-buttons {
+      .p-element {
+        .p-button {
+          background-color: $colors-primitive-primary-color !important;
+          color: white !important;
+        }
+      }
+    }
+  }
+  p-inputswitch {
+    display: flex;
   }
 }
