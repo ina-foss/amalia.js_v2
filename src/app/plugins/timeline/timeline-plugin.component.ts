@@ -418,7 +418,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge of save or not display block states
      * @param isValid true for save display block
      */
-    public handleDisplayBlocks(isValid) {
+    public handleDisplayBlocks(isValid: boolean) {
         if (isValid) {
             this.listOfBlocks.forEach((block) => {
                 block.displayState = this.selectedNodesMap().has(block.id);
@@ -430,6 +430,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             })
         }
         this.toggleConfig();
+    }
+
+    /**
+     * Hides a block
+     * @param block block to hide
+     */
+    removeBlock(block: any) {
+        this.listOfBlocks.find(b => b.id === block.id).displayState = false;
+        this.selectedNodes.set(this.getAllNodes(this.nodes).filter(node => node.id !== block.id));
     }
 
     /**
@@ -662,6 +671,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
     }
 
+    /**
+     * Gets all the nodes and their children from the given nodes
+     * @param nodes nodes
+     * @returns all nodes
+     */
     getAllNodes(nodes: any[]): any[] {
         let allNodes: any[] = [];
         for (let node of nodes) {
