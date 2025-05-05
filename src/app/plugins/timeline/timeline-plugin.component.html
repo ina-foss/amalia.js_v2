@@ -2,11 +2,6 @@
 <div class="toolbar-container"><ng-container *ngIf="showTollbar;then toolbar else hiddenToolbar"></ng-container>
     <ng-template #toolbar>
         <p-toolbar>
-            <div class="p-toolbar-group-start">
-                <div class="synchro-switch">
-                    <span class="synchro-switch-label">Synchroniser</span><p-inputSwitch [(ngModel)]="checkedSyncro" />
-                </div>
-            </div>
             <div class="p-toolbar-group-end">
                 <div class="flex items-center gap-2 toolbar-end-buttons">
                     <p-button icon="pi pi-search-minus" [rounded]="true" (onClick)="unZoom()"></p-button>
@@ -25,11 +20,13 @@
 
 <div class="main-block" #mainBlockContainer>
     <div class="tc-cursor"></div>
-    <div class="timeline-block main">
-        <div class="focus" #focusContainer>
+
+    <div class="timeline-block">
+        <div class="focus handle-border" #focusContainer>
             <div class="time-code" *ngIf="focusTcOut">
                 <span class="start">{{ focusTcIn|tcFormat:timeFormat:fps }}</span>
-                <span> - </span>
+            </div>
+            <div class="time-code" *ngIf="focusTcOut">
                 <span class="end ">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
             </div>
         </div>
@@ -54,41 +51,50 @@
         <p *ngIf="selectedBlock?.label" class="label">{{ selectedBlock.label }}</p>
         <p *ngIf="selectedBlock?.tc" class="tc">Tc:{{ selectedBlock.tc }}</p>
         <p *ngIf="selectedBlock?.tcIn&&selectedBlock?.tcOut" class="tc">
-            <span class="start">Tc: {{ selectedBlock.tcIn|tcFormat:timeFormat:fps }}</span>
+            <span class="start">{{ selectedBlock.tcIn|tcFormat:timeFormat:fps }}</span>
             <span> - </span>
             <span class="end ">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
         </p>
     </div>
-    <div class="timeline-block" #mainBlock *ngFor="let block of listOfBlocks;"
-        [ngClass]=" {'hidden-timeline':block.displayState===false}">
-        <div class="block-header" *ngIf="block.label!=''" (mouseover)="enableDragDrop = true" (onFocus)="enableDragDrop = true"
-            (mouseout)="enableDragDrop = false" (onBlur)="enableDragDrop = false">
-            <div class="extend">
-                <svg class="amalia-svg-down-size icon" *ngIf="block.expendable" (click)="toggleState(mainBlock)">
-                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down'"></use>
-                </svg>
-                {{ block.label }}
-            </div>
-            <div *ngIf="enableDragDrop" (mouseover)="enableDragDrop = true">
-                <p-button icon="pi pi-arrows-alt" [text]="true" class="drag"></p-button>
-                <p-button icon="pi pi-times" (click)="removeBlock(block)" (onKeyPress)="removeBlock(block)"
-                    [text]="true"></p-button>
-            </div>
-        </div>
-        <div class="timeline">
-            <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
-                <div class="cue-point" *ngSwitchDefault (mouseenter)="handleMouseEnterOnTc($event,loc)"
-                    (mouseleave)="handleMouseLeaveOnTc($event)"
-                    [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"
-                    [attr.data-tc]="loc.tc" [attr.data-type]="loc.type" (click)="callSeek(loc.tc)"></div>
-                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" [attr.data-type]="loc.type"
-                    (click)="callSeek(loc.tcIn)" (mouseenter)="handleMouseEnterOnTc($event,loc)"
-                    (mouseleave)="handleMouseLeaveOnTc($event)"
-                    [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn)+'%' }">
-                </div>
-            </ng-container>
-        </div>
-    </div>
+    <p-accordion [multiple]="true" [activeIndex]="listOfBlocksIndexes">
+        <ng-container *ngFor="let block of listOfBlocks; let idx = index">
+            <p-accordionTab [ngClass]="{'hidden-timeline':block.displayState===false}" iconPos="start" class="grabbable"
+                pDraggable="listOfBlocks" pDroppable="listOfBlocks" (onDragStart)="onDragStart(idx)"
+                (onDrop)="onDrop(idx)">
+                <ng-template pTemplate="header">
+                    <div class="block-header" *ngIf="block.label!=''">
+                        <div class="timeline-block-label">
+                            <i [class]="block.icon"></i>{{ block.label }}
+                        </div>
+                        <div class="block-header-buttons">
+                            <p-button icon="pi pi-times" (click)="removeBlock(block)" (keyPress)="removeBlock(block)"
+                                (keyDown)="removeBlock(block)" (keyUp)="removeBlock(block)" [text]="true"></p-button>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <div class="timeline">
+                        <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
+                            <div class="cue-point" *ngSwitchDefault (mouseenter)="handleMouseEnterOnTc($event,loc)"
+                                (mouseleave)="handleMouseLeaveOnTc($event)"
+                                (keyPress)="handleMouseEnterOnTc($event,loc)"
+                                (keyDown)="handleMouseEnterOnTc($event,loc)" (keyUp)="handleMouseEnterOnTc($event,loc)"
+                                [ngStyle]="{'background-color': block.data.color ?block.data.color:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"
+                                [attr.data-tc]="loc.tc" [attr.data-type]="loc.type" (click)="callSeek(loc.tc)"></div>
+                            <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn"
+                                [attr.data-type]="loc.type" (click)="callSeek(loc.tcIn)"
+                                (keyPress)="handleMouseEnterOnTc($event,loc)"
+                                (keyDown)="handleMouseEnterOnTc($event,loc)" (keyUp)="handleMouseEnterOnTc($event,loc)"
+                                (mouseenter)="handleMouseEnterOnTc($event,loc)"
+                                (mouseleave)="handleMouseLeaveOnTc($event)"
+                                [ngStyle]="{'background-color': block.data.color ?block.data.color:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn)+'%' }">
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-template>
+            </p-accordionTab>
+        </ng-container>
+    </p-accordion>
 </div>
 <div class="segment-empty"></div>
 <div class="menu" [ngClass]="{'open':configIsOpen}">
@@ -97,9 +103,11 @@
             <p-checkbox label="Sélectionner des segments" [(ngModel)]="allNodesChecked" [binary]="true"
                 inputId="select-segments" (onChange)="toggleAllNodes()" />
             <p-button *ngIf="filterHidden" icon="pi pi-search" [rounded]="true" (click)="toggleFilter()"
+                (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
                 class="btn-show-filter" />
             <p-button *ngIf="!filterHidden" icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary"
-                (click)="toggleFilter()" class="btn-hide-filter" />
+                (click)="toggleFilter()" (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
+                class="btn-hide-filter" />
         </div>
         <div class="main">
             <p-tree *ngIf="filterHidden" [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes">
@@ -120,8 +128,10 @@
             </p-tree>
         </div>
         <div class="footer">
-            <p-button class="no-highlight" (click)="handleDisplayBlocks(false)">Annuler</p-button>
-            <p-button class="highlight" (click)="handleDisplayBlocks(true)">Valider</p-button>
+            <p-button class="no-highlight" (click)="handleDisplayBlocks(false)"
+                (keyPress)="handleDisplayBlocks(false)">Annuler</p-button>
+            <p-button class="highlight" (click)="handleDisplayBlocks(true)"
+                (keyPress)="handleDisplayBlocks(true)">Valider</p-button>
         </div>
     </div>
     <div class="segment-empty"></div>

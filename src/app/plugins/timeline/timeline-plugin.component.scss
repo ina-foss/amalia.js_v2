@@ -100,7 +100,7 @@
     width: 15px;
     position: relative;
     top: 5px;
-    color: #0086B1;
+    color: $amalia-plugin-timeline-primary-color;
   }
 
   .amalia-svg-down-size {
@@ -113,7 +113,7 @@
     box-sizing: border-box;
     height: 100%;
     width: 2px;
-    background-color: #0086B1;
+    background-color: $amalia-plugin-timeline-primary-color;
   }
 
   .header,
@@ -137,62 +137,6 @@
 
     div {
       padding: 0 10px;
-    }
-  }
-
-  .footer {
-    .unzoom {
-      padding: 0;
-
-      .amalia-svg-unzoom-size {
-        cursor: pointer;
-        color: $amalia-plugin-timeline-font-color;
-        height: 30px;
-        width: 25px;
-        top: 1px;
-      }
-    }
-
-    .state-control {
-      cursor: pointer;
-
-      &.close {
-        .amalia-svg-down-size {
-          transform: scaleY(-1) rotate(-90deg);
-        }
-      }
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: row;
-      line-height: 32px;
-
-      .zoom,
-      .drag-drop {
-        position: relative;
-        border: 1px solid #727070;
-        cursor: pointer;
-        background-color: $amalia-plugin-timeline-bg-color;
-        color: $amalia-plugin-timeline-actions-border-color;
-        height: 25px;
-        line-height: 25px;
-        top: 3px;
-
-        .icon {
-          top: 3px;
-          color: #C8C9CA;
-        }
-
-        &.selected {
-          background-color: #0087B2;
-          color: $amalia-plugin-timeline-font-color;
-
-          .icon {
-            color: $amalia-plugin-timeline-font-color;
-          }
-        }
-      }
     }
   }
 
@@ -221,8 +165,8 @@
     }
 
     .p-checkbox .p-checkbox-box.p-highlight {
-      border-color: var(--amalia-plugin-timeline-primary-color, #0086B1);
-      background: var(--amalia-plugin-timeline-primary-color, #0086B1);
+      border-color: $amalia-plugin-timeline-primary-color;
+      background: $amalia-plugin-timeline-primary-color;
     }
 
     .content {
@@ -242,7 +186,7 @@
       .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-treenode-icon,
       .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-tree-toggler:hover,
       .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-treenode-icon:hover {
-        color: var(--amalia-plugin-timeline-primary-color, #0086B1);
+        color: $amalia-plugin-timeline-primary-color;
       }
 
       .p-tree .p-tree-container .p-treenode .p-treenode-content {
@@ -251,7 +195,7 @@
       }
 
       .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
-        color: var(--amalia-plugin-timeline-primary-color, #0086B1);
+        color: $amalia-plugin-timeline-primary-color;
       }
 
       .p-treenode-leaf {
@@ -290,7 +234,7 @@
         }
 
         .p-checkbox-label-active {
-          color: var(--amalia-plugin-timeline-primary-color, #0086B1);
+          color: $amalia-plugin-timeline-primary-color;
         }
 
         .btn-hide-filter {
@@ -497,149 +441,222 @@
     }
 
 
-    .timeline-block {
-      position: relative;
+    .timeline-block-label {
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      gap: var(--spacings-border-radius-radius-sm, 4px);
+    }
+
+    &.sortable-chosen {
+      border: solid $amalia-plugin-timeline-secondary-color 1px;
+    }
+
+    .focus {
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      min-height: 50px;
+      top: 0;
+      width: 100%;
+
+      border-radius: var(--border-radius-sm, 4px);
+      border: 2px solid $amalia-plugin-timeline-primary-color;
+      z-index: 10;
+
+      .time-code {
+        position: relative;
+        top: -32px;
+        font-size: 12px;
+
+        .start {
+          left: 0;
+        }
+
+        .end {
+          right: 10px;
+        }
+      }
+    }
+
+    .block-header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      box-sizing: border-box;
+      min-height: 30px;
+      user-select: none;
+      width: 100%;
+
+      .extend .icon {
+        cursor: pointer;
+      }
+
+      div {
+        padding: 0;
+      }
+    }
+
+    .p-accordion-header:hover {
+      cursor: move;
+
+      .block-header-buttons {
+        display: flex;
+        gap: var(--spacings-border-radius-radius-sm, 4px);
+        padding: 0;
+
+        p-button {
+          width: 14px;
+          height: 14px;
+        }
+
+        .p-button.p-button-icon-only {
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+
+    .p-accordion-toggle-icon {
+      color: $amalia-plugin-timeline-primary-color;
+      padding: 0 12px 0 4px;
+    }
+
+    .p-accordion .p-accordion-header .p-accordion-toggle-icon {
+      transform: rotate(0deg) !important;
+    }
+
+    .p-accordion .p-accordion-header.p-highlight .p-accordion-toggle-icon {
+      transform: rotate(0deg) !important;
+    }
+
+    .block-header-buttons {
+      display: none;
+    }
+
+    .p-accordion-header-link {
+      padding: 0;
+      width: 100%;
+    }
+
+    .timeline {
+      display: block;
+      min-height: 30px !important;
+      position: relative;
+      height: 100%;
+      width: 100%;
       overflow: hidden;
-      height: 60px;
-      transition: height 0.5s ease-in-out;
       user-select: none;
 
-
-      &.sortable-chosen {
-        border: solid $amalia-plugin-timeline-secondary-color 1px;
-      }
-
-      .drag {
-        right: 15px;
-        cursor: grab;
-        color: $amalia-plugin-timeline-primary-color;
-        position: relative;
-      }
-
-      &.small {
-        height: 30px;
-
-        .extend {
-          .amalia-svg-down-size {
-            transition: all 0.5s ease-in-out;
-            transform: scaleY(-1) rotate(-90deg);
-          }
-        }
-      }
-
-      .focus {
-        position: absolute;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 5px;
-        height: calc(100% - 10px);
-        top: 5px;
-        width: 100%;
-        left: 0;
-        border: solid 1px $amalia-plugin-timeline-secondary-color;
-        z-index: 10;
-
-        .time-code {
-          position: absolute;
-          right: 10px;
-          top: -8px;
-
-          .start,
-          .end {
-            font-size: 12px;
-          }
-        }
-      }
-
-      .block-header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        box-sizing: border-box;
-        border: 1px solid $amalia-plugin-timeline-border-color;
-        background-color: $amalia-plugin-timeline-header-bg-color;
-        min-height: 30px;
-        user-select: none;
-
-        .extend .icon {
-          cursor: pointer;
-        }
-
-        div {
-          padding: 0 10px;
-        }
-      }
-
-      .timeline {
+      &:before {
+        content: "";
         display: block;
-        min-height: 30px;
-        position: relative;
-        height: 100%;
         width: 100%;
-        overflow: hidden;
-        user-select: none;
+        box-sizing: border-box;
+        height: 1px;
+        border: 1px solid var(--INA-Gris-croissant, #D9D9D9);
+        position: absolute;
+        top: calc(50% - 1px);
+      }
 
-        &:before {
-          content: "";
-          display: block;
-          width: 100%;
-          box-sizing: border-box;
-          height: 1px;
-          border: 1px solid #979797;
-          position: absolute;
-          top: 50%;
-        }
+      .cue-point {
+        position: absolute;
+        top: calc(50% - 3px);
+        background-color: $amalia-plugin-timeline-primary-color;
+        height: 10px;
+        width: 10px;
+        border-radius: var(--spacings-border-radius-radius-sm, 4px);
+        left: 30%;
+        border: 1px solid $amalia-plugin-timeline-secondary-color;
+        cursor: pointer;
+        transition: all 0.25s ease-in-out;
+      }
 
-        .cue-point {
-          position: absolute;
-          top: calc(50% - 3px);
-          background-color: $amalia-plugin-timeline-primary-color;
-          height: 10px;
-          width: 10px;
-          border-radius: 10px;
-          left: 30%;
-          border: 1px solid $amalia-plugin-timeline-secondary-color;
-          cursor: pointer;
-          transition: all 0.25s ease-in-out;
-        }
-
-        .segment {
-          position: absolute;
-          top: calc(50% - 5px);
-          width: 100px;
-          height: 10px;
-          left: 85%;
-          background-color: $amalia-plugin-timeline-primary-color;
-          border-radius: 2px;
-          border: 1px solid $amalia-plugin-timeline-secondary-color;
-          cursor: pointer;
-          transition: all 0.25s ease-in-out;
-        }
-
+      .segment {
+        position: absolute;
+        top: calc(50% - 5px);
+        width: 100px;
+        height: 10px;
+        left: 85%;
+        background-color: $amalia-plugin-timeline-primary-color;
+        border-radius: var(--spacings-border-radius-radius-sm, 4px);
+        border: 1px solid var(--INA-Gris-croissant, #D9D9D9);
+        cursor: pointer;
+        transition: all 0.25s ease-in-out;
       }
     }
   }
 
   .main-block {
     min-height: 50px;
-    overflow: hidden;
+    overflow: visible;
     padding: 0;
     margin: 0;
     box-sizing: unset;
     border: none;
     height: 50px;
 
-    .block.main {
+    .timeline-block {
       background-color: $amalia-plugin-timeline-header-bg-color;
       height: 50px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .handle-border {
+      position: absolute;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .handle-border::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 15px;
+      height: 100%;
+      background-image: url('/assets/amalia/images/left-handle-molecule.svg');
+      background-repeat: no-repeat;
+      background-position: left center;
+    }
+
+    .handle-border::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 15px;
+      height: 100%;
+      background-image: url('/assets/amalia/images/right-handle-molecule.svg');
+      background-repeat: no-repeat;
+      background-position: right center;
     }
   }
 
-  /* try without ng-deep */
-  
+
+  .grabbable {
+    cursor: grab;
+  }
+
+  .grabbable:active {
+    cursor: grabbing;
+  }
+
+
   p-toolbar {
     box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.10) !important;
+    display: flex;
+    justify-content: flex-end;
+    background-color: white !important;
+    padding: 4px 8px 4px 8px !important;
+  }
+
+  .p-toolbar {
+    border: none !important;
+    padding: 0 !important;
   }
 
   .p-button.p-button-icon-only {
@@ -649,7 +666,14 @@
     border: none !important;
   }
 
+  .p-button.p-button-icon-only.p-button-rounded {
+    height: 33px;
+    width: 33px;
+  }
+
   .p-toolbar-group-end {
+    border: none !important;
+
     .toolbar-end-buttons {
       .p-element {
         .p-button {
@@ -659,7 +683,31 @@
       }
     }
   }
-  p-inputswitch {
-    display: flex;
+
+  .p-accordion .p-accordion-header .p-accordion-header-link {
+    padding: 0 1.125rem 0 1.125rem !important;
+  }
+
+  .p-accordion .p-accordion-content {
+    padding: 0 1.125rem 0 1.125rem !important;
+  }
+
+  .p-accordion .p-accordion-header .p-accordion-toggle-icon {
+    order: -1;
+    /* Déplace l'icône à gauche */
+    margin-right: 12px;
+    /* Ajoute un espace entre l'icône et le texte */
+  }
+
+  .p-accordion .p-accordion-header .p-accordion-header-link {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+  }
+
+}
+
+:host ::ng-deep {
+  [pDraggable] {
+    cursor: move;
   }
 }

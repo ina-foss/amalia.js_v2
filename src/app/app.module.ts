@@ -41,6 +41,8 @@ import {TreeModule} from 'primeng/tree';
 import {CheckboxModule} from "primeng/checkbox";
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { AccordionModule } from 'primeng/accordion';
+import { DragDropModule } from 'primeng/dragdrop'; 
 
 @NgModule({
     imports: [
@@ -67,7 +69,9 @@ import { InputSwitchModule } from 'primeng/inputswitch';
         TreeModule,
         CheckboxModule,
         ToolbarModule,
-        InputSwitchModule
+        InputSwitchModule,
+        AccordionModule,
+        DragDropModule
     ],
     declarations: [
         AmaliaComponent,

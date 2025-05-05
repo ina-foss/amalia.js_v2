@@ -22,6 +22,7 @@ import { TimeLineBlock, TimelineLocalisation } from '../../core/metadata/model/t
 import * as _ from 'lodash';
 import { Metadata } from '@ina/amalia-model';
 import { TreeNode } from 'primeng/api/treenode';
+import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
 
 @Component({
     selector: 'amalia-timeline',
@@ -35,7 +36,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<TimeLineBlock>;
-    public enableDragDrop = false;
+    public listOfBlocksIndexes: Array<number>;
     public configIsOpen = false;
     public currentTime = 0;
     public duration = 0;
@@ -75,7 +76,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         handle: '.drag',
         filter: '.filtered',
     };
-    public enableZoom = false;
+
     /**
      * true for open all block
      */
@@ -97,6 +98,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     allNodesChecked: boolean = false;
     showTollbar: boolean = false;
     checkedSyncro: boolean = false;
+    enableZoom: boolean = false;
 
     showToolbar() {
         this.showTollbar = true;
@@ -124,9 +126,28 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     getNewNodeFromMetadataElement = (metadata: { type: string; }) => {
+        let { level1Label, icon } = this.getNodeLabelAndIcon(metadata);
+
+        let level1Node: TreeNode = (icon === '') ? {
+            key: metadata.type,
+            label: level1Label,
+            children: [],
+            checked: true,
+            expanded: true
+        } : {
+            key: metadata.type,
+            label: level1Label,
+            children: [],
+            icon,
+            checked: true,
+            expanded: true
+        };
+        return level1Node;
+    }
+
+    private getNodeLabelAndIcon(metadata: { type: string; }) {
         let level1Label: string = '';
         let icon: string = undefined;
-
         const segmentationRegExp = new RegExp(DataType.SEGMENTATION, 'g');
         const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, 'g');
         const dayScheduleRegExp = new RegExp(DataType.DAY_SCHEDULE, 'g');
@@ -147,22 +168,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (level1Label.endsWith('-')) {
             level1Label = level1Label.substring(0, level1Label.length - 1);
         }
-
-        let level1Node: TreeNode = (icon === '') ? {
-            key: metadata.type,
-            label: level1Label,
-            children: [],
-            checked: true,
-            expanded: true
-        } : {
-            key: metadata.type,
-            label: level1Label,
-            children: [],
-            icon,
-            checked: true,
-            expanded: true
-        };
-        return level1Node;
+        return { level1Label, icon };
     }
 
     /**
@@ -201,6 +207,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     parseTimelineMetadata() {
         this.listOfBlocks = [];
+        this.listOfBlocksIndexes = [];
         const listOfMetadata: Array<Metadata> = [];
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
@@ -235,12 +242,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     // Handle metadata properties
-    handleMetadataProperties(listOfMetadata, metadataManager) {
-        listOfMetadata.forEach((metadata) => {
+    handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: MetadataManager) {
+        listOfMetadata.forEach((metadata: any) => {
             let listOfLocalisations = null;
             try {
                 listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
-                listOfLocalisations.forEach(l => {
+                listOfLocalisations.forEach((l: { tcIn: number; tcOut: number; }) => {
                     if (l.tcIn) {
                         l.tcIn += this.tcOffset;
                     }
@@ -249,27 +256,29 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                     }
                 });
             } catch (e) {
-                this.logger.warn('Error to parse metadata');
+                this.logger.warn('Error to parse metadata', e);
             }
+            const color = (metadata?.viewControl?.color) ?? this.getAvailableColor();
             this.listOfBlocks.push({
                 id: metadata.id,
-                label: (metadata?.label) ? metadata.label : metadata.id,
+                label: (metadata?.label) ?? metadata.id,
                 expendable: this.pluginConfiguration.data.expendable,
-                defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
+                defaultColor: color,
                 displayState: true,
-                data: listOfLocalisations
+                data: listOfLocalisations,
+                icon: this.getNodeLabelAndIcon(metadata).icon
             });
-
+            this.listOfBlocksIndexes.push(this.listOfBlocks.length - 1);
             let level1NodeAlreadyAdded: boolean = false;
             this.nodes.forEach(node => {
                 if (node.key === metadata.type) {
-                    node.children.push(this.getNewChildNodeFromMetadataElement(metadata));
+                    node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
                     level1NodeAlreadyAdded = true;
                 }
             });
             if (!level1NodeAlreadyAdded) {
                 let level1Node = this.getNewNodeFromMetadataElement(metadata);
-                level1Node.children.push(this.getNewChildNodeFromMetadataElement(metadata));
+                level1Node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
                 this.nodes.push(level1Node);
             }
         });
@@ -277,13 +286,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.allNodesChecked = true;
     }
 
-    getNewChildNodeFromMetadataElement = (metadata) => {
+    getNewChildNodeFromMetadataElement = (metadata: any, color: string) => {
         return {
             key: metadata.id,
-            label: (metadata?.label) ? metadata.label : metadata.id,
-            data: { color: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(), },
+            label: (metadata?.label) ?? metadata.id,
+            data: { color },
             checked: true,
-            expanded: true
+            expanded: true,
+            icon: this.getNodeLabelAndIcon(metadata).icon
         };
     }
     filterHidden: boolean = false;
@@ -376,10 +386,21 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 })
             ],
         });
-        container.on('dragend resizeend', this.handleZoomRangeChange);
+        container.on('dragend resizeend', this.handleZoomRangeChange.bind(this));
     }
 
+    initTimeCodePositioning() {
+        const focusElement: HTMLDivElement = document.querySelector('.focus');
+        const tcInElement: HTMLSpanElement = document.querySelector('.time-code .start');
+        const tcOutElement: HTMLSpanElement = document.querySelector('.time-code .end');
+        focusElement.addEventListener('mousemove', (event) => {
+            const rect = focusElement.getBoundingClientRect();
+            const offsetX = event.clientX - rect.left;
+            tcInElement.style.left = `${offsetX}px`;
+            tcOutElement.style.right = `${offsetX}px`;
+        });
 
+    }
     /**
      * In charge to change display state
      * @param mainElement parent element
@@ -397,7 +418,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param mainElement parent element
      * @param stateControl old state
      */
-    public toggleAllBlocksState(mainElement: HTMLElement, stateControl) {
+    public toggleAllBlocksState(mainElement: HTMLElement, stateControl: HTMLDivElement) {
         this.blocksIsOpen = !this.blocksIsOpen;
         if (this.blocksIsOpen) {
             stateControl.classList.add('close');
@@ -513,7 +534,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * In charge to main timeline
      */
-    public createMainMetadataIds(handleMetadataIds, metadataManager) {
+    public createMainMetadataIds(handleMetadataIds: string[], metadataManager: MetadataManager) {
         const listOfLocalisations = new Array<TimelineLocalisation>();
         if (handleMetadataIds) {
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
@@ -524,7 +545,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 try {
                     localisations = metadataManager.getTimelineLocalisations(metadata);
                     if (localisations) {
-                        localisations.forEach((l) => {
+                        localisations.forEach((l: TimelineLocalisation) => {
                             l.color = baseColor;
                             listOfLocalisations.push(l);
                         });
@@ -544,7 +565,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param localisation localisation
      */
     public handleMouseEnterOnTc(event: MouseEvent, localisation: TimelineLocalisation) {
-        const defaultMouseMargin = 50;
+        const defaultMouseMargin = 20;
         const selectedBlockElement = this.selectedBlockElement.nativeElement;
         const currentTarget = event.target as HTMLElement;
         selectedBlockElement.style.left = `${currentTarget.offsetLeft}px`;
@@ -557,56 +578,45 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * On mouse enter on tc bloc
      * @param $event event
      */
-    public handleMouseLeaveOnTc($event) {
+    public handleMouseLeaveOnTc($event: any) {
         this.selectedBlockElement.nativeElement.style.display = 'none';
         this.selectedBlock = null;
     }
 
 
-    handleClickToDrawRect(event) {
-        if (this.enableZoom) {
-            this.isDrawingRectangle = (event.type === 'mousedown');
-            if (event.type === 'mouseup') {
-                this.enableZoom = false;
-            }
-            if (this.isDrawingRectangle) {
-                const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
-                const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
-                this.selectionPosition.startX = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
-                this.selectionPosition.startY = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
-                this.updateMouseEvent(event);
-                this.selectionContainer.nativeElement.style.cursor = 'crosshair';
-                this.selectionContainer.nativeElement.style.display = 'block';
-                this.selectionContainer.nativeElement.style.left = this.selectionPosition.startX + 'px';
-                this.selectionContainer.nativeElement.style.top = this.selectionPosition.startY + 'px';
-            } else {
-                this.updateFocusContainerOnSelection(this.selectionContainer.nativeElement.offsetWidth, this.selectionContainer.nativeElement.offsetLeft);
-                this.selectionContainer.nativeElement.style.cursor = 'default';
-                this.selectionContainer.nativeElement.style.display = 'none';
-                this.selectionPosition = {
-                    x: 0,
-                    y: 0,
-                    startX: 0,
-                    startY: 0
-                };
-            }
+    handleClickToDrawRect(event: { type: string; clientX: string; clientY: string; }) {
+        this.isDrawingRectangle = (event.type === 'mousedown');
+        if (event.type === 'mouseup') {
+            this.enableZoom = false;
         }
-    }
 
-    /**
-     * Enable zoom
-     */
-    public handleEnableZoom() {
-        this.enableZoom = !this.enableZoom;
-        if (this.enableZoom) {
-            this.unZoom();
+        if (this.isDrawingRectangle) {
+            const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
+            const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
+            this.selectionPosition.startX = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
+            this.selectionPosition.startY = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
+            this.updateMouseEvent(event);
+            this.selectionContainer.nativeElement.style.cursor = 'crosshair';
+            this.selectionContainer.nativeElement.style.display = 'block';
+            this.selectionContainer.nativeElement.style.left = this.selectionPosition.startX + 'px';
+            this.selectionContainer.nativeElement.style.top = this.selectionPosition.startY + 'px';
+        } else {
+            this.updateFocusContainerOnSelection(this.selectionContainer.nativeElement.offsetWidth, this.selectionContainer.nativeElement.offsetLeft);
+            this.selectionContainer.nativeElement.style.cursor = 'default';
+            this.selectionContainer.nativeElement.style.display = 'none';
+            this.selectionPosition = {
+                x: 0,
+                y: 0,
+                startX: 0,
+                startY: 0
+            };
         }
     }
 
     /**
      * In charge to change focus container
      */
-    public updateFocusContainerOnSelection(focusWidth, leftPos) {
+    public updateFocusContainerOnSelection(focusWidth: number, leftPos: number) {
         const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
         const selectionContainer = this.selectionContainer.nativeElement;
         const selectionContainerWidth = selectionContainer.clientWidth;
@@ -700,4 +710,17 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     toggleFilter() {
         this.filterHidden = !this.filterHidden;
     }
+
+    startIndex: number;
+
+    onDragStart(index: number) {
+        this.startIndex = index;
+    }
+
+    onDrop(dropIndex: number) {
+        const item = this.listOfBlocks[this.startIndex];
+        this.listOfBlocks.splice(this.startIndex, 1);
+        this.listOfBlocks.splice(dropIndex, 0, item);
+    }
+
 }
