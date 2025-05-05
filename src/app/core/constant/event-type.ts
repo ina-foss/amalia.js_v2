@@ -248,6 +248,7 @@ export enum PlayerEventType {
     HTML_ELEMENT_MOUSE_DOWN = 'mousedown',
     HTML_ELEMENT_MOUSE_UP = 'mouseup',
     HTML_ELEMENT_MOUSE_MOVE = 'mousemove',
+    HTML_ELEMENT_WHEEL = 'wheel',
     ELEMENT_CONTEXT_MENU = 'contextmenu',
     ELEMENT_CLICK = 'click',
     ELEMENT_LOADSTART = 'loadstart',

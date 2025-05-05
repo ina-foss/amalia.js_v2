@@ -43,6 +43,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AccordionModule } from 'primeng/accordion';
 import { DragDropModule } from 'primeng/dragdrop'; 
+import { PreventCtrlScrollDirective } from './core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
 
 @NgModule({
     imports: [
@@ -86,7 +87,8 @@ import { DragDropModule } from 'primeng/dragdrop';
         TimelinePluginComponent,
         SortablejsDirective,
         AnnotationPluginComponent,
-        SegmentComponent
+        SegmentComponent,
+        PreventCtrlScrollDirective,
     ],
     providers: [
         MediaPlayerService,

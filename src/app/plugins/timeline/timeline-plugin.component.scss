@@ -41,6 +41,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    z-index: 11;
   }
 
   .synchro-switch {
@@ -107,15 +108,6 @@
     transition: all 0.5s ease-in-out;
   }
 
-  .tc-cursor {
-    position: absolute;
-    z-index: 9;
-    box-sizing: border-box;
-    height: 100%;
-    width: 2px;
-    background-color: $amalia-plugin-timeline-primary-color;
-  }
-
   .header,
   .footer {
     background-color: $amalia-plugin-timeline-secondary-color;
@@ -153,7 +145,7 @@
     width: 0;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.8);
-    z-index: 10;
+    z-index: 11;
 
     &.open {
       width: 100%;
@@ -457,18 +449,17 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      background-color: rgba(255, 255, 255, 0.8);
-      min-height: 50px;
-      top: 0;
+      min-height: 30px;
       width: 100%;
-
+      background-color: transparent;
+      box-shadow: 0 9999px 0 9999px rgba(255, 255, 255, 0.7);
       border-radius: var(--border-radius-sm, 4px);
       border: 2px solid $amalia-plugin-timeline-primary-color;
       z-index: 10;
 
       .time-code {
         position: relative;
-        top: -32px;
+        top: -21px;
         font-size: 12px;
 
         .start {
@@ -486,7 +477,6 @@
       flex-direction: row;
       justify-content: space-between;
       box-sizing: border-box;
-      min-height: 30px;
       user-select: none;
       width: 100%;
 
@@ -521,7 +511,8 @@
 
     .p-accordion-toggle-icon {
       color: $amalia-plugin-timeline-primary-color;
-      padding: 0 12px 0 4px;
+      padding: 0 12px 0 4px !important;
+      margin: 0 !important;
     }
 
     .p-accordion .p-accordion-header .p-accordion-toggle-icon {
@@ -534,11 +525,6 @@
 
     .block-header-buttons {
       display: none;
-    }
-
-    .p-accordion-header-link {
-      padding: 0;
-      width: 100%;
     }
 
     .timeline {
@@ -563,13 +549,12 @@
 
       .cue-point {
         position: absolute;
-        top: calc(50% - 3px);
+        top: calc(50% - 5px);
         background-color: $amalia-plugin-timeline-primary-color;
         height: 10px;
         width: 10px;
         border-radius: var(--spacings-border-radius-radius-sm, 4px);
         left: 30%;
-        border: 1px solid $amalia-plugin-timeline-secondary-color;
         cursor: pointer;
         transition: all 0.25s ease-in-out;
       }
@@ -582,25 +567,50 @@
         left: 85%;
         background-color: $amalia-plugin-timeline-primary-color;
         border-radius: var(--spacings-border-radius-radius-sm, 4px);
-        border: 1px solid var(--INA-Gris-croissant, #D9D9D9);
         cursor: pointer;
         transition: all 0.25s ease-in-out;
       }
     }
   }
 
+  .list-blocks {
+    z-index: 11;
+
+    .tc-cursor {
+      position: absolute;
+      z-index: 999;
+      box-sizing: border-box;
+      height: 100%;
+      width: 2px;
+      background-color: $amalia-plugin-timeline-primary-color;
+    }
+  }
+
   .main-block {
-    min-height: 50px;
+    min-height: 40px;
     overflow: visible;
     padding: 0;
     margin: 0;
     box-sizing: unset;
     border: none;
-    height: 50px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+
+    .tc-cursor {
+      position: absolute;
+      z-index: 11;
+      box-sizing: border-box;
+      height: 30px;
+      width: 2px;
+      background-color: $amalia-plugin-timeline-primary-color;
+    }
 
     .timeline-block {
       background-color: $amalia-plugin-timeline-header-bg-color;
-      height: 50px;
+      height: 30px;
       display: flex;
       flex-direction: column;
     }
@@ -684,26 +694,27 @@
     }
   }
 
-  .p-accordion .p-accordion-header .p-accordion-header-link {
-    padding: 0 1.125rem 0 1.125rem !important;
-  }
-
   .p-accordion .p-accordion-content {
-    padding: 0 1.125rem 0 1.125rem !important;
+    padding: 0 15px !important;
   }
 
   .p-accordion .p-accordion-header .p-accordion-toggle-icon {
     order: -1;
     /* Déplace l'icône à gauche */
-    margin-right: 12px;
-    /* Ajoute un espace entre l'icône et le texte */
   }
 
   .p-accordion .p-accordion-header .p-accordion-header-link {
+    width: 100%;
     flex-direction: row !important;
     justify-content: flex-start !important;
+    padding: var(--border-radius-sm, 4px);
+    gap: 4px;
+    background: var(--accordion-header-active-background, #F9FAFB);
   }
 
+  .pad {
+    padding: 0 15px !important;
+  }
 }
 
 :host ::ng-deep {

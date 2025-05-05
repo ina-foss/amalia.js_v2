@@ -63,6 +63,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         '#183462', '#0e4f26', '#5e4803', '#661814', '#5e1d3d', '#282960', '#084a42', '#642e09', '#282e38', '#432263', '#024955',];
     @ViewChild('focusContainer', { static: true })
     public focusContainer: ElementRef<HTMLElement>;
+    @ViewChild('mainTimeline', { static: true })
+    public mainTimeline: ElementRef<HTMLDivElement>;
     @ViewChild('mainBlockContainer', { static: true })
     public mainBlockContainer: ElementRef<HTMLElement>;
     @ViewChild('listOfBlocksContainer', { static: true })
@@ -99,6 +101,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     showTollbar: boolean = false;
     checkedSyncro: boolean = false;
     enableZoom: boolean = false;
+    mouseX: number;
+    mouseY: number;
 
     showToolbar() {
         this.showTollbar = true;
@@ -190,8 +194,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         }
         this.initFocusResizable(this.focusContainer.nativeElement);
-        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_DOWN, this.handleClickToDrawRect);
-        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_UP, this.handleClickToDrawRect);
+        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_WHEEL, this.handleClickToDrawRect);
         this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_MOVE, this.handleMouseMoveToDrawRect);
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTimelineMetadata();
@@ -389,18 +392,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         container.on('dragend resizeend', this.handleZoomRangeChange.bind(this));
     }
 
-    initTimeCodePositioning() {
-        const focusElement: HTMLDivElement = document.querySelector('.focus');
-        const tcInElement: HTMLSpanElement = document.querySelector('.time-code .start');
-        const tcOutElement: HTMLSpanElement = document.querySelector('.time-code .end');
-        focusElement.addEventListener('mousemove', (event) => {
-            const rect = focusElement.getBoundingClientRect();
-            const offsetX = event.clientX - rect.left;
-            tcInElement.style.left = `${offsetX}px`;
-            tcOutElement.style.right = `${offsetX}px`;
-        });
-
-    }
     /**
      * In charge to change display state
      * @param mainElement parent element
@@ -503,11 +494,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public refreshTimeCursor() {
         if (isFinite(this.currentTime) && isFinite(this.duration)) {
             const selector = '.tc-cursor';
-            const focusLeftPos = (this.currentTime - this.focusTcIn) * 100 / (this.focusTcOut - this.focusTcIn);
+            const mainTimelineWidth = this.mainTimeline.nativeElement.offsetWidth;
+            const mainTimelineLeftPosition = this.mainTimeline.nativeElement.offsetLeft;
+            const focusLeftPos = mainTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn);
             const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
             const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
-            mainBlock.style.left = `${this.currentTime * 100 / this.duration}%`;
-            listBlock.style.left = `${focusLeftPos}%`;
+            mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
+            listBlock.style.left = `${focusLeftPos}px`;
         }
     }
 
@@ -584,32 +577,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
 
-    handleClickToDrawRect(event: { type: string; clientX: string; clientY: string; }) {
-        this.isDrawingRectangle = (event.type === 'mousedown');
-        if (event.type === 'mouseup') {
-            this.enableZoom = false;
-        }
-
+    handleClickToDrawRect(event: any) {
+        this.isDrawingRectangle = (event.type === 'wheel' && event.ctrlKey);
         if (this.isDrawingRectangle) {
-            const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
-            const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
-            this.selectionPosition.startX = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
-            this.selectionPosition.startY = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
-            this.updateMouseEvent(event);
-            this.selectionContainer.nativeElement.style.cursor = 'crosshair';
-            this.selectionContainer.nativeElement.style.display = 'block';
-            this.selectionContainer.nativeElement.style.left = this.selectionPosition.startX + 'px';
-            this.selectionContainer.nativeElement.style.top = this.selectionPosition.startY + 'px';
-        } else {
-            this.updateFocusContainerOnSelection(this.selectionContainer.nativeElement.offsetWidth, this.selectionContainer.nativeElement.offsetLeft);
-            this.selectionContainer.nativeElement.style.cursor = 'default';
-            this.selectionContainer.nativeElement.style.display = 'none';
-            this.selectionPosition = {
-                x: 0,
-                y: 0,
-                startX: 0,
-                startY: 0
-            };
+            let focusContainerWidth = this.focusContainer.nativeElement.offsetWidth;
+            focusContainerWidth = focusContainerWidth + event.deltaY;
+            this.updateFocusContainerOnSelection(focusContainerWidth, this.selectionPosition.x);
         }
     }
 
@@ -617,12 +590,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to change focus container
      */
     public updateFocusContainerOnSelection(focusWidth: number, leftPos: number) {
-        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
-        const selectionContainer = this.selectionContainer.nativeElement;
-        const selectionContainerWidth = selectionContainer.clientWidth;
+        const mainContainerWidth = this.mainTimeline.nativeElement.clientWidth;
         const focusContainer: HTMLElement = this.focusContainer.nativeElement;
         const leftPosFocusContainer = Math.min(leftPos * 100 / mainContainerWidth, 100);
-        const focusContainerWidth = Math.min(100, selectionContainerWidth * 100 / mainContainerWidth);
+        const focusContainerWidth = Math.min(100, focusWidth * 100 / mainContainerWidth);
         // update the element's style
         focusContainer.style.left = `${leftPosFocusContainer}%`;
         focusContainer.style.width = `${focusContainerWidth}%`;
@@ -634,13 +605,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * handle mouse to draw
      * @param event mouse event
      */
-
     handleMouseMoveToDrawRect(event: MouseEvent) {
-        if (this.isDrawingRectangle) {
-            this.updateMouseEvent(event);
-            this.selectionContainer.nativeElement.style.width = Math.abs(this.selectionPosition.startX - this.selectionPosition.x) + 'px';
-            this.selectionContainer.nativeElement.style.height = Math.abs(this.selectionPosition.startY - this.selectionPosition.y) + 'px';
-        }
+        this.updateMouseEvent(event);
     }
 
     /**

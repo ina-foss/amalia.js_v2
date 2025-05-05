@@ -19,8 +19,9 @@
 </div>
 
 <div class="main-block" #mainBlockContainer>
-    <div class="tc-cursor"></div>
-
+    <div class="pad">
+        <div class="tc-cursor"></div>
+    </div>
     <div class="timeline-block">
         <div class="focus handle-border" #focusContainer>
             <div class="time-code" *ngIf="focusTcOut">
@@ -30,21 +31,26 @@
                 <span class="end ">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
             </div>
         </div>
-        <div class="timeline">
-            <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
-                <div class="cue-point" *ngSwitchDefault [attr.data-color]="loc.color"
-                    [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
-                    [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
-                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
-                    [attr.data-color]="loc.color"
-                    [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%','background-color': loc.color ?loc.color:mainBlockColor }">
-                </div>
-            </ng-container>
+        <div class="pad">
+            <div class="timeline" #mainTimeline>
+                <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
+                    <div class="cue-point" *ngSwitchDefault [attr.data-color]="loc.color"
+                        [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
+                        [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
+                    <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                        [attr.data-color]="loc.color"
+                        [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%','background-color': loc.color ?loc.color:mainBlockColor }">
+                    </div>
+                </ng-container>
+            </div>
         </div>
+
     </div>
 </div>
-<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions">
-    <div class="tc-cursor"></div>
+<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions" appPreventCtrlScroll>
+    <div class="pad">
+        <div class="tc-cursor"></div>
+    </div>
     <div class="rectangle" #selectionContainer></div>
     <div class="tooltip" #selectedBlockElement>
         <p *ngIf="selectedBlock?.thumb">{{ selectedBlock.thumb }}</p>
