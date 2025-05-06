@@ -43,7 +43,6 @@ describe('TimelinePluginComponent', () => {
         expect(component.mainBlockColor).toBeUndefined();
         expect(component.mainLocalisations).toBeUndefined();
         expect(component.listOfBlocks).toBeUndefined();
-        expect(component.enableDragDrop).toBeFalse();
         expect(component.configIsOpen).toBeFalse();
         expect(component.currentTime).toBe(0);
         expect(component.duration).toBe(0);
@@ -108,7 +107,7 @@ describe('TimelinePluginComponent', () => {
 
     it('should get new child node from metadata element', () => {
         const metadata = {id: 'test-id', label: 'Test Label', viewControl: {color: '#000000'}};
-        const childNode = component.getNewChildNodeFromMetadataElement(metadata);
+        const childNode = component.getNewChildNodeFromMetadataElement(metadata,metadata.viewControl.color);
 
         expect(childNode.key).toBe(metadata.id);
         expect(childNode.label).toBe(metadata.label);

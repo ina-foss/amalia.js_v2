@@ -36,7 +36,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<TimeLineBlock>;
-    public listOfBlocksIndexes: Array<number>;
+    public listOfBlocksIndexes: Array<number>= new Array();
     public configIsOpen = false;
     public currentTime = 0;
     public duration = 0;
@@ -245,7 +245,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     // Handle metadata properties
-    handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: MetadataManager) {
+    handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: any) {
         listOfMetadata.forEach((metadata: any) => {
             let listOfLocalisations = null;
             try {
