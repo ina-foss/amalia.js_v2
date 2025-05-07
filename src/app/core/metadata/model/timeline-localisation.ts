@@ -14,5 +14,6 @@ export interface TimeLineBlock {
     expendable: boolean,
     defaultColor?: string,
     displayState: boolean,
-    data: Array<TimelineLocalisation>
+    data: Array<TimelineLocalisation>,
+    icon?: string
 };

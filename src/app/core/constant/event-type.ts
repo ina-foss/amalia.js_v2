@@ -248,6 +248,7 @@ export enum PlayerEventType {
     HTML_ELEMENT_MOUSE_DOWN = 'mousedown',
     HTML_ELEMENT_MOUSE_UP = 'mouseup',
     HTML_ELEMENT_MOUSE_MOVE = 'mousemove',
+    HTML_ELEMENT_WHEEL = 'wheel',
     ELEMENT_CONTEXT_MENU = 'contextmenu',
     ELEMENT_CLICK = 'click',
     ELEMENT_LOADSTART = 'loadstart',
@@ -263,5 +264,11 @@ export enum PlayerEventType {
     ELEMENT_WAITING = 'waiting',
     ELEMENT_SUSPEND = 'suspend',
     ELEMENT_FULLSCREENCHANGE = 'fullscreenchange',
-    ELEMENT_KEYDOWN = 'keydown'
+    ELEMENT_KEYDOWN = 'keydown',
+    /**
+     * get the current time
+     */
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME = 'ina.CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME',
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME = 'ina.CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME',
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME = 'ina.CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME',
 }

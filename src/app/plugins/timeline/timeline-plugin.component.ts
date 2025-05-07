@@ -1,4 +1,4 @@
-import {PluginBase} from '../../core/plugin/plugin-base';
+import { PluginBase } from '../../core/plugin/plugin-base';
 import {
     Component,
     computed,
@@ -10,18 +10,19 @@ import {
     ViewEncapsulation,
     WritableSignal
 } from '@angular/core';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {TimelineConfig} from '../../core/config/model/timeline-config';
+import { PluginConfigData } from '../../core/config/model/plugin-config-data';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { TimelineConfig } from '../../core/config/model/timeline-config';
 import interact from 'interactjs';
-import {Options} from 'sortablejs';
-import {PlayerEventType} from '../../core/constant/event-type';
-import {DataType} from '../../core/constant/data-type';
-import {Utils} from '../../core/utils/utils';
-import {TimeLineBlock, TimelineLocalisation} from '../../core/metadata/model/timeline-localisation';
+import { Options } from 'sortablejs';
+import { PlayerEventType } from '../../core/constant/event-type';
+import { DataType } from '../../core/constant/data-type';
+import { Utils } from '../../core/utils/utils';
+import { TimeLineBlock, TimelineLocalisation } from '../../core/metadata/model/timeline-localisation';
 import * as _ from 'lodash';
-import {Metadata} from '@ina/amalia-model';
-import {TreeNode} from 'primeng/api/treenode';
+import { Metadata } from '@ina/amalia-model';
+import { TreeNode } from 'primeng/api/treenode';
+import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
 
 @Component({
     selector: 'amalia-timeline',
@@ -35,7 +36,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<TimeLineBlock>;
-    public enableDragDrop = false;
+    public listOfBlocksIndexes: Array<number> = [];
     public configIsOpen = false;
     public currentTime = 0;
     public duration = 0;
@@ -60,22 +61,24 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         '#85b2f9', '#76db9b', '#f2d066', '#ff8780', '#f38ec0', '#9ea0f6', '#6dd3c8', '#fba86f', '#9fa9b7', '#c996fa', '#65d2e4',
         '#204887', '#136c34', '#816204', '#8c221c', '#822854', '#363885', '#0b655b', '#893f0c', '#37404c', '#5c2f88', '#036475',
         '#183462', '#0e4f26', '#5e4803', '#661814', '#5e1d3d', '#282960', '#084a42', '#642e09', '#282e38', '#432263', '#024955',];
-    @ViewChild('focusContainer', {static: true})
+    @ViewChild('focusContainer', { static: true })
     public focusContainer: ElementRef<HTMLElement>;
-    @ViewChild('mainBlockContainer', {static: true})
+    @ViewChild('mainTimeline', { static: true })
+    public mainTimeline: ElementRef<HTMLDivElement>;
+    @ViewChild('mainBlockContainer', { static: true })
     public mainBlockContainer: ElementRef<HTMLElement>;
-    @ViewChild('listOfBlocksContainer', {static: true})
+    @ViewChild('listOfBlocksContainer', { static: true })
     public listOfBlocksContainer: ElementRef<HTMLElement>;
-    @ViewChild('selectedBlockElement', {static: true})
+    @ViewChild('selectedBlockElement', { static: true })
     public selectedBlockElement: any = null;
-    @ViewChild('selectionContainer', {static: true})
+    @ViewChild('selectionContainer', { static: true })
     public selectionContainer: ElementRef<HTMLElement>;
     public selectedBlock: TimelineLocalisation = null;
     public sortableOptions: Options = {
         handle: '.drag',
         filter: '.filtered',
     };
-    public enableZoom = false;
+
     /**
      * true for open all block
      */
@@ -86,15 +89,27 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     nodes: TreeNode[] = [];
     selectedNodes: WritableSignal<TreeNode[]> = signal<TreeNode[]>([]);
     selectedNodesMap = computed(() => {
-                let result = new Map<string, TreeNode>();
-                this.selectedNodes().forEach(selectedNode => {
-                    result.set(selectedNode.key, selectedNode);
-                });
-                return result;
-            }
+        let result = new Map<string, TreeNode>();
+        this.selectedNodes().forEach(selectedNode => {
+            result.set(selectedNode.key, selectedNode);
+        });
+        return result;
+    }
     );
     selectedNodesBeforeChange: TreeNode[] = [];
     allNodesChecked: boolean = false;
+    showTollbar: boolean = false;
+    checkedSyncro: boolean = false;
+    enableZoom: boolean = false;
+    mouseX: number;
+    mouseY: number;
+
+    showToolbar() {
+        this.showTollbar = true;
+    }
+    hideToolbar() {
+        this.showTollbar = false;
+    }
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -115,9 +130,28 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     getNewNodeFromMetadataElement = (metadata: { type: string; }) => {
+        let { level1Label, icon } = this.getNodeLabelAndIcon(metadata);
+
+        let level1Node: TreeNode = (icon === '') ? {
+            key: metadata.type,
+            label: level1Label,
+            children: [],
+            checked: true,
+            expanded: true
+        } : {
+            key: metadata.type,
+            label: level1Label,
+            children: [],
+            icon,
+            checked: true,
+            expanded: true
+        };
+        return level1Node;
+    }
+
+    private getNodeLabelAndIcon(metadata: { type: string; }) {
         let level1Label: string = '';
         let icon: string = undefined;
-
         const segmentationRegExp = new RegExp(DataType.SEGMENTATION, 'g');
         const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, 'g');
         const dayScheduleRegExp = new RegExp(DataType.DAY_SCHEDULE, 'g');
@@ -138,22 +172,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (level1Label.endsWith('-')) {
             level1Label = level1Label.substring(0, level1Label.length - 1);
         }
-
-        let level1Node: TreeNode = (icon === '') ? {
-            key: metadata.type,
-            label: level1Label,
-            children: [],
-            checked: true,
-            expanded: true
-        } : {
-            key: metadata.type,
-            label: level1Label,
-            children: [],
-            icon,
-            checked: true,
-            expanded: true
-        };
-        return level1Node;
+        return { level1Label, icon };
     }
 
     /**
@@ -175,8 +194,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         }
         this.initFocusResizable(this.focusContainer.nativeElement);
-        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_DOWN, this.handleClickToDrawRect);
-        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_UP, this.handleClickToDrawRect);
         this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_MOVE, this.handleMouseMoveToDrawRect);
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTimelineMetadata();
@@ -192,6 +209,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     parseTimelineMetadata() {
         this.listOfBlocks = [];
+        this.listOfBlocksIndexes = [];
         const listOfMetadata: Array<Metadata> = [];
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
@@ -226,12 +244,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     // Handle metadata properties
-    handleMetadataProperties(listOfMetadata, metadataManager) {
-        listOfMetadata.forEach((metadata) => {
+    handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: any) {
+        listOfMetadata.forEach((metadata: any) => {
             let listOfLocalisations = null;
             try {
                 listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
-                listOfLocalisations.forEach(l => {
+                listOfLocalisations.forEach((l: { tcIn: number; tcOut: number; }) => {
                     if (l.tcIn) {
                         l.tcIn += this.tcOffset;
                     }
@@ -240,27 +258,29 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                     }
                 });
             } catch (e) {
-                this.logger.warn('Error to parse metadata');
+                this.logger.warn('Error to parse metadata', e);
             }
+            const color = (metadata?.viewControl?.color) ?? this.getAvailableColor();
             this.listOfBlocks.push({
                 id: metadata.id,
-                label: (metadata?.label) ? metadata.label : metadata.id,
+                label: (metadata?.label) ?? metadata.id,
                 expendable: this.pluginConfiguration.data.expendable,
-                defaultColor: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),
+                defaultColor: color,
                 displayState: true,
-                data: listOfLocalisations
+                data: listOfLocalisations,
+                icon: this.getNodeLabelAndIcon(metadata).icon
             });
-
+            this.listOfBlocksIndexes.push(this.listOfBlocks.length - 1);
             let level1NodeAlreadyAdded: boolean = false;
             this.nodes.forEach(node => {
                 if (node.key === metadata.type) {
-                    node.children.push(this.getNewChildNodeFromMetadataElement(metadata));
+                    node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
                     level1NodeAlreadyAdded = true;
                 }
             });
             if (!level1NodeAlreadyAdded) {
                 let level1Node = this.getNewNodeFromMetadataElement(metadata);
-                level1Node.children.push(this.getNewChildNodeFromMetadataElement(metadata));
+                level1Node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
                 this.nodes.push(level1Node);
             }
         });
@@ -268,13 +288,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.allNodesChecked = true;
     }
 
-    getNewChildNodeFromMetadataElement = (metadata) => {
+    getNewChildNodeFromMetadataElement = (metadata: any, color: string) => {
         return {
             key: metadata.id,
-            label: (metadata?.label) ? metadata.label : metadata.id,
-            data: {color: (metadata?.viewControl && metadata.viewControl.color) ? metadata.viewControl.color : this.getAvailableColor(),},
+            label: (metadata?.label) ?? metadata.id,
+            data: { color },
             checked: true,
-            expanded: true
+            expanded: true,
+            icon: this.getNodeLabelAndIcon(metadata).icon
         };
     }
     filterHidden: boolean = false;
@@ -313,7 +334,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const container = interact(element);
         container.resizable({
             // resize from all edges and corners
-            edges: {left: true, right: true, bottom: false, top: false},
+            edges: { left: true, right: true, bottom: false, top: false },
             listeners: {
                 move: (event) => {
                     const target = event.target;
@@ -338,7 +359,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 }),
                 // minimum size
                 interact.modifiers.restrictSize({
-                    min: {width: 10, height: null}
+                    min: { width: 10, height: null }
                 })
             ],
             inertia: true
@@ -367,9 +388,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 })
             ],
         });
-        container.on('dragend resizeend', this.handleZoomRangeChange);
+        container.on('dragend resizeend', this.handleZoomRangeChange.bind(this));
     }
-
 
     /**
      * In charge to change display state
@@ -388,7 +408,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param mainElement parent element
      * @param stateControl old state
      */
-    public toggleAllBlocksState(mainElement: HTMLElement, stateControl) {
+    public toggleAllBlocksState(mainElement: HTMLElement, stateControl: HTMLDivElement) {
         this.blocksIsOpen = !this.blocksIsOpen;
         if (this.blocksIsOpen) {
             stateControl.classList.add('close');
@@ -409,7 +429,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge of save or not display block states
      * @param isValid true for save display block
      */
-    public handleDisplayBlocks(isValid) {
+    public handleDisplayBlocks(isValid: boolean) {
         if (isValid) {
             this.listOfBlocks.forEach((block) => {
                 block.displayState = this.selectedNodesMap().has(block.id);
@@ -421,6 +441,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             })
         }
         this.toggleConfig();
+    }
+
+    /**
+     * Hides a block
+     * @param block block to hide
+     */
+    removeBlock(block: any) {
+        this.listOfBlocks.find(b => b.id === block.id).displayState = false;
+        this.selectedNodes.set(this.getAllNodes(this.nodes).filter(node => node.id !== block.id));
     }
 
     /**
@@ -464,11 +493,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public refreshTimeCursor() {
         if (isFinite(this.currentTime) && isFinite(this.duration)) {
             const selector = '.tc-cursor';
-            const focusLeftPos = (this.currentTime - this.focusTcIn) * 100 / (this.focusTcOut - this.focusTcIn);
+            const mainTimelineWidth = this.mainTimeline.nativeElement.offsetWidth;
+            const mainTimelineLeftPosition = this.mainTimeline.nativeElement.offsetLeft;
+            const focusLeftPos = mainTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn);
             const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
             const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
-            mainBlock.style.left = `${this.currentTime * 100 / this.duration}%`;
-            listBlock.style.left = `${focusLeftPos}%`;
+            mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
+            listBlock.style.left = `${focusLeftPos}px`;
         }
     }
 
@@ -495,18 +526,18 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * In charge to main timeline
      */
-    public createMainMetadataIds(handleMetadataIds, metadataManager) {
+    public createMainMetadataIds(handleMetadataIds: string[], metadataManager: MetadataManager) {
         const listOfLocalisations = new Array<TimelineLocalisation>();
         if (handleMetadataIds) {
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
                 const metadata = metadataManager.getMetadata(metadataId);
-                const blockMetadata: any = _.find<TimeLineBlock>(this.listOfBlocks, {id: metadataId});
+                const blockMetadata: any = _.find<TimeLineBlock>(this.listOfBlocks, { id: metadataId });
                 const baseColor = (metadata?.viewControl?.color) ? metadata.viewControl.color : blockMetadata.defaultColor;
                 let localisations = null;
                 try {
                     localisations = metadataManager.getTimelineLocalisations(metadata);
                     if (localisations) {
-                        localisations.forEach((l) => {
+                        localisations.forEach((l: TimelineLocalisation) => {
                             l.color = baseColor;
                             listOfLocalisations.push(l);
                         });
@@ -526,7 +557,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param localisation localisation
      */
     public handleMouseEnterOnTc(event: MouseEvent, localisation: TimelineLocalisation) {
-        const defaultMouseMargin = 50;
+        const defaultMouseMargin = 20;
         const selectedBlockElement = this.selectedBlockElement.nativeElement;
         const currentTarget = event.target as HTMLElement;
         selectedBlockElement.style.left = `${currentTarget.offsetLeft}px`;
@@ -539,80 +570,18 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * On mouse enter on tc bloc
      * @param $event event
      */
-    public handleMouseLeaveOnTc($event) {
+    public handleMouseLeaveOnTc($event: any) {
         this.selectedBlockElement.nativeElement.style.display = 'none';
         this.selectedBlock = null;
     }
 
 
-    handleClickToDrawRect(event) {
-        if (this.enableZoom) {
-            this.isDrawingRectangle = (event.type === 'mousedown');
-            if (event.type === 'mouseup') {
-                this.enableZoom = false;
-            }
-            if (this.isDrawingRectangle) {
-                const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
-                const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
-                this.selectionPosition.startX = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
-                this.selectionPosition.startY = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
-                this.updateMouseEvent(event);
-                this.selectionContainer.nativeElement.style.cursor = 'crosshair';
-                this.selectionContainer.nativeElement.style.display = 'block';
-                this.selectionContainer.nativeElement.style.left = this.selectionPosition.startX + 'px';
-                this.selectionContainer.nativeElement.style.top = this.selectionPosition.startY + 'px';
-            } else {
-                this.updateFocusContainerOnSelection(this.selectionContainer.nativeElement.offsetWidth, this.selectionContainer.nativeElement.offsetLeft);
-                this.selectionContainer.nativeElement.style.cursor = 'default';
-                this.selectionContainer.nativeElement.style.display = 'none';
-                this.selectionPosition = {
-                    x: 0,
-                    y: 0,
-                    startX: 0,
-                    startY: 0
-                };
-            }
-        }
-    }
-
-    /**
-     * Enable zoom
-     */
-    public handleEnableZoom() {
-        this.enableZoom = !this.enableZoom;
-        if (this.enableZoom) {
-            this.unZoom();
-        }
-    }
-
-    /**
-     * In charge to change focus container
-     */
-    public updateFocusContainerOnSelection(focusWidth, leftPos) {
-        const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
-        const selectionContainer = this.selectionContainer.nativeElement;
-        const selectionContainerWidth = selectionContainer.clientWidth;
-        const focusContainer: HTMLElement = this.focusContainer.nativeElement;
-        const leftPosFocusContainer = Math.min(leftPos * 100 / mainContainerWidth, 100);
-        const focusContainerWidth = Math.min(100, selectionContainerWidth * 100 / mainContainerWidth);
-        // update the element's style
-        focusContainer.style.left = `${leftPosFocusContainer}%`;
-        focusContainer.style.width = `${focusContainerWidth}%`;
-        this.focusTcIn = this.tcOffset + Math.max((leftPosFocusContainer * this.duration / 100), 0);
-        this.focusTcOut = this.tcOffset + Math.min(((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100, this.duration);
-    }
-
     /**
      * handle mouse to draw
      * @param event mouse event
      */
-
     handleMouseMoveToDrawRect(event: MouseEvent) {
-        if (this.isDrawingRectangle) {
-            this.updateMouseEvent(event);
-            this.selectionContainer.nativeElement.style.width = Math.abs(this.selectionPosition.startX - this.selectionPosition.x) + 'px';
-            this.selectionContainer.nativeElement.style.height = Math.abs(this.selectionPosition.startY - this.selectionPosition.y) + 'px';
-        }
+        this.updateMouseEvent(event);
     }
 
     /**
@@ -653,6 +622,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
     }
 
+    /**
+     * Gets all the nodes and their children from the given nodes
+     * @param nodes nodes
+     * @returns all nodes
+     */
     getAllNodes(nodes: any[]): any[] {
         let allNodes: any[] = [];
         for (let node of nodes) {
@@ -677,4 +651,17 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     toggleFilter() {
         this.filterHidden = !this.filterHidden;
     }
+
+    startIndex: number;
+
+    onDragStart(index: number) {
+        this.startIndex = index;
+    }
+
+    onDrop(dropIndex: number) {
+        const item = this.listOfBlocks[this.startIndex];
+        this.listOfBlocks.splice(this.startIndex, 1);
+        this.listOfBlocks.splice(dropIndex, 0, item);
+    }
+
 }

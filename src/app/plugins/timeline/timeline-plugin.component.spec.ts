@@ -1,26 +1,32 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TimelinePluginComponent} from './timeline-plugin.component';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {TreeNode} from 'primeng/api/treenode';
-import {DataType} from "../../core/constant/data-type";
-import {CheckboxModule} from "primeng/checkbox";
-import {TreeModule} from "primeng/tree";
-import {SortablejsDirective} from "../../core/directive/inaSortablejs/sortablejs.directive";
-import {CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TimelinePluginComponent } from './timeline-plugin.component';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { TreeNode } from 'primeng/api/treenode';
+import { DataType } from "../../core/constant/data-type";
+import { CheckboxModule } from "primeng/checkbox";
+import { TreeModule } from "primeng/tree";
+import { SortablejsDirective } from "../../core/directive/inaSortablejs/sortablejs.directive";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { DefaultConfigLoader } from 'src/app/core/config/loader/default-config-loader';
+import { DefaultConfigConverter } from 'src/app/core/config/converter/default-config-converter';
+import { DefaultLogger } from 'src/app/core/logger/default-logger';
+import { ConfigurationManager } from 'src/app/core/config/configuration-manager';
+import { DefaultMetadataLoader } from 'src/app/core/metadata/loader/default-metadata-loader';
+import { DefaultMetadataConverter } from 'src/app/core/metadata/converter/default-metadata-converter';
+import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { MediaPlayerElement } from 'src/app/core/media-player-element';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
     let fixture: ComponentFixture<TimelinePluginComponent>;
-    let mediaPlayerServiceStub: Partial<MediaPlayerService>;
 
     beforeEach(async () => {
-        mediaPlayerServiceStub = {
-            // Ajoutez ici les méthodes nécessaires pour le stub du service
-        };
 
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective],
-            providers: [{provide: MediaPlayerService, useValue: mediaPlayerServiceStub}],
+            providers: [MediaPlayerService],
             imports: [CheckboxModule, TreeModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
@@ -31,6 +37,7 @@ describe('TimelinePluginComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TimelinePluginComponent);
         component = fixture.componentInstance;
+        component.playerId = 'playerOne';
         fixture.detectChanges();
     });
 
@@ -38,19 +45,25 @@ describe('TimelinePluginComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should show and hide toolbar', () => {
+        component.showToolbar();
+        expect(component.showTollbar).toBeTrue();
+        component.hideToolbar();
+        expect(component.showTollbar).toBeFalse();
+    });
+
     it('should initialize with default values', () => {
         expect(component.title).toBeUndefined();
         expect(component.mainBlockColor).toBeUndefined();
         expect(component.mainLocalisations).toBeUndefined();
         expect(component.listOfBlocks).toBeUndefined();
-        expect(component.enableDragDrop).toBeFalse();
         expect(component.configIsOpen).toBeFalse();
         expect(component.currentTime).toBe(0);
         expect(component.duration).toBe(0);
         expect(component.tcOffset).toBe(0);
         expect(component.focusTcIn).toBe(0);
         expect(component.focusTcOut).toBe(0);
-        expect(component.selectionPosition).toEqual({x: 0, y: 0, startX: 0, startY: 0});
+        expect(component.selectionPosition).toEqual({ x: 0, y: 0, startX: 0, startY: 0 });
         expect(component.isDrawingRectangle).toBeFalse();
         expect(component.colors.length).toBeGreaterThan(0);
         expect(component.selectedBlock).toBeNull();
@@ -71,7 +84,7 @@ describe('TimelinePluginComponent', () => {
 
     it('should toggle all nodes', () => {
         component.allNodesChecked = true;
-        component.nodes = [{key: '1', label: 'Node 1', children: []} as TreeNode];
+        component.nodes = [{ key: '1', label: 'Node 1', children: [] } as TreeNode];
         component.toggleAllNodes();
         expect(component.selectedNodes().length).toBe(1);
 
@@ -107,8 +120,8 @@ describe('TimelinePluginComponent', () => {
     });
 
     it('should get new child node from metadata element', () => {
-        const metadata = {id: 'test-id', label: 'Test Label', viewControl: {color: '#000000'}};
-        const childNode = component.getNewChildNodeFromMetadataElement(metadata);
+        const metadata = { id: 'test-id', label: 'Test Label', viewControl: { color: '#000000' } };
+        const childNode = component.getNewChildNodeFromMetadataElement(metadata, metadata.viewControl.color);
 
         expect(childNode.key).toBe(metadata.id);
         expect(childNode.label).toBe(metadata.label);
@@ -3677,7 +3690,7 @@ describe('TimelinePluginComponent', () => {
     });
 
     it('should get new node from metadata element', () => {
-        const metadata = {type: DataType.SEGMENTATION};
+        const metadata = { type: DataType.SEGMENTATION };
         const newNode = component.getNewNodeFromMetadataElement(metadata);
 
         expect(newNode.key).toBe(metadata.type);
@@ -3719,10 +3732,10 @@ describe('TimelinePluginComponent', () => {
     });
 
     it('should filter nodes', () => {
-        const event = {target: {value: 'test'}};
+        const event = { target: { value: 'test' } };
         component.nodes = [
-            {label: 'testNode', children: []} as TreeNode,
-            {label: 'otherNode', children: []} as TreeNode
+            { label: 'testNode', children: [] } as TreeNode,
+            { label: 'otherNode', children: [] } as TreeNode
         ];
 
         component.filterNodes(event);
@@ -3731,7 +3744,7 @@ describe('TimelinePluginComponent', () => {
     });
 
     it('should filter node', () => {
-        const node = {label: 'testNode', children: []} as TreeNode;
+        const node = { label: 'testNode', children: [] } as TreeNode;
         const query = 'test';
 
         const result = component.filterNode(node, query);
@@ -3747,4 +3760,118 @@ describe('TimelinePluginComponent', () => {
         component.toggleFilter();
         expect(component.filterHidden).toBeFalse();
     });
+});
+
+describe('TimelinePluginComponent 2', () => {
+    let component: TimelinePluginComponent;
+    let fixture: ComponentFixture<TimelinePluginComponent>;
+
+    const timeline_metadata_url = "http://localhost/metadata/timelineListOfMetaData.json";
+    const timeline_metadata_Model = require("tests/assets/metadata/timelineListOfMetaData.json");
+    let httpTestingController: HttpTestingController;
+    let mediaPlayerElement: MediaPlayerElement;
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [TimelinePluginComponent, SortablejsDirective],
+            providers: [MediaPlayerService],
+            imports: [CheckboxModule, TreeModule, HttpClientTestingModule],
+            schemas: [
+                CUSTOM_ELEMENTS_SCHEMA
+            ]
+        }).compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TimelinePluginComponent);
+        component = fixture.componentInstance;
+        component.playerId = 'playerOne';
+        const playerService = TestBed.inject(MediaPlayerService);
+        mediaPlayerElement = playerService.get(component.playerId);
+        const logger = new DefaultLogger();
+        const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+        const httpClient: HttpClient = TestBed.inject(HttpClient);
+        mediaPlayerElement.configurationManager = new ConfigurationManager(loader, logger);
+        mediaPlayerElement.configurationManager.configData = {
+            "tcOffset": 600,
+            "player": {
+                "backwardsSrc": "",
+                "src": "",
+                "autoplay": false,
+                "crossOrigin": "anonymous",
+                "ratio": "4:3"
+            },
+            "thumbnail": {
+                "baseUrl": "https://image.wsmedia.sas.ina/thumbs/qNnhN1ISmDe8DBMdODoONH5_X_k9J4W0Z7sqO1JsvUST-DVa82vq-bEt2LmebGISKNUHvCX9sZcePvGoCfle6WyX8kcF6OQIx8H_AuU_Iv2vPY8Lmbv1zlF-7QbYJvKRfEhyuN8NjXlmzqFVVU8cCqIUs1_mtaFimK2TZ-Log7UXSAwKdu_FHYF4nxuGfW5V7GkqVz1AoS_lH9b0WEfO3y9zPexndfEtZju1jTekkx0Xc7s37g5UCKT6_rQycibYIWsVaq28iUf6lzyZ2UBDzwLWbwO-LtXbT-AfJxP2OjBYOy_2dqqPKOiLQ7Az0vFXCzOzYYuDrz8sQop2gxkwUtcWiRQuREGYCn1CTeRGmZKLFrVDLg73e-B_OUUkY-NfMc38K6W9n6aqzYI8Tkmasx_q0zSlBPzp1I3loJLUBr9eZQ3eknZsvWHzGzAn_sC-MlMrMr6FhBcwUQ29-7o7UNRGSS3ykMGFQpVQyK6uZh2A7N11qG_Mo4rhPgUWC6gN8n4bwvP4DOxYNjTtTtHDrAqk6OVoi9FoNooDGicKve2MqbZRszcwj4teR6X88MCgjYTDIjIuqsJxzMpzu3_qIOZAsL4_2NJlvYPKGT7UB6NB9jIlHosH4MY95b6exdCdXkdrcx4HMsOfPFS_Tqwyx06yIcIveMLgP6SjIOG9v_0cZ5rjomlCQ0F6hD5oVlmlwao_cO0w6Z8BYP98c8ZuUb2ygOaXbXOf5FXbQOFJJnDC_Gub4Tcz-OoHWSDmiFMsbiZ_s8lzQI-R0aGYvYs5WPGb08SvhD-9tV-7Mkl6odoqx7gb5f5t8oZGzQSb6pS9ua-mVjZnj36C3jM-R4-Yfbsz_toPL1t708vg5mUrSE5f-QELZluvvVbAipWRa4EOtE8FD6DxHj_ZMJx7QvPgu3JjAJY0fyW42wlDnqNsYxpKhkg9O7Jvo4MnEy6tS02nUv4x0RxFGjJt6abtfEktoKt_g5DpF39_ZHBMfBQDqnxLwna9hkxx8ADi7_NOOBmC/sl_iv/hpog2iFsrU10ltgchPvllg/sl_hm/?width=320",
+                "enableThumbnail": true,
+                "tcParam": "start"
+            },
+            "dataSources": [
+                {
+                    "url": "http://localhost/metadata/timelineListOfMetaData.json",
+                    "headers": [
+                        "Authorization: "
+                    ],
+                    "plugin": "timeline"
+                }
+            ],
+            loadMetadataOnDemand: true,
+            "debug": false,
+            "logLevel": "info",
+            "displaySizes": {
+                "large": 900,
+                "medium": 700,
+                "small": 550,
+                "xsmall": 340
+            }
+        };
+        const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
+        mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
+        const obj = document.createElement('video');
+        mediaPlayerElement.setMediaPlayer(obj);
+        httpTestingController = TestBed.inject(HttpTestingController);
+    });
+
+    it('Should call init, handleMetaDataLoaded and handleOnDurationChange', fakeAsync(() => {
+        const spyOnInit = spyOn(component, 'init');
+        const spyOnHandleMetaDataLoaded = spyOn(component, 'parseTimelineMetadata')
+
+        mediaPlayerElement.metadataManager.init().then(() => {
+            fixture.detectChanges();
+        });
+        httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
+            status: 200,
+            statusText: 'Ok'
+        });
+
+        tick(400);
+        expect(spyOnInit).toHaveBeenCalled();
+        expect(spyOnHandleMetaDataLoaded).toHaveBeenCalled();
+    }));
+    it('Should manage onDragStart and onDrop', () => {
+        fixture.detectChanges();
+        component.onDragStart(0);
+        expect(component.startIndex).toEqual(0);
+        component.onDrop(0);
+    });
+    it('Should handle refreshTimeCursor', () => {
+        fixture.detectChanges();
+        component.currentTime = 600;
+        component.duration = 1800;
+        component.refreshTimeCursor();
+    });
+    it('Should handle unZoom', () => {
+        fixture.detectChanges();
+        component.unZoom();
+        const container: HTMLElement = component.focusContainer.nativeElement;
+        container.style.left = `0`;
+        container.style.width = `100%`;
+        expect(container.style.left).toEqual('0px');
+        expect(container.style.width).toEqual('100%');
+    });
+    it('Should updateMouseEvent', () => {
+        fixture.detectChanges();
+        component.updateMouseEvent({ clientX: `200px`, clientY: `200px` });
+    });
+
 });

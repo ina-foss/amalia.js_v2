@@ -10,30 +10,30 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
-import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
-import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
-import {DefaultMetadataLoader} from '../core/metadata/loader/default-metadata-loader';
-import {MediaPlayerElement} from '../core/media-player-element';
-import {HttpClient} from '@angular/common/http';
-import {DefaultLogger} from '../core/logger/default-logger';
-import {Loader} from '../core/loader/loader';
-import {ConfigData} from '../core/config/model/config-data';
-import {Converter} from '../core/converter/converter';
-import {Metadata} from '@ina/amalia-model';
-import {environment} from '../../environments/environment';
-import {PlayerState} from '../core/constant/player-state';
-import {PlayerEventType} from '../core/constant/event-type';
-import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
-import {BaseUtils} from '../core/utils/base-utils';
-import {MediaPlayerService} from '../service/media-player-service';
-import {ThumbnailService} from '../service/thumbnail-service';
-import {DomSanitizer} from '@angular/platform-browser';
+import { DefaultConfigLoader } from '../core/config/loader/default-config-loader';
+import { DefaultConfigConverter } from '../core/config/converter/default-config-converter';
+import { DefaultMetadataConverter } from '../core/metadata/converter/default-metadata-converter';
+import { DefaultMetadataLoader } from '../core/metadata/loader/default-metadata-loader';
+import { MediaPlayerElement } from '../core/media-player-element';
+import { HttpClient } from '@angular/common/http';
+import { DefaultLogger } from '../core/logger/default-logger';
+import { Loader } from '../core/loader/loader';
+import { ConfigData } from '../core/config/model/config-data';
+import { Converter } from '../core/converter/converter';
+import { Metadata } from '@ina/amalia-model';
+import { environment } from '../../environments/environment';
+import { PlayerState } from '../core/constant/player-state';
+import { PlayerEventType } from '../core/constant/event-type';
+import { HttpConfigLoader } from '../core/config/loader/http-config-loader';
+import { BaseUtils } from '../core/utils/base-utils';
+import { MediaPlayerService } from '../service/media-player-service';
+import { ThumbnailService } from '../service/thumbnail-service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import * as _ from 'lodash';
-import {ControlBarPluginComponent} from '../plugins/control-bar/control-bar-plugin.component';
-import {LoggerLevel} from '../core/logger/logger-level';
-import {Utils} from "../core/utils/utils";
+import { ControlBarPluginComponent } from '../plugins/control-bar/control-bar-plugin.component';
+import { LoggerLevel } from '../core/logger/logger-level';
+import { Utils } from "../core/utils/utils";
 
 @Component({
     selector: 'amalia-player',
@@ -93,7 +93,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * Preview thumbnail container
      */
-    @ViewChild('previewThumbnail', {static: true})
+    @ViewChild('previewThumbnail', { static: true })
     public previewThumbnailElement: ElementRef<HTMLVideoElement>;
 
     /**
@@ -162,13 +162,13 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * get video html element
      */
-    @ViewChild('video', {static: true})
+    @ViewChild('video', { static: true })
     public mediaPlayer: ElementRef<HTMLVideoElement>;
 
     /**
      * Get context menu html element
      */
-    @ViewChild('contextMenu', {static: true})
+    @ViewChild('contextMenu', { static: true })
     public contextMenu: ElementRef<HTMLElement>;
     /**
      * tc
@@ -211,7 +211,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * mediaContainer element
      */
-    @ViewChild('mediaContainer', {static: true})
+    @ViewChild('mediaContainer', { static: true })
     public mediaContainer: ElementRef<HTMLElement>;
     /**
      * Sert à conserver les dimensions du mediaContainer avant qu' il ne passe en mode plein écran.<br/>
@@ -255,7 +255,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.sanitizer = sanitizer;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
-        this.throttleFunc = _.throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, {trailing: false});
+        this.throttleFunc = _.throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, { trailing: false });
     }
 
     /**
@@ -274,8 +274,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             // set media player in charge to player video or audio files
             this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
             this.mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
-                    .then((state) => this.onInitConfig(state))
-                    .catch((state) => this.onErrorInitConfig(state));
+                .then((state) => this.onInitConfig(state))
+                .catch((state) => this.onErrorInitConfig(state));
             // bind events
             this.bindEvents();
             // set mediaPlayer width for responsive grid
@@ -408,8 +408,16 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_BEGIN, this.handleLoading);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_END, this.handleLoadingEnd);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ELEMENT_CONTEXT_MENU, this.onContextMenu);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME, this.sendCurrentTime);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME, this.setCurrentTime);
         this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
 
+    }
+    sendCurrentTime() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME, { currentTime: this.mediaPlayerElement.getMediaPlayer().getCurrentTime() });
+    }
+    setCurrentTime(event) {
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(event.currentTime);
     }
 
     public handleLoading() {
