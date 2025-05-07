@@ -3868,5 +3868,10 @@ describe('TimelinePluginComponent 2', () => {
         container.style.width = `100%`;
         expect(container.style.left).toEqual('0px');
         expect(container.style.width).toEqual('100%');
-    })
+    });
+    it('Should updateMouseEvent', () => {
+        fixture.detectChanges();
+        component.updateMouseEvent({ clientX: `200px`, clientY: `200px` });
+    });
+
 });

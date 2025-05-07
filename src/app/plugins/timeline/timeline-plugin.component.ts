@@ -36,7 +36,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<TimeLineBlock>;
-    public listOfBlocksIndexes: Array<number>= new Array();
+    public listOfBlocksIndexes: Array<number> = new Array();
     public configIsOpen = false;
     public currentTime = 0;
     public duration = 0;
@@ -194,7 +194,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         }
         this.initFocusResizable(this.focusContainer.nativeElement);
-        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_WHEEL, this.handleClickToDrawRect);
         this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_MOVE, this.handleMouseMoveToDrawRect);
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTimelineMetadata();
@@ -576,30 +575,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.selectedBlock = null;
     }
 
-
-    handleClickToDrawRect(event: any) {
-        this.isDrawingRectangle = (event.type === 'wheel' && event.ctrlKey);
-        if (this.isDrawingRectangle) {
-            let focusContainerWidth = this.focusContainer.nativeElement.offsetWidth;
-            focusContainerWidth = focusContainerWidth + event.deltaY;
-            this.updateFocusContainerOnSelection(focusContainerWidth, this.selectionPosition.x);
-        }
-    }
-
-    /**
-     * In charge to change focus container
-     */
-    public updateFocusContainerOnSelection(focusWidth: number, leftPos: number) {
-        const mainContainerWidth = this.mainTimeline.nativeElement.clientWidth;
-        const focusContainer: HTMLElement = this.focusContainer.nativeElement;
-        const leftPosFocusContainer = Math.min(leftPos * 100 / mainContainerWidth, 100);
-        const focusContainerWidth = Math.min(100, focusWidth * 100 / mainContainerWidth);
-        // update the element's style
-        focusContainer.style.left = `${leftPosFocusContainer}%`;
-        focusContainer.style.width = `${focusContainerWidth}%`;
-        this.focusTcIn = this.tcOffset + Math.max((leftPosFocusContainer * this.duration / 100), 0);
-        this.focusTcOut = this.tcOffset + Math.min(((leftPosFocusContainer + focusContainerWidth) * this.duration) / 100, this.duration);
-    }
 
     /**
      * handle mouse to draw
