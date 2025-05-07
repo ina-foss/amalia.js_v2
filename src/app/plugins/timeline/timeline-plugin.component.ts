@@ -36,7 +36,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<TimeLineBlock>;
-    public listOfBlocksIndexes: Array<number> = new Array();
+    public listOfBlocksIndexes: Array<number> = [];
     public configIsOpen = false;
     public currentTime = 0;
     public duration = 0;
