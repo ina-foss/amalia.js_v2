@@ -486,10 +486,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / mainContainerWidth), 0);
         this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / mainContainerWidth), this.duration);
         const startElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".start");
-        const startElementClientRect = startElement.getBoundingClientRect();
+        const startElementClientRect = startElement ? startElement.getBoundingClientRect() : null;
         const endElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".end");
-        const endElementClientRect = endElement.getBoundingClientRect();
-        this.displaydash = (endElementClientRect.left <= startElementClientRect.right + 10);
+        const endElementClientRect = endElement ? endElement.getBoundingClientRect() : null;
+        this.displaydash = (endElementClientRect ? endElementClientRect.left <= startElementClientRect.right + 10 : false);
         this.refreshTimeCursor();
     }
 
@@ -504,7 +504,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
             const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
             const listBlockTimeline: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.timeline');
-            const listBlockTimelineLeftPosition = listBlockTimeline.offsetLeft;
+            const listBlockTimelineLeftPosition = listBlockTimeline ? listBlockTimeline.offsetLeft : mainTimelineLeftPosition;
             mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
             listBlock.style.left = `${listBlockTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn)}px`;
         }

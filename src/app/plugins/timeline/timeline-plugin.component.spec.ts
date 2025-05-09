@@ -17,6 +17,7 @@ import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MediaPlayerElement } from 'src/app/core/media-player-element';
+import { TcFormatPipe } from 'src/app/core/utils/tc-format.pipe';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -26,7 +27,7 @@ describe('TimelinePluginComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective],
-            providers: [MediaPlayerService],
+            providers: [MediaPlayerService, TcFormatPipe],
             imports: [CheckboxModule, TreeModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA

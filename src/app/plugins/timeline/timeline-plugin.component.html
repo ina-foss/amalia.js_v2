@@ -24,7 +24,7 @@
     </div>
     <div class="timeline-block">
         <div class="focus handle-border" #focusContainer>
-            <div class="time-code" *ngIf="focusTcIn">
+            <div class="time-code" *ngIf="focusTcOut">
                 <span class="start">{{ focusTcIn|tcFormat:timeFormat:fps }}</span>
             </div>
             <div class="time-code" *ngIf="focusTcIn && displaydash">
