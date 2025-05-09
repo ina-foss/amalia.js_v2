@@ -91,6 +91,10 @@ $amalia-plugin-storyboard-bg-color: var(--amalia-plugin-storyboard-bg-color, #D9
 $amalia-font-family-trebuchet-ms: var(--amalia-font-family-trebuchet-ms, "Trebuchet MS");
 $amalia-font-family-lato: var(--amalia-font-family-lato, "Lato");
 
+:host {
+  --font-family: $amalia-font-family-lato;
+}
+
 //Histogram
 
 $amalia-plugin-histograms-bg: var(--amalia-plugin-histogram-bg, #6c6c6c);
@@ -122,7 +126,7 @@ $amalia-plugin-timeline-text-founded-color: var(--amalia-plugin-timeline-text-fo
  * $properties transition
  * $param : Time duration (s), function
  */
-@mixin transition($property:all, $time-duration:1s, $function-style:ease-out) {
+@mixin transition($property: all, $time-duration: 1s, $function-style: ease-out) {
 
   -webkit-transition: $property $time-duration $function-style;
   -moz-transition: $property $time-duration $function-style;

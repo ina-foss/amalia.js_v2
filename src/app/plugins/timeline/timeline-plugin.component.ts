@@ -103,6 +103,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     enableZoom: boolean = false;
     mouseX: number;
     mouseY: number;
+    displaydash: any;
 
     showToolbar() {
         this.showTollbar = true;
@@ -484,6 +485,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
         this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / mainContainerWidth), 0);
         this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / mainContainerWidth), this.duration);
+        const startElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".start");
+        const startElementClientRect = startElement.getBoundingClientRect();
+        const endElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".end");
+        const endElementClientRect = endElement.getBoundingClientRect();
+        this.displaydash = (endElementClientRect.left <= startElementClientRect.right + 10);
         this.refreshTimeCursor();
     }
 
@@ -495,11 +501,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             const selector = '.tc-cursor';
             const mainTimelineWidth = this.mainTimeline.nativeElement.offsetWidth;
             const mainTimelineLeftPosition = this.mainTimeline.nativeElement.offsetLeft;
-            const focusLeftPos = mainTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn);
             const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
             const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
+            const listBlockTimeline: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.timeline');
+            const listBlockTimelineLeftPosition = listBlockTimeline.offsetLeft;
             mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
-            listBlock.style.left = `${focusLeftPos}px`;
+            listBlock.style.left = `${listBlockTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn)}px`;
         }
     }
 

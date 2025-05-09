@@ -353,6 +353,7 @@
     padding-bottom: 5px;
     min-height: 30px;
     user-select: none;
+    margin: 0 0 0 8px;
 
     .rectangle {
       border: 1px solid $amalia-plugin-timeline-primary-color;
@@ -437,6 +438,13 @@
       display: flex;
       align-items: center;
       gap: var(--spacings-border-radius-radius-sm, 4px);
+      height: 17px;
+      color: #212529;
+      font-family: $amalia-font-family;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
     }
 
     &.sortable-chosen {
@@ -454,20 +462,27 @@
       background-color: transparent;
       box-shadow: 0 9999px 0 9999px rgba(255, 255, 255, 0.7);
       border-radius: var(--border-radius-sm, 4px);
-      border: 2px solid $amalia-plugin-timeline-primary-color;
       z-index: 10;
 
       .time-code {
         position: relative;
-        top: -21px;
+        top: -22px;
         font-size: 12px;
 
         .start {
-          left: 0;
+          position: relative;
+          left: 12px;
+          margin-right: 14px;
+        }
+
+        .middle {
+          position: relative;
         }
 
         .end {
-          right: 10px;
+          position: relative;
+          right: 12px;
+          margin-left: 14px;
         }
       }
     }
@@ -511,7 +526,7 @@
 
     .p-accordion-toggle-icon {
       color: $amalia-plugin-timeline-primary-color;
-      padding: 0 12px 0 4px !important;
+      padding: 0 12px 0 0 !important;
       margin: 0 !important;
     }
 
@@ -529,7 +544,7 @@
 
     .timeline {
       display: block;
-      min-height: 30px !important;
+      min-height: 8px !important;
       position: relative;
       height: 100%;
       width: 100%;
@@ -549,9 +564,8 @@
 
       .cue-point {
         position: absolute;
-        top: calc(50% - 5px);
         background-color: $amalia-plugin-timeline-primary-color;
-        height: 10px;
+        height: 8px;
         width: 10px;
         border-radius: var(--spacings-border-radius-radius-sm, 4px);
         left: 30%;
@@ -561,9 +575,8 @@
 
       .segment {
         position: absolute;
-        top: calc(50% - 5px);
         width: 100px;
-        height: 10px;
+        height: 8px;
         left: 85%;
         background-color: $amalia-plugin-timeline-primary-color;
         border-radius: var(--spacings-border-radius-radius-sm, 4px);
@@ -582,7 +595,11 @@
       box-sizing: border-box;
       height: 100%;
       width: 2px;
-      background-color: $amalia-plugin-timeline-primary-color;
+      background-color: #0b769880;
+    }
+
+    .timeline {
+      min-height: 8px !important;
     }
   }
 
@@ -590,7 +607,6 @@
     min-height: 40px;
     overflow: visible;
     padding: 0;
-    margin: 0;
     box-sizing: unset;
     border: none;
     height: 40px;
@@ -605,7 +621,7 @@
       box-sizing: border-box;
       height: 30px;
       width: 2px;
-      background-color: $amalia-plugin-timeline-primary-color;
+      background-color: #0b769880;
     }
 
     .timeline-block {
@@ -613,12 +629,12 @@
       height: 30px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
     }
 
     .handle-border {
       position: absolute;
-      padding-left: 15px;
-      padding-right: 15px;
+      border: 2px solid $amalia-plugin-timeline-primary-color;
     }
 
     .handle-border::before {
@@ -700,16 +716,26 @@
 
   .p-accordion .p-accordion-header .p-accordion-toggle-icon {
     order: -1;
-    /* Déplace l'icône à gauche */
+
+    .p-icon {
+      width: 14px !important;
+      height: 14px !important;
+    }
   }
 
   .p-accordion .p-accordion-header .p-accordion-header-link {
     width: 100%;
     flex-direction: row !important;
     justify-content: flex-start !important;
-    padding: var(--border-radius-sm, 4px);
-    gap: 4px;
+    padding: 0;
     background: var(--accordion-header-active-background, #F9FAFB);
+  }
+
+  .p-accordion-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px 0;
   }
 
   .pad {
