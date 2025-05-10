@@ -3885,7 +3885,7 @@ describe('TimelinePluginComponent 2', () => {
         fixture.detectChanges();
         component.updateMouseEvent({ clientX: `200px`, clientY: `200px` });
     });
-    fit('Should handleMouseEnterOnTc', fakeAsync(() => {
+    it('Should handleMouseEnterOnTc', fakeAsync(() => {
         const spyOnHandleMouseEnterOnTc = spyOn(component, 'handleMouseEnterOnTc').and.callThrough();
         const spyOnHandleMouseLeaveOnTc = spyOn(component, 'handleMouseLeaveOnTc').and.callThrough();
 
