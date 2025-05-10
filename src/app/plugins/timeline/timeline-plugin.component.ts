@@ -586,7 +586,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     /**
      * handle mouse to drawxit
-     * 
      * @param event mouse event
      */
     handleMouseMoveToDrawRect(event: MouseEvent) {
