@@ -11,7 +11,8 @@
     flex-direction: column;
     overflow: hidden;
     z-index: 999;
-    position: relative;
+    position: absolute;
+    width:100%;
   }
 
   .header {
@@ -153,8 +154,9 @@
   }
 
   .scrollable-content {
-    max-height: 100%; /* Définir la hauteur maximale */
-    overflow-y: auto; /* Activer le défilement vertical */
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
     overflow-x: clip;
     position: relative;
   }

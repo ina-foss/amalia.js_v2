@@ -55,7 +55,6 @@
     <div class="pad">
         <div class="tc-cursor"></div>
     </div>
-    <div class="rectangle" #selectionContainer></div>
     <div class="tooltip" #selectedBlockElement>
         <p *ngIf="selectedBlock?.thumb">{{ selectedBlock.thumb }}</p>
         <p *ngIf="selectedBlock?.label" class="label">{{ selectedBlock.label }}</p>
@@ -144,5 +143,4 @@
                 (keyPress)="handleDisplayBlocks(true)">Valider</p-button>
         </div>
     </div>
-    <div class="segment-empty"></div>
 </div>

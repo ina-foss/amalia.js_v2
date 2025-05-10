@@ -571,11 +571,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         selectedBlockElement.style.top = `${currentTarget.parentElement.parentElement.offsetTop + defaultMouseMargin}px`;
         selectedBlockElement.style.display = 'block';
         this.selectedBlock = localisation;
+
     }
 
     /**
      * On mouse enter on tc bloc
-     * @param $event event
+     * @param $event any
      */
     public handleMouseLeaveOnTc($event: any) {
         this.selectedBlockElement.nativeElement.style.display = 'none';
@@ -584,7 +585,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
 
     /**
-     * handle mouse to draw
+     * handle mouse to drawxit
+     * 
      * @param event mouse event
      */
     handleMouseMoveToDrawRect(event: MouseEvent) {

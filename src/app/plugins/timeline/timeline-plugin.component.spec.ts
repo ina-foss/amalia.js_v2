@@ -18,6 +18,12 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { MediaPlayerElement } from 'src/app/core/media-player-element';
 import { TcFormatPipe } from 'src/app/core/utils/tc-format.pipe';
+import { ToolbarModule } from 'primeng/toolbar';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { AccordionModule } from 'primeng/accordion';
+import { DragDropModule } from 'primeng/dragdrop';
+import { PreventCtrlScrollDirective } from 'src/app/core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -3766,6 +3772,8 @@ describe('TimelinePluginComponent', () => {
 describe('TimelinePluginComponent 2', () => {
     let component: TimelinePluginComponent;
     let fixture: ComponentFixture<TimelinePluginComponent>;
+    let spyOngetCurrentTime: jasmine.Spy;
+    let spyOngetDuration: jasmine.Spy;
 
     const timeline_metadata_url = "http://localhost/metadata/timelineListOfMetaData.json";
     const timeline_metadata_Model = require("tests/assets/metadata/timelineListOfMetaData.json");
@@ -3774,14 +3782,15 @@ describe('TimelinePluginComponent 2', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [TimelinePluginComponent, SortablejsDirective],
+            declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
             providers: [MediaPlayerService],
-            imports: [CheckboxModule, TreeModule, HttpClientTestingModule],
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, TreeModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
         }).compileComponents();
     });
+
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TimelinePluginComponent);
@@ -3831,11 +3840,13 @@ describe('TimelinePluginComponent 2', () => {
         const obj = document.createElement('video');
         mediaPlayerElement.setMediaPlayer(obj);
         httpTestingController = TestBed.inject(HttpTestingController);
+        spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
+        spyOngetDuration = spyOn(mediaPlayerElement.getMediaPlayer(), 'getDuration').and.returnValue(1800);
     });
 
     it('Should call init, handleMetaDataLoaded and handleOnDurationChange', fakeAsync(() => {
-        const spyOnInit = spyOn(component, 'init');
-        const spyOnHandleMetaDataLoaded = spyOn(component, 'parseTimelineMetadata')
+        const spyOnInit = spyOn(component, 'init').and.callThrough();
+        const spyOnHandleMetaDataLoaded = spyOn(component, 'parseTimelineMetadata').and.callThrough();
 
         mediaPlayerElement.metadataManager.init().then(() => {
             fixture.detectChanges();
@@ -3874,5 +3885,38 @@ describe('TimelinePluginComponent 2', () => {
         fixture.detectChanges();
         component.updateMouseEvent({ clientX: `200px`, clientY: `200px` });
     });
+    fit('Should handleMouseEnterOnTc', fakeAsync(() => {
+        const spyOnHandleMouseEnterOnTc = spyOn(component, 'handleMouseEnterOnTc').and.callThrough();
+        const spyOnHandleMouseLeaveOnTc = spyOn(component, 'handleMouseLeaveOnTc').and.callThrough();
+
+        mediaPlayerElement.metadataManager.init().then(() => {
+            component.currentTime = 600;
+            component.duration = 1800;
+            fixture.detectChanges();
+            tick(400);
+            const listOfBlocks = component.listOfBlocks;
+            const loc = listOfBlocks[0].data[0];
+            const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
+            const target = component.listOfBlocksContainer.nativeElement.querySelector('.segment');
+            target.dispatchEvent(mouseEnterEvent);
+
+            expect(spyOngetCurrentTime).toHaveBeenCalled();
+            expect(spyOngetDuration).toHaveBeenCalled();
+            expect(component.selectedBlockElement.nativeElement.style.display).toEqual('block');
+            expect(component.selectedBlock).toEqual(loc);
+            expect(spyOnHandleMouseEnterOnTc).toHaveBeenCalled();
+
+            const mouseLeaveEvent = new MouseEvent('mouseleave', { clientX: 200, clientY: 200 });
+            target.dispatchEvent(mouseLeaveEvent);
+            expect(component.selectedBlockElement.nativeElement.style.display).toEqual('none');
+            expect(component.selectedBlock).toEqual(null);
+            expect(spyOnHandleMouseLeaveOnTc).toHaveBeenCalled();
+        });
+        httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
+            status: 200,
+            statusText: 'Ok'
+        });
+        tick(400);
+    }));
 
 });

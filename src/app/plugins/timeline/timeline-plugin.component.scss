@@ -353,7 +353,7 @@
     padding-bottom: 5px;
     min-height: 30px;
     user-select: none;
-    margin: 0 0 0 8px;
+    margin-left: 0;
 
     .rectangle {
       border: 1px solid $amalia-plugin-timeline-primary-color;
@@ -588,6 +588,7 @@
 
   .list-blocks {
     z-index: 11;
+    margin-top: 4px;
 
     .tc-cursor {
       position: absolute;
@@ -712,6 +713,7 @@
 
   .p-accordion .p-accordion-content {
     padding: 0 15px !important;
+    background: var(--accordion-header-active-background, #F9FAFB);
   }
 
   .p-accordion .p-accordion-header .p-accordion-toggle-icon {
@@ -736,6 +738,23 @@
     flex-direction: column;
     gap: 4px;
     padding: 4px 0;
+    border-radius: var(--spacings-border-radius-radius-sm, 4px);
+    border: 0.5px solid var(--accordion-header-active-borderColor, #EDEDED);
+    background: var(--accordion-header-active-background, #F9FAFB);
+  }
+
+  .p-accordion {
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+  }
+
+  .p-accordion::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #F7F7F7;
+    z-index: -1;
   }
 
   .pad {
