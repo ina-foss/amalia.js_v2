@@ -27,8 +27,11 @@
             <div class="time-code" *ngIf="focusTcOut">
                 <span class="start">{{ focusTcIn|tcFormat:timeFormat:fps }}</span>
             </div>
+            <div class="time-code" *ngIf="focusTcIn && displaydash">
+                <span class="middle">-</span>
+            </div>
             <div class="time-code" *ngIf="focusTcOut">
-                <span class="end ">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
+                <span class="end">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
             </div>
         </div>
         <div class="pad">
@@ -47,19 +50,19 @@
 
     </div>
 </div>
-<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions" appPreventCtrlScroll>
+<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions"
+    appPreventCtrlScroll>
     <div class="pad">
         <div class="tc-cursor"></div>
     </div>
-    <div class="rectangle" #selectionContainer></div>
     <div class="tooltip" #selectedBlockElement>
         <p *ngIf="selectedBlock?.thumb">{{ selectedBlock.thumb }}</p>
         <p *ngIf="selectedBlock?.label" class="label">{{ selectedBlock.label }}</p>
         <p *ngIf="selectedBlock?.tc" class="tc">Tc:{{ selectedBlock.tc }}</p>
         <p *ngIf="selectedBlock?.tcIn&&selectedBlock?.tcOut" class="tc">
             <span class="start">{{ selectedBlock.tcIn|tcFormat:timeFormat:fps }}</span>
-            <span> - </span>
-            <span class="end ">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
+            <span class="middle">-</span>
+            <span class="end">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
         </p>
     </div>
     <p-accordion [multiple]="true" [activeIndex]="listOfBlocksIndexes">
@@ -140,5 +143,4 @@
                 (keyPress)="handleDisplayBlocks(true)">Valider</p-button>
         </div>
     </div>
-    <div class="segment-empty"></div>
 </div>

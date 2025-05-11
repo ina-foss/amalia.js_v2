@@ -103,6 +103,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     enableZoom: boolean = false;
     mouseX: number;
     mouseY: number;
+    displaydash: any;
 
     showToolbar() {
         this.showTollbar = true;
@@ -336,21 +337,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             // resize from all edges and corners
             edges: { left: true, right: true, bottom: false, top: false },
             listeners: {
-                move: (event) => {
-                    const target = event.target;
-                    let x = (parseFloat(target.getAttribute('data-x')) || 0);
-                    // translate when resizing from top or left edges
-                    x += event.deltaRect.left;
-                    const y = (parseFloat(target.getAttribute('data-y')) || 0);
-                    const parentElement = target.parentElement;
-                    const parentWidth = parentElement.clientWidth;
-                    const leftPos = Math.min(x * 100 / parentWidth, 100);
-                    // update the element's style
-                    target.style.width = Math.min(100, event.rect.width * 100 / parentWidth) + '%';
-                    target.style.left = +leftPos + '%';
-                    target.setAttribute('data-x', x.toFixed(2));
-                    target.setAttribute('data-y', y.toFixed(2));
-                }
+                move: this.moveElement
             },
             modifiers: [
                 // keep the edges inside the parent
@@ -366,20 +353,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         });
         container.draggable({
             listeners: {
-                move(event) {
-                    const target = event.target;
-                    // keep the dragged position in the data-x/data-y attributes
-                    const x = (parseFloat(target.getAttribute('data-x')) || 0) + parseFloat(event.dx);
-                    const y = (parseFloat(target.getAttribute('data-y')) || 0);
-                    const parentWidth = target.parentElement.clientWidth;
-                    // update the element's style
-                    const leftPos = Math.min(x * 100 / parentWidth, 100);
-                    // translate the element
-                    target.style.left = leftPos + '%';
-                    // update the position attributes
-                    target.setAttribute('data-x', x.toFixed(2));
-                    target.setAttribute('data-y', y.toFixed(2));
-                }
+                move: this.dragElement
             },
             // keep the element within the area of it's parent
             modifiers: [
@@ -389,6 +363,37 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             ],
         });
         container.on('dragend resizeend', this.handleZoomRangeChange.bind(this));
+    }
+
+    dragElement(event) {
+        const target = event.target;
+        // keep the dragged position in the data-x/data-y attributes
+        const x = (parseFloat(target.getAttribute('data-x')) || 0) + parseFloat(event.dx);
+        const y = (parseFloat(target.getAttribute('data-y')) || 0);
+        const parentWidth = target.parentElement.clientWidth;
+        // update the element's style
+        const leftPos = Math.min(x * 100 / parentWidth, 100);
+        // translate the element
+        target.style.left = leftPos + '%';
+        // update the position attributes
+        target.setAttribute('data-x', x.toFixed(2));
+        target.setAttribute('data-y', y.toFixed(2));
+    }
+
+    moveElement(event) {
+        const target = event.target;
+        let x = (parseFloat(target.getAttribute('data-x')) || 0);
+        // translate when resizing from top or left edges
+        x += event.deltaRect.left;
+        const y = (parseFloat(target.getAttribute('data-y')) || 0);
+        const parentElement = target.parentElement;
+        const parentWidth = parentElement.clientWidth;
+        const leftPos = Math.min(x * 100 / parentWidth, 100);
+        // update the element's style
+        target.style.width = Math.min(100, event.rect.width * 100 / parentWidth) + '%';
+        target.style.left = +leftPos + '%';
+        target.setAttribute('data-x', x.toFixed(2));
+        target.setAttribute('data-y', y.toFixed(2));
     }
 
     /**
@@ -484,6 +489,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
         this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / mainContainerWidth), 0);
         this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / mainContainerWidth), this.duration);
+        const startElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".start");
+        const startElementClientRect = startElement ? startElement.getBoundingClientRect() : null;
+        const endElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".end");
+        const endElementClientRect = endElement ? endElement.getBoundingClientRect() : null;
+        this.displaydash = (endElementClientRect ? endElementClientRect.left <= startElementClientRect.right + 10 : false);
         this.refreshTimeCursor();
     }
 
@@ -495,11 +505,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             const selector = '.tc-cursor';
             const mainTimelineWidth = this.mainTimeline.nativeElement.offsetWidth;
             const mainTimelineLeftPosition = this.mainTimeline.nativeElement.offsetLeft;
-            const focusLeftPos = mainTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn);
             const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
             const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
+            const listBlockTimeline: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.timeline');
+            const listBlockTimelineLeftPosition = listBlockTimeline ? listBlockTimeline.offsetLeft : mainTimelineLeftPosition;
             mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
-            listBlock.style.left = `${focusLeftPos}px`;
+            listBlock.style.left = `${listBlockTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn)}px`;
         }
     }
 
@@ -564,11 +575,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         selectedBlockElement.style.top = `${currentTarget.parentElement.parentElement.offsetTop + defaultMouseMargin}px`;
         selectedBlockElement.style.display = 'block';
         this.selectedBlock = localisation;
+
     }
 
     /**
      * On mouse enter on tc bloc
-     * @param $event event
+     * @param $event any
      */
     public handleMouseLeaveOnTc($event: any) {
         this.selectedBlockElement.nativeElement.style.display = 'none';
@@ -577,10 +589,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
 
     /**
-     * handle mouse to draw
+     * handle mouse to drawxit
      * @param event mouse event
      */
-    handleMouseMoveToDrawRect(event: MouseEvent) {
+    handleMouseMoveToDrawRect(event: any) {
         this.updateMouseEvent(event);
     }
 
