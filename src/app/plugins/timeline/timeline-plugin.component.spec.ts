@@ -25,6 +25,7 @@ import { DragDropModule } from 'primeng/dragdrop';
 import { PreventCtrlScrollDirective } from 'src/app/core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayerConfigData } from 'src/app/core/config/model/player-config-data';
+import interact from 'interactjs';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -3884,6 +3885,7 @@ describe('TimelinePluginComponent 2', () => {
     it('Should updateMouseEvent', () => {
         fixture.detectChanges();
         component.updateMouseEvent({ clientX: `200px`, clientY: `200px` });
+        component.handleMouseMoveToDrawRect({ clientX: `200px`, clientY: `200px` });
     });
     it('Should handleMouseEnterOnTc', fakeAsync(() => {
         const spyOnHandleMouseEnterOnTc = spyOn(component, 'handleMouseEnterOnTc').and.callThrough();
@@ -3950,4 +3952,60 @@ describe('TimelinePluginComponent 2', () => {
         });
         tick(400);
     }));
+
+
+    it('should update the element\'s position correctly', function () {
+
+        const target = document.createElement('div');
+        target.setAttribute('data-x', '0');
+        target.setAttribute('data-y', '0');
+        target.style.left = '0%';
+        document.body.appendChild(target);
+
+        const event = {
+            target: target,
+            dx: 50,
+            dy: 0
+        };
+        component.dragElement(event);
+
+        const x = parseFloat(target.getAttribute('data-x'));
+        const y = parseFloat(target.getAttribute('data-y'));
+
+        expect(x).toBe(50);
+        expect(y).toBe(0);
+
+        document.body.removeChild(target);
+
+    });
+
+
+    it('should update the element\'s position and size correctly', function () {
+
+        const target = document.createElement('div');
+
+        target.setAttribute('data-x', '0');
+        target.setAttribute('data-y', '0');
+        target.style.left = '0%';
+        target.style.width = '0%';
+        document.body.appendChild(target);
+
+        const event = {
+            target: target,
+            deltaRect: { left: 50 },
+            rect: { width: 200 }
+        };
+        component.moveElement(event);
+
+        const x = parseFloat(target.getAttribute('data-x'));
+        const y = parseFloat(target.getAttribute('data-y'));
+
+        expect(x).toBe(50);
+        expect(y).toBe(0);
+
+        document.body.removeChild(target);
+
+    });
+
+
 });
