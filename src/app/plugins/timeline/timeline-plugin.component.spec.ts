@@ -24,6 +24,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { DragDropModule } from 'primeng/dragdrop';
 import { PreventCtrlScrollDirective } from 'src/app/core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PlayerConfigData } from 'src/app/core/config/model/player-config-data';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -3840,7 +3841,6 @@ describe('TimelinePluginComponent 2', () => {
         const obj = document.createElement('video');
         mediaPlayerElement.setMediaPlayer(obj);
         httpTestingController = TestBed.inject(HttpTestingController);
-        spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
         spyOngetDuration = spyOn(mediaPlayerElement.getMediaPlayer(), 'getDuration').and.returnValue(1800);
     });
 
@@ -3888,7 +3888,7 @@ describe('TimelinePluginComponent 2', () => {
     it('Should handleMouseEnterOnTc', fakeAsync(() => {
         const spyOnHandleMouseEnterOnTc = spyOn(component, 'handleMouseEnterOnTc').and.callThrough();
         const spyOnHandleMouseLeaveOnTc = spyOn(component, 'handleMouseLeaveOnTc').and.callThrough();
-
+        spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
         mediaPlayerElement.metadataManager.init().then(() => {
             component.currentTime = 600;
             component.duration = 1800;
@@ -3918,5 +3918,36 @@ describe('TimelinePluginComponent 2', () => {
         });
         tick(400);
     }));
+    it('Should manage callSeek', () => {
+        const srcMedia = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+        const backSrc = 'http://test-streams.mu.dev/9898.m3u8';
+        const config: PlayerConfigData = {
+            autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: srcMedia,
+            backwardsSrc: backSrc, hls: { enable: true }
+        };
+        mediaPlayerElement.getMediaPlayer().setSrc(config);
+        spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.callThrough();
+        fixture.detectChanges();
+        component.callSeek(700);//tcOffset=600
+        expect(component.mediaPlayerElement.getMediaPlayer().getCurrentTime()).toEqual(100);
+    });
+    it('Should removeBlock', fakeAsync(() => {
+        spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
+        mediaPlayerElement.metadataManager.init().then(() => {
+            fixture.detectChanges();
+            tick(400);
+            const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
+            const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordion-header');
+            target.dispatchEvent(mouseEnterEvent);
+            const removeButton: HTMLElement = target.querySelector('p-button');
+            removeButton.click();
+            expect(component.listOfBlocks[0].displayState).toEqual(false);
+        });
 
+        httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
+            status: 200,
+            statusText: 'Ok'
+        });
+        tick(400);
+    }));
 });
