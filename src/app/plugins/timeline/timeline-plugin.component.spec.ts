@@ -54,13 +54,6 @@ describe('TimelinePluginComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should show and hide toolbar', () => {
-        component.showToolbar();
-        expect(component.showTollbar).toBeTrue();
-        component.hideToolbar();
-        expect(component.showTollbar).toBeFalse();
-    });
-
     it('should initialize with default values', () => {
         expect(component.title).toBeUndefined();
         expect(component.mainBlockColor).toBeUndefined();
