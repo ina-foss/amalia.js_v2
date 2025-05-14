@@ -1,21 +1,13 @@
 <script src="./app/plugins/timeline/timeline-plugin.component.ts"></script>
-<div class="toolbar-container"><ng-container *ngIf="showTollbar;then toolbar else hiddenToolbar"></ng-container>
-    <ng-template #toolbar>
-        <p-toolbar>
-            <div class="p-toolbar-group-end">
-                <div class="flex items-center gap-2 toolbar-end-buttons">
-                    <p-button icon="pi pi-search-minus" [rounded]="true" (onClick)="unZoom()"></p-button>
-                    <p-button icon="pi pi-filter" [rounded]="true" (onClick)="toggleConfig()"></p-button>
-                </div>
+<div class="toolbar-container">
+    <p-toolbar>
+        <div class="p-toolbar-group-end">
+            <div class="flex items-center gap-2 toolbar-end-buttons">
+                <p-button icon="pi pi-search-minus" [rounded]="true" (onClick)="unZoom()"></p-button>
+                <p-button icon="pi pi-filter" [rounded]="true" (onClick)="toggleConfig()"></p-button>
             </div>
-        </p-toolbar>
-        <div class="full-width"><p-button icon="pi pi-chevron-up" [rounded]="true" [text]="true"
-                class="toolbar-toggle-button" (onClick)="hideToolbar()"></p-button></div>
-    </ng-template>
-    <ng-template #hiddenToolbar>
-        <div class="full-width"><p-button icon="pi pi-chevron-down" [rounded]="true" [text]="true"
-                class="toolbar-toggle-button" (onClick)="showToolbar()"></p-button></div>
-    </ng-template>
+        </div>
+    </p-toolbar>
 </div>
 
 <div class="main-block" #mainBlockContainer>

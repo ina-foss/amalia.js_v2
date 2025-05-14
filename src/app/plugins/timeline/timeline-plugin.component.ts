@@ -98,19 +98,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     );
     selectedNodesBeforeChange: TreeNode[] = [];
     allNodesChecked: boolean = false;
-    showTollbar: boolean = false;
     checkedSyncro: boolean = false;
     enableZoom: boolean = false;
     mouseX: number;
     mouseY: number;
     displaydash: any;
 
-    showToolbar() {
-        this.showTollbar = true;
-    }
-    hideToolbar() {
-        this.showTollbar = false;
-    }
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -346,7 +339,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 }),
                 // minimum size
                 interact.modifiers.restrictSize({
-                    min: { width: 10, height: null }
+                    min: { width: 33, height: null }
                 })
             ],
             inertia: true
@@ -474,8 +467,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        this.focusTcIn = this.tcOffset + this.currentTime;
+        this.focusTcIn = this.tcOffset;
         this.focusTcOut = this.tcOffset + this.duration;
+        this.refreshTimeCursor();
     }
 
 
@@ -510,7 +504,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             const listBlockTimeline: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.timeline');
             const listBlockTimelineLeftPosition = listBlockTimeline ? listBlockTimeline.offsetLeft : mainTimelineLeftPosition;
             mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
+            mainBlock.style.width = `2px`;
             listBlock.style.left = `${listBlockTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn)}px`;
+            const accordion: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.p-accordion');
+            const accordionBoundRect = accordion?.getBoundingClientRect();
+            listBlock.style.height = `${accordionBoundRect?.height}px`;
+            listBlock.style.width = `2px`;
         }
     }
 

@@ -11,52 +11,15 @@
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
-  border: 1px solid $amalia-plugin-timeline-border-color;
   align-items: stretch;
   overflow: hidden;
-
-  .full-width {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    border: none;
-  }
-
-  .toolbar-toggle-button {
-    border-radius: var(--border-radius-sm, 4px) var(--border-radius-sm, 4px) var(--spacing-space-xl, 24px) var(--spacing-space-xl, 24px);
-    background: var(--button-color, #FFF);
-
-    /* button/raised/shadow */
-    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.20), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    display: flex;
-    width: 80px;
-    height: 15px;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    overflow: hidden;
-  }
 
   .toolbar-container {
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 48px;
     z-index: 11;
-  }
-
-  .synchro-switch {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    .synchro-switch-label {
-      color: $amalia-plugin-timeline-primary-color;
-      font-family: $amalia-font-family-lato;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 700;
-      line-height: normal;
-    }
   }
 
   .no-highlight {
@@ -153,7 +116,21 @@
       .content {
         transition: right 0.5s ease-in-out;
         right: -40%;
+
+        .footer {
+          display: flex !important;
+          align-items: center;
+          gap: var(--border-radius-lg, 12px);
+          align-self: stretch;
+          bottom: 12px;
+          right: 8px;
+          padding: var(--border-radius-md, 8px) var(--border-radius-lg, 12px);
+          background: var(--INA-Blanc, #FFF);
+          position: fixed;
+          transition: right 0.5s ease-in-out;
+        }
       }
+
     }
 
     .p-checkbox .p-checkbox-box.p-highlight {
@@ -163,10 +140,10 @@
 
     .content {
       position: relative;
-      height: 98%;
+      height: 100%;
       width: 60%;
       background-color: $amalia-plugin-timeline-bg-color;
-      display: flex;
+      display: flex !important;
       flex-direction: column;
       right: -100%;
 
@@ -198,8 +175,7 @@
 
       .header,
       .footer {
-        width: 100%;
-        height: 55px;
+        min-height: 55px;
         background-color: $amalia-plugin-timeline-bg-color;
       }
 
@@ -213,6 +189,7 @@
         padding: 0 20px;
         display: flex;
         justify-content: space-between;
+        width: 100%;
 
         .p-checkbox-label {
           color: var(--colors-text-title, #212529);
@@ -250,20 +227,12 @@
       }
 
       .footer {
-        display: flex;
-        padding: var(--border-radius-md, 8px) var(--border-radius-lg, 12px);
-        justify-content: flex-end;
-        align-items: center;
-        gap: var(--border-radius-lg, 12px);
-        align-self: stretch;
-        border-top: 1px solid #EDEDED;
-        background: var(--INA-Blanc, #FFF);
+        display: none !important;
       }
 
       .main {
-        height: 100%;
+        height: 90%;
         width: 100%;
-        overflow-y: auto;
         display: flex;
         flex-direction: column;
 
@@ -280,7 +249,7 @@
         }
 
         .p-tree-container {
-          height: 100%;
+          height: 90%;
           overflow-y: auto;
           /* Activer le défilement vertical */
           overflow-x: clip;
@@ -526,7 +495,7 @@
 
     .p-accordion-toggle-icon {
       color: $amalia-plugin-timeline-primary-color;
-      padding: 0 12px 0 0 !important;
+      padding: 0 10px 0 2px !important;
       margin: 0 !important;
     }
 
@@ -596,7 +565,7 @@
       box-sizing: border-box;
       height: 100%;
       width: 2px;
-      background-color: #0b769880;
+      background-color: rgba(11, 119, 152, 0.30);
     }
 
     .timeline {
@@ -622,7 +591,7 @@
       box-sizing: border-box;
       height: 30px;
       width: 2px;
-      background-color: #0b769880;
+      background-color: rgba(11, 119, 152, 0.50);
     }
 
     .timeline-block {
@@ -702,6 +671,10 @@
     border: none !important;
 
     .toolbar-end-buttons {
+      gap: 12px;
+      display: flex;
+      padding: 0 12px;
+
       .p-element {
         .p-button {
           background-color: $colors-primitive-primary-color !important;
@@ -720,8 +693,8 @@
     order: -1;
 
     .p-icon {
-      width: 14px !important;
-      height: 14px !important;
+      width: 10px !important;
+      height: 10px !important;
     }
   }
 
