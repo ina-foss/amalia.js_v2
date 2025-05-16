@@ -1,5 +1,6 @@
 import { PluginBase } from '../../core/plugin/plugin-base';
 import {
+    AfterViewInit,
     Component,
     computed,
     ElementRef,
@@ -30,7 +31,8 @@ import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
     styleUrls: ['./timeline-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
 })
-export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit {
+export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit, AfterViewInit {
+
     public static PLUGIN_NAME = 'TIMELINE';
     public title: string;
     public mainBlockColor: string;
@@ -69,10 +71,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainBlockContainer: ElementRef<HTMLElement>;
     @ViewChild('listOfBlocksContainer', { static: true })
     public listOfBlocksContainer: ElementRef<HTMLElement>;
+    @ViewChild('listOfBlocksAccordion', { static: true })
+    public listOfBlocksAccordion: ElementRef<HTMLElement>;
     @ViewChild('selectedBlockElement', { static: true })
     public selectedBlockElement: any = null;
     @ViewChild('selectionContainer', { static: true })
     public selectionContainer: ElementRef<HTMLElement>;
+    @ViewChild('menuContainer', { static: true })
+    public menuContainer: ElementRef<HTMLElement>;
     public selectedBlock: TimelineLocalisation = null;
     public sortableOptions: Options = {
         handle: '.drag',
@@ -98,11 +104,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     );
     selectedNodesBeforeChange: TreeNode[] = [];
     allNodesChecked: boolean = false;
-    checkedSyncro: boolean = false;
+    isSelectSegmentsFocused: boolean = false;
     enableZoom: boolean = false;
     mouseX: number;
     mouseY: number;
-    displaydash: any;
+    indeterminate: boolean = false;
 
 
     constructor(playerService: MediaPlayerService) {
@@ -110,8 +116,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.pluginName = TimelinePluginComponent.PLUGIN_NAME;
     }
 
+    ngAfterViewInit(): void {
+        this.refreshTimeCursor();
+        this.updateTimeCodePosition();
+    }
+
     ngOnInit(): void {
         try {
+            this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.closeMenu);
             super.ngOnInit();
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
@@ -120,6 +132,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.init();
             this.handleMetadataLoaded();
             this.handleOnDurationChange();
+        }
+    }
+
+    closeMenu(event: any) {
+        if (this.configIsOpen === true) {
+            if (!Utils.isInComposedPath('menu-content', event) && !Utils.isInComposedPath('timeline-toolbar-filter-button', event)) {
+                this.handleDisplayBlocks(false);
+            }
         }
     }
 
@@ -483,12 +503,69 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
         this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / mainContainerWidth), 0);
         this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / mainContainerWidth), this.duration);
+        this.updateTimeCodePosition();
+        this.refreshTimeCursor();
+    }
+
+    updateTimeCodePosition() {
+        const focusContainer: HTMLElement = this.focusContainer.nativeElement;
+        const focusContainerClientRect = focusContainer ? focusContainer.getBoundingClientRect() : null;
+
+        const timeCodeContainer: HTMLElement = this.focusContainer.nativeElement.querySelector(".time-code");;
+        let timeCodeContainerClientRect = timeCodeContainer ? timeCodeContainer.getBoundingClientRect() : null;
+
         const startElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".start");
         const startElementClientRect = startElement ? startElement.getBoundingClientRect() : null;
+
+        const middleElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".middle");
+        const middleElementClientRect = middleElement ? middleElement.getBoundingClientRect() : null;
+
         const endElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".end");
         const endElementClientRect = endElement ? endElement.getBoundingClientRect() : null;
-        this.displaydash = (endElementClientRect ? endElementClientRect.left <= startElementClientRect.right + 10 : false);
-        this.refreshTimeCursor();
+
+        if (focusContainerClientRect && startElementClientRect && endElementClientRect && middleElementClientRect && timeCodeContainerClientRect) {
+            if (endElementClientRect.left <= startElementClientRect.right + 7) {
+                this.displayDashInTimeCode(middleElement, startElementClientRect, timeCodeContainer, endElementClientRect, startElement, endElement, focusContainerClientRect);
+            } else {
+                middleElement.style.display = 'none';
+                timeCodeContainer.style.minWidth = '0';
+                timeCodeContainer.style.transform = 'translateX(0)';
+                setTimeout(() => {
+                    if (endElementClientRect.left > (startElementClientRect.right + 6 + 12 + 12)) {
+                        startElement.style.left = '12px';
+                        endElement.style.right = '12px';
+                    }
+                }, 100);
+            }
+        }
+    }
+
+    displayDashInTimeCode(middleElement: HTMLSpanElement, startElementClientRect: DOMRect, timeCodeContainer: HTMLElement, endElementClientRect: DOMRect, startElement: HTMLSpanElement, endElement: HTMLSpanElement, focusContainerClientRect: DOMRect) {
+        middleElement.style.display = 'block';
+        middleElement.style.left = `${startElementClientRect.width + 12 + 2}px`;
+        timeCodeContainer.style.minWidth = `${12 + startElementClientRect.width + 6 + endElementClientRect.width + 12}px`;
+        startElement.style.left = '12px';
+        endElement.style.right = '12px';
+
+        setTimeout(() => {
+            const timeCodeContainerClientRect = timeCodeContainer.getBoundingClientRect();
+            const timeCodeContainerCenter = (timeCodeContainerClientRect.left + timeCodeContainerClientRect.right) / 2;
+            const focusContainerCenter = (focusContainerClientRect.left + focusContainerClientRect.right) / 2;
+            const offset = focusContainerCenter - timeCodeContainerCenter;
+            timeCodeContainer.style.transform = `translateX(${offset}px)`;
+            setTimeout(() => {
+                const timeCodeContainerClientRect = timeCodeContainer.getBoundingClientRect();
+                const mainBlockContainerClientRect = this.mainBlockContainer.nativeElement.getBoundingClientRect();
+                if (timeCodeContainerClientRect.left < mainBlockContainerClientRect.left) {
+                    const offset = mainBlockContainerClientRect.left - timeCodeContainerClientRect.left;
+                    timeCodeContainer.style.transform = `translateX(${offset}px)`;
+                }
+                if (timeCodeContainerClientRect.right > mainBlockContainerClientRect.right) {
+                    const offset = mainBlockContainerClientRect.right - timeCodeContainerClientRect.right;
+                    timeCodeContainer.style.transform = `translateX(${offset}px)`;
+                }
+            }, 100);
+        }, 100);
     }
 
     /**
@@ -626,6 +703,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
 
     toggleAllNodes() {
+        this.allNodesChecked = !this.allNodesChecked;
+        this.indeterminate = false;
         if (this.allNodesChecked) {
             this.selectedNodes.set(this.getAllNodes(this.nodes));
         } else {
@@ -674,5 +753,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.listOfBlocks.splice(this.startIndex, 1);
         this.listOfBlocks.splice(dropIndex, 0, item);
     }
-
+    updateTreeComponent() {
+        const nbNodes = this.getAllNodes(this.nodes).length;
+        const nbSelectedNodes = this.selectedNodes().length;
+        this.allNodesChecked = nbSelectedNodes === nbNodes;
+        this.indeterminate = nbSelectedNodes > 0 && nbSelectedNodes < nbNodes;
+    }
 }

@@ -6,7 +6,7 @@ import { DataType } from "../../core/constant/data-type";
 import { CheckboxModule } from "primeng/checkbox";
 import { TreeModule } from "primeng/tree";
 import { SortablejsDirective } from "../../core/directive/inaSortablejs/sortablejs.directive";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from "@angular/core";
 import { DefaultConfigLoader } from 'src/app/core/config/loader/default-config-loader';
 import { DefaultConfigConverter } from 'src/app/core/config/converter/default-config-converter';
 import { DefaultLogger } from 'src/app/core/logger/default-logger';
@@ -26,6 +26,10 @@ import { PreventCtrlScrollDirective } from 'src/app/core/directive/inaSortablejs
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayerConfigData } from 'src/app/core/config/model/player-config-data';
 import interact from 'interactjs';
+import { MinusIcon } from 'primeng/icons/minus';
+import { CheckIcon } from 'primeng/icons/check';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -36,7 +40,7 @@ describe('TimelinePluginComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective],
             providers: [MediaPlayerService, TcFormatPipe],
-            imports: [CheckboxModule, TreeModule],
+            imports: [CheckboxModule, TreeModule, MinusIcon, CheckIcon, FormsModule, ButtonModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -85,12 +89,12 @@ describe('TimelinePluginComponent', () => {
     });
 
     it('should toggle all nodes', () => {
-        component.allNodesChecked = true;
+        component.allNodesChecked = false;
         component.nodes = [{ key: '1', label: 'Node 1', children: [] } as TreeNode];
         component.toggleAllNodes();
         expect(component.selectedNodes().length).toBe(1);
 
-        component.allNodesChecked = false;
+        component.allNodesChecked = true;
         component.toggleAllNodes();
         expect(component.selectedNodes().length).toBe(0);
     });
@@ -3779,7 +3783,9 @@ describe('TimelinePluginComponent 2', () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
             providers: [MediaPlayerService],
-            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, TreeModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule],
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
+                MinusIcon, CheckIcon, FormsModule, ButtonModule
+            ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -3883,12 +3889,16 @@ describe('TimelinePluginComponent 2', () => {
     it('Should handleMouseEnterOnTc', fakeAsync(() => {
         const spyOnHandleMouseEnterOnTc = spyOn(component, 'handleMouseEnterOnTc').and.callThrough();
         const spyOnHandleMouseLeaveOnTc = spyOn(component, 'handleMouseLeaveOnTc').and.callThrough();
+        const spyOnRefreshTimeCursor = spyOn(component, 'refreshTimeCursor').and.callThrough();
+        const spyOnUpdateTimeCodePosition = spyOn(component, 'updateTimeCodePosition').and.callThrough();
         spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
         mediaPlayerElement.metadataManager.init().then(() => {
             component.currentTime = 600;
             component.duration = 1800;
             fixture.detectChanges();
             tick(400);
+            expect(spyOnRefreshTimeCursor).toHaveBeenCalled();
+            expect(spyOnUpdateTimeCodePosition).toHaveBeenCalled();
             const listOfBlocks = component.listOfBlocks;
             const loc = listOfBlocks[0].data[0];
             const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
@@ -3999,6 +4009,105 @@ describe('TimelinePluginComponent 2', () => {
         document.body.removeChild(target);
 
     });
+    it('Should updateTreeComponent', fakeAsync(() => {
+        spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
+        mediaPlayerElement.metadataManager.init().then(() => {
+            component.currentTime = 600;
+            component.duration = 1800;
+            fixture.detectChanges();
+            component.updateTreeComponent();
+            expect(component.allNodesChecked).toBe(true);
+            expect(component.indeterminate).toBe(false);
+        });
+        httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
+            status: 200,
+            statusText: 'Ok'
+        });
+        tick(400);
+    }));
+    it('Should closeMenu', fakeAsync(() => {
+        spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
+        const spyOnCloseMenu = spyOn(component, 'closeMenu').and.callThrough();
+        mediaPlayerElement.metadataManager.init().then(() => {
+            component.currentTime = 600;
+            component.duration = 1800;
+            fixture.detectChanges();
+            const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
+            const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordion-header');
+            target.dispatchEvent(mouseEnterEvent);
+            const removeButton: HTMLElement = target.querySelector('p-button');
+            component.toggleConfig();
+            removeButton.click();
+            tick(400);
+            expect(spyOnCloseMenu).toHaveBeenCalled();
+        });
+        httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
+            status: 200,
+            statusText: 'Ok'
+        });
+        tick(400);
+    }));
 
+    it('devrait positionner correctement les éléments et ajuster le translateX', fakeAsync(() => {
+        const middle = document.createElement('span');
+        const start = document.createElement('span');
+        const end = document.createElement('span');
+        const container = document.createElement('div');
+
+        const startRect = { width: 50 } as DOMRect;
+        const endRect = { width: 60 } as DOMRect;
+        const focusRect = { left: 100, right: 400 } as DOMRect;
+
+        // Mock de mainBlockContainer
+        component.mainBlockContainer = {
+            nativeElement: {
+                getBoundingClientRect: () => ({
+                    left: 0,
+                    right: 500
+                })
+            }
+        } as ElementRef;
+
+        spyOn(container, 'getBoundingClientRect').and.returnValues(
+            {
+                left: 150, right: 350,
+                height: 0,
+                width: 0,
+                x: 0,
+                y: 0,
+                bottom: 0,
+                top: 0,
+                toJSON: function () {
+                    //not implemented;
+                }
+            }, // 1er setTimeout
+            {
+                left: -20,
+                right: 600,
+                height: 0,
+                width: 0,
+                x: 0,
+                y: 0,
+                bottom: 0,
+                top: 0,
+                toJSON: function () {
+                    //not implemented;
+                }
+            }  // 2e setTimeout
+        );
+
+        component.displayDashInTimeCode(middle, startRect, container, endRect, start, end, focusRect);
+
+        // Avance le temps pour le 1er setTimeout
+        tick(100);
+
+        expect(container.style.transform).toBe('translateX(0px)');
+
+        // Avance le temps pour le 2e setTimeout
+        tick(100);
+
+        // Vérifie que le translateX a été ajusté à cause du débordement à gauche
+        expect(container.style.transform).toBe('translateX(-100px)');
+    }));
 
 });

@@ -44,6 +44,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { AccordionModule } from 'primeng/accordion';
 import { DragDropModule } from 'primeng/dragdrop'; 
 import { PreventCtrlScrollDirective } from './core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
+import { MinusIcon } from 'primeng/icons/minus';
+import { CheckIcon } from 'primeng/icons/check';
 
 @NgModule({
     imports: [
@@ -72,7 +74,9 @@ import { PreventCtrlScrollDirective } from './core/directive/inaSortablejs/preve
         ToolbarModule,
         InputSwitchModule,
         AccordionModule,
-        DragDropModule
+        DragDropModule,
+        MinusIcon,
+        CheckIcon
     ],
     declarations: [
         AmaliaComponent,

@@ -4,7 +4,8 @@
         <div class="p-toolbar-group-end">
             <div class="flex items-center gap-2 toolbar-end-buttons">
                 <p-button icon="pi pi-search-minus" [rounded]="true" (onClick)="unZoom()"></p-button>
-                <p-button icon="pi pi-filter" [rounded]="true" (onClick)="toggleConfig()"></p-button>
+                <p-button id="timeline-toolbar-filter-button" icon="pi pi-filter" [rounded]="true"
+                    (onClick)="toggleConfig()"></p-button>
             </div>
         </div>
     </p-toolbar>
@@ -16,14 +17,10 @@
     </div>
     <div class="timeline-block">
         <div class="focus handle-border" #focusContainer>
-            <div class="time-code" *ngIf="focusTcOut">
-                <span class="start">{{ focusTcIn|tcFormat:timeFormat:fps }}</span>
-            </div>
-            <div class="time-code" *ngIf="focusTcIn && displaydash">
-                <span class="middle">-</span>
-            </div>
-            <div class="time-code" *ngIf="focusTcOut">
-                <span class="end">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
+            <div class="time-code">
+                <span *ngIf="focusTcOut" class="start">{{ focusTcIn|tcFormat:timeFormat:fps }}</span>
+                <span *ngIf="focusTcIn" class="middle">-</span>
+                <span *ngIf="focusTcOut" class="end">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
             </div>
         </div>
         <div class="pad">
@@ -57,7 +54,8 @@
             <span class="end">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
         </p>
     </div>
-    <p-accordion [multiple]="true" [activeIndex]="listOfBlocksIndexes">
+    <p-accordion #listOfBlocksAccordion [multiple]="true" [activeIndex]="listOfBlocksIndexes"
+        (activeIndexChange)="refreshTimeCursor()" (onClose)="refreshTimeCursor()" (onOpen)="refreshTimeCursor()">
         <ng-container *ngFor="let block of listOfBlocks; let idx = index">
             <p-accordionTab [ngClass]="{'hidden-timeline':block.displayState===false}" iconPos="start" class="grabbable"
                 pDraggable="listOfBlocks" pDroppable="listOfBlocks" (onDragStart)="onDragStart(idx)"
@@ -98,11 +96,29 @@
     </p-accordion>
 </div>
 <div class="segment-empty"></div>
-<div class="menu" [ngClass]="{'open':configIsOpen}">
-    <div class="content">
+<div class="menu" #menuContainer [ngClass]="{'open':configIsOpen}">
+    <div class="content" id="menu-content">
         <div class="header">
-            <p-checkbox label="Sélectionner des segments" [(ngModel)]="allNodesChecked" [binary]="true"
-                inputId="select-segments" (onChange)="toggleAllNodes()" />
+            <div class="select-segments">
+                <div class="p-checkbox p-component" aria-hidden="true" inputId="select-segments" id="select-segments">
+                    <div class="p-checkbox-box"
+                        [ngClass]="{ 'p-highlight': allNodesChecked || indeterminate, 'p-indeterminate': indeterminate, 'p-checkbox-focused': isSelectSegmentsFocused }"
+                        (click)="toggleAllNodes()" (keyPress)="toggleAllNodes()" (keyDown)="toggleAllNodes()"
+                        (keyUp)="toggleAllNodes()" (focus)="isSelectSegmentsFocused=true"
+                        (blur)="isSelectSegmentsFocused=false">
+                        <CheckIcon *ngIf="!indeterminate && allNodesChecked" [styleClass]="'p-checkbox-icon'" />
+                        <MinusIcon *ngIf="indeterminate" [styleClass]="'p-checkbox-icon'" />
+                    </div>
+                </div>
+                <label for="select-segments"
+                    [ngClass]="{ 'p-checkbox-label-active': allNodesChecked || indeterminate, 'p-checkbox-label-focus': isSelectSegmentsFocused }"
+                    class="p-checkbox-label ng-star-inserted p-checkbox-label-active" (click)="toggleAllNodes()"
+                    (keyPress)="toggleAllNodes()" (keyDown)="toggleAllNodes()" (keyUp)="toggleAllNodes()"> Sélectionner
+                    des
+                    segments</label>
+            </div>
+
+
             <p-button *ngIf="filterHidden" icon="pi pi-search" [rounded]="true" (click)="toggleFilter()"
                 (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
                 class="btn-show-filter" />
@@ -111,7 +127,8 @@
                 class="btn-hide-filter" />
         </div>
         <div class="main">
-            <p-tree *ngIf="filterHidden" [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes">
+            <p-tree *ngIf="filterHidden" [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes"
+                (selectionChange)="updateTreeComponent()">
                 <ng-template let-node pTemplate="default">
                     <span *ngIf="node.data && node.data.color" class="color"
                         [ngStyle]="{'background-color':node.data.color}"></span>
@@ -120,7 +137,7 @@
             </p-tree>
             <p-tree *ngIf="!filterHidden" [value]="nodes" selectionMode="checkbox" [filter]="true"
                 filterPlaceholder="Rechercher..." filterMode="strict" [(selection)]="selectedNodes"
-                (onFilter)="filterNodes($event)">
+                (selectionChange)="updateTreeComponent()" (onFilter)="filterNodes($event)">
                 <ng-template let-node pTemplate="default">
                     <span *ngIf="node.data && node.data.color" class="color"
                         [ngStyle]="{'background-color':node.data.color}"></span>

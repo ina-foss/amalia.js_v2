@@ -1,6 +1,6 @@
-import {interval, of, Subscription, switchMap, takeUntil, takeWhile, timer} from "rxjs";
-import {PlayerEventType} from "../constant/event-type";
-import {EventEmitter} from "events";
+import { interval, of, Subscription, switchMap, takeUntil, takeWhile, timer } from "rxjs";
+import { PlayerEventType } from "../constant/event-type";
+import { EventEmitter } from "events";
 
 interface FnParam {
     fn: any;
@@ -37,16 +37,16 @@ export class Utils {
         const _timeout = timeout ?? 30000;
         const _intervalStep = intervalStep ?? 5;
         return interval(_intervalStep).pipe(// Vérifier toutes les _intervalStep millisecondes
-                switchMap(() => of(conditionFn())), takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
-                , takeUntil(timer(_timeout))).subscribe({
-            next: () => {
-                Utils.callFunctionWithParam(nextActionFn);
-            },
-            complete: () => {
-                Utils.callFunctionWithParam(completeActionFn);
-                setDataLoadingFn && setDataLoadingFn(false);
-            }
-        });
+            switchMap(() => of(conditionFn())), takeWhile(conditionMet => !conditionMet, true) // Continuer tant que la condition n'est pas vérifiée
+            , takeUntil(timer(_timeout))).subscribe({
+                next: () => {
+                    Utils.callFunctionWithParam(nextActionFn);
+                },
+                complete: () => {
+                    Utils.callFunctionWithParam(completeActionFn);
+                    setDataLoadingFn && setDataLoadingFn(false);
+                }
+            });
     }
 
     public static addListener(target: any, elementOnTarget: any, playerEventType: PlayerEventType, funcOnTarget: any) {
@@ -138,7 +138,9 @@ export class Utils {
             }
         }
     }
-
+    public static isInComposedPath(htmlElementId: string, event: any): boolean {
+        return event.composedPath().some((pathElement: any) => pathElement.id === htmlElementId);
+    }
 
 }
 
