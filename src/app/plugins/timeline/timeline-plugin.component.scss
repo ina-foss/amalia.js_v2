@@ -116,6 +116,13 @@
       .content {
         transition: right 0.5s ease-in-out;
         right: -40%;
+        padding: 0 4px;
+
+        .select-segments {
+          display: flex;
+          align-items: center;
+          padding: 4px 0;
+        }
 
         .footer {
           display: flex !important;
@@ -175,21 +182,25 @@
 
       .header,
       .footer {
-        min-height: 55px;
         background-color: $amalia-plugin-timeline-bg-color;
       }
 
       .header {
+        min-height: 22px;
         color: $amalia-plugin-timeline-header-font-color;
         font-family: $amalia-font-family !important;
         font-size: 20px;
         font-weight: bold;
         letter-spacing: 0;
         line-height: 45px;
-        padding: 0 20px;
+        padding: 4px 12px;
         display: flex;
-        justify-content: space-between;
+        align-items: center;
         width: 100%;
+
+        div {
+          padding: 0;
+        }
 
         .p-checkbox-label {
           color: var(--colors-text-title, #212529);
@@ -209,7 +220,7 @@
         .btn-hide-filter {
           position: absolute;
           right: 10px;
-          top: 55px;
+          top: 30px;
         }
 
         .btn-show-filter {
@@ -228,6 +239,7 @@
 
       .footer {
         display: none !important;
+        min-height: 55px;
       }
 
       .main {
@@ -242,6 +254,7 @@
 
         .p-tree {
           height: 100%;
+          padding: 0 !important;
         }
 
         .p-tree-wrapper {
@@ -283,6 +296,7 @@
 
         .p-tree-filter-container {
           width: 90%;
+          padding: 8px 0 0 12px;
         }
 
         ul {
@@ -424,7 +438,7 @@
       position: absolute;
       display: flex;
       flex-direction: row;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       min-height: 30px;
       width: 100%;
@@ -434,24 +448,30 @@
       z-index: 10;
 
       .time-code {
-        position: relative;
-        top: -22px;
+        position: absolute;
+        top: -8px;
         font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        white-space: nowrap;
 
         .start {
-          position: relative;
+          position: absolute;
+          text-align: left;
           left: 12px;
-          margin-right: 14px;
         }
 
         .middle {
-          position: relative;
+          position: absolute;
+          text-align: center;
         }
 
         .end {
-          position: relative;
+          position: absolute;
+          text-align: right;
           right: 12px;
-          margin-left: 14px;
         }
       }
     }
