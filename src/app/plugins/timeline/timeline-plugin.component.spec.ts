@@ -6,7 +6,7 @@ import { DataType } from "../../core/constant/data-type";
 import { CheckboxModule } from "primeng/checkbox";
 import { TreeModule } from "primeng/tree";
 import { SortablejsDirective } from "../../core/directive/inaSortablejs/sortablejs.directive";
-import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from "@angular/core";
 import { DefaultConfigLoader } from 'src/app/core/config/loader/default-config-loader';
 import { DefaultConfigConverter } from 'src/app/core/config/converter/default-config-converter';
 import { DefaultLogger } from 'src/app/core/logger/default-logger';
@@ -4047,4 +4047,67 @@ describe('TimelinePluginComponent 2', () => {
         });
         tick(400);
     }));
+
+    it('devrait positionner correctement les éléments et ajuster le translateX', fakeAsync(() => {
+        const middle = document.createElement('span');
+        const start = document.createElement('span');
+        const end = document.createElement('span');
+        const container = document.createElement('div');
+
+        const startRect = { width: 50 } as DOMRect;
+        const endRect = { width: 60 } as DOMRect;
+        const focusRect = { left: 100, right: 400 } as DOMRect;
+
+        // Mock de mainBlockContainer
+        component.mainBlockContainer = {
+            nativeElement: {
+                getBoundingClientRect: () => ({
+                    left: 0,
+                    right: 500
+                })
+            }
+        } as ElementRef;
+
+        spyOn(container, 'getBoundingClientRect').and.returnValues(
+            {
+                left: 150, right: 350,
+                height: 0,
+                width: 0,
+                x: 0,
+                y: 0,
+                bottom: 0,
+                top: 0,
+                toJSON: function () {
+                    //not implemented;
+                }
+            }, // 1er setTimeout
+            {
+                left: -20,
+                right: 600,
+                height: 0,
+                width: 0,
+                x: 0,
+                y: 0,
+                bottom: 0,
+                top: 0,
+                toJSON: function () {
+                    //not implemented;
+                }
+            }  // 2e setTimeout
+        );
+
+        component.displayDashInTimeCode(middle, startRect, container, endRect, start, end, focusRect);
+
+        // Avance le temps pour le 1er setTimeout
+        tick(100);
+
+        expect(container.style.transform).toBe('translateX(0px)');
+
+        // Avance le temps pour le 2e setTimeout
+        tick(100);
+
+        // Vérifie que le translateX a été ajusté à cause du débordement à gauche
+        expect(container.style.transform).toBe('translateX(-100px)');
+    }));
+
 });

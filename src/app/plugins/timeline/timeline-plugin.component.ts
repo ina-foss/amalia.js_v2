@@ -540,7 +540,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
     }
 
-    private displayDashInTimeCode(middleElement: HTMLSpanElement, startElementClientRect: DOMRect, timeCodeContainer: HTMLElement, endElementClientRect: DOMRect, startElement: HTMLSpanElement, endElement: HTMLSpanElement, focusContainerClientRect: DOMRect) {
+    displayDashInTimeCode(middleElement: HTMLSpanElement, startElementClientRect: DOMRect, timeCodeContainer: HTMLElement, endElementClientRect: DOMRect, startElement: HTMLSpanElement, endElement: HTMLSpanElement, focusContainerClientRect: DOMRect) {
         middleElement.style.display = 'block';
         middleElement.style.left = `${startElementClientRect.width + 12 + 2}px`;
         timeCodeContainer.style.minWidth = `${12 + startElementClientRect.width + 6 + endElementClientRect.width + 12}px`;
