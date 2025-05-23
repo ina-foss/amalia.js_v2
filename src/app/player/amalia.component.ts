@@ -410,6 +410,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ELEMENT_CONTEXT_MENU, this.onContextMenu);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME, this.sendCurrentTime);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME, this.setCurrentTime);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_DURATION, this.sendDuration);
         this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
 
     }
@@ -418,6 +419,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     }
     setCurrentTime(event) {
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(event.currentTime);
+    }
+    sendDuration() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_DURATION, { duration: this.mediaPlayerElement.getMediaPlayer().getDuration() });
     }
 
     public handleLoading() {

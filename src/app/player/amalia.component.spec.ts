@@ -1,21 +1,21 @@
-import {ComponentFixture, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
-import {AmaliaComponent} from './amalia.component';
-import {MediaPlayerService} from '../service/media-player-service';
-import {ThumbnailService} from '../service/thumbnail-service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MediaPlayerElement} from "../core/media-player-element";
-import {DefaultLogger} from "../core/logger/default-logger";
-import {HttpClient} from "@angular/common/http";
-import {DefaultConfigLoader} from "../core/config/loader/default-config-loader";
-import {DefaultConfigConverter} from "../core/config/converter/default-config-converter";
-import {ConfigurationManager} from "../core/config/configuration-manager";
-import {DefaultMetadataLoader} from "../core/metadata/loader/default-metadata-loader";
-import {DefaultMetadataConverter} from "../core/metadata/converter/default-metadata-converter";
-import {MetadataManager} from "../core/metadata/metadata-manager";
-import {PlayerEventType} from "../core/constant/event-type";
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { AmaliaComponent } from './amalia.component';
+import { MediaPlayerService } from '../service/media-player-service';
+import { ThumbnailService } from '../service/thumbnail-service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MediaPlayerElement } from "../core/media-player-element";
+import { DefaultLogger } from "../core/logger/default-logger";
+import { HttpClient } from "@angular/common/http";
+import { DefaultConfigLoader } from "../core/config/loader/default-config-loader";
+import { DefaultConfigConverter } from "../core/config/converter/default-config-converter";
+import { ConfigurationManager } from "../core/config/configuration-manager";
+import { DefaultMetadataLoader } from "../core/metadata/loader/default-metadata-loader";
+import { DefaultMetadataConverter } from "../core/metadata/converter/default-metadata-converter";
+import { MetadataManager } from "../core/metadata/metadata-manager";
+import { PlayerEventType } from "../core/constant/event-type";
 
-const config = {...require('tests/assets/config-mpe.json'), player: {autoplay: false}};
+const config = { ...require('tests/assets/config-mpe.json'), player: { autoplay: false } };
 
 const initTestData = (component: AmaliaComponent, mediaPlayerElement: MediaPlayerElement, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();
@@ -46,7 +46,7 @@ describe('AmaliaComponent', () => {
             providers: [
                 MediaPlayerService,
                 ThumbnailService,
-                {provide: DomSanitizer, useValue: {bypassSecurityTrustUrl: (url) => url}}
+                { provide: DomSanitizer, useValue: { bypassSecurityTrustUrl: (url) => url } }
             ]
         }).compileComponents();
     });
@@ -102,7 +102,7 @@ describe('AmaliaComponent', () => {
 
     it('should handle context menu', () => {
         fixture.detectChanges();
-        const event = new MouseEvent('contextmenu', {clientX: 100, clientY: 100});
+        const event = new MouseEvent('contextmenu', { clientX: 100, clientY: 100 });
         component.onContextMenu(event);
         expect(component.contextMenuState).toBeTrue();
     });
@@ -118,14 +118,14 @@ describe('AmaliaComponent', () => {
 
     it('should handle error event', () => {
         fixture.detectChanges();
-        const errorEvent = {message: 'Error'};
+        const errorEvent = { message: 'Error' };
         component._handleErrorForTesting(errorEvent);
         expect(component.inError).toBeTrue();
         expect(component.errorMessage).toEqual(errorEvent);
     });
     it('should handle erase error event', () => {
         fixture.detectChanges();
-        const errorEvent = {message: 'Error Erased'};
+        const errorEvent = { message: 'Error Erased' };
         component._handleEraseErrorForTesting(errorEvent);
         expect(component.inError).toBeFalse();
         expect(component.errorMessage).toEqual(errorEvent);
@@ -213,5 +213,64 @@ describe('AmaliaComponent', () => {
     });
     afterEach(() => {
         fixture.destroy();
+    });
+});
+
+
+describe('AmaliaComponent contribution juridique', () => {
+    let component: AmaliaComponent;
+    let fixture: ComponentFixture<AmaliaComponent>;
+    let mockMediaPlayerElement: any;
+    let mockMediaPlayer: any;
+
+    beforeEach(() => {
+        mockMediaPlayer = {
+            getCurrentTime: () => 42,
+            getDuration: () => 120,
+            setCurrentTime: jasmine.createSpy('setCurrentTime')
+        };
+        mockMediaPlayerElement = {
+            eventEmitter: {
+                emit: jasmine.createSpy('emit')
+            },
+            getMediaPlayer: () => mockMediaPlayer
+        };
+
+        TestBed.configureTestingModule({
+            declarations: [AmaliaComponent],
+            imports: [HttpClientTestingModule],
+            providers: [
+                MediaPlayerService,
+                ThumbnailService,
+                { provide: MediaPlayerElement, useValue: mockMediaPlayerElement }
+            ]
+        }).compileComponents();
+
+        fixture = TestBed.createComponent(AmaliaComponent);
+        component = fixture.componentInstance;
+        component.mediaPlayerElement = mockMediaPlayerElement;
+        // fixture.detectChanges();
+    });
+
+    it('should emit current time in sendCurrentTime', () => {
+        component.sendCurrentTime();
+        expect(mockMediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(
+            PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME,
+            { currentTime: 42 }
+        );
+    });
+
+    it('should set current time in setCurrentTime', () => {
+        const event = { currentTime: 55 };
+        component.setCurrentTime(event);
+        expect(mockMediaPlayerElement.getMediaPlayer().setCurrentTime).toHaveBeenCalledWith(55);
+    });
+
+    it('should emit duration in sendDuration', () => {
+        component.sendDuration();
+        expect(mockMediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(
+            PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_DURATION,
+            { duration: 120 }
+        );
     });
 });
