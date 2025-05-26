@@ -129,11 +129,11 @@
           align-items: center;
           gap: var(--border-radius-lg, 12px);
           align-self: stretch;
-          bottom: 12px;
-          right: 8px;
-          padding: var(--border-radius-md, 8px) var(--border-radius-lg, 12px);
+          bottom: 4px;
+          right: 14px;
+          padding: var(--border-radius-sm, 4px);
           background: var(--INA-Blanc, #FFF);
-          position: fixed;
+          position: absolute;
           transition: right 0.5s ease-in-out;
         }
       }
