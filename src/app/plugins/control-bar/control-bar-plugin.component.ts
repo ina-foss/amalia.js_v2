@@ -1,11 +1,11 @@
-import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import { PluginBase } from '../../core/plugin/plugin-base';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as _ from 'lodash';
-import {PlayerEventType} from '../../core/constant/event-type';
-import {ControlBarConfig} from '../../core/config/model/control-bar-config';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {ThumbnailService} from '../../service/thumbnail-service';
+import { PlayerEventType } from '../../core/constant/event-type';
+import { ControlBarConfig } from '../../core/config/model/control-bar-config';
+import { PluginConfigData } from '../../core/config/model/plugin-config-data';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { ThumbnailService } from '../../service/thumbnail-service';
 import interact from 'interactjs';
 
 @Component({
@@ -210,10 +210,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list position subtitles
      */
-    public listOfSubtitles = [{label: 'Bas', key: 'down'}, {
+    public listOfSubtitles = [{ label: 'Bas', key: 'down' }, {
         label: 'Haut',
         key: 'up'
-    }, {label: this.selectedLabel, key: this.subtitlePosition}];
+    }, { label: this.selectedLabel, key: this.subtitlePosition }];
     /**
      * progressBar element
      */
@@ -455,8 +455,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
         const listOfControls = new Array<ControlBarConfig>();
-        listOfControls.push({label: 'Barre de progression', control: 'progressBar', priority: 1});
-        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1});
+        listOfControls.push({ label: 'Barre de progression', control: 'progressBar', priority: 1 });
+        listOfControls.push({ label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1 });
         listOfControls.push({
             label: 'Fullscreen',
             control: 'toggleFullScreen',
@@ -479,7 +479,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             if (typeof data[i] === 'object') {
                 const control = data[i];
                 if (typeof control.key !== 'undefined' && typeof control.control !== 'undefined') {
-                    listOfShortcuts.push({key: control.key, control: control.control});
+                    listOfShortcuts.push({ key: control.key, control: control.control });
                 }
             }
         }
@@ -614,7 +614,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param componentName compoent name
      */
     public hasComponentWithoutZone(componentName: string): boolean {
-        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: componentName});
+        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: componentName });
         return (control !== undefined && control !== null);
     }
 
@@ -624,7 +624,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public getControlsByZone(zone: number): Array<ControlBarConfig> {
         if (this.elements) {
-            return _.filter<ControlBarConfig>(this.elements, {zone});
+            return _.filter<ControlBarConfig>(this.elements, { zone });
         }
         return null;
     }
@@ -632,7 +632,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
         if (this.elements) {
             this.elements = _.orderBy(this.elements, ['order']);
-            return _.filter<ControlBarConfig>(this.elements, {priority, zone});
+            return _.filter<ControlBarConfig>(this.elements, { priority, zone });
         }
         return null;
     }
@@ -856,7 +856,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public setThumbnail(url, currentTime) {
         this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
             if (typeof (blob) !== 'undefined') {
-                this.thumbnailElement.nativeElement.setAttribute('src', blob);
+                this.thumbnailElement?.nativeElement?.setAttribute('src', blob);
             }
         });
     }
@@ -1187,20 +1187,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public initDragThumb() {
         // init drag slider
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-                .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
+            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
         const step = Math.ceil(selected.offsetWidth);
         const values = this.controlBarContainer.nativeElement
-                .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
+            .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
         let left = (step / 2);
         values.forEach(value => {
             value.setAttribute('data-x', left.toString());
             left += step;
         });
-        let position = {x: Number(selected.getAttribute('data-x'))};
+        let position = { x: Number(selected.getAttribute('data-x')) };
         const container = this.dragElement.nativeElement;
         const self = this;
         const valuesContainer = this.controlBarContainer.nativeElement
-                .querySelector<HTMLElement>('.selected > .playback-rate-values');
+            .querySelector<HTMLElement>('.selected > .playback-rate-values');
         const maxWidth = valuesContainer.offsetWidth;
         container.style.paddingLeft = position.x + 'px';
         container.setAttribute('data-x', position.x);
@@ -1221,7 +1221,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                         event.stopImmediatePropagation();
                     } else {
                         event.preventDefault();
-                        position = {x: Number(container.getAttribute('data-x'))};
+                        position = { x: Number(container.getAttribute('data-x')) };
                         position.x += event.dx;
                         if (position.x < step / 2) {
                             event.target.style.paddingLeft = '0px';
@@ -1348,7 +1348,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-                .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
+            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
         if (selected) {
             const position = Number(selected.getAttribute('data-x'));
             container.style.paddingLeft = position + 'px';
@@ -1372,7 +1372,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     initTracks() {
-        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: 'volume'});
+        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: 'volume' });
         if (control && control.data && control.data.tracks) {
             this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
