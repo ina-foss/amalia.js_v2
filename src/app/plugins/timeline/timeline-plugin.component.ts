@@ -657,7 +657,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         selectedBlockElement.style.top = `${rect.top + defaultMouseMargin}px`;
         selectedBlockElement.style.bottom = `auto`;
         selectedBlockElement.style.display = 'block';
-        selectedBlockElement.style.transform = 'translateY(0),translateX(0)';
+        selectedBlockElement.style.transform = 'none';
         this.selectedBlock = localisation;
         setTimeout(() => {
             const selectedBlockElementBoundRect = selectedBlockElement.getBoundingClientRect();
@@ -670,12 +670,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 const offset = listOfBlocksContainerBoundRect.right - selectedBlockElementBoundRect.right;
                 selectedBlockElement.style.transform = `translateX(${offset}px)`;
             }
-            if (selectedBlockElementBoundRect.top < listOfBlocksContainerBoundRect.top) {
-                const offset = listOfBlocksContainerBoundRect.top - selectedBlockElementBoundRect.top;
-                selectedBlockElement.style.transform = `translateY(${offset}px)`;
-            }
+
             if (selectedBlockElementBoundRect.bottom > listOfBlocksContainerBoundRect.bottom) {
-                selectedBlockElement.style.bottom = `${listOfBlocksContainerBoundRect.bottom - rect.top + 8}px`;
+                selectedBlockElement.style.bottom = `${listOfBlocksContainerBoundRect.bottom - rect.top + 10}px`;
                 selectedBlockElement.style.top = `auto`;
             }
         }, 10);
