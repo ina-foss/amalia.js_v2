@@ -30,6 +30,7 @@ import { MinusIcon } from 'primeng/icons/minus';
 import { CheckIcon } from 'primeng/icons/check';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { TimelineLocalisation } from 'src/app/core/metadata/model/timeline-localisation';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -4109,5 +4110,238 @@ describe('TimelinePluginComponent 2', () => {
         // Vérifie que le translateX a été ajusté à cause du débordement à gauche
         expect(container.style.transform).toBe('translateX(-100px)');
     }));
+
+    it('should position the selected block and apply transform if needed', fakeAsync(() => {
+        const mockEvent = {
+            target: document.createElement('div')
+        } as unknown as MouseEvent;
+
+        const mockLocalisation = { id: 1 } as unknown as TimelineLocalisation;
+
+        const selectedBlockElement = document.createElement('div');
+        const listOfBlocksContainer = document.createElement('div');
+
+        // Simuler les dimensions
+        spyOn(mockEvent.target as any, 'getBoundingClientRect').and.returnValue({
+            left: 100,
+            top: 200,
+            right: 200,
+            bottom: 250,
+            width: 100,
+            height: 50,
+            x: 100,
+            y: 200,
+            toJSON: () => { }
+        });
+
+        spyOn(selectedBlockElement, 'getBoundingClientRect').and.returnValue({
+            left: 90,
+            right: 310,
+            top: 200,
+            bottom: 300,
+            width: 220,
+            height: 100,
+            x: 90,
+            y: 200,
+            toJSON: () => { }
+        });
+
+        spyOn(listOfBlocksContainer, 'getBoundingClientRect').and.returnValue({
+            left: 100,
+            right: 300,
+            top: 0,
+            bottom: 280,
+            width: 200,
+            height: 280,
+            x: 100,
+            y: 0,
+            toJSON: () => { }
+        });
+
+        component.selectedBlockElement = new ElementRef(selectedBlockElement);
+        component.listOfBlocksContainer = new ElementRef(listOfBlocksContainer);
+
+        component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
+
+        expect(selectedBlockElement.style.left).toBe('100px');
+        expect(selectedBlockElement.style.top).toBe('220px');
+        expect(selectedBlockElement.style.bottom).toBe('auto');
+        expect(selectedBlockElement.style.display).toBe('block');
+        expect(selectedBlockElement.style.transform).toBe('none');
+        expect(component.selectedBlock).toBe(mockLocalisation);
+
+        tick(10); // avancer le temps pour exécuter setTimeout
+
+        // Vérifie que le transform a été mis à jour
+        expect(selectedBlockElement.style.transform).toContain('translateX');
+        expect(selectedBlockElement.style.bottom).toBe('90px');
+        expect(selectedBlockElement.style.top).toBe('auto');
+    }));
+
+    it('should not apply transform if the selected block is fully within the container', fakeAsync(() => {
+        const mockEvent = {
+            target: document.createElement('div')
+        } as unknown as MouseEvent;
+
+        const mockLocalisation = { id: 2 } as unknown as TimelineLocalisation;
+
+        const selectedBlockElement = document.createElement('div');
+        const listOfBlocksContainer = document.createElement('div');
+
+        spyOn(mockEvent.target as any, 'getBoundingClientRect').and.returnValue({
+            left: 100,
+            top: 100,
+            right: 200,
+            bottom: 150,
+            width: 100,
+            height: 50,
+            x: 100,
+            y: 100,
+            toJSON: () => { }
+        });
+
+        spyOn(selectedBlockElement, 'getBoundingClientRect').and.returnValue({
+            left: 100,
+            right: 200,
+            top: 120,
+            bottom: 170,
+            width: 100,
+            height: 50,
+            x: 100,
+            y: 120,
+            toJSON: () => { }
+        });
+
+        spyOn(listOfBlocksContainer, 'getBoundingClientRect').and.returnValue({
+            left: 90,
+            right: 210,
+            top: 0,
+            bottom: 300,
+            width: 120,
+            height: 300,
+            x: 90,
+            y: 0,
+            toJSON: () => { }
+        });
+
+        component.selectedBlockElement = new ElementRef(selectedBlockElement);
+        component.listOfBlocksContainer = new ElementRef(listOfBlocksContainer);
+
+        component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
+        tick(10);
+
+        expect(selectedBlockElement.style.transform).toBe('none');
+    }));
+    it('should apply positive translateX if selected block overflows to the left', fakeAsync(() => {
+        const mockEvent = {
+          target: document.createElement('div')
+        } as unknown as MouseEvent;
+      
+        const mockLocalisation = { id: 3 } as unknown as TimelineLocalisation;
+      
+        const selectedBlockElement = document.createElement('div');
+        const listOfBlocksContainer = document.createElement('div');
+      
+        spyOn(mockEvent.target as any, 'getBoundingClientRect').and.returnValue({
+          left: 100,
+          top: 100,
+          right: 200,
+          bottom: 150,
+          width: 100,
+          height: 50,
+          x: 100,
+          y: 100,
+          toJSON: () => {}
+        });
+      
+        spyOn(selectedBlockElement, 'getBoundingClientRect').and.returnValue({
+          left: 80,
+          right: 180,
+          top: 120,
+          bottom: 170,
+          width: 100,
+          height: 50,
+          x: 80,
+          y: 120,
+          toJSON: () => {}
+        });
+      
+        spyOn(listOfBlocksContainer, 'getBoundingClientRect').and.returnValue({
+          left: 100,
+          right: 300,
+          top: 0,
+          bottom: 300,
+          width: 200,
+          height: 300,
+          x: 100,
+          y: 0,
+          toJSON: () => {}
+        });
+      
+        component.selectedBlockElement = new ElementRef(selectedBlockElement);
+        component.listOfBlocksContainer = new ElementRef(listOfBlocksContainer);
+      
+        component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
+        tick(10);
+      
+        expect(selectedBlockElement.style.transform).toBe('translateX(20px)');
+      }));
+      
+      it('should adjust bottom and reset top if selected block overflows below container', fakeAsync(() => {
+        const mockEvent = {
+          target: document.createElement('div')
+        } as unknown as MouseEvent;
+      
+        const mockLocalisation = { id: 4 } as unknown as TimelineLocalisation;
+      
+        const selectedBlockElement = document.createElement('div');
+        const listOfBlocksContainer = document.createElement('div');
+      
+        spyOn(mockEvent.target as any, 'getBoundingClientRect').and.returnValue({
+          left: 100,
+          top: 100,
+          right: 200,
+          bottom: 150,
+          width: 100,
+          height: 50,
+          x: 100,
+          y: 100,
+          toJSON: () => {}
+        });
+      
+        spyOn(selectedBlockElement, 'getBoundingClientRect').and.returnValue({
+          left: 100,
+          right: 200,
+          top: 120,
+          bottom: 350,
+          width: 100,
+          height: 230,
+          x: 100,
+          y: 120,
+          toJSON: () => {}
+        });
+      
+        spyOn(listOfBlocksContainer, 'getBoundingClientRect').and.returnValue({
+          left: 90,
+          right: 300,
+          top: 0,
+          bottom: 300,
+          width: 210,
+          height: 300,
+          x: 90,
+          y: 0,
+          toJSON: () => {}
+        });
+      
+        component.selectedBlockElement = new ElementRef(selectedBlockElement);
+        component.listOfBlocksContainer = new ElementRef(listOfBlocksContainer);
+      
+        component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
+        tick(10);
+      
+        expect(selectedBlockElement.style.bottom).toBe('210px'); // 300 - 100 + 10
+        expect(selectedBlockElement.style.top).toBe('auto');
+      }));
+      
 
 });
