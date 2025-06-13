@@ -95,7 +95,6 @@
         </ng-container>
     </p-accordion>
 </div>
-<div class="segment-empty"></div>
 <div class="menu" #menuContainer [ngClass]="{'open':configIsOpen}">
     <div class="content" id="menu-content">
         <div class="header">
@@ -126,7 +125,7 @@
                 (click)="toggleFilter()" (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
                 class="btn-hide-filter" />
         </div>
-        <div class="main">
+        <div class="main" [ngClass]="{'filter-hidden':filterHidden}">
             <p-tree *ngIf="filterHidden" [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes"
                 (selectionChange)="updateTreeComponent()">
                 <ng-template let-node pTemplate="default">

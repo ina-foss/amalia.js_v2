@@ -54,15 +54,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public isDrawingRectangle = false;
     @Input()
     public colors: Array<string> = [
-        '#609af8', '#4cd07d', '#eec137', '#ff6259', '#f06bac', '#8183f4', '#41c5b7', '#fa8e42', '#818ea1', '#b975f9', '#35c4dc',
-        '#3b82f6', '#22c55e', '#eab308', '#ff3d32', '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#64748b', '#a855f7', '#06b6d4',
-        '#d0e1fd', '#caf1d8', '#faedc4', '#ffd0ce', '#fad3e7', '#dadafc', '#c7eeea', '#feddc7', '#dadee3', '#ead6fd', '#c3edf5',
-        '#326fd1', '#1da750', '#c79807', '#d9342b', '#c93d82', '#5457cd', '#119c8d', '#d46213', '#556376', '#8f48d2', '#059bb4',
-        '#abc9fb', '#a0e6ba', '#f6de95', '#ffaca7', '#f7b0d3', '#bcbdf9', '#9ae0d9', '#fcc39b', '#bcc3cd', '#dab6fc', '#94e0ed',
-        '#295bac', '#188a42', '#a47d06', '#b32b23', '#a5326b', '#4547a9', '#0e8174', '#ae510f', '#465161', '#763cad', '#047f94',
-        '#85b2f9', '#76db9b', '#f2d066', '#ff8780', '#f38ec0', '#9ea0f6', '#6dd3c8', '#fba86f', '#9fa9b7', '#c996fa', '#65d2e4',
-        '#204887', '#136c34', '#816204', '#8c221c', '#822854', '#363885', '#0b655b', '#893f0c', '#37404c', '#5c2f88', '#036475',
-        '#183462', '#0e4f26', '#5e4803', '#661814', '#5e1d3d', '#282960', '#084a42', '#642e09', '#282e38', '#432263', '#024955',];
+        '#609af8', '#4cd07d', '#eec137', '#ff6259', '#f06bac', '#8183f4', '#41c5b7', '#fa8e42', '#818ea1',
+        '#b975f9', '#35c4dc', '#3b82f6', '#22c55e', '#eab308', '#ff3d32', '#ec4899', '#6366f1', '#14b8a6',
+        '#f97316', '#64748b', '#a855f7', '#06b6d4', '#326fd1', '#1da750', '#c79807', '#d9342b', '#c93d82',
+        '#5457cd', '#119c8d', '#d46213', '#556376', '#8f48d2', '#059bb4', '#295bac', '#188a42', '#a47d06',
+        '#b32b23', '#a5326b', '#4547a9', '#0e8174', '#ae510f', '#465161', '#763cad', '#047f94', '#85b2f9',
+        '#76db9b', '#f2d066', '#ff8780', '#f38ec0', '#9ea0f6', '#6dd3c8', '#fba86f', '#9fa9b7', '#c996fa',
+        '#65d2e4', '#204887', '#136c34', '#816204', '#8c221c', '#822854', '#363885', '#0b655b', '#893f0c',
+        '#37404c', '#5c2f88', '#036475', '#183462', '#0e4f26', '#5e4803', '#661814', '#5e1d3d', '#282960',
+        '#084a42', '#642e09', '#282e38', '#432263', '#024955',];
     @ViewChild('focusContainer', { static: true })
     public focusContainer: ElementRef<HTMLElement>;
     @ViewChild('mainTimeline', { static: true })
@@ -268,7 +268,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                         l.tcIn += this.tcOffset;
                     }
                     if (l.tcOut) {
-                        l.tcOut += this.tcOffset;
+                        const duration: number = this.mediaPlayerElement?.getMediaPlayer()?.getDuration();
+                        if (duration > 0 && l.tcOut > duration) {
+                            l.tcOut = duration + this.tcOffset;
+                        } else {
+                            l.tcOut += this.tcOffset;
+                        }
                     }
                 });
             } catch (e) {
@@ -467,7 +472,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     removeBlock(block: any) {
         this.listOfBlocks.find(b => b.id === block.id).displayState = false;
-        this.selectedNodes.set(this.getAllNodes(this.nodes).filter(node => node.id !== block.id));
+        this.selectedNodes.set(this.selectedNodes().filter(node => node.key !== block.id));
     }
 
     /**
@@ -647,10 +652,33 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const defaultMouseMargin = 20;
         const selectedBlockElement = this.selectedBlockElement.nativeElement;
         const currentTarget = event.target as HTMLElement;
-        selectedBlockElement.style.left = `${currentTarget.offsetLeft}px`;
-        selectedBlockElement.style.top = `${currentTarget.parentElement.parentElement.offsetTop + defaultMouseMargin}px`;
+        const rect = currentTarget.getBoundingClientRect();
+        selectedBlockElement.style.left = `${rect.left}px`;
+        selectedBlockElement.style.top = `${rect.top + defaultMouseMargin}px`;
+        selectedBlockElement.style.bottom = `auto`;
         selectedBlockElement.style.display = 'block';
+        selectedBlockElement.style.transform = 'translateY(0),translateX(0)';
         this.selectedBlock = localisation;
+        setTimeout(() => {
+            const selectedBlockElementBoundRect = selectedBlockElement.getBoundingClientRect();
+            const listOfBlocksContainerBoundRect = this.listOfBlocksContainer.nativeElement.getBoundingClientRect();
+            if (selectedBlockElementBoundRect.left < listOfBlocksContainerBoundRect.left) {
+                const offset = listOfBlocksContainerBoundRect.left - selectedBlockElementBoundRect.left;
+                selectedBlockElement.style.transform = `translateX(${offset}px)`;
+            }
+            if (selectedBlockElementBoundRect.right > listOfBlocksContainerBoundRect.right) {
+                const offset = listOfBlocksContainerBoundRect.right - selectedBlockElementBoundRect.right;
+                selectedBlockElement.style.transform = `translateX(${offset}px)`;
+            }
+            if (selectedBlockElementBoundRect.top < listOfBlocksContainerBoundRect.top) {
+                const offset = listOfBlocksContainerBoundRect.top - selectedBlockElementBoundRect.top;
+                selectedBlockElement.style.transform = `translateY(${offset}px)`;
+            }
+            if (selectedBlockElementBoundRect.bottom > listOfBlocksContainerBoundRect.bottom) {
+                selectedBlockElement.style.bottom = `${listOfBlocksContainerBoundRect.bottom - rect.top + 8}px`;
+                selectedBlockElement.style.top = `auto`;
+            }
+        }, 10);
 
     }
 

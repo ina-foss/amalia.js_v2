@@ -20,7 +20,7 @@
         ],
         "types": [
             "node",
-            "@types/jasmine"
+            "jasmine"
         ],
         "lib": [
             "ES2022",

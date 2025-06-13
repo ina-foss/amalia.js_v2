@@ -207,7 +207,7 @@
           font-family: $amalia-font-family !important;
           font-size: 14px;
           font-style: normal;
-          font-weight: 900;
+          font-weight: normal;
           line-height: 150%;
           padding: 0 16px;
           margin: 0 8px;
@@ -242,14 +242,18 @@
         min-height: 55px;
       }
 
+      .main.filter-hidden {
+        height: calc(100% - 32px);
+      }
+
       .main {
-        height: 90%;
         width: 100%;
+        height: calc(100% - 77px);
         display: flex;
         flex-direction: column;
 
         p-tree {
-          height: 95%;
+          height: 100%;
         }
 
         .p-tree {
@@ -330,7 +334,6 @@
   .main-block,
   .list-blocks {
     position: relative;
-    height: calc(100% - 120px);
     overflow-y: overlay;
     overflow-x: hidden;
     padding-bottom: 5px;
@@ -353,7 +356,7 @@
       box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
       color: black;
       display: none;
-      position: absolute;
+      position: fixed;
       top: 30px;
       left: 225px;
       z-index: 5;
@@ -388,34 +391,30 @@
       display: initial;
     }
 
+    /* Personnaliser la barre de défilement */
     &::-webkit-scrollbar {
-      display: none;
       width: 10px;
+      /* Largeur de la barre de défilement */
     }
 
     &::-webkit-scrollbar-track {
-      background-color: $amalia-plugin-timeline-header-bg-color;
-      border-width: 0;
-      border-radius: 100px;
+      background: #f1f1f1;
+      /* Couleur de la piste */
+      border: 1px solid $amalia-plugin-storyboard-box-border-color;
+      padding: 2px 0;
     }
 
     &::-webkit-scrollbar-thumb {
-      border-radius: 10px;
-      background-color: $amalia-plugin-timeline-primary-color;
-      border-style: solid;
-      border-color: transparent;
-      border-width: 3px;
-      background-clip: padding-box;
+      border-radius: 5px;
+      /* Arrondir les coins */
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+      background-color: $amalia-primary-color;
     }
 
-    /* hidden elements */
-    &::-webkit-scrollbar-button,
-    &::-webkit-scrollbar-track-piece,
-    &::-webkit-scrollbar-corner,
-    &::-webkit-resizer {
-      display: none;
+    &::-webkit-scrollbar-thumb:hover {
+      background: $amalia-primary-color;
+      /* Couleur de la poignée au survol */
     }
-
 
     .timeline-block-label {
       display: flex;
