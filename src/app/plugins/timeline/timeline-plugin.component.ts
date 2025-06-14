@@ -268,12 +268,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                         l.tcIn += this.tcOffset;
                     }
                     if (l.tcOut) {
-                        const duration: number = this.mediaPlayerElement?.getMediaPlayer()?.getDuration();
-                        if (duration > 0 && l.tcOut > duration) {
-                            l.tcOut = duration + this.tcOffset;
-                        } else {
-                            l.tcOut += this.tcOffset;
-                        }
+                        l.tcOut += this.tcOffset;
                     }
                 });
             } catch (e) {
