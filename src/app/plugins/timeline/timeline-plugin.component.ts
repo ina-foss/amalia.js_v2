@@ -467,8 +467,20 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     removeBlock(block: any) {
         this.listOfBlocks.find(b => b.id === block.id).displayState = false;
-        this.selectedNodes.set(this.selectedNodes().filter(node => node.key !== block.id));
+        const allNodes = this.getAllNodes(this.nodes);
+        const nodeToRemove = allNodes.find(n => n.key === block.id);
+        this.selectedNodes.set(this.selectedNodes().filter(node => node.key !== nodeToRemove.key));
+        let parentNode = nodeToRemove.parent;
+        do {
+            parentNode.checked = false;
+            parentNode.partialSelected = true;
+            this.selectedNodes.set(this.selectedNodes().filter(node => node.key !== parentNode.key));
+            parentNode = parentNode.parent;
+        } while (parentNode);
+        this.updateTreeComponent();
     }
+
+
 
     /**
      * Invoked time change event for :
