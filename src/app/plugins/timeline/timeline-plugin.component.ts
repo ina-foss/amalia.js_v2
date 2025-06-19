@@ -452,8 +452,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param isValid true for save display block
      */
     public handleDisplayBlocks(isValid: boolean) {
-        this.listOfBlocksIndexes = [];
         if (isValid) {
+            this.listOfBlocksIndexes = [];
             this.listOfBlocks.forEach((block, index) => {
                 block.displayState = this.selectedNodesMap().has(block.id);
                 this.mapOfBlocksIndexes.forEach((_, key) => {
@@ -797,27 +797,27 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     updateTreeComponent() {
-        this.nodes.forEach(parentNode => {
-            let allChildrenUnchecked: boolean = true;
-            let allChildrenChecked: boolean = true;
-            let parentNodeChildren: TreeNode<any>[] = this.selectedNodes().filter(node => node.key !== parentNode.key && node.key.includes(parentNode.key));
-            parentNodeChildren.forEach((child: any) => {
-                if (this.selectedNodes().find(node => node.key === child.key)) {
-                    allChildrenUnchecked = false;
-                }
-                if (!this.selectedNodes().find(node => node.key === child.key)) {
-                    allChildrenChecked = false;
-                }
+        setTimeout(() => {
+            this.nodes.forEach(parentNode => {
+                let allChildrenUnchecked: boolean = true;
+                let allChildrenChecked: boolean = true;
+                parentNode.children?.forEach((child: any) => {
+                    if (this.selectedNodes().find(node => node.key === child.key)) {
+                        allChildrenUnchecked = false;
+                    }
+                    if (!this.selectedNodes().find(node => node.key === child.key)) {
+                        allChildrenChecked = false;
+                    }
+                });
+                parentNode.checked = allChildrenChecked;
+                parentNode.partialSelected = !allChildrenChecked && !allChildrenUnchecked;
             });
-            parentNode.checked = allChildrenChecked;
-            parentNode.partialSelected = !allChildrenChecked && !allChildrenUnchecked;
-        });
-
-
+        }, 10);
         const nbNodes = this.getAllNodes(this.nodes).length;
         const nbSelectedNodes = this.selectedNodes().length;
         this.allNodesChecked = nbSelectedNodes === nbNodes;
         this.indeterminate = nbSelectedNodes > 0 && nbSelectedNodes < nbNodes;
 
     }
+
 }

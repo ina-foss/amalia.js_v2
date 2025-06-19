@@ -55,7 +55,8 @@
         </p>
     </div>
     <p-accordion #listOfBlocksAccordion [multiple]="true" [activeIndex]="listOfBlocksIndexes"
-        (activeIndexChange)="refreshTimeCursor($event)" (onClose)="refreshTimeCursor($event)" (onOpen)="refreshTimeCursor($event)">
+        (activeIndexChange)="refreshTimeCursor($event)" (onClose)="refreshTimeCursor($event)"
+        (onOpen)="refreshTimeCursor($event)">
         <ng-container *ngFor="let block of listOfBlocks; let idx = index">
             <p-accordionTab [ngClass]="{'hidden-timeline':block.displayState===false}" iconPos="start" class="grabbable"
                 pDraggable="listOfBlocks" pDroppable="listOfBlocks" (onDragStart)="onDragStart(idx)"
