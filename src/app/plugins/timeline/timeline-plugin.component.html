@@ -55,7 +55,7 @@
         </p>
     </div>
     <p-accordion #listOfBlocksAccordion [multiple]="true" [activeIndex]="listOfBlocksIndexes"
-        (activeIndexChange)="refreshTimeCursor()" (onClose)="refreshTimeCursor()" (onOpen)="refreshTimeCursor()">
+        (activeIndexChange)="refreshTimeCursor($event)" (onClose)="refreshTimeCursor($event)" (onOpen)="refreshTimeCursor($event)">
         <ng-container *ngFor="let block of listOfBlocks; let idx = index">
             <p-accordionTab [ngClass]="{'hidden-timeline':block.displayState===false}" iconPos="start" class="grabbable"
                 pDraggable="listOfBlocks" pDroppable="listOfBlocks" (onDragStart)="onDragStart(idx)"
@@ -136,7 +136,7 @@
             </p-tree>
             <p-tree *ngIf="!filterHidden" [value]="nodes" selectionMode="checkbox" [filter]="true"
                 filterPlaceholder="Rechercher..." filterMode="strict" [(selection)]="selectedNodes"
-                (selectionChange)="updateTreeComponent()" (onFilter)="filterNodes($event)">
+                (selectionChange)="updateTreeComponent()">
                 <ng-template let-node pTemplate="default">
                     <span *ngIf="node.data && node.data.color" class="color"
                         [ngStyle]="{'background-color':node.data.color}"></span>
