@@ -109,6 +109,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     mouseX: number;
     mouseY: number;
     indeterminate: boolean = false;
+    mapOfBlocksIndexes: Map<TimeLineBlock, number> = new Map<TimeLineBlock, number>();
 
 
     constructor(playerService: MediaPlayerService) {
@@ -275,7 +276,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 this.logger.warn('Error to parse metadata', e);
             }
             const color = (metadata?.viewControl?.color) ?? this.getAvailableColor();
-            this.listOfBlocks.push({
+            let block: TimeLineBlock = {
                 id: metadata.id,
                 label: (metadata?.label) ?? metadata.id,
                 expendable: this.pluginConfiguration.data.expendable,
@@ -283,8 +284,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 displayState: true,
                 data: listOfLocalisations,
                 icon: this.getNodeLabelAndIcon(metadata).icon
-            });
+            }
+            this.listOfBlocks.push(block);
+
             this.listOfBlocksIndexes.push(this.listOfBlocks.length - 1);
+            this.mapOfBlocksIndexes.set(block, this.listOfBlocks.length - 1);
             let level1NodeAlreadyAdded: boolean = false;
             this.nodes.forEach(node => {
                 if (node.key === metadata.type) {
@@ -449,8 +453,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     public handleDisplayBlocks(isValid: boolean) {
         if (isValid) {
-            this.listOfBlocks.forEach((block) => {
+            this.listOfBlocksIndexes = [];
+            this.listOfBlocks.forEach((block, index) => {
                 block.displayState = this.selectedNodesMap().has(block.id);
+                this.mapOfBlocksIndexes.forEach((_, key) => {
+                    let indexOfKeyInListOfBlocks = this.listOfBlocks.indexOf(key);
+                    this.listOfBlocksIndexes.push(indexOfKeyInListOfBlocks);
+                });
             });
         } else {
             this.selectedNodes.set([]);
@@ -473,7 +482,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         let parentNode = nodeToRemove.parent;
         do {
             parentNode.checked = false;
-            parentNode.partialSelected = true;
+            let allChildsUnchecked: boolean = true;
+            parentNode.children.forEach((child: any) => {
+                if (this.listOfBlocks.find(b => b.id === child.key).displayState === true) {
+                    allChildsUnchecked = false;
+                }
+            });
+            parentNode.partialSelected = !allChildsUnchecked;
             this.selectedNodes.set(this.selectedNodes().filter(node => node.key !== parentNode.key));
             parentNode = parentNode.parent;
         } while (parentNode);
@@ -583,7 +598,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     /**
      * In charge to refresh time cursor
      */
-    public refreshTimeCursor() {
+    public refreshTimeCursor(event?: any) {
         if (isFinite(this.currentTime) && isFinite(this.duration)) {
             const selector = '.tc-cursor';
             const mainTimelineWidth = this.mainTimeline.nativeElement.offsetWidth;
@@ -600,8 +615,17 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             listBlock.style.height = `${accordionBoundRect?.height}px`;
             listBlock.style.width = `2px`;
         }
+        if (event instanceof Array) {
+            this.listOfBlocksIndexes = event;
+            this.listOfBlocks.forEach((block: TimeLineBlock, index: number) => {
+                if (this.listOfBlocksIndexes.includes(index)) {
+                    this.mapOfBlocksIndexes.set(block, index);
+                } else {
+                    this.mapOfBlocksIndexes.delete(block);
+                }
+            });
+        }
     }
-
     /**
      * In charge to un-zoom
      */
@@ -715,25 +739,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.selectionPosition.y = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
     }
 
-    filterNodes(event: any) {
-        const query = event.target.value.toLowerCase();
-        this.nodes.forEach(node => {
-            this.filterNode(node, query);
-        });
-    }
-
-    filterNode(node: TreeNode, query: string): boolean {
-        let visible = node.label.toLowerCase().includes(query);
-        if (node.children) {
-            node.children.forEach(child => {
-                visible = this.filterNode(child, query) || visible;
-            });
-        }
-        node.styleClass = visible ? '' : 'hidden-node';
-        return visible;
-    }
-
-
     toggleAllNodes() {
         this.allNodesChecked = !this.allNodesChecked;
         this.indeterminate = false;
@@ -784,11 +789,35 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const item = this.listOfBlocks[this.startIndex];
         this.listOfBlocks.splice(this.startIndex, 1);
         this.listOfBlocks.splice(dropIndex, 0, item);
+        this.listOfBlocksIndexes = [];
+        this.mapOfBlocksIndexes.forEach((_, key) => {
+            let indexOfKeyInListOfBlocks = this.listOfBlocks.indexOf(key);
+            this.listOfBlocksIndexes.push(indexOfKeyInListOfBlocks);
+        });
     }
+
     updateTreeComponent() {
+        setTimeout(() => {
+            this.nodes.forEach(parentNode => {
+                let allChildrenUnchecked: boolean = true;
+                let allChildrenChecked: boolean = true;
+                parentNode.children?.forEach((child: any) => {
+                    if (this.selectedNodes().find(node => node.key === child.key)) {
+                        allChildrenUnchecked = false;
+                    }
+                    if (!this.selectedNodes().find(node => node.key === child.key)) {
+                        allChildrenChecked = false;
+                    }
+                });
+                parentNode.checked = allChildrenChecked;
+                parentNode.partialSelected = !allChildrenChecked && !allChildrenUnchecked;
+            });
+        }, 10);
         const nbNodes = this.getAllNodes(this.nodes).length;
         const nbSelectedNodes = this.selectedNodes().length;
         this.allNodesChecked = nbSelectedNodes === nbNodes;
         this.indeterminate = nbSelectedNodes > 0 && nbSelectedNodes < nbNodes;
+
     }
+
 }

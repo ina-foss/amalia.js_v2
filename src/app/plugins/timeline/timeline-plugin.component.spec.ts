@@ -3738,26 +3738,6 @@ describe('TimelinePluginComponent', () => {
         expect(component.selectedNodes().length).toBe(1);
     });
 
-    it('should filter nodes', () => {
-        const event = { target: { value: 'test' } };
-        component.nodes = [
-            { label: 'testNode', children: [] } as TreeNode,
-            { label: 'otherNode', children: [] } as TreeNode
-        ];
-
-        component.filterNodes(event);
-        expect(component.nodes[0].styleClass).toBe('');
-        expect(component.nodes[1].styleClass).toBe('hidden-node');
-    });
-
-    it('should filter node', () => {
-        const node = { label: 'testNode', children: [] } as TreeNode;
-        const query = 'test';
-
-        const result = component.filterNode(node, query);
-        expect(result).toBeTrue();
-        expect(node.styleClass).toBe('');
-    });
 
     it('should toggle filter', () => {
         component.filterHidden = false;
@@ -4234,114 +4214,307 @@ describe('TimelinePluginComponent 2', () => {
     }));
     it('should apply positive translateX if selected block overflows to the left', fakeAsync(() => {
         const mockEvent = {
-          target: document.createElement('div')
+            target: document.createElement('div')
         } as unknown as MouseEvent;
-      
+
         const mockLocalisation = { id: 3 } as unknown as TimelineLocalisation;
-      
+
         const selectedBlockElement = document.createElement('div');
         const listOfBlocksContainer = document.createElement('div');
-      
+
         spyOn(mockEvent.target as any, 'getBoundingClientRect').and.returnValue({
-          left: 100,
-          top: 100,
-          right: 200,
-          bottom: 150,
-          width: 100,
-          height: 50,
-          x: 100,
-          y: 100,
-          toJSON: () => {}
+            left: 100,
+            top: 100,
+            right: 200,
+            bottom: 150,
+            width: 100,
+            height: 50,
+            x: 100,
+            y: 100,
+            toJSON: () => { }
         });
-      
+
         spyOn(selectedBlockElement, 'getBoundingClientRect').and.returnValue({
-          left: 80,
-          right: 180,
-          top: 120,
-          bottom: 170,
-          width: 100,
-          height: 50,
-          x: 80,
-          y: 120,
-          toJSON: () => {}
+            left: 80,
+            right: 180,
+            top: 120,
+            bottom: 170,
+            width: 100,
+            height: 50,
+            x: 80,
+            y: 120,
+            toJSON: () => { }
         });
-      
+
         spyOn(listOfBlocksContainer, 'getBoundingClientRect').and.returnValue({
-          left: 100,
-          right: 300,
-          top: 0,
-          bottom: 300,
-          width: 200,
-          height: 300,
-          x: 100,
-          y: 0,
-          toJSON: () => {}
+            left: 100,
+            right: 300,
+            top: 0,
+            bottom: 300,
+            width: 200,
+            height: 300,
+            x: 100,
+            y: 0,
+            toJSON: () => { }
         });
-      
+
         component.selectedBlockElement = new ElementRef(selectedBlockElement);
         component.listOfBlocksContainer = new ElementRef(listOfBlocksContainer);
-      
+
         component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
         tick(10);
-      
+
         expect(selectedBlockElement.style.transform).toBe('translateX(20px)');
-      }));
-      
-      it('should adjust bottom and reset top if selected block overflows below container', fakeAsync(() => {
+    }));
+
+    it('should adjust bottom and reset top if selected block overflows below container', fakeAsync(() => {
         const mockEvent = {
-          target: document.createElement('div')
+            target: document.createElement('div')
         } as unknown as MouseEvent;
-      
+
         const mockLocalisation = { id: 4 } as unknown as TimelineLocalisation;
-      
+
         const selectedBlockElement = document.createElement('div');
         const listOfBlocksContainer = document.createElement('div');
-      
+
         spyOn(mockEvent.target as any, 'getBoundingClientRect').and.returnValue({
-          left: 100,
-          top: 100,
-          right: 200,
-          bottom: 150,
-          width: 100,
-          height: 50,
-          x: 100,
-          y: 100,
-          toJSON: () => {}
+            left: 100,
+            top: 100,
+            right: 200,
+            bottom: 150,
+            width: 100,
+            height: 50,
+            x: 100,
+            y: 100,
+            toJSON: () => { }
         });
-      
+
         spyOn(selectedBlockElement, 'getBoundingClientRect').and.returnValue({
-          left: 100,
-          right: 200,
-          top: 120,
-          bottom: 350,
-          width: 100,
-          height: 230,
-          x: 100,
-          y: 120,
-          toJSON: () => {}
+            left: 100,
+            right: 200,
+            top: 120,
+            bottom: 350,
+            width: 100,
+            height: 230,
+            x: 100,
+            y: 120,
+            toJSON: () => { }
         });
-      
+
         spyOn(listOfBlocksContainer, 'getBoundingClientRect').and.returnValue({
-          left: 90,
-          right: 300,
-          top: 0,
-          bottom: 300,
-          width: 210,
-          height: 300,
-          x: 90,
-          y: 0,
-          toJSON: () => {}
+            left: 90,
+            right: 300,
+            top: 0,
+            bottom: 300,
+            width: 210,
+            height: 300,
+            x: 90,
+            y: 0,
+            toJSON: () => { }
         });
-      
+
         component.selectedBlockElement = new ElementRef(selectedBlockElement);
         component.listOfBlocksContainer = new ElementRef(listOfBlocksContainer);
-      
+
         component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
         tick(10);
-      
+
         expect(selectedBlockElement.style.bottom).toBe('210px'); // 300 - 100 + 10
         expect(selectedBlockElement.style.top).toBe('auto');
-      }));
-      
+    }));
+
+
+});
+
+describe('TimelinePluginComponent 3 ', () => {
+    let component: TimelinePluginComponent;
+    let fixture: ComponentFixture<TimelinePluginComponent>;
+
+    let mediaPlayerElement: MediaPlayerElement;
+    let httpTestingController: HttpTestingController;
+    let spyOngetCurrentTime: jasmine.Spy;
+    let spyOngetDuration: jasmine.Spy;
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
+            providers: [MediaPlayerService],
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
+                MinusIcon, CheckIcon, FormsModule, ButtonModule
+            ],
+            schemas: [
+                CUSTOM_ELEMENTS_SCHEMA
+            ]
+        }).compileComponents();
+
+        fixture = TestBed.createComponent(TimelinePluginComponent);
+        component = fixture.componentInstance;
+        component.playerId = 'playerOne';
+        const playerService = TestBed.inject(MediaPlayerService);
+        mediaPlayerElement = playerService.get(component.playerId);
+        const logger = new DefaultLogger();
+        const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+        const httpClient: HttpClient = TestBed.inject(HttpClient);
+        mediaPlayerElement.configurationManager = new ConfigurationManager(loader, logger);
+        mediaPlayerElement.configurationManager.configData = {
+            "tcOffset": 600,
+            "player": {
+                "backwardsSrc": "",
+                "src": "",
+                "autoplay": false,
+                "crossOrigin": "anonymous",
+                "ratio": "4:3"
+            },
+            "thumbnail": {
+                "baseUrl": "https://image.wsmedia.sas.ina/thumbs/qNnhN1ISmDe8DBMdODoONH5_X_k9J4W0Z7sqO1JsvUST-DVa82vq-bEt2LmebGISKNUHvCX9sZcePvGoCfle6WyX8kcF6OQIx8H_AuU_Iv2vPY8Lmbv1zlF-7QbYJvKRfEhyuN8NjXlmzqFVVU8cCqIUs1_mtaFimK2TZ-Log7UXSAwKdu_FHYF4nxuGfW5V7GkqVz1AoS_lH9b0WEfO3y9zPexndfEtZju1jTekkx0Xc7s37g5UCKT6_rQycibYIWsVaq28iUf6lzyZ2UBDzwLWbwO-LtXbT-AfJxP2OjBYOy_2dqqPKOiLQ7Az0vFXCzOzYYuDrz8sQop2gxkwUtcWiRQuREGYCn1CTeRGmZKLFrVDLg73e-B_OUUkY-NfMc38K6W9n6aqzYI8Tkmasx_q0zSlBPzp1I3loJLUBr9eZQ3eknZsvWHzGzAn_sC-MlMrMr6FhBcwUQ29-7o7UNRGSS3ykMGFQpVQyK6uZh2A7N11qG_Mo4rhPgUWC6gN8n4bwvP4DOxYNjTtTtHDrAqk6OVoi9FoNooDGicKve2MqbZRszcwj4teR6X88MCgjYTDIjIuqsJxzMpzu3_qIOZAsL4_2NJlvYPKGT7UB6NB9jIlHosH4MY95b6exdCdXkdrcx4HMsOfPFS_Tqwyx06yIcIveMLgP6SjIOG9v_0cZ5rjomlCQ0F6hD5oVlmlwao_cO0w6Z8BYP98c8ZuUb2ygOaXbXOf5FXbQOFJJnDC_Gub4Tcz-OoHWSDmiFMsbiZ_s8lzQI-R0aGYvYs5WPGb08SvhD-9tV-7Mkl6odoqx7gb5f5t8oZGzQSb6pS9ua-mVjZnj36C3jM-R4-Yfbsz_toPL1t708vg5mUrSE5f-QELZluvvVbAipWRa4EOtE8FD6DxHj_ZMJx7QvPgu3JjAJY0fyW42wlDnqNsYxpKhkg9O7Jvo4MnEy6tS02nUv4x0RxFGjJt6abtfEktoKt_g5DpF39_ZHBMfBQDqnxLwna9hkxx8ADi7_NOOBmC/sl_iv/hpog2iFsrU10ltgchPvllg/sl_hm/?width=320",
+                "enableThumbnail": true,
+                "tcParam": "start"
+            },
+            "dataSources": [
+                {
+                    "url": "http://localhost/metadata/timelineListOfMetaData.json",
+                    "headers": [
+                        "Authorization: "
+                    ],
+                    "plugin": "timeline"
+                }
+            ],
+            loadMetadataOnDemand: true,
+            "debug": false,
+            "logLevel": "info",
+            "displaySizes": {
+                "large": 900,
+                "medium": 700,
+                "small": 550,
+                "xsmall": 340
+            }
+        };
+        const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
+        mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
+        const obj = document.createElement('video');
+        mediaPlayerElement.setMediaPlayer(obj);
+        httpTestingController = TestBed.inject(HttpTestingController);
+        spyOngetDuration = spyOn(mediaPlayerElement.getMediaPlayer(), 'getDuration').and.returnValue(1800);
+        // Simulez les éléments DOM
+        const mainTimeline = document.createElement('div');
+        mainTimeline.style.width = '1000px';
+        mainTimeline.style.position = 'absolute';
+        mainTimeline.style.left = '100px';
+        Object.defineProperty(mainTimeline, 'offsetWidth', { value: 1000 });
+        Object.defineProperty(mainTimeline, 'offsetLeft', { value: 100 });
+
+        const mainBlock = document.createElement('div');
+        mainBlock.classList.add('tc-cursor');
+
+        const listBlock = document.createElement('div');
+        listBlock.classList.add('tc-cursor');
+
+        const timeline = document.createElement('div');
+        timeline.classList.add('timeline');
+        Object.defineProperty(timeline, 'offsetLeft', { value: 50 });
+
+        const accordion = document.createElement('div');
+        accordion.classList.add('p-accordion');
+        accordion.getBoundingClientRect = () => ({ height: 200 } as DOMRect);
+
+        const container = document.createElement('div');
+        container.appendChild(mainBlock);
+        container.appendChild(listBlock);
+        container.appendChild(timeline);
+        container.appendChild(accordion);
+
+        component.mainTimeline = { nativeElement: mainTimeline };
+        component.mainBlockContainer = { nativeElement: container };
+        component.listOfBlocksContainer = { nativeElement: container };
+
+        // Valeurs de test
+        component.currentTime = 50;
+        component.duration = 100;
+        component.tcOffset = 0;
+        component.focusTcIn = 0;
+        component.focusTcOut = 100;
+
+        fixture.detectChanges();
+    });
+
+    it('should correctly position and size the cursor elements', () => {
+        component.refreshTimeCursor();
+
+        const mainBlock: HTMLElement = component.mainBlockContainer.nativeElement.querySelector('.tc-cursor');
+        const listBlock: HTMLElement = component.listOfBlocksContainer.nativeElement.querySelector('.tc-cursor');
+
+        expect(mainBlock.style.left).toBe('50px'); // 100 + (50 * 1000 / 100)
+        expect(mainBlock.style.width).toBe('2px');
+        expect(listBlock.style.left).toBe('50px'); // 50 + (0 + 50 - 0) * 1000 / 100
+        expect(listBlock.style.height).toBe('200px');
+        expect(listBlock.style.width).toBe('2px');
+    });
+
+    it('should update mapOfBlocksIndexes based on event array', () => {
+        component.listOfBlocks = [{ id: 1 }, { id: 2 }, { id: 3 }] as any;
+        component.mapOfBlocksIndexes = new Map();
+
+        component.refreshTimeCursor([0, 2]);
+
+        expect(component.mapOfBlocksIndexes.size).toBe(2);
+        expect(component.mapOfBlocksIndexes.has(component.listOfBlocks[0])).toBeTrue();
+        expect(component.mapOfBlocksIndexes.has(component.listOfBlocks[1])).toBeFalse();
+        expect(component.mapOfBlocksIndexes.has(component.listOfBlocks[2])).toBeTrue();
+    });
+    it('should skip DOM updates if currentTime or duration is not finite', () => {
+        component.currentTime = NaN;
+        component.duration = 100;
+
+        const mainBlock = jasmine.createSpyObj('mainBlock', ['style']);
+        spyOn(component.mainBlockContainer.nativeElement, 'querySelector').and.returnValue(mainBlock);
+
+        component.refreshTimeCursor();
+
+        // Aucun style ne doit être modifié
+        expect(mainBlock.style.left).toBeUndefined();
+    });
+    it('should fallback to mainTimelineLeftPosition if listBlockTimeline is null', () => {
+        spyOn(component.listOfBlocksContainer.nativeElement, 'querySelector').and.callFake((selector: string) => {
+            if (selector === '.timeline') return null;
+            const el = document.createElement('div');
+            el.classList.add(selector.replace('.', ''));
+            return el;
+        });
+
+        component.refreshTimeCursor();
+
+        const listBlock: HTMLElement = component.listOfBlocksContainer.nativeElement.querySelector('.tc-cursor');
+        expect(listBlock.style.left).toBe(''); // fallback utilisé
+    });
+    it('should not set height if accordion is null', () => {
+        spyOn(component.listOfBlocksContainer.nativeElement, 'querySelector').and.callFake((selector: string) => {
+            if (selector === '.p-accordion') return null;
+            const el = document.createElement('div');
+            el.classList.add(selector.replace('.', ''));
+            return el;
+        });
+
+        component.refreshTimeCursor();
+
+        const listBlock: HTMLElement = component.listOfBlocksContainer.nativeElement.querySelector('.tc-cursor');
+        expect(listBlock.style.height).toBe(''); // pas de hauteur définie
+    });
+    it('should not update mapOfBlocksIndexes if event is not an array', () => {
+        component.mapOfBlocksIndexes = new Map();
+        const initialSize = component.mapOfBlocksIndexes.size;
+
+        component.refreshTimeCursor('not-an-array');
+
+        expect(component.mapOfBlocksIndexes.size).toBe(initialSize);
+    });
+    it('should ignore invalid indexes in listOfBlocksIndexes', () => {
+        component.listOfBlocks = [{ id: 1 }, { id: 2 }] as any;
+        component.mapOfBlocksIndexes = new Map();
+
+        component.refreshTimeCursor([0, 5]); // 5 est invalide
+
+        expect(component.mapOfBlocksIndexes.has(component.listOfBlocks[0])).toBeTrue();
+        expect(component.mapOfBlocksIndexes.has(component.listOfBlocks[1])).toBeFalse();
+    });
 
 });
