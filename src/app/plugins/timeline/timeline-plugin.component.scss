@@ -20,6 +20,7 @@
     width: 100%;
     height: 48px;
     z-index: 11;
+    margin-bottom: 16px;
   }
 
   .no-highlight {
@@ -577,6 +578,7 @@
   .list-blocks {
     z-index: 11;
     margin-top: 4px;
+    margin-bottom: 40px;
 
     .tc-cursor {
       position: absolute;
@@ -672,6 +674,8 @@
   .p-toolbar {
     border: none !important;
     padding: 0 !important;
+    flex-wrap: nowrap !important;
+    height: 50px;
   }
 
   .p-button.p-button-icon-only {
@@ -758,4 +762,26 @@
   [pDraggable] {
     cursor: move;
   }
+}
+
+ina-messages {
+  padding: 0px;
+  max-height: fit-content;
+  height: 49px;
+
+  .p-messages .p-message.p-message-info .p-message-wrapper .p-message-icon.pi-info:before {
+    content: "\e923" !important;
+    font-size: 14px !important;
+    font-weight: 400;
+  }
+
+  .p-messages .p-message.p-message-info .p-message-wrapper .p-message-detail {
+    overflow: hidden;
+     text-overflow: ellipsis;
+     display: -webkit-box;
+     -webkit-line-clamp: 2;
+             line-clamp: 2;
+     -webkit-box-orient: vertical;
+  }
+
 }
