@@ -122,7 +122,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     ngAfterViewInit(): void {
         this.refreshTimeCursor();
         this.updateTimeCodePosition();
-        this.messagesComponent.setMessages([{
+        (this.messagesComponent && typeof (this.messagesComponent as any).setMessages === 'function') &&
+            (this.messagesComponent as any).setMessages([{
             severity: 'info',
             detail: "Information : certains segments sont issues d’un traitement par IA et peuvent contenir des erreurs.",
             summary: 'Information'

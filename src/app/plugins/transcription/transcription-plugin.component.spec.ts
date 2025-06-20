@@ -13,6 +13,9 @@ import {DefaultMetadataConverter} from "../../core/metadata/converter/default-me
 import {MetadataManager} from "../../core/metadata/metadata-manager";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {MediaElement} from "../../core/media/media-element";
+import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { MessagesModule } from 'primeng/messages';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const initTestData = (component: TranscriptionPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();
@@ -117,7 +120,7 @@ describe('TranscriptionPluginComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TranscriptionPluginComponent],
-            imports: [HttpClientTestingModule],
+            imports: [HttpClientTestingModule, BrowserAnimationsModule, MessagesModule, InaMessagesComponent],
             providers: [MediaPlayerService]
         }).compileComponents();
     });
@@ -129,6 +132,12 @@ describe('TranscriptionPluginComponent', () => {
         component.transcriptionElement = new ElementRef(document.createElement('div'));
         component.headerElement = new ElementRef(document.createElement('div'));
         component.searchText = new ElementRef(document.createElement('input'));
+        
+        // Mock the messagesComponent to fix the error in ngAfterViewInit
+        component.messagesComponent = {
+            setMessages: jasmine.createSpy('setMessages')
+        } as any;
+        
         mediaPlayerElement = initTestData(component, mediaPlayerElement, logger, httpClient);
     });
 

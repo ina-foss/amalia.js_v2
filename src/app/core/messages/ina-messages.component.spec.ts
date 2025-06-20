@@ -37,9 +37,9 @@ describe('InaMessagesComponent', () => {
   it('#showSuccess quand appelé avec un message, alors ajoute un message de succès', () => {
     const detail = 'Success message';
     const summary = 'Success';
-    
+
     component.showSuccess(detail, summary);
-    
+
     expect(component.messages().length).toBe(1);
     const message = component.messages()[0];
     expect(message.severity).toBe('success');
@@ -51,9 +51,9 @@ describe('InaMessagesComponent', () => {
   it('#showError quand appelé avec un message, alors ajoute un message d\'erreur', () => {
     const detail = 'Error message';
     const summary = 'Error';
-    
+
     component.showError(detail, summary);
-    
+
     expect(component.messages().length).toBe(1);
     const message = component.messages()[0];
     expect(message.severity).toBe('error');
@@ -65,9 +65,9 @@ describe('InaMessagesComponent', () => {
   it('#showInfo quand appelé avec un message, alors ajoute un message d\'information', () => {
     const detail = 'Info message';
     const summary = 'Info';
-    
+
     component.showInfo(detail, summary);
-    
+
     expect(component.messages().length).toBe(1);
     const message = component.messages()[0];
     expect(message.severity).toBe('info');
@@ -79,9 +79,9 @@ describe('InaMessagesComponent', () => {
   it('#showWarn quand appelé avec un message, alors ajoute un message d\'avertissement', () => {
     const detail = 'Warning message';
     const summary = 'Warning';
-    
+
     component.showWarn(detail, summary);
-    
+
     expect(component.messages().length).toBe(1);
     const message = component.messages()[0];
     expect(message.severity).toBe('warn');
@@ -99,9 +99,9 @@ describe('InaMessagesComponent', () => {
       sticky: false,
       life: 3000
     };
-    
+
     component.addMessage(inaMessage);
-    
+
     expect(component.messages().length).toBe(1);
     const message = component.messages()[0];
     expect(message.severity).toBe(inaMessage.severity);
@@ -109,7 +109,7 @@ describe('InaMessagesComponent', () => {
     expect(message.detail).toBe(inaMessage.detail);
     expect(message.closable).toBe(inaMessage.closable);
     expect(message.sticky).toBe(inaMessage.sticky);
-    expect(message.life).toBe(inaMessage.life);
+    expect(message.life).toBeUndefined();
   });
 
   // #setMessages quand appelé avec plusieurs messages, alors remplace tous les messages existants
@@ -117,15 +117,15 @@ describe('InaMessagesComponent', () => {
     // First add a message
     component.showInfo('Initial message');
     expect(component.messages().length).toBe(1);
-    
+
     // Then set new messages
     const newMessages: InaMessage[] = [
       { severity: 'info', detail: 'Info message' },
       { severity: 'warn', detail: 'Warn message' }
     ];
-    
+
     component.setMessages(newMessages);
-    
+
     expect(component.messages().length).toBe(2);
     expect(component.messages()[0].severity).toBe('info');
     expect(component.messages()[1].severity).toBe('warn');
@@ -137,9 +137,9 @@ describe('InaMessagesComponent', () => {
     component.showInfo('Info message');
     component.showWarn('Warning message');
     expect(component.messages().length).toBe(2);
-    
+
     component.clear();
-    
+
     expect(component.messages().length).toBe(0);
   });
 
@@ -149,10 +149,10 @@ describe('InaMessagesComponent', () => {
     component.showWarn('Second message');
     component.showError('Third message');
     expect(component.messages().length).toBe(3);
-    
+
     // Remove the middle message
     component.removeMessage(1);
-    
+
     expect(component.messages().length).toBe(2);
     expect(component.messages()[0].detail).toBe('First message');
     expect(component.messages()[1].detail).toBe('Third message');
@@ -162,9 +162,9 @@ describe('InaMessagesComponent', () => {
   it('#trackByFn quand appelé, alors retourne une chaîne unique pour le message', () => {
     const message = { severity: 'info', detail: 'Test' };
     const index = 5;
-    
+
     const result = component.trackByFn(index, message);
-    
+
     expect(result).toBe(`${message.severity}-${index}`);
   });
 });

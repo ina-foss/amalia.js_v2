@@ -679,7 +679,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.timeout,
                 this.setDataLoading.bind(this)));
 
-        this.messagesComponent.setMessages([{
+        this.messagesComponent?.setMessages([{
             severity: 'info',
             detail: "Information : les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.",
             summary: 'Information'
