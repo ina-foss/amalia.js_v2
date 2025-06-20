@@ -11,6 +11,8 @@ import {MediaPlayerService} from '../../service/media-player-service';
 import * as _ from 'lodash';
 import {FormatUtils} from '../../core/utils/format-utils';
 import {DefaultLogger} from "../../core/logger/default-logger";
+import { Message } from 'primeng/api';
+import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
 
 export class TcFormatPipe implements PipeTransform {
     transform(tc: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = null, defaultFps: number = 25) {
@@ -63,6 +65,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private prevSearchValue = '';
     public tcFormatPipe = new TcFormatPipe();
     logger: DefaultLogger;
+
+    @ViewChild('messages') messagesComponent!: InaMessagesComponent;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -674,6 +678,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.intervalStep,
                 this.timeout,
                 this.setDataLoading.bind(this)));
+
+        this.messagesComponent?.setMessages([{
+            severity: 'info',
+            detail: "Information : les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.",
+            summary: 'Information'
+        }]);
     }
 
 }

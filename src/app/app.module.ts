@@ -42,10 +42,12 @@ import {CheckboxModule} from "primeng/checkbox";
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AccordionModule } from 'primeng/accordion';
-import { DragDropModule } from 'primeng/dragdrop'; 
+import { DragDropModule } from 'primeng/dragdrop';
+import { MessagesModule } from 'primeng/messages';
 import { PreventCtrlScrollDirective } from './core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
 import { MinusIcon } from 'primeng/icons/minus';
 import { CheckIcon } from 'primeng/icons/check';
+import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
 
 @NgModule({
     imports: [
@@ -75,8 +77,10 @@ import { CheckIcon } from 'primeng/icons/check';
         InputSwitchModule,
         AccordionModule,
         DragDropModule,
+        MessagesModule,
         MinusIcon,
-        CheckIcon
+        CheckIcon,
+        InaMessagesComponent
     ],
     declarations: [
         AmaliaComponent,

@@ -23,7 +23,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { AccordionModule } from 'primeng/accordion';
 import { DragDropModule } from 'primeng/dragdrop';
 import { PreventCtrlScrollDirective } from 'src/app/core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayerConfigData } from 'src/app/core/config/model/player-config-data';
 import interact from 'interactjs';
 import { MinusIcon } from 'primeng/icons/minus';
@@ -31,6 +31,8 @@ import { CheckIcon } from 'primeng/icons/check';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TimelineLocalisation } from 'src/app/core/metadata/model/timeline-localisation';
+import { MessagesModule } from 'primeng/messages';
+import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -41,7 +43,8 @@ describe('TimelinePluginComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective],
             providers: [MediaPlayerService, TcFormatPipe],
-            imports: [CheckboxModule, TreeModule, MinusIcon, CheckIcon, FormsModule, ButtonModule],
+            imports: [CheckboxModule, TreeModule, MinusIcon, CheckIcon, FormsModule, ButtonModule,
+                MessagesModule, InaMessagesComponent, NoopAnimationsModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -3765,8 +3768,7 @@ describe('TimelinePluginComponent 2', () => {
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
             providers: [MediaPlayerService],
             imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
-                MinusIcon, CheckIcon, FormsModule, ButtonModule
-            ],
+                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, InaMessagesComponent],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]

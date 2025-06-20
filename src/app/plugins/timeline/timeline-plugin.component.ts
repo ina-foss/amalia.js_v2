@@ -24,6 +24,7 @@ import * as _ from 'lodash';
 import { Metadata } from '@ina/amalia-model';
 import { TreeNode } from 'primeng/api/treenode';
 import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
+import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
 
 @Component({
     selector: 'amalia-timeline',
@@ -111,6 +112,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     indeterminate: boolean = false;
     mapOfBlocksIndexes: Map<TimeLineBlock, number> = new Map<TimeLineBlock, number>();
 
+    @ViewChild('messages') messagesComponent!: InaMessagesComponent;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -120,6 +122,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     ngAfterViewInit(): void {
         this.refreshTimeCursor();
         this.updateTimeCodePosition();
+        (this.messagesComponent && typeof (this.messagesComponent as any).setMessages === 'function') &&
+            (this.messagesComponent as any).setMessages([{
+            severity: 'info',
+            detail: "Information : certains segments sont issues d’un traitement par IA et peuvent contenir des erreurs.",
+            summary: 'Information'
+        }]);
     }
 
     ngOnInit(): void {
