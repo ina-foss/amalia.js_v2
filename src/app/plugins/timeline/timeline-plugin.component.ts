@@ -461,14 +461,20 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     public handleDisplayBlocks(isValid: boolean) {
         if (isValid) {
-            this.listOfBlocksIndexes = [];
+            let nodeAdded: boolean = false;
             this.listOfBlocks.forEach((block, index) => {
+                if (block.displayState === false && this.selectedNodesMap().has(block.id)) {
+                    //newly selected
+                    block.displayState = true;
+                    this.listOfBlocksIndexes.push(index);
+                    this.mapOfBlocksIndexes.set(block, index);
+                    nodeAdded = true;
+                }
                 block.displayState = this.selectedNodesMap().has(block.id);
-                this.mapOfBlocksIndexes.forEach((_, key) => {
-                    let indexOfKeyInListOfBlocks = this.listOfBlocks.indexOf(key);
-                    this.listOfBlocksIndexes.push(indexOfKeyInListOfBlocks);
-                });
             });
+            if (nodeAdded) {
+                this.listOfBlocksIndexes.sort((a, b) => a - b);
+            }
         } else {
             this.selectedNodes.set([]);
             this.selectedNodesBeforeChange.forEach(selectedNodeBeforeChange => {

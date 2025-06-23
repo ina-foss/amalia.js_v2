@@ -1,11 +1,12 @@
-import {MediaSourceExtension} from '../media-source-extension';
-import Hls, {FragmentLoaderConstructor, FragmentLoaderContext, Loader} from 'hls.js';
-import {PlayerConfigData} from '../../config/model/player-config-data';
-import {AmaliaException} from '../../exception/amalia-exception';
-import {PlayerEventType} from '../../constant/event-type';
-import {EventEmitter} from 'events';
-import {CustomFragmentLoader} from './hls-custom-f-loader';
-import {LoggerInterface} from '../../logger/logger-interface';
+import { MediaSourceExtension } from '../media-source-extension';
+import Hls, { FragmentLoaderConstructor, FragmentLoaderContext, Loader } from 'hls.js';
+import { PlayerConfigData } from '../../config/model/player-config-data';
+import { AmaliaException } from '../../exception/amalia-exception';
+import { PlayerEventType } from '../../constant/event-type';
+import { EventEmitter } from 'events';
+import { CustomFragmentLoader } from './hls-custom-f-loader';
+import { LoggerInterface } from '../../logger/logger-interface';
+import { Utils } from '../../utils/utils';
 
 /* tslint:disable:no-string-literal */
 function createCustomFragmentLoader(config: any): Loader<FragmentLoaderContext> {
@@ -28,7 +29,6 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     private readonly eventEmitter: EventEmitter;
     private hlsPlayer: Hls;
 
-
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, config: PlayerConfigData, logger: LoggerInterface) {
         this.mediaElement = mediaElement;
         this.eventEmitter = eventEmitter;
@@ -39,7 +39,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             throw new AmaliaException('Hls extension is not supported.');
         }
         if (!config.hls) {
-            config.hls = {enable: true};
+            config.hls = { enable: true };
         }
         if (!config.hls.config) {
             config.hls.config = Hls.DefaultConfig;
@@ -51,6 +51,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         this.hlsPlayer = new Hls(config.hls.config);
         this.eventEmitter.on(PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
     }
+    mediaType: 'AUDIO' | 'VIDEO';
 
     /**
      * Is valid url
@@ -84,12 +85,13 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.mainMediaSrc = (!HLSMediaSourceExtension.isUrl(config.src)) ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.src}` : config.src;
             if (typeof config.backwardsSrc === 'string') {
                 this.backwardsMediaSrc = (!HLSMediaSourceExtension.isUrl(config.backwardsSrc))
-                        ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
+                    ? `${HLSMediaSourceExtension.DEFAULT_HEADER_BASE64}${config.backwardsSrc}` : config.backwardsSrc;
             }
             this.logger.debug('Hls string source', this.mainMediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(this.mainMediaSrc);
-            this.hlsPlayer.on(Hls.Events.ERROR, this.handleError);
+            Utils.addListener(this, this.hlsPlayer, Hls.Events.MANIFEST_PARSED, this.handleManifestParsed);
+            Utils.addListener(this, this.hlsPlayer, PlayerEventType.ERROR, this.handleError);
             if (config.autoplay) {
                 this.mediaElement.play();
             }
@@ -98,6 +100,13 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.mainMediaSrc = null;
             this.hlsPlayer.destroy();
         }
+    }
+
+    handleManifestParsed(_, data) {
+        this.mediaType = 'AUDIO';
+        data.levels.forEach((level) => {
+            if (level.videoCodec) this.mediaType = 'VIDEO';
+        });
     }
 
     getBackwardsSrc(): string | MediaStream | MediaSource | Blob | null {
@@ -139,6 +148,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     public destroy() {
         this.hlsPlayer.stopLoad();
         this.hlsPlayer.detachMedia();
+        Utils.unsubscribeTargetedElementEventListeners(this, this.hlsPlayer);
         this.hlsPlayer.destroy();
     }
 
