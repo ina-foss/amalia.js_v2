@@ -152,7 +152,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
      * Invoked on metadata loaded
      */
 
-    protected handleMetadataLoaded() {
+    handleMetadataLoaded() {
         this.parseAnnotation();
     }
 
@@ -176,7 +176,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         };
     }
 
-    constructor(private confirmationService: ConfirmationService, playerService: MediaPlayerService, private fileService: FileService, private cdr: ChangeDetectorRef) {
+    constructor(private readonly confirmationService: ConfirmationService, playerService: MediaPlayerService, private readonly fileService: FileService, private readonly cdr: ChangeDetectorRef) {
         super(playerService);
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
     }
@@ -216,8 +216,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
             } else {
                 segmentToBeAdded.data.media = 'AUDIO';
-                const response = await fetch('assets/amalia/images/headphonesbase64.txt');
-                segmentToBeAdded.thumb = await response.text();
+                segmentToBeAdded.thumb = 'assets/amalia/images/headphones.svg';
             }
 
             segmentToBeAdded.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcOffset) * 1000;

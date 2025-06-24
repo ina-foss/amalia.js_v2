@@ -80,7 +80,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      *  Personalized selected Interval
      */
-    public tcInterval = 3;
+    public tcInterval = 4;
     /**
      * thumbnails per line
      */

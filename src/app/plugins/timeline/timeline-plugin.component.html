@@ -55,7 +55,7 @@
             <span class="end">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
         </p>
     </div>
-    <p-accordion #listOfBlocksAccordion [multiple]="true" [activeIndex]="listOfBlocksIndexes"
+    <p-accordion #listOfBlocksAccordion [multiple]="true" [(activeIndex)]="listOfBlocksIndexes"
         (activeIndexChange)="refreshTimeCursor($event)" (onClose)="refreshTimeCursor($event)"
         (onOpen)="refreshTimeCursor($event)">
         <ng-container *ngFor="let block of listOfBlocks; let idx = index">

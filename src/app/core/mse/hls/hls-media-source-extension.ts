@@ -49,9 +49,9 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         config.hls.config.fLoader = createCustomFragmentLoader as unknown as FragmentLoaderConstructor;
         this.config.hls = config.hls;
         this.hlsPlayer = new Hls(config.hls.config);
-        this.eventEmitter.on(PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
+        Utils.addListener(this, this.eventEmitter, PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
     }
-    mediaType: 'AUDIO' | 'VIDEO';
+    mediaType: 'AUDIO' | 'VIDEO' = 'AUDIO';
 
     /**
      * Is valid url
@@ -90,7 +90,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
             this.logger.debug('Hls string source', this.mainMediaSrc);
             this.hlsPlayer.attachMedia(this.mediaElement);
             this.hlsPlayer.loadSource(this.mainMediaSrc);
-            Utils.addListener(this, this.hlsPlayer, Hls.Events.MANIFEST_PARSED, this.handleManifestParsed);
+            this.mediaType = config.media;
             Utils.addListener(this, this.hlsPlayer, PlayerEventType.ERROR, this.handleError);
             if (config.autoplay) {
                 this.mediaElement.play();
@@ -149,6 +149,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         this.hlsPlayer.stopLoad();
         this.hlsPlayer.detachMedia();
         Utils.unsubscribeTargetedElementEventListeners(this, this.hlsPlayer);
+        Utils.unsubscribeTargetedElementEventListeners(this, this.eventEmitter);
         this.hlsPlayer.destroy();
     }
 

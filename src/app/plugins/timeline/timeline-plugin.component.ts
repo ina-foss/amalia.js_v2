@@ -1,6 +1,7 @@
 import { PluginBase } from '../../core/plugin/plugin-base';
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
     computed,
     ElementRef,
@@ -46,6 +47,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public tcOffset = 0;
     public focusTcIn = 0;
     public focusTcOut = 0;
+    public tcIn = 0;
+    public durationFromConfig = 0;
+    public resourceType: 'stock' | 'flux';
     public selectionPosition = {
         x: 0,
         y: 0,
@@ -114,7 +118,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     @ViewChild('messages') messagesComponent!: InaMessagesComponent;
 
-    constructor(playerService: MediaPlayerService) {
+
+    constructor(playerService: MediaPlayerService, private cdr: ChangeDetectorRef) {
         super(playerService);
         this.pluginName = TimelinePluginComponent.PLUGIN_NAME;
     }
@@ -124,15 +129,18 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.updateTimeCodePosition();
         (this.messagesComponent && typeof (this.messagesComponent as any).setMessages === 'function') &&
             (this.messagesComponent as any).setMessages([{
-            severity: 'info',
-            detail: "Information : certains segments sont issues d’un traitement par IA et peuvent contenir des erreurs.",
-            summary: 'Information'
-        }]);
+                severity: 'info',
+                detail: "Information : certains segments sont issus d’un traitement par IA et peuvent contenir des erreurs.",
+                summary: 'Information'
+            }]);
     }
 
     ngOnInit(): void {
         try {
             this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.closeMenu);
+            this.resourceType = this.pluginConfiguration?.data?.resourceType;
+            this.tcIn = this.pluginConfiguration?.data?.tcIn;
+            this.durationFromConfig = this.pluginConfiguration?.data?.duration;
             super.ngOnInit();
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
@@ -272,14 +280,37 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             let listOfLocalisations = null;
             try {
                 listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
-                listOfLocalisations.forEach((l: { tcIn: number; tcOut: number; }) => {
-                    if (l.tcIn) {
-                        l.tcIn += this.tcOffset;
-                    }
-                    if (l.tcOut) {
-                        l.tcOut += this.tcOffset;
-                    }
-                });
+                if (this.resourceType === 'stock' && (this.tcIn > 0 || this.durationFromConfig > 0)) {
+                    const tcOut = this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration;
+                    listOfLocalisations = listOfLocalisations.filter((l: { tcIn: number; tcOut: number; }) => {
+                        if (this.tcIn <= l.tcOut && l.tcOut <= tcOut) {
+                            return true;
+                        }
+                        if (this.tcIn <= l.tcIn && l.tcIn <= tcOut) {
+                            return true;
+                        }
+                        return false;
+                    });
+                    listOfLocalisations.forEach((l: { tcIn: number; tcOut: number; }) => {
+                        if (l.tcIn) {
+                            l.tcIn += this.tcIn;
+                        }
+                        if (l.tcOut) {
+                            l.tcOut += this.tcIn;
+                        }
+                    });
+                } else {
+                    listOfLocalisations.forEach((l: { tcIn: number; tcOut: number; }) => {
+                        if (l.tcIn) {
+                            l.tcIn += this.tcOffset;
+                        }
+                        if (l.tcOut) {
+                            l.tcOut += this.tcOffset;
+                        }
+                    });
+                }
+
+
             } catch (e) {
                 this.logger.warn('Error to parse metadata', e);
             }
@@ -474,6 +505,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             });
             if (nodeAdded) {
                 this.listOfBlocksIndexes.sort((a, b) => a - b);
+                this.cdr.detectChanges();
             }
         } else {
             this.selectedNodes.set([]);
@@ -668,11 +700,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (handleMetadataIds) {
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
                 const metadata = metadataManager.getMetadata(metadataId);
-                const blockMetadata: any = _.find<TimeLineBlock>(this.listOfBlocks, { id: metadataId });
+                const blockMetadata: TimeLineBlock = _.find<TimeLineBlock>(this.listOfBlocks, { id: metadataId });
                 const baseColor = (metadata?.viewControl?.color) ? metadata.viewControl.color : blockMetadata.defaultColor;
                 let localisations = null;
                 try {
-                    localisations = metadataManager.getTimelineLocalisations(metadata);
+                    localisations = (this.resourceType === 'stock' && (this.tcIn < 0 || this.durationFromConfig > 0)) ? blockMetadata.data : metadataManager.getTimelineLocalisations(metadata);
                     if (localisations) {
                         localisations.forEach((l: TimelineLocalisation) => {
                             l.color = baseColor;
