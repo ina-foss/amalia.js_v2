@@ -23,6 +23,7 @@ export class DefaultMediaSourceExtension implements MediaSourceExtension {
         this.config = config;
         this.logger = logger;
     }
+    mediaType: 'AUDIO' | 'VIDEO';
 
     getSrc(): string {
         return this.mediaSrc;

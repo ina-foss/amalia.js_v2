@@ -22,4 +22,7 @@ export interface TranscriptionConfig {
     label: string;
     labelSynchro: string;
     key?: string;
+    tcIn?: number;
+    duration?: number;
+    resourceType?: 'stock' | 'flux';
 }

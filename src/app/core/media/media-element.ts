@@ -542,7 +542,6 @@ export class MediaElement {
 
     private handleFullscreenChange() {
         this.logger.debug('handleFullscreenChange');
-        this.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
     }
 
 

@@ -1,10 +1,10 @@
-import {PlayerConfigData} from '../config/model/player-config-data';
+import { PlayerConfigData } from '../config/model/player-config-data';
 
 /**
  * In charge to handle MediaSourceExtension
  */
 export interface MediaSourceExtension {
-
+    mediaType: 'AUDIO' | 'VIDEO';
     /**
      * Invoked to set source
      * @param src media source

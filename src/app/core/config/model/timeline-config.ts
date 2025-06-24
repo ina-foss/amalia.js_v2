@@ -23,4 +23,7 @@ export interface TimelineConfig {
      * Main block color
      */
     mainBlockColor: string;
+    tcIn?: number;
+    duration?: number;
+    resourceType?: 'stock' | 'flux';
 }

@@ -623,7 +623,12 @@ export class AmaliaComponent implements OnInit, OnDestroy {
 
         const element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
         if (element) {
-            const parent = element.offsetParent as HTMLElement;
+            let parent = element.offsetParent as HTMLElement;
+            let condition = parent && parent.classList.contains('module') && parent.classList.contains('player');
+            while (parent && !condition) {
+                parent = parent.offsetParent as HTMLElement;
+                condition = parent && parent.classList.contains('module') && parent.classList.contains('player');
+            }
             if (parent) {
                 this.mediaPlayerElement.toggleFullscreen(parent);
             } else {

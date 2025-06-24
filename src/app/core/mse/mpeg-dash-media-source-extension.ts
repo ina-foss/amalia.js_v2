@@ -5,6 +5,7 @@ import {MediaSourceExtension} from './media-source-extension';
 import {AmaliaException} from '../exception/amalia-exception';
 
 export class MPEGDashMediaSourceExtension implements MediaSourceExtension {
+    mediaType: 'AUDIO' | 'VIDEO';
 
 
     /**
