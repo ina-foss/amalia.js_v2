@@ -276,7 +276,7 @@
         .readonly-segment-audioThumbnail {
           position: absolute;
           flex-shrink: 0;
-          background: url("/assets/images/headphones.svg") $amalia-primary-color 50% 50% / 50% 50% no-repeat;
+          background: url("/assets/amalia/images/headphones.svg") $amalia-primary-color 50% 50% / 50% 50% no-repeat;
           width: 165px;
           height: 111px;
 
@@ -330,7 +330,8 @@
             font-size: 14px;
             font-style: normal;
             font-weight: 600;
-            line-height: 100%; /* 21px */
+            line-height: 100%;
+            /* 21px */
           }
         }
 
@@ -427,7 +428,8 @@
       white-space: pre-wrap;
       word-wrap: break-word;
       margin: 0;
-      line-height: 150%; /* 21px */
+      line-height: 150%;
+      /* 21px */
     }
 
     .readonly-segment-description {
@@ -460,7 +462,8 @@
         height: 20px;
         width: 15px;
         position: relative;
-        color: $amalia-primary-color;;
+        color: $amalia-primary-color;
+        ;
       }
 
       .amalia-svg-down-size {
@@ -471,4 +474,3 @@
 
 
 }
-

@@ -106,9 +106,9 @@
                     <div class="readonly-segment-info">
                         <div class="readonly-segment-thumbnail-block">
                             <div [ngClass]="{'readonly-segment-thumbnail': !segment.thumb, 'readonly-segment-thumbnail-no-background':segment.thumb}">
-                                <img *ngIf="segment.data.category ==='audio' || segment.thumb === 'assets/images/headphones.svg'"
+                                <img *ngIf="segment.data.category ==='audio' || segment.thumb === 'assets/amalia/images/headphones.svg'"
                                      class="thumbnail readonly-segment-audioThumbnail"/>
-                                <img *ngIf="segment.data.category !=='audio' && segment.thumb !== 'assets/images/headphones.svg'"
+                                <img *ngIf="segment.data.category !=='audio' && segment.thumb !== 'assets/amalia/images/headphones.svg'"
                                      class="thumbnail" alt='thumbnail'
                                      [src]="segment.thumb"/>
                             </div>

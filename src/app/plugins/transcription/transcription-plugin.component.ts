@@ -157,7 +157,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const element = e.target as HTMLElement;
         const tcIn = Number.parseFloat(element.getAttribute('data-tcin'));
         if (tcIn) {
-            const seekTc = this.pluginConfiguration.data.tcDelta ? tcIn - this.pluginConfiguration.data.tcDelta : tcIn;
+            let seekTc;
+            if (this.pluginConfiguration.data.resourceType === 'stock' && this.pluginConfiguration?.data?.tcIn > 0) {
+                seekTc = this.pluginConfiguration.data.tcDelta ? tcIn - this.pluginConfiguration.data.tcDelta - this.pluginConfiguration.data.tcIn : tcIn - this.pluginConfiguration.data.tcIn;
+            } else {
+                seekTc = this.pluginConfiguration.data.tcDelta ? tcIn - this.pluginConfiguration.data.tcDelta : tcIn;
+            }
             this.mediaPlayerElement.getMediaPlayer().setCurrentTime(seekTc);
             this.scroll();
         }
