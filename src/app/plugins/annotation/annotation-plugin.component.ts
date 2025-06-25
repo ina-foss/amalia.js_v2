@@ -278,6 +278,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             this.segmentsInfo.subLocalisations.forEach(localisation => {
                 localisation.tcOffset = tcOffset;
                 localisation.data.tcMax = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
+                if (this.mediaPlayerElement.getMediaPlayer()?.mse?.mediaType === 'AUDIO') {
+                    localisation.thumb = 'assets/amalia/images/headphones.svg';
+                }
             })
         }
     }
