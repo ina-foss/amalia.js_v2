@@ -578,7 +578,7 @@
   .list-blocks {
     z-index: 11;
     margin-top: 4px;
-    margin-bottom: 40px;
+    margin-bottom: 0;
 
     .tc-cursor {
       position: absolute;
@@ -780,11 +780,11 @@ ina-messages {
 
   .p-messages .p-message.p-message-info .p-message-wrapper .p-message-detail {
     overflow: hidden;
-     text-overflow: ellipsis;
-     display: -webkit-box;
-     -webkit-line-clamp: 2;
-             line-clamp: 2;
-     -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
 }
