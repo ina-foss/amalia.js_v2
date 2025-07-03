@@ -1,11 +1,12 @@
-import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {PlayerEventType} from '../../core/constant/event-type';
-import {TimeBarConfig} from '../../core/config/model/time-bar-config';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {DEFAULT} from '../../core/constant/default';
-import {LABEL} from '../../core/constant/labels';
-import {MediaPlayerService} from '../../service/media-player-service';
+import { PluginBase } from '../../core/plugin/plugin-base';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { PlayerEventType } from '../../core/constant/event-type';
+import { TimeBarConfig } from '../../core/config/model/time-bar-config';
+import { PluginConfigData } from '../../core/config/model/plugin-config-data';
+import { DEFAULT } from '../../core/constant/default';
+import { LABEL } from '../../core/constant/labels';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { Utils } from 'src/app/core/utils/utils';
 
 @Component({
     selector: 'amalia-time-bar',
@@ -116,7 +117,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Return default config
      */
     getDefaultConfig(): PluginConfigData<TimeBarConfig> {
-        return {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f', theme: 'outside'}};
+        return { name: TimeBarPluginComponent.PLUGIN_NAME, data: { timeFormat: 'f', theme: 'outside' } };
     }
 
     /**
@@ -127,6 +128,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     public handleOnTimeChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
     }
 
     /**
@@ -136,7 +138,10 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     public handleOnDurationChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.startTc = (tcOffset) ? tcOffset : 0;
+        this.startTc = this.pluginConfiguration?.data?.first_tc ? this.startTc + this.pluginConfiguration?.data?.first_tc : this.startTc;
         this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
         this.durationTimeBar = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset : this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.durationTimeBar = this.pluginConfiguration?.data?.first_tc ? this.durationTimeBar + this.pluginConfiguration?.data?.first_tc : this.durationTimeBar;
     }
 }
