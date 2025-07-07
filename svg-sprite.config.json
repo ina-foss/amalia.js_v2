@@ -1,6 +1,6 @@
 {
     "dest": "src/assets/svgs/",
-    "log": "debug",
+    "log": "warn",
     "shape": {
         "dimension": {
             "maxWidth": 50,

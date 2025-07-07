@@ -1,19 +1,19 @@
-import {LoggerInterface} from './logger/logger-interface';
-import {ConfigurationManager} from './config/configuration-manager';
-import {DefaultConfigConverter} from './config/converter/default-config-converter';
-import {DefaultConfigLoader} from './config/loader/default-config-loader';
-import {PlayerState} from './constant/player-state';
-import {MetadataManager} from './metadata/metadata-manager';
-import {Loader} from './loader/loader';
-import {Metadata} from '@ina/amalia-model';
-import {ConfigData} from './config/model/config-data';
-import {PluginConfigData} from './config/model/plugin-config-data';
-import {DefaultLogger} from './logger/default-logger';
-import {MediaElement} from './media/media-element';
-import {EventEmitter} from 'events';
-import {PlayerEventType} from './constant/event-type';
-import {PreferenceStorageManager} from './storage/preference-storage-manager';
-import {LoggerLevel} from './logger/logger-level';
+import { LoggerInterface } from './logger/logger-interface';
+import { ConfigurationManager } from './config/configuration-manager';
+import { DefaultConfigConverter } from './config/converter/default-config-converter';
+import { DefaultConfigLoader } from './config/loader/default-config-loader';
+import { PlayerState } from './constant/player-state';
+import { MetadataManager } from './metadata/metadata-manager';
+import { Loader } from './loader/loader';
+import { Metadata } from '@ina/amalia-model';
+import { ConfigData } from './config/model/config-data';
+import { PluginConfigData } from './config/model/plugin-config-data';
+import { DefaultLogger } from './logger/default-logger';
+import { MediaElement } from './media/media-element';
+import { EventEmitter } from 'events';
+import { PlayerEventType } from './constant/event-type';
+import { PreferenceStorageManager } from './storage/preference-storage-manager';
+import { LoggerLevel } from './logger/logger-level';
 
 /**
  * In charge to create player
@@ -97,29 +97,29 @@ export class MediaPlayerElement {
         return await new Promise<PlayerState>((resolve, reject) => {
             // load configuration
             this.loadConfiguration(config).then(() => {
-                        this.state = PlayerState.INITIALIZED;
-                        // Set logger states
-                        const debug = this.preferenceStorageManager.getItem('debug');
-                        const loadMetadataOnDemand = this.getConfiguration().loadMetadataOnDemand;
-                        const loggerState = debug === null ? this.getConfiguration().debug : true;
-                        const loggerLevel = debug === null ? this.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug);
-                        this.logger.state(loggerState);
-                        this.logger.logLevel(loggerLevel);
-                        this.logger.info(`Config data: ${config}`);
-                        this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
-                        // Set media source specified by config
-                        this.setMediaSource();
-                        if (!loadMetadataOnDemand) {
-                            this.loadDataSources().then(() => this.handleMetadataLoaded());
-                        }
-                        resolve(this.state);
-                    },
-                    error => {
-                        this.state = PlayerState.ERROR_LOAD_CONFIG;
-                        this.logger.error('Error to load config', error);
-                        this.logger.info(`Config data: ${config}`);
-                        reject(this.state);
-                    });
+                this.state = PlayerState.INITIALIZED;
+                // Set logger states
+                const debug = this.preferenceStorageManager.getItem('debug');
+                const loadMetadataOnDemand = this.getConfiguration().loadMetadataOnDemand;
+                const loggerState = debug === null ? this.getConfiguration().debug : true;
+                const loggerLevel = debug === null ? this.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug);
+                this.logger.state(loggerState);
+                this.logger.logLevel(loggerLevel);
+                this.logger.info(`Config data: ${config}`);
+                this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
+                // Set media source specified by config
+                this.setMediaSource();
+                if (!loadMetadataOnDemand) {
+                    this.loadDataSources().then(() => this.handleMetadataLoaded());
+                }
+                resolve(this.state);
+            },
+                error => {
+                    this.state = PlayerState.ERROR_LOAD_CONFIG;
+                    this.logger.error('Error to load config', error);
+                    this.logger.info(`Config data: ${config}`);
+                    reject(this.state);
+                });
         });
     }
 
