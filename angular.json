@@ -28,7 +28,7 @@
                         "styles": [
                             "src/styles.scss",
                             "node_modules/primeicons/primeicons.css",
-                            "node_modules/primeng/resources/themes/aura-light-blue/theme.css",
+                            "src/assets/themes/aura-light-blue/theme.css",
                             "node_modules/primeng/resources/primeng.min.css",
                             "node_modules/primeflex/primeflex.min.css"
                         ],
@@ -68,8 +68,8 @@
                                 },
                                 {
                                     "type": "anyComponentStyle",
-                                    "maximumWarning": "300kb",
-                                    "maximumError": "600kb"
+                                    "maximumWarning": "800kb",
+                                    "maximumError": "1mb"
                                 }
                             ]
                         },
@@ -115,7 +115,7 @@
                         "styles": [
                             "src/styles.scss",
                             "node_modules/primeicons/primeicons.css",
-                            "node_modules/primeng/resources/themes/aura-light-blue/theme.css",
+                            "src/assets/themes/aura-light-blue/theme.css",
                             "node_modules/primeng/resources/primeng.min.css",
                             "node_modules/primeflex/primeflex.min.css"
                         ],
