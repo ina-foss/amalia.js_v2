@@ -510,6 +510,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enableMenu) {
             this.enableMenu = !this.enableMenu;
         }
+        const paused = mediaPlayer?.isPaused();
         switch (control) {
             case 'playPause':
                 mediaPlayer.playPause();
@@ -531,9 +532,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'backward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
-                this.mediaPlayerElement.getMediaPlayer().pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(frames);
-                this.mediaPlayerElement.getMediaPlayer().play();
+                !paused && mediaPlayer.play();
                 break;
             case 'backward-second':
                 frames = mediaPlayer.framerate;
@@ -544,7 +545,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.movePrevFrame(frames);
                 break;
             case 'backward-frame':
-                mediaPlayer.pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(1);
                 break;
             case 'backward-1h':
@@ -562,9 +563,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'forward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
-                this.mediaPlayerElement.getMediaPlayer().pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(frames);
-                this.mediaPlayerElement.getMediaPlayer().play();
+                !paused && mediaPlayer.play();
                 break;
             case 'forward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
@@ -578,7 +579,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.moveNextFrame(frames);
                 break;
             case 'forward-frame':
-                mediaPlayer.pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(1);
                 break;
             case 'forward-end':
