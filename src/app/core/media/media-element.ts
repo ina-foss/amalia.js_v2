@@ -1,12 +1,12 @@
-import {LoggerInterface} from '../logger/logger-interface';
-import {EventEmitter} from 'events';
-import {PlayerEventType} from '../constant/event-type';
-import {MediaSourceExtension} from '../mse/media-source-extension';
-import {PlayerConfigData} from '../config/model/player-config-data';
-import {DefaultMediaSourceExtension} from '../mse/default-media-source-extension';
-import {HLSMediaSourceExtension} from '../mse/hls/hls-media-source-extension';
-import {DefaultLogger} from '../logger/default-logger';
-import {Utils} from "../utils/utils";
+import { LoggerInterface } from '../logger/logger-interface';
+import { EventEmitter } from 'events';
+import { PlayerEventType } from '../constant/event-type';
+import { MediaSourceExtension } from '../mse/media-source-extension';
+import { PlayerConfigData } from '../config/model/player-config-data';
+import { DefaultMediaSourceExtension } from '../mse/default-media-source-extension';
+import { HLSMediaSourceExtension } from '../mse/hls/hls-media-source-extension';
+import { DefaultLogger } from '../logger/default-logger';
+import { Utils } from "../utils/utils";
 
 /**
  * Media element
@@ -139,6 +139,13 @@ export class MediaElement {
             this.mediaElement.pause();
             this.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_PLAY, true);
         }
+    }
+
+    /**
+     * Invoked to pause the player without setting back the frame rate
+     */
+    pauseOnly(): void {
+        this.mediaElement.pause();
     }
 
     stop(): void {
