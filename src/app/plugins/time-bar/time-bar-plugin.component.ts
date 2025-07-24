@@ -91,6 +91,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
             this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
         }
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleOnSeeking);
     }
 
     /**
@@ -143,5 +144,12 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
         this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
         this.durationTimeBar = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset : this.mediaPlayerElement.getMediaPlayer().getDuration();
         this.durationTimeBar = this.pluginConfiguration?.data?.first_tc ? this.durationTimeBar + this.pluginConfiguration?.data?.first_tc : this.durationTimeBar;
+    }
+
+    public handleOnSeeking(time: number) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        this.timeTimeBar = (tcOffset) ? tcOffset + time : time;
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
+
     }
 }
