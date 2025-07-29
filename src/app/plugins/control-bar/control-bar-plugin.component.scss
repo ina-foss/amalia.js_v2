@@ -69,74 +69,12 @@
       .column {
         flex: none;
 
-        .control {
-          .amalia-svg-forward-end-size, .amalia-svg-backward-start-size {
-            display: none;
-          }
-        }
-
         &.mid {
           flex: 1;
         }
 
         &.last {
           flex: none;
-        }
-      }
-    }
-
-    &.sm, &.s, &xs {
-      .column {
-        .control {
-          .amalia-svg-pin-size {
-            display: none;
-          }
-
-          .amalia-svg-slider-size {
-            display: none;
-          }
-
-          .amalia-svg-forward-frame-size, .amalia-svg-backward-frame-size {
-            display: none;
-          }
-        }
-      }
-    }
-
-    &.xs {
-      .column {
-        display: none;
-
-        .control {
-          .amalia-svg-backward-size, .amalia-svg-forward-size, {
-            display: none;
-          }
-
-          .amalia-svg-slow-backward-size, .amalia-svg-slow-forward-size {
-            display: none;
-          }
-
-          .amalia-svg-screenshot-size {
-            display: none;
-          }
-
-          .amalia-svg-backward-1h-size, .amalia-svg-forward-1h-size, {
-            display: none;
-          }
-        }
-      }
-    }
-
-    &.s {
-      .column {
-        .control {
-          .amalia-svg-backward-size, .amalia-svg-forward-size {
-            display: none;
-          }
-
-          .amalia-svg-slow-backward-size, .amalia-svg-slow-forward-size {
-            display: none;
-          }
         }
       }
     }
@@ -1016,7 +954,7 @@
       }
     }
 
-    &.s, &.ms, &.xs {
+    &.s, &.xs {
       display: none;
     }
 

@@ -32,4 +32,8 @@ export interface ControlBarConfig {
      * Custom data control
      */
     data?: any;
+    /**
+     * Not in menu
+     */
+    notInMenu?: boolean;
 }
