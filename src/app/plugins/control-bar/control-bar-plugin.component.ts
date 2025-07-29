@@ -705,27 +705,41 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public handleDisplayState() {
+        this.controls = [];
         this.displayState = this.mediaPlayerElement.getDisplayState();
+        // Controls priority 5
+        let controlsP5 = [];
+        // Controls priority 4
+        let controlsP4 = [];
         // Controls priority 3
         let controlsP3 = [];
         let controlsP2 = [];
         for (let zone = 1; zone < 4; zone++) {
+            // Controls priority 5
+            controlsP5 = controlsP5.concat(this.getControlsByPriority(5, zone));
+            // Controls priority 4
+            controlsP4 = controlsP4.concat(this.getControlsByPriority(4, zone));
             // Controls priority 3
             controlsP3 = controlsP3.concat(this.getControlsByPriority(3, zone));
             // Controls priority 2
             controlsP2 = controlsP2.concat(this.getControlsByPriority(2, zone));
         }
-        if (controlsP3 === null) {
-            controlsP3 = [];
-        }
-        if (controlsP2 === null) {
-            controlsP2 = [];
-        }
+        controlsP5 ??= [];
+        controlsP4 ??= [];
+        controlsP3 ??= [];
+        controlsP2 ??= [];
+
         if (this.displayState === 'm') {
-            this.controls = controlsP3;
+            this.controls = controlsP5;
         } else if (this.displayState === 'sm') {
-            this.controls = controlsP2.concat(controlsP3);
+            this.controls = controlsP5.concat(controlsP4);
+        } else if (this.displayState === 's') {
+            this.controls = controlsP5.concat(controlsP4).concat(controlsP3);
+        } else if (this.displayState === 'xs') {
+            this.controls = controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2);
         }
+        //remove controls not in menu
+        this.controls = this.controls.filter((control) => !control.notInMenu);
     }
 
     /**
