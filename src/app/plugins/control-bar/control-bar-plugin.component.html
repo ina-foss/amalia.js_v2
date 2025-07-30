@@ -59,13 +59,12 @@
                         </svg>
                     </div>
                     <!--Aspect Ratio-->
-                    <div tooltip="{{c.label}}"
-                        [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                        ||(c.priority === 2 && displayState ==='s')}"
-                        *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text" [attr.aria-label]="c.label"
-                        (click)="changeAspectRatio()" [ngStyle]="{'order':c.order ? c.order:'0'}"
+                        ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'aspectRatio'"
+                        class="aspect-ratio control text" [attr.aria-label]="c.label" (click)="changeAspectRatio()"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}"
                         (mouseenter)="hideAll('ratio');enableListRatio=true;">
                         <div class="value">{{aspectRatio}}</div>
                         <div class="list-options" [ngClass]="{'on':enableListRatio}"
@@ -272,13 +271,11 @@
                         </div>
                     </div>
                     <!-- Button subtitles -->
-                    <div tooltip="{{c.label}}"
-                        [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                        ||(c.priority === 2 && displayState ==='s')}"
-                        *ngSwitchCase="'subtitles'" class="control subtitle" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}"
+                        ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'subtitles'"
+                        class="control subtitle" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}"
                         (mouseenter)="hideAll();enableListPositionsSubtitle=true;">
                         <svg class="amalia-svg-subtitle-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"></use>
@@ -309,6 +306,28 @@
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-dots-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#dots'"></use>
+                        </svg>
+                    </div>
+                    <!-- pinControls-->
+                    <div #pinControls tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                    ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                    ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control)" *ngSwitchCase="'pinControls'"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                    </div>
+                    <!-- displaySlider-->
+                    <div #displaySlider tooltip="{{c.label}}" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                    ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                    ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control)" *ngSwitchCase="'displaySlider'"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Other controls-->
