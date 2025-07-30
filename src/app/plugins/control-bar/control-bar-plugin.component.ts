@@ -1,5 +1,5 @@
 import { PluginBase } from '../../core/plugin/plugin-base';
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as _ from 'lodash';
 import { PlayerEventType } from '../../core/constant/event-type';
 import { ControlBarConfig } from '../../core/config/model/control-bar-config';
@@ -252,12 +252,50 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public listOfTracks: Array<{ label: string, track: string }> = [];
     public selectedTrack = null;
     public selectedTrackLabel = '';
+    @ViewChild('displaySlider')
+    displaySliderElement: ElementRef;
+    @ViewChild('pinControls')
+    pinControlsElement: ElementRef;
 
-    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
+
+    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2) {
         super(playerService);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
         this.thumbnailService = thumbnailService;
         this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
+    }
+    listenToDisplaySliderDisplayChanges() {
+        const sliderDisplayStyle = getComputedStyle(this.displaySliderElement.nativeElement).display;
+        const displaySliderOff = !this.displaySliderElement || sliderDisplayStyle === 'none';
+        const svgPinControls = this.pinControlsElement.nativeElement.querySelector('svg');
+        if (displaySliderOff) {
+            svgPinControls && this.renderer.removeClass(svgPinControls, 'amalia-svg-pin-size');
+        } else {
+            svgPinControls && this.renderer.addClass(svgPinControls, 'amalia-svg-pin-size');
+        }
+    }
+    listenToPinControlsDisplayChanges() {
+        const pinControlsDisplayStyle = getComputedStyle(this.pinControlsElement.nativeElement).display;
+        const pinControlsOff = !this.pinControlsElement || pinControlsDisplayStyle === 'none';
+        const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector('svg');
+        if (pinControlsOff) {
+            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, 'amalia-svg-slider-size');
+        } else {
+            svgDisplaySlider && this.renderer.addClass(svgDisplaySlider, 'amalia-svg-slider-size');
+        }
+    }
+
+    updatePinAndSpeedSliderPositions(): void {
+        if (this.displaySliderElement && this.pinControlsElement) {
+            this.listenToDisplaySliderDisplayChanges();
+            this.listenToPinControlsDisplayChanges();
+        } else if (!this.displaySliderElement && this.pinControlsElement) {
+            const svgPinControls = this.pinControlsElement.nativeElement.querySelector('svg');
+            svgPinControls && this.renderer.removeClass(svgPinControls, 'amalia-svg-pin-size');
+        } else if (!this.pinControlsElement && this.displaySliderElement) {
+            const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector('svg');
+            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, 'amalia-svg-slider-size');
+        }
     }
 
     init() {
@@ -740,6 +778,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         //remove controls not in menu
         this.controls = this.controls.filter((control) => !control.notInMenu);
+        //readjust Pin and speed slider
+        setTimeout(() => {
+            this.updatePinAndSpeedSliderPositions();
+        }, 100);
     }
 
     /**
