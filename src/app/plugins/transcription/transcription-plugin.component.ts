@@ -163,7 +163,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             } else {
                 seekTc = this.pluginConfiguration.data.tcDelta ? tcIn - this.pluginConfiguration.data.tcDelta : tcIn;
             }
-            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(seekTc);
+            const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(reverseMode ? this.mediaPlayerElement.getMediaPlayer().getDuration() - seekTc : seekTc);
             this.scroll();
         }
     }
