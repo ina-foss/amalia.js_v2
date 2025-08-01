@@ -68,6 +68,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     @ViewChild('messages') messagesComponent!: InaMessagesComponent;
     public resourceType: 'stock' | 'flux';
+    automaticallyScrolled: boolean = false;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -386,6 +387,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (this.autoScroll) {
                 if (!(visible) && this.displaySynchro === false) {
                     this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
+                    this.automaticallyScrolled = true;
+                    setTimeout(() => {
+                        this.automaticallyScrolled = false;
+                    }, 100);
                 }
             }
         }
@@ -395,8 +400,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * handle scroll event
      */
     public handleScroll(ignoreNextScroll?: boolean) {
-        this.ignoreNextScroll = true;
-        setTimeout(() => this.updateSynchro(), 350);
+        this.ignoreNextScroll = ignoreNextScroll;
+        this.updateSynchro();
     }
 
     /**
@@ -527,6 +532,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
             this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
+            this.automaticallyScrolled = true;
+            setTimeout(() => {
+                this.automaticallyScrolled = false;
+            }, 100);
         }
         this.displaySynchro = false;
     }
@@ -613,6 +622,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.displaySynchro = true;
             } else {
                 this.displaySynchro = false;
+            }
+            if (!this.automaticallyScrolled) {
+                this.displaySynchro = true;
             }
         }
     }
