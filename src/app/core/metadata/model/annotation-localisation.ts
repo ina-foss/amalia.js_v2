@@ -41,6 +41,6 @@ export interface AnnotationLocalisation {
 }
 
 export interface AnnotationAction {
-    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail";
+    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail" | "playMedia";
     payload: AnnotationLocalisation;
 }
