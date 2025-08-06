@@ -340,6 +340,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public cancelNewSegmentEdition(segment) {
         if (this.segmentBeforeEdition) {
             Object.assign(segment, this.segmentBeforeEdition);
+            for (const key in segment) {
+                if (this.segmentBeforeEdition[key] === undefined) {
+                    delete segment[key];
+                }
+            }
         }
         segment.data.displayMode = "readonly";
     }
