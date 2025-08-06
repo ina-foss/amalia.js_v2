@@ -410,7 +410,12 @@ const initTestData = (component: AnnotationPluginComponent) => {
     const httpClient = TestBed.inject(HttpClient);
     const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
     mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
+    
     component.mediaPlayerElement = mediaPlayerElement;
+    const mediaElement = document.createElement('video');
+    component.mediaPlayerElement.setMediaPlayer(mediaElement);
+    const mediaPlayer = component.mediaPlayerElement.getMediaPlayer();
+    mediaPlayer.reverseMode = false;
     return { mediaPlayerElement, httpClient, logger };
 }
 
@@ -1517,26 +1522,49 @@ describe('AnnotationPluginComponent ManageSegments', () => {
     }));
 
     it('should play the media', () => {
-        const segmentToPlay = component.segmentsInfo.subLocalisations.find(segment => segment.id === "003001y7tygn");
-        const event: any = {
-            "type": "playMedia",
-            "payload": segmentToPlay
-        };
-        const mediaElement = document.createElement('video');
-        component.mediaPlayerElement.setMediaPlayer(mediaElement);
-        const mediaPlayer = component.mediaPlayerElement.getMediaPlayer();
-        mediaPlayer.reverseMode = false;
+        const segmentToPlay: AnnotationLocalisation = component.segmentsInfo.subLocalisations.find(segment => segment.id === "003001y7tygn");
+        segmentToPlay.data.selected = true;
+        fixture.detectChanges();
+        const segmentToPlayCard = fixture.debugElement.query(el => el.nativeElement.tagName.toLowerCase() === 'p-card' && el.nativeElement.classList.contains('segment-selected'));
+        const playButton = segmentToPlayCard.query(el => el.nativeElement.tagName.toLowerCase() === 'svg' && el.nativeElement.classList.contains('amalia-svg-blue-play-size'));
 
-        const spyOnGetDuration = spyOn(mediaPlayer, 'getDuration').and.returnValue(600);
-        const spyOnSetCurrentTime = spyOn(mediaPlayer, 'setCurrentTime');
-        const spyOnPlay = spyOn(mediaPlayer, 'play');
-        component.manageSegment(event);
+        const spyOnManageSegment = spyOn(component, 'manageSegment').and.callThrough();
+        const spyOnGetDuration = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getDuration').and.returnValue(600);
+        const spyOnSetCurrentTime = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'setCurrentTime');
+        const spyOnPlay = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'play');
+        playButton.triggerEventHandler('click', null);
+        expect(spyOnManageSegment).toHaveBeenCalled();
         expect(spyOnGetDuration).toHaveBeenCalled();
         expect(spyOnSetCurrentTime).toHaveBeenCalledWith(segmentToPlay.tcIn - segmentToPlay.tcOffset);
         expect(spyOnPlay).toHaveBeenCalled();
 
     });
 
+    it('should init segment data', fakeAsync(() => {
+        fixture.detectChanges();
+        const button_AjouterUnSegment = fixture.debugElement.query(el => el.nativeElement.tagName.toLowerCase() === 'span'
+            && el.nativeElement.classList.contains('p-button-label')
+            && el.nativeElement.textContent.trim() === 'Ajouter un segment');
+        const spyOnInitializeNewSegment = spyOn(component, 'initializeNewSegment').and.callThrough();
+        const spyOnInitSegmentData = spyOn(component, 'initSegmentData').and.callThrough();
+        const spyOnAddSegmentToSegmentsInfo = spyOn(component as any, 'addSegmentToSegmentsInfo').and.callThrough();
+        let event_add_annotation:any;
+        const getEvent = (event: any) => {
+            event_add_annotation = event;
+        };
+        mediaPlayerElement.eventEmitter.on(PlayerEventType.ANNOTATION_ADD, getEvent);
+        button_AjouterUnSegment.nativeElement.click();
+        setTimeout(() => {
+            event_add_annotation.status = 'success';
+            event_add_annotation.responseMessage = 'Segment enregistré.';
+        }, 100);
+        tick(200);
+        expect(spyOnInitializeNewSegment).toHaveBeenCalled();
+        expect(spyOnInitSegmentData).toHaveBeenCalled();
+        expect(spyOnAddSegmentToSegmentsInfo).toHaveBeenCalled();
+        tick(5000);
+        flush();
+    }));
 
 });
 

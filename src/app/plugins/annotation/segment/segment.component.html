@@ -96,7 +96,7 @@
                             <div
                                 [ngClass]="{'readonly-segment-thumbnail': !segment.thumb, 'readonly-segment-thumbnail-no-background':segment.thumb}">
                                 <img *ngIf="segment.data.category ==='audio' || segment.thumb === 'assets/amalia/images/newAudioBackGround.png'"
-                                    class="thumbnail readonly-segment-audioThumbnail"/>
+                                    class="thumbnail readonly-segment-audioThumbnail" alt="thumbnail"/>
                                 <svg class="amalia-svg-blue-play-size icon" (click)="playMedia()">
                                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
                                 </svg>
