@@ -245,6 +245,8 @@ export enum PlayerEventType {
     /**
      * An html element event
      */
+    ANNOTATION_PLAY = 'ina.annotation.PLAY',
+
     HTML_ELEMENT_MOUSE_DOWN = 'mousedown',
     HTML_ELEMENT_MOUSE_UP = 'mouseup',
     HTML_ELEMENT_MOUSE_MOVE = 'mousemove',

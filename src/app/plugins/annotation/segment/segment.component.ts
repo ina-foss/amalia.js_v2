@@ -9,15 +9,15 @@ import {
     Output, signal,
     ViewChild
 } from '@angular/core';
-import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
-import {debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer} from "rxjs";
-import {FormatUtils} from "../../../core/utils/format-utils";
-import {DEFAULT} from "../../../core/constant/default";
-import {MessageService} from "primeng/api";
-import {switchMap} from 'rxjs/operators';
-import {AutoCompleteCompleteEvent} from "primeng/autocomplete";
-import {NgForm} from "@angular/forms";
-import {ToastComponent} from "../../../core/toast/toast.component";
+import { AnnotationAction, AnnotationLocalisation } from "../../../core/metadata/model/annotation-localisation";
+import { debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer } from "rxjs";
+import { FormatUtils } from "../../../core/utils/format-utils";
+import { DEFAULT } from "../../../core/constant/default";
+import { MessageService } from "primeng/api";
+import { switchMap } from 'rxjs/operators';
+import { AutoCompleteCompleteEvent } from "primeng/autocomplete";
+import { NgForm } from "@angular/forms";
+import { ToastComponent } from "../../../core/toast/toast.component";
 
 @Component({
     selector: 'amalia-segment',
@@ -26,7 +26,7 @@ import {ToastComponent} from "../../../core/toast/toast.component";
 })
 export class SegmentComponent implements OnInit, AfterViewInit {
     //Inputs
-    @Input({required: true})
+    @Input({ required: true })
     public segment: AnnotationLocalisation;
     @Input()
     public tcDisplayFormat: 's' | 'f' = 'f';
@@ -93,12 +93,12 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         const prop: { key: string; value: string }[] = [];
         this.categories()?.forEach(cat => {
             if (!prop.find(p => p.key === 'category' && p.value === cat)) {
-                prop.push({key: 'category', value: cat});
+                prop.push({ key: 'category', value: cat });
             }
         });
         this.keywords()?.forEach(keyword => {
             if (!prop.find(p => p.key === 'keyword' && p.value === keyword)) {
-                prop.push({key: 'keyword', value: keyword});
+                prop.push({ key: 'keyword', value: keyword });
             }
         });
         return prop;
@@ -131,7 +131,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.doCheckTcOut();
         this.doCheckTc();
         if (this.segmentForm.valid) {
-            this.actionEmitter.emit({type: "validate", payload: this.segment});
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
             this.setIsEllipsed();
             this.setIsDescriptionTruncated();
         }
@@ -159,8 +159,8 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             summary: undefined,
             detail: msgContent,
             key: 'segment',
-            life:5000,
-            data: {progress: 0} // initial progress value (life/ interval timeout)*2
+            life: 5000,
+            data: { progress: 0 } // initial progress value (life/ interval timeout)*2
         });
     }
 
@@ -176,9 +176,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const tcInFormControl = this.segmentForm.form.controls['tcIn'];
             if (tcInFormControl) {
-                tcInFormControl.setErrors({'Error': true});
+                tcInFormControl.setErrors({ 'Error': true });
             }
-            return {value, error: true};
+            return { value, error: true };
         }
         return value;
     }
@@ -193,9 +193,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
             if (tcOutFormControl) {
-                tcOutFormControl.setErrors({'Error': true});
+                tcOutFormControl.setErrors({ 'Error': true });
             }
-            return {value, error: true};
+            return { value, error: true };
         }
         return value;
     }
@@ -209,9 +209,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const tcFormControl = this.segmentForm.form.controls['tc'];
             if (tcFormControl) {
-                tcFormControl.setErrors({'Error': true});
+                tcFormControl.setErrors({ 'Error': true });
             }
-            return {value, error: true};
+            return { value, error: true };
         }
         return value;
     }
@@ -241,7 +241,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     }
 
     tcValidators(forTC: "tcIn" | "tcOut" | "tc", value: string, displaySnackBar?: boolean): any {
-        let result: any = {value, error: true, formatError: true};
+        let result: any = { value, error: true, formatError: true };
         if (this.timeFormatPattern.test(value)) {
             let tcMax = this.segment.data.tcMax ? this.segment.data.tcMax : Number.MAX_VALUE;
             switch (forTC) {
@@ -261,7 +261,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const formControl = this.segmentForm.form.controls[forTC];
             if (formControl) {
-                formControl.setErrors({'Error': true});
+                formControl.setErrors({ 'Error': true });
             }
         }
         return result;
@@ -425,7 +425,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
                 this.segment.property = this.property();
                 if (this.categories().length > 10) {
-                    categoriesFormControl.setErrors({'invalid': true});
+                    categoriesFormControl.setErrors({ 'invalid': true });
                 } else {
                     categoriesFormControl.setErrors(null);
                 }
@@ -439,7 +439,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
                 this.segment.property = this.property();
                 if (this.keywords().length > 10) {
-                    keywordsFormControl.setErrors({'invalid': true});
+                    keywordsFormControl.setErrors({ 'invalid': true });
                 } else {
                     keywordsFormControl.setErrors(null);
                 }
@@ -453,7 +453,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         if (titleFormControl) {
             const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
                 if (value.length > 250) {
-                    titleFormControl.setErrors({'Error': true})
+                    titleFormControl.setErrors({ 'Error': true })
                 } else {
                     titleFormControl.setErrors(null);
                 }
@@ -466,7 +466,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         if (descriptionFormControl) {
             const descriptionChangesSubscription = descriptionFormControl.valueChanges.subscribe((value) => {
                 if (value.length > 1000) {
-                    descriptionFormControl.setErrors({'Error': true})
+                    descriptionFormControl.setErrors({ 'Error': true })
                 } else {
                     descriptionFormControl.setErrors(null);
                 }
@@ -477,25 +477,25 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public editSegment() {
         this.editionAlreadyActivated = false;
-        this.actionEmitter.emit({type: "edit", payload: this.segment});
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
     }
 
     public cancelNewSegmentCreation() {
-        this.actionEmitter.emit({type: "cancel", payload: this.segment});
+        this.actionEmitter.emit({ type: "cancel", payload: this.segment });
         this.setCategoriesFromProperty(this.propertyBeforeEdition);
         this.setKeywordsFromProperty(this.propertyBeforeEdition);
     }
 
     public cloneSegment() {
-        this.actionEmitter.emit({type: "clone", payload: this.segment});
+        this.actionEmitter.emit({ type: "clone", payload: this.segment });
     }
 
     public removeSegment() {
-        this.actionEmitter.emit({type: "remove", payload: this.segment});
+        this.actionEmitter.emit({ type: "remove", payload: this.segment });
     }
 
     public updateThumbnail() {
-        this.actionEmitter.emit({type: "updatethumbnail", payload: this.segment});
+        this.actionEmitter.emit({ type: "updatethumbnail", payload: this.segment });
     }
 
     public setCategoriesFromProperty(props) {
@@ -529,9 +529,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public setIsEllipsed() {
         interval(2).pipe(// Vérifier toutes les 2 millisecondes
-                switchMap(() => of(this.readOnlyTitleReady())),
-                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
-                takeUntil(timer(2000))
+            switchMap(() => of(this.readOnlyTitleReady())),
+            takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+            takeUntil(timer(2000))
         ).subscribe({
             next: () => {
                 if (this.readOnlyTitleReady()) {
@@ -543,9 +543,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public setIsDescriptionTruncated() {
         interval(2).pipe(// Vérifier toutes les 2 millisecondes
-                switchMap(() => of(this.readOnlyDescriptionReady())),
-                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
-                takeUntil(timer(2000))
+            switchMap(() => of(this.readOnlyDescriptionReady())),
+            takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+            takeUntil(timer(2000))
         ).subscribe({
             next: () => {
                 if (this.readOnlyDescriptionReady()) {
@@ -579,9 +579,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             //on enlève les catégories déjà sélectionnées en ne tenant pas compte de la casse
             return !this.isIncludedInArrayIgnoreCase(this.categories(), item);
         })//on inclut les les options qui contiennent le mot recherché
-                .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
-                //On limite la liste à 10 éléménts
-                .slice(0, 10);
+            .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
+            //On limite la liste à 10 éléménts
+            .slice(0, 10);
         // On inclut le mot recherché s'il n'est pas déjà sélectionné, ni déjà dans la liste des availables après filtres
         let addCurrentQuery = !this.isIncludedInArrayIgnoreCase(this.categories(), $event.query) && !this.isIncludedInArrayIgnoreCase(this.filteredCategories, $event.query);
         if (addCurrentQuery) {
@@ -596,9 +596,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             //on enlève les keywords déjà sélectionnées en ne tenant pas compte de la casse
             return !this.isIncludedInArrayIgnoreCase(this.keywords(), item);
         })//on inclut les les options qui contiennent le mot recherché
-                .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
-                //On limite la liste à 10 éléménts
-                .slice(0, 10);
+            .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
+            //On limite la liste à 10 éléménts
+            .slice(0, 10);
         // On inclut le mot recherché s'il n'est pas déjà sélectionné, ni déjà dans la liste des availables après filtres
         let addCurrentQuery = !this.isIncludedInArrayIgnoreCase(this.keywords(), $event.query) && !this.isIncludedInArrayIgnoreCase(this.filteredKeywords, $event.query);
         if (addCurrentQuery) {
@@ -703,6 +703,10 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public textLatoWidthHigherThan(text: string, width: number) {
         return this.calculateTextWidth(text, 'Lato') > width;
+    }
+
+    playMedia() {
+        this.actionEmitter.emit({ type: "playMedia", payload: this.segment });
     }
 
 }

@@ -216,7 +216,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
             } else {
                 segmentToBeAdded.data.media = 'AUDIO';
-                segmentToBeAdded.thumb = 'assets/amalia/images/headphones.svg';
+                segmentToBeAdded.thumb = 'assets/amalia/images/newAudioBackGround.png';
             }
 
             segmentToBeAdded.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcOffset) * 1000;
@@ -279,7 +279,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 localisation.tcOffset = tcOffset;
                 localisation.data.tcMax = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
                 if (this.mediaPlayerElement.getMediaPlayer()?.mse?.mediaType === 'AUDIO') {
-                    localisation.thumb = 'assets/amalia/images/headphones.svg';
+                    localisation.thumb = 'assets/amalia/images/newAudioBackGround.png';
                 }
             })
         }
@@ -340,6 +340,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public cancelNewSegmentEdition(segment) {
         if (this.segmentBeforeEdition) {
             Object.assign(segment, this.segmentBeforeEdition);
+            for (const key in segment) {
+                if (this.segmentBeforeEdition[key] === undefined) {
+                    delete segment[key];
+                }
+            }
         }
         segment.data.displayMode = "readonly";
     }
@@ -458,8 +463,17 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     10000,
                     this.setDataLoading.bind(this)));
                 this.manageEventResponseStatus(event);
-            }
                 return;
+            }
+            case 'playMedia':
+                {
+                    const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+                    const tcIn = event.payload.tcIn - event.payload.tcOffset;
+                    const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+                    this.mediaPlayerElement.getMediaPlayer().setCurrentTime(reverseMode ? duration - tcIn : tcIn);
+                    this.mediaPlayerElement.getMediaPlayer().play();
+                    return;
+                }
         }
     }
 

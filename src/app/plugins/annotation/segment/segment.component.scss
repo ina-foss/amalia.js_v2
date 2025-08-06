@@ -150,15 +150,14 @@
 
     }
 
-    .new-segment-actions {
-    }
+    .new-segment-actions {}
 
-    .p-float-label input:focus ~ label,
-    .p-float-label input.p-filled ~ label,
-    .p-float-label textarea:focus ~ label,
-    .p-float-label textarea.p-filled ~ label,
-    .p-float-label .p-inputwrapper-focus ~ label,
-    .p-float-label .p-inputwrapper-filled ~ label {
+    .p-float-label input:focus~label,
+    .p-float-label input.p-filled~label,
+    .p-float-label textarea:focus~label,
+    .p-float-label textarea.p-filled~label,
+    .p-float-label .p-inputwrapper-focus~label,
+    .p-float-label .p-inputwrapper-filled~label {
       display: none;
     }
   }
@@ -267,6 +266,26 @@
             width: 160px;
             height: 107px;
           }
+
+          .amalia-svg-blue-play-size.icon {
+            display: none;
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        .readonly-segment-thumbnail:hover {
+          .amalia-svg-blue-play-size.icon {
+            display: block;
+            width: 24px;
+            height: 24px;
+            z-index: 2;
+            position: absolute;
+            top: 50%;
+            left: calc(50% - 12px);
+            cursor: pointer;
+            color: $amalia-primary-color;
+          }
         }
 
         .readonly-segment-no-camera-icon {
@@ -276,7 +295,7 @@
         .readonly-segment-audioThumbnail {
           position: absolute;
           flex-shrink: 0;
-          background: url("/assets/amalia/images/headphones.svg") $amalia-primary-color 50% 50% / 50% 50% no-repeat;
+          background: url("/assets/amalia/images/newAudioBackGround.png") $amalia-primary-color 0 0 / 100% 100% no-repeat;
           width: 165px;
           height: 111px;
 
@@ -284,6 +303,22 @@
             margin-top: 12px;
             width: 160px;
             height: 107px;
+          }
+
+        }
+
+        .readonly-segment-thumbnail-no-background:hover {
+          .amalia-svg-blue-play-size.icon {
+            display: block;
+            width: 24px;
+            height: 24px;
+            z-index: 2;
+            position: absolute;
+            top: 50%;
+            left: calc(50% - 12px);
+            cursor: pointer;
+            color: $amalia-primary-color;
+
           }
         }
 
@@ -297,6 +332,12 @@
             margin-top: 12px;
             width: 160px;
             height: 107px;
+          }
+
+          .amalia-svg-blue-play-size.icon {
+            display: none;
+            width: 24px;
+            height: 24px;
           }
         }
 
