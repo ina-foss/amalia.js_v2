@@ -90,8 +90,16 @@
       flex-direction: row;
       justify-content: space-between;
       width: 100%;
-    }
 
+      .tc-input {
+        width: 100%;
+        flex-grow: 1;
+        flex-shrink: 1;
+      }
+    }
+    .segment-tc-wrap {
+      flex-wrap: wrap;
+    }
     .segment-details {
       display: flex;
       flex-direction: column;

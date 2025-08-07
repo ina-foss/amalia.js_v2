@@ -11,18 +11,18 @@
                         250 caractères maximum.
                     </small>
                 </div>
-                <div class="segment-tc gap-2">
-                    <div class="flex flex-row align-items-center gap-2">
+                <div class="segment-tc gap-2" [ngClass]="{'segment-tc-wrap':editableSegmentTcWrap}" #segmentTcRef>
+                    <div class="flex flex-row align-items-center gap-2 flex-shrink-1 flex-grow-1">
                         <label for="tcIn">Début</label>
-                        <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted" />
+                        <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted" #tcInInputRef class="tc-input"/>
                     </div>
-                    <div class="flex flex-row align-items-center gap-2">
+                    <div class="flex flex-row align-items-center gap-2 flex-shrink-1 flex-grow-1">
                         <label for="tcOut">Fin</label>
-                        <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted" />
+                        <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted" #tcOutInputRef class="tc-input"/>
                     </div>
-                    <div class="flex flex-row align-items-center gap-2">
+                    <div class="flex flex-row align-items-center gap-2 flex-shrink-1 flex-grow-1">
                         <label for="tc">Durée</label>
-                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted" />
+                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted" #tcInputRef class="tc-input"/>
                     </div>
                 </div>
                 <div class="segment-details">

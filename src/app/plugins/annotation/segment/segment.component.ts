@@ -59,7 +59,14 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public readOnlyKeywordsDiv: ElementRef;
     @ViewChild('toast')
     public toast: ToastComponent;
-
+    @ViewChild('tcInInputRef')
+    public tcInInputRef: ElementRef;
+    @ViewChild('tcOutInputRef')
+    public tcOutInputRef: ElementRef;
+    @ViewChild('tcInputRef')
+    public tcInputRef: ElementRef;
+    @ViewChild('segmentTcRef')
+    public segmentTcRef: ElementRef;
     public isEllipsed: boolean = false;
     public isDescriptionCollapsed: boolean = true;
     public isDescriptionTruncated: boolean = false;
@@ -103,6 +110,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         });
         return prop;
     });
+    editableSegmentTcWrap: boolean = false;
 
 
     constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
@@ -478,6 +486,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public editSegment() {
         this.editionAlreadyActivated = false;
         this.actionEmitter.emit({ type: "edit", payload: this.segment });
+        setTimeout(() => {
+            this.updateTcsDisplay();
+        }, 100);
     }
 
     public cancelNewSegmentCreation() {
@@ -639,7 +650,27 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             this.hiddenKeywordsCount = this.updateDisplay(this.readOnlyKeywordsDiv, this.readOnlyKeywordsClassName, this.hiddenKeywordsSummaryChipId);
         }
     }
-
+    @HostListener("window:resize", [])
+    updateTcsDisplay() {
+        if (this.segment.data.displayMode !== 'readonly' && this.tcInInputRef && this.tcOutInputRef && this.tcInputRef && this.segmentTcRef) {
+            const tcInInputRef = this.tcInInputRef.nativeElement;
+            if (tcInInputRef.scrollWidth > tcInInputRef.clientWidth) {
+                this.editableSegmentTcWrap = true;
+            } else {
+                const margin = 24 + 2;
+                const gap = 2;
+                const segmentTcGap = 2;
+                const tcInTextSize = this.calculateTextWidth(this.tcInFormatted, 'Lato') + margin;
+                const tcOutTextSize = this.calculateTextWidth(this.tcOutFormatted, 'Lato') + margin;
+                const tcTextSize = this.calculateTextWidth(this.tcFormatted, 'Lato') + margin;
+                const labelTcInSize = this.calculateTextWidth('Début', 'Lato') + gap;
+                const labelTcOutSize = this.calculateTextWidth('Fin', 'Lato') + gap;
+                const labelTcSize = this.calculateTextWidth('Durée', 'Lato') + gap;
+                const totalWidth = tcInTextSize + tcOutTextSize + tcTextSize + labelTcInSize + labelTcOutSize + labelTcSize + (segmentTcGap * 2);
+                this.editableSegmentTcWrap = totalWidth > this.segmentTcRef.nativeElement.offsetWidth;
+            }
+        }
+    }
     private updateDisplay(readOnlyDiv: ElementRef, readOnlyClassName: string, summaryChipId: string) {
         const div = readOnlyDiv.nativeElement;
         const divWidth = div.offsetWidth;
