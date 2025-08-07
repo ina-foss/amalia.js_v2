@@ -358,7 +358,9 @@ export class MediaElement {
      * @param nbFrames number of frame
      */
     moveNextFrame(nbFrames = 1) {
-        this.setCurrentTime(Math.max(0, this.getCurrentTime() + ((1 / this.framerate) * nbFrames)));
+        //getCureentTime tient compte du reverseMode
+        let currentTime = this.reverseMode ? this.mediaElement.currentTime - ((1 / this.framerate) * nbFrames) : this.mediaElement.currentTime + ((1 / this.framerate) * nbFrames);
+        this.setCurrentTime(Math.max(0, currentTime));
     }
 
     /**
@@ -366,7 +368,9 @@ export class MediaElement {
      * @param nbFrames number of frame
      */
     movePrevFrame(nbFrames = 1) {
-        this.setCurrentTime(Math.max(0, this.getCurrentTime() - ((1 / this.framerate) * nbFrames)));
+        //getCureentTime tient compte du reverseMode
+        let currentTime = this.reverseMode ? (this.mediaElement.currentTime + ((1 / this.framerate) * nbFrames)) : this.mediaElement.currentTime - ((1 / this.framerate) * nbFrames);
+        this.setCurrentTime(Math.max(0, currentTime));
     }
 
     /**

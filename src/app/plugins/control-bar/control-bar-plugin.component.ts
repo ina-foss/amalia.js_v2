@@ -576,18 +576,26 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'backward-second':
                 frames = mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
             case 'backward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
             case 'backward-frame':
                 mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(1);
                 break;
             case 'backward-1h':
-                mediaPlayer.setCurrentTime((mediaPlayer.getCurrentTime() - 3600));
+                {
+                    let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
+                    currentTime = mediaPlayer.reverseMode ? currentTime + 3600 : currentTime - 3600;
+                    mediaPlayer.setCurrentTime(currentTime);
+                }
                 break;
             case 'backward-start':
                 this.changePlaybackRate(1);
@@ -607,14 +615,22 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'forward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
             case 'forward-1h':
-                mediaPlayer.setCurrentTime((mediaPlayer.getCurrentTime() + 3600));
+                {
+                    let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
+                    currentTime = mediaPlayer.reverseMode ? currentTime - 3600 : currentTime + 3600;
+                    mediaPlayer.setCurrentTime(currentTime);
+                }
                 break;
             case 'forward-second':
                 frames = mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
             case 'forward-frame':
                 mediaPlayer.pauseOnly();
