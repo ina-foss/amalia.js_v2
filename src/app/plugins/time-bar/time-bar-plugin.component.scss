@@ -12,7 +12,7 @@
     font-size: 12px;
     font-weight: normal;
     z-index: $amalia-timebar-z-index;
-    background: $amalia-ctrl-bar-bg-color;
+    background: rgb(31 31 31);
     user-select: none;
     &.inside {
       position: absolute;
