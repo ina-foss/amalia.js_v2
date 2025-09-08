@@ -95,7 +95,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     private blocksIsOpen = false;
     private lastSelectedColorIdx = -1;
-    managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE];
+    managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE, DataType.DOCUMENT_LIE];
 
     nodes: TreeNode[] = [];
     selectedNodes: WritableSignal<TreeNode[]> = signal<TreeNode[]>([]);
@@ -186,6 +186,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const segmentationRegExp = new RegExp(DataType.SEGMENTATION, 'g');
         const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, 'g');
         const dayScheduleRegExp = new RegExp(DataType.DAY_SCHEDULE, 'g');
+        const documentLieRegExp = new RegExp(DataType.DOCUMENT_LIE, 'g');
 
         if (segmentationRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.SEGMENTATION, 'g'), 'Segmentation sonore');
@@ -199,7 +200,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             level1Label = metadata.type.replace(new RegExp(DataType.DAY_SCHEDULE, 'g'), 'Partie journée de  programme');
             icon = 'pi pi-fw pi-calendar';
         }
-
+        if (documentLieRegExp.test(metadata.type)) {
+            level1Label = metadata.type.replace(new RegExp(DataType.DOCUMENT_LIE, 'g'), 'Documents liés segmentés');
+            icon = 'pi pi-fw pi-file';
+        }
         if (level1Label.endsWith('-')) {
             level1Label = level1Label.substring(0, level1Label.length - 1);
         }
