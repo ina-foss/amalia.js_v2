@@ -15,6 +15,6 @@ export enum DataType {
 
     DAY_SCHEDULE = 'DAY_SCHEDULE',
 
-    DOCUMENT_LIE = 'DOCUMENT_LIE',
+    DOCUMENTS_LIES = 'DOCUMENTS_LIES',
 
 }

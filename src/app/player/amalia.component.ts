@@ -373,8 +373,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
     private getMaxHeight = (isFullscreen: boolean, htmlElement: HTMLVideoElement) => {
         const maxParentHeight = !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.height : htmlElement.parentElement.offsetHeight;
-        const maxHeightWhenNotPinned = this.pinnedControlbar ? maxParentHeight - 63 : maxParentHeight;
-        return this.pinned ? maxParentHeight - 106 : maxHeightWhenNotPinned;
+        const maxHeightWhenNotPinned = this.pinnedControlbar ? maxParentHeight - 50 : maxParentHeight;
+        return this.pinned ? maxParentHeight - 100 : maxHeightWhenNotPinned;
     }
     /**
      * Retourne la largeur maximale du parent de la video en tenant compte de la taille du conteneur parent de la video avant le passage au plein écran.
