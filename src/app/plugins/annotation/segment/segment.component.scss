@@ -97,9 +97,11 @@
         flex-shrink: 1;
       }
     }
+
     .segment-tc-wrap {
       flex-wrap: wrap;
     }
+
     .segment-details {
       display: flex;
       flex-direction: column;
@@ -304,15 +306,9 @@
           position: absolute;
           flex-shrink: 0;
           background: url("/assets/amalia/images/newAudioBackGround.png") $amalia-primary-color 0 0 / 100% 100% no-repeat;
-          width: 165px;
-          height: 111px;
-
-          img {
-            margin-top: 12px;
-            width: 160px;
-            height: 107px;
-          }
-
+          margin-top: 12px;
+          width: 160px;
+          height: 107px;
         }
 
         .readonly-segment-thumbnail-no-background:hover {
