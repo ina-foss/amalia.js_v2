@@ -163,7 +163,7 @@ export class MetadataUtils {
             tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
         };
         // add to list if tc or tcin not empty
-        if (tl.tc || tl.tcIn) {
+        if (tl.tc != null || tl.tcIn != null) {
             timelineLocalisations.push(tl);
         }
     }
