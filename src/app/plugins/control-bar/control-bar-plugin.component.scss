@@ -133,9 +133,12 @@
       position: relative;
       padding: 0;
       margin: 0 5px 0 5px;
+      height: 100%;
 
       &.show {
-        display: unset;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       &.menu {
@@ -167,9 +170,11 @@
         position: relative;
         cursor: pointer;
         height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
 
         .value {
-          top: 12px;
           text-align: center;
           font-size: 14px;
           padding: 1px 6px;
@@ -320,6 +325,7 @@
           width: 25px;
           padding: 4px 8px;
           left: -39px;
+          top: 24px;
         }
 
         &.amalia-svg-play-size, &.amalia-svg-pause-size {
