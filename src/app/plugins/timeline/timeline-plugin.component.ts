@@ -743,6 +743,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         setTimeout(() => {
             const selectedBlockElementBoundRect = selectedBlockElement.getBoundingClientRect();
             const listOfBlocksContainerBoundRect = this.listOfBlocksContainer.nativeElement.getBoundingClientRect();
+          
             if (selectedBlockElementBoundRect.left < listOfBlocksContainerBoundRect.left) {
                 const offset = listOfBlocksContainerBoundRect.left - selectedBlockElementBoundRect.left;
                 selectedBlockElement.style.transform = `translateX(${offset}px)`;
@@ -751,11 +752,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 const offset = listOfBlocksContainerBoundRect.right - selectedBlockElementBoundRect.right;
                 selectedBlockElement.style.transform = `translateX(${offset}px)`;
             }
-
-            if (selectedBlockElementBoundRect.bottom > listOfBlocksContainerBoundRect.bottom) {
-                selectedBlockElement.style.bottom = `${listOfBlocksContainerBoundRect.bottom - rect.top + 10}px`;
-                selectedBlockElement.style.top = `auto`;
+            const ancestor = Utils.getShadowRoot(this.listOfBlocksContainer);
+            if (ancestor) {
+                const ancestorBoundRect = ancestor.host.getBoundingClientRect();
+                if (selectedBlockElementBoundRect.bottom > ancestorBoundRect.bottom) {
+                    selectedBlockElement.style.bottom = `${ancestorBoundRect.bottom - rect.top + 10}px`;
+                    selectedBlockElement.style.top = `auto`;
+                }
             }
+
         }, 10);
 
     }

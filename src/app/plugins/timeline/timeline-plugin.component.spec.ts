@@ -4156,8 +4156,8 @@ describe('TimelinePluginComponent 2', () => {
 
         // Vérifie que le transform a été mis à jour
         expect(selectedBlockElement.style.transform).toContain('translateX');
-        expect(selectedBlockElement.style.bottom).toBe('90px');
-        expect(selectedBlockElement.style.top).toBe('auto');
+        expect(selectedBlockElement.style.bottom).toBe('auto');
+        expect(selectedBlockElement.style.top).toBe('220px');
     }));
 
     it('should not apply transform if the selected block is fully within the container', fakeAsync(() => {
@@ -4321,8 +4321,8 @@ describe('TimelinePluginComponent 2', () => {
         component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
         tick(10);
 
-        expect(selectedBlockElement.style.bottom).toBe('210px'); // 300 - 100 + 10
-        expect(selectedBlockElement.style.top).toBe('auto');
+        expect(selectedBlockElement.style.bottom).toBe('auto'); // 300 - 100 + 10
+        expect(selectedBlockElement.style.top).toBe('120px');
     }));
 
 
