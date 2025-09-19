@@ -1,5 +1,6 @@
 import { interval, of, Subscription, switchMap, takeUntil, takeWhile, timer } from "rxjs";
 import { PlayerEventType } from "../constant/event-type";
+import { ElementRef } from "@angular/core";
 
 
 interface FnParam {
@@ -150,6 +151,17 @@ export class Utils {
         return event.composedPath().some((pathElement: any) => pathElement.id === htmlElementId);
     }
 
+    public static getShadowRoot(elementRef: any | undefined): ShadowRoot | undefined {
+        if (!elementRef) return undefined;
+        let node = elementRef instanceof ElementRef ? elementRef.nativeElement : elementRef;
+        while (node) {
+            if (node.nodeType == 11) {
+                return node;
+            }
+            node = node.parentNode;
+        }
+        return undefined;
+    }
 }
 
 
