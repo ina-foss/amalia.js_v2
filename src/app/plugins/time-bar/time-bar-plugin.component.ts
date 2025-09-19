@@ -107,7 +107,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     }
 
     public showTimeBar() {
-        if (this.displayState !== 's') {
+        if (this.displayState !== 's' && this.displayState !== 'xs') {
             this.active = true;
         } else {
             this.active = false;

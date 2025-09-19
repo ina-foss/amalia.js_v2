@@ -83,7 +83,7 @@ describe('TimeBar plugin test', () => {
         plugin.handleDisplayState();
         expect(plugin.displayState).toEqual('xs');
         plugin.showTimeBar();
-        expect(plugin.active).toEqual(true);
+        expect(plugin.active).toEqual(false);
         plugin.handleOnDurationChange();
         playerService.get('PLAYER');
         playerService.get('PLAYER2');
