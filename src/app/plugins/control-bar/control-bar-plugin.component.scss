@@ -65,7 +65,7 @@
     right: 0;
     user-select: none;
 
-    &.m, &.sm, &.s, &xs {
+    &.m, &.sm, &.s, &.xs {
       .column {
         flex: none;
 
@@ -1150,7 +1150,7 @@
       display: inline-block;
     }
 
-    &.s, &xs {
+    &.s, &.xs {
       display: none;
 
       &.activated, &.pinned {

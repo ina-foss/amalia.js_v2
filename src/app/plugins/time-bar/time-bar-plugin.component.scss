@@ -15,28 +15,51 @@
     background: rgb(31 31 31);
     user-select: none;
     height: 20px;
-    
+
     &.inside {
       position: absolute;
       top: 0;
       width: 100%;
     }
+
     &.outside {
       position: relative;
     }
+
+    &.s,
+    &.xs {
+      justify-content: center;
+    }
+
     div {
       padding: 0 5px;
       color: white;
       display: none;
 
-      &.s {
-        display: none;
+
+      &.currentTime {
+        &.active {
+          display: block;
+
+          &.s,
+          &.xs {
+            display: block;
+          }
+        }
       }
+
+      &.s,
+      &.xs {
+        display: none;
+
+        &.active {
+          display: none;
+        }
+      }
+
       &.active {
         display: block;
       }
-
     }
   }
 }
-
