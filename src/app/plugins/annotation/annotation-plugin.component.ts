@@ -13,6 +13,7 @@ import { FileService } from "../../service/file.service";
 import { FormatUtils } from "../../core/utils/format-utils";
 import { ToastComponent } from "../../core/toast/toast.component";
 import { SegmentComponent } from "./segment/segment.component";
+import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
 
 export interface ExportColumnsHeader {
     "Lien": string;
@@ -77,9 +78,44 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (this.mediaPlayerElement) {
             this.init();
             this.handleMetadataLoaded();
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
         }
     }
 
+    /**
+     * Apply shortcut if exists on keydown
+     */
+    public handleShortcuts(event: ShortcutEvent) {
+        if (event.targets.find(target => target.toLowerCase() === this.pluginName.toLowerCase())) {
+            this.applyShortcut(event);
+        }
+    }
+    applyShortcut(event: ShortcutEvent) {
+        if (event.shortcut.key === 'i'
+            && event.shortcut.ctrl !== true
+            && event.shortcut.shift !== true
+            && event.shortcut.alt !== true
+            && event.shortcut.meta !== true) {
+            this.initializeNewSegment();
+            return;
+        }
+        if (event.shortcut.key === 'o'
+            && event.shortcut.ctrl !== true
+            && event.shortcut.shift !== true
+            && event.shortcut.alt !== true
+            && event.shortcut.meta !== true) {
+            this.setTcOut();
+            return;
+        }
+        if (event.shortcut.key === 'd'
+            && event.shortcut.ctrl === true
+            && event.shortcut.shift !== true
+            && event.shortcut.alt !== true
+            && event.shortcut.meta !== true) {
+            this.downloadSegmentJsonFormat();
+            return;
+        }
+    }
 
     init() {
         super.init();
@@ -472,6 +508,16 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
                     this.mediaPlayerElement.getMediaPlayer().setCurrentTime(reverseMode ? duration - tcIn : tcIn);
                     this.mediaPlayerElement.getMediaPlayer().play();
+                    return;
+                }
+            case 'muteShortCuts':
+                {
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_MUTE);
+                    return;
+                }
+            case 'unmuteShortCuts':
+                {
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_UNMUTE);
                     return;
                 }
         }

@@ -5,7 +5,8 @@
             <p-card [class]="{'segment-selected':segment.data.selected}">
                 <div class="segment-title">
                     <textarea id="title" name="title" [(ngModel)]="segment.label" rows="1" cols="30" pInputTextarea
-                        [autoResize]="true" placeholder="Ajouter un titre"></textarea>
+                        [autoResize]="true" (focus)="muteShortCuts()" (blur)="unmuteShortCuts()"
+                        placeholder="Ajouter un titre"></textarea>
                     <small class="segment-title-alignment" *ngIf="segment.label && segment.label.length >250"
                         id="title-error">
                         250 caractères maximum.
@@ -15,16 +16,17 @@
                     <div class="flex flex-row align-items-center gap-2 flex-shrink-1 flex-grow-1">
                         <label for="tcIn">Début</label>
                         <input pInputText id="tcIn" name="tcIn" [(ngModel)]="tcInFormatted" #tcInInputRef
-                            class="tc-input" />
+                            class="tc-input" (focus)="muteShortCuts()" (blur)="unmuteShortCuts()" />
                     </div>
                     <div class="flex flex-row align-items-center gap-2 flex-shrink-1 flex-grow-1">
                         <label for="tcOut">Fin</label>
                         <input pInputText id="tcOut" name="tcOut" [(ngModel)]="tcOutFormatted" #tcOutInputRef
-                            class="tc-input" />
+                            class="tc-input" (focus)="muteShortCuts()" (blur)="unmuteShortCuts()" />
                     </div>
                     <div class="flex flex-row align-items-center gap-2 flex-shrink-1 flex-grow-1">
                         <label for="tc">Durée</label>
-                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted" #tcInputRef class="tc-input" />
+                        <input pInputText id="tc" name="tc" [(ngModel)]="tcFormatted" #tcInputRef class="tc-input"
+                            (focus)="muteShortCuts()" (blur)="unmuteShortCuts()" />
                     </div>
                 </div>
                 <div class="segment-details">
@@ -33,7 +35,8 @@
                             <p-autoComplete id="categories" name="categories" [(ngModel)]="categories"
                                 [suggestions]="filteredCategories" (completeMethod)="searchCategories($event)"
                                 [multiple]="true" inputId="categories" [forceSelection]="true"
-                                (ngModelChange)="addToAvailableCategories($event)"></p-autoComplete>
+                                (ngModelChange)="addToAvailableCategories($event)" (focus)="muteShortCuts()"
+                                (blur)="unmuteShortCuts()"></p-autoComplete>
                             <label for="categories">Catégories</label>
                         </p-floatLabel>
                         <small class="segment-categories-alignment" *ngIf="categories() && categories().length >10"
@@ -46,7 +49,8 @@
                             <p-autoComplete id="keywords" name="keywords" [(ngModel)]="keywords"
                                 [suggestions]="filteredKeywords" (completeMethod)="searchKeywords($event)"
                                 [multiple]="true" inputId="keywords" [forceSelection]="true"
-                                (ngModelChange)="addToAvailableKeywords($event)"></p-autoComplete>
+                                (ngModelChange)="addToAvailableKeywords($event)" (focus)="muteShortCuts()"
+                                (blur)="unmuteShortCuts()"></p-autoComplete>
                             <label for="keywords">Mots-clés</label>
                         </p-floatLabel>
                         <small class="segment-keywords-alignment" *ngIf="keywords() && keywords().length >10"
@@ -57,7 +61,8 @@
                     <div class="segment-description">
                         <p-floatLabel>
                             <textarea id="description" name="description" [(ngModel)]="segment.description" rows="5"
-                                cols="30" pInputTextarea [autoResize]="true"></textarea>
+                                cols="30" pInputTextarea [autoResize]="true" (focus)="muteShortCuts()"
+                                (blur)="unmuteShortCuts()"></textarea>
                             <label for="description">Description</label>
                         </p-floatLabel>
                         <small class="segment-description-alignment"

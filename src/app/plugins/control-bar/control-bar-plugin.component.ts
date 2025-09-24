@@ -7,6 +7,7 @@ import { PluginConfigData } from '../../core/config/model/plugin-config-data';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { ThumbnailService } from '../../service/thumbnail-service';
 import interact from 'interactjs';
+import { matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
 
 @Component({
     selector: 'amalia-control-bar',
@@ -238,7 +239,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list of shortcuts
      */
-    public listOfShortcuts;
+    public listOfShortcuts: Array<ShortcutControl> = [];
     // Menu of controls
     @ViewChild('controlsMenu')
     public controlsMenu: ElementRef<HTMLElement>;
@@ -306,7 +307,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(50);
         // init shortcuts
-        this.listOfShortcuts = this.initShortcuts(this.pluginConfiguration.data);
+        this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
@@ -334,7 +335,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYDOWN, this.handleShortcuts);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
@@ -451,8 +452,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Apply shortcut if exists on keydown
      */
 
-    public handleShortcuts(event) {
-        this.applyShortcut(event);
+    public handleShortcuts(event: ShortcutEvent) {
+        if (event.targets.find(target => target.toLowerCase() === this.pluginName.toLowerCase())) {
+            this.applyShortcut(event);
+        }
     }
 
     /**
@@ -511,27 +514,52 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * init array of shortcuts
      */
-    public initShortcuts(data) {
-        const listOfShortcuts = [];
+    public initShortcuts(data: Array<ControlBarConfig>) {
+        this.listOfShortcuts = [];
         for (const i in data) {
             if (typeof data[i] === 'object') {
-                const control = data[i];
-                if (typeof control.key !== 'undefined' && typeof control.control !== 'undefined') {
-                    listOfShortcuts.push({ key: control.key, control: control.control });
+                const controlConfig = data[i];
+                if (typeof controlConfig.key !== 'undefined' && typeof controlConfig.control !== 'undefined') {
+                    let key = controlConfig.key
+                        .replace('Control', '')
+                        .replace('Shift', '')
+                        .replace('Alt', '')
+                        .replace('Meta', '')
+                        .replaceAll('+', '')
+                        .replaceAll(' ', '')
+                        .toLowerCase();
+                    const shortCut: Shortcut = {
+                        key,
+                        ctrl: controlConfig.key.includes('Control') || controlConfig.key.includes('Ctrl') || controlConfig.key.includes('control') || controlConfig.key.includes('ctrl'),
+                        shift: controlConfig.key.includes('Shift') || controlConfig.key.includes('shift'),
+                        alt: controlConfig.key.includes('Alt') || controlConfig.key.includes('alt'),
+                        meta: controlConfig.key.includes('Meta') || controlConfig.key.includes('meta')
+                    };
+
+                    const shortcutControl: ShortcutControl = {
+                        shortcut: shortCut,
+                        control: controlConfig.control
+                    };
+                    this.listOfShortcuts.push(shortcutControl);
                 }
             }
         }
-        return listOfShortcuts;
     }
 
     /**
      * If key is declared in config apply control
      */
-    public applyShortcut(key) {
-        for (const shortcut of this.listOfShortcuts) {
-            if (key === shortcut.key) {
-                this.keypressed = shortcut.key;
-                this.controlClicked(shortcut.control);
+    public applyShortcut(shortcutToBeApplied: ShortcutEvent) {
+        let shortcutFound = false;
+        for (const shortcutControl of this.listOfShortcuts) {
+            if (shortcutFound === false && matchesShortcut(shortcutControl, shortcutToBeApplied.shortcut)) {
+                this.keypressed = shortcutControl.shortcut.key;
+                if (shortcutControl.control === 'volume') {
+                    this.handleMuteUnmuteVolume();
+                } else {
+                    this.controlClicked(shortcutControl.control);
+                }
+                shortcutFound = true;
             }
         }
     }

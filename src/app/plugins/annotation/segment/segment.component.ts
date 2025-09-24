@@ -18,6 +18,10 @@ import { switchMap } from 'rxjs/operators';
 import { AutoCompleteCompleteEvent } from "primeng/autocomplete";
 import { NgForm } from "@angular/forms";
 import { ToastComponent } from "../../../core/toast/toast.component";
+import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
+import { MediaPlayerElement } from 'src/app/core/media-player-element';
+import { PlayerEventType } from 'src/app/core/constant/event-type';
+import { Utils } from 'src/app/core/utils/utils';
 
 @Component({
     selector: 'amalia-segment',
@@ -36,6 +40,8 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     availableCategories: string[] = [];
     @Input()
     availableKeywords: string[] = [];
+    @Input()
+    mediaPlayerElement: MediaPlayerElement;
 
     //InputSignals
     public tcIn = input<number>(0);
@@ -528,6 +534,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.setIsEllipsed();
         this.setIsDescriptionTruncated();
         this.updateCategoriesAndKeywordsDisplay();
+        if (this.mediaPlayerElement) {
+            Utils.addListener(this, this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
+        }
     }
 
     public readOnlyTitleReady(): boolean {
@@ -740,4 +749,40 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.actionEmitter.emit({ type: "playMedia", payload: this.segment });
     }
 
+    unmuteShortCuts() {
+        this.actionEmitter.emit({ type: "unmuteShortCuts", payload: this.segment });
+    }
+    muteShortCuts() {
+        this.actionEmitter.emit({ type: "muteShortCuts", payload: this.segment });
+    }
+    /**
+      * Apply shortcut if exists on keydown
+      */
+    public handleShortcuts(event: ShortcutEvent) {
+        if (event.targets.find(target => target.toLowerCase() === 'ANNOTATIONS'.toLowerCase())) {
+            this.applyShortcut(event);
+        }
+    }
+    applyShortcut(event: ShortcutEvent) {
+        if (this.segment.data.selected === true
+            && this.segment.data.displayMode === 'edit'
+            && ((event.shortcut.key === 'enter' && event.shortcut.ctrl !== true)
+                || (event.shortcut.key === 's' && event.shortcut.ctrl === true))
+            && event.shortcut.shift !== true
+            && event.shortcut.alt !== true
+            && event.shortcut.meta !== true) {
+            this.validateNewSegment();
+            return;
+        }
+        if (this.segment.data.selected === true
+            && this.segment.data.displayMode === 'edit'
+            && event.shortcut.key === 'escape'
+            && event.shortcut.ctrl !== true
+            && event.shortcut.shift !== true
+            && event.shortcut.alt !== true
+            && event.shortcut.meta !== true) {
+            this.cancelNewSegmentCreation();
+            return;
+        }
+    }
 }

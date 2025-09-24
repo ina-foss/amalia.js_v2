@@ -12,8 +12,7 @@
      (mouseout)="displayControlBar(false);playerHover= false"
      (mousemove)="resetTimer();displayControlBar(true);focus();playerHover= true;" (load)="startTimer()"
      (contextmenu)="onContextMenu($event)"
-     class="media-player aspect-ratio-{{ratio}}"
-     (keydown)="emitKeyDownEvent($event)" (keyup)="emitKeyUpEvent()" (onresize)="handleWindowResize()"
+     class="media-player aspect-ratio-{{ratio}}" (onresize)="handleWindowResize()"
      [ngClass]="{'pinned' : pinned,
      'pinnedControlbar' : pinnedControlbar,
      'amalia-player-bg-color1' : posterBackgound['amalia-player-bg-color1'],

@@ -267,6 +267,10 @@ export enum PlayerEventType {
     ELEMENT_SUSPEND = 'suspend',
     ELEMENT_FULLSCREENCHANGE = 'fullscreenchange',
     ELEMENT_KEYDOWN = 'keydown',
+    ELEMENT_KEYUP = 'keyup',
+    SHORTCUT_KEYDOWN = "SHORTCUT_KEYDOWN",
+    SHORTCUT_MUTE = "SHORTCUT_MUTE",
+    SHORTCUT_UNMUTE = "SHORTCUT_UNMUTE",
     /**
      * get the current time
      */
