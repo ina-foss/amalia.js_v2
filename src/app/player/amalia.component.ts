@@ -34,6 +34,7 @@ import * as _ from 'lodash';
 import { ControlBarPluginComponent } from '../plugins/control-bar/control-bar-plugin.component';
 import { LoggerLevel } from '../core/logger/logger-level';
 import { Utils } from "../core/utils/utils";
+import { ShortcutEvent } from '../core/config/model/shortcuts-event';
 
 @Component({
     selector: 'amalia-player',
@@ -113,6 +114,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     private _config: any;
     // mainSource as src video
     public mainSource = true;
+    handleKeyUpEvent: any;
+
+    //mute shortcuts
+    public muteShortcuts = false;
 
     get config(): any {
         return this._config;
@@ -412,8 +417,37 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME, this.setCurrentTime);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_DURATION, this.sendDuration);
         this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
-
+        this.addListener(document, PlayerEventType.ELEMENT_KEYDOWN, this.handleShortCutsKeyDownEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_MUTE, this.handleMuteShortcuts);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_UNMUTE, this.handleUnmuteShortcuts);
     }
+    handleMuteShortcuts() {
+        this.muteShortcuts = true;
+    }
+    handleUnmuteShortcuts() {
+        this.muteShortcuts = false;
+    }
+
+    handleShortCutsKeyDownEvent($event) {
+        let key = $event.key;
+        if (key === ' ') {
+            key = 'espace';
+        }
+        const shortcut: ShortcutEvent = {
+            shortcut: {
+                key: key.toLowerCase(),
+                ctrl: $event.ctrlKey,
+                shift: $event.shiftKey,
+                alt: $event.altKey,
+                meta: $event.metaKey,
+            },
+            targets: ['CONTROL_BAR', 'ANNOTATIONS'],
+        };
+        if (this.muteShortcuts === false) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_KEYDOWN, shortcut);
+        }
+    }
+
     sendCurrentTime() {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME, { currentTime: this.mediaPlayerElement.getMediaPlayer().getCurrentTime() });
     }

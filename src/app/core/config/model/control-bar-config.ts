@@ -33,6 +33,10 @@ export interface ControlBarConfig {
      */
     data?: any;
     /**
+     * Key for shortcut
+     */
+    key?: string;
+    /**
      * Not in menu
      */
     notInMenu?: boolean;

@@ -47,13 +47,13 @@
     </div>
     <div class="tooltip" #selectedBlockElement>
         <p *ngIf="selectedBlock?.thumb">{{ selectedBlock.thumb }}</p>
-        <p *ngIf="selectedBlock?.label" class="label">{{ selectedBlock.label }}</p>
         <p *ngIf="selectedBlock?.tc != null" class="tc">Tc:{{ selectedBlock.tc }}</p>
         <p *ngIf="selectedBlock?.tcIn !=null && selectedBlock?.tcOut !=null" class="tc">
             <span class="start">{{ selectedBlock.tcIn|tcFormat:timeFormat:fps }}</span>
             <span class="middle">-</span>
             <span class="end">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
         </p>
+        <p *ngIf="selectedBlock?.label" class="label">{{ selectedBlock.label }}</p>
     </div>
     <p-accordion #listOfBlocksAccordion [multiple]="true" [(activeIndex)]="listOfBlocksIndexes"
         (activeIndexChange)="refreshTimeCursor($event)" (onClose)="refreshTimeCursor($event)"
