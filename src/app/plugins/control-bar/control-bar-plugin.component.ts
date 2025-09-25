@@ -257,6 +257,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     displaySliderElement: ElementRef;
     @ViewChild('pinControls')
     pinControlsElement: ElementRef;
+    volumepanelTimeOut: any;
 
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2) {
@@ -561,6 +562,36 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 }
                 shortcutFound = true;
             }
+        }
+        const volumeUpShortcut: ShortcutControl = {
+            shortcut: { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false },
+            control: 'volume'
+        };
+        const volumeDownShortcut: ShortcutControl = {
+            shortcut: { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false },
+            control: 'volume'
+        };
+        if (matchesShortcut(volumeUpShortcut, shortcutToBeApplied.shortcut)) {
+            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
+            this.volumeRight = Math.min(this.volumeRight + 5, 100);
+            this.volumeLeft = Math.min(this.volumeLeft + 5, 100);
+            if(this.volumepanelTimeOut){
+                clearTimeout(this.volumepanelTimeOut);
+            }
+            this.volumepanelTimeOut = setTimeout(() => {
+                this.hideAll();
+            }, 1000);
+        }
+        if (matchesShortcut(volumeDownShortcut, shortcutToBeApplied.shortcut)) {
+            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
+            this.volumeRight = Math.max(this.volumeRight - 5, 0);
+            this.volumeLeft = Math.max(this.volumeLeft - 5, 0);
+            if(this.volumepanelTimeOut){
+                clearTimeout(this.volumepanelTimeOut);
+            }
+            this.volumepanelTimeOut = setTimeout(() => {
+                this.hideAll();
+            }, 1000);
         }
     }
 
