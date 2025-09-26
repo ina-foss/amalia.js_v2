@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { ControlBarPluginComponent } from './control-bar-plugin.component';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { ThumbnailService } from '../../service/thumbnail-service';
@@ -17,6 +17,7 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
 import { Renderer2 } from '@angular/core';
 import { ShortcutEvent, ShortcutControl, Shortcut } from 'src/app/core/config/model/shortcuts-event';
+import { EventEmitter } from 'events';
 
 const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();
@@ -1001,5 +1002,263 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             expect((component as any).logger.warn)
                 .toHaveBeenCalledWith('Control not implemented', 'not-implemented');
         });
+    });
+});
+
+describe('ControlBarPluginComponent (focused methods)', () => {
+    let component: ControlBarPluginComponent;
+    let fixture: ComponentFixture<ControlBarPluginComponent>;
+    let rendererSpy: jasmine.SpyObj<Renderer2>;
+    // Mocks simples pour les services
+    let thumbnailService: ThumbnailService;
+    let mediaPlayerElement = {
+        getDisplayState: jasmine.createSpy('getDisplayState').and.returnValue('m'),
+        getThumbnailUrl: jasmine.createSpy('getThumbnailUrl').and.callFake((tc: number) => `thumb?tc=${tc}`),
+        // ci-dessous non utilisés par nos 4 méthodes visées, mais utiles au besoin :
+        getMediaPlayer: jasmine.createSpy('getMediaPlayer').and.returnValue({}),
+        eventEmitter: new EventEmitter()
+    } as any;
+    let playerService = jasmine.createSpyObj('MediaPlayerService', ['get']);
+    playerService.get.and.returnValue(mediaPlayerElement);
+
+    beforeEach(async () => {
+        rendererSpy = jasmine.createSpyObj<Renderer2>('Renderer2', [
+            'addClass',
+            'removeClass',
+            'setAttribute',
+            'removeAttribute',
+            'appendChild',
+            'createElement',
+            'setProperty',
+            'setStyle',
+            'removeStyle',
+            'insertBefore',
+            'selectRootElement',
+            'listen',
+            // on ne les utilise pas toutes, mais ça évite les erreurs d’API incomplète
+        ]);
+
+        await TestBed.configureTestingModule({
+            declarations: [ControlBarPluginComponent, TcFormatPipe],
+            imports: [HttpClientTestingModule],
+            providers: [
+                { provide: Renderer2, useValue: rendererSpy },
+                { provide: MediaPlayerService, useValue: playerService },// si le token réel est exporté, remplace 'MediaPlayerService' par la classe
+                ThumbnailService,     // idem
+            ],
+            schemas: [NO_ERRORS_SCHEMA]
+        })
+            // note: si tu as les classes concrètes, remplace les tokens string par les vraies classes
+            .overrideComponent(ControlBarPluginComponent, {
+                set: { // pas de template requis pour ces tests
+                    template: '<div></div>'
+                }
+            })
+            .compileComponents();
+    });
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ControlBarPluginComponent);
+        component = fixture.componentInstance;
+        thumbnailService = TestBed.inject(ThumbnailService);
+        const getThumbnailMock = spyOn(thumbnailService, 'getThumbnail');
+        getThumbnailMock.and.resolveTo('data:image/png;base64,xxx');
+        // ---- Mocks minimaux sur mediaPlayerElement utilisés par nos méthodes testées
+        component['mediaPlayerElement'] = mediaPlayerElement;
+        // ---- ViewChild simulés
+        const progressBar = document.createElement('div');
+        Object.defineProperty(progressBar, 'offsetWidth', { value: 100 }); // largeur container
+        component.progressBarElement = new ElementRef(progressBar);
+
+        const controlBarContainer = document.createElement('div');
+        component.controlBarContainer = new ElementRef(controlBarContainer);
+
+        const thumbnailImg = document.createElement('img');
+        component.thumbnailElement = new ElementRef(thumbnailImg);
+
+        // Valeurs par défaut utilisées dans les calculs
+        component.duration = 200; // ex: 200s
+
+        fixture.detectChanges();
+    });
+
+    // ============ updateThumbnail ============
+    it('updateThumbnail() doit calculer le tc et appeler setThumbnail avec l’URL et le currentTime attendus', () => {
+        // ---- ViewChild simulés
+        const progressBar = document.createElement('div');
+        Object.defineProperty(progressBar, 'offsetWidth', { value: 100 }); // largeur container
+        component.progressBarElement = new ElementRef(progressBar);
+
+        const controlBarContainer = document.createElement('div');
+        component.controlBarContainer = new ElementRef(controlBarContainer);
+
+        const thumbnailImg = document.createElement('img');
+        component.thumbnailElement = new ElementRef(thumbnailImg);
+
+        // Valeurs par défaut utilisées dans les calculs
+        component.duration = 200; // ex: 200s
+
+        // offsetX = 50, containerWidth = 100, duration = 200 -> tc = 100
+        const evt = { offsetX: 50 } as any;
+        const setThumbnailSpy = spyOn(component, 'setThumbnail');
+
+        component.updateThumbnail(evt);
+
+        expect((component as any).mediaPlayerElement.getThumbnailUrl).toHaveBeenCalledWith(100, true);
+        expect(setThumbnailSpy).toHaveBeenCalledOnceWith('thumb?tc=100', 100);
+    });
+
+    it('updateThumbnail() ne doit rien faire si tc n’est pas fini (containerWidth = 0)', () => {
+        // ---- ViewChild simulés
+        const progressBar = document.createElement('div');
+        Object.defineProperty(progressBar, 'offsetWidth', { value: 0 }); // largeur container
+        component.progressBarElement = new ElementRef(progressBar);
+
+        const controlBarContainer = document.createElement('div');
+        component.controlBarContainer = new ElementRef(controlBarContainer);
+
+        const thumbnailImg = document.createElement('img');
+        component.thumbnailElement = new ElementRef(thumbnailImg);
+
+        // Valeurs par défaut utilisées dans les calculs
+        component.duration = 200; // ex: 200s
+
+        //const progressBarNativeElement = component.progressBarElement.nativeElement as HTMLDivElement;
+        //Object.defineProperty(progressBarNativeElement, 'offsetWidth', { value: 0 });
+        const evt = { offsetX: 10 } as any;
+
+        const setThumbnailSpy = spyOn(component, 'setThumbnail');
+
+        component.updateThumbnail(evt);
+
+        expect(setThumbnailSpy).not.toHaveBeenCalled();
+    });
+
+    // ============ handleDisplayState ============
+    describe('handleDisplayState()', () => {
+        beforeEach(() => {
+            // Élément de config couvrant les priorités 5/4/3/2 et différentes zones
+            component.elements = [
+                { control: 'c1', zone: 1, priority: 5 },
+                { control: 'c2', zone: 2, priority: 4 },
+                { control: 'c3', zone: 3, priority: 3 },
+                { control: 'c4', zone: 1, priority: 2 },
+                { control: 'c5', zone: 2, priority: 5, notInMenu: true }, // doit être filtré
+            ] as any;
+            spyOn(component, 'updatePinAndSpeedSliderPositions'); // on vérifie l’appel sans exécuter la logique DOM
+        });
+
+        it('affiche uniquement les priorités 5 en mode "m" et filtre notInMenu', fakeAsync(() => {
+            (component as any).mediaPlayerElement.getDisplayState = jasmine.createSpy().and.returnValue('m');
+
+            component.handleDisplayState();
+            tick(120); // > 100ms pour le setTimeout
+            const names = component.controls.map((c: any) => c.control);
+            expect(names).toEqual(['c1']); // c5 est filtré (notInMenu)
+            expect(component.updatePinAndSpeedSliderPositions).toHaveBeenCalled();
+        }));
+
+        it('affiche p5+p4 en mode "sm"', fakeAsync(() => {
+            (component as any).mediaPlayerElement.getDisplayState = jasmine.createSpy().and.returnValue('sm');
+
+            component.handleDisplayState();
+            tick(120);
+
+            const names = component.controls.map((c: any) => c.control).sort();
+            expect(names).toEqual(['c1', 'c2'].sort());
+        }));
+
+        it('affiche p5+p4+p3 en mode "s"', fakeAsync(() => {
+            (component as any).mediaPlayerElement.getDisplayState = jasmine.createSpy().and.returnValue('s');
+
+            component.handleDisplayState();
+            tick(120);
+
+            const names = component.controls.map((c: any) => c.control).sort();
+            expect(names).toEqual(['c1', 'c2', 'c3'].sort());
+        }));
+
+        it('affiche p5+p4+p3+p2 en mode "xs"', fakeAsync(() => {
+            (component as any).mediaPlayerElement.getDisplayState = jasmine.createSpy().and.returnValue('xs');
+
+            component.handleDisplayState();
+            tick(120);
+
+            const names = component.controls.map((c: any) => c.control).sort();
+            expect(names).toEqual(['c1', 'c2', 'c3', 'c4'].sort());
+        }));
+    });
+
+    // ============ hideAll ============
+    describe('hideAll()', () => {
+        it('doit replier tous les panneaux sauf "menu" quand control="menu"', () => {
+            component.enableMenu = true;
+            component.enableVolumeSlider = true;
+            component.enableListPositionsSubtitle = true;
+            component.enableListRatio = true;
+
+            component.hideAll('menu');
+
+            // menu reste ouvert, le reste se replie
+            expect(component.enableMenu).toBeTrue();
+            expect(component.enableVolumeSlider).toBeFalse();
+            expect(component.enableListPositionsSubtitle).toBeFalse();
+            expect(component.enableListRatio).toBeFalse();
+        });
+
+        it('doit replier aussi le menu quand control != "menu"', () => {
+            component.enableMenu = true;
+            component.enableVolumeSlider = true;
+            component.enableListPositionsSubtitle = false;
+            component.enableListRatio = true;
+
+            component.hideAll('other');
+
+            expect(component.enableMenu).toBeFalse();
+            expect(component.enableVolumeSlider).toBeFalse();
+            expect(component.enableListPositionsSubtitle).toBeFalse();
+            expect(component.enableListRatio).toBeFalse();
+        });
+
+        it('ne change rien si tous sont déjà fermés', () => {
+            component.enableMenu = false;
+            component.enableVolumeSlider = false;
+            component.enableListPositionsSubtitle = false;
+            component.enableListRatio = false;
+
+            component.hideAll();
+
+            expect(component.enableMenu).toBeFalse();
+            expect(component.enableVolumeSlider).toBeFalse();
+            expect(component.enableListPositionsSubtitle).toBeFalse();
+            expect(component.enableListRatio).toBeFalse();
+        });
+    });
+
+    // ============ aspectRatioMouseEnter ============
+    describe('aspectRatioMouseEnter()', () => {
+        it('appelle hideAll("ratio"), ouvre la liste et la referme après 4s', fakeAsync(() => {
+            const hideAllSpy = spyOn(component, 'hideAll').and.callThrough();
+
+            component.aspectRatioMouseEnter();
+            expect(hideAllSpy).toHaveBeenCalledOnceWith('ratio');
+            expect(component.enableListRatio).toBeTrue();
+
+            // après 4s, la liste se referme
+            tick(4000);
+            expect(component.enableListRatio).toBeFalse();
+        }));
+
+        it('annule un timer précédent s’il existe', fakeAsync(() => {
+            const clearSpy = spyOn(window, 'clearTimeout').and.callThrough();
+            // on installe un timer existant
+            component.aspectRatioMouseEnterTimeOut = setTimeout(() => { }, 999999);
+
+            component.aspectRatioMouseEnter();
+            expect(clearSpy).toHaveBeenCalled(); // le timer précédent est annulé
+
+            // cleanup timers
+            tick(4000);
+        }));
     });
 });
