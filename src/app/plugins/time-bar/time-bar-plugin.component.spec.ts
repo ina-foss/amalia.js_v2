@@ -1,21 +1,21 @@
-import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
-import {TimeBarPluginComponent} from './time-bar-plugin.component';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {ConfigurationManager} from '../../core/config/configuration-manager';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {EventEmitter} from 'events';
-import {MediaElement} from '../../core/media/media-element';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {TimeBarConfig} from '../../core/config/model/time-bar-config';
-import {DefaultLogger} from '../../core/logger/default-logger';
-import {LoggerInterface} from '../../core/logger/logger-interface';
-import {DefaultConfigLoader} from '../../core/config/loader/default-config-loader';
-import {DefaultConfigConverter} from '../../core/config/converter/default-config-converter';
-import {MediaPlayerElement} from '../../core/media-player-element';
-import {DefaultMetadataLoader} from '../../core/metadata/loader/default-metadata-loader';
-import {PlayerState} from '../../core/constant/player-state';
-import {HttpClient} from '@angular/common/http';
-import {DefaultMetadataConverter} from '../../core/metadata/converter/default-metadata-converter';
+import { waitForAsync, getTestBed, TestBed } from '@angular/core/testing';
+import { TimeBarPluginComponent } from './time-bar-plugin.component';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { ConfigurationManager } from '../../core/config/configuration-manager';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { EventEmitter } from 'events';
+import { MediaElement } from '../../core/media/media-element';
+import { PluginConfigData } from '../../core/config/model/plugin-config-data';
+import { TimeBarConfig } from '../../core/config/model/time-bar-config';
+import { DefaultLogger } from '../../core/logger/default-logger';
+import { LoggerInterface } from '../../core/logger/logger-interface';
+import { DefaultConfigLoader } from '../../core/config/loader/default-config-loader';
+import { DefaultConfigConverter } from '../../core/config/converter/default-config-converter';
+import { MediaPlayerElement } from '../../core/media-player-element';
+import { DefaultMetadataLoader } from '../../core/metadata/loader/default-metadata-loader';
+import { PlayerState } from '../../core/constant/player-state';
+import { HttpClient } from '@angular/common/http';
+import { DefaultMetadataConverter } from '../../core/metadata/converter/default-metadata-converter';
 
 describe('TimeBar plugin test', () => {
     let injector: TestBed;
@@ -24,8 +24,9 @@ describe('TimeBar plugin test', () => {
     const logger: LoggerInterface = new DefaultLogger();
     const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     const mediaSrc = 'http://localhost:4201/medias/outputlm.mp4';
-    const configPlugin: PluginConfigData<TimeBarConfig> = {name: 'TIME_BAR', data: {timeFormat: 'f', theme : 'outside'}};
+    const configPlugin: PluginConfigData<TimeBarConfig> = { name: 'TIME_BAR', data: { timeFormat: 'f', theme: 'outside' } };
     const eventEmitter = new EventEmitter();
+    eventEmitter.setMaxListeners(1001);
     const metadataConverter = new DefaultMetadataConverter();
 
     // const mediaPlayer = new MediaElement(obj, eventEmitter);

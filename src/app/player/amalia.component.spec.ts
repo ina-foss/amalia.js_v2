@@ -274,3 +274,177 @@ describe('AmaliaComponent contribution juridique', () => {
         );
     });
 });
+
+// Mocks minimaux pour satisfaire le constructeur
+class MediaPlayerServiceStub {
+    get() { return null as any; }
+    increment() { }
+    decrement() { }
+}
+class ThumbnailServiceStub { }
+class DomSanitizerStub {
+    bypassSecurityTrustUrl(v: string) { return v; }
+}
+
+describe('AmaliaComponent - keyboard shortcuts', () => {
+    let component: AmaliaComponent;
+    let emitSpy: jasmine.Spy;
+
+    beforeEach(() => {
+        component = new AmaliaComponent(
+            new MediaPlayerServiceStub() as any,
+            {} as any,                       // HttpClient non utilisé ici
+            new ThumbnailServiceStub() as any,
+            new DomSanitizerStub() as any
+        );
+
+        // Stub très simple du mediaPlayerElement + eventEmitter
+        emitSpy = jasmine.createSpy('emit');
+        (component as any).mediaPlayerElement = {
+            eventEmitter: { emit: emitSpy }
+        };
+    });
+
+    // ---------- handleMuteShortcuts ----------
+    it('handleMuteShortcuts: doit activer mute si $event est undefined', () => {
+        component.muteShortcuts = false;
+        component.handleMuteShortcuts(undefined as any);
+        expect(component.muteShortcuts).toBeTrue();
+    });
+
+    it('handleMuteShortcuts: doit activer mute pour les cibles <input>, <textarea>, <select>, <button>', () => {
+        const cases = [
+            document.createElement('input'),
+            document.createElement('textarea'),
+            document.createElement('select'),
+            document.createElement('button')
+        ];
+
+        for (const el of cases) {
+            component.muteShortcuts = false;
+            component.handleMuteShortcuts({ target: el } as any);
+            //`cible: <${el.tagName.toLowerCase()}>`
+            expect(component.muteShortcuts).toBeTrue();
+        }
+    });
+
+    it('handleMuteShortcuts: doit activer mute pour un élément contentEditable', () => {
+        const div = document.createElement('div');
+        div.contentEditable = 'true';
+        component.muteShortcuts = false;
+
+        component.handleMuteShortcuts({ target: div } as any);
+        expect(component.muteShortcuts).toBeTrue();
+    });
+
+    it('handleMuteShortcuts: ne doit pas activer mute pour un élément non prévu', () => {
+        const div = document.createElement('div'); // non contentEditable
+        component.muteShortcuts = false;
+
+        component.handleMuteShortcuts({ target: div } as any);
+        expect(component.muteShortcuts).toBeFalse();
+    });
+
+    // ---------- handleUnmuteShortcuts ----------
+    it('handleUnmuteShortcuts: doit désactiver mute si $event est undefined', () => {
+        component.muteShortcuts = true;
+        component.handleUnmuteShortcuts(undefined as any);
+        expect(component.muteShortcuts).toBeFalse();
+    });
+
+    it('handleUnmuteShortcuts: doit désactiver mute pour les cibles <input>, <textarea>, <select>, <button>', () => {
+        const cases = [
+            document.createElement('input'),
+            document.createElement('textarea'),
+            document.createElement('select'),
+            document.createElement('button')
+        ];
+
+        for (const el of cases) {
+            component.muteShortcuts = true;
+            component.handleUnmuteShortcuts({ target: el } as any);
+            //`cible: <${el.tagName.toLowerCase()}>`
+            expect(component.muteShortcuts).toBeFalse();
+        }
+    });
+
+    it('handleUnmuteShortcuts: doit désactiver mute pour un élément contentEditable', () => {
+        const div = document.createElement('div');
+        div.contentEditable = 'true';
+        component.muteShortcuts = true;
+
+        component.handleUnmuteShortcuts({ target: div } as any);
+        expect(component.muteShortcuts).toBeFalse();
+    });
+
+    it('handleUnmuteShortcuts: ne doit pas modifier mute pour un élément non prévu', () => {
+        const div = document.createElement('div'); // non contentEditable
+        component.muteShortcuts = true;
+
+        component.handleUnmuteShortcuts({ target: div } as any);
+        expect(component.muteShortcuts).toBeTrue();
+    });
+
+    // ---------- handleShortCutsKeyDownEvent ----------
+    it('handleShortCutsKeyDownEvent: émet SHORTCUT_KEYDOWN quand muteShortcuts=false', () => {
+        component.muteShortcuts = false;
+        emitSpy.calls.reset();
+
+        const evt = {
+            key: 'A',
+            ctrlKey: true,
+            shiftKey: false,
+            altKey: false,
+            metaKey: false
+        } as any;
+
+        component.handleShortCutsKeyDownEvent(evt);
+
+        expect(emitSpy).toHaveBeenCalled();
+        const [, payload] = emitSpy.calls.mostRecent().args;
+
+        expect(payload.targets).toEqual(['CONTROL_BAR', 'ANNOTATIONS']);
+        expect(payload.shortcut.key).toBe('a'); // toLowerCase
+        expect(payload.shortcut.ctrl).toBeTrue();
+        expect(payload.shortcut.shift).toBeFalse();
+        expect(payload.shortcut.alt).toBeFalse();
+        expect(payload.shortcut.meta).toBeFalse();
+    });
+
+    it('handleShortCutsKeyDownEvent: transforme la barre d’espace en "espace"', () => {
+        component.muteShortcuts = false;
+        emitSpy.calls.reset();
+
+        const evt = {
+            key: ' ',
+            ctrlKey: false,
+            shiftKey: false,
+            altKey: false,
+            metaKey: false,
+            preventDefault: jasmine.createSpy('preventDefault')
+        } as any;
+
+        component.handleShortCutsKeyDownEvent(evt);
+
+        expect(emitSpy).toHaveBeenCalled();
+        const [, payload] = emitSpy.calls.mostRecent().args;
+
+        expect(payload.shortcut.key).toBe('espace');
+    });
+
+    it('handleShortCutsKeyDownEvent: n’émet rien quand muteShortcuts=true', () => {
+        component.muteShortcuts = true;
+        emitSpy.calls.reset();
+
+        const evt = {
+            key: 'x',
+            ctrlKey: false,
+            shiftKey: false,
+            altKey: false,
+            metaKey: false
+        } as any;
+
+        component.handleShortCutsKeyDownEvent(evt);
+        expect(emitSpy).not.toHaveBeenCalled();
+    });
+});

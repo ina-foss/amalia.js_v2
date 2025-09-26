@@ -38,6 +38,7 @@ import { ChipsModule } from 'primeng/chips';
 import { PlayerEventType } from '../../core/constant/event-type';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnnotationLocalisation } from 'src/app/core/metadata/model/annotation-localisation';
+import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
 
 
 const initTestData = (component: AnnotationPluginComponent) => {
@@ -410,7 +411,7 @@ const initTestData = (component: AnnotationPluginComponent) => {
     const httpClient = TestBed.inject(HttpClient);
     const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
     mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
-    
+
     component.mediaPlayerElement = mediaPlayerElement;
     const mediaElement = document.createElement('video');
     component.mediaPlayerElement.setMediaPlayer(mediaElement);
@@ -1548,7 +1549,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         const spyOnInitializeNewSegment = spyOn(component, 'initializeNewSegment').and.callThrough();
         const spyOnInitSegmentData = spyOn(component, 'initSegmentData').and.callThrough();
         const spyOnAddSegmentToSegmentsInfo = spyOn(component as any, 'addSegmentToSegmentsInfo').and.callThrough();
-        let event_add_annotation:any;
+        let event_add_annotation: any;
         const getEvent = (event: any) => {
             event_add_annotation = event;
         };
@@ -1566,5 +1567,68 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         flush();
     }));
 
+    it('should call initializeNewSegment on "i" shortcut', () => {
+        spyOn(component, 'initializeNewSegment');
+        const event: ShortcutEvent = {
+            shortcut: { key: 'i', ctrl: false, shift: false, alt: false, meta: false },
+            targets: ['ANNOTATIONS']
+        };
+        component.applyShortcut(event);
+        expect(component.initializeNewSegment).toHaveBeenCalled();
+    });
+
+    it('should call setTcOut on "o" shortcut', () => {
+        spyOn(component, 'setTcOut');
+        const event: ShortcutEvent = {
+            shortcut: { key: 'o', ctrl: false, shift: false, alt: false, meta: false },
+            targets: ['ANNOTATIONS']
+        };
+        component.applyShortcut(event);
+        expect(component.setTcOut).toHaveBeenCalled();
+    });
+
+    it('should call downloadSegmentJsonFormat on "Ctrl + d" shortcut', () => {
+        spyOn(component, 'downloadSegmentJsonFormat');
+        const event: ShortcutEvent = {
+            shortcut: { key: 'd', ctrl: true, shift: false, alt: false, meta: false },
+            targets: ['ANNOTATIONS']
+        };
+        component.applyShortcut(event);
+        expect(component.downloadSegmentJsonFormat).toHaveBeenCalled();
+    });
+
+    it('should not call any method for unrelated shortcut', () => {
+        spyOn(component, 'initializeNewSegment');
+        spyOn(component, 'setTcOut');
+        spyOn(component, 'downloadSegmentJsonFormat');
+        const event: ShortcutEvent = {
+            shortcut: { key: 'x', ctrl: false, shift: false, alt: false, meta: false },
+            targets: ['ANNOTATIONS']
+        };
+        component.applyShortcut(event);
+        expect(component.initializeNewSegment).not.toHaveBeenCalled();
+        expect(component.setTcOut).not.toHaveBeenCalled();
+        expect(component.downloadSegmentJsonFormat).not.toHaveBeenCalled();
+    });
+
+    it('should call applyShortcut if target matches plugin name', () => {
+        const event: ShortcutEvent = {
+            shortcut: { key: 'i', ctrl: false, shift: false, alt: false, meta: false },
+            targets: ['ANNOTATIONS']
+        };
+        spyOn(component, 'applyShortcut');
+        component.handleShortcuts(event);
+        expect(component.applyShortcut).toHaveBeenCalledWith(event);
+    });
+
+    it('should not call applyShortcut if target does not match plugin name', () => {
+        const event: ShortcutEvent = {
+            shortcut: { key: 'i', ctrl: false, shift: false, alt: false, meta: false },
+            targets: ['CONTROL_BAR']
+        };
+        spyOn(component, 'applyShortcut');
+        component.handleShortcuts(event);
+        expect(component.applyShortcut).not.toHaveBeenCalled();
+    });
 });
 
