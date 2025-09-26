@@ -689,7 +689,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             expect(muteSpy).toHaveBeenCalledTimes(1);
         });
 
-        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis hideAll après 1000ms', () => {
+        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis hideAll après 1500ms', () => {
             spyOn(component, 'hideAll');
             jasmine.clock().install();
 
@@ -710,7 +710,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             expect(component.volumeRight).toBe(100);
 
             // hideAll doit être appelé après 1s
-            jasmine.clock().tick(999);
+            jasmine.clock().tick(1499);
             expect(component.hideAll).not.toHaveBeenCalled();
             jasmine.clock().tick(1);
             expect(component.hideAll).toHaveBeenCalledTimes(1);
@@ -718,7 +718,40 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             jasmine.clock().uninstall();
         });
 
-        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0), puis hideAll après 1000ms', () => {
+
+        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis encore le slider puis hideAll après 1500ms', () => {
+            spyOn(component, 'hideAll');
+            jasmine.clock().install();
+
+            const evt = {
+                shortcut: { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false },
+                targets: ['CONTROL_BAR']
+            } as any;
+
+            component.volumeLeft = 90;
+            component.volumeRight = 90;
+
+            component.applyShortcut(evt);
+
+            // Mouseenter déclenché sur le bouton volume
+            expect(volumeButtonEl.dispatchEvent).toHaveBeenCalled();
+            // Volumes incrémentés et bornés à 100
+            expect(component.volumeLeft).toBe(95);
+            expect(component.volumeRight).toBe(95);
+            jasmine.clock().tick(1499);
+            component.applyShortcut(evt);
+            expect(component.volumeMouseEnterTimeOut).not.toBeNull();
+            jasmine.clock().tick(1);
+            expect(component.hideAll).not.toHaveBeenCalled();
+            expect(component.volumeLeft).toBe(100);
+            expect(component.volumeRight).toBe(100);
+            // hideAll doit être appelé après 1,5s
+            jasmine.clock().tick(1499);
+            expect(component.hideAll).toHaveBeenCalledTimes(1);
+            jasmine.clock().uninstall();
+        });
+
+        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0), puis hideAll après 1500ms', () => {
             spyOn(component, 'hideAll');
             jasmine.clock().install();
 
@@ -736,12 +769,39 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             expect(component.volumeLeft).toBe(0);
             expect(component.volumeRight).toBe(0);
 
-            jasmine.clock().tick(1000);
+            jasmine.clock().tick(1500);
             expect(component.hideAll).toHaveBeenCalledTimes(1);
 
             jasmine.clock().uninstall();
         });
+        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0) puis encore -5 puis hideAll après 1500ms', () => {
+            spyOn(component, 'hideAll');
+            jasmine.clock().install();
 
+            const evt = {
+                shortcut: { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false },
+                targets: ['CONTROL_BAR']
+            } as any;
+
+            component.volumeLeft = 11;
+            component.volumeRight = 14;
+
+            component.applyShortcut(evt);
+            expect(component.volumeLeft).toBe(6);
+            expect(component.volumeRight).toBe(9);
+            jasmine.clock().tick(1499);
+            component.applyShortcut(evt);
+            expect(component.volumeMouseEnterTimeOut).not.toBeNull();
+            jasmine.clock().tick(1);
+            expect(component.hideAll).not.toHaveBeenCalled();
+            expect(component.volumeLeft).toBe(1);
+            expect(component.volumeRight).toBe(4);
+
+            jasmine.clock().tick(1499);
+            expect(component.hideAll).toHaveBeenCalledTimes(1);
+
+            jasmine.clock().uninstall();
+        });
         it('ne fait rien si aucun raccourci ne correspond (et pas ArrowUp/ArrowDown)', () => {
             const muteSpy = spyOn(component, 'handleMuteUnmuteVolume');
             const clickSpy = spyOn(component, 'controlClicked');

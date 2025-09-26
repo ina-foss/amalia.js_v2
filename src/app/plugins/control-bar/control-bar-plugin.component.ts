@@ -582,7 +582,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
             this.volumeMouseEnterTimeOut = setTimeout(() => {
                 this.hideAll();
-            }, 1000);
+            }, 1500);
         }
         if (matchesShortcut(volumeDownShortcut, shortcutToBeApplied.shortcut)) {
             this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
@@ -593,7 +593,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
             this.volumeMouseEnterTimeOut = setTimeout(() => {
                 this.hideAll();
-            }, 1000);
+            }, 1500);
         }
     }
 
