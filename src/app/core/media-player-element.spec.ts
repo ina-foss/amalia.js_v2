@@ -18,6 +18,7 @@ describe('Test Media player element', () => {
     let httpTestingController: HttpTestingController;
     const logger = new DefaultLogger();
     const eventEmitter = new EventEmitter();
+    eventEmitter.setMaxListeners(1001);
     const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({

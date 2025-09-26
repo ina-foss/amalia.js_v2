@@ -1,20 +1,22 @@
-import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {ControlBarPluginComponent} from './control-bar-plugin.component';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {ThumbnailService} from '../../service/thumbnail-service';
-import {ElementRef, NO_ERRORS_SCHEMA} from '@angular/core';
-import {MediaPlayerElement} from "../../core/media-player-element";
-import {DefaultLogger} from "../../core/logger/default-logger";
-import {HttpClient} from "@angular/common/http";
-import {DefaultConfigLoader} from "../../core/config/loader/default-config-loader";
-import {DefaultConfigConverter} from "../../core/config/converter/default-config-converter";
-import {ConfigurationManager} from "../../core/config/configuration-manager";
-import {DefaultMetadataLoader} from "../../core/metadata/loader/default-metadata-loader";
-import {DefaultMetadataConverter} from "../../core/metadata/converter/default-metadata-converter";
-import {MetadataManager} from "../../core/metadata/metadata-manager";
-import {PlayerEventType} from "../../core/constant/event-type";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {TcFormatPipe} from "../../core/utils/tc-format.pipe";
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ControlBarPluginComponent } from './control-bar-plugin.component';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { ThumbnailService } from '../../service/thumbnail-service';
+import { ElementRef, NO_ERRORS_SCHEMA } from '@angular/core';
+import { MediaPlayerElement } from "../../core/media-player-element";
+import { DefaultLogger } from "../../core/logger/default-logger";
+import { HttpClient } from "@angular/common/http";
+import { DefaultConfigLoader } from "../../core/config/loader/default-config-loader";
+import { DefaultConfigConverter } from "../../core/config/converter/default-config-converter";
+import { ConfigurationManager } from "../../core/config/configuration-manager";
+import { DefaultMetadataLoader } from "../../core/metadata/loader/default-metadata-loader";
+import { DefaultMetadataConverter } from "../../core/metadata/converter/default-metadata-converter";
+import { MetadataManager } from "../../core/metadata/metadata-manager";
+import { PlayerEventType } from "../../core/constant/event-type";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
+import { Renderer2 } from '@angular/core';
+import { ShortcutEvent, ShortcutControl, Shortcut } from 'src/app/core/config/model/shortcuts-event';
 
 const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();
@@ -54,208 +56,189 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
             ]
         },
         "CONTROL_BAR-PLAYERONE1": {
-            name: '',
-            "data": [
+            data: [
                 {
-                    "label": "Barre de progression",
-                    "control": "progressBar",
-                    "priority": 1
+                    label: 'Barre de progression',
+                    control: 'progressBar',
+                    priority: 1
                 },
                 {
-                    "label": "Télécharger",
-                    "control": "download",
-                    "icon": "download",
-                    "zone": 1,
-                    "order": 1,
-                    "data": {
-                        "href": ""
-                    },
-                    "priority": 3,
-                    "key": "d"
+                    label: "Télécharger",
+                    control: "download",
+                    icon: "download",
+                    zone: 1,
+                    order: 1,
+                    priority: 5,
+                    key: 'd',
                 },
                 {
-                    "label": "Playback rate custom steps",
-                    "control": "playbackRateCustomSteps"
+                    label: 'Playback rate custom steps',
+                    control: 'playbackRateCustomSteps'
                 },
                 {
-                    "label": "Playback rate steps",
-                    "control": "playbackRateSteps"
+                    label: 'Playback rate steps',
+                    control: 'playbackRateSteps'
                 },
                 {
-                    "label": "Capture",
-                    "control": "download",
-                    "icon": "screenshot",
-                    "key": "c",
-                    "zone": 1,
-                    "order": 2,
-                    "data": {
-                        "tcParam": "start",
-                        "href": "https://image.wsmedia.sas.ina/thumbs/..../sl_hm/"
-                    },
-                    "priority": 1
+                    label: 'Capture',
+                    control: 'download',
+                    icon: 'screenshot',
+                    key: 'c',
+                    zone: 1,
+                    order: 2,
+                    data: { 'tcParam': 'start', 'href': '' },
+                    priority: 2
                 },
                 {
-                    "label": "Playback Rate",
-                    "control": "playbackRate",
-                    "zone": 1,
-                    "priority": 1,
-                    "order": 3
+                    label: 'Playback Rate',
+                    control: 'playbackRate',
+                    zone: 1,
+                    priority: 3,
+                    order: 3
                 },
                 {
-                    "label": "Aller au début du média",
-                    "icon": "backward-start",
-                    "control": "backward-start",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "Shift + ArrowLeft"
+                    label: 'Aller au début du média',
+                    icon: 'backward-start',
+                    control: 'backward-start',
+                    zone: 2,
+                    priority: 5,
+                    key: 'Home',
+                    notInMenu: true
                 },
                 {
-                    "label": "Retour image par image",
-                    "icon": "backward-frame",
-                    "control": "backward-frame",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "ArrowLeft"
+                    label: 'Retour rapide',
+                    icon: 'backward',
+                    control: 'backward',
+                    zone: 2,
+                    priority: 3,
+                    key: 'Shift + ArrowLeft'
                 },
                 {
-                    "label": "Retour 5 secondes par 5 secondes",
-                    "icon": "backward-5seconds",
-                    "control": "backward-5seconds",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "ArrowLeft"
+                    label: 'Retour ralenti',
+                    icon: 'slow-backward',
+                    control: 'slow-backward',
+                    zone: 2,
+                    priority: 4,
+                    key: 'Alt + ArrowLeft',
+                    notInMenu: true
                 },
                 {
-                    "label": "Retour ralenti",
-                    "icon": "slow-backward",
-                    "control": "slow-backward",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "Control + Shift + ArrowLeft"
+                    label: 'Retour 5 secondes par 5 secondes',
+                    icon: 'backward-5seconds',
+                    control: 'backward-5seconds',
+                    zone: 2,
+                    priority: 2,
+                    key: 'Control + ArrowLeft'
                 },
                 {
-                    "label": "Retour rapide",
-                    "icon": "backward",
-                    "control": "backward",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "Control + ArrowLeft"
+                    label: 'Retour image par image',
+                    icon: 'backward-frame',
+                    control: 'backward-frame',
+                    zone: 2,
+                    priority: 3,
+                    key: 'ArrowLeft'
                 },
                 {
-                    "label": "Pause / Lire",
-                    "control": "playPause",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "espace"
+                    label: 'Pause / Lire',
+                    control: 'playPause',
+                    zone: 2,
+                    priority: 2,
+                    key: 'espace'
                 },
                 {
-                    "label": "Avance rapide",
-                    "icon": "forward",
-                    "control": "forward",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "Control + ArrowRight"
+                    label: 'Avance image par image',
+                    icon: 'forward-frame',
+                    control: 'forward-frame',
+                    zone: 2,
+                    priority: 3,
+                    key: 'ArrowRight'
                 },
                 {
-                    "label": "Avance ralentie",
-                    "icon": "slow-forward",
-                    "control": "slow-forward",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "Control + Shift + ArrowRight"
+                    label: 'Avance 5 secondes par 5 secondes',
+                    icon: 'forward-5seconds',
+                    control: 'forward-5seconds',
+                    zone: 2,
+                    priority: 2,
+                    key: 'Control + ArrowRight'
                 },
                 {
-                    "label": "Avance 5 secondes par 5 secondes",
-                    "icon": "forward-5seconds",
-                    "control": "forward-5seconds",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "ArrowRight"
+                    label: 'Avance ralentie',
+                    icon: 'slow-forward',
+                    control: 'slow-forward',
+                    zone: 2,
+                    priority: 4,
+                    key: 'Alt + ArrowRight',
+                    notInMenu: true
                 },
                 {
-                    "label": "Avance image par image",
-                    "icon": "forward-frame",
-                    "control": "forward-frame",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "ArrowRight"
+                    label: 'Avance rapide',
+                    icon: 'forward',
+                    control: 'forward',
+                    zone: 2,
+                    priority: 3,
+                    key: 'Shift + ArrowRight'
                 },
                 {
-                    "label": "Aller à la fin du média",
-                    "icon": "forward-end",
-                    "control": "forward-end",
-                    "zone": 2,
-                    "priority": 1,
-                    "key": "Shift + ArrowRight"
+                    label: 'Aller à la fin du média',
+                    icon: 'forward-end',
+                    control: 'forward-end',
+                    zone: 2,
+                    priority: 5,
+                    key: 'End',
+                    notInMenu: true
                 },
                 {
-                    "label": "Désactiver le son",
-                    "control": "volume",
-                    "zone": 3,
-                    "priority": 1,
-                    "key": "m",
-                    "data": {
-                        "channelMergeVolume": false,
-                        "channelMergerNode": "",
-                        "tracks": [
-                            {
-                                "track": 1,
-                                "label": "fra"
-                            },
-                            {
-                                "track": 2,
-                                "label": "fra"
-                            },
-                            {
-                                "track": 3,
-                                "label": "qaa"
-                            }
-                        ]
-                    }
+                    label: 'Désactiver le son',
+                    control: 'volume',
+                    zone: 3,
+                    priority: 2,
+                    key: 'm',
+                    data: { 'channelMergeVolume': false, 'channelMergerNode': '' },
                 },
                 {
-                    "label": "Plein écran",
-                    "control": "toggleFullScreen",
-                    "icon": "fullscreen",
-                    "zone": 3,
-                    "priority": 1,
-                    "key": "f"
+                    label: 'Plein écran',
+                    control: 'toggleFullScreen',
+                    icon: 'fullscreen',
+                    zone: 3,
+                    priority: 2,
+                    key: 'f'
                 },
                 {
-                    "label": "Aspect ratio",
-                    "control": "aspectRatio",
-                    "zone": 3,
-                    "priority": 3,
-                    "key": "a"
+                    label: 'Aspect ratio',
+                    control: 'aspectRatio',
+                    zone: 3,
+                    priority: 5,
+                    key: 'a'
                 },
                 {
-                    "label": "Figer",
-                    "control": "pinControls",
-                    "icon": "pin",
-                    "zone": 3,
-                    "priority": 1,
-                    "order": 1,
-                    "key": "g"
+                    label: 'Figer',
+                    control: 'pinControls',
+                    icon: 'pin',
+                    zone: 3,
+                    priority: 4,
+                    key: 'p',
                 },
                 {
-                    "label": "Afficher les vitesses",
-                    "control": "displaySlider",
-                    "icon": "slider",
-                    "zone": 3,
-                    "priority": 2,
-                    "order": 1,
-                    "key": "v"
+                    label: 'Afficher les vitesses',
+                    control: 'displaySlider',
+                    icon: 'slider',
+                    zone: 3,
+                    priority: 5,
+                    key: 'v',
                 },
                 {
-                    "label": "Plus d'options",
-                    "control": "menu",
-                    "icon": "dots",
-                    "zone": 3,
-                    "key": "r"
+                    label: 'Plus d\'options',
+                    control: 'menu',
+                    icon: 'dots',
+                    zone: 3,
+                    priority: 3,
+                    key: 'r'
                 }
+
             ],
-            "pinnedControls": true
-        },
+            pinnedControls: true,
+        }
+        ,
         "TIME_BAR-PLAYERONE": {
             name: '',
             "data": {
@@ -469,5 +452,97 @@ describe('ControlBarPluginComponent 2', () => {
         expect(component.pluginConfSetThroughInit).toBeFalse();
         expect(getThumbnailMock).toHaveBeenCalledTimes(2);
         expect(initMock).toHaveBeenCalledTimes(2);
+    }));
+
+    it('should apply shortcut and call controlClicked', () => {
+        const shortcut: Shortcut = { key: 'p', ctrl: false, shift: false, alt: false, meta: false };
+        const shortcutControl: ShortcutControl = {
+            shortcut,
+            control: 'playPause'
+        };
+
+        spyOn(component, 'controlClicked');
+        component.listOfShortcuts = [shortcutControl];
+
+        const event: ShortcutEvent = {
+            shortcut,
+            targets: ['CONTROL_BAR']
+        };
+
+        component.applyShortcut(event);
+
+        expect(component.keypressed).toBe('p');
+        expect(component.controlClicked).toHaveBeenCalledWith('playPause');
+    });
+
+    it('should apply volume shortcut and call handleMuteUnmuteVolume', () => {
+        const shortcut: Shortcut = { key: 'v', ctrl: false, shift: false, alt: false, meta: false };
+        const shortcutControl: ShortcutControl = {
+            shortcut,
+            control: 'volume'
+        };
+
+        spyOn(component, 'handleMuteUnmuteVolume');
+        component.listOfShortcuts = [shortcutControl];
+
+        const event: ShortcutEvent = {
+            shortcut,
+            targets: ['CONTROL_BAR']
+        };
+
+        component.applyShortcut(event);
+
+        expect(component.keypressed).toBe('v');
+        expect(component.handleMuteUnmuteVolume).toHaveBeenCalled();
+    });
+
+    it('should increase volume on ArrowUp shortcut', fakeAsync(() => {
+        const shortcut: Shortcut = { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false };
+        const event: ShortcutEvent = {
+            shortcut,
+            targets: ['CONTROL_BAR']
+        };
+
+        component.volumeLeft = 45;
+        component.volumeRight = 45;
+        component.volumeButton = {
+            nativeElement: {
+                dispatchEvent: jasmine.createSpy('dispatchEvent')
+            }
+        } as any;
+
+        spyOn(component, 'hideAll');
+
+        component.applyShortcut(event);
+        tick(5000);
+        expect(component.volumeLeft).toBe(50);
+        expect(component.volumeRight).toBe(50);
+        expect(component.volumeButton.nativeElement.dispatchEvent).toHaveBeenCalled();
+        expect(component.hideAll).toHaveBeenCalled();
+    }));
+
+    it('should decrease volume on ArrowDown shortcut', fakeAsync(() => {
+        const shortcut: Shortcut = { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false };
+        const event: ShortcutEvent = {
+            shortcut,
+            targets: ['CONTROL_BAR']
+        };
+
+        component.volumeLeft = 50;
+        component.volumeRight = 50;
+        component.volumeButton = {
+            nativeElement: {
+                dispatchEvent: jasmine.createSpy('dispatchEvent')
+            }
+        } as any;
+
+        spyOn(component, 'hideAll');
+
+        component.applyShortcut(event);
+        tick(5000);
+        expect(component.volumeLeft).toBe(45);
+        expect(component.volumeRight).toBe(45);
+        expect(component.volumeButton.nativeElement.dispatchEvent).toHaveBeenCalled();
+        expect(component.hideAll).toHaveBeenCalled();
     }));
 });

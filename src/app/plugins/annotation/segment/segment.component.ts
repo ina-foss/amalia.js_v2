@@ -5,7 +5,7 @@ import {
     effect, ElementRef,
     EventEmitter, HostListener,
     input,
-    Input, OnInit,
+    Input, OnDestroy, OnInit,
     Output, signal,
     ViewChild
 } from '@angular/core';
@@ -28,7 +28,7 @@ import { Utils } from 'src/app/core/utils/utils';
     templateUrl: './segment.component.html',
     styleUrl: './segment.component.scss',
 })
-export class SegmentComponent implements OnInit, AfterViewInit {
+export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     //Inputs
     @Input({ required: true })
     public segment: AnnotationLocalisation;
@@ -784,5 +784,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             this.cancelNewSegmentCreation();
             return;
         }
+    }
+    ngOnDestroy() {
+        this.formChangesSubscriptions.forEach(subscription => subscription.unsubscribe());
+        Utils.unsubscribeTargetedElementEventListeners(this);
     }
 }

@@ -34,6 +34,7 @@ export class MediaPlayerElement {
         this.logger = new DefaultLogger('root-player');
         this._preferenceStorageManager = new PreferenceStorageManager();
         this._eventEmitter = new EventEmitter();
+        this._eventEmitter.setMaxListeners(1001);
     }
 
 
