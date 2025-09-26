@@ -545,4 +545,401 @@ describe('ControlBarPluginComponent 2', () => {
         expect(component.volumeButton.nativeElement.dispatchEvent).toHaveBeenCalled();
         expect(component.hideAll).toHaveBeenCalled();
     }));
+
+});
+
+
+describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
+    let component: ControlBarPluginComponent;
+
+    // Spies & stubs communs
+    let emitSpy: jasmine.Spy;
+    let mediaPlayer: any;
+    let volumeButtonEl: HTMLButtonElement;
+
+    // Renderer minimal
+    const rendererStub: Partial<Renderer2> = {
+        addClass: () => { },
+        removeClass: () => { },
+        setStyle: () => { },
+        removeStyle: () => { },
+        setAttribute: () => { },
+        removeAttribute: () => { },
+        listen: () => () => { },
+        createElement: () => document.createElement('div') as any,
+        createText: () => document.createTextNode('') as any,
+        appendChild: () => { },
+        removeChild: () => { },
+        selectRootElement: () => document.createElement('div') as any
+    };
+
+    /** Crée un mediaPlayer mocké avec des spies utiles pour les tests */
+    function createMediaPlayerStub() {
+        mediaPlayer = {
+            framerate: 25,
+            reverseMode: false,
+            isPaused: jasmine.createSpy('isPaused').and.returnValue(false),
+
+            playPause: jasmine.createSpy('playPause'),
+            pauseOnly: jasmine.createSpy('pauseOnly'),
+            play: jasmine.createSpy('play'),
+            captureImage: jasmine.createSpy('captureImage'),
+
+            movePrevFrame: jasmine.createSpy('movePrevFrame'),
+            moveNextFrame: jasmine.createSpy('moveNextFrame'),
+
+            getDuration: jasmine.createSpy('getDuration').and.returnValue(10000),
+            getCurrentTime: jasmine.createSpy('getCurrentTime').and.returnValue(5000),
+            setCurrentTime: jasmine.createSpy('setCurrentTime'),
+
+            seekToBegin: jasmine.createSpy('seekToBegin'),
+            seekToEnd: jasmine.createSpy('seekToEnd'),
+
+            mse: { setMaxBufferLengthConfig: jasmine.createSpy('setMaxBufferLengthConfig') }
+        };
+    }
+
+    beforeEach(() => {
+        // Instanciation
+        component = new ControlBarPluginComponent(
+            {} as any,           // MediaPlayerService (non utilisé ici)
+            {} as any,           // ThumbnailService (non utilisé ici)
+            rendererStub as Renderer2
+        );
+
+        // Logger neutre pour éviter des erreurs
+        (component as any).logger = {
+            debug: jasmine.createSpy('debug'),
+            info: jasmine.createSpy('info'),
+            warn: jasmine.createSpy('warn')
+        };
+
+        // mediaPlayerElement + eventEmitter
+        emitSpy = jasmine.createSpy('emit');
+
+        createMediaPlayerStub();
+
+        (component as any).mediaPlayerElement = {
+            // Fournit le mediaPlayer mocké
+            getMediaPlayer: () => mediaPlayer,
+            // Petite API dont on n’a pas besoin ici mais que la classe pourrait appeler
+            getDisplayState: () => 'm',
+            eventEmitter: { emit: emitSpy },
+            aspectRatio: '4:3'
+        };
+
+        // Bouton volume (utilisé par applyShortcut pour ArrowUp/ArrowDown)
+        volumeButtonEl = document.createElement('button');
+        spyOn(volumeButtonEl, 'dispatchEvent').and.callThrough();
+        component.volumeButton = new ElementRef(volumeButtonEl);
+
+        // État initial des volumes
+        component.volumeLeft = 50;
+        component.volumeRight = 50;
+
+        // Nettoyage des timeouts par défaut
+        if ((jasmine as any).clock) {
+            jasmine.clock().uninstall();
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // applyShortcut
+    // -------------------------------------------------------------------------
+    describe('applyShortcut', () => {
+        it('doit appeler controlClicked et mettre à jour keypressed si un raccourci (non volume) correspond', () => {
+            spyOn(component, 'controlClicked');
+
+            component.listOfShortcuts = [
+                {
+                    shortcut: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
+                    control: 'playPause'
+                }
+            ];
+
+            const evt = {
+                shortcut: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
+                targets: ['CONTROL_BAR']
+            } as any;
+
+            component.applyShortcut(evt);
+
+            expect(component.keypressed).toBe('p');
+            expect(component.controlClicked).toHaveBeenCalledOnceWith('playPause');
+        });
+
+        it('doit appeler handleMuteUnmuteVolume si un raccourci volume correspond', () => {
+            const muteSpy = spyOn(component, 'handleMuteUnmuteVolume');
+
+            component.listOfShortcuts = [
+                {
+                    shortcut: { key: 'm', ctrl: false, shift: false, alt: false, meta: false },
+                    control: 'volume'
+                }
+            ];
+
+            const evt = {
+                shortcut: { key: 'm', ctrl: false, shift: false, alt: false, meta: false },
+                targets: ['CONTROL_BAR']
+            } as any;
+
+            component.applyShortcut(evt);
+
+            expect(component.keypressed).toBe('m');
+            expect(muteSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis hideAll après 1000ms', () => {
+            spyOn(component, 'hideAll');
+            jasmine.clock().install();
+
+            const evt = {
+                shortcut: { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false },
+                targets: ['CONTROL_BAR']
+            } as any;
+
+            component.volumeLeft = 98;
+            component.volumeRight = 99;
+
+            component.applyShortcut(evt);
+
+            // Mouseenter déclenché sur le bouton volume
+            expect(volumeButtonEl.dispatchEvent).toHaveBeenCalled();
+            // Volumes incrémentés et bornés à 100
+            expect(component.volumeLeft).toBe(100);
+            expect(component.volumeRight).toBe(100);
+
+            // hideAll doit être appelé après 1s
+            jasmine.clock().tick(999);
+            expect(component.hideAll).not.toHaveBeenCalled();
+            jasmine.clock().tick(1);
+            expect(component.hideAll).toHaveBeenCalledTimes(1);
+
+            jasmine.clock().uninstall();
+        });
+
+        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0), puis hideAll après 1000ms', () => {
+            spyOn(component, 'hideAll');
+            jasmine.clock().install();
+
+            const evt = {
+                shortcut: { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false },
+                targets: ['CONTROL_BAR']
+            } as any;
+
+            component.volumeLeft = 1;
+            component.volumeRight = 4;
+
+            component.applyShortcut(evt);
+
+            expect(volumeButtonEl.dispatchEvent).toHaveBeenCalled();
+            expect(component.volumeLeft).toBe(0);
+            expect(component.volumeRight).toBe(0);
+
+            jasmine.clock().tick(1000);
+            expect(component.hideAll).toHaveBeenCalledTimes(1);
+
+            jasmine.clock().uninstall();
+        });
+
+        it('ne fait rien si aucun raccourci ne correspond (et pas ArrowUp/ArrowDown)', () => {
+            const muteSpy = spyOn(component, 'handleMuteUnmuteVolume');
+            const clickSpy = spyOn(component, 'controlClicked');
+
+            component.listOfShortcuts = [
+                {
+                    shortcut: { key: 'x', ctrl: false, shift: false, alt: false, meta: false },
+                    control: 'playPause'
+                }
+            ];
+
+            const evt = {
+                shortcut: { key: 'y', ctrl: false, shift: false, alt: false, meta: false },
+                targets: ['CONTROL_BAR']
+            } as any;
+
+            component.applyShortcut(evt);
+
+            expect(muteSpy).not.toHaveBeenCalled();
+            expect(clickSpy).not.toHaveBeenCalled();
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // controlClicked
+    // -------------------------------------------------------------------------
+    describe('controlClicked', () => {
+        it('playPause: appelle mediaPlayer.playPause() et ferme le menu si ouvert', () => {
+            component.enableMenu = true;
+
+            component.controlClicked('playPause');
+
+            expect(mediaPlayer.playPause).toHaveBeenCalledTimes(1);
+            expect(component.enableMenu).toBeFalse();
+        });
+
+        it('volume: appelle la méthode privée toggleVolume()', () => {
+            const toggleVolumeSpy = spyOn<any>(component, 'toggleVolume');
+            component.controlClicked('volume');
+            expect(toggleVolumeSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('viewRatio: appelle playPause() (même comportement que playPause)', () => {
+            component.controlClicked('viewRatio');
+            expect(mediaPlayer.playPause).toHaveBeenCalledTimes(1);
+        });
+
+        it('screenshot: captureImage(100)', () => {
+            component.controlClicked('screenshot');
+            expect(mediaPlayer.captureImage).toHaveBeenCalledOnceWith(100);
+        });
+
+        it('backward: déclenche prevPlaybackRate()', () => {
+            const spyPrev = spyOn<any>(component, 'prevPlaybackRate');
+            component.controlClicked('backward');
+            expect(spyPrev).toHaveBeenCalledTimes(1);
+        });
+
+        it('slow-backward: déclenche prevSlowPlaybackRate()', () => {
+            const spyPrevSlow = spyOn<any>(component, 'prevSlowPlaybackRate');
+            component.controlClicked('slow-backward');
+            expect(spyPrevSlow).toHaveBeenCalledTimes(1);
+        });
+
+        it('backward-5seconds: pauseOnly, movePrevFrame(frames) et play() si non en pause', () => {
+            mediaPlayer.framerate = 25; // 5 s => 125 frames
+            mediaPlayer.isPaused.and.returnValue(false);
+
+            component.controlClicked('backward-5seconds');
+
+            expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
+            expect(mediaPlayer.movePrevFrame).toHaveBeenCalledOnceWith(125);
+            expect(mediaPlayer.play).toHaveBeenCalled();
+        });
+
+        it('forward-second: pauseOnly, moveNextFrame(frames) et pas de play() si en pause', () => {
+            mediaPlayer.framerate = 30; // 1 s => 30 frames
+            mediaPlayer.isPaused.and.returnValue(true);
+
+            component.controlClicked('forward-second');
+
+            expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
+            expect(mediaPlayer.moveNextFrame).toHaveBeenCalledOnceWith(30);
+            expect(mediaPlayer.play).not.toHaveBeenCalled();
+        });
+
+        it('backward-frame: pauseOnly puis movePrevFrame(1)', () => {
+            component.controlClicked('backward-frame');
+
+            expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
+            expect(mediaPlayer.movePrevFrame).toHaveBeenCalledOnceWith(1);
+        });
+
+        it('backward-1h: recule de 3600 s (mode normal)', () => {
+            mediaPlayer.reverseMode = false;
+            mediaPlayer.getCurrentTime.and.returnValue(7200);
+
+            component.controlClicked('backward-1h');
+
+            expect(mediaPlayer.setCurrentTime).toHaveBeenCalledOnceWith(7200 - 3600);
+        });
+
+        it('forward-1h: en reverseMode, avance logique => time - 3600', () => {
+            mediaPlayer.reverseMode = true;
+            mediaPlayer.getDuration.and.returnValue(10000);
+            mediaPlayer.getCurrentTime.and.returnValue(1000); // current = 9000 => 9000 - 3600 = 5400
+
+            component.controlClicked('forward-1h');
+
+            expect(mediaPlayer.setCurrentTime).toHaveBeenCalledOnceWith(5400);
+        });
+
+        it('backward-start: remet la vitesse à 1 puis seekToBegin()', () => {
+            const spyChangeRate = spyOn<any>(component, 'changePlaybackRate');
+            component.controlClicked('backward-start');
+
+            expect(spyChangeRate).toHaveBeenCalledOnceWith(1);
+            expect(mediaPlayer.seekToBegin).toHaveBeenCalledTimes(1);
+        });
+
+        it('forward: déclenche nextPlaybackRate()', () => {
+            const spyNext = spyOn<any>(component, 'nextPlaybackRate');
+            component.controlClicked('forward');
+            expect(spyNext).toHaveBeenCalledTimes(1);
+        });
+
+        it('slow-forward: déclenche nextSlowPlaybackRate()', () => {
+            const spyNextSlow = spyOn<any>(component, 'nextSlowPlaybackRate');
+            component.controlClicked('slow-forward');
+            expect(spyNextSlow).toHaveBeenCalledTimes(1);
+        });
+
+        it('forward-10seconds: pauseOnly puis moveNextFrame(10*framerate) et play() si non en pause', () => {
+            mediaPlayer.framerate = 24; // 10 s => 240 frames
+            mediaPlayer.isPaused.and.returnValue(false);
+
+            component.controlClicked('forward-10seconds');
+
+            expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
+            expect(mediaPlayer.moveNextFrame).toHaveBeenCalledOnceWith(240);
+            expect(mediaPlayer.play).toHaveBeenCalled();
+        });
+
+        it('forward-frame: pauseOnly puis moveNextFrame(1)', () => {
+            component.controlClicked('forward-frame');
+
+            expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
+            expect(mediaPlayer.moveNextFrame).toHaveBeenCalledOnceWith(1);
+        });
+
+        it('forward-end: remet la vitesse à 1 puis seekToEnd()', () => {
+            const spyChangeRate = spyOn<any>(component, 'changePlaybackRate');
+            component.controlClicked('forward-end');
+
+            expect(spyChangeRate).toHaveBeenCalledOnceWith(1);
+            expect(mediaPlayer.seekToEnd).toHaveBeenCalledTimes(1);
+        });
+
+        it('displaySlider: appelle la méthode privée displaySlider()', () => {
+            const spyDisplay = spyOn<any>(component, 'displaySlider');
+            component.controlClicked('displaySlider');
+            expect(spyDisplay).toHaveBeenCalledTimes(1);
+        });
+
+        it('pinControls: appelle la méthode privée pinControls()', () => {
+            const spyPin = spyOn<any>(component, 'pinControls');
+            component.controlClicked('pinControls');
+            expect(spyPin).toHaveBeenCalledTimes(1);
+        });
+
+        it('toggleFullScreen: appelle la méthode privée toggleFullScreen()', () => {
+            const spyFs = spyOn<any>(component, 'toggleFullScreen');
+            component.controlClicked('toggleFullScreen');
+            expect(spyFs).toHaveBeenCalledTimes(1);
+        });
+
+        it('aspectRatio: appelle changeAspectRatio()', () => {
+            const spyRatio = spyOn(component, 'changeAspectRatio');
+            component.controlClicked('aspectRatio');
+            expect(spyRatio).toHaveBeenCalledTimes(1);
+        });
+
+        it('subtitles: appelle updateSubtitlePosition()', () => {
+            const spySub = spyOn(component, 'updateSubtitlePosition');
+            component.controlClicked('subtitles');
+            expect(spySub).toHaveBeenCalledTimes(1);
+        });
+
+        it('download: appelle downloadUrl(control)', () => {
+            const spyDl = spyOn(component, 'downloadUrl');
+            component.controlClicked('download');
+            expect(spyDl).toHaveBeenCalledOnceWith('download');
+        });
+
+        it('par défaut: log.warn("Control not implemented", control)', () => {
+            component.controlClicked('not-implemented');
+            expect((component as any).logger.warn)
+                .toHaveBeenCalledWith('Control not implemented', 'not-implemented');
+        });
+    });
 });
