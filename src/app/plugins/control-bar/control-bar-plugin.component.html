@@ -30,7 +30,7 @@
                 <!-- ngSwitch by controls-->
                 <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
                     <!-- play pause mode-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" (click)="controlClicked(c.control);hideAll()"
@@ -45,7 +45,7 @@
                         </svg>
                     </div>
                     <!--FullScreen Button -->
-                    <div tooltip="{{c.label}}" placement="top"   autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" (click)="controlClicked(c.control)"
@@ -59,13 +59,12 @@
                         </svg>
                     </div>
                     <!--Aspect Ratio-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'aspectRatio'"
                         class="aspect-ratio control text" [attr.aria-label]="c.label" (click)="changeAspectRatio()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}"
-                        (mouseenter)="hideAll('ratio');enableListRatio=true;">
+                        [ngStyle]="{'order':c.order ? c.order:'0'}" (mouseenter)="aspectRatioMouseEnter()">
                         <div class="value">{{aspectRatio}}</div>
                         <div class="list-options" [ngClass]="{'on':enableListRatio}"
                             (mouseleave)="enableListRatio=false">
@@ -90,7 +89,7 @@
 
                     </div>
                     <!--Playback Rate-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')) && currentPlaybackRate !== 1}"
@@ -99,7 +98,7 @@
                         {{currentPlaybackRate}}x
                     </div>
                     <!--Download-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="false" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="false" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'download'"
@@ -112,7 +111,7 @@
                         </a>
                     </div>
                     <!--Forward Images-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'images-forward'"
@@ -123,7 +122,7 @@
                         </svg>
                     </div>
                     <!--Backward Images-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'images-backward'"
@@ -138,8 +137,8 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'callback'"
-                        class="control callback" [attr.aria-label]="c.label" tooltip="{{c.label}}" placement="top"  autoPlacement="true"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
+                        class="control callback" [attr.aria-label]="c.label" tooltip="{{c.label}}" placement="top"
+                        autoPlacement="true" [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
@@ -150,7 +149,7 @@
                             ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                             ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'volume'"
                         class="volume control" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                        (mouseenter)="hideAll();enableVolumeSlider=true; openVolume(c.data)" #volumeButton>
+                        (mouseenter)="volumeMouseEnter(c.data)" #volumeButton>
                         <svg tooltip="{{c.label}}" *ngIf="volumeLeft > 0 || volumeRight > 0"
                             class="amalia-svg-volume-on-size icon" (click)="handleMuteUnmuteVolume()" #volumeMute>
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
@@ -271,7 +270,7 @@
                         </div>
                     </div>
                     <!-- Button subtitles -->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'subtitles'"
@@ -297,7 +296,7 @@
                         </div>
                     </div>
                     <!--Menu Button-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')) && controls.length > 0}" *ngSwitchCase="'menu'"
@@ -309,7 +308,7 @@
                         </svg>
                     </div>
                     <!-- pinControls-->
-                    <div #pinControls tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div #pinControls tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                     ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                     ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                     ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"
@@ -320,7 +319,7 @@
                         </svg>
                     </div>
                     <!-- displaySlider-->
-                    <div #displaySlider tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div #displaySlider tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                     ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                     ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                     ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"
@@ -331,7 +330,7 @@
                         </svg>
                     </div>
                     <!--Other controls-->
-                    <div tooltip="{{c.label}}" placement="top"  autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"

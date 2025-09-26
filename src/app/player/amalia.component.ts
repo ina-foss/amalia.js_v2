@@ -418,14 +418,32 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_DURATION, this.sendDuration);
         this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
         this.addListener(document, PlayerEventType.ELEMENT_KEYDOWN, this.handleShortCutsKeyDownEvent);
+        this.addListener(document, PlayerEventType.ELEMENT_FOCUSIN, this.handleMuteShortcuts);
+        this.addListener(document, PlayerEventType.ELEMENT_FOCUSOUT, this.handleUnmuteShortcuts);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_MUTE, this.handleMuteShortcuts);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_UNMUTE, this.handleUnmuteShortcuts);
     }
-    handleMuteShortcuts() {
-        this.muteShortcuts = true;
+
+    handleMuteShortcuts($event) {
+        if ($event == undefined ||
+            $event.target instanceof HTMLInputElement ||
+            $event.target instanceof HTMLTextAreaElement ||
+            $event.target instanceof HTMLSelectElement ||
+            $event.target instanceof HTMLButtonElement ||
+            ($event.target instanceof HTMLElement && $event.target.isContentEditable === true)) {
+            this.muteShortcuts = true;
+        }
     }
-    handleUnmuteShortcuts() {
-        this.muteShortcuts = false;
+
+    handleUnmuteShortcuts($event) {
+        if ($event == undefined ||
+            $event.target instanceof HTMLInputElement ||
+            $event.target instanceof HTMLTextAreaElement ||
+            $event.target instanceof HTMLSelectElement ||
+            $event.target instanceof HTMLButtonElement ||
+            ($event.target instanceof HTMLElement && $event.target.isContentEditable === true)) {
+            this.muteShortcuts = false;
+        }
     }
 
     handleShortCutsKeyDownEvent($event) {

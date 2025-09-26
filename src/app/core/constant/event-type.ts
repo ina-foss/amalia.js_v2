@@ -268,6 +268,8 @@ export enum PlayerEventType {
     ELEMENT_FULLSCREENCHANGE = 'fullscreenchange',
     ELEMENT_KEYDOWN = 'keydown',
     ELEMENT_KEYUP = 'keyup',
+    ELEMENT_FOCUSIN = "focusin",
+    ELEMENT_FOCUSOUT = "focusout",
     SHORTCUT_KEYDOWN = "SHORTCUT_KEYDOWN",
     SHORTCUT_MUTE = "SHORTCUT_MUTE",
     SHORTCUT_UNMUTE = "SHORTCUT_UNMUTE",

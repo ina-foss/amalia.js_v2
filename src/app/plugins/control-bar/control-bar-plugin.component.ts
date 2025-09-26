@@ -16,6 +16,7 @@ import { matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent } from 'src/a
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> {
+
     public static PLUGIN_NAME = 'CONTROL_BAR';
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
     /**
@@ -257,7 +258,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     displaySliderElement: ElementRef;
     @ViewChild('pinControls')
     pinControlsElement: ElementRef;
-    volumepanelTimeOut: any;
+    aspectRatioMouseEnterTimeOut: any;
+    volumeMouseEnterTimeOut: any;
 
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2) {
@@ -575,10 +577,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
             this.volumeRight = Math.min(this.volumeRight + 5, 100);
             this.volumeLeft = Math.min(this.volumeLeft + 5, 100);
-            if(this.volumepanelTimeOut){
-                clearTimeout(this.volumepanelTimeOut);
+            if (this.volumeMouseEnterTimeOut) {
+                clearTimeout(this.volumeMouseEnterTimeOut);
             }
-            this.volumepanelTimeOut = setTimeout(() => {
+            this.volumeMouseEnterTimeOut = setTimeout(() => {
                 this.hideAll();
             }, 1000);
         }
@@ -586,10 +588,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
             this.volumeRight = Math.max(this.volumeRight - 5, 0);
             this.volumeLeft = Math.max(this.volumeLeft - 5, 0);
-            if(this.volumepanelTimeOut){
-                clearTimeout(this.volumepanelTimeOut);
+            if (this.volumeMouseEnterTimeOut) {
+                clearTimeout(this.volumeMouseEnterTimeOut);
             }
-            this.volumepanelTimeOut = setTimeout(() => {
+            this.volumeMouseEnterTimeOut = setTimeout(() => {
                 this.hideAll();
             }, 1000);
         }
@@ -1267,10 +1269,35 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enableListPositionsSubtitle) {
             this.enableListPositionsSubtitle = !this.enableListPositionsSubtitle;
         }
-        if (this.enableListRatio && control !== 'ratio') {
+        if (this.enableListRatio) {
             this.enableListRatio = !this.enableListRatio;
         }
     }
+
+    aspectRatioMouseEnter() {
+        this.hideAll('ratio');
+        this.enableListRatio = true;
+        if (this.aspectRatioMouseEnterTimeOut) {
+            clearTimeout(this.aspectRatioMouseEnterTimeOut);
+        }
+        this.aspectRatioMouseEnterTimeOut = setTimeout(() => {
+            this.enableListRatio = false;
+        }, 4000);
+    }
+
+    volumeMouseEnter(data: any) {
+        this.hideAll('volume');
+        this.enableVolumeSlider = true;
+        this.openVolume(data);
+        if (this.volumeMouseEnterTimeOut) {
+            clearTimeout(this.volumeMouseEnterTimeOut);
+        }
+        this.volumeMouseEnterTimeOut = setTimeout(() => {
+            this.enableVolumeSlider = false;
+            this.openPisteAudio = false;
+        }, 4000);
+    }
+
 
     /**
      * Mute sound
