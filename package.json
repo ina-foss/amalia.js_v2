@@ -42,7 +42,7 @@
         "ci": "^2.3.0",
         "dompurify": "^3.1.5",
         "file-saver": "^2.0.5",
-        "hls.js": "^1.6.5",
+        "hls.js": "^1.6.13",
         "interactjs": "^1.10.27",
         "json-as-xlsx": "^2.5.6",
         "lodash": "^4.17.21",
