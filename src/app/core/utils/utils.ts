@@ -162,6 +162,55 @@ export class Utils {
         }
         return undefined;
     }
+
+
+    public static needsToMutePlayerShortcuts(el: Element | null): boolean {
+        if (!el || !(el instanceof HTMLElement)) {
+            return false;
+        }
+        // 1) Test simple (si supporté)
+        try {
+            if (el.matches(':read-write')) {
+                return true;
+            }
+        } catch {
+            // certains moteurs anciens peuvent ne pas comprendre :read-write
+        }
+        // 2) Fallback manuel
+        if (el instanceof HTMLTextAreaElement) {
+            return !el.disabled && !el.readOnly;
+        }
+        if (el instanceof HTMLInputElement) {
+            return !el.disabled && !el.readOnly;
+        }
+        if (el instanceof HTMLSelectElement) {
+            return !el.disabled;
+        }
+        if (el instanceof HTMLButtonElement) {
+            return !el.disabled;
+        }
+        // contenteditable (héritage géré par isContentEditable)
+        if (el.isContentEditable) {
+            return true;
+        }
+        return false;
+    }
+
+    public static eventTargetNeedsToMuteShortcuts(ev: any): boolean {
+        const path = (ev.composedPath?.() ?? []) as EventTarget[];
+        // on prend le premier Element significatif du path
+        let el: Element | null = null;
+        for (const t of path) {
+            if (t instanceof Element) { el = t; break; }
+            if (t instanceof Node && t.nodeType === Node.TEXT_NODE) {
+                el = (t.parentElement ?? null);
+                break;
+            }
+        }
+        const needsToMuteShortcuts = Utils.needsToMutePlayerShortcuts(el);
+        return needsToMuteShortcuts;
+
+    }
 }
 
 

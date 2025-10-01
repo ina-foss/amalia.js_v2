@@ -322,7 +322,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
 
         for (const el of cases) {
             component.muteShortcuts = false;
-            component.handleMuteShortcuts({ target: el } as any);
+            component.handleMuteShortcuts({ target: el,composedPath: () => [el] } as any);
             //`cible: <${el.tagName.toLowerCase()}>`
             expect(component.muteShortcuts).toBeTrue();
         }
@@ -333,7 +333,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         div.contentEditable = 'true';
         component.muteShortcuts = false;
 
-        component.handleMuteShortcuts({ target: div } as any);
+        component.handleMuteShortcuts({ target: div,composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeTrue();
     });
 
@@ -341,7 +341,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         const div = document.createElement('div'); // non contentEditable
         component.muteShortcuts = false;
 
-        component.handleMuteShortcuts({ target: div } as any);
+        component.handleMuteShortcuts({ target: div,composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeFalse();
     });
 
@@ -362,7 +362,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
 
         for (const el of cases) {
             component.muteShortcuts = true;
-            component.handleUnmuteShortcuts({ target: el } as any);
+            component.handleUnmuteShortcuts({ target: el,composedPath: () => [el] } as any);
             //`cible: <${el.tagName.toLowerCase()}>`
             expect(component.muteShortcuts).toBeFalse();
         }
@@ -373,7 +373,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         div.contentEditable = 'true';
         component.muteShortcuts = true;
 
-        component.handleUnmuteShortcuts({ target: div } as any);
+        component.handleUnmuteShortcuts({ target: div,composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeFalse();
     });
 
@@ -381,7 +381,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         const div = document.createElement('div'); // non contentEditable
         component.muteShortcuts = true;
 
-        component.handleUnmuteShortcuts({ target: div } as any);
+        component.handleUnmuteShortcuts({ target: div,composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeTrue();
     });
 
@@ -395,7 +395,8 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
             ctrlKey: true,
             shiftKey: false,
             altKey: false,
-            metaKey: false
+            metaKey: false,
+            preventDefault: jasmine.createSpy('preventDefault')
         } as any;
 
         component.handleShortCutsKeyDownEvent(evt);

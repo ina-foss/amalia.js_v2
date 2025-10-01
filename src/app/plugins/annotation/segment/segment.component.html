@@ -35,8 +35,8 @@
                             <p-autoComplete id="categories" name="categories" [(ngModel)]="categories"
                                 [suggestions]="filteredCategories" (completeMethod)="searchCategories($event)"
                                 [multiple]="true" inputId="categories" [forceSelection]="true"
-                                (ngModelChange)="addToAvailableCategories($event)" (focus)="muteShortCuts()"
-                                (blur)="unmuteShortCuts()"></p-autoComplete>
+                                (ngModelChange)="addToAvailableCategories($event)" (onFocus)="muteShortCuts()"
+                                (onBlur)="unmuteShortCuts()"></p-autoComplete>
                             <label for="categories">Catégories</label>
                         </p-floatLabel>
                         <small class="segment-categories-alignment" *ngIf="categories() && categories().length >10"
@@ -49,8 +49,8 @@
                             <p-autoComplete id="keywords" name="keywords" [(ngModel)]="keywords"
                                 [suggestions]="filteredKeywords" (completeMethod)="searchKeywords($event)"
                                 [multiple]="true" inputId="keywords" [forceSelection]="true"
-                                (ngModelChange)="addToAvailableKeywords($event)" (focus)="muteShortCuts()"
-                                (blur)="unmuteShortCuts()"></p-autoComplete>
+                                (ngModelChange)="addToAvailableKeywords($event)" (onFocus)="muteShortCuts()"
+                                (onBlur)="unmuteShortCuts()"></p-autoComplete>
                             <label for="keywords">Mots-clés</label>
                         </p-floatLabel>
                         <small class="segment-keywords-alignment" *ngIf="keywords() && keywords().length >10"
