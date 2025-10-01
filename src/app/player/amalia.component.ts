@@ -425,23 +425,17 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     }
 
     handleMuteShortcuts($event) {
-        if ($event == undefined ||
-            $event.target instanceof HTMLInputElement ||
-            $event.target instanceof HTMLTextAreaElement ||
-            $event.target instanceof HTMLSelectElement ||
-            $event.target instanceof HTMLButtonElement ||
-            ($event.target instanceof HTMLElement && $event.target.isContentEditable === true)) {
+        let needsToMuteShortcuts = false;
+        $event && (needsToMuteShortcuts = Utils.eventTargetNeedsToMuteShortcuts($event));
+        if (($event == undefined) || needsToMuteShortcuts) {
             this.muteShortcuts = true;
         }
     }
 
     handleUnmuteShortcuts($event) {
-        if ($event == undefined ||
-            $event.target instanceof HTMLInputElement ||
-            $event.target instanceof HTMLTextAreaElement ||
-            $event.target instanceof HTMLSelectElement ||
-            $event.target instanceof HTMLButtonElement ||
-            ($event.target instanceof HTMLElement && $event.target.isContentEditable === true)) {
+        let needsToMuteShortcuts = false;
+        $event && (needsToMuteShortcuts = Utils.eventTargetNeedsToMuteShortcuts($event));
+        if (($event == undefined) || needsToMuteShortcuts) {
             this.muteShortcuts = false;
         }
     }
@@ -461,8 +455,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             },
             targets: ['CONTROL_BAR', 'ANNOTATIONS'],
         };
+
         if (this.muteShortcuts === false) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_KEYDOWN, shortcut);
+            $event.preventDefault();
         }
     }
 
