@@ -855,6 +855,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         Utils.unsubscribeTargetedElementEventListeners(this);
         this.playerService.decrement(this.playerId);
+        this.thumbnailService.listThumbnails = [];
     }
 
     /** @internal */
