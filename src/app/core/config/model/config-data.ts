@@ -13,6 +13,8 @@ export interface ConfigData {
      * Time code offset handle metadata time code
      */
     tcOffset?: number;
+    extractTcIn?: number;
+    extractTcOut?: number;
     player: PlayerConfigData;
     pluginsConfiguration?: Map<string, PluginConfigData<any>>;
     dataSources?: Array<ConfigDataSource>;

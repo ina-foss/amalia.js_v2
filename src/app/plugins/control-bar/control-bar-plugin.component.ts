@@ -69,6 +69,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public negPlaybackrates: Array<number> = [];
     public maxCursor: number;
     public minCursor: number;
+    public extractTcIn?: number = null;
+    public extractTcOut?: number = null;
     // handle slider drag
     @ViewChild('dragThumb')
     public dragElement: ElementRef;
@@ -314,6 +316,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
+
+        const configuration = this.mediaPlayerElement.getConfiguration();
+        this.extractTcIn = configuration.extractTcIn !== undefined ? configuration.extractTcIn : null;
+        this.extractTcOut = configuration.extractTcOut !== undefined ? configuration.extractTcOut : null;
+
         // Show thumbnail when tc = 0
         if (this.enableThumbnail) {
             const url = this.mediaPlayerElement.getThumbnailUrl(0, true);

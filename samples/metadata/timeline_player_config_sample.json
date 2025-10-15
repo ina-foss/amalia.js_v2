@@ -1,5 +1,7 @@
 {
     "tcOffset": 72000,
+    "extractTcIn":300,
+    "extractTcOut":1000,
     "player": {
         "backwardsSrc": "https://front.wsmedia.sas.ina/wsmedia/flux:tv:FR2:20220125T200000:1800?type=stream&protocol=hls&rewind=1",
         "src": "https://front.wsmedia.sas.ina/wsmedia/flux:tv:FR2:20220125T200000:1800?type=stream&protocol=hls",
