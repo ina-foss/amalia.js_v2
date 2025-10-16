@@ -14,7 +14,7 @@
         "build:icon": "svg-sprite -C svg-sprite.config.json src/styles/svgs/*.svg",
         "build": "ng lint && npm run build:icon && npm run build:component && cp -r package-public.json dist/amalia/package.json ",
         "publish": "cp -r package-public.json dist/amalia/package.json && cd dist/amalia && npm publish",
-        "test-watch": "ng test  --code-coverage",
+        "test-watch": "ng test --watch=true --code-coverage --browsers=ChromeHeadlessCI",
         "test": "ng test --watch=false --code-coverage --browsers=ChromeHeadlessCI",
         "sonar": "node sonar.conf.js",
         "lint": "ng lint",

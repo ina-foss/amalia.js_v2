@@ -19,16 +19,16 @@
             <div *ngIf="hasComponentWithoutZone('progressBar')" class="control progress-bar"
                 (mouseenter)="progressBarMouseEnter($event)" (mouseleave)="progressBarMouseLeave()"
                 (mousemove)="progressBarMouseMove($event)">
-                <div class="time-extract-container" *ngIf="extractTcIn!=null || extractTcOut!=null">
-                    <span class="time-extract-duration" *ngIf="extractTcIn!=null && extractTcOut!=null"  [style]="{left:'calc('+(extractTcIn/duration)*100+'% + 6px)', width:((extractTcOut-extractTcIn)/duration)*100+'%'}"></span>
-                    <span class="time-extract tc-in" *ngIf="extractTcIn!=null" [style]="{left:'calc('+(extractTcIn/duration)*100+'% + 6px)'}"></span>
-                    <span class="time-extract tc-out" *ngIf="extractTcOut!=null" [style]="{left:(extractTcOut/duration)*100+'%'}"></span>
+                <div class="time-extract-container" *ngIf="extractTcIn!=null || extractTcOut!=null" [ngClass]="{'on':onProgressBar}" >
+                    <span class="time-extract-duration" *ngIf="extractTcIn!=null && extractTcOut!=null"  [style]="{left:'calc('+(extractTcIn/duration)*100+'% + 2px)', width:((extractTcOut-extractTcIn)/duration)*100+'%'}"></span>
+                    <span class="time-extract tc-in" *ngIf="extractTcIn!=null" [style]="{left:'calc('+(extractTcIn/duration)*100+'% - 2px)'}" (click)="seekTo(extractTcIn)"></span>
+                    <span class="time-extract tc-out" *ngIf="extractTcOut!=null" [style]="{left:'calc('+(extractTcOut/duration)*100+'% - 4px)'}" (click)="seekTo(extractTcOut)"></span>
                 </div>
                 <div class="ui-slider">
                     <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
                     <input type="range" step='0.01' class="slider" min="0" [value]="progressBarValue" #progressBar
                         (mousedown)="handleProgressBarMouseDown()" (mousemove)="handleProgressBarMouseMove($event)"
-                        (mouseup)="handleProgressBarMouseUp($event)">
+                        (mouseup)="handleProgressBarMouseUp($event)" (mouseleave)="onProgressBar=false" (mouseenter)="onProgressBar=true">
                 </div>
             </div>
             <div *ngFor="let colId of [1,2,3]; index as i; last as isLast;" [ngClass]="{'last':isLast,'mid':i===1} "

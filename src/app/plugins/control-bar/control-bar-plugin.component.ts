@@ -1,13 +1,22 @@
-import { PluginBase } from '../../core/plugin/plugin-base';
-import { Component, ElementRef, EventEmitter, Input, Output, Renderer2, ViewChild, ViewEncapsulation } from '@angular/core';
+import {PluginBase} from '../../core/plugin/plugin-base';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    Renderer2,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import * as _ from 'lodash';
-import { PlayerEventType } from '../../core/constant/event-type';
-import { ControlBarConfig } from '../../core/config/model/control-bar-config';
-import { PluginConfigData } from '../../core/config/model/plugin-config-data';
-import { MediaPlayerService } from '../../service/media-player-service';
-import { ThumbnailService } from '../../service/thumbnail-service';
+import {PlayerEventType} from '../../core/constant/event-type';
+import {ControlBarConfig} from '../../core/config/model/control-bar-config';
+import {PluginConfigData} from '../../core/config/model/plugin-config-data';
+import {MediaPlayerService} from '../../service/media-player-service';
+import {ThumbnailService} from '../../service/thumbnail-service';
 import interact from 'interactjs';
-import { matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
+import {matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent} from 'src/app/core/config/model/shortcuts-event';
 
 @Component({
     selector: 'amalia-control-bar',
@@ -71,6 +80,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public minCursor: number;
     public extractTcIn?: number = null;
     public extractTcOut?: number = null;
+    public onProgressBar = false;
     // handle slider drag
     @ViewChild('dragThumb')
     public dragElement: ElementRef;
@@ -214,10 +224,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list position subtitles
      */
-    public listOfSubtitles = [{ label: 'Bas', key: 'down' }, {
+    public listOfSubtitles = [{label: 'Bas', key: 'down'}, {
         label: 'Haut',
         key: 'up'
-    }, { label: this.selectedLabel, key: this.subtitlePosition }];
+    }, {label: this.selectedLabel, key: this.subtitlePosition}];
     /**
      * progressBar element
      */
@@ -270,6 +280,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.thumbnailService = thumbnailService;
         this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
+
     listenToDisplaySliderDisplayChanges() {
         const sliderDisplayStyle = getComputedStyle(this.displaySliderElement.nativeElement).display;
         const displaySliderOff = !this.displaySliderElement || sliderDisplayStyle === 'none';
@@ -280,6 +291,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             svgPinControls && this.renderer.addClass(svgPinControls, 'amalia-svg-pin-size');
         }
     }
+
     listenToPinControlsDisplayChanges() {
         const pinControlsDisplayStyle = getComputedStyle(this.pinControlsElement.nativeElement).display;
         const pinControlsOff = !this.pinControlsElement || pinControlsDisplayStyle === 'none';
@@ -506,8 +518,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
         const listOfControls = new Array<ControlBarConfig>();
-        listOfControls.push({ label: 'Barre de progression', control: 'progressBar', priority: 1 });
-        listOfControls.push({ label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1 });
+        listOfControls.push({label: 'Barre de progression', control: 'progressBar', priority: 1});
+        listOfControls.push({label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1});
         listOfControls.push({
             label: 'Fullscreen',
             control: 'toggleFullScreen',
@@ -531,13 +543,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 const controlConfig = data[i];
                 if (typeof controlConfig.key !== 'undefined' && typeof controlConfig.control !== 'undefined') {
                     let key = controlConfig.key
-                        .replace('Control', '')
-                        .replace('Shift', '')
-                        .replace('Alt', '')
-                        .replace('Meta', '')
-                        .replaceAll('+', '')
-                        .replaceAll(' ', '')
-                        .toLowerCase();
+                            .replace('Control', '')
+                            .replace('Shift', '')
+                            .replace('Alt', '')
+                            .replace('Meta', '')
+                            .replaceAll('+', '')
+                            .replaceAll(' ', '')
+                            .toLowerCase();
                     const shortCut: Shortcut = {
                         key,
                         ctrl: controlConfig.key.includes('Control') || controlConfig.key.includes('Ctrl') || controlConfig.key.includes('control') || controlConfig.key.includes('ctrl'),
@@ -573,11 +585,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
         }
         const volumeUpShortcut: ShortcutControl = {
-            shortcut: { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false },
+            shortcut: {key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false},
             control: 'volume'
         };
         const volumeDownShortcut: ShortcutControl = {
-            shortcut: { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false },
+            shortcut: {key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false},
             control: 'volume'
         };
         if (matchesShortcut(volumeUpShortcut, shortcutToBeApplied.shortcut)) {
@@ -605,10 +617,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
+     * Invoked seek time
+     * @param time number
+     */
+    public seekTo(time: number) {
+        if (this.mediaPlayerElement.getMediaPlayer()) {
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(time);
+        }
+    }
+
+    /**
      * Invoked player with specified control function name
      * @param control control name
      */
-
     public controlClicked(control: string) {
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
@@ -658,12 +679,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(1);
                 break;
-            case 'backward-1h':
-                {
-                    let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
-                    currentTime = mediaPlayer.reverseMode ? currentTime + 3600 : currentTime - 3600;
-                    mediaPlayer.setCurrentTime(currentTime);
-                }
+            case 'backward-1h': {
+                let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
+                currentTime = mediaPlayer.reverseMode ? currentTime + 3600 : currentTime - 3600;
+                mediaPlayer.setCurrentTime(currentTime);
+            }
                 break;
             case 'backward-start':
                 this.changePlaybackRate(1);
@@ -687,12 +707,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 mediaPlayer.moveNextFrame(frames);
                 !paused && mediaPlayer.play();
                 break;
-            case 'forward-1h':
-                {
-                    let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
-                    currentTime = mediaPlayer.reverseMode ? currentTime - 3600 : currentTime + 3600;
-                    mediaPlayer.setCurrentTime(currentTime);
-                }
+            case 'forward-1h': {
+                let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
+                currentTime = mediaPlayer.reverseMode ? currentTime - 3600 : currentTime + 3600;
+                mediaPlayer.setCurrentTime(currentTime);
+            }
                 break;
             case 'forward-second':
                 frames = mediaPlayer.framerate;
@@ -737,7 +756,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param componentName compoent name
      */
     public hasComponentWithoutZone(componentName: string): boolean {
-        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: componentName });
+        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: componentName});
         return (control !== undefined && control !== null);
     }
 
@@ -747,7 +766,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public getControlsByZone(zone: number): Array<ControlBarConfig> {
         if (this.elements) {
-            return _.filter<ControlBarConfig>(this.elements, { zone });
+            return _.filter<ControlBarConfig>(this.elements, {zone});
         }
         return null;
     }
@@ -755,7 +774,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
         if (this.elements) {
             this.elements = _.orderBy(this.elements, ['order']);
-            return _.filter<ControlBarConfig>(this.elements, { priority, zone });
+            return _.filter<ControlBarConfig>(this.elements, {priority, zone});
         }
         return null;
     }
@@ -1353,20 +1372,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public initDragThumb() {
         // init drag slider
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
+                .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
         const step = Math.ceil(selected.offsetWidth);
         const values = this.controlBarContainer.nativeElement
-            .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
+                .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
         let left = (step / 2);
         values.forEach(value => {
             value.setAttribute('data-x', left.toString());
             left += step;
         });
-        let position = { x: Number(selected.getAttribute('data-x')) };
+        let position = {x: Number(selected.getAttribute('data-x'))};
         const container = this.dragElement.nativeElement;
         const self = this;
         const valuesContainer = this.controlBarContainer.nativeElement
-            .querySelector<HTMLElement>('.selected > .playback-rate-values');
+                .querySelector<HTMLElement>('.selected > .playback-rate-values');
         const maxWidth = valuesContainer.offsetWidth;
         container.style.paddingLeft = position.x + 'px';
         container.setAttribute('data-x', position.x);
@@ -1387,7 +1406,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                         event.stopImmediatePropagation();
                     } else {
                         event.preventDefault();
-                        position = { x: Number(container.getAttribute('data-x')) };
+                        position = {x: Number(container.getAttribute('data-x'))};
                         position.x += event.dx;
                         if (position.x < step / 2) {
                             event.target.style.paddingLeft = '0px';
@@ -1514,7 +1533,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
         const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
+                .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
         if (selected) {
             const position = Number(selected.getAttribute('data-x'));
             container.style.paddingLeft = position + 'px';
@@ -1538,7 +1557,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     initTracks() {
-        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: 'volume' });
+        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, {control: 'volume'});
         if (control && control.data && control.data.tracks) {
             this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
