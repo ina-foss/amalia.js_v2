@@ -458,7 +458,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
 
         if (this.muteShortcuts === false) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_KEYDOWN, shortcut);
-            (key && key.toLowerCase() === "enter") || $event.preventDefault();
+            if ($event.key !== 'enter' && $event.key !== 'Enter') {
+                $event.preventDefault();
+            }
         }
     }
 
