@@ -1,23 +1,23 @@
-import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
-import { ControlBarPluginComponent } from './control-bar-plugin.component';
-import { MediaPlayerService } from '../../service/media-player-service';
-import { ThumbnailService } from '../../service/thumbnail-service';
-import { ElementRef, NO_ERRORS_SCHEMA } from '@angular/core';
-import { MediaPlayerElement } from "../../core/media-player-element";
-import { DefaultLogger } from "../../core/logger/default-logger";
-import { HttpClient } from "@angular/common/http";
-import { DefaultConfigLoader } from "../../core/config/loader/default-config-loader";
-import { DefaultConfigConverter } from "../../core/config/converter/default-config-converter";
-import { ConfigurationManager } from "../../core/config/configuration-manager";
-import { DefaultMetadataLoader } from "../../core/metadata/loader/default-metadata-loader";
-import { DefaultMetadataConverter } from "../../core/metadata/converter/default-metadata-converter";
-import { MetadataManager } from "../../core/metadata/metadata-manager";
-import { PlayerEventType } from "../../core/constant/event-type";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
-import { Renderer2 } from '@angular/core';
-import { ShortcutEvent, ShortcutControl, Shortcut } from 'src/app/core/config/model/shortcuts-event';
-import { EventEmitter } from 'events';
+import {ComponentFixture, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import {ControlBarPluginComponent} from './control-bar-plugin.component';
+import {MediaPlayerService} from '../../service/media-player-service';
+import {ThumbnailService} from '../../service/thumbnail-service';
+import {ElementRef, NO_ERRORS_SCHEMA} from '@angular/core';
+import {MediaPlayerElement} from "../../core/media-player-element";
+import {DefaultLogger} from "../../core/logger/default-logger";
+import {HttpClient} from "@angular/common/http";
+import {DefaultConfigLoader} from "../../core/config/loader/default-config-loader";
+import {DefaultConfigConverter} from "../../core/config/converter/default-config-converter";
+import {ConfigurationManager} from "../../core/config/configuration-manager";
+import {DefaultMetadataLoader} from "../../core/metadata/loader/default-metadata-loader";
+import {DefaultMetadataConverter} from "../../core/metadata/converter/default-metadata-converter";
+import {MetadataManager} from "../../core/metadata/metadata-manager";
+import {PlayerEventType} from "../../core/constant/event-type";
+import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {TcFormatPipe} from "../../core/utils/tc-format.pipe";
+import {Renderer2} from '@angular/core';
+import {ShortcutEvent, ShortcutControl, Shortcut} from 'src/app/core/config/model/shortcuts-event';
+import {EventEmitter} from 'events';
 
 const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();
@@ -87,7 +87,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     key: 'c',
                     zone: 1,
                     order: 2,
-                    data: { 'tcParam': 'start', 'href': '' },
+                    data: {'tcParam': 'start', 'href': ''},
                     priority: 2
                 },
                 {
@@ -194,7 +194,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     zone: 3,
                     priority: 2,
                     key: 'm',
-                    data: { 'channelMergeVolume': false, 'channelMergerNode': '' },
+                    data: {'channelMergeVolume': false, 'channelMergerNode': ''},
                 },
                 {
                     label: 'Plein écran',
@@ -249,6 +249,8 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
     };
     mediaPlayerElement.configurationManager.configData = {
         "tcOffset": 0,
+        "extractTcIn": 10,
+        "extractTcOut": 200,
         "player": {
             "backwardsSrc": "",
             "src": "",
@@ -277,6 +279,8 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
     component.mediaPlayerElement = mediaPlayerElement;
     component.playerId = 'PLAYERONE';
     component.pluginInstance = '1';
+    component.extractTcIn=10
+    component.extractTcOut=300
     return mediaPlayerElement;
 }
 describe('ControlBarPluginComponent', () => {
@@ -322,6 +326,7 @@ describe('ControlBarPluginComponent', () => {
     it('should initialize playback rates', () => {
         spyOn(component, 'initPlaybackrates');
         component.init();
+
         expect(component.initPlaybackrates).toHaveBeenCalled();
     });
 
@@ -340,6 +345,8 @@ describe('ControlBarPluginComponent', () => {
         expect(component.currentTime).toBe(120);
         expect(component.time).toBe(120);
         expect(component.duration).toBe(1800);
+        expect(component.extractTcIn).toBe(10);
+        expect(component.extractTcOut).toBe(200);
     });
 
     it('should handle time change', () => {
@@ -438,6 +445,8 @@ describe('ControlBarPluginComponent 2', () => {
         component.thumbnailElement = new ElementRef(document.createElement('img'));
         tick(100);
         expect(component.pluginConfSetThroughInit).toBeFalse();
+        expect(component.extractTcIn).toBe(10);
+        expect(component.extractTcOut).toBe(200);
         expect(getThumbnailMock).toHaveBeenCalled();
         expect(initMock).toHaveBeenCalled();
     }));
@@ -451,12 +460,35 @@ describe('ControlBarPluginComponent 2', () => {
         mediaPlayerElement.eventEmitter.emit(PlayerEventType.INIT);
         tick(100);
         expect(component.pluginConfSetThroughInit).toBeFalse();
+        expect(component.extractTcIn).toBe(10);
+        expect(component.extractTcOut).toBe(200);
         expect(getThumbnailMock).toHaveBeenCalledTimes(2);
         expect(initMock).toHaveBeenCalledTimes(2);
     }));
 
     it('should apply shortcut and call controlClicked', () => {
-        const shortcut: Shortcut = { key: 'p', ctrl: false, shift: false, alt: false, meta: false };
+        const shortcut: Shortcut = {key: 'p', ctrl: false, shift: false, alt: false, meta: false};
+        const shortcutControl: ShortcutControl = {
+            shortcut,
+            control: 'playPause'
+        };
+
+        spyOn(component, 'controlClicked');
+        component.listOfShortcuts = [shortcutControl];
+
+        const event: ShortcutEvent = {
+            shortcut,
+            targets: ['CONTROL_BAR']
+        };
+
+        component.applyShortcut(event);
+
+        expect(component.keypressed).toBe('p');
+        expect(component.controlClicked).toHaveBeenCalledWith('playPause');
+    });
+
+    it('should apply shortcut and call controlClicked', () => {
+        const shortcut: Shortcut = {key: 'p', ctrl: false, shift: false, alt: false, meta: false};
         const shortcutControl: ShortcutControl = {
             shortcut,
             control: 'playPause'
@@ -477,7 +509,7 @@ describe('ControlBarPluginComponent 2', () => {
     });
 
     it('should apply volume shortcut and call handleMuteUnmuteVolume', () => {
-        const shortcut: Shortcut = { key: 'v', ctrl: false, shift: false, alt: false, meta: false };
+        const shortcut: Shortcut = {key: 'v', ctrl: false, shift: false, alt: false, meta: false};
         const shortcutControl: ShortcutControl = {
             shortcut,
             control: 'volume'
@@ -498,7 +530,7 @@ describe('ControlBarPluginComponent 2', () => {
     });
 
     it('should increase volume on ArrowUp shortcut', fakeAsync(() => {
-        const shortcut: Shortcut = { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false };
+        const shortcut: Shortcut = {key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false};
         const event: ShortcutEvent = {
             shortcut,
             targets: ['CONTROL_BAR']
@@ -523,7 +555,7 @@ describe('ControlBarPluginComponent 2', () => {
     }));
 
     it('should decrease volume on ArrowDown shortcut', fakeAsync(() => {
-        const shortcut: Shortcut = { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false };
+        const shortcut: Shortcut = {key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false};
         const event: ShortcutEvent = {
             shortcut,
             targets: ['CONTROL_BAR']
@@ -560,17 +592,26 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
 
     // Renderer minimal
     const rendererStub: Partial<Renderer2> = {
-        addClass: () => { },
-        removeClass: () => { },
-        setStyle: () => { },
-        removeStyle: () => { },
-        setAttribute: () => { },
-        removeAttribute: () => { },
-        listen: () => () => { },
+        addClass: () => {
+        },
+        removeClass: () => {
+        },
+        setStyle: () => {
+        },
+        removeStyle: () => {
+        },
+        setAttribute: () => {
+        },
+        removeAttribute: () => {
+        },
+        listen: () => () => {
+        },
         createElement: () => document.createElement('div') as any,
         createText: () => document.createTextNode('') as any,
-        appendChild: () => { },
-        removeChild: () => { },
+        appendChild: () => {
+        },
+        removeChild: () => {
+        },
         selectRootElement: () => document.createElement('div') as any
     };
 
@@ -596,16 +637,16 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             seekToBegin: jasmine.createSpy('seekToBegin'),
             seekToEnd: jasmine.createSpy('seekToEnd'),
 
-            mse: { setMaxBufferLengthConfig: jasmine.createSpy('setMaxBufferLengthConfig') }
+            mse: {setMaxBufferLengthConfig: jasmine.createSpy('setMaxBufferLengthConfig')}
         };
     }
 
     beforeEach(() => {
         // Instanciation
         component = new ControlBarPluginComponent(
-            {} as any,           // MediaPlayerService (non utilisé ici)
-            {} as any,           // ThumbnailService (non utilisé ici)
-            rendererStub as Renderer2
+                {} as any,           // MediaPlayerService (non utilisé ici)
+                {} as any,           // ThumbnailService (non utilisé ici)
+                rendererStub as Renderer2
         );
 
         // Logger neutre pour éviter des erreurs
@@ -625,7 +666,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             getMediaPlayer: () => mediaPlayer,
             // Petite API dont on n’a pas besoin ici mais que la classe pourrait appeler
             getDisplayState: () => 'm',
-            eventEmitter: { emit: emitSpy },
+            eventEmitter: {emit: emitSpy},
             aspectRatio: '4:3'
         };
 
@@ -653,13 +694,13 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
 
             component.listOfShortcuts = [
                 {
-                    shortcut: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
+                    shortcut: {key: 'p', ctrl: false, shift: false, alt: false, meta: false},
                     control: 'playPause'
                 }
             ];
 
             const evt = {
-                shortcut: { key: 'p', ctrl: false, shift: false, alt: false, meta: false },
+                shortcut: {key: 'p', ctrl: false, shift: false, alt: false, meta: false},
                 targets: ['CONTROL_BAR']
             } as any;
 
@@ -674,13 +715,13 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
 
             component.listOfShortcuts = [
                 {
-                    shortcut: { key: 'm', ctrl: false, shift: false, alt: false, meta: false },
+                    shortcut: {key: 'm', ctrl: false, shift: false, alt: false, meta: false},
                     control: 'volume'
                 }
             ];
 
             const evt = {
-                shortcut: { key: 'm', ctrl: false, shift: false, alt: false, meta: false },
+                shortcut: {key: 'm', ctrl: false, shift: false, alt: false, meta: false},
                 targets: ['CONTROL_BAR']
             } as any;
 
@@ -695,7 +736,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             jasmine.clock().install();
 
             const evt = {
-                shortcut: { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false },
+                shortcut: {key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false},
                 targets: ['CONTROL_BAR']
             } as any;
 
@@ -725,7 +766,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             jasmine.clock().install();
 
             const evt = {
-                shortcut: { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false },
+                shortcut: {key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false},
                 targets: ['CONTROL_BAR']
             } as any;
 
@@ -757,7 +798,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             jasmine.clock().install();
 
             const evt = {
-                shortcut: { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false },
+                shortcut: {key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false},
                 targets: ['CONTROL_BAR']
             } as any;
 
@@ -780,7 +821,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             jasmine.clock().install();
 
             const evt = {
-                shortcut: { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false },
+                shortcut: {key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false},
                 targets: ['CONTROL_BAR']
             } as any;
 
@@ -809,13 +850,13 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
 
             component.listOfShortcuts = [
                 {
-                    shortcut: { key: 'x', ctrl: false, shift: false, alt: false, meta: false },
+                    shortcut: {key: 'x', ctrl: false, shift: false, alt: false, meta: false},
                     control: 'playPause'
                 }
             ];
 
             const evt = {
-                shortcut: { key: 'y', ctrl: false, shift: false, alt: false, meta: false },
+                shortcut: {key: 'y', ctrl: false, shift: false, alt: false, meta: false},
                 targets: ['CONTROL_BAR']
             } as any;
 
@@ -848,6 +889,12 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
         it('viewRatio: appelle playPause() (même comportement que playPause)', () => {
             component.controlClicked('viewRatio');
             expect(mediaPlayer.playPause).toHaveBeenCalledTimes(1);
+        });
+
+        it('appelle seekTc(), ()',() => {
+            const spySeekTo = spyOn<any>(component, 'seekTo').and.callThrough();
+            component.seekTo(2);
+            expect(spySeekTo).toHaveBeenCalledTimes(1);
         });
 
         it('screenshot: captureImage(100)', () => {
@@ -1000,7 +1047,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
         it('par défaut: log.warn("Control not implemented", control)', () => {
             component.controlClicked('not-implemented');
             expect((component as any).logger.warn)
-                .toHaveBeenCalledWith('Control not implemented', 'not-implemented');
+                    .toHaveBeenCalledWith('Control not implemented', 'not-implemented');
         });
     });
 });
@@ -1042,19 +1089,19 @@ describe('ControlBarPluginComponent (focused methods)', () => {
             declarations: [ControlBarPluginComponent, TcFormatPipe],
             imports: [HttpClientTestingModule],
             providers: [
-                { provide: Renderer2, useValue: rendererSpy },
-                { provide: MediaPlayerService, useValue: playerService },// si le token réel est exporté, remplace 'MediaPlayerService' par la classe
+                {provide: Renderer2, useValue: rendererSpy},
+                {provide: MediaPlayerService, useValue: playerService},// si le token réel est exporté, remplace 'MediaPlayerService' par la classe
                 ThumbnailService,     // idem
             ],
             schemas: [NO_ERRORS_SCHEMA]
         })
-            // note: si tu as les classes concrètes, remplace les tokens string par les vraies classes
-            .overrideComponent(ControlBarPluginComponent, {
-                set: { // pas de template requis pour ces tests
-                    template: '<div></div>'
-                }
-            })
-            .compileComponents();
+                // note: si tu as les classes concrètes, remplace les tokens string par les vraies classes
+                .overrideComponent(ControlBarPluginComponent, {
+                    set: { // pas de template requis pour ces tests
+                        template: '<div></div>'
+                    }
+                })
+                .compileComponents();
     });
 
     beforeEach(() => {
@@ -1067,7 +1114,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         component['mediaPlayerElement'] = mediaPlayerElement;
         // ---- ViewChild simulés
         const progressBar = document.createElement('div');
-        Object.defineProperty(progressBar, 'offsetWidth', { value: 100 }); // largeur container
+        Object.defineProperty(progressBar, 'offsetWidth', {value: 100}); // largeur container
         component.progressBarElement = new ElementRef(progressBar);
 
         const controlBarContainer = document.createElement('div');
@@ -1086,7 +1133,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
     it('updateThumbnail() doit calculer le tc et appeler setThumbnail avec l’URL et le currentTime attendus', () => {
         // ---- ViewChild simulés
         const progressBar = document.createElement('div');
-        Object.defineProperty(progressBar, 'offsetWidth', { value: 100 }); // largeur container
+        Object.defineProperty(progressBar, 'offsetWidth', {value: 100}); // largeur container
         component.progressBarElement = new ElementRef(progressBar);
 
         const controlBarContainer = document.createElement('div');
@@ -1099,7 +1146,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         component.duration = 200; // ex: 200s
 
         // offsetX = 50, containerWidth = 100, duration = 200 -> tc = 100
-        const evt = { offsetX: 50 } as any;
+        const evt = {offsetX: 50} as any;
         const setThumbnailSpy = spyOn(component, 'setThumbnail');
 
         component.updateThumbnail(evt);
@@ -1111,7 +1158,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
     it('updateThumbnail() ne doit rien faire si tc n’est pas fini (containerWidth = 0)', () => {
         // ---- ViewChild simulés
         const progressBar = document.createElement('div');
-        Object.defineProperty(progressBar, 'offsetWidth', { value: 0 }); // largeur container
+        Object.defineProperty(progressBar, 'offsetWidth', {value: 0}); // largeur container
         component.progressBarElement = new ElementRef(progressBar);
 
         const controlBarContainer = document.createElement('div');
@@ -1125,7 +1172,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
 
         //const progressBarNativeElement = component.progressBarElement.nativeElement as HTMLDivElement;
         //Object.defineProperty(progressBarNativeElement, 'offsetWidth', { value: 0 });
-        const evt = { offsetX: 10 } as any;
+        const evt = {offsetX: 10} as any;
 
         const setThumbnailSpy = spyOn(component, 'setThumbnail');
 
@@ -1139,11 +1186,11 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         beforeEach(() => {
             // Élément de config couvrant les priorités 5/4/3/2 et différentes zones
             component.elements = [
-                { control: 'c1', zone: 1, priority: 5 },
-                { control: 'c2', zone: 2, priority: 4 },
-                { control: 'c3', zone: 3, priority: 3 },
-                { control: 'c4', zone: 1, priority: 2 },
-                { control: 'c5', zone: 2, priority: 5, notInMenu: true }, // doit être filtré
+                {control: 'c1', zone: 1, priority: 5},
+                {control: 'c2', zone: 2, priority: 4},
+                {control: 'c3', zone: 3, priority: 3},
+                {control: 'c4', zone: 1, priority: 2},
+                {control: 'c5', zone: 2, priority: 5, notInMenu: true}, // doit être filtré
             ] as any;
             spyOn(component, 'updatePinAndSpeedSliderPositions'); // on vérifie l’appel sans exécuter la logique DOM
         });
@@ -1252,7 +1299,8 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         it('annule un timer précédent s’il existe', fakeAsync(() => {
             const clearSpy = spyOn(window, 'clearTimeout').and.callThrough();
             // on installe un timer existant
-            component.aspectRatioMouseEnterTimeOut = setTimeout(() => { }, 999999);
+            component.aspectRatioMouseEnterTimeOut = setTimeout(() => {
+            }, 999999);
 
             component.aspectRatioMouseEnter();
             expect(clearSpy).toHaveBeenCalled(); // le timer précédent est annulé

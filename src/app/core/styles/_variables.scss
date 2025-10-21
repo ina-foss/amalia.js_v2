@@ -64,8 +64,16 @@ $amalia-loading-plugin-histogram-z-index: var(--amalia-loading-plugin-histogram-
 
 // Control bar back
 $amalia-ctrl-bar-z-index: var(--amalia-ctrl-bar-z-index, 2);
+$amalia-ctrl-bar-pin-z-index: var(--amalia-ctrl-bar-pin-z-index, 1);
+$amalia-ctrl-bar-slider-z-index: var(--amalia-ctrl-bar-slider-z-index, none);
 $amalia-ctrl-bar-bg-color: var(--amalia-ctrl-bar-bg-color, rgba(34, 34, 34, 0.9));
 $amalia-ctrl-bar-btn-hover: var(--amalia-ctrl-bar-btn-hover, #0086B1);
+$amalia-ctrl-bar-progress-bar-color: var(--amalia-ctrl-bar-progress-bar-color, #ffffff);
+$amalia-ctrl-bar-progress-bar-color-hover: var(--amalia-ctrl-bar-progress-bar-color-hover, $amalia-primary-color);
+$amalia-ctrl-bar-extract-pin: var(--amalia-ctrl-bar-extract-pin, #0086B1);
+$amalia-ctrl-bar-extract-pin-z-index: var(--amalia-ctrl-bar-extract-pin-z-index, 2);
+$amalia-ctrl-bar-extract-duration-z-index: var(--amalia-ctrl-bar-extract-duration-z-index, 2);
+$amalia-ctrl-bar-extract-duration-color: var(--amalia-ctrl-bar-extract-duration-color, #0086B1);
 $backgroundColor: #2e2e2e;
 $amalia-border-buttons-bg-color: var(--amalia-border-buttons-bg-color, #1A0C0C);
 // Playback rate slider

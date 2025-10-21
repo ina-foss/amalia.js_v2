@@ -101,6 +101,49 @@
     margin: 0;
     list-style: none;
 
+    .time-extract-container {
+      position: relative;
+      top: 8px;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 3px;
+
+      .time-extract-duration {
+        background-color: $amalia-ctrl-bar-extract-duration-color;
+        position: absolute;
+        display: block;
+        border-radius: 2px;
+        z-index: $amalia-ctrl-bar-extract-duration-z-index;
+        height: 3px;
+        top: -1px;
+      }
+
+      .time-extract {
+        width: 10px;
+        height: 10px;
+        top: -4px;
+        background-color: $amalia-ctrl-bar-extract-pin;
+        position: absolute;
+        display: block;
+        border-radius: 2px;
+        z-index: $amalia-ctrl-bar-extract-pin-z-index;
+      }
+
+      &.on {
+        .time-extract-duration {
+          height: 6px;
+          top: -4px;
+        }
+
+        .time-extract {
+          width: 15px;
+          height: 15px;
+          top: -8px;
+        }
+      }
+    }
+
     .column {
       min-width: 20px;
       min-height: 20px;
@@ -193,7 +236,7 @@
           height: 3px;
           top: 12px;
           position: absolute;
-          background-color: $amalia-primary-color;
+          background-color: $amalia-ctrl-bar-progress-bar-color-hover;
         }
 
         .slider {
@@ -208,6 +251,7 @@
           position: absolute;
           background: transparent;
           opacity: 1;
+          z-index: $amalia-ctrl-bar-slider-z-index;
 
           &::-webkit-slider-thumb {
             -webkit-appearance: none;
@@ -217,6 +261,7 @@
             border-radius: 50%;
             background: $amalia-primary-color;
             cursor: pointer;
+            z-index: $amalia-ctrl-bar-slider-z-index;
           }
 
           &::-moz-range-thumb {
@@ -225,6 +270,7 @@
             border-radius: 50%;
             background: $amalia-primary-color;
             cursor: pointer;
+            z-index: $amalia-ctrl-bar-slider-z-index;
           }
         }
       }
@@ -244,7 +290,7 @@
         }
 
         .ui-slider {
-          background-color: white;
+          background-color: $amalia-ctrl-bar-progress-bar-color;
           height: 3px;
           top: 4.5px;
 
@@ -374,7 +420,6 @@
         position: absolute;
         z-index: $amalia-volume-bar-z-index;
         right: 10%;
-        // top: -133px;
         bottom: 50px;
 
         &.on {
@@ -1101,6 +1146,7 @@
 
         a {
           text-decoration-color: white !important;
+
           span {
             color: white !important;
           }
