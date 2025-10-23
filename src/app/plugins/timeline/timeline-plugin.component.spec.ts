@@ -33,6 +33,7 @@ import { ButtonModule } from 'primeng/button';
 import { TimelineLocalisation } from 'src/app/core/metadata/model/timeline-localisation';
 import { MessagesModule } from 'primeng/messages';
 import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { PlayerEventType } from 'src/app/core/constant/event-type';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -4518,5 +4519,9 @@ describe('TimelinePluginComponent 3 ', () => {
         expect(component.mapOfBlocksIndexes.has(component.listOfBlocks[0])).toBeTrue();
         expect(component.mapOfBlocksIndexes.has(component.listOfBlocks[1])).toBeFalse();
     });
-
+    it('should export tv days', () => {
+        spyOn(component.mediaPlayerElement.eventEmitter, 'emit').and.callThrough();
+        component.exportTvDays();
+        expect(component.mediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.TIMELINE_EXPORT_TV_DAYS);
+    });
 });

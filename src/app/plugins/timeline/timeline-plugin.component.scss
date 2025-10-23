@@ -706,8 +706,8 @@
 
       .p-element {
         .p-button {
-          background-color: $colors-primitive-primary-color !important;
-          color: white !important;
+          background: none;
+          color: $colors-primitive-primary-color !important;
         }
       }
     }

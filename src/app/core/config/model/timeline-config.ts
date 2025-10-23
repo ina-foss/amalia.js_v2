@@ -1,4 +1,5 @@
 export interface TimelineConfig {
+
     /**
      * Plugin title
      */
@@ -26,4 +27,10 @@ export interface TimelineConfig {
     tcIn?: number;
     duration?: number;
     resourceType?: 'stock' | 'flux';
+    /**
+     * True for enable tv days
+     * Tv Days are enabled when the user is allowed to export the tv Days.
+     * This means that the metadata has some Tv program data
+     */
+    tvDaysEnabled?: boolean;
 }

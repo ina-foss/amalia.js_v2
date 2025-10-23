@@ -34,7 +34,6 @@ import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.compone
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit, AfterViewInit {
-
     public static PLUGIN_NAME = 'TIMELINE';
     public title: string;
     public mainBlockColor: string;
@@ -117,6 +116,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     mapOfBlocksIndexes: Map<TimeLineBlock, number> = new Map<TimeLineBlock, number>();
 
     @ViewChild('messages') messagesComponent!: InaMessagesComponent;
+    tvDaysEnabled: boolean = false;
 
 
     constructor(playerService: MediaPlayerService, private cdr: ChangeDetectorRef) {
@@ -141,6 +141,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.resourceType = this.pluginConfiguration?.data?.resourceType;
             this.tcIn = this.pluginConfiguration?.data?.tcIn;
             this.durationFromConfig = this.pluginConfiguration?.data?.duration;
+            this.tvDaysEnabled = this.pluginConfiguration?.data?.tvDaysEnabled;
             super.ngOnInit();
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
@@ -743,7 +744,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         setTimeout(() => {
             const selectedBlockElementBoundRect = selectedBlockElement.getBoundingClientRect();
             const listOfBlocksContainerBoundRect = this.listOfBlocksContainer.nativeElement.getBoundingClientRect();
-          
+
             if (selectedBlockElementBoundRect.left < listOfBlocksContainerBoundRect.left) {
                 const offset = listOfBlocksContainerBoundRect.left - selectedBlockElementBoundRect.left;
                 selectedBlockElement.style.transform = `translateX(${offset}px)`;
@@ -873,6 +874,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.allNodesChecked = nbSelectedNodes === nbNodes;
         this.indeterminate = nbSelectedNodes > 0 && nbSelectedNodes < nbNodes;
 
+    }
+    /**
+     * Export the tv days
+     * Sends an event through the mediaPlayerElement eventListener asking for the tv days to be exported
+     */
+    exportTvDays() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIMELINE_EXPORT_TV_DAYS);
     }
 
 }
