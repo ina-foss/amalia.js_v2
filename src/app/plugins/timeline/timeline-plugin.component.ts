@@ -125,8 +125,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     ngAfterViewInit(): void {
-        this.refreshTimeCursor();
-        this.updateTimeCodePosition();
+        this.subscriptionToEventsEmitters
+            .push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
+                undefined,
+                this.initAfterMediaPlayerElementIsReady.bind(this),
+                this.intervalStep,
+                this.timeout,
+                this.setDataLoading.bind(this)));
         (this.messagesComponent && typeof (this.messagesComponent as any).setMessages === 'function') &&
             (this.messagesComponent as any).setMessages([{
                 severity: 'info',
@@ -146,11 +151,25 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
+        
+        this.subscriptionToEventsEmitters
+            .push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
+                undefined,
+                this.initAfterMediaPlayerElementIsReady.bind(this),
+                this.intervalStep,
+                this.timeout,
+                this.setDataLoading.bind(this)));
+    }
+
+    initAfterMediaPlayerElementIsReady() {
+        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        if (this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
             this.init();
             this.handleMetadataLoaded();
             this.handleOnDurationChange();
         }
+        this.refreshTimeCursor();
+        this.updateTimeCodePosition();
     }
 
     closeMenu(event: any) {
@@ -294,28 +313,21 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                         if (this.tcIn <= l.tcIn && l.tcIn <= tcOut) {
                             return true;
                         }
+                        if (l.tcIn <= this.tcIn && this.tcIn <= l.tcOut) {
+                            return true;
+                        }
                         return false;
                     });
-                    listOfLocalisations.forEach((l: { tcIn: number; tcOut: number; }) => {
-                        if (l.tcIn) {
-                            l.tcIn += this.tcIn;
-                        }
-                        if (l.tcOut) {
-                            l.tcOut += this.tcIn;
-                        }
-                    });
                 } else {
-                    listOfLocalisations.forEach((l: { tcIn: number; tcOut: number; }) => {
+                    for (const l of listOfLocalisations) {
                         if (l.tcIn) {
                             l.tcIn += this.tcOffset;
                         }
                         if (l.tcOut) {
                             l.tcOut += this.tcOffset;
                         }
-                    });
+                    };
                 }
-
-
             } catch (e) {
                 this.logger.warn('Error to parse metadata', e);
             }

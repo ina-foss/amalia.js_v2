@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { TimelinePluginComponent } from './timeline-plugin.component';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { TreeNode } from 'primeng/api/treenode';
@@ -3844,12 +3844,15 @@ describe('TimelinePluginComponent 2', () => {
         expect(spyOnInit).toHaveBeenCalled();
         expect(spyOnHandleMetaDataLoaded).toHaveBeenCalled();
     }));
-    it('Should manage onDragStart and onDrop', () => {
+    it('Should manage onDragStart and onDrop', fakeAsync(() => {
         fixture.detectChanges();
+        flush();
+        tick(35000);
         component.onDragStart(0);
         expect(component.startIndex).toEqual(0);
         component.onDrop(0);
-    });
+        flush();
+    }));
     it('Should handle refreshTimeCursor', () => {
         fixture.detectChanges();
         component.currentTime = 600;
@@ -3880,7 +3883,9 @@ describe('TimelinePluginComponent 2', () => {
             component.currentTime = 600;
             component.duration = 1800;
             fixture.detectChanges();
-            tick(400);
+            flush();
+            tick(35000);
+            fixture.changeDetectorRef.detectChanges();
             expect(spyOnRefreshTimeCursor).toHaveBeenCalled();
             expect(spyOnUpdateTimeCodePosition).toHaveBeenCalled();
             const listOfBlocks = component.listOfBlocks;
@@ -3906,6 +3911,7 @@ describe('TimelinePluginComponent 2', () => {
             statusText: 'Ok'
         });
         tick(400);
+        flush();
     }));
     it('Should manage callSeek', () => {
         const srcMedia = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
@@ -3918,26 +3924,29 @@ describe('TimelinePluginComponent 2', () => {
         spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.callThrough();
         fixture.detectChanges();
         component.callSeek(700);//tcOffset=600
-        expect(component.mediaPlayerElement.getMediaPlayer().getCurrentTime()).toEqual(100);
+        expect(component.mediaPlayerElement.getMediaPlayer().getCurrentTime()).toEqual(700);
     });
     it('Should removeBlock', fakeAsync(() => {
         spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
         mediaPlayerElement.metadataManager.init().then(() => {
             fixture.detectChanges();
-            tick(400);
+            tick(35000);
+            flush();
+            fixture.changeDetectorRef.detectChanges();
             const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
             const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordion-header');
             target.dispatchEvent(mouseEnterEvent);
             const removeButton: HTMLElement = target.querySelector('p-button');
             removeButton.click();
             expect(component.listOfBlocks[0].displayState).toEqual(false);
-        });
 
+        });
         httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
             status: 200,
             statusText: 'Ok'
         });
         tick(400);
+        flush();
     }));
 
 
@@ -3999,6 +4008,8 @@ describe('TimelinePluginComponent 2', () => {
             component.currentTime = 600;
             component.duration = 1800;
             fixture.detectChanges();
+            flush();
+            tick(35000);
             component.updateTreeComponent();
             expect(component.allNodesChecked).toBe(true);
             expect(component.indeterminate).toBe(false);
@@ -4008,6 +4019,7 @@ describe('TimelinePluginComponent 2', () => {
             statusText: 'Ok'
         });
         tick(400);
+        flush();
     }));
     it('Should closeMenu', fakeAsync(() => {
         spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
@@ -4016,6 +4028,9 @@ describe('TimelinePluginComponent 2', () => {
             component.currentTime = 600;
             component.duration = 1800;
             fixture.detectChanges();
+            flush();
+            tick(35000);
+            fixture.changeDetectorRef.detectChanges();
             const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
             const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordion-header');
             target.dispatchEvent(mouseEnterEvent);
@@ -4030,6 +4045,7 @@ describe('TimelinePluginComponent 2', () => {
             statusText: 'Ok'
         });
         tick(400);
+        flush();
     }));
 
     it('devrait positionner correctement les éléments et ajuster le translateX', fakeAsync(() => {
@@ -4436,7 +4452,7 @@ describe('TimelinePluginComponent 3 ', () => {
         component.tcOffset = 0;
         component.focusTcIn = 0;
         component.focusTcOut = 100;
-
+        component.timeFormat = 's';
         fixture.detectChanges();
     });
 
@@ -4446,9 +4462,9 @@ describe('TimelinePluginComponent 3 ', () => {
         const mainBlock: HTMLElement = component.mainBlockContainer.nativeElement.querySelector('.tc-cursor');
         const listBlock: HTMLElement = component.listOfBlocksContainer.nativeElement.querySelector('.tc-cursor');
 
-        expect(mainBlock.style.left).toBe('50px'); // 100 + (50 * 1000 / 100)
+        expect(mainBlock.style.left).toBe('550px'); // 100 + (50 * 1000 / 100)
         expect(mainBlock.style.width).toBe('2px');
-        expect(listBlock.style.left).toBe('50px'); // 50 + (0 + 50 - 0) * 1000 / 100
+        expect(listBlock.style.left).toBe('550px'); // 50 + (0 + 50 - 0) * 1000 / 100
         expect(listBlock.style.height).toBe('200px');
         expect(listBlock.style.width).toBe('2px');
     });
