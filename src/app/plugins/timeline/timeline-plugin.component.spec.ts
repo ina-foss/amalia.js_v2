@@ -4541,3 +4541,94 @@ describe('TimelinePluginComponent 3 ', () => {
         expect(component.mediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.TIMELINE_EXPORT_TV_DAYS);
     });
 });
+describe('TimelinePluginComponent For Stock', () => {
+    let component: TimelinePluginComponent;
+    let fixture: ComponentFixture<TimelinePluginComponent>;
+    let spyOngetCurrentTime: jasmine.Spy;
+    let spyOngetDuration: jasmine.Spy;
+
+    const timeline_metadata_url = "http://localhost/metadata/timelineListOfMetaData.json";
+    const timeline_metadata_Model = require("tests/assets/metadata/timelineListOfMetaDataForStock.json");
+    let httpTestingController: HttpTestingController;
+    let mediaPlayerElement: MediaPlayerElement;
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
+            providers: [MediaPlayerService],
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
+                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, InaMessagesComponent],
+            schemas: [
+                CUSTOM_ELEMENTS_SCHEMA
+            ]
+        }).compileComponents();
+    });
+
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(TimelinePluginComponent);
+        component = fixture.componentInstance;
+        component.playerId = 'playerOne';
+        const playerService = TestBed.inject(MediaPlayerService);
+        mediaPlayerElement = playerService.get(component.playerId);
+        const logger = new DefaultLogger();
+        const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+        const httpClient: HttpClient = TestBed.inject(HttpClient);
+        mediaPlayerElement.configurationManager = new ConfigurationManager(loader, logger);
+        mediaPlayerElement.configurationManager.configData = {
+            "tcOffset": 600,
+            "player": {
+                "backwardsSrc": "",
+                "src": "",
+                "autoplay": false,
+                "crossOrigin": "anonymous",
+                "ratio": "4:3"
+            },
+            "thumbnail": {
+                "baseUrl": "https://image.wsmedia.sas.ina/thumbs/qNnhN1ISmDe8DBMdODoONH5_X_k9J4W0Z7sqO1JsvUST-DVa82vq-bEt2LmebGISKNUHvCX9sZcePvGoCfle6WyX8kcF6OQIx8H_AuU_Iv2vPY8Lmbv1zlF-7QbYJvKRfEhyuN8NjXlmzqFVVU8cCqIUs1_mtaFimK2TZ-Log7UXSAwKdu_FHYF4nxuGfW5V7GkqVz1AoS_lH9b0WEfO3y9zPexndfEtZju1jTekkx0Xc7s37g5UCKT6_rQycibYIWsVaq28iUf6lzyZ2UBDzwLWbwO-LtXbT-AfJxP2OjBYOy_2dqqPKOiLQ7Az0vFXCzOzYYuDrz8sQop2gxkwUtcWiRQuREGYCn1CTeRGmZKLFrVDLg73e-B_OUUkY-NfMc38K6W9n6aqzYI8Tkmasx_q0zSlBPzp1I3loJLUBr9eZQ3eknZsvWHzGzAn_sC-MlMrMr6FhBcwUQ29-7o7UNRGSS3ykMGFQpVQyK6uZh2A7N11qG_Mo4rhPgUWC6gN8n4bwvP4DOxYNjTtTtHDrAqk6OVoi9FoNooDGicKve2MqbZRszcwj4teR6X88MCgjYTDIjIuqsJxzMpzu3_qIOZAsL4_2NJlvYPKGT7UB6NB9jIlHosH4MY95b6exdCdXkdrcx4HMsOfPFS_Tqwyx06yIcIveMLgP6SjIOG9v_0cZ5rjomlCQ0F6hD5oVlmlwao_cO0w6Z8BYP98c8ZuUb2ygOaXbXOf5FXbQOFJJnDC_Gub4Tcz-OoHWSDmiFMsbiZ_s8lzQI-R0aGYvYs5WPGb08SvhD-9tV-7Mkl6odoqx7gb5f5t8oZGzQSb6pS9ua-mVjZnj36C3jM-R4-Yfbsz_toPL1t708vg5mUrSE5f-QELZluvvVbAipWRa4EOtE8FD6DxHj_ZMJx7QvPgu3JjAJY0fyW42wlDnqNsYxpKhkg9O7Jvo4MnEy6tS02nUv4x0RxFGjJt6abtfEktoKt_g5DpF39_ZHBMfBQDqnxLwna9hkxx8ADi7_NOOBmC/sl_iv/hpog2iFsrU10ltgchPvllg/sl_hm/?width=320",
+                "enableThumbnail": true,
+                "tcParam": "start"
+            },
+            "dataSources": [
+                {
+                    "url": "http://localhost/metadata/timelineListOfMetaData.json",
+                    "headers": [
+                        "Authorization: "
+                    ],
+                    "plugin": "timeline"
+                }
+            ],
+            loadMetadataOnDemand: true,
+            "debug": false,
+            "logLevel": "info",
+            "displaySizes": {
+                "large": 900,
+                "medium": 700,
+                "small": 550,
+                "xsmall": 340
+            }
+        };
+        const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
+        mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
+        const obj = document.createElement('video');
+        mediaPlayerElement.setMediaPlayer(obj);
+        httpTestingController = TestBed.inject(HttpTestingController);
+        spyOngetDuration = spyOn(mediaPlayerElement.getMediaPlayer(), 'getDuration').and.returnValue(1800);
+    });
+     fit('Should call init, handleMetaDataLoaded and handleOnDurationChange', fakeAsync(() => {
+        const spyOnInit = spyOn(component, 'init').and.callThrough();
+        const spyOnHandleMetaDataLoaded = spyOn(component, 'parseTimelineMetadata').and.callThrough();
+
+        mediaPlayerElement.metadataManager.init().then(() => {
+            fixture.detectChanges();
+        });
+        httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
+            status: 200,
+            statusText: 'Ok'
+        });
+
+        tick(400);
+        expect(spyOnInit).toHaveBeenCalled();
+        expect(spyOnHandleMetaDataLoaded).toHaveBeenCalled();
+    }));
+});
