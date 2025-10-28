@@ -150,7 +150,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             super.ngOnInit();
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
-        }        
+        }
         this.subscriptionToEventsEmitters
             .push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
                 undefined,
@@ -329,6 +329,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 }
             } catch (e) {
                 this.logger.warn('Error to parse metadata', e);
+            }
+            if (!listOfLocalisations || listOfLocalisations.length === 0) {
+                return;
             }
             const color = (metadata?.viewControl?.color) ?? this.getAvailableColor();
             let block: TimeLineBlock = {
@@ -717,6 +720,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
                 const metadata = metadataManager.getMetadata(metadataId);
                 const blockMetadata: TimeLineBlock = _.find<TimeLineBlock>(this.listOfBlocks, { id: metadataId });
+                if (!blockMetadata) {
+                    return;
+                }
                 const baseColor = (metadata?.viewControl?.color) ? metadata.viewControl.color : blockMetadata.defaultColor;
                 let localisations = null;
                 try {

@@ -4614,21 +4614,39 @@ describe('TimelinePluginComponent For Stock', () => {
         mediaPlayerElement.setMediaPlayer(obj);
         httpTestingController = TestBed.inject(HttpTestingController);
         spyOngetDuration = spyOn(mediaPlayerElement.getMediaPlayer(), 'getDuration').and.returnValue(1800);
+
+        component.pluginConfiguration = {
+            name: "",
+            "metadataIds": null,
+            "data": {
+                "title": "Timeline globale",
+                "mainBlockColor": null,
+                "timeFormat": "s",
+                "expendable": true,
+                "mainMetadataIds": [],
+                "resizeable": true,
+                "resourceType": "stock",
+                "tcIn": 1979,
+                "duration": 1750
+            }
+        }
     });
-     fit('Should call init, handleMetaDataLoaded and handleOnDurationChange', fakeAsync(() => {
+    it('Should call init, handleMetaDataLoaded and handleOnDurationChange', fakeAsync(() => {
         const spyOnInit = spyOn(component, 'init').and.callThrough();
         const spyOnHandleMetaDataLoaded = spyOn(component, 'parseTimelineMetadata').and.callThrough();
 
         mediaPlayerElement.metadataManager.init().then(() => {
             fixture.detectChanges();
+            tick(35000);
+            flush();
         });
         httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
             status: 200,
             statusText: 'Ok'
         });
-
         tick(400);
         expect(spyOnInit).toHaveBeenCalled();
         expect(spyOnHandleMetaDataLoaded).toHaveBeenCalled();
+        flush();
     }));
 });
