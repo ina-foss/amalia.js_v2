@@ -712,21 +712,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.intervalStep,
             this.timeout,
             this.setDataLoading.bind(this)));
-        this.displaySnackBar("Information : les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.", 'info');
-    }
-
-    public displaySnackBar(msgContent: string, severity: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary' = 'error', life?: number) {
-
-        if (this.messagesComponent && typeof this.messagesComponent.addMessage === 'function') {
-            this.messagesComponent.addMessage({
-                severity,
-                summary: undefined,
-                detail: msgContent,
-                key: 'ai',
-                life: life ?? 5000,
-                data: { progress: 0 }
-            });
-        }
+        Utils.displaySnackBar(this.messagesComponent, "Information : les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.", 'info');
     }
 
 }

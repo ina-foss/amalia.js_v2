@@ -211,6 +211,19 @@ export class Utils {
         return needsToMuteShortcuts;
 
     }
+
+    public static displaySnackBar(msgComponent: any, msgContent: string, severity: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary' = 'error', life?: number) {
+        if (msgComponent && typeof msgComponent.addMessage === 'function') {
+            msgComponent.addMessage({
+                severity,
+                summary: undefined,
+                detail: msgContent,
+                key: 'ai',
+                life: life ?? 5000,
+                data: { progress: 0 }
+            });
+        }
+    }
 }
 
 
