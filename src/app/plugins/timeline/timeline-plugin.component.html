@@ -1,7 +1,6 @@
 <script src="./app/plugins/timeline/timeline-plugin.component.ts"></script>
 <div class="toolbar-container">
     <p-toolbar>
-        <ina-messages #messages [sticky]="true"></ina-messages>
         <div class="p-toolbar-group-end">
             <div class="flex items-center gap-2 toolbar-end-buttons">
                 @if(tvDaysEnabled){
@@ -157,3 +156,4 @@
         </div>
     </div>
 </div>
+<amalia-toast #messages position="bottom-center" key="ai"/>

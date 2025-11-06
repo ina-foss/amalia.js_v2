@@ -11,8 +11,7 @@ import { MediaPlayerService } from '../../service/media-player-service';
 import * as _ from 'lodash';
 import { FormatUtils } from '../../core/utils/format-utils';
 import { DefaultLogger } from "../../core/logger/default-logger";
-import { Message } from 'primeng/api';
-import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { ToastComponent } from 'src/app/core/toast/toast.component';
 
 export class TcFormatPipe implements PipeTransform {
     transform(tc: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = null, defaultFps: number = 25) {
@@ -66,7 +65,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public tcFormatPipe = new TcFormatPipe();
     logger: DefaultLogger;
 
-    @ViewChild('messages') messagesComponent!: InaMessagesComponent;
+    @ViewChild('messages') messagesComponent!: ToastComponent;
+
     public resourceType: 'stock' | 'flux';
     automaticallyScrolled: boolean = false;
 
@@ -712,12 +712,21 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.intervalStep,
             this.timeout,
             this.setDataLoading.bind(this)));
+        this.displaySnackBar("Information : les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.", 'info');
+    }
 
-        this.messagesComponent?.setMessages([{
-            severity: 'info',
-            detail: "Information : les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.",
-            summary: 'Information'
-        }]);
+    public displaySnackBar(msgContent: string, severity: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary' = 'error', life?: number) {
+
+        if (this.messagesComponent && typeof this.messagesComponent.addMessage === 'function') {
+            this.messagesComponent.addMessage({
+                severity,
+                summary: undefined,
+                detail: msgContent,
+                key: 'ai',
+                life: life ?? 5000,
+                data: { progress: 0 }
+            });
+        }
     }
 
 }

@@ -13,9 +13,10 @@ import {DefaultMetadataConverter} from "../../core/metadata/converter/default-me
 import {MetadataManager} from "../../core/metadata/metadata-manager";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {MediaElement} from "../../core/media/media-element";
-import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { ToastComponent } from "../../core/toast/toast.component";
 import { MessagesModule } from 'primeng/messages';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MessageService } from 'primeng/api';
 
 const initTestData = (component: TranscriptionPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();
@@ -120,8 +121,8 @@ describe('TranscriptionPluginComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TranscriptionPluginComponent],
-            imports: [HttpClientTestingModule, BrowserAnimationsModule, MessagesModule, InaMessagesComponent],
-            providers: [MediaPlayerService]
+            imports: [HttpClientTestingModule, BrowserAnimationsModule, MessagesModule, ToastComponent],
+            providers: [MediaPlayerService, MessageService]
         }).compileComponents();
     });
 

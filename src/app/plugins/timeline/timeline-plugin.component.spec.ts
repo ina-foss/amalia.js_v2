@@ -32,8 +32,9 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TimelineLocalisation } from 'src/app/core/metadata/model/timeline-localisation';
 import { MessagesModule } from 'primeng/messages';
-import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { ToastComponent } from "../../core/toast/toast.component";
 import { PlayerEventType } from 'src/app/core/constant/event-type';
+import { MessageService } from 'primeng/api';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -43,9 +44,9 @@ describe('TimelinePluginComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective],
-            providers: [MediaPlayerService, TcFormatPipe],
+            providers: [MediaPlayerService, TcFormatPipe, MessageService],
             imports: [CheckboxModule, TreeModule, MinusIcon, CheckIcon, FormsModule, ButtonModule,
-                MessagesModule, InaMessagesComponent, NoopAnimationsModule],
+                MessagesModule, ToastComponent, NoopAnimationsModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -3767,9 +3768,9 @@ describe('TimelinePluginComponent 2', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
-            providers: [MediaPlayerService],
+            providers: [MediaPlayerService, MessageService],
             imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
-                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, InaMessagesComponent],
+                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, ToastComponent],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -3834,23 +3835,27 @@ describe('TimelinePluginComponent 2', () => {
 
         mediaPlayerElement.metadataManager.init().then(() => {
             fixture.detectChanges();
+            tick(35000);
+            flush();
         });
         httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
             status: 200,
             statusText: 'Ok'
         });
 
-        tick(400);
+        tick(30000);
+        flush();
         expect(spyOnInit).toHaveBeenCalled();
         expect(spyOnHandleMetaDataLoaded).toHaveBeenCalled();
     }));
     it('Should manage onDragStart and onDrop', fakeAsync(() => {
         fixture.detectChanges();
-        flush();
         tick(35000);
+        flush();
         component.onDragStart(0);
         expect(component.startIndex).toEqual(0);
         component.onDrop(0);
+        tick(30000);
         flush();
     }));
     it('Should handle refreshTimeCursor', () => {
@@ -3883,9 +3888,12 @@ describe('TimelinePluginComponent 2', () => {
             component.currentTime = 600;
             component.duration = 1800;
             fixture.detectChanges();
-            flush();
             tick(35000);
+            flush();
+
             fixture.changeDetectorRef.detectChanges();
+            tick(35000);
+            flush();
             expect(spyOnRefreshTimeCursor).toHaveBeenCalled();
             expect(spyOnUpdateTimeCodePosition).toHaveBeenCalled();
             const listOfBlocks = component.listOfBlocks;
@@ -3910,7 +3918,7 @@ describe('TimelinePluginComponent 2', () => {
             status: 200,
             statusText: 'Ok'
         });
-        tick(400);
+        tick(35000);
         flush();
     }));
     it('Should manage callSeek', () => {
@@ -3945,7 +3953,7 @@ describe('TimelinePluginComponent 2', () => {
             status: 200,
             statusText: 'Ok'
         });
-        tick(400);
+        tick(30000);
         flush();
     }));
 
@@ -4008,8 +4016,8 @@ describe('TimelinePluginComponent 2', () => {
             component.currentTime = 600;
             component.duration = 1800;
             fixture.detectChanges();
-            flush();
             tick(35000);
+            flush();
             component.updateTreeComponent();
             expect(component.allNodesChecked).toBe(true);
             expect(component.indeterminate).toBe(false);
@@ -4018,7 +4026,7 @@ describe('TimelinePluginComponent 2', () => {
             status: 200,
             statusText: 'Ok'
         });
-        tick(400);
+        tick(30000);
         flush();
     }));
     it('Should closeMenu', fakeAsync(() => {
@@ -4028,8 +4036,8 @@ describe('TimelinePluginComponent 2', () => {
             component.currentTime = 600;
             component.duration = 1800;
             fixture.detectChanges();
-            flush();
             tick(35000);
+            flush();
             fixture.changeDetectorRef.detectChanges();
             const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
             const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordion-header');
@@ -4037,14 +4045,15 @@ describe('TimelinePluginComponent 2', () => {
             const removeButton: HTMLElement = target.querySelector('p-button');
             component.toggleConfig();
             removeButton.click();
-            tick(400);
+            tick(35000);
+            flush();
             expect(spyOnCloseMenu).toHaveBeenCalled();
         });
         httpTestingController.expectOne(timeline_metadata_url).flush(timeline_metadata_Model, {
             status: 200,
             statusText: 'Ok'
         });
-        tick(400);
+        tick(30000);
         flush();
     }));
 
@@ -4357,7 +4366,7 @@ describe('TimelinePluginComponent 3 ', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
-            providers: [MediaPlayerService],
+            providers: [MediaPlayerService, MessageService],
             imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
                 MinusIcon, CheckIcon, FormsModule, ButtonModule
             ],
@@ -4555,9 +4564,9 @@ describe('TimelinePluginComponent For Stock', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
-            providers: [MediaPlayerService],
+            providers: [MediaPlayerService, MessageService],
             imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
-                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, InaMessagesComponent],
+                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, ToastComponent],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]

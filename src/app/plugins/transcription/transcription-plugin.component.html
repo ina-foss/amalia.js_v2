@@ -43,7 +43,6 @@
         </div>
     </div>
 
-    <ina-messages #messages [sticky]="true"></ina-messages>
     <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
             <div class="copybutton tooltip" (click)="copy(t)">
@@ -90,3 +89,4 @@
     </div>
 </ng-template>
 <ng-template #emptyBlock>Error to find transcription</ng-template>
+<amalia-toast #messages position="bottom-center" key="ai"/>

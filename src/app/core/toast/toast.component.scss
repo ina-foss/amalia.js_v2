@@ -22,8 +22,14 @@
 
   .p-toast .p-toast-message.p-toast-message-error {
     background: #FFF !important;
-    color:  #FF5757!important;
+    color: #FF5757 !important;
   }
+
+  .p-toast .p-toast-message.p-toast-message-info {
+    background: #FFF !important;
+    color: #2563eb !important;
+  }
+
   .p-toast-message-template-content {
     display: flex;
     flex-direction: row;
@@ -56,6 +62,20 @@
       gap: var(--spacings-space-space-sm, 12px);
       border-radius: 100px;
       background: currentColor;
+    }
+
+    .p-toast-message-template-info-icon {
+      display: flex;
+      width: 32px;
+      height: 32px;
+      padding: var(--spacings-border-radius-radius-sm, 4px);
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacings-space-space-sm, 12px);
+      border-radius: 100px;
+      border-style: solid;
+      border-color: currentColor;
+      border-width: 1px;
     }
 
     .p-toast-detail {

@@ -25,7 +25,7 @@ import * as _ from 'lodash';
 import { Metadata } from '@ina/amalia-model';
 import { TreeNode } from 'primeng/api/treenode';
 import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
-import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { ToastComponent } from "../../core/toast/toast.component";
 
 @Component({
     selector: 'amalia-timeline',
@@ -115,7 +115,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     indeterminate: boolean = false;
     mapOfBlocksIndexes: Map<TimeLineBlock, number> = new Map<TimeLineBlock, number>();
 
-    @ViewChild('messages') messagesComponent!: InaMessagesComponent;
+    @ViewChild('messages') messagesComponent!: ToastComponent;
     tvDaysEnabled: boolean = false;
 
 
@@ -132,14 +132,21 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 this.intervalStep,
                 this.timeout,
                 this.setDataLoading.bind(this)));
-        (this.messagesComponent && typeof (this.messagesComponent as any).setMessages === 'function') &&
-            (this.messagesComponent as any).setMessages([{
-                severity: 'info',
-                detail: "Information : certains segments sont issus d’un traitement par IA et peuvent contenir des erreurs.",
-                summary: 'Information'
-            }]);
-    }
+        this.displaySnackBar("Information : certains segments sont issus d’un traitement par IA et peuvent contenir des erreurs.", 'info');
 
+    }
+    public displaySnackBar(msgContent: string, severity: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary' = 'error', life?: number) {
+        if (this.messagesComponent && typeof this.messagesComponent.addMessage === 'function') {
+            this.messagesComponent.addMessage({
+                severity,
+                summary: undefined,
+                detail: msgContent,
+                key: 'ai',
+                life: life ?? 5000,
+                data: { progress: 0 }
+            });
+        }
+    }
     ngOnInit(): void {
         try {
             this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.closeMenu);
