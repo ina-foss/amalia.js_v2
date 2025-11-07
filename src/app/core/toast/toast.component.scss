@@ -26,8 +26,8 @@
   }
 
   .p-toast .p-toast-message.p-toast-message-info {
-    background: #FFF !important;
-    color: #2563eb !important;
+    background: #b3ddf4  !important;
+    color: #b3ddf4 !important;
   }
 
   .p-toast-message-template-content {
@@ -73,9 +73,7 @@
       align-items: center;
       gap: var(--spacings-space-space-sm, 12px);
       border-radius: 100px;
-      border-style: solid;
-      border-color: currentColor;
-      border-width: 1px;
+      background: currentColor;
     }
 
     .p-toast-detail {

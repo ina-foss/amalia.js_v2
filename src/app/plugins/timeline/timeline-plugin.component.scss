@@ -671,7 +671,16 @@
     box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.10) !important;
     display: flex;
     background-color: white !important;
-    padding: 4px 8px 4px 8px !important;
+    padding: 4px 12px 4px 12px !important;
+  }
+
+  .p-button-download {
+    .p-button {
+      border-radius: 4px;
+      border: 1px solid var(--amalia-plugin-timeline-primary-color, #0B7698);
+      background: var(--amalia-plugin-timeline-primary-color, #0B7698);
+      color: var(--INA-Blanc, #FFFFFF);
+    }
   }
 
   .p-toolbar {
@@ -680,7 +689,7 @@
     display: flex;
     justify-content: space-between !important;
     flex-wrap: nowrap !important;
-    height: 50px;
+    height: 45px;
     width: 100%;
   }
 
@@ -768,27 +777,4 @@
   [pDraggable] {
     cursor: move;
   }
-}
-
-ina-messages {
-  padding: 0px;
-  max-height: fit-content;
-  height: 49px;
-  width: 100%;
-
-  .p-messages .p-message.p-message-info .p-message-wrapper .p-message-icon.pi-info:before {
-    content: "\e923" !important;
-    font-size: 14px !important;
-    font-weight: 400;
-  }
-
-  .p-messages .p-message.p-message-info .p-message-wrapper .p-message-detail {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-
 }

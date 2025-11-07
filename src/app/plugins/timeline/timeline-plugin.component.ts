@@ -132,7 +132,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 this.intervalStep,
                 this.timeout,
                 this.setDataLoading.bind(this)));
-        Utils.displaySnackBar(this.messagesComponent, "Information : certains segments sont issus d’un traitement par IA et peuvent contenir des erreurs.", 'info');
+        Utils.displaySnackBar(this.messagesComponent, "Des segments sont issus de traitements IA et peuvent contenir des erreurs.", 'info');
     }
 
     ngOnInit(): void {

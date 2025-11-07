@@ -1,11 +1,14 @@
 <script src="./app/plugins/timeline/timeline-plugin.component.ts"></script>
 <div class="toolbar-container">
     <p-toolbar>
+        <div class="p-toolbar-group-start">
+            @if(tvDaysEnabled){
+            <p-button icon="pi pi-download" (onClick)="exportTvDays()" label="Exporter les données"
+                class="p-button-download"></p-button>
+            }
+        </div>
         <div class="p-toolbar-group-end">
             <div class="flex items-center gap-2 toolbar-end-buttons">
-                @if(tvDaysEnabled){
-                <p-button icon="pi pi-download" (onClick)="exportTvDays()" [text]="true" [rounded]="true"></p-button>
-                }
                 <p-button icon="pi pi-search-minus" (onClick)="unZoom()" [text]="true" [rounded]="true"></p-button>
                 <p-button id="timeline-toolbar-filter-button" icon="pi pi-filter" (onClick)="toggleConfig()"
                     [text]="true" [rounded]="true"></p-button>
@@ -156,4 +159,4 @@
         </div>
     </div>
 </div>
-<amalia-toast #messages position="bottom-center" key="ai"/>
+<amalia-toast #messages position="bottom-center" key="ai" />
