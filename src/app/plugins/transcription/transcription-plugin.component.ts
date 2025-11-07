@@ -712,7 +712,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.intervalStep,
             this.timeout,
             this.setDataLoading.bind(this)));
-        Utils.displaySnackBar(this.messagesComponent, "Des segments sont issus de traitements IA et peuvent contenir des erreurs.", 'info');
+        Utils.displaySnackBar(this.messagesComponent, "Les transcriptions sont issues d’un traitement par IA et peuvent contenir des erreurs.", 'info');
     }
 
 }

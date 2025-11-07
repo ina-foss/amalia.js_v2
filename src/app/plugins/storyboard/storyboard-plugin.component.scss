@@ -12,9 +12,12 @@
   font-weight: normal;
 
 
-.row {
-  height: 35px;
-}
+  .row {
+    min-height: 45px;
+    max-height: 45px;
+    background-color: va(--INA-Blanc, #FFF);
+  }
+
   .interval {
     margin-top: -7px;
     flex: 1;
@@ -42,6 +45,7 @@
       letter-spacing: 0;
       line-height: 16px;
       font-weight: normal;
+
       .second-span {
         margin: -4px;
         padding: 0;
@@ -158,6 +162,7 @@
     overflow-y: auto;
     will-change: scroll-position;
     z-index: 1;
+    padding-top: 5px;
 
     .vs-container {
       position: absolute;
@@ -180,10 +185,12 @@
         border-radius: 4px;
         overflow: hidden;
         border: solid 1px $amalia-plugin-storyboard-bg-color;
+
         .image {
           background-image: url("/assets/images/placeholder.png");
           background-color: transparent;
         }
+
         &:hover {
           border-color: $amalia-plugin-storyboard-box-color;
         }
@@ -199,10 +206,12 @@
             font-weight: bold;
           }
         }
+
         &.medium {
           width: $amalia-plugin-storyboard-thumbnail-mw;
           height: $amalia-plugin-storyboard-thumbnail-mh;
         }
+
         &.large {
           width: $amalia-plugin-storyboard-thumbnail-lw;
           height: $amalia-plugin-storyboard-thumbnail-lh;
@@ -213,9 +222,12 @@
           height: calc(100% - 20px);
           display: block;
           overflow: hidden;
-          object-fit: contain; /* Fit logo in the image size */
-          -o-object-fit: contain; /* Fit logo fro opera browser */
-          object-position: center; /* Set logo position */
+          object-fit: contain;
+          /* Fit logo in the image size */
+          -o-object-fit: contain;
+          /* Fit logo fro opera browser */
+          object-position: center;
+          /* Set logo position */
           -o-object-position: center;
           border-radius: 3px 3px 0 0;
         }
@@ -292,7 +304,7 @@
         border-radius: 4px;
         margin-right: 85px;
 
-        > img {
+        >img {
           width: 225px;
           height: 126px;
           cursor: pointer;
@@ -371,7 +383,7 @@
       right: 15px;
     }
 
-    > ul {
+    >ul {
       list-style: none;
       position: absolute;
       z-index: 100;
@@ -406,4 +418,3 @@
     }
   }
 }
-

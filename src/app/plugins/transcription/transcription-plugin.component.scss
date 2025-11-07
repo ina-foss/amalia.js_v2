@@ -63,7 +63,8 @@
           color: $amalia-plugin-timeline-font-color;
           font-weight: 500;
 
-          .tcin, .tcout {
+          .tcin,
+          .tcout {
             color: $amalia-plugin-timeline-font-color;
           }
 
@@ -208,7 +209,8 @@
         height: 23px;
         align-items: center;
 
-        .tcin, .tcout {
+        .tcin,
+        .tcout {
           color: $amalia-plugin-transcription-tc;
           font-family: $amalia-font-family-lato;
           font-size: 12px;
@@ -327,8 +329,7 @@
   }
 
   .search-block {
-    background-color: $amalia-plugin-transcription-bg-search;
-    border: 1px solid #DDDDDD;
+    background-color: var(--INA-Blanc, #FFFFFF);
     position: relative;
     top: 0;
     display: flex;
@@ -336,6 +337,8 @@
     align-items: center;
     justify-content: space-between;
     padding-right: 15px;
+    min-height: 45px;
+    max-height: 45px;
 
     div {
       &.search-text {
@@ -357,9 +360,12 @@
           color: $amalia-plugin-timeline-actions-border-color;
           padding-left: 23px;
           z-index: 1;
-          -moz-user-select: none; /* Firefox */
-          -webkit-user-select: none; /* Chrome, Safari, Opéra */
-          -ms-user-select: none; /* Internet explorer */
+          -moz-user-select: none;
+          /* Firefox */
+          -webkit-user-select: none;
+          /* Chrome, Safari, Opéra */
+          -ms-user-select: none;
+          /* Internet explorer */
           user-select: none;
 
           &.active {
@@ -379,9 +385,12 @@
           right: 40px;
           height: 14px;
           color: $amalia-plugin-timeline-primary-color;
-          -moz-user-select: none; /* Firefox */
-          -webkit-user-select: none; /* Chrome, Safari, Opéra */
-          -ms-user-select: none; /* Internet explorer */
+          -moz-user-select: none;
+          /* Firefox */
+          -webkit-user-select: none;
+          /* Chrome, Safari, Opéra */
+          -ms-user-select: none;
+          /* Internet explorer */
           user-select: none;
         }
 
@@ -418,7 +427,7 @@
           }
 
           &.show {
-            right: 1px;
+            right: 10px;
             margin-right: 0px;
           }
         }
