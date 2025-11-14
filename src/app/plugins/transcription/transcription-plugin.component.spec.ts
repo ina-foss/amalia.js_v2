@@ -234,7 +234,7 @@ describe('TranscriptionPluginComponent', () => {
         spyOn(component.mediaPlayerElement.eventEmitter, 'emit');
         await component.copyAll();
 
-        const expectedText = `[TC10][TC20]\n\nText 1\n[TC30][TC40]\n\nText 2`;
+        const expectedText = `[TC10][TC20]\nText 1\n\n[TC30][TC40]\nText 2`;
         expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedText);
         expect(component.mediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PLAYER_COPY_BOARD, expectedText);
     });

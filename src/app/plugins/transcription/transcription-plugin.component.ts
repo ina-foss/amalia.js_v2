@@ -133,8 +133,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const copiedText = this.transcriptions.map((localisation) => {
             const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
             const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
-            return '[' + tcIn + '][' + tcOut + ']\n\n' + localisation.text;
-        }).join('\n');
+            return '[' + tcIn + '][' + tcOut + ']\n' + localisation.text;
+        }).join('\n\n');
         window.navigator.clipboard.writeText(copiedText).then(
             () => {
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, copiedText);

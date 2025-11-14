@@ -2,14 +2,10 @@ import { Utils } from './utils';
 
 describe('Utils', () => {
 
-
     it('Utils:  ', () => {
         const array1 = ['1', '2', '3'];
         expect(Utils.isArrayLike(array1)).toEqual(true);
     });
-
-
-
 
     it('devrait retourner true si l\'élément avec l\'ID est dans le composedPath', () => {
         const fakeEvent = {
@@ -231,14 +227,17 @@ describe('Utils copyToClipBoard', () => {
 
         jasmine.clock().uninstall();
     });
+
 });
 
 describe('Utils copyToClipBoard Error', () => {
+
     it('should handle error gracefully', async () => {
+        console.error = jasmine.createSpy('error');
         let tooltip: HTMLElement;
         tooltip = document.createElement('div');
-        spyOn(console, 'error'); // pour éviter les logs d'erreur
-        spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.reject('Error'));
+        spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.reject(new Error('Error')));
+
         await Utils.copyToClipBoard('Hello', tooltip, 100, 200);
         expect(console.error).toHaveBeenCalled();
     });
