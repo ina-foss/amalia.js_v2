@@ -16,19 +16,19 @@
     min-height: 45px;
     max-height: 45px;
     background-color: var(--INA-Blanc, #FFF);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .interval {
-    margin-top: -7px;
     flex: 1;
     display: flex;
-    text-align: center;
-    float: right;
+    justify-content: flex-end;
     margin-inline-end: 20px;
     color: #4A4A4A;
     font-size: 14px;
-    letter-spacing: 0;
-    line-height: 16px;
+
 
     .label {
       font-weight: bold;
@@ -56,7 +56,7 @@
       width: 16px;
       height: 16px;
       margin-left: 10px;
-      color: #0086B1;
+      color: #0B7698;
       position: relative;
       top: 3px;
 
@@ -103,7 +103,7 @@
 
         &.selected {
           font-weight: bold;
-          color: #0086B1;
+          color: #0B7698;
         }
       }
     }
@@ -112,10 +112,8 @@
   .storyboard-size {
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    float: left;
-    margin-top: 7px;
     margin-inline-start: 20px;
 
     div.size {
@@ -279,7 +277,7 @@
 
       &.selected,
       &:hover {
-        --hover: #0086B1;
+        --hover: #0B7698;
         color: $amalia-plugin-timeline-bg-color;
       }
     }
@@ -331,7 +329,7 @@
         .unity {
           width: 1px;
           height: 12px;
-          background-color: #0086B1;
+          background-color: #0B7698;
           margin: 0 auto 0;
         }
       }
@@ -412,7 +410,7 @@
 
         &.selected {
           font-weight: bold;
-          color: #0086B1;
+          color: #0B7698;
         }
       }
     }

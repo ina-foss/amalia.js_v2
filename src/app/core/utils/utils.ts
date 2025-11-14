@@ -13,6 +13,22 @@ type MapOfRegisteredListenersPerElement = Map<any, Map<string, Array<(...args: a
 
 
 export class Utils {
+    static async copyToClipBoard(text: any, tooltip?: any, x?: number, y?: number) {
+        try {
+            await navigator.clipboard.writeText(text);
+            if (tooltip) {
+
+                tooltip.classList.add('show');
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = y - 16 + 'px';
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 1000);
+            }
+        } catch (err) {
+            console.error('Erreur lors de la copie :', err);
+        }
+    }
 
     public static isArrayLike = (<T>(x: any): x is ArrayLike<T> => x && typeof x.length === 'number' && typeof x !== 'function');
 
@@ -184,9 +200,6 @@ export class Utils {
             return !el.disabled && !el.readOnly;
         }
         if (el instanceof HTMLSelectElement) {
-            return !el.disabled;
-        }
-        if (el instanceof HTMLButtonElement) {
             return !el.disabled;
         }
         // contenteditable (héritage géré par isContentEditable)

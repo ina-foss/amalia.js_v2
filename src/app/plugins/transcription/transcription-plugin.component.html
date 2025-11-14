@@ -8,6 +8,11 @@
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#clear'"></use>
                 </svg>
             </div>
+
+            <input type="text" placeholder={{pluginConfiguration.data.label}}
+                (click)="$event.stopPropagation();active= true" (keyup)="handleChangeInput(searchText.value)"
+                [ngClass]="{'active' : active === true}" #searchText>
+
             <div class="search-icon" [ngClass]="{'show' : searching === false}" (click)="searchWord(searchText.value);">
                 <svg class="amalia-svg-search-size icon">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#search'"></use>
@@ -31,9 +36,15 @@
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
                 </svg>
             </div>
-            <input type="text" placeholder={{pluginConfiguration.data.label}}
-                (click)="$event.stopPropagation();active= true" (keyup)="handleChangeInput(searchText.value)"
-                [ngClass]="{'active' : active === true}" #searchText>
+        </div>
+        <div class="copybutton tooltip" (click)="copyAll()">
+            <span class="tooltiptext">Copier toutes les transcriptions</span>
+            <div class="copy-icon">
+                <svg class="icon">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#copy'"></use>
+                </svg>
+
+            </div>
         </div>
         <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}'
             [ngClass]="{'active' : displaySynchro}" (click)="scrollToSelectedSegment()">
@@ -55,7 +66,8 @@
                 </div>
             </div>
             <div class="timecode" (click)="callSeek(t.tcIn)">
-                <div class="tcin">{{(resourceType === 'stock') ? (t.tcIn|tcFormat:tcDisplayFormat) : (t.tcIn + tcOffset|tcFormat:tcDisplayFormat)
+                <div class="tcin">{{(resourceType === 'stock') ? (t.tcIn|tcFormat:tcDisplayFormat) : (t.tcIn +
+                    tcOffset|tcFormat:tcDisplayFormat)
                     }}</div>
                 <div class="separator"></div>
                 <div class="tcout">{{(resourceType === 'stock') ? (t.tcOut|tcFormat:tcDisplayFormat) : (t.tcOut +
@@ -89,4 +101,4 @@
     </div>
 </ng-template>
 <ng-template #emptyBlock>Error to find transcription</ng-template>
-<amalia-toast #messages position="bottom-center" key="ai"/>
+<amalia-toast #messages position="bottom-center" key="ai" />

@@ -1,5 +1,6 @@
 import { waitForAsync, getTestBed, TestBed } from '@angular/core/testing';
 import { TimeBarPluginComponent } from './time-bar-plugin.component';
+import { ComponentFixture } from '@angular/core/testing';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { ConfigurationManager } from '../../core/config/configuration-manager';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -16,6 +17,9 @@ import { DefaultMetadataLoader } from '../../core/metadata/loader/default-metada
 import { PlayerState } from '../../core/constant/player-state';
 import { HttpClient } from '@angular/common/http';
 import { DefaultMetadataConverter } from '../../core/metadata/converter/default-metadata-converter';
+import { ElementRef } from '@angular/core';
+import { FormatUtils } from 'src/app/core/utils/format-utils';
+import { Utils } from 'src/app/core/utils/utils';
 
 describe('TimeBar plugin test', () => {
     let injector: TestBed;
@@ -89,7 +93,21 @@ describe('TimeBar plugin test', () => {
         playerService.get('PLAYER');
         playerService.get('PLAYER2');
         playerService.get(null);
-
-
+        spyOn(FormatUtils, 'formatTime').and.returnValue('00:10');
+        spyOn(Utils, 'copyToClipBoard');
+        const mockEvent = new MouseEvent('click', { clientX: 150, clientY: 200 });
+        plugin.fps = 25;
+        const tooltipElement = document.createElement('div');
+        plugin.tooltip = new ElementRef(tooltipElement);
+        // Appel de la méthode
+        plugin.copyToClipBoard(10, mockEvent);
+        expect(FormatUtils.formatTime).toHaveBeenCalledWith(10, 's', 25);
+        expect(Utils.copyToClipBoard).toHaveBeenCalledWith(
+            '00:10',
+            plugin.tooltip.nativeElement,
+            150,
+            200
+        );
     });
+
 });

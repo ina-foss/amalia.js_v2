@@ -1,22 +1,23 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranscriptionPluginComponent} from './transcription-plugin.component';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {ElementRef} from '@angular/core';
-import {MediaPlayerElement} from "../../core/media-player-element";
-import {DefaultLogger} from "../../core/logger/default-logger";
-import {HttpClient} from "@angular/common/http";
-import {DefaultConfigLoader} from "../../core/config/loader/default-config-loader";
-import {DefaultConfigConverter} from "../../core/config/converter/default-config-converter";
-import {ConfigurationManager} from "../../core/config/configuration-manager";
-import {DefaultMetadataLoader} from "../../core/metadata/loader/default-metadata-loader";
-import {DefaultMetadataConverter} from "../../core/metadata/converter/default-metadata-converter";
-import {MetadataManager} from "../../core/metadata/metadata-manager";
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {MediaElement} from "../../core/media/media-element";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranscriptionPluginComponent } from './transcription-plugin.component';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { ElementRef } from '@angular/core';
+import { MediaPlayerElement } from "../../core/media-player-element";
+import { DefaultLogger } from "../../core/logger/default-logger";
+import { HttpClient } from "@angular/common/http";
+import { DefaultConfigLoader } from "../../core/config/loader/default-config-loader";
+import { DefaultConfigConverter } from "../../core/config/converter/default-config-converter";
+import { ConfigurationManager } from "../../core/config/configuration-manager";
+import { DefaultMetadataLoader } from "../../core/metadata/loader/default-metadata-loader";
+import { DefaultMetadataConverter } from "../../core/metadata/converter/default-metadata-converter";
+import { MetadataManager } from "../../core/metadata/metadata-manager";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { MediaElement } from "../../core/media/media-element";
 import { ToastComponent } from "../../core/toast/toast.component";
 import { MessagesModule } from 'primeng/messages';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
+import { PlayerEventType } from '../../core/constant/event-type';
 
 const initTestData = (component: TranscriptionPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();
@@ -133,13 +134,16 @@ describe('TranscriptionPluginComponent', () => {
         component.transcriptionElement = new ElementRef(document.createElement('div'));
         component.headerElement = new ElementRef(document.createElement('div'));
         component.searchText = new ElementRef(document.createElement('input'));
-        
+
         // Mock the messagesComponent to fix the error in ngAfterViewInit
         component.messagesComponent = {
             setMessages: jasmine.createSpy('setMessages')
         } as any;
-        
+
         mediaPlayerElement = initTestData(component, mediaPlayerElement, logger, httpClient);
+        // Mock tcFormatPipe
+        component.tcFormatPipe = { transform: jasmine.createSpy('transform').and.callFake((val: number) => `TC${val}`) };
+        spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
     });
 
     it('should create', () => {
@@ -195,9 +199,43 @@ describe('TranscriptionPluginComponent', () => {
     });
 
     it('should handle shortcut', () => {
-        const event = new KeyboardEvent('keydown', {key: 'Enter'});
+        const event = new KeyboardEvent('keydown', { key: 'Enter' });
         spyOn(component, 'handleShortcut').and.callThrough();
         component.handleShortcut(event);
         expect(component.handleShortcut).toHaveBeenCalledWith(event);
+    });
+
+
+    it('should copy single localisation and emit event', async () => {
+        // Mock transcriptions
+        component.transcriptions = [
+            { tcIn: 10, tcOut: 20, text: 'Text 1', label: 'Text 1', thumb: 'Text 1' },
+            { tcIn: 30, tcOut: 40, text: 'Text 2', label: 'Text 2', thumb: 'Text 2' }
+        ];
+        const localisation = { tcIn: 10, tcOut: 20, text: 'Hello', label: 'Hello', thumb: 'Hello' };
+        spyOn(component.mediaPlayerElement.eventEmitter, 'emit');
+
+        await component.copy(localisation);
+
+        expect(component.tcFormatPipe.transform).toHaveBeenCalledWith(10, component.tcDisplayFormat);
+        expect(component.tcFormatPipe.transform).toHaveBeenCalledWith(20, component.tcDisplayFormat);
+
+        const expectedText = `[TC10][TC20]\n\nHello`;
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedText);
+        expect(component.mediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PLAYER_COPY_BOARD, localisation);
+    });
+
+    it('should copy all transcriptions and emit event', async () => {
+        // Mock transcriptions
+        component.transcriptions = [
+            { tcIn: 10, tcOut: 20, text: 'Text 1', label: 'Text 1', thumb: 'Text 1' },
+            { tcIn: 30, tcOut: 40, text: 'Text 2', label: 'Text 2', thumb: 'Text 2' }
+        ];
+        spyOn(component.mediaPlayerElement.eventEmitter, 'emit');
+        await component.copyAll();
+
+        const expectedText = `[TC10][TC20]\n\nText 1\n[TC30][TC40]\n\nText 2`;
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedText);
+        expect(component.mediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PLAYER_COPY_BOARD, expectedText);
     });
 });

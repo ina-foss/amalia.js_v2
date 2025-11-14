@@ -322,9 +322,13 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
 
         for (const el of cases) {
             component.muteShortcuts = false;
-            component.handleMuteShortcuts({ target: el,composedPath: () => [el] } as any);
+            component.handleMuteShortcuts({ target: el, composedPath: () => [el] } as any);
             //`cible: <${el.tagName.toLowerCase()}>`
-            expect(component.muteShortcuts).toBeTrue();
+            if (el instanceof HTMLButtonElement) {
+                expect(component.muteShortcuts).toBeFalse();
+            } else {
+                expect(component.muteShortcuts).toBeTrue();
+            }
         }
     });
 
@@ -333,7 +337,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         div.contentEditable = 'true';
         component.muteShortcuts = false;
 
-        component.handleMuteShortcuts({ target: div,composedPath: () => [div] } as any);
+        component.handleMuteShortcuts({ target: div, composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeTrue();
     });
 
@@ -341,7 +345,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         const div = document.createElement('div'); // non contentEditable
         component.muteShortcuts = false;
 
-        component.handleMuteShortcuts({ target: div,composedPath: () => [div] } as any);
+        component.handleMuteShortcuts({ target: div, composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeFalse();
     });
 
@@ -352,7 +356,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         expect(component.muteShortcuts).toBeFalse();
     });
 
-    it('handleUnmuteShortcuts: doit désactiver mute pour les cibles <input>, <textarea>, <select>, <button>', () => {
+    it('handleUnmuteShortcuts: doit désactiver mute pour les cibles <input>, <textarea>, <select> et non <button>', () => {
         const cases = [
             document.createElement('input'),
             document.createElement('textarea'),
@@ -362,9 +366,13 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
 
         for (const el of cases) {
             component.muteShortcuts = true;
-            component.handleUnmuteShortcuts({ target: el,composedPath: () => [el] } as any);
+            component.handleUnmuteShortcuts({ target: el, composedPath: () => [el] } as any);
             //`cible: <${el.tagName.toLowerCase()}>`
-            expect(component.muteShortcuts).toBeFalse();
+            if (el instanceof HTMLButtonElement) {
+                expect(component.muteShortcuts).toBeTrue();
+            } else {
+                expect(component.muteShortcuts).toBeFalse();
+            }
         }
     });
 
@@ -373,7 +381,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         div.contentEditable = 'true';
         component.muteShortcuts = true;
 
-        component.handleUnmuteShortcuts({ target: div,composedPath: () => [div] } as any);
+        component.handleUnmuteShortcuts({ target: div, composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeFalse();
     });
 
@@ -381,7 +389,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         const div = document.createElement('div'); // non contentEditable
         component.muteShortcuts = true;
 
-        component.handleUnmuteShortcuts({ target: div,composedPath: () => [div] } as any);
+        component.handleUnmuteShortcuts({ target: div, composedPath: () => [div] } as any);
         expect(component.muteShortcuts).toBeTrue();
     });
 

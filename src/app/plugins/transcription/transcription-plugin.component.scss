@@ -343,22 +343,27 @@
     div {
       &.search-text {
         width: 75%;
-        padding: 5px;
+        padding: 0 5px;
         position: relative;
         z-index: 1;
-        float: left;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 5px;
+        border: 1px solid $amalia-plugin-transcription-input-border;
+        border-radius: 4px;
+        height: 30px;
+
 
         input {
           width: 100%;
-          height: 30px;
-          border: 1px solid $amalia-plugin-transcription-input-border;
-          border-radius: 4px;
+          height: 28px;
           font-family: $amalia-font-family-lato;
+          border: none;
           font-size: 14px;
           letter-spacing: 0.1px;
-          line-height: 20px;
+          line-height: 14px;
           color: $amalia-plugin-timeline-actions-border-color;
-          padding-left: 23px;
           z-index: 1;
           -moz-user-select: none;
           /* Firefox */
@@ -367,11 +372,10 @@
           -ms-user-select: none;
           /* Internet explorer */
           user-select: none;
+        }
 
-          &.active {
-            font-style: normal;
-            color: #222222;
-          }
+        input:focus-visible {
+          outline: none;
         }
 
         .search-result {
@@ -380,9 +384,6 @@
           font-size: 12px;
           letter-spacing: 0.09px;
           line-height: 14px;
-          top: calc(50% - 7px);
-          position: absolute;
-          right: 40px;
           height: 14px;
           color: $amalia-plugin-timeline-primary-color;
           -moz-user-select: none;
@@ -392,13 +393,12 @@
           -ms-user-select: none;
           /* Internet explorer */
           user-select: none;
+          min-width: fit-content;
         }
 
         .clear-icon {
           height: 16px;
           width: 16px;
-          top: calc(50% - 8px);
-          position: absolute;
           padding-left: 5px;
           cursor: pointer;
           z-index: 2;
@@ -413,9 +413,6 @@
         .search-icon {
           height: 23px;
           width: 23px;
-          top: calc(50% - 11px);
-          position: absolute;
-          right: 80px;
           cursor: pointer;
           z-index: 2;
           margin-right: 12px;
@@ -437,11 +434,8 @@
           height: 20px;
           width: 1px;
           border: 1px solid $amalia-plugin-timeline-border-color;
-          position: absolute;
           cursor: pointer;
           z-index: 2;
-          right: 80px;
-          top: calc(50% - 10px);
         }
 
         .up {
@@ -452,15 +446,15 @@
             height: 16px;
             width: 16px;
             top: calc(50% - 8px);
-            //left: 9px;
-            position: absolute;
             color: $amalia-plugin-transcription-search-icons;
             z-index: 2;
             right: 15px;
           }
 
           &.show {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
 
@@ -471,16 +465,15 @@
           .icon {
             height: 16px;
             width: 16px;
-            top: calc(50% - 8px);
-            //left: 9px;
-            position: absolute;
             color: $amalia-plugin-transcription-search-icons;
             z-index: 2;
             right: 1px;
           }
 
           &.show {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
         }
       }
@@ -505,8 +498,47 @@
 
         &.selected,
         &:hover {
-          --hover: #0086B1;
+          --hover: #0B7698;
           color: $amalia-plugin-timeline-bg-color;
+        }
+      }
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 175px;
+    }
+
+    .copybutton {
+      position: relative;
+      display: inline-block;
+      float: right;
+      margin-right: 5px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+
+      .copy-icon {
+        display: block;
+        height: 30px;
+        width: 30px;
+        position: absolute;
+        cursor: pointer;
+        z-index: 2;
+        border-radius: 50%;
+
+        .icon {
+          height: 30px;
+          width: 30px;
+          color: $amalia-plugin-transcription-search-icons;
+          border-radius: 50%;
+
+          &:hover {
+            display: block;
+            border-radius: 50%;
+            background-color: $amalia-plugin-transcription-tc-hover !important;
+            color: #FFFFFF;
+          }
         }
       }
     }

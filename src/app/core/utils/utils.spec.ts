@@ -166,7 +166,7 @@ describe('Utils', () => {
                 spyOn(btn, 'matches').and.returnValue(false);
                 btn.disabled = false;
 
-                expect(Utils.needsToMutePlayerShortcuts(btn)).toBeTrue();
+                expect(Utils.needsToMutePlayerShortcuts(btn)).toBeFalse();
             });
 
             it('button disabled => false', () => {
@@ -201,4 +201,45 @@ describe('Utils', () => {
 
 });
 
+describe('Utils copyToClipBoard', () => {
+    let tooltip: HTMLElement;
 
+    beforeEach(() => {
+        tooltip = document.createElement('div');
+        spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.resolve());
+    });
+
+    it('should copy text to clipboard', async () => {
+        await Utils.copyToClipBoard('Hello');
+        expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Hello');
+    });
+
+    it('should add show class and set position when tooltip is provided', async () => {
+        await Utils.copyToClipBoard('Hello', tooltip, 100, 200);
+        expect(tooltip.classList.contains('show')).toBeTrue();
+        expect(tooltip.style.left).toBe('100px');
+        expect(tooltip.style.top).toBe('184px');
+    });
+
+    it('should remove show class after 1 second', async () => {
+        jasmine.clock().install(); // contrôle du temps
+        await Utils.copyToClipBoard('Hello', tooltip, 100, 200);
+        expect(tooltip.classList.contains('show')).toBeTrue();
+
+        jasmine.clock().tick(1000); // avance le temps
+        expect(tooltip.classList.contains('show')).toBeFalse();
+
+        jasmine.clock().uninstall();
+    });
+});
+
+describe('Utils copyToClipBoard Error', () => {
+    it('should handle error gracefully', async () => {
+        let tooltip: HTMLElement;
+        tooltip = document.createElement('div');
+        spyOn(console, 'error'); // pour éviter les logs d'erreur
+        spyOn(navigator.clipboard, 'writeText').and.returnValue(Promise.reject('Error'));
+        await Utils.copyToClipBoard('Hello', tooltip, 100, 200);
+        expect(console.error).toHaveBeenCalled();
+    });
+});

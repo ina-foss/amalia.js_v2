@@ -1,5 +1,5 @@
 import { PluginBase } from '../../core/plugin/plugin-base';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { PlayerEventType } from '../../core/constant/event-type';
 import { TimeBarConfig } from '../../core/config/model/time-bar-config';
 import { PluginConfigData } from '../../core/config/model/plugin-config-data';
@@ -7,6 +7,7 @@ import { DEFAULT } from '../../core/constant/default';
 import { LABEL } from '../../core/constant/labels';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { Utils } from 'src/app/core/utils/utils';
+import { FormatUtils } from 'src/app/core/utils/format-utils';
 
 @Component({
     selector: 'amalia-time-bar',
@@ -15,6 +16,9 @@ import { Utils } from 'src/app/core/utils/utils';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements OnInit {
+    @ViewChild("tooltip")
+    tooltip: ElementRef<HTMLDivElement>;
+
     public static PLUGIN_NAME = 'TIME_BAR';
     /**
      * Return  current time
@@ -151,5 +155,10 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
         this.timeTimeBar = (tcOffset) ? tcOffset + time : time;
         this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
 
+    }
+
+    copyToClipBoard(tc: number, event: MouseEvent) {
+        const text = FormatUtils.formatTime(tc, 's', this.fps);
+        Utils.copyToClipBoard(text, this.tooltip?.nativeElement, event.clientX, event.clientY);
     }
 }

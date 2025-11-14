@@ -26,6 +26,7 @@ export class TcFormatPipe implements PipeTransform {
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements AfterViewInit {
+
     public static PLUGIN_NAME = 'TRANSCRIPTION';
     public static KARAOKE_TC_DELTA = 0.250;
     public static SELECTOR_SEGMENT = 'segment';
@@ -124,6 +125,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         window.navigator.clipboard.writeText(copiedText).then(
             () => {
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, localisation);
+            }
+        );
+    }
+    copyAll() {
+        const tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset;
+        const copiedText = this.transcriptions.map((localisation) => {
+            const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
+            const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
+            return '[' + tcIn + '][' + tcOut + ']\n\n' + localisation.text;
+        }).join('\n');
+        window.navigator.clipboard.writeText(copiedText).then(
+            () => {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, copiedText);
             }
         );
     }
