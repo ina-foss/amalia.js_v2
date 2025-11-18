@@ -2,22 +2,20 @@
     <div class="header">
         <div>
             <p-button class="highlight" label="Ajouter un segment" icon="pi pi-plus" (click)="initializeNewSegment()"
-                      size="small" [disabled]="dataLoading"></p-button>
+                size="small" [disabled]="dataLoading"></p-button>
             <ng-container *ngIf="segmentsInfo.subLocalisations.length !== 0">
                 <p-button class="no-highlight" label="Début" (click)="setTcIn()" icon="pi pi-clock"
-                          size="small"></p-button>
+                    size="small"></p-button>
                 <p-button class="no-highlight" label="Fin" (click)="setTcOut()" icon="pi pi-clock"
-                          size="small"></p-button>
+                    size="small"></p-button>
             </ng-container>
         </div>
         <div *ngIf="segmentsInfo.subLocalisations.length !== 0">
-            <p-button class="no-highlight no-outline" icon="pi pi-download" size="small"
-                      (click)="toggleExportMenu()">
+            <p-button class="no-highlight no-outline" icon="pi pi-download" size="small" (click)="toggleExportMenu()">
             </p-button>
-            <div *ngIf="enabledExportButtons"
-                 class="export-menu">
+            <div *ngIf="enabledExportButtons" class="export-menu">
                 <div class="export-menu-item" (click)="downloadSegmentJsonFormat();toggleExportMenu()"
-                     style="cursor:pointer">Exporter au format
+                    style="cursor:pointer">Exporter au format
                     JSON
                 </div>
                 <div class="export-menu-item" (click)="downloadSegments();toggleExportMenu()" style="cursor:pointer">
@@ -31,13 +29,13 @@
         sur “Ajouter un segment” pour
         débuter la segmentation du média.
     </div>
-    <amalia-toast #toast position="bottom-center" key="br"/>
+    <amalia-toast #toast position="bottom-center" key="br" />
     <div class="card flex justify-content-center">
         <p-confirmDialog #cd>
             <ng-template pTemplate="headless" let-message>
                 <div class="flex flex-column align-items-left p-2 surface-overlay border-round">
-                    <div class="flex flex-row lg:align-content-around"><span
-                            class="font-bold text-2xl block">{{ message.header }}</span>
+                    <div class="flex flex-row lg:align-content-around"><span class="font-bold text-2xl block">{{
+                            message.header }}</span>
                         <div class="flex justify-content-end w-full">
                             <button type="button" class="p-dialog-titlebar-icon p-link" (click)="cd.reject()">
                                 <i class="pi pi-times"></i>
@@ -46,16 +44,10 @@
                     </div>
                     <p class="mb-0" style="white-space:pre-wrap; word-wrap:break-word">{{ message.message }}</p>
                     <div class="flex flex-row justify-content-end gap-2 mt-4">
-                        <p-button
-                                [label]="message.rejectLabel"
-                                (click)="cd.reject()"
-                                class="p-button-outlined no-highlight" size="small">
+                        <p-button [label]="message.rejectLabel" (click)="cd.reject()"
+                            class="p-button-outlined no-highlight" size="small">
                         </p-button>
-                        <p-button
-                                [label]="message.acceptLabel"
-                                (click)="cd.accept()"
-                                class="highlight" size="small"
-                        >
+                        <p-button [label]="message.acceptLabel" (click)="cd.accept()" class="highlight" size="small">
                         </p-button>
                     </div>
                 </div>
@@ -64,17 +56,14 @@
     </div>
     <div class="segments scrollable-content" #annotationElement>
         <div *ngIf="!noSpinner && dataLoading" class="card flex justify-content-center spinner-background">
-            <p-progressSpinner ariaLabel="loading"/>
+            <p-progressSpinner ariaLabel="loading" />
         </div>
         <ng-container>
             <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations">
                 <amalia-segment [segment]="segment" [tcIn]="segment.tcIn" [tcOut]="segment.tcOut"
-                                [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'"
-                                [fps]="fps"
-                                (actionEmitter)="manageSegment($event)" (click)="selectSegment(segment)"
-                                [availableCategories]="availableCategories"
-                                [availableKeywords]="availableKeywords"
-                                [mediaPlayerElement]="mediaPlayerElement"/>
+                    [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'" [fps]="fps"
+                    (click)="selectSegment(segment)" [availableCategories]="availableCategories"
+                    [availableKeywords]="availableKeywords" [mediaPlayerElement]="mediaPlayerElement" />
             </div>
         </ng-container>
 

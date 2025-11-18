@@ -39,6 +39,7 @@ import { PlayerEventType } from '../../core/constant/event-type';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnnotationLocalisation } from 'src/app/core/metadata/model/annotation-localisation';
 import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
+import { AnnotationsService } from 'src/app/service/annotations.service';
 
 
 const initTestData = (component: AnnotationPluginComponent) => {
@@ -435,6 +436,7 @@ describe('AnnotationPluginComponent', () => {
                 MessageService,
                 FileService,
                 ChangeDetectorRef,
+                AnnotationsService,
                 { provide: ElementRef, useValue: new ElementRef(null) }
             ],
             imports: [ButtonModule, ToastComponent, ConfirmDialogModule]
@@ -711,6 +713,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                 MessageService,
                 FileService,
                 ChangeDetectorRef,
+                AnnotationsService,
                 { provide: ElementRef, useValue: new ElementRef(null) }
             ],
             imports: [HttpClientTestingModule, ButtonModule, ToastComponent, FormsModule, TooltipModule,
@@ -1235,6 +1238,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                 MessageService,
                 FileService,
                 ChangeDetectorRef,
+                AnnotationsService,
                 { provide: ElementRef, useValue: new ElementRef(null) }
             ],
             imports: [HttpClientTestingModule, ButtonModule, ToastComponent, FormsModule, TooltipModule,

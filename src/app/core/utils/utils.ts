@@ -163,6 +163,37 @@ export class Utils {
             }
         }
     }
+
+    public static unsubscribeTargetedElementEventListener(target: any, elementOnTarget: any, playerEventType: PlayerEventType, func: any) {
+        const mapOfListenersPerElement: MapOfRegisteredListenersPerElement = Utils.mapOfRegisteredListenersPerTarget.get(target);
+        if (mapOfListenersPerElement) {
+            const mapOfListeners = mapOfListenersPerElement.get(elementOnTarget);
+            if (mapOfListeners) {
+                const listOfFunctions = mapOfListeners.get(playerEventType);
+                const fn = listOfFunctions?.find((fn) => fn.name === 'bound ' + func.name);
+                if (fn) {
+                    const remList = [elementOnTarget.off, elementOnTarget.removeListener, elementOnTarget.removeEventListener];
+                    const removeFn = remList.find((fn) => !!fn && typeof fn === 'function').bind(elementOnTarget);
+                    removeFn(playerEventType, fn);
+                    Utils.cleanMapsOfListeners(listOfFunctions, fn, mapOfListeners, playerEventType, mapOfListenersPerElement, elementOnTarget, target);
+                }
+            }
+        }
+    }
+
+    static cleanMapsOfListeners(listOfFunctions: ((...args: any[]) => void)[], fn: (...args: any[]) => void, mapOfListeners: Map<string, ((...args: any[]) => void)[]>, playerEventType: PlayerEventType, mapOfListenersPerElement: MapOfRegisteredListenersPerElement, elementOnTarget: any, target: any) {
+        listOfFunctions.splice(listOfFunctions.indexOf(fn), 1);
+        if (listOfFunctions.length === 0) {
+            mapOfListeners.delete(playerEventType);
+            if (mapOfListeners.size === 0) {
+                mapOfListenersPerElement.delete(elementOnTarget);
+                if (mapOfListenersPerElement.size === 0) {
+                    Utils.mapOfRegisteredListenersPerTarget.delete(target);
+                }
+            }
+        }
+    }
+
     public static isInComposedPath(htmlElementId: string, event: any): boolean {
         return event.composedPath().some((pathElement: any) => pathElement.id === htmlElementId);
     }

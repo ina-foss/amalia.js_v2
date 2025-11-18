@@ -14,6 +14,7 @@ import { FormatUtils } from "../../core/utils/format-utils";
 import { ToastComponent } from "../../core/toast/toast.component";
 import { SegmentComponent } from "./segment/segment.component";
 import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
+import { AnnotationsService } from 'src/app/service/annotations.service';
 
 export interface ExportColumnsHeader {
     "Lien": string;
@@ -61,6 +62,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     assetId: string;
     link: string;
     enabledExportButtons: boolean = false;
+    public technical_id: string;
 
     sortAnnotations() {
         if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
@@ -78,7 +80,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (this.mediaPlayerElement) {
             this.init();
             this.handleMetadataLoaded();
-            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
+            this.annotationsService.setFocusedAnnotation(this);
         }
     }
 
@@ -164,13 +166,16 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
         // Check if metadata is initialized
         if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
-
-            handleMetadataIds.forEach((metadataId) => {
+            this.segmentsInfo.subLocalisations = [];
+            for (const metadataId of handleMetadataIds) {
                 this.logger.info(`get metadata for ${metadataId}`);
                 const annotationLocalisations = metadataManager
                     .getAnnotationLocalisations(metadataId);
                 if (annotationLocalisations && annotationLocalisations.length > 0) {
-                    this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations);
+                    this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations.map(al => {
+                        al.data.hierarchy_technical_id = this.technical_id;
+                        return al;
+                    }));
                     this.subscriptionToEventsEmitters.push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
                         this.setSegmentsTcOffsetAndTcMax.bind(this),
                         this.logWaitForTcOffsetComplete.bind(this),
@@ -180,7 +185,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 }
                 // Add sort by tcin
                 this.sortAnnotations();
-            });
+            }
         }
     }
 
@@ -212,9 +217,13 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         };
     }
 
-    constructor(private readonly confirmationService: ConfirmationService, playerService: MediaPlayerService, private readonly fileService: FileService, private readonly cdr: ChangeDetectorRef) {
+    constructor(private readonly confirmationService: ConfirmationService, playerService: MediaPlayerService,
+        private readonly fileService: FileService, private readonly cdr: ChangeDetectorRef,
+        private readonly annotationsService: AnnotationsService) {
         super(playerService);
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
+        this.technical_id = crypto.randomUUID();
+        annotationsService.registerAnnotation(this);
     }
 
     public initializeNewSegment() {
@@ -240,7 +249,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     displayMode: "readonly",
                     selected: true,
                     tcMax: maxDuration,
-                    tcThumbnail: tcIn
+                    tcThumbnail: tcIn,
+                    hierarchy_technical_id: this.technical_id,
                 },
                 tc: 0,
                 tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset
@@ -420,6 +430,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (event.status) {
             this.displaySnackBar(event.responseMessage, event.status);
             if (event.status === 'success') {
+                this.syncOtherAnnotationsComponents();
                 this.cdr.detectChanges();
             }
         } else {
@@ -440,7 +451,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     manageSegment(event) {
         switch (event.type) {
-            case 'validate':
+            case 'validate' + this.technical_id:
                 event.payload = { segment: event.payload, updatedSegment: this.segmentBeforeEdition };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 //après émission de l'évènement, nous attendons que son status soit renseigné avant d'appeler saveSegment
@@ -454,15 +465,15 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 //On gère ici l'affichage d'un message en réponse au status de l'évènement
                 this.manageEventResponseStatus(event);
                 return;
-            case 'edit':
+            case 'edit' + this.technical_id:
                 this.editSegment(event.payload);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_EDITING, event);
                 return;
-            case 'cancel':
+            case 'cancel' + this.technical_id:
                 this.cancelNewSegmentEdition(event.payload);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_CANCEL_EDITING, event);
                 return;
-            case 'clone': {
+            case 'clone' + this.technical_id: {
                 const _event: any = {
                     type: event.type,
                     payload: this.cloneSegment(event.payload)
@@ -481,10 +492,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.manageEventResponseStatus(_event);
             }
                 return;
-            case 'remove':
+            case 'remove' + this.technical_id:
                 this.removeSegment(event.payload);
                 return;
-            case 'updatethumbnail': {
+            case 'updatethumbnail' + this.technical_id: {
                 const updatedSegment = structuredClone(event.payload);
                 updatedSegment.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset) * 1000;
                 updatedSegment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
@@ -501,7 +512,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.manageEventResponseStatus(event);
                 return;
             }
-            case 'playMedia':
+            case 'playMedia' + this.technical_id:
                 {
                     const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
                     const tcIn = event.payload.tcIn - event.payload.tcOffset;
@@ -510,17 +521,38 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     this.mediaPlayerElement.getMediaPlayer().play();
                     return;
                 }
-            case 'muteShortCuts':
+            case 'muteShortCuts' + this.technical_id:
                 {
                     this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_MUTE);
                     return;
                 }
-            case 'unmuteShortCuts':
+            case 'unmuteShortCuts' + this.technical_id:
                 {
                     this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_UNMUTE);
                     return;
                 }
         }
+    }
+
+    syncOtherAnnotationsComponents() {
+        const otherAnnotations: AnnotationPluginComponent[] = Array.from(this.annotationsService.getAnnotations()).filter(annotation => annotation !== this);
+        for (const annotation of otherAnnotations) {
+            annotation.setDataLoading(true);
+        }
+        this.mediaPlayerElement.metadataManager.loadDataSourceForPlugin(AnnotationPluginComponent.PLUGIN_NAME).then(
+            () => {
+                for (const annotation of otherAnnotations) {
+                    annotation.handleMetadataLoaded();
+                    annotation.setDataLoading(false);
+                    annotation.cdr.detectChanges();
+                }
+            },
+            () => {
+                for (const annotation of otherAnnotations) {
+                    annotation.setDataLoading(false);
+                    annotation.cdr.detectChanges();
+                }
+            });
     }
 
     private cloneSegment(sourceSegment: AnnotationLocalisation): AnnotationLocalisation {
@@ -544,6 +576,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public selectSegment(event: AnnotationLocalisation) {
         this.unselectAllSegments();
         event.data.selected = true;
+        this.annotationsService.setFocusedAnnotation(this);
     }
 
     private setTc(segment) {
@@ -743,10 +776,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     ngOnDestroy(): void {
         if (!!this.subscriptionToEventsEmitters && this.subscriptionToEventsEmitters.length > 0) {
-            this.subscriptionToEventsEmitters.forEach(subscription => {
+            for (const subscription of this.subscriptionToEventsEmitters) {
                 subscription.unsubscribe();
-            });
+            }
         }
+        this.annotationsService.removeAnnotation(this);
     }
 
     toggleExportMenu() {

@@ -1,12 +1,12 @@
-import {MediaPlayerElement} from '../media-player-element';
-import {PluginConfigData} from '../config/model/plugin-config-data';
-import {DefaultLogger} from '../logger/default-logger';
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {PlayerEventType} from '../constant/event-type';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {AmaliaException} from '../exception/amalia-exception';
-import {Subscription} from "rxjs";
-import {Utils} from "../utils/utils";
+import { MediaPlayerElement } from '../media-player-element';
+import { PluginConfigData } from '../config/model/plugin-config-data';
+import { DefaultLogger } from '../logger/default-logger';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { PlayerEventType } from '../constant/event-type';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { AmaliaException } from '../exception/amalia-exception';
+import { Subscription } from "rxjs";
+import { Utils } from "../utils/utils";
 
 /**
  * Base class for create plugin
@@ -117,7 +117,7 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     @Input()
     public pluginInstance = '';
     public mediaPlayerElement: MediaPlayerElement;
-    @Input({required: true})
+    @Input({ required: true })
     protected pluginName: string;
     logger: DefaultLogger;
 
@@ -144,6 +144,9 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
 
     addListener(element: any, playerEventType: PlayerEventType, func: any) {
         Utils.addListener(this, element, playerEventType, func);
+    }
+    removeListener(element: any, playerEventType: PlayerEventType, func: any) {
+        Utils.unsubscribeTargetedElementEventListener(this, element, playerEventType, func);
     }
 
     protected handleMetadataLoaded() {
