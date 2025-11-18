@@ -294,7 +294,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     // Handle metadata properties
     handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: any) {
-        listOfMetadata.forEach((metadata: any) => {
+        this.nodes = [];
+        this.listOfBlocks = [];
+        this.listOfBlocksIndexes = [];
+        this.mapOfBlocksIndexes = new Map<TimeLineBlock, number>();
+        this.selectedNodes.update(signal<TreeNode[]>([]));
+        this.allNodesChecked = false;
+
+        for (const metadata of listOfMetadata) {
             let listOfLocalisations = null;
             try {
                 listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
@@ -342,22 +349,24 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
             this.listOfBlocksIndexes.push(this.listOfBlocks.length - 1);
             this.mapOfBlocksIndexes.set(block, this.listOfBlocks.length - 1);
+
             let level1NodeAlreadyAdded: boolean = false;
-            this.nodes.forEach(node => {
+            for (const node of this.nodes) {
                 if (node.key === metadata.type) {
                     node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
                     level1NodeAlreadyAdded = true;
                 }
-            });
+            };
             if (!level1NodeAlreadyAdded) {
                 let level1Node = this.getNewNodeFromMetadataElement(metadata);
                 level1Node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
                 this.nodes.push(level1Node);
             }
-        });
+        }
         this.selectedNodes.set(this.getAllNodes(this.nodes));
         this.allNodesChecked = true;
     }
+
 
     getNewChildNodeFromMetadataElement = (metadata: any, color: string) => {
         return {

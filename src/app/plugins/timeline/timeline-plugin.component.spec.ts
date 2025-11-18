@@ -3696,8 +3696,8 @@ describe('TimelinePluginComponent', () => {
         component.handleMetadataProperties(listOfMetadata, metadataManager);
 
         expect(component.listOfBlocks.length).toBe(12);
-        expect(component.nodes.length).toBe(3);
-        expect(component.selectedNodes().length).toBe(15);
+        expect(component.nodes.length).toBe(1);
+        expect(component.selectedNodes().length).toBe(13);
         expect(component.allNodesChecked).toBeTrue();
     });
 
