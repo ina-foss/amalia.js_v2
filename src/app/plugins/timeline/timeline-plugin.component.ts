@@ -292,6 +292,38 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
     }
 
+    checkTcForStock(l: { tcIn: number; tcOut: number; }, tcIn: number, tcOut: number) {
+        if (this.tcIn <= l.tcOut && l.tcOut <= tcOut) {
+            return true;
+        }
+        if (this.tcIn <= l.tcIn && l.tcIn <= tcOut) {
+            return true;
+        }
+        if (l.tcIn <= this.tcIn && this.tcIn <= l.tcOut) {
+            return true;
+        }
+        return false;
+    }
+    adjustTcsForFlux(listOfLocalisations: { tcIn: number; tcOut: number; }[]) {
+        if (this.resourceType === 'stock' && (this.tcIn > 0 || this.durationFromConfig > 0)) {
+            return;
+        }
+        for (const l of listOfLocalisations) {
+            if (l.tcIn) {
+                l.tcIn += this.tcOffset;
+            }
+            if (l.tcOut) {
+                l.tcOut += this.tcOffset;
+            }
+        };
+    }
+    adjustForStock(listOfLocalisations: { tcIn: number; tcOut: number; }[]) {
+        if (this.resourceType === 'stock' && (this.tcIn > 0 || this.durationFromConfig > 0)) {
+            const tcOut = this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration;
+            return listOfLocalisations.filter((l: { tcIn: number; tcOut: number; }) => this.checkTcForStock(l, this.tcIn, tcOut));
+        }
+        return listOfLocalisations;
+    }
     // Handle metadata properties
     handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: any) {
         this.nodes = [];
@@ -305,30 +337,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             let listOfLocalisations = null;
             try {
                 listOfLocalisations = metadataManager.getTimelineLocalisations(metadata);
-                if (this.resourceType === 'stock' && (this.tcIn > 0 || this.durationFromConfig > 0)) {
-                    const tcOut = this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration;
-                    listOfLocalisations = listOfLocalisations.filter((l: { tcIn: number; tcOut: number; }) => {
-                        if (this.tcIn <= l.tcOut && l.tcOut <= tcOut) {
-                            return true;
-                        }
-                        if (this.tcIn <= l.tcIn && l.tcIn <= tcOut) {
-                            return true;
-                        }
-                        if (l.tcIn <= this.tcIn && this.tcIn <= l.tcOut) {
-                            return true;
-                        }
-                        return false;
-                    });
-                } else {
-                    for (const l of listOfLocalisations) {
-                        if (l.tcIn) {
-                            l.tcIn += this.tcOffset;
-                        }
-                        if (l.tcOut) {
-                            l.tcOut += this.tcOffset;
-                        }
-                    };
-                }
+                listOfLocalisations = this.adjustForStock(listOfLocalisations);
+                this.adjustTcsForFlux(listOfLocalisations);
             } catch (e) {
                 this.logger.warn('Error to parse metadata', e);
             }
@@ -351,11 +361,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.mapOfBlocksIndexes.set(block, this.listOfBlocks.length - 1);
 
             let level1NodeAlreadyAdded: boolean = false;
-            for (const node of this.nodes) {
-                if (node.key === metadata.type) {
-                    node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
-                    level1NodeAlreadyAdded = true;
-                }
+            for (const node of this.nodes.filter((n: TreeNode) => n.key === metadata.type)) {
+                node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
+                level1NodeAlreadyAdded = true;
             };
             if (!level1NodeAlreadyAdded) {
                 let level1Node = this.getNewNodeFromMetadataElement(metadata);
