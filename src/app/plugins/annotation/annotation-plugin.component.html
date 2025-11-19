@@ -59,11 +59,12 @@
             <p-progressSpinner ariaLabel="loading" />
         </div>
         <ng-container>
-            <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations">
+            <div class="segment" *ngFor="let segment of segmentsInfo.subLocalisations; let i = index">
                 <amalia-segment [segment]="segment" [tcIn]="segment.tcIn" [tcOut]="segment.tcOut"
                     [displayMode]="segment.data.displayMode" [tcDisplayFormat]="'f'" [fps]="fps"
                     (click)="selectSegment(segment)" [availableCategories]="availableCategories"
-                    [availableKeywords]="availableKeywords" [mediaPlayerElement]="mediaPlayerElement" />
+                    [availableKeywords]="availableKeywords" [mediaPlayerElement]="mediaPlayerElement"
+                    id="{{technical_id+i}}" />
             </div>
         </ng-container>
 
