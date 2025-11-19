@@ -292,7 +292,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
     }
 
-    checkTcForStock(l: { tcIn: number; tcOut: number; }, tcIn: number, tcOut: number) {
+    checkTcForStock(l: { tcIn: number; tcOut: number; }, tcOut: number) {
         if (this.tcIn <= l.tcOut && l.tcOut <= tcOut) {
             return true;
         }
@@ -320,7 +320,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     adjustForStock(listOfLocalisations: { tcIn: number; tcOut: number; }[]) {
         if (this.resourceType === 'stock' && (this.tcIn > 0 || this.durationFromConfig > 0)) {
             const tcOut = this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration;
-            return listOfLocalisations.filter((l: { tcIn: number; tcOut: number; }) => this.checkTcForStock(l, this.tcIn, tcOut));
+            return listOfLocalisations.filter((l: { tcIn: number; tcOut: number; }) => this.checkTcForStock(l, tcOut));
         }
         return listOfLocalisations;
     }
@@ -343,7 +343,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 this.logger.warn('Error to parse metadata', e);
             }
             if (!listOfLocalisations || listOfLocalisations.length === 0) {
-                return;
+                continue;
             }
             const color = (metadata?.viewControl?.color) ?? this.getAvailableColor();
             let block: TimeLineBlock = {

@@ -2,7 +2,7 @@
     "name": "@ina/amalia",
     "description": "Amalia is a extensible and versatile HTML5 multimedia player",
     "author": "INA",
-    "version": "2.1.16",
+    "version": "2.1.17",
     "main": "amalia.min.js",
     "scripts": {
         "ng": "ng",
