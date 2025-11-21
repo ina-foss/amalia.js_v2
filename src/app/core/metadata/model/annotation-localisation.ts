@@ -42,7 +42,6 @@ export interface AnnotationLocalisation {
 }
 
 export interface AnnotationAction {
-    //type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail" | "playMedia" | "muteShortCuts" | "unmuteShortCuts"; + hierarcgy_technical_id
-    type: string;
+    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail" | "playMedia" | "muteShortCuts" | "unmuteShortCuts";
     payload: AnnotationLocalisation;
 }

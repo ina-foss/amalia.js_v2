@@ -19,7 +19,9 @@ export class AnnotationsService {
     }
 
     public removeAnnotation(annotation: AnnotationPluginComponent) {
-        Utils.unsubscribeTargetedElementEventListener(annotation, annotation.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, annotation.handleShortcuts);
+        if (annotation.mediaPlayerElement?.eventEmitter) {
+            Utils.unsubscribeTargetedElementEventListener(annotation, annotation.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, annotation.handleShortcuts);
+        }
         this.annotations.delete(annotation);
         if (this.focusedAnnotation === annotation) {
             this.setFocusToNextAvailableAnnotation();
@@ -31,7 +33,9 @@ export class AnnotationsService {
         if (annotation) {
             const OtherAnnotations = Array.from(this.annotations).filter(a => a !== annotation);
             for (const annotation of OtherAnnotations) {
-                Utils.unsubscribeTargetedElementEventListener(annotation, annotation.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, annotation.handleShortcuts);
+                if (annotation.mediaPlayerElement?.eventEmitter) {
+                    Utils.unsubscribeTargetedElementEventListener(annotation, annotation.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, annotation.handleShortcuts);
+                }
             }
             annotation.addListener(annotation.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, annotation.handleShortcuts);
             this.actionEmitter.unsubscribe();

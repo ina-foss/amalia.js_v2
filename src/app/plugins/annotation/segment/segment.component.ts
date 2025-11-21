@@ -49,6 +49,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public tcOut = input<number>(0);
     public displayMode = input<"new" | "edit" | "readonly">("readonly");
 
+    //Outputs
+    @Output()
+    public actionEmitter: EventEmitter<AnnotationAction> = new EventEmitter<AnnotationAction>();
+
     //ViewChilds
     @ViewChild('segmentForm')
     public segmentForm: NgForm;
@@ -144,7 +148,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         this.doCheckTcOut();
         this.doCheckTc();
         if (this.segmentForm.valid) {
-            this.annotationsService.actionEmitter.emit({ type: "validate" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
             this.setIsEllipsed();
             this.setIsDescriptionTruncated();
         }
@@ -490,28 +494,28 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public editSegment() {
         this.editionAlreadyActivated = false;
-        this.annotationsService.actionEmitter.emit({ type: "edit" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
         setTimeout(() => {
             this.updateTcsDisplay();
         }, 100);
     }
 
     public cancelNewSegmentCreation() {
-        this.annotationsService.actionEmitter.emit({ type: "cancel" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "cancel", payload: this.segment });
         this.setCategoriesFromProperty(this.propertyBeforeEdition);
         this.setKeywordsFromProperty(this.propertyBeforeEdition);
     }
 
     public cloneSegment() {
-        this.annotationsService.actionEmitter.emit({ type: "clone" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "clone", payload: this.segment });
     }
 
     public removeSegment() {
-        this.annotationsService.actionEmitter.emit({ type: "remove" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "remove", payload: this.segment });
     }
 
     public updateThumbnail() {
-        this.annotationsService.actionEmitter.emit({ type: "updatethumbnail" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "updatethumbnail", payload: this.segment });
     }
 
     public setCategoriesFromProperty(props) {
@@ -745,14 +749,14 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     playMedia() {
-        this.annotationsService.actionEmitter.emit({ type: "playMedia" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "playMedia" , payload: this.segment });
     }
 
     unmuteShortCuts() {
-        this.annotationsService.actionEmitter.emit({ type: "unmuteShortCuts" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "unmuteShortCuts" , payload: this.segment });
     }
     muteShortCuts() {
-        this.annotationsService.actionEmitter.emit({ type: "muteShortCuts" + this.segment.data.hierarchy_technical_id, payload: this.segment });
+        this.actionEmitter.emit({ type: "muteShortCuts" , payload: this.segment });
     }
     /**
       * Apply shortcut if exists on keydown

@@ -343,6 +343,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     rejectButtonStyleClass: "p-button-text",
                     rejectLabel: "Non",
                     acceptLabel: "Oui",
+                    key: this.technical_id,
                     accept: () => {
                         this.cancelNewSegmentEdition(editing);
                         this.segmentBeforeEdition = structuredClone(segment);
@@ -396,6 +397,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public removeSegment(segment) {
+        console.group('removeSegment' + ' ' + Date.now());
+
         const msg = (segment.label === undefined || segment.label === '') ? SegmentComponent.SEGMENT_SANS_TITRE : segment.label;
         this.confirmationService.confirm({
             message: `Etes-vous sûr de vouloir supprimer le segment ['${msg}']`,
@@ -404,7 +407,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             rejectButtonStyleClass: "p-button-text",
             rejectLabel: "Annuler",
             acceptLabel: "Supprimer",
+            key: this.technical_id,
             accept: () => {
+                console.group('removeSegment accept' + ' ' + Date.now());
                 this.unselectAllSegments();
                 const event: any = {
                     type: 'remove',
@@ -419,11 +424,13 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     10000,
                     this.setDataLoading.bind(this)));
                 this.manageEventResponseStatus(event);
+                console.groupEnd();
             },
             reject: () => {
                 //we do nothing
             }
         });
+        console.groupEnd();
     }
 
     displayEventResponseStatus(event) {
@@ -451,7 +458,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     manageSegment(event) {
         switch (event.type) {
-            case 'validate' + this.technical_id:
+            case 'validate':
                 event.payload = { segment: event.payload, updatedSegment: this.segmentBeforeEdition };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 //après émission de l'évènement, nous attendons que son status soit renseigné avant d'appeler saveSegment
@@ -465,15 +472,15 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 //On gère ici l'affichage d'un message en réponse au status de l'évènement
                 this.manageEventResponseStatus(event);
                 return;
-            case 'edit' + this.technical_id:
+            case 'edit':
                 this.editSegment(event.payload);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_EDITING, event);
                 return;
-            case 'cancel' + this.technical_id:
+            case 'cancel':
                 this.cancelNewSegmentEdition(event.payload);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_CANCEL_EDITING, event);
                 return;
-            case 'clone' + this.technical_id: {
+            case 'clone': {
                 const _event: any = {
                     type: event.type,
                     payload: this.cloneSegment(event.payload)
@@ -492,10 +499,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.manageEventResponseStatus(_event);
             }
                 return;
-            case 'remove' + this.technical_id:
+            case 'remove':
                 this.removeSegment(event.payload);
                 return;
-            case 'updatethumbnail' + this.technical_id: {
+            case 'updatethumbnail': {
                 const updatedSegment = structuredClone(event.payload);
                 updatedSegment.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset) * 1000;
                 updatedSegment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
@@ -512,7 +519,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 this.manageEventResponseStatus(event);
                 return;
             }
-            case 'playMedia' + this.technical_id:
+            case 'playMedia':
                 {
                     const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
                     const tcIn = event.payload.tcIn - event.payload.tcOffset;
@@ -521,12 +528,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     this.mediaPlayerElement.getMediaPlayer().play();
                     return;
                 }
-            case 'muteShortCuts' + this.technical_id:
+            case 'muteShortCuts':
                 {
                     this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_MUTE);
                     return;
                 }
-            case 'unmuteShortCuts' + this.technical_id:
+            case 'unmuteShortCuts':
                 {
                     this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_UNMUTE);
                     return;
@@ -785,5 +792,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     toggleExportMenu() {
         this.enabledExportButtons = !this.enabledExportButtons;
+    }
+    isMainAnnotationComponent(): boolean {
+        return this.annotationsService.getFocusedAnnotation() === this;
     }
 }

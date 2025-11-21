@@ -977,7 +977,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 46800,
@@ -1023,7 +1024,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 46800,
@@ -1039,7 +1041,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 46800,
@@ -1055,7 +1058,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 46800,
@@ -1071,7 +1075,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 47816,
@@ -1088,7 +1093,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 47932,
@@ -1104,7 +1110,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 48600,
@@ -1120,7 +1127,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 48600,
@@ -1136,7 +1144,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 48600,
@@ -1152,7 +1161,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 48600,
@@ -1168,7 +1178,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 48825,
@@ -1184,7 +1195,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 49009,
@@ -1200,7 +1212,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 49122,
@@ -1216,7 +1229,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly"
+                    "displayMode": "readonly",
+                    "media": "VIDEO",
                 },
                 "tc": 0,
                 "tcIn": 49982,
@@ -1268,7 +1282,11 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         component.playerId = 'manageSements';
         component.subscriptionToEventsEmitters = [];
         component.intervalStep = 10;
-        component.segmentsInfo = structuredClone(segmentsInfo);
+        const spyOnGetAnnotationLocalisations = spyOn(mediaPlayerElement.metadataManager, 'getAnnotationLocalisations');
+        const annotations = structuredClone(segmentsInfo.subLocalisations);
+        spyOnGetAnnotationLocalisations.and.callFake((metadataId: string) => {
+            return annotations;
+        });
         fixture.detectChanges();
     });
 
@@ -1333,12 +1351,11 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         const spyOnEmit = spyOn(mediaPlayerElement.eventEmitter, 'emit');
         const spyOnEditSegment = spyOn(component, 'editSegment').and.callThrough();
         const spyOncancelNewSegmentEdition = spyOn(component, 'cancelNewSegmentEdition').and.callThrough();
-        component.segmentBeforeEdition = { id: '123', data: {}, tcIn: 0, tcOut: 0, tc: 0 } as any;
         component.manageSegment(newEvent);
         expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_EDITING, newEvent);
         expect(spyOnEditSegment).toHaveBeenCalledWith(newEvent.payload);
         tick();
-        fixture.detectChanges();
+        fixture.changeDetectorRef.detectChanges();
         const spans = fixture.debugElement.queryAll(
             el => el.nativeElement.tagName.toLowerCase() === 'span' &&
                 el.nativeElement.classList.contains('p-button-label') &&
@@ -1346,8 +1363,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         );
         expect(spans.length).toBe(1);
         spans[0].nativeElement.click();
-        fixture.detectChanges();
-        tick();
+        fixture.changeDetectorRef.detectChanges();
+        tick(1000);
         expect(spyOncancelNewSegmentEdition).toHaveBeenCalledWith(event.payload);
         expect(event.payload.data.displayMode).toEqual("readonly");
         expect(newEvent.payload.id).toEqual(component.segmentBeforeEdition.id);
@@ -1373,7 +1390,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_EDITING, newEvent);
         expect(spyOnEditSegment).toHaveBeenCalledWith(newEvent.payload);
         tick();
-        fixture.detectChanges();
+        fixture.changeDetectorRef.detectChanges();
         const spans = fixture.debugElement.queryAll(
             el => el.nativeElement.tagName.toLowerCase() === 'span' &&
                 el.nativeElement.classList.contains('p-button-label') &&
@@ -1381,8 +1398,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         );
         expect(spans.length).toBe(1);
         spans[0].nativeElement.click();
-        fixture.detectChanges();
-        tick();
+        fixture.changeDetectorRef.detectChanges();
+        tick(1000);
         expect(segmentBeingEdited.data.selected).toEqual(true);
         expect(segmentToEdit.data.selected).toEqual(false);
         tick(5000);

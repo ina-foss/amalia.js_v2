@@ -10,10 +10,10 @@ describe('AnnotationsService', () => {
 
     beforeEach(() => {
         service = new AnnotationsService();
-        mockAnnotation1 = jasmine.createSpyObj('AnnotationPluginComponent', ['addListener', 'handleShortcuts'], {
+        mockAnnotation1 = jasmine.createSpyObj('AnnotationPluginComponent', ['addListener', 'handleShortcuts','manageSegment'], {
             mediaPlayerElement: { eventEmitter: {} }
-        });
-        mockAnnotation2 = jasmine.createSpyObj('AnnotationPluginComponent', ['addListener', 'handleShortcuts'], {
+        }, );
+        mockAnnotation2 = jasmine.createSpyObj('AnnotationPluginComponent', ['addListener', 'handleShortcuts','manageSegment'], {
             mediaPlayerElement: { eventEmitter: {} }
         });
         spyOn(Utils, 'unsubscribeTargetedElementEventListener');
