@@ -25,7 +25,6 @@ import { DragDropModule } from 'primeng/dragdrop';
 import { PreventCtrlScrollDirective } from 'src/app/core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayerConfigData } from 'src/app/core/config/model/player-config-data';
-import interact from 'interactjs';
 import { MinusIcon } from 'primeng/icons/minus';
 import { CheckIcon } from 'primeng/icons/check';
 import { FormsModule } from '@angular/forms';
@@ -3738,7 +3737,47 @@ describe('TimelinePluginComponent', () => {
                     "version": 1,
                     "id": "SEGMENTATION-1739761189Volodymyr Zelensky"
                 }
+            ],
+            [
+                "EXTRAITS_UTILISATEUR001001kq9t5x",
+                {
+                    "localisation": [
+                        {
+                            "sublocalisations": {
+                                "localisation": [
+                                    {
+                                        "data": {
+                                            "text": [""],
+                                            "attribute": [{
+                                                "value": "",
+                                                "name": "label",
+                                                "score": 1
+                                            }
+                                            ],
+                                        },
+                                        "type": "VIDEO",
+                                        "tcin": "00:-4:-58:00",
+                                        "tcout": "00:05:34:00",
+                                        "tclevel": 1
+                                    }
+                                ]
+                            },
+                            "type": "VIDEO",
+                            "tcin": "00:-4:-58:00",
+                            "tcout": "00:05:34:00",
+                            "tclevel": 0
+                        }
+                    ],
+                    "type": "EXTRAITS_UTILISATEUR-",
+                    "label": "",
+                    "algorithm": "null null",
+                    "processor": "null null",
+                    "processed": 1739761189,
+                    "version": 1,
+                    "id": "EXTRAITS_UTILISATEUR001001kq9t5x"
+                }
             ]
+
         ]);
         component.nodes = [];
         component.listOfBlocks = [];
@@ -3756,9 +3795,9 @@ describe('TimelinePluginComponent', () => {
         }
         component.handleMetadataProperties(listOfMetadata, metadataManager);
 
-        expect(component.listOfBlocks.length).toBe(12);
+        expect(component.listOfBlocks.length).toBe(13);
         expect(component.nodes.length).toBe(1);
-        expect(component.selectedNodes().length).toBe(13);
+        expect(component.selectedNodes().length).toBe(14);
         expect(component.allNodesChecked).toBeTrue();
     });
 
