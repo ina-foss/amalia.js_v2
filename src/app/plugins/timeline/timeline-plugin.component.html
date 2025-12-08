@@ -93,7 +93,7 @@
                                 (keyDown)="handleMouseEnterOnTc($event,loc)" (keyUp)="handleMouseEnterOnTc($event,loc)"
                                 (mouseenter)="handleMouseEnterOnTc($event,loc)"
                                 (mouseleave)="handleMouseLeaveOnTc($event)"
-                                [ngStyle]="{'background-color': block.data.color ?block.data.color:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn)+'%' }">
+                                [ngStyle]="{'background-color': block.data.color ?block.data.color:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn===0)? '1px':(((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn))+'%') }">
                             </div>
                         </ng-container>
                     </div>

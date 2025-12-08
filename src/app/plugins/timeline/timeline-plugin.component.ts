@@ -94,7 +94,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     private blocksIsOpen = false;
     private lastSelectedColorIdx = -1;
-    managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE, DataType.DOCUMENTS_LIES];
+    managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE, DataType.DOCUMENTS_LIES, DataType.EXTRAITS_UTILISATEUR];
 
     nodes: TreeNode[] = [];
     selectedNodes: WritableSignal<TreeNode[]> = signal<TreeNode[]>([]);
@@ -201,6 +201,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, 'g');
         const dayScheduleRegExp = new RegExp(DataType.DAY_SCHEDULE, 'g');
         const documentLieRegExp = new RegExp(DataType.DOCUMENTS_LIES, 'g');
+        const extraitsUtilisateurRegExp = new RegExp(DataType.EXTRAITS_UTILISATEUR, 'g');
 
         if (segmentationRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.SEGMENTATION, 'g'), 'Segmentation sonore');
@@ -217,6 +218,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (documentLieRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.DOCUMENTS_LIES, 'g'), 'Documents liés segmentés');
             icon = 'pi pi-fw pi-file';
+        }
+        if (extraitsUtilisateurRegExp.test(metadata.type)) {
+            level1Label = metadata.type.replace(new RegExp(DataType.EXTRAITS_UTILISATEUR, 'g'), 'Extraits utilisateur');
+            icon = 'pi pi-fw pi-tags';
         }
         if (level1Label.endsWith('-')) {
             level1Label = level1Label.substring(0, level1Label.length - 1);
@@ -263,11 +268,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const handleMetadataIds = this.pluginConfiguration.metadataIds;
         const metadataManager = this.mediaPlayerElement.metadataManager;
         const mainMetadataIds = this.pluginConfiguration.data.mainMetadataIds;
-        if (!handleMetadataIds) {
+        if (handleMetadataIds === null || handleMetadataIds === undefined) {
             this.managedDataTypes.forEach((type) => {
                 const metadata = metadataManager.getMetadataByType(`${type}-${this.pluginInstance}`);
                 if (metadata && metadata.length > 0) {
                     listOfMetadata.push(...metadata);
+                    if (type === DataType.EXTRAITS_UTILISATEUR) {
+                        this.patchExtraitUtilisateur(metadata as any);
+                    }
                 }
             });
         } else {
@@ -291,6 +299,16 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
         this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
     }
+
+
+    private patchExtraitUtilisateur(metadata: { label?: string; localisation?: any[]; sublocalisations?: any }[]) {
+        const patchLabel = (item: { label?: string; localisation?: any[]; sublocalisations?: any }) => {
+            item.label ||= 'Extrait sans titre';
+            item.localisation?.forEach(patchLabel);
+        };
+        metadata.forEach(patchLabel);
+    }
+
 
     checkTcForStock(l: { tcIn: number; tcOut: number; }, tcOut: number) {
         if (this.tcIn <= l.tcOut && l.tcOut <= tcOut) {
