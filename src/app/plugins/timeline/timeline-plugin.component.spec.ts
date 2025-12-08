@@ -142,6 +142,67 @@ describe('TimelinePluginComponent', () => {
         expect(childNode.expanded).toBeTrue();
     });
 
+    describe('patchExtraitUtilisateur', () => {
+        it('should add default label when metadata items have no label', () => {
+            // Arrange
+            const metadata = [
+                { localisation: [{ label: undefined }] },
+                { localisation: [{ label: '' }] },
+                { localisation: [{}] }
+            ];
+
+            // Act
+            component.patchExtraitUtilisateur(metadata);
+
+            // Assert
+            expect(metadata[0].localisation[0]['label']).toBe('Extrait sans titre');
+            expect(metadata[1].localisation[0]['label']).toBe('Extrait sans titre');
+            expect(metadata[2].localisation[0]['label']).toBe('Extrait sans titre');
+        });
+
+        it('should not modify existing labels', () => {
+            // Arrange
+            const metadata = [
+                { localisation: [{ label: 'Existing Label' }] },
+                { localisation: [{ label: 'Another Label' }] }
+            ];
+
+            // Act
+            component.patchExtraitUtilisateur(metadata);
+
+            // Assert
+            expect(metadata[0].localisation[0].label).toBe('Existing Label');
+            expect(metadata[1].localisation[0].label).toBe('Another Label');
+        });
+
+        it('should process nested localizations', () => {
+            // Arrange
+            const metadata = [
+                {
+                    localisation: [
+                        {
+                            label: 'Parent',
+                            sublocalisations: {
+                                localisation: [
+                                    { label: undefined },
+                                    { label: 'Child with label' }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ];
+
+            // Act
+            component.patchExtraitUtilisateur(metadata);
+
+            // Assert
+            expect(metadata[0].localisation[0].label).toBe('Parent');
+            expect(metadata[0].localisation[0].sublocalisations.localisation[0].label).toBeUndefined();
+            expect(metadata[0].localisation[0].sublocalisations.localisation[1].label).toBe('Child with label');
+        });
+    });
+
     it('should handle metadata properties', () => {
         const metadataManager = {
             getTimelineLocalisations: jasmine.createSpy('getTimelineLocalisations').and.returnValue([{

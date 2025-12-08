@@ -301,7 +301,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
 
-    private patchExtraitUtilisateur(metadata: { label?: string; localisation?: any[]; sublocalisations?: any }[]) {
+    patchExtraitUtilisateur(metadata: { label?: string; localisation?: any[]; sublocalisations?: any }[]) {
         const patchLabel = (item: { label?: string; localisation?: any[]; sublocalisations?: any }) => {
             item.label ||= 'Extrait sans titre';
             item.localisation?.forEach(patchLabel);
