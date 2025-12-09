@@ -108,6 +108,20 @@ describe('TimeBar plugin test', () => {
             150,
             200
         );
+        //double click
+        const mockEvent2 = new MouseEvent('doubleClick', { clientX: 150, clientY: 200 });
+        plugin.fps = 25;
+        const tooltipElement2 = document.createElement('div');
+        plugin.tooltip2 = new ElementRef(tooltipElement2);
+        // Appel de la méthode
+        plugin.copyAllToClipBoard(10, mockEvent2);
+        expect(FormatUtils.formatTime).toHaveBeenCalledWith(10, 'f', 25);
+        expect(Utils.copyToClipBoard).toHaveBeenCalledWith(
+            '00:10',
+            plugin.tooltip2.nativeElement,
+            150,
+            200
+        );
     });
 
 });

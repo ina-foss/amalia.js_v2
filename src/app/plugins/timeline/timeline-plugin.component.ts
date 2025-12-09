@@ -194,7 +194,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return level1Node;
     }
 
-    private getNodeLabelAndIcon(metadata: { type: string; }) {
+    getNodeLabelAndIcon(metadata: { type: string; }) {
         let level1Label: string = '';
         let icon: string = undefined;
         const segmentationRegExp = new RegExp(DataType.SEGMENTATION, 'g');
@@ -212,7 +212,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             icon = 'pi pi-fw pi-eye';
         }
         if (dayScheduleRegExp.test(metadata.type)) {
-            level1Label = metadata.type.replace(new RegExp(DataType.DAY_SCHEDULE, 'g'), 'Partie journée de  programme');
+            level1Label = metadata.type.replace(new RegExp(DataType.DAY_SCHEDULE, 'g'), 'Partie journée de programme');
             icon = 'pi pi-fw pi-calendar';
         }
         if (documentLieRegExp.test(metadata.type)) {

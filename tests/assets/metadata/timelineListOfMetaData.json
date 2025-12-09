@@ -10573,5 +10573,44 @@
         "processed": 1746590355,
         "version": 1,
         "id": "FACES_RECOGNITION-1746590355Liêm Hoang-Ngoc"
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": {
+                    "localisation": [
+                        {
+                            "data": {
+                                "text": [
+                                    ""
+                                ],
+                                "attribute": [
+                                    {
+                                        "value": "",
+                                        "name": "label",
+                                        "score": 1
+                                    }
+                                ]
+                            },
+                            "type": "VIDEO",
+                            "tcin": "00:-4:-58:00",
+                            "tcout": "00:05:34:00",
+                            "tclevel": 1
+                        }
+                    ]
+                },
+                "type": "VIDEO",
+                "tcin": "00:-4:-58:00",
+                "tcout": "00:05:34:00",
+                "tclevel": 0
+            }
+        ],
+        "type": "EXTRAITS_UTILISATEUR-",
+        "label": "",
+        "algorithm": "null null",
+        "processor": "null null",
+        "processed": 1739761189,
+        "version": 1,
+        "id": "EXTRAITS_UTILISATEUR001001kq9t5x"
     }
 ]

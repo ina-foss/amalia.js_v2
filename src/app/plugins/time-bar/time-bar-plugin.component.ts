@@ -19,6 +19,9 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     @ViewChild("tooltip")
     tooltip: ElementRef<HTMLDivElement>;
 
+    @ViewChild("tooltip2")
+    tooltip2: ElementRef<HTMLDivElement>;
+
     public static PLUGIN_NAME = 'TIME_BAR';
     /**
      * Return  current time
@@ -160,5 +163,9 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     copyToClipBoard(tc: number, event: MouseEvent) {
         const text = FormatUtils.formatTime(tc, 's', this.fps);
         Utils.copyToClipBoard(text, this.tooltip?.nativeElement, event.clientX, event.clientY);
+    }
+    copyAllToClipBoard(tc: number, event: MouseEvent) {
+        const text = FormatUtils.formatTime(tc, 'f', this.fps);
+        Utils.copyToClipBoard(text, this.tooltip2?.nativeElement, event.clientX, event.clientY);
     }
 }
