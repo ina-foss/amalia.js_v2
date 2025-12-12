@@ -309,7 +309,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         metadata.forEach(patchLabel);
     }
 
-
     checkTcForStock(l: { tcIn: number; tcOut: number; }, tcOut: number) {
         if (this.tcIn <= l.tcOut && l.tcOut <= tcOut) {
             return true;
@@ -322,21 +321,23 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
         return false;
     }
+
     adjustTcsForFlux(listOfLocalisations: { tcIn: number; tcOut: number; }[]) {
-        if (this.resourceType === 'stock' && (this.tcIn > 0 || this.durationFromConfig > 0)) {
+        if (this.resourceType === 'stock') {
             return;
         }
         for (const l of listOfLocalisations) {
-            if (l.tcIn) {
+            if (!isNaN(l.tcIn)) {
                 l.tcIn += this.tcOffset;
             }
-            if (l.tcOut) {
+            if (!isNaN(l.tcOut)) {
                 l.tcOut += this.tcOffset;
             }
         };
     }
+
     adjustForStock(listOfLocalisations: { tcIn: number; tcOut: number; }[]) {
-        if (this.resourceType === 'stock' && (this.tcIn > 0 || this.durationFromConfig > 0)) {
+        if (this.resourceType === 'stock' && (!isNaN(this.tcIn) || this.durationFromConfig > 0)) {
             const tcOut = this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration;
             return listOfLocalisations.filter((l: { tcIn: number; tcOut: number; }) => this.checkTcForStock(l, tcOut));
         }
