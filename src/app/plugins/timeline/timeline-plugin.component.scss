@@ -429,6 +429,13 @@
       line-height: normal;
     }
 
+    .ellipsis {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
+
     &.sortable-chosen {
       border: solid $amalia-plugin-timeline-secondary-color 1px;
     }
@@ -481,7 +488,7 @@
       justify-content: space-between;
       box-sizing: border-box;
       user-select: none;
-      width: 100%;
+      width: 95%;
 
       .extend .icon {
         cursor: pointer;

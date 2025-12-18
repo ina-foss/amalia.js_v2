@@ -69,7 +69,7 @@
                 (onDrop)="onDrop(idx)">
                 <ng-template pTemplate="header">
                     <div class="block-header" *ngIf="block.label!=''">
-                        <div class="timeline-block-label">
+                        <div class="timeline-block-label ellipsis">
                             <i [class]="block.icon"></i>{{ block.label }}
                         </div>
                         <div class="block-header-buttons">
