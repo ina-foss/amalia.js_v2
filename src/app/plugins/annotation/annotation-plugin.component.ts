@@ -538,6 +538,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_UNMUTE);
                     return;
                 }
+            case 'openNotilusMaterial':
+                {
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.OPEN_NOTILUS_MATERIAL, event);
+                    return;
+                }
         }
     }
 

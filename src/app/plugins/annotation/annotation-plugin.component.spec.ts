@@ -1588,6 +1588,32 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         flush();
     }));
 
+    it('should emit OPEN_NOTILUS_MATERIAL when manageSegment receives openNotilusMaterial', () => {
+        // On prend un segment existant des données d'init
+        const segmentToOpen = component.segmentsInfo.subLocalisations.find(seg => seg.id === "003000ai0qgw")
+            ?? component.segmentsInfo.subLocalisations[0];
+
+        const event: any = {
+            type: 'openNotilusMaterial',
+            payload: segmentToOpen
+        };
+
+        // On espionne l’émission de l’évènement
+        const spyOnEmit = spyOn(mediaPlayerElement.eventEmitter, 'emit').and.callThrough();
+
+        // (Optionnel) s'assurer que d'autres méthodes ne sont pas invoquées par erreur
+        const spyOnRemove = spyOn(component, 'removeSegment');
+        const spyOnEdit = spyOn(component, 'editSegment');
+
+        // Act
+        component.manageSegment(event);
+
+        // Assert
+        expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.OPEN_NOTILUS_MATERIAL, event);
+        expect(spyOnRemove).not.toHaveBeenCalled();
+        expect(spyOnEdit).not.toHaveBeenCalled;
+    });
+
     it('should call initializeNewSegment on "i" shortcut', () => {
         spyOn(component, 'initializeNewSegment');
         const event: ShortcutEvent = {

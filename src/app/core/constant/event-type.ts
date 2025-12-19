@@ -286,4 +286,8 @@ export enum PlayerEventType {
      * Export tv days
      */
     TIMELINE_EXPORT_TV_DAYS = 'ina.TIMELINE_EXPORT_TV_DAYS',
+    /**
+     * Annotations linked to a material with an idDocument
+     */
+    OPEN_NOTILUS_MATERIAL = "ina.OPEN_NOTILUS_MATERIAL",
 }

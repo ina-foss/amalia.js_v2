@@ -94,6 +94,8 @@
                             severity="secondary" tooltip="Dupliquer un segment" />
                         <p-button id="btnremove" icon="pi pi-trash" (click)="removeSegment()" [text]="true"
                             severity="danger" tooltip="Supprimer" />
+                        <p-button *ngIf="segment.data.idDocument"  id="btnclone" icon="pi pi-fw pi-tags" (click)="openNotilusMaterial()" [text]="true"
+                            severity="secondary" tooltip="Ouvrir dans Notilus" />
                     </div>
                 </ng-template>
                 <p-divider />

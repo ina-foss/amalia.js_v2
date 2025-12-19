@@ -749,14 +749,14 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     playMedia() {
-        this.actionEmitter.emit({ type: "playMedia" , payload: this.segment });
+        this.actionEmitter.emit({ type: "playMedia", payload: this.segment });
     }
 
     unmuteShortCuts() {
-        this.actionEmitter.emit({ type: "unmuteShortCuts" , payload: this.segment });
+        this.actionEmitter.emit({ type: "unmuteShortCuts", payload: this.segment });
     }
     muteShortCuts() {
-        this.actionEmitter.emit({ type: "muteShortCuts" , payload: this.segment });
+        this.actionEmitter.emit({ type: "muteShortCuts", payload: this.segment });
     }
     /**
       * Apply shortcut if exists on keydown
@@ -787,6 +787,9 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             this.cancelNewSegmentCreation();
             return;
         }
+    }
+    openNotilusMaterial() {
+        this.actionEmitter.emit({ type: "openNotilusMaterial", payload: this.segment });
     }
     ngOnDestroy() {
         this.formChangesSubscriptions.forEach(subscription => subscription.unsubscribe());

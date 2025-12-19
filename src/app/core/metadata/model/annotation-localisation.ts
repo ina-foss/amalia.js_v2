@@ -31,6 +31,8 @@ export interface AnnotationLocalisation {
         tcMax?: number;
         category?: string;
         hierarchy_technical_id?: string;
+        idDocument?: string;
+        typeDocument?: string;
     };
     property?: {
         key: string;
@@ -42,6 +44,6 @@ export interface AnnotationLocalisation {
 }
 
 export interface AnnotationAction {
-    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail" | "playMedia" | "muteShortCuts" | "unmuteShortCuts";
+    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail" | "playMedia" | "muteShortCuts" | "unmuteShortCuts" | "openNotilusMaterial";
     payload: AnnotationLocalisation;
 }
