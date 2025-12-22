@@ -27,7 +27,9 @@ export interface ExportColumnsHeader {
     "Mots_cles": string;
     "Categories": string;
     "Description": string;
-    "Lien de l\'imagette": string
+    "Lien de l\'imagette": string;
+    "Id Document": string;
+    "Type Document": string;
 }
 
 @Component({
@@ -728,7 +730,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 "Mots_cles": localisation.property?.filter(value => value.key === 'keyword').map(value => value.value).join('; '),
                 "Categories": localisation.property?.filter(value => value.key === 'category').map(value => value.value).join('; '),
                 "Description": localisation.description,
-                "Lien de l\'imagette": this.mediaPlayerElement?.getThumbnailUrl(tcThumbnail, true)
+                "Lien de l\'imagette": this.mediaPlayerElement?.getThumbnailUrl(tcThumbnail, true),
+                "Id Document": localisation.data.idDocument,
+                "Type Document": localisation.data.typeDocument,
             };
             return row;
         }
