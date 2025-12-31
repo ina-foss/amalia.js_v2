@@ -30,6 +30,7 @@ export interface ExportColumnsHeader {
     "Lien de l\'imagette": string;
     "Id Document": string;
     "Type Document": string;
+    "Titre de l\'instance":string;
 }
 
 @Component({
@@ -733,6 +734,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 "Lien de l\'imagette": this.mediaPlayerElement?.getThumbnailUrl(tcThumbnail, true),
                 "Id Document": localisation.data.idDocument,
                 "Type Document": localisation.data.typeDocument,
+                "Titre de l'instance": localisation.data.instanceTitle,
             };
             return row;
         }

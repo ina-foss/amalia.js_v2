@@ -33,6 +33,7 @@ export interface AnnotationLocalisation {
         hierarchy_technical_id?: string;
         idDocument?: string;
         typeDocument?: string;
+        instanceTitle?: string;
     };
     property?: {
         key: string;

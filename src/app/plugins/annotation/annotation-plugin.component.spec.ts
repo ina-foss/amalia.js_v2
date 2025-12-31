@@ -571,6 +571,7 @@ describe('AnnotationPluginComponent', () => {
                     "tcOutParent": 2264,
                     "idDocument": "123",
                     "typeDocument": "SEGMENT",
+                    "instanceTitle": "Claude Monet l\'éternel"
                 },
                 "tc": 0,
                 "tcIn": 600,
@@ -669,7 +670,8 @@ describe('AnnotationPluginComponent', () => {
             "Description": "\"Impression, soleil levant\" est sans doute le tableau le plus connu de Claude Monet, mais aussi du mouvement impressionniste, puisqu'il est celui qui lui a donné son nom. Peint en 1872-73, il tient une place importante dans l'Histoire de l'Art et recèle de nombreux secrets.",
             "Lien de l'imagette": "https://image.wsmedia.sas.ina/thumbs/qNnhN1ISmDe8DBMdODoONH5_X_k9J4W0Z7sqO1JsvUST-DVa82vq-bEt2LmebGISKNUHvCX9sZcePvGoCfle6WyX8kcF6OQIx8H_AuU_Iv2vPY8Lmbv1zlF-7QbYJvKRfEhyuN8NjXlmzqFVVU8cCqIUs1_mtaFimK2TZ-Log7UXSAwKdu_FHYF4nxuGfW5V7GkqVz1AoS_lH9b0WEfO3y9zPexndfEtZju1jTekkx0Xc7s37g5UCKT6_rQycibYIWsVaq28iUf6lzyZ2UBDzwLWbwO-LtXbT-AfJxP2OjBYOy_2dqqPKOiLQ7Az0vFXCzOzYYuDrz8sQop2gxkwUtcWiRQuREGYCn1CTeRGmZKLFrVDLg73e-B_OUUkY-NfMc38K6W9n6aqzYI8Tkmasx_q0zSlBPzp1I3loJLUBr9eZQ3eknZsvWHzGzAn_sC-MlMrMr6FhBcwUQ29-7o7UNRGSS3ykMGFQpVQyK6uZh2A7N11qG_Mo4rhPgUWC6gN8n4bwvP4DOxYNjTtTtHDrAqk6OVoi9FoNooDGicKve2MqbZRszcwj4teR6X88MCgjYTDIjIuqsJxzMpzu3_qIOZAsL4_2NJlvYPKGT7UB6NB9jIlHosH4MY95b6exdCdXkdrcx4HMsOfPFS_Tqwyx06yIcIveMLgP6SjIOG9v_0cZ5rjomlCQ0F6hD5oVlmlwao_cO0w6Z8BYP98c8ZuUb2ygOaXbXOf5FXbQOFJJnDC_Gub4Tcz-OoHWSDmiFMsbiZ_s8lzQI-R0aGYvYs5WPGb08SvhD-9tV-7Mkl6odoqx7gb5f5t8oZGzQSb6pS9ua-mVjZnj36C3jM-R4-Yfbsz_toPL1t708vg5mUrSE5f-QELZluvvVbAipWRa4EOtE8FD6DxHj_ZMJx7QvPgu3JjAJY0fyW42wlDnqNsYxpKhkg9O7Jvo4MnEy6tS02nUv4x0RxFGjJt6abtfEktoKt_g5DpF39_ZHBMfBQDqnxLwna9hkxx8ADi7_NOOBmC/sl_iv/hpog2iFsrU10ltgchPvllg/sl_hm/?width=320&start=0",
             "Id Document": "123",
-            "Type Document": "SEGMENT"
+            "Type Document": "SEGMENT",
+            "Titre de l'instance": "Claude Monet l\'éternel",
         }];
         const jsonData = component.getJsonDataFromAnnotations();
         component.downloadSegmentJsonFormat();
