@@ -4,11 +4,16 @@
         <div class="search-text">
             <div class="clear-icon">
                 <svg class="amalia-svg-clear-size icon" *ngIf="typing === true"
-                     (click)="clearSearchList();active = false;typing= false;searchText.value ='';">
+                    (click)="clearSearchList();active = false;typing= false;searchText.value ='';">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#clear'"></use>
                 </svg>
             </div>
-            <div class="search-icon" [ngClass]="{'show' : searching === false}"  (click)="searchWord(searchText.value);">
+
+            <input type="text" placeholder={{pluginConfiguration.data.label}}
+                (click)="$event.stopPropagation();active= true" (keyup)="handleChangeInput(searchText.value)"
+                [ngClass]="{'active' : active === true}" #searchText>
+
+            <div class="search-icon" [ngClass]="{'show' : searching === false}" (click)="searchWord(searchText.value);">
                 <svg class="amalia-svg-search-size icon">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#search'"></use>
                 </svg>
@@ -20,31 +25,35 @@
                 {{ index }} / {{ listOfSearchedNodes?.length }}
             </div>
             <div class="up" [ngClass]="{'show' : listOfSearchedNodes?.length > 0 && searching === true}"
-                 (click)="$event.stopPropagation();scrollToSearchedWord('up')">
+                (click)="$event.stopPropagation();scrollToSearchedWord('up')">
                 <svg class="amalia-svg-up-size icon">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#up2'"></use>
                 </svg>
             </div>
             <div class="down" [ngClass]="{'show' : listOfSearchedNodes?.length > 0 && searching === true}"
-                 (click)="$event.stopPropagation();scrollToSearchedWord('down')">
+                (click)="$event.stopPropagation();scrollToSearchedWord('down')">
                 <svg class="amalia-svg-down-size icon">
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
                 </svg>
             </div>
-            <input type="text"
-                   placeholder={{pluginConfiguration.data.label}}
-                   (click)="$event.stopPropagation();active= true"
-                   (keyup)="handleChangeInput(searchText.value)"
-                   [ngClass]="{'active' : active === true}"
-                   #searchText>
         </div>
-        <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}' [ngClass]="{'active' : displaySynchro}"
-             (click)="scrollToSelectedSegment()">
+        <div class="copybutton tooltip" (click)="copyAll()">
+            <span class="tooltiptext">Copier toutes les transcriptions</span>
+            <div class="copy-icon">
+                <svg class="icon">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#copy'"></use>
+                </svg>
+
+            </div>
+        </div>
+        <div class="auto-scroll" tooltip='{{pluginConfiguration.data.labelSynchro}}'
+            [ngClass]="{'active' : displaySynchro}" (click)="scrollToSelectedSegment()">
             <svg class="amalia-svg-auto-scroll-size icon">
                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#new_refresh'"></use>
             </svg>
         </div>
     </div>
+
     <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
             <div class="copybutton tooltip" (click)="copy(t)">
@@ -57,15 +66,19 @@
                 </div>
             </div>
             <div class="timecode" (click)="callSeek(t.tcIn)">
-                <div class="tcin">{{ t.tcIn + tcOffset|tcFormat:tcDisplayFormat }}</div>
+                <div class="tcin">{{(resourceType === 'stock') ? (t.tcIn|tcFormat:tcDisplayFormat) : (t.tcIn +
+                    tcOffset|tcFormat:tcDisplayFormat)
+                    }}</div>
                 <div class="separator"></div>
-                <div class="tcout">{{ t.tcOut + tcOffset|tcFormat:tcDisplayFormat }}</div>
+                <div class="tcout">{{(resourceType === 'stock') ? (t.tcOut|tcFormat:tcDisplayFormat) : (t.tcOut +
+                    tcOffset|tcFormat:tcDisplayFormat) }}</div>
             </div>
 
             <div class="named-entities" *ngIf="t.annotations.length>0">
                 <button class="named-entity" *ngFor="let a of t.annotations" data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="{{a.conceptIdWikidata?('ID wikidata: ' + a.conceptIdWikidata +'\n'): '' }}{{a.conceptScheme?('Type: ' + a.conceptScheme) : ''}}">{{ a.label }}
+                    data-placement="bottom"
+                    title="{{a.conceptIdWikidata?('ID wikidata: ' + a.conceptIdWikidata +'\n'): '' }}{{a.conceptScheme?('Type: ' + a.conceptScheme) : ''}}">{{
+                    a.label }}
                 </button>
             </div>
 
@@ -73,21 +86,19 @@
                 <div class="title">{{ t.label }}</div>
 
                 <div class="text" (click)="seekToWord($event)">
-                    <span *ngIf="t.subLocalisations && t.subLocalisations.length>0; then subLocalisationBlock; else wordBlock"></span>
+                    <span
+                        *ngIf="t.subLocalisations && t.subLocalisations.length>0; then subLocalisationBlock; else wordBlock"></span>
                     <ng-template #subLocalisationBlock>
-                        <div *ngFor="let w of t.subLocalisations"
-                             class="w"
-                             [attr.data-tcin]="w.tcIn"
-                             [attr.data-tcOut]="w.tcOut" [innerHTML]="w.text+' ' | sanitizeHtml: 'html'"></div>
+                        <div *ngFor="let w of t.subLocalisations" class="w" [attr.data-tcin]="w.tcIn"
+                            [attr.data-tcOut]="w.tcOut" [innerHTML]="w.text+' ' | sanitizeHtml: 'html'"></div>
                     </ng-template>
-                    <ng-template #wordBlock><span class="w" [attr.data-tcin]="t.tcIn"
-                                                  [attr.data-tcOut]="t.tcOut"
-                                                  [innerHTML]="t.text | sanitizeHtml: 'html'"></span>
+                    <ng-template #wordBlock><span class="w" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut"
+                            [innerHTML]="t.text | sanitizeHtml: 'html'"></span>
                     </ng-template>
                 </div>
             </div>
         </div>
     </div>
-    <div class="segment-empty"></div>
 </ng-template>
 <ng-template #emptyBlock>Error to find transcription</ng-template>
+<amalia-toast #messages position="bottom-center" key="ai" />

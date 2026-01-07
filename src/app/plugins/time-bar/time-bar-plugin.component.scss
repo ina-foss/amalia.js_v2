@@ -12,29 +12,76 @@
     font-size: 12px;
     font-weight: normal;
     z-index: $amalia-timebar-z-index;
-    background: $amalia-ctrl-bar-bg-color;
+    background: rgb(31 31 31);
     user-select: none;
+    height: 20px;
+
     &.inside {
       position: absolute;
       top: 0;
       width: 100%;
     }
+
     &.outside {
       position: relative;
     }
+
+    &.s,
+    &.xs {
+      justify-content: center;
+    }
+
     div {
-      padding: 5px;
+      padding: 0 5px;
       color: white;
       display: none;
 
-      &.s {
-        display: none;
+
+      &.currentTime {
+        &.active {
+          display: block;
+
+          &.s,
+          &.xs {
+            display: block;
+          }
+        }
       }
+
+      &.s,
+      &.xs {
+        display: none;
+
+        &.active {
+          display: none;
+        }
+      }
+
       &.active {
         display: block;
       }
-
     }
   }
-}
 
+  .tooltip {
+    position: fixed;
+    background: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .tooltip.show {
+    opacity: 1;
+    display: block;
+  }
+
+  .start,
+  .end,
+  .currentTime {
+    cursor: pointer;
+  }
+}

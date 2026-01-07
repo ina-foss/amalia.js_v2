@@ -12,20 +12,23 @@
   font-weight: normal;
 
 
-.row {
-  height: 35px;
-}
+  .row {
+    min-height: 45px;
+    max-height: 45px;
+    background-color: var(--INA-Blanc, #FFF);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   .interval {
-    margin-top: -7px;
     flex: 1;
     display: flex;
-    text-align: center;
-    float: right;
+    justify-content: flex-end;
     margin-inline-end: 20px;
     color: #4A4A4A;
     font-size: 14px;
-    letter-spacing: 0;
-    line-height: 16px;
+
 
     .label {
       font-weight: bold;
@@ -42,6 +45,7 @@
       letter-spacing: 0;
       line-height: 16px;
       font-weight: normal;
+
       .second-span {
         margin: -4px;
         padding: 0;
@@ -52,7 +56,7 @@
       width: 16px;
       height: 16px;
       margin-left: 10px;
-      color: #0086B1;
+      color: #0B7698;
       position: relative;
       top: 3px;
 
@@ -99,7 +103,7 @@
 
         &.selected {
           font-weight: bold;
-          color: #0086B1;
+          color: #0B7698;
         }
       }
     }
@@ -108,10 +112,8 @@
   .storyboard-size {
     display: flex;
     flex-direction: row;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    float: left;
-    margin-top: 7px;
     margin-inline-start: 20px;
 
     div.size {
@@ -158,6 +160,7 @@
     overflow-y: auto;
     will-change: scroll-position;
     z-index: 1;
+    padding-top: 5px;
 
     .vs-container {
       position: absolute;
@@ -180,10 +183,12 @@
         border-radius: 4px;
         overflow: hidden;
         border: solid 1px $amalia-plugin-storyboard-bg-color;
+
         .image {
           background-image: url("/assets/images/placeholder.png");
           background-color: transparent;
         }
+
         &:hover {
           border-color: $amalia-plugin-storyboard-box-color;
         }
@@ -199,10 +204,12 @@
             font-weight: bold;
           }
         }
+
         &.medium {
           width: $amalia-plugin-storyboard-thumbnail-mw;
           height: $amalia-plugin-storyboard-thumbnail-mh;
         }
+
         &.large {
           width: $amalia-plugin-storyboard-thumbnail-lw;
           height: $amalia-plugin-storyboard-thumbnail-lh;
@@ -213,9 +220,12 @@
           height: calc(100% - 20px);
           display: block;
           overflow: hidden;
-          object-fit: contain; /* Fit logo in the image size */
-          -o-object-fit: contain; /* Fit logo fro opera browser */
-          object-position: center; /* Set logo position */
+          object-fit: contain;
+          /* Fit logo in the image size */
+          -o-object-fit: contain;
+          /* Fit logo fro opera browser */
+          object-position: center;
+          /* Set logo position */
           -o-object-position: center;
           border-radius: 3px 3px 0 0;
         }
@@ -267,7 +277,7 @@
 
       &.selected,
       &:hover {
-        --hover: #0086B1;
+        --hover: #0B7698;
         color: $amalia-plugin-timeline-bg-color;
       }
     }
@@ -292,7 +302,7 @@
         border-radius: 4px;
         margin-right: 85px;
 
-        > img {
+        >img {
           width: 225px;
           height: 126px;
           cursor: pointer;
@@ -319,7 +329,7 @@
         .unity {
           width: 1px;
           height: 12px;
-          background-color: #0086B1;
+          background-color: #0B7698;
           margin: 0 auto 0;
         }
       }
@@ -371,7 +381,7 @@
       right: 15px;
     }
 
-    > ul {
+    >ul {
       list-style: none;
       position: absolute;
       z-index: 100;
@@ -400,10 +410,9 @@
 
         &.selected {
           font-weight: bold;
-          color: #0086B1;
+          color: #0B7698;
         }
       }
     }
   }
 }
-

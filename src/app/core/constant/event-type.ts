@@ -245,9 +245,12 @@ export enum PlayerEventType {
     /**
      * An html element event
      */
+    ANNOTATION_PLAY = 'ina.annotation.PLAY',
+
     HTML_ELEMENT_MOUSE_DOWN = 'mousedown',
     HTML_ELEMENT_MOUSE_UP = 'mouseup',
     HTML_ELEMENT_MOUSE_MOVE = 'mousemove',
+    HTML_ELEMENT_WHEEL = 'wheel',
     ELEMENT_CONTEXT_MENU = 'contextmenu',
     ELEMENT_CLICK = 'click',
     ELEMENT_LOADSTART = 'loadstart',
@@ -263,5 +266,28 @@ export enum PlayerEventType {
     ELEMENT_WAITING = 'waiting',
     ELEMENT_SUSPEND = 'suspend',
     ELEMENT_FULLSCREENCHANGE = 'fullscreenchange',
-    ELEMENT_KEYDOWN = 'keydown'
+    ELEMENT_KEYDOWN = 'keydown',
+    ELEMENT_KEYUP = 'keyup',
+    ELEMENT_FOCUSIN = "focusin",
+    ELEMENT_FOCUSOUT = "focusout",
+    SHORTCUT_KEYDOWN = "SHORTCUT_KEYDOWN",
+    SHORTCUT_MUTE = "SHORTCUT_MUTE",
+    SHORTCUT_UNMUTE = "SHORTCUT_UNMUTE",
+    /**
+     * get the current time
+     */
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME = 'ina.CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME',
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME = 'ina.CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME',
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_DURATION = 'ina.CONTRIBUTION_JURIDIQUE_ASK_FOR_DURATION',
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME = 'ina.CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME',
+    NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_DURATION = 'ina.CONTRIBUTION_JURIDIQUE_GET_DURATION',
+
+    /**
+     * Export tv days
+     */
+    TIMELINE_EXPORT_TV_DAYS = 'ina.TIMELINE_EXPORT_TV_DAYS',
+    /**
+     * Annotations linked to a material with an idDocument
+     */
+    OPEN_NOTILUS_MATERIAL = "ina.OPEN_NOTILUS_MATERIAL",
 }

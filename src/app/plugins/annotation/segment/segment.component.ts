@@ -5,28 +5,33 @@ import {
     effect, ElementRef,
     EventEmitter, HostListener,
     input,
-    Input, OnInit,
+    Input, OnDestroy, OnInit,
     Output, signal,
     ViewChild
 } from '@angular/core';
-import {AnnotationAction, AnnotationLocalisation} from "../../../core/metadata/model/annotation-localisation";
-import {debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer} from "rxjs";
-import {FormatUtils} from "../../../core/utils/format-utils";
-import {DEFAULT} from "../../../core/constant/default";
-import {MessageService} from "primeng/api";
-import {switchMap} from 'rxjs/operators';
-import {AutoCompleteCompleteEvent} from "primeng/autocomplete";
-import {NgForm} from "@angular/forms";
-import {ToastComponent} from "../../../core/toast/toast.component";
+import { AnnotationAction, AnnotationLocalisation } from "../../../core/metadata/model/annotation-localisation";
+import { debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer, Subject } from "rxjs";
+import { FormatUtils } from "../../../core/utils/format-utils";
+import { DEFAULT } from "../../../core/constant/default";
+import { MessageService } from "primeng/api";
+import { switchMap, throttleTime } from 'rxjs/operators';
+import { AutoCompleteCompleteEvent } from "primeng/autocomplete";
+import { NgForm } from "@angular/forms";
+import { ToastComponent } from "../../../core/toast/toast.component";
+import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
+import { MediaPlayerElement } from 'src/app/core/media-player-element';
+import { PlayerEventType } from 'src/app/core/constant/event-type';
+import { Utils } from 'src/app/core/utils/utils';
+import { AnnotationsService } from 'src/app/service/annotations.service';
 
 @Component({
     selector: 'amalia-segment',
     templateUrl: './segment.component.html',
     styleUrl: './segment.component.scss',
 })
-export class SegmentComponent implements OnInit, AfterViewInit {
+export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     //Inputs
-    @Input({required: true})
+    @Input({ required: true })
     public segment: AnnotationLocalisation;
     @Input()
     public tcDisplayFormat: 's' | 'f' = 'f';
@@ -36,6 +41,8 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     availableCategories: string[] = [];
     @Input()
     availableKeywords: string[] = [];
+    @Input()
+    mediaPlayerElement: MediaPlayerElement;
 
     //InputSignals
     public tcIn = input<number>(0);
@@ -59,7 +66,14 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     public readOnlyKeywordsDiv: ElementRef;
     @ViewChild('toast')
     public toast: ToastComponent;
-
+    @ViewChild('tcInInputRef')
+    public tcInInputRef: ElementRef;
+    @ViewChild('tcOutInputRef')
+    public tcOutInputRef: ElementRef;
+    @ViewChild('tcInputRef')
+    public tcInputRef: ElementRef;
+    @ViewChild('segmentTcRef')
+    public segmentTcRef: ElementRef;
     public isEllipsed: boolean = false;
     public isDescriptionCollapsed: boolean = true;
     public isDescriptionTruncated: boolean = false;
@@ -93,19 +107,21 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         const prop: { key: string; value: string }[] = [];
         this.categories()?.forEach(cat => {
             if (!prop.find(p => p.key === 'category' && p.value === cat)) {
-                prop.push({key: 'category', value: cat});
+                prop.push({ key: 'category', value: cat });
             }
         });
         this.keywords()?.forEach(keyword => {
             if (!prop.find(p => p.key === 'keyword' && p.value === keyword)) {
-                prop.push({key: 'keyword', value: keyword});
+                prop.push({ key: 'keyword', value: keyword });
             }
         });
         return prop;
     });
+    editableSegmentTcWrap: boolean = false;
 
 
-    constructor(private messageService: MessageService, private cdr: ChangeDetectorRef) {
+    constructor(private messageService: MessageService, private cdr: ChangeDetectorRef,
+        private annotationsService: AnnotationsService) {
         effect(() => {
             this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
         });
@@ -124,6 +140,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
                 this.updateCategoriesAndKeywordsDisplay();
             }
         });
+
     }
 
     public validateNewSegment() {
@@ -131,7 +148,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.doCheckTcOut();
         this.doCheckTc();
         if (this.segmentForm.valid) {
-            this.actionEmitter.emit({type: "validate", payload: this.segment});
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
             this.setIsEllipsed();
             this.setIsDescriptionTruncated();
         }
@@ -159,8 +176,8 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             summary: undefined,
             detail: msgContent,
             key: 'segment',
-            life:5000,
-            data: {progress: 0} // initial progress value (life/ interval timeout)*2
+            life: 5000,
+            data: { progress: 0 } // initial progress value (life/ interval timeout)*2
         });
     }
 
@@ -176,9 +193,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const tcInFormControl = this.segmentForm.form.controls['tcIn'];
             if (tcInFormControl) {
-                tcInFormControl.setErrors({'Error': true});
+                tcInFormControl.setErrors({ 'Error': true });
             }
-            return {value, error: true};
+            return { value, error: true };
         }
         return value;
     }
@@ -193,9 +210,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const tcOutFormControl = this.segmentForm.form.controls['tcOut'];
             if (tcOutFormControl) {
-                tcOutFormControl.setErrors({'Error': true});
+                tcOutFormControl.setErrors({ 'Error': true });
             }
-            return {value, error: true};
+            return { value, error: true };
         }
         return value;
     }
@@ -209,9 +226,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const tcFormControl = this.segmentForm.form.controls['tc'];
             if (tcFormControl) {
-                tcFormControl.setErrors({'Error': true});
+                tcFormControl.setErrors({ 'Error': true });
             }
-            return {value, error: true};
+            return { value, error: true };
         }
         return value;
     }
@@ -241,7 +258,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
     }
 
     tcValidators(forTC: "tcIn" | "tcOut" | "tc", value: string, displaySnackBar?: boolean): any {
-        let result: any = {value, error: true, formatError: true};
+        let result: any = { value, error: true, formatError: true };
         if (this.timeFormatPattern.test(value)) {
             let tcMax = this.segment.data.tcMax ? this.segment.data.tcMax : Number.MAX_VALUE;
             switch (forTC) {
@@ -261,7 +278,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             }
             const formControl = this.segmentForm.form.controls[forTC];
             if (formControl) {
-                formControl.setErrors({'Error': true});
+                formControl.setErrors({ 'Error': true });
             }
         }
         return result;
@@ -425,7 +442,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
                 this.segment.property = this.property();
                 if (this.categories().length > 10) {
-                    categoriesFormControl.setErrors({'invalid': true});
+                    categoriesFormControl.setErrors({ 'invalid': true });
                 } else {
                     categoriesFormControl.setErrors(null);
                 }
@@ -439,7 +456,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
                 this.segment.property = this.property();
                 if (this.keywords().length > 10) {
-                    keywordsFormControl.setErrors({'invalid': true});
+                    keywordsFormControl.setErrors({ 'invalid': true });
                 } else {
                     keywordsFormControl.setErrors(null);
                 }
@@ -453,7 +470,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         if (titleFormControl) {
             const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
                 if (value.length > 250) {
-                    titleFormControl.setErrors({'Error': true})
+                    titleFormControl.setErrors({ 'Error': true })
                 } else {
                     titleFormControl.setErrors(null);
                 }
@@ -466,7 +483,7 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         if (descriptionFormControl) {
             const descriptionChangesSubscription = descriptionFormControl.valueChanges.subscribe((value) => {
                 if (value.length > 1000) {
-                    descriptionFormControl.setErrors({'Error': true})
+                    descriptionFormControl.setErrors({ 'Error': true })
                 } else {
                     descriptionFormControl.setErrors(null);
                 }
@@ -477,25 +494,28 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public editSegment() {
         this.editionAlreadyActivated = false;
-        this.actionEmitter.emit({type: "edit", payload: this.segment});
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+        setTimeout(() => {
+            this.updateTcsDisplay();
+        }, 100);
     }
 
     public cancelNewSegmentCreation() {
-        this.actionEmitter.emit({type: "cancel", payload: this.segment});
+        this.actionEmitter.emit({ type: "cancel", payload: this.segment });
         this.setCategoriesFromProperty(this.propertyBeforeEdition);
         this.setKeywordsFromProperty(this.propertyBeforeEdition);
     }
 
     public cloneSegment() {
-        this.actionEmitter.emit({type: "clone", payload: this.segment});
+        this.actionEmitter.emit({ type: "clone", payload: this.segment });
     }
 
     public removeSegment() {
-        this.actionEmitter.emit({type: "remove", payload: this.segment});
+        this.actionEmitter.emit({ type: "remove", payload: this.segment });
     }
 
     public updateThumbnail() {
-        this.actionEmitter.emit({type: "updatethumbnail", payload: this.segment});
+        this.actionEmitter.emit({ type: "updatethumbnail", payload: this.segment });
     }
 
     public setCategoriesFromProperty(props) {
@@ -517,6 +537,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         this.setIsEllipsed();
         this.setIsDescriptionTruncated();
         this.updateCategoriesAndKeywordsDisplay();
+        if (this.mediaPlayerElement) {
+            Utils.addListener(this, this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
+        }
     }
 
     public readOnlyTitleReady(): boolean {
@@ -529,9 +552,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public setIsEllipsed() {
         interval(2).pipe(// Vérifier toutes les 2 millisecondes
-                switchMap(() => of(this.readOnlyTitleReady())),
-                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
-                takeUntil(timer(2000))
+            switchMap(() => of(this.readOnlyTitleReady())),
+            takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+            takeUntil(timer(2000))
         ).subscribe({
             next: () => {
                 if (this.readOnlyTitleReady()) {
@@ -543,9 +566,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
 
     public setIsDescriptionTruncated() {
         interval(2).pipe(// Vérifier toutes les 2 millisecondes
-                switchMap(() => of(this.readOnlyDescriptionReady())),
-                takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
-                takeUntil(timer(2000))
+            switchMap(() => of(this.readOnlyDescriptionReady())),
+            takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
+            takeUntil(timer(2000))
         ).subscribe({
             next: () => {
                 if (this.readOnlyDescriptionReady()) {
@@ -579,9 +602,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             //on enlève les catégories déjà sélectionnées en ne tenant pas compte de la casse
             return !this.isIncludedInArrayIgnoreCase(this.categories(), item);
         })//on inclut les les options qui contiennent le mot recherché
-                .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
-                //On limite la liste à 10 éléménts
-                .slice(0, 10);
+            .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
+            //On limite la liste à 10 éléménts
+            .slice(0, 10);
         // On inclut le mot recherché s'il n'est pas déjà sélectionné, ni déjà dans la liste des availables après filtres
         let addCurrentQuery = !this.isIncludedInArrayIgnoreCase(this.categories(), $event.query) && !this.isIncludedInArrayIgnoreCase(this.filteredCategories, $event.query);
         if (addCurrentQuery) {
@@ -596,9 +619,9 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             //on enlève les keywords déjà sélectionnées en ne tenant pas compte de la casse
             return !this.isIncludedInArrayIgnoreCase(this.keywords(), item);
         })//on inclut les les options qui contiennent le mot recherché
-                .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
-                //On limite la liste à 10 éléménts
-                .slice(0, 10);
+            .filter(item => item.toLowerCase().includes($event.query.toLowerCase()))
+            //On limite la liste à 10 éléménts
+            .slice(0, 10);
         // On inclut le mot recherché s'il n'est pas déjà sélectionné, ni déjà dans la liste des availables après filtres
         let addCurrentQuery = !this.isIncludedInArrayIgnoreCase(this.keywords(), $event.query) && !this.isIncludedInArrayIgnoreCase(this.filteredKeywords, $event.query);
         if (addCurrentQuery) {
@@ -639,7 +662,27 @@ export class SegmentComponent implements OnInit, AfterViewInit {
             this.hiddenKeywordsCount = this.updateDisplay(this.readOnlyKeywordsDiv, this.readOnlyKeywordsClassName, this.hiddenKeywordsSummaryChipId);
         }
     }
-
+    @HostListener("window:resize", [])
+    updateTcsDisplay() {
+        if (this.segment.data.displayMode !== 'readonly' && this.tcInInputRef && this.tcOutInputRef && this.tcInputRef && this.segmentTcRef) {
+            const tcInInputRef = this.tcInInputRef.nativeElement;
+            if (tcInInputRef.scrollWidth > tcInInputRef.clientWidth) {
+                this.editableSegmentTcWrap = true;
+            } else {
+                const margin = 24 + 2;
+                const gap = 2;
+                const segmentTcGap = 2;
+                const tcInTextSize = this.calculateTextWidth(this.tcInFormatted, 'Lato') + margin;
+                const tcOutTextSize = this.calculateTextWidth(this.tcOutFormatted, 'Lato') + margin;
+                const tcTextSize = this.calculateTextWidth(this.tcFormatted, 'Lato') + margin;
+                const labelTcInSize = this.calculateTextWidth('Début', 'Lato') + gap;
+                const labelTcOutSize = this.calculateTextWidth('Fin', 'Lato') + gap;
+                const labelTcSize = this.calculateTextWidth('Durée', 'Lato') + gap;
+                const totalWidth = tcInTextSize + tcOutTextSize + tcTextSize + labelTcInSize + labelTcOutSize + labelTcSize + (segmentTcGap * 2);
+                this.editableSegmentTcWrap = totalWidth > this.segmentTcRef.nativeElement.offsetWidth;
+            }
+        }
+    }
     private updateDisplay(readOnlyDiv: ElementRef, readOnlyClassName: string, summaryChipId: string) {
         const div = readOnlyDiv.nativeElement;
         const divWidth = div.offsetWidth;
@@ -705,4 +748,51 @@ export class SegmentComponent implements OnInit, AfterViewInit {
         return this.calculateTextWidth(text, 'Lato') > width;
     }
 
+    playMedia() {
+        this.actionEmitter.emit({ type: "playMedia", payload: this.segment });
+    }
+
+    unmuteShortCuts() {
+        this.actionEmitter.emit({ type: "unmuteShortCuts", payload: this.segment });
+    }
+    muteShortCuts() {
+        this.actionEmitter.emit({ type: "muteShortCuts", payload: this.segment });
+    }
+    /**
+      * Apply shortcut if exists on keydown
+      */
+    public handleShortcuts(event: ShortcutEvent) {
+        if (event.targets.find(target => target.toLowerCase() === 'ANNOTATIONS'.toLowerCase())) {
+            this.applyShortcut(event);
+        }
+    }
+    applyShortcut(event: ShortcutEvent) {
+        if (this.segment.data.selected === true
+            && this.segment.data.displayMode === 'edit'
+            && ((event.shortcut.key === 'enter' && event.shortcut.ctrl !== true)
+                || (event.shortcut.key === 's' && event.shortcut.ctrl === true))
+            && event.shortcut.shift !== true
+            && event.shortcut.alt !== true
+            && event.shortcut.meta !== true) {
+            this.validateNewSegment();
+            return;
+        }
+        if (this.segment.data.selected === true
+            && this.segment.data.displayMode === 'edit'
+            && event.shortcut.key === 'escape'
+            && event.shortcut.ctrl !== true
+            && event.shortcut.shift !== true
+            && event.shortcut.alt !== true
+            && event.shortcut.meta !== true) {
+            this.cancelNewSegmentCreation();
+            return;
+        }
+    }
+    openNotilusMaterial() {
+        this.actionEmitter.emit({ type: "openNotilusMaterial", payload: this.segment });
+    }
+    ngOnDestroy() {
+        this.formChangesSubscriptions.forEach(subscription => subscription.unsubscribe());
+        Utils.unsubscribeTargetedElementEventListeners(this);
+    }
 }

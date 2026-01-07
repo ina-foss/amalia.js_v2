@@ -22,8 +22,14 @@
 
   .p-toast .p-toast-message.p-toast-message-error {
     background: #FFF !important;
-    color:  #FF5757!important;
+    color: #FF5757 !important;
   }
+
+  .p-toast .p-toast-message.p-toast-message-info {
+    background: #b3ddf4  !important;
+    color: #b3ddf4 !important;
+  }
+
   .p-toast-message-template-content {
     display: flex;
     flex-direction: row;
@@ -47,6 +53,18 @@
     }
 
     .p-toast-message-template-success-icon {
+      display: flex;
+      width: 32px;
+      height: 32px;
+      padding: var(--spacings-border-radius-radius-sm, 4px);
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacings-space-space-sm, 12px);
+      border-radius: 100px;
+      background: currentColor;
+    }
+
+    .p-toast-message-template-info-icon {
       display: flex;
       width: 32px;
       height: 32px;
@@ -92,7 +110,7 @@
   }
 
   .p-toast-message {
-    border-left-style: none !important;
+    border-style: none !important;
   }
 
   .p-toast-icon-close {

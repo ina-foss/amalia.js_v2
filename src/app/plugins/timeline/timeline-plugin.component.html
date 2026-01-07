@@ -1,145 +1,162 @@
 <script src="./app/plugins/timeline/timeline-plugin.component.ts"></script>
-<div class="header">
-    <div class="title">
-        {{ title }}
-    </div>
-    <div (click)="toggleConfig()">
-        <svg class="amalia-svg-settings-size icon">
-            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#settings'"></use>
-        </svg>
-        Choisir les segments à afficher
-    </div>
-</div>
-<div class="main-block" #mainBlockContainer>
-    <div class="tc-cursor"></div>
-    <div class="timeline-block main">
-        <div class="focus" #focusContainer>
-            <div class="time-code" *ngIf="focusTcOut">
-                <span class="start">{{ focusTcIn|tcFormat:timeFormat:fps }}</span>
-                <span> - </span>
-                <span class="end ">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
+<div class="toolbar-container">
+    <p-toolbar>
+        <div class="p-toolbar-group-start">
+            @if(tvDaysEnabled){
+            <p-button icon="pi pi-download" (onClick)="exportTvDays()" label="Exporter les données"
+                class="p-button-download"></p-button>
+            }
+        </div>
+        <div class="p-toolbar-group-end">
+            <div class="flex items-center gap-2 toolbar-end-buttons">
+                <p-button icon="pi pi-search-minus" (onClick)="unZoom()" [text]="true" [rounded]="true"></p-button>
+                <p-button id="timeline-toolbar-filter-button" icon="pi pi-filter" (onClick)="toggleConfig()"
+                    [text]="true" [rounded]="true"></p-button>
             </div>
         </div>
-        <div class="timeline">
-            <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
-                <div class="cue-point" *ngSwitchDefault [attr.data-color]="loc.color"
-                     [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
-                     [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
-                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
-                     [attr.data-color]="loc.color"
-                     [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%','background-color': loc.color ?loc.color:mainBlockColor }"></div>
-            </ng-container>
+    </p-toolbar>
+</div>
+
+<div class="main-block" #mainBlockContainer>
+    <div class="pad">
+        <div class="tc-cursor"></div>
+    </div>
+    <div class="timeline-block">
+        <div class="focus handle-border" #focusContainer>
+            <div class="time-code">
+                <span *ngIf="focusTcOut" class="start">{{ focusTcIn|tcFormat:timeFormat:fps }}</span>
+                <span *ngIf="focusTcIn" class="middle">-</span>
+                <span *ngIf="focusTcOut" class="end">{{ focusTcOut|tcFormat:timeFormat:fps }}</span>
+            </div>
         </div>
+        <div class="pad">
+            <div class="timeline" #mainTimeline>
+                <ng-container *ngFor="let loc of mainLocalisations" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
+                    <div class="cue-point" *ngSwitchDefault [attr.data-color]="loc.color"
+                        [ngStyle]="{ left:((loc.tc*100)/duration)+'%' ,'background-color': loc.color ?loc.color:mainBlockColor}"
+                        [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
+                    <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                        [attr.data-color]="loc.color"
+                        [ngStyle]="{left:((loc.tcIn*100)/duration)+'%', width:((loc.tcOut-loc.tcIn)*100)/duration+'%','background-color': loc.color ?loc.color:mainBlockColor }">
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
     </div>
 </div>
-<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions">
-    <div class="tc-cursor"></div>
-    <div class="rectangle" #selectionContainer></div>
+<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions"
+    appPreventCtrlScroll>
+    <div class="pad">
+        <div class="tc-cursor"></div>
+    </div>
     <div class="tooltip" #selectedBlockElement>
         <p *ngIf="selectedBlock?.thumb">{{ selectedBlock.thumb }}</p>
-        <p *ngIf="selectedBlock?.label" class="label">{{ selectedBlock.label }}</p>
-        <p *ngIf="selectedBlock?.tc" class="tc">Tc:{{ selectedBlock.tc }}</p>
-        <p *ngIf="selectedBlock?.tcIn&&selectedBlock?.tcOut" class="tc">
-            <span class="start">Tc: {{ selectedBlock.tcIn|tcFormat:timeFormat:fps }}</span>
-            <span> - </span>
-            <span class="end ">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
+        <p *ngIf="selectedBlock?.tc != null" class="tc">Tc:{{ selectedBlock.tc }}</p>
+        <p *ngIf="selectedBlock?.tcIn !=null && selectedBlock?.tcOut !=null" class="tc">
+            <span class="start">{{ selectedBlock.tcIn|tcFormat:timeFormat:fps }}</span>
+            <span class="middle">-</span>
+            <span class="end">{{ selectedBlock.tcOut|tcFormat:timeFormat:fps }}</span>
         </p>
+        <p *ngIf="selectedBlock?.label" class="label">{{ selectedBlock.label }}</p>
     </div>
-    <div class="timeline-block" #mainBlock *ngFor="let block of listOfBlocks;"
-         [ngClass]=" {'hidden-timeline':block.displayState===false}">
-        <div class="block-header" *ngIf="block.label!=''">
-            <div class="extend">
-                <svg class="amalia-svg-down-size icon" *ngIf="block.expendable" (click)="toggleState(mainBlock)">
-                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down'"></use>
-                </svg>
-                {{ block.label }}
-            </div>
-            <div class="drag" [hidden]="!enableDragDrop">
-                <svg class="amalia-svg-drag-drop-size icon">
-                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
-                </svg>
-            </div>
-        </div>
-        <div class="timeline">
-            <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
-                <div class="cue-point" *ngSwitchDefault
-                     (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
-                     [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"
-                     [attr.data-tc]="loc.tc" [attr.data-type]="loc.type" (click)="callSeek(loc.tc)"></div>
-                <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn" [attr.data-type]="loc.type"
-                     (click)="callSeek(loc.tcIn)"
-                     (mouseenter)="handleMouseEnterOnTc($event,loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
-                     [ngStyle]="{'background-color': block.defaultColor ?block.defaultColor:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn)+'%' }"></div>
-            </ng-container>
-        </div>
-    </div>
+    <p-accordion #listOfBlocksAccordion [multiple]="true" [(activeIndex)]="listOfBlocksIndexes"
+        (activeIndexChange)="refreshTimeCursor($event)" (onClose)="refreshTimeCursor($event)"
+        (onOpen)="refreshTimeCursor($event)">
+        <ng-container *ngFor="let block of listOfBlocks; let idx = index">
+            <p-accordionTab [ngClass]="{'hidden-timeline':block.displayState===false}" iconPos="start" class="grabbable"
+                pDraggable="listOfBlocks" pDroppable="listOfBlocks" (onDragStart)="onDragStart(idx)"
+                (onDrop)="onDrop(idx)">
+                <ng-template pTemplate="header">
+                    <div class="block-header" *ngIf="block.label!=''">
+                        <div class="timeline-block-label ellipsis">
+                            <i [class]="block.icon"></i>{{ block.label }}
+                        </div>
+                        <div class="block-header-buttons">
+                            <p-button icon="pi pi-times" (click)="removeBlock(block)" (keyPress)="removeBlock(block)"
+                                (keyDown)="removeBlock(block)" (keyUp)="removeBlock(block)" [text]="true"></p-button>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <div class="timeline">
+                        <ng-container *ngFor="let loc of block.data" [ngSwitch]="loc.tcIn!=null && loc.tcOut!=null">
+                            <div class="cue-point" *ngSwitchDefault (mouseenter)="handleMouseEnterOnTc($event,loc)"
+                                (mouseleave)="handleMouseLeaveOnTc($event)"
+                                (keyPress)="handleMouseEnterOnTc($event,loc)"
+                                (keyDown)="handleMouseEnterOnTc($event,loc)" (keyUp)="handleMouseEnterOnTc($event,loc)"
+                                [ngStyle]="{'background-color': block.data.color ?block.data.color:block.defaultColor, left:(((loc.tc-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%' }"
+                                [attr.data-tc]="loc.tc" [attr.data-type]="loc.type" (click)="callSeek(loc.tc)"></div>
+                            <div class="segment" *ngSwitchCase="true" [attr.data-tc]="loc.tcIn"
+                                [attr.data-type]="loc.type" (click)="callSeek(loc.tcIn)"
+                                (keyPress)="handleMouseEnterOnTc($event,loc)"
+                                (keyDown)="handleMouseEnterOnTc($event,loc)" (keyUp)="handleMouseEnterOnTc($event,loc)"
+                                (mouseenter)="handleMouseEnterOnTc($event,loc)"
+                                (mouseleave)="handleMouseLeaveOnTc($event)"
+                                [ngStyle]="{'background-color': block.data.color ?block.data.color:block.defaultColor,left:(((loc.tcIn-focusTcIn)*100)/(focusTcOut-focusTcIn))+'%', width:((loc.tcOut-loc.tcIn===0)? '1px':(((loc.tcOut-loc.tcIn)*100)/(focusTcOut-focusTcIn))+'%') }">
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-template>
+            </p-accordionTab>
+        </ng-container>
+    </p-accordion>
 </div>
-<div class="footer">
-    <div class="state-control" #stateControl (click)="toggleAllBlocksState(listOfBlocksContainer, stateControl)">
-        <svg class="amalia-svg-down-size icon">
-            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#down'"></use>
-        </svg>
-        Fermer toutes les timelines
-    </div>
-    <div class="unzoom" (click)="unZoom()">
-        <svg class="amalia-svg-unzoom-size icon">
-            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#unzoom'"></use>
-        </svg>
-    </div>
-    <div class="actions">
-        <div>Actions :</div>
-        <div class="zoom" [ngClass]="{'selected':enableZoom}" (click)="handleEnableZoom()">
-            <svg class="amalia-svg-zoom-size icon">
-                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#zoom'"></use>
-            </svg>
-            Zoom
-        </div>
-        <div class="drag-drop" [ngClass]="{'selected':enableDragDrop}" (click)="enableDragDrop=!enableDragDrop">
-            <svg class="amalia-svg-hand-size icon">
-                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#hand'"></use>
-            </svg>
-            Déplacer
-        </div>
-    </div>
-</div>
-<div class="segment-empty"></div>
-<div class="menu" [ngClass]="{'open':configIsOpen}">
-    <div class="content">
+<div class="menu" #menuContainer [ngClass]="{'open':configIsOpen}">
+    <div class="content" id="menu-content">
         <div class="header">
-            <p-checkbox label="Sélectionner des segments"
-                        [(ngModel)]="allNodesChecked"
-                        [binary]="true"
-                        inputId="select-segments"
-                        (onChange)="toggleAllNodes()"/>
+            <div class="select-segments">
+                <div class="p-checkbox p-component" aria-hidden="true" inputId="select-segments" id="select-segments">
+                    <div class="p-checkbox-box"
+                        [ngClass]="{ 'p-highlight': allNodesChecked || indeterminate, 'p-indeterminate': indeterminate, 'p-checkbox-focused': isSelectSegmentsFocused }"
+                        (click)="toggleAllNodes()" (keyPress)="toggleAllNodes()" (keyDown)="toggleAllNodes()"
+                        (keyUp)="toggleAllNodes()" (focus)="isSelectSegmentsFocused=true"
+                        (blur)="isSelectSegmentsFocused=false">
+                        <CheckIcon *ngIf="!indeterminate && allNodesChecked" [styleClass]="'p-checkbox-icon'" />
+                        <MinusIcon *ngIf="indeterminate" [styleClass]="'p-checkbox-icon'" />
+                    </div>
+                </div>
+                <label for="select-segments"
+                    [ngClass]="{ 'p-checkbox-label-active': allNodesChecked || indeterminate, 'p-checkbox-label-focus': isSelectSegmentsFocused }"
+                    class="p-checkbox-label ng-star-inserted p-checkbox-label-active" (click)="toggleAllNodes()"
+                    (keyPress)="toggleAllNodes()" (keyDown)="toggleAllNodes()" (keyUp)="toggleAllNodes()"> Sélectionner
+                    des
+                    segments</label>
+            </div>
+
+
             <p-button *ngIf="filterHidden" icon="pi pi-search" [rounded]="true" (click)="toggleFilter()"
-                      class="btn-show-filter"/>
+                (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
+                class="btn-show-filter" />
             <p-button *ngIf="!filterHidden" icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary"
-                      (click)="toggleFilter()" class="btn-hide-filter"/>
+                (click)="toggleFilter()" (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
+                class="btn-hide-filter" />
         </div>
-        <div class="main">
-            <p-tree *ngIf="filterHidden" [value]="nodes" selectionMode="checkbox"
-                    [(selection)]="selectedNodes">
+        <div class="main" [ngClass]="{'filter-hidden':filterHidden}">
+            <p-tree *ngIf="filterHidden" [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes"
+                (selectionChange)="updateTreeComponent()">
                 <ng-template let-node pTemplate="default">
                     <span *ngIf="node.data && node.data.color" class="color"
-                          [ngStyle]="{'background-color':node.data.color}"></span>
+                        [ngStyle]="{'background-color':node.data.color}"></span>
                     {{ node.label }}
                 </ng-template>
             </p-tree>
             <p-tree *ngIf="!filterHidden" [value]="nodes" selectionMode="checkbox" [filter]="true"
-                    filterPlaceholder="Rechercher..." filterMode="strict"
-                    [(selection)]="selectedNodes" (onFilter)="filterNodes($event)">
+                filterPlaceholder="Rechercher..." filterMode="strict" [(selection)]="selectedNodes"
+                (selectionChange)="updateTreeComponent()">
                 <ng-template let-node pTemplate="default">
                     <span *ngIf="node.data && node.data.color" class="color"
-                          [ngStyle]="{'background-color':node.data.color}"></span>
+                        [ngStyle]="{'background-color':node.data.color}"></span>
                     {{ node.label }}
                 </ng-template>
             </p-tree>
         </div>
         <div class="footer">
-            <p-button class="no-highlight" (click)="handleDisplayBlocks(false)">Annuler</p-button>
-            <p-button class="highlight" (click)="handleDisplayBlocks(true)">Valider</p-button>
+            <p-button class="no-highlight" (click)="handleDisplayBlocks(false)"
+                (keyPress)="handleDisplayBlocks(false)">Annuler</p-button>
+            <p-button class="highlight" (click)="handleDisplayBlocks(true)"
+                (keyPress)="handleDisplayBlocks(true)">Valider</p-button>
         </div>
     </div>
-    <div class="segment-empty"></div>
 </div>
-
+<amalia-toast #messages position="bottom-center" key="ai" />

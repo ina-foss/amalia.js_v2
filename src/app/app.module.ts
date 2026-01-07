@@ -39,6 +39,15 @@ import {AutoCompleteModule} from "primeng/autocomplete";
 import {ToastComponent} from "./core/toast/toast.component";
 import {TreeModule} from 'primeng/tree';
 import {CheckboxModule} from "primeng/checkbox";
+import { ToolbarModule } from 'primeng/toolbar';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { AccordionModule } from 'primeng/accordion';
+import { DragDropModule } from 'primeng/dragdrop';
+import { MessagesModule } from 'primeng/messages';
+import { PreventCtrlScrollDirective } from './core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
+import { MinusIcon } from 'primeng/icons/minus';
+import { CheckIcon } from 'primeng/icons/check';
+import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
 
 @NgModule({
     imports: [
@@ -63,7 +72,15 @@ import {CheckboxModule} from "primeng/checkbox";
         AutoCompleteModule,
         ToastComponent,
         TreeModule,
-        CheckboxModule
+        CheckboxModule,
+        ToolbarModule,
+        InputSwitchModule,
+        AccordionModule,
+        DragDropModule,
+        MessagesModule,
+        MinusIcon,
+        CheckIcon,
+        InaMessagesComponent
     ],
     declarations: [
         AmaliaComponent,
@@ -78,7 +95,8 @@ import {CheckboxModule} from "primeng/checkbox";
         TimelinePluginComponent,
         SortablejsDirective,
         AnnotationPluginComponent,
-        SegmentComponent
+        SegmentComponent,
+        PreventCtrlScrollDirective,
     ],
     providers: [
         MediaPlayerService,

@@ -7,6 +7,7 @@ export interface AnnotationLocalisation {
     tc: number;
     tcOffset?: number;
     data: {
+        media?: string;
         linkThumbnail?: string;
         id_media?: string;
         link?: string;
@@ -29,6 +30,10 @@ export interface AnnotationLocalisation {
         itemBusinessIdentifier?: string;
         tcMax?: number;
         category?: string;
+        hierarchy_technical_id?: string;
+        idDocument?: string;
+        typeDocument?: string;
+        instanceTitle?: string;
     };
     property?: {
         key: string;
@@ -40,6 +45,6 @@ export interface AnnotationLocalisation {
 }
 
 export interface AnnotationAction {
-    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail";
+    type: "validate" | "edit" | "cancel" | "clone" | "remove" | "updatethumbnail" | "playMedia" | "muteShortCuts" | "unmuteShortCuts" | "openNotilusMaterial";
     payload: AnnotationLocalisation;
 }

@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const concat = require('concat');
+const { version } = require('./package.json');
 
 const concatenate = async () => {
     const files = [
@@ -10,6 +11,6 @@ const concatenate = async () => {
     ];
 
     await fs.ensureDir('dist');
-    await concat(files, 'dist/amalia/amalia.min.js');
+    await concat(files, `dist/amalia/amalia-${version}.min.js`);
 }
 concatenate();

@@ -45,7 +45,7 @@ export class MetadataUtils {
                 annotation.tcIn = (l.tcin && typeof l.tcin === 'string') ? FormatUtils.convertTcToSeconds(l.tcin) : l.tcin;
                 annotation.tcOut = (l.tcout && typeof l.tcout === 'string') ? FormatUtils.convertTcToSeconds(l.tcout) : l.tcout;
                 annotation.description = l.description;
-                annotation.thumb = l.thumb;
+                annotation.thumb = l.thumb?.startsWith('data:image') ? l.thumb : `data:image/jpeg;base64,${l.thumb}`;
                 annotation.data = structuredClone(l.data);
                 annotation.data.displayMode = "readonly";
                 annotation.property = structuredClone(l.property);
@@ -163,7 +163,7 @@ export class MetadataUtils {
             tcOut: (typeof localisation.tcout === 'string') ? FormatUtils.convertTcToSeconds(localisation.tcout) : localisation.tcout || null,
         };
         // add to list if tc or tcin not empty
-        if (tl.tc || tl.tcIn) {
+        if (tl.tc != null || tl.tcIn != null) {
             timelineLocalisations.push(tl);
         }
     }

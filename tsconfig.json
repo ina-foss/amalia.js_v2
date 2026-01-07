@@ -11,15 +11,16 @@
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "importHelpers": true,
-        "target": "ES2022",
-        "module": "ES2022",
+        "target": "es2022",
+        "module": "esnext",
+        "skipLibCheck": true,
         "useDefineForClassFields": false,
         "typeRoots": [
             "node_modules/@types"
         ],
         "types": [
             "node",
-            "@types/jasmine"
+            "jasmine"
         ],
         "lib": [
             "ES2022",

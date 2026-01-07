@@ -12,6 +12,11 @@
                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#check'"></use>
                 </svg>
             </div>
+            <div *ngIf="message.severity==='info'" class="p-toast-message-template-info-icon">
+                <svg class="p-toast-message-template-icon-size">
+                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#info'"></use>
+                </svg>
+            </div>
             <div class="p-toast-detail">
                 {{ message.detail }}
             </div>

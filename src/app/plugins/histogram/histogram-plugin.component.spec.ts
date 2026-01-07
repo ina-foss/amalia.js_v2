@@ -149,7 +149,7 @@ describe('HistogramPluginComponent', () => {
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
         component.ngOnInit();
-        const mockOff = spyOn(component.mediaPlayerElement.eventEmitter, 'removeListener');
+        const mockOff = spyOn(component.mediaPlayerElement.eventEmitter, 'off');
         component.ngOnDestroy();
         const expects = mockOff.calls.all();
         expect(expects[0].args[0]).toEqual(PlayerEventType.INIT);
@@ -228,7 +228,7 @@ describe('HistogramPluginComponent', () => {
     it('ngOnInit should handle pinned control bar change and other events', () => {
         const getPlayer = spyOn(component.playerService, 'get');
         getPlayer.and.returnValue(mediaPlayerElement);
-        const onEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'addListener');
+        const onEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'on');
         component.mediaPlayerElement.getConfiguration().loadMetadataOnDemand = true;
         component.ngOnInit();
         expect(onEvent).toHaveBeenCalledTimes(6);

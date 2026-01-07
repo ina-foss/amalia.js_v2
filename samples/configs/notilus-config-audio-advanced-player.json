@@ -3,7 +3,7 @@
         "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
         "crossOrigin": "anonymous",
         "ratio": "16:8",
-        "poster": "/assets/images/headphones.svg",
+        "poster": "/assets/images/newAudioBackGround.png",
         "posterBackground": "amalia-primary-color",
 
         "hls": {

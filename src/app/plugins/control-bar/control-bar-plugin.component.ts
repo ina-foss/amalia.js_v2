@@ -1,5 +1,14 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    Output,
+    Renderer2,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
 import * as _ from 'lodash';
 import {PlayerEventType} from '../../core/constant/event-type';
 import {ControlBarConfig} from '../../core/config/model/control-bar-config';
@@ -7,6 +16,7 @@ import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ThumbnailService} from '../../service/thumbnail-service';
 import interact from 'interactjs';
+import {matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent} from 'src/app/core/config/model/shortcuts-event';
 
 @Component({
     selector: 'amalia-control-bar',
@@ -15,6 +25,7 @@ import interact from 'interactjs';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> {
+
     public static PLUGIN_NAME = 'CONTROL_BAR';
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
     /**
@@ -67,6 +78,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public negPlaybackrates: Array<number> = [];
     public maxCursor: number;
     public minCursor: number;
+    public extractTcIn?: number = null;
+    public extractTcOut?: number = null;
+    public onProgressBar = false;
     // handle slider drag
     @ViewChild('dragThumb')
     public dragElement: ElementRef;
@@ -238,7 +252,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list of shortcuts
      */
-    public listOfShortcuts;
+    public listOfShortcuts: Array<ShortcutControl> = [];
     // Menu of controls
     @ViewChild('controlsMenu')
     public controlsMenu: ElementRef<HTMLElement>;
@@ -252,12 +266,54 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public listOfTracks: Array<{ label: string, track: string }> = [];
     public selectedTrack = null;
     public selectedTrackLabel = '';
+    @ViewChild('displaySlider')
+    displaySliderElement: ElementRef;
+    @ViewChild('pinControls')
+    pinControlsElement: ElementRef;
+    aspectRatioMouseEnterTimeOut: any;
+    volumeMouseEnterTimeOut: any;
 
-    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService) {
+
+    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2) {
         super(playerService);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
         this.thumbnailService = thumbnailService;
         this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
+    }
+
+    listenToDisplaySliderDisplayChanges() {
+        const sliderDisplayStyle = getComputedStyle(this.displaySliderElement.nativeElement).display;
+        const displaySliderOff = !this.displaySliderElement || sliderDisplayStyle === 'none';
+        const svgPinControls = this.pinControlsElement.nativeElement.querySelector('svg');
+        if (displaySliderOff) {
+            svgPinControls && this.renderer.removeClass(svgPinControls, 'amalia-svg-pin-size');
+        } else {
+            svgPinControls && this.renderer.addClass(svgPinControls, 'amalia-svg-pin-size');
+        }
+    }
+
+    listenToPinControlsDisplayChanges() {
+        const pinControlsDisplayStyle = getComputedStyle(this.pinControlsElement.nativeElement).display;
+        const pinControlsOff = !this.pinControlsElement || pinControlsDisplayStyle === 'none';
+        const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector('svg');
+        if (pinControlsOff) {
+            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, 'amalia-svg-slider-size');
+        } else {
+            svgDisplaySlider && this.renderer.addClass(svgDisplaySlider, 'amalia-svg-slider-size');
+        }
+    }
+
+    updatePinAndSpeedSliderPositions(): void {
+        if (this.displaySliderElement && this.pinControlsElement) {
+            this.listenToDisplaySliderDisplayChanges();
+            this.listenToPinControlsDisplayChanges();
+        } else if (!this.displaySliderElement && this.pinControlsElement) {
+            const svgPinControls = this.pinControlsElement.nativeElement.querySelector('svg');
+            svgPinControls && this.renderer.removeClass(svgPinControls, 'amalia-svg-pin-size');
+        } else if (!this.pinControlsElement && this.displaySliderElement) {
+            const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector('svg');
+            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, 'amalia-svg-slider-size');
+        }
     }
 
     init() {
@@ -268,10 +324,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // init volume
         this.mediaPlayerElement.getMediaPlayer().setVolume(50);
         // init shortcuts
-        this.listOfShortcuts = this.initShortcuts(this.pluginConfiguration.data);
+        this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
+
+        const configuration = this.mediaPlayerElement.getConfiguration();
+        this.extractTcIn = configuration.extractTcIn !== undefined ? configuration.extractTcIn : null;
+        this.extractTcOut = configuration.extractTcOut !== undefined ? configuration.extractTcOut : null;
+
         // Show thumbnail when tc = 0
         if (this.enableThumbnail) {
             const url = this.mediaPlayerElement.getThumbnailUrl(0, true);
@@ -296,7 +357,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYDOWN, this.handleShortcuts);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
@@ -413,8 +474,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Apply shortcut if exists on keydown
      */
 
-    public handleShortcuts(event) {
-        this.applyShortcut(event);
+    public handleShortcuts(event: ShortcutEvent) {
+        if (event.targets.find(target => target.toLowerCase() === this.pluginName.toLowerCase())) {
+            this.applyShortcut(event);
+        }
     }
 
     /**
@@ -473,28 +536,93 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * init array of shortcuts
      */
-    public initShortcuts(data) {
-        const listOfShortcuts = [];
+    public initShortcuts(data: Array<ControlBarConfig>) {
+        this.listOfShortcuts = [];
         for (const i in data) {
             if (typeof data[i] === 'object') {
-                const control = data[i];
-                if (typeof control.key !== 'undefined' && typeof control.control !== 'undefined') {
-                    listOfShortcuts.push({key: control.key, control: control.control});
+                const controlConfig = data[i];
+                if (typeof controlConfig.key !== 'undefined' && typeof controlConfig.control !== 'undefined') {
+                    let key = controlConfig.key
+                            .replace('Control', '')
+                            .replace('Shift', '')
+                            .replace('Alt', '')
+                            .replace('Meta', '')
+                            .replaceAll('+', '')
+                            .replaceAll(' ', '')
+                            .toLowerCase();
+                    const shortCut: Shortcut = {
+                        key,
+                        ctrl: controlConfig.key.includes('Control') || controlConfig.key.includes('Ctrl') || controlConfig.key.includes('control') || controlConfig.key.includes('ctrl'),
+                        shift: controlConfig.key.includes('Shift') || controlConfig.key.includes('shift'),
+                        alt: controlConfig.key.includes('Alt') || controlConfig.key.includes('alt'),
+                        meta: controlConfig.key.includes('Meta') || controlConfig.key.includes('meta')
+                    };
+
+                    const shortcutControl: ShortcutControl = {
+                        shortcut: shortCut,
+                        control: controlConfig.control
+                    };
+                    this.listOfShortcuts.push(shortcutControl);
                 }
             }
         }
-        return listOfShortcuts;
     }
 
     /**
      * If key is declared in config apply control
      */
-    public applyShortcut(key) {
-        for (const shortcut of this.listOfShortcuts) {
-            if (key === shortcut.key) {
-                this.keypressed = shortcut.key;
-                this.controlClicked(shortcut.control);
+    public applyShortcut(shortcutToBeApplied: ShortcutEvent) {
+        let shortcutFound = false;
+        for (const shortcutControl of this.listOfShortcuts) {
+            if (shortcutFound === false && matchesShortcut(shortcutControl, shortcutToBeApplied.shortcut)) {
+                this.keypressed = shortcutControl.shortcut.key;
+                if (shortcutControl.control === 'volume') {
+                    this.handleMuteUnmuteVolume();
+                } else {
+                    this.controlClicked(shortcutControl.control);
+                }
+                shortcutFound = true;
             }
+        }
+        const volumeUpShortcut: ShortcutControl = {
+            shortcut: {key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false},
+            control: 'volume'
+        };
+        const volumeDownShortcut: ShortcutControl = {
+            shortcut: {key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false},
+            control: 'volume'
+        };
+        if (matchesShortcut(volumeUpShortcut, shortcutToBeApplied.shortcut)) {
+            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
+            this.volumeRight = Math.min(this.volumeRight + 5, 100);
+            this.volumeLeft = Math.min(this.volumeLeft + 5, 100);
+            if (this.volumeMouseEnterTimeOut) {
+                clearTimeout(this.volumeMouseEnterTimeOut);
+            }
+            this.volumeMouseEnterTimeOut = setTimeout(() => {
+                this.hideAll();
+            }, 1500);
+        }
+        if (matchesShortcut(volumeDownShortcut, shortcutToBeApplied.shortcut)) {
+            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
+            this.volumeRight = Math.max(this.volumeRight - 5, 0);
+            this.volumeLeft = Math.max(this.volumeLeft - 5, 0);
+            if (this.volumeMouseEnterTimeOut) {
+                clearTimeout(this.volumeMouseEnterTimeOut);
+            }
+            this.volumeMouseEnterTimeOut = setTimeout(() => {
+                this.hideAll();
+            }, 1500);
+        }
+    }
+
+    /**
+     * Invoked seek time
+     * @param time number
+     */
+    public seekTo(time: number) {
+        if (this.mediaPlayerElement.getMediaPlayer()) {
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(time);
         }
     }
 
@@ -502,7 +630,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked player with specified control function name
      * @param control control name
      */
-
     public controlClicked(control: string) {
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
@@ -510,6 +637,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enableMenu) {
             this.enableMenu = !this.enableMenu;
         }
+        const paused = mediaPlayer?.isPaused();
         switch (control) {
             case 'playPause':
                 mediaPlayer.playPause();
@@ -531,24 +659,31 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'backward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
-                this.mediaPlayerElement.getMediaPlayer().pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(frames);
-                this.mediaPlayerElement.getMediaPlayer().play();
+                !paused && mediaPlayer.play();
                 break;
             case 'backward-second':
                 frames = mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
             case 'backward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
             case 'backward-frame':
-                mediaPlayer.pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.movePrevFrame(1);
                 break;
-            case 'backward-1h':
-                mediaPlayer.setCurrentTime((mediaPlayer.getCurrentTime() - 3600));
+            case 'backward-1h': {
+                let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
+                currentTime = mediaPlayer.reverseMode ? currentTime + 3600 : currentTime - 3600;
+                mediaPlayer.setCurrentTime(currentTime);
+            }
                 break;
             case 'backward-start':
                 this.changePlaybackRate(1);
@@ -562,23 +697,30 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             case 'forward-5seconds':
                 frames = 5 * mediaPlayer.framerate;
-                this.mediaPlayerElement.getMediaPlayer().pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(frames);
-                this.mediaPlayerElement.getMediaPlayer().play();
+                !paused && mediaPlayer.play();
                 break;
             case 'forward-10seconds':
                 frames = 10 * mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
-            case 'forward-1h':
-                mediaPlayer.setCurrentTime((mediaPlayer.getCurrentTime() + 3600));
+            case 'forward-1h': {
+                let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
+                currentTime = mediaPlayer.reverseMode ? currentTime - 3600 : currentTime + 3600;
+                mediaPlayer.setCurrentTime(currentTime);
+            }
                 break;
             case 'forward-second':
                 frames = mediaPlayer.framerate;
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(frames);
+                !paused && mediaPlayer.play();
                 break;
             case 'forward-frame':
-                mediaPlayer.pause();
+                mediaPlayer.pauseOnly();
                 mediaPlayer.moveNextFrame(1);
                 break;
             case 'forward-end':
@@ -704,27 +846,45 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public handleDisplayState() {
+        this.controls = [];
         this.displayState = this.mediaPlayerElement.getDisplayState();
+        // Controls priority 5
+        let controlsP5 = [];
+        // Controls priority 4
+        let controlsP4 = [];
         // Controls priority 3
         let controlsP3 = [];
         let controlsP2 = [];
         for (let zone = 1; zone < 4; zone++) {
+            // Controls priority 5
+            controlsP5 = controlsP5.concat(this.getControlsByPriority(5, zone));
+            // Controls priority 4
+            controlsP4 = controlsP4.concat(this.getControlsByPriority(4, zone));
             // Controls priority 3
             controlsP3 = controlsP3.concat(this.getControlsByPriority(3, zone));
             // Controls priority 2
             controlsP2 = controlsP2.concat(this.getControlsByPriority(2, zone));
         }
-        if (controlsP3 === null) {
-            controlsP3 = [];
-        }
-        if (controlsP2 === null) {
-            controlsP2 = [];
-        }
+        controlsP5 ??= [];
+        controlsP4 ??= [];
+        controlsP3 ??= [];
+        controlsP2 ??= [];
+
         if (this.displayState === 'm') {
-            this.controls = controlsP3;
+            this.controls = controlsP5;
         } else if (this.displayState === 'sm') {
-            this.controls = controlsP2.concat(controlsP3);
+            this.controls = controlsP5.concat(controlsP4);
+        } else if (this.displayState === 's') {
+            this.controls = controlsP5.concat(controlsP4).concat(controlsP3);
+        } else if (this.displayState === 'xs') {
+            this.controls = controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2);
         }
+        //remove controls not in menu
+        this.controls = this.controls.filter((control) => !control.notInMenu);
+        //readjust Pin and speed slider
+        setTimeout(() => {
+            this.updatePinAndSpeedSliderPositions();
+        }, 100);
     }
 
     /**
@@ -856,7 +1016,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public setThumbnail(url, currentTime) {
         this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
             if (typeof (blob) !== 'undefined') {
-                this.thumbnailElement.nativeElement.setAttribute('src', blob);
+                this.thumbnailElement?.nativeElement?.setAttribute('src', blob);
             }
         });
     }
@@ -1135,10 +1295,35 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enableListPositionsSubtitle) {
             this.enableListPositionsSubtitle = !this.enableListPositionsSubtitle;
         }
-        if (this.enableListRatio && control !== 'ratio') {
+        if (this.enableListRatio) {
             this.enableListRatio = !this.enableListRatio;
         }
     }
+
+    aspectRatioMouseEnter() {
+        this.hideAll('ratio');
+        this.enableListRatio = true;
+        if (this.aspectRatioMouseEnterTimeOut) {
+            clearTimeout(this.aspectRatioMouseEnterTimeOut);
+        }
+        this.aspectRatioMouseEnterTimeOut = setTimeout(() => {
+            this.enableListRatio = false;
+        }, 4000);
+    }
+
+    volumeMouseEnter(data: any) {
+        this.hideAll('volume');
+        this.enableVolumeSlider = true;
+        this.openVolume(data);
+        if (this.volumeMouseEnterTimeOut) {
+            clearTimeout(this.volumeMouseEnterTimeOut);
+        }
+        this.volumeMouseEnterTimeOut = setTimeout(() => {
+            this.enableVolumeSlider = false;
+            this.openPisteAudio = false;
+        }, 4000);
+    }
+
 
     /**
      * Mute sound

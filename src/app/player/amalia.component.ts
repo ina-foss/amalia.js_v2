@@ -10,30 +10,31 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import {DefaultConfigLoader} from '../core/config/loader/default-config-loader';
-import {DefaultConfigConverter} from '../core/config/converter/default-config-converter';
-import {DefaultMetadataConverter} from '../core/metadata/converter/default-metadata-converter';
-import {DefaultMetadataLoader} from '../core/metadata/loader/default-metadata-loader';
-import {MediaPlayerElement} from '../core/media-player-element';
-import {HttpClient} from '@angular/common/http';
-import {DefaultLogger} from '../core/logger/default-logger';
-import {Loader} from '../core/loader/loader';
-import {ConfigData} from '../core/config/model/config-data';
-import {Converter} from '../core/converter/converter';
-import {Metadata} from '@ina/amalia-model';
-import {environment} from '../../environments/environment';
-import {PlayerState} from '../core/constant/player-state';
-import {PlayerEventType} from '../core/constant/event-type';
-import {HttpConfigLoader} from '../core/config/loader/http-config-loader';
-import {BaseUtils} from '../core/utils/base-utils';
-import {MediaPlayerService} from '../service/media-player-service';
-import {ThumbnailService} from '../service/thumbnail-service';
-import {DomSanitizer} from '@angular/platform-browser';
+import { DefaultConfigLoader } from '../core/config/loader/default-config-loader';
+import { DefaultConfigConverter } from '../core/config/converter/default-config-converter';
+import { DefaultMetadataConverter } from '../core/metadata/converter/default-metadata-converter';
+import { DefaultMetadataLoader } from '../core/metadata/loader/default-metadata-loader';
+import { MediaPlayerElement } from '../core/media-player-element';
+import { HttpClient } from '@angular/common/http';
+import { DefaultLogger } from '../core/logger/default-logger';
+import { Loader } from '../core/loader/loader';
+import { ConfigData } from '../core/config/model/config-data';
+import { Converter } from '../core/converter/converter';
+import { Metadata } from '@ina/amalia-model';
+import { environment } from '../../environments/environment';
+import { PlayerState } from '../core/constant/player-state';
+import { PlayerEventType } from '../core/constant/event-type';
+import { HttpConfigLoader } from '../core/config/loader/http-config-loader';
+import { BaseUtils } from '../core/utils/base-utils';
+import { MediaPlayerService } from '../service/media-player-service';
+import { ThumbnailService } from '../service/thumbnail-service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import * as _ from 'lodash';
-import {ControlBarPluginComponent} from '../plugins/control-bar/control-bar-plugin.component';
-import {LoggerLevel} from '../core/logger/logger-level';
-import {Utils} from "../core/utils/utils";
+import { ControlBarPluginComponent } from '../plugins/control-bar/control-bar-plugin.component';
+import { LoggerLevel } from '../core/logger/logger-level';
+import { Utils } from "../core/utils/utils";
+import { ShortcutEvent } from '../core/config/model/shortcuts-event';
 
 @Component({
     selector: 'amalia-player',
@@ -93,7 +94,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * Preview thumbnail container
      */
-    @ViewChild('previewThumbnail', {static: true})
+    @ViewChild('previewThumbnail', { static: true })
     public previewThumbnailElement: ElementRef<HTMLVideoElement>;
 
     /**
@@ -113,6 +114,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     private _config: any;
     // mainSource as src video
     public mainSource = true;
+    handleKeyUpEvent: any;
+
+    //mute shortcuts
+    public muteShortcuts = false;
 
     get config(): any {
         return this._config;
@@ -162,13 +167,13 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * get video html element
      */
-    @ViewChild('video', {static: true})
+    @ViewChild('video', { static: true })
     public mediaPlayer: ElementRef<HTMLVideoElement>;
 
     /**
      * Get context menu html element
      */
-    @ViewChild('contextMenu', {static: true})
+    @ViewChild('contextMenu', { static: true })
     public contextMenu: ElementRef<HTMLElement>;
     /**
      * tc
@@ -211,7 +216,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * mediaContainer element
      */
-    @ViewChild('mediaContainer', {static: true})
+    @ViewChild('mediaContainer', { static: true })
     public mediaContainer: ElementRef<HTMLElement>;
     /**
      * Sert à conserver les dimensions du mediaContainer avant qu' il ne passe en mode plein écran.<br/>
@@ -255,7 +260,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.sanitizer = sanitizer;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
-        this.throttleFunc = _.throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, {trailing: false});
+        this.throttleFunc = _.throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, { trailing: false });
     }
 
     /**
@@ -274,8 +279,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             // set media player in charge to player video or audio files
             this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
             this.mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
-                    .then((state) => this.onInitConfig(state))
-                    .catch((state) => this.onErrorInitConfig(state));
+                .then((state) => this.onInitConfig(state))
+                .catch((state) => this.onErrorInitConfig(state));
             // bind events
             this.bindEvents();
             // set mediaPlayer width for responsive grid
@@ -373,8 +378,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
     private getMaxHeight = (isFullscreen: boolean, htmlElement: HTMLVideoElement) => {
         const maxParentHeight = !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.height : htmlElement.parentElement.offsetHeight;
-        const maxHeightWhenNotPinned = this.pinnedControlbar ? maxParentHeight - 63 : maxParentHeight;
-        return this.pinned ? maxParentHeight - 106 : maxHeightWhenNotPinned;
+        const maxHeightWhenNotPinned = this.pinnedControlbar ? maxParentHeight - 50 : maxParentHeight;
+        return this.pinned ? maxParentHeight - 100 : maxHeightWhenNotPinned;
     }
     /**
      * Retourne la largeur maximale du parent de la video en tenant compte de la taille du conteneur parent de la video avant le passage au plein écran.
@@ -408,8 +413,65 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_BEGIN, this.handleLoading);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_LOADING_END, this.handleLoadingEnd);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ELEMENT_CONTEXT_MENU, this.onContextMenu);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME, this.sendCurrentTime);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME, this.setCurrentTime);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_DURATION, this.sendDuration);
         this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
+        this.addListener(document, PlayerEventType.ELEMENT_KEYDOWN, this.handleShortCutsKeyDownEvent);
+        this.addListener(document, PlayerEventType.ELEMENT_FOCUSIN, this.handleMuteShortcuts);
+        this.addListener(document, PlayerEventType.ELEMENT_FOCUSOUT, this.handleUnmuteShortcuts);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_MUTE, this.handleMuteShortcuts);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_UNMUTE, this.handleUnmuteShortcuts);
+    }
 
+    handleMuteShortcuts($event) {
+        let needsToMuteShortcuts = false;
+        $event && (needsToMuteShortcuts = Utils.eventTargetNeedsToMuteShortcuts($event));
+        if (($event == undefined) || needsToMuteShortcuts) {
+            this.muteShortcuts = true;
+        }
+    }
+
+    handleUnmuteShortcuts($event) {
+        let needsToMuteShortcuts = false;
+        $event && (needsToMuteShortcuts = Utils.eventTargetNeedsToMuteShortcuts($event));
+        if (($event == undefined) || needsToMuteShortcuts) {
+            this.muteShortcuts = false;
+        }
+    }
+
+    handleShortCutsKeyDownEvent($event) {
+        let key = $event.key;
+        if (key === ' ') {
+            key = 'espace';
+        }
+        const shortcut: ShortcutEvent = {
+            shortcut: {
+                key: key.toLowerCase(),
+                ctrl: $event.ctrlKey,
+                shift: $event.shiftKey,
+                alt: $event.altKey,
+                meta: $event.metaKey,
+            },
+            targets: ['CONTROL_BAR', 'ANNOTATIONS'],
+        };
+
+        if (this.muteShortcuts === false) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_KEYDOWN, shortcut);
+            if ($event.key !== 'enter' && $event.key !== 'Enter') {
+                $event.preventDefault();
+            }
+        }
+    }
+
+    sendCurrentTime() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME, { currentTime: this.mediaPlayerElement.getMediaPlayer().getCurrentTime() });
+    }
+    setCurrentTime(event) {
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(event.currentTime);
+    }
+    sendDuration() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_DURATION, { duration: this.mediaPlayerElement.getMediaPlayer().getDuration() });
     }
 
     public handleLoading() {
@@ -611,7 +673,12 @@ export class AmaliaComponent implements OnInit, OnDestroy {
 
         const element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
         if (element) {
-            const parent = element.offsetParent as HTMLElement;
+            let parent = element.offsetParent as HTMLElement;
+            let condition = parent && parent.classList.contains('module') && parent.classList.contains('player');
+            while (parent && !condition) {
+                parent = parent.offsetParent as HTMLElement;
+                condition = parent && parent.classList.contains('module') && parent.classList.contains('player');
+            }
             if (parent) {
                 this.mediaPlayerElement.toggleFullscreen(parent);
             } else {
@@ -790,6 +857,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         Utils.unsubscribeTargetedElementEventListeners(this);
         this.playerService.decrement(this.playerId);
+        this.thumbnailService.listThumbnails = [];
     }
 
     /** @internal */

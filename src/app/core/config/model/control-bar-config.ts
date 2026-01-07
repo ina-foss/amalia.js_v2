@@ -32,4 +32,12 @@ export interface ControlBarConfig {
      * Custom data control
      */
     data?: any;
+    /**
+     * Key for shortcut
+     */
+    key?: string;
+    /**
+     * Not in menu
+     */
+    notInMenu?: boolean;
 }

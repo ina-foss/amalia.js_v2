@@ -1,11 +1,13 @@
-import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {PlayerEventType} from '../../core/constant/event-type';
-import {TimeBarConfig} from '../../core/config/model/time-bar-config';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {DEFAULT} from '../../core/constant/default';
-import {LABEL} from '../../core/constant/labels';
-import {MediaPlayerService} from '../../service/media-player-service';
+import { PluginBase } from '../../core/plugin/plugin-base';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { PlayerEventType } from '../../core/constant/event-type';
+import { TimeBarConfig } from '../../core/config/model/time-bar-config';
+import { PluginConfigData } from '../../core/config/model/plugin-config-data';
+import { DEFAULT } from '../../core/constant/default';
+import { LABEL } from '../../core/constant/labels';
+import { MediaPlayerService } from '../../service/media-player-service';
+import { Utils } from 'src/app/core/utils/utils';
+import { FormatUtils } from 'src/app/core/utils/format-utils';
 
 @Component({
     selector: 'amalia-time-bar',
@@ -14,6 +16,12 @@ import {MediaPlayerService} from '../../service/media-player-service';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements OnInit {
+    @ViewChild("tooltip")
+    tooltip: ElementRef<HTMLDivElement>;
+
+    @ViewChild("tooltip2")
+    tooltip2: ElementRef<HTMLDivElement>;
+
     public static PLUGIN_NAME = 'TIME_BAR';
     /**
      * Return  current time
@@ -90,6 +98,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
             this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
         }
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleOnSeeking);
     }
 
     /**
@@ -105,7 +114,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     }
 
     public showTimeBar() {
-        if (this.displayState !== 's') {
+        if (this.displayState !== 's' && this.displayState !== 'xs') {
             this.active = true;
         } else {
             this.active = false;
@@ -116,7 +125,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Return default config
      */
     getDefaultConfig(): PluginConfigData<TimeBarConfig> {
-        return {name: TimeBarPluginComponent.PLUGIN_NAME, data: {timeFormat: 'f', theme: 'outside'}};
+        return { name: TimeBarPluginComponent.PLUGIN_NAME, data: { timeFormat: 'f', theme: 'outside' } };
     }
 
     /**
@@ -127,6 +136,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     public handleOnTimeChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
     }
 
     /**
@@ -136,7 +146,26 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     public handleOnDurationChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
         this.startTc = (tcOffset) ? tcOffset : 0;
+        this.startTc = this.pluginConfiguration?.data?.first_tc ? this.startTc + this.pluginConfiguration?.data?.first_tc : this.startTc;
         this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
         this.durationTimeBar = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset : this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.durationTimeBar = this.pluginConfiguration?.data?.first_tc ? this.durationTimeBar + this.pluginConfiguration?.data?.first_tc : this.durationTimeBar;
+    }
+
+    public handleOnSeeking(time: number) {
+        const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
+        this.timeTimeBar = (tcOffset) ? tcOffset + time : time;
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
+
+    }
+
+    copyToClipBoard(tc: number, event: MouseEvent) {
+        const text = FormatUtils.formatTime(tc, 's', this.fps);
+        Utils.copyToClipBoard(text, this.tooltip?.nativeElement, event.clientX, event.clientY);
+    }
+    copyAllToClipBoard(tc: number, event: MouseEvent) {
+        const text = FormatUtils.formatTime(tc, 'f', this.fps);
+        Utils.copyToClipBoard(text, this.tooltip2?.nativeElement, event.clientX, event.clientY);
     }
 }
