@@ -1,0 +1,989 @@
+[
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "0030002a224m",
+                                "label": "",
+                                "tcin": "20:22:15:00",
+                                "tcout": "20:22:15:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73335908",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "0030004713v4",
+                                "label": "",
+                                "tcin": "20:22:15:00",
+                                "tcout": "20:22:15:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73335908",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "0030004afhvm",
+                                "label": "",
+                                "tcin": "20:00:00:00",
+                                "tcout": "20:00:00:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72000000",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [
+                                    {
+                                        "key": "keyword",
+                                        "value": "Amenagement"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "Parking"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "Accès"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "dddddddddddddddd"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "Segmentation"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "ddd"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "Journée Programme"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "ddddddddddd"
+                                    }
+                                ],
+                                "id": "00300061win4",
+                                "label": "Segment sans titre Afin de sécuriser notre site de BRY1-4&5, les ac",
+                                "description": "BRY2 s’apprête à accueillir des locataires professionnels du domaine audiovisuel dès le 1er octobre 2024.  \n\nAfin de sécuriser notre site de Bry (BRY1-4&5), les accès aux parkings et la circulation piétonne vont être modifiés à compter du mecredi 25 septembre. \n\nAménagement des accès et circulation :\n \n\nAccès Piétons : un accès unique via l’entrée BRY1 Extension au 32 av. des Frères Lumière. L’arrêt de bus le plus proche est l’arrêt Europe \n \n\nAccès des Véhicules : une entrée unique sera accessible au 30 av. des Frères Lumière pour tous les véhicules, y compris les camions de livraison et collecte des déchets. zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+                                "tcin": "20:21:00:00",
+                                "tcout": "20:22:10:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "0",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "0030008dxyqj",
+                                "label": "",
+                                "tcin": "20:22:30:00",
+                                "tcout": "20:22:30:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73350939",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000c2e08g",
+                                "label": "",
+                                "tcin": "20:22:02:00",
+                                "tcout": "20:22:02:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73322755",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000cddhmy",
+                                "label": "",
+                                "tcin": "20:22:10:00",
+                                "tcout": "20:22:10:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73330271",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000e1dob0",
+                                "label": "",
+                                "tcin": "20:22:15:00",
+                                "tcout": "20:22:15:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73335908",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000eutha2",
+                                "label": "",
+                                "tcin": "20:02:50:00",
+                                "tcout": "20:02:50:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72170981",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000jf38xk",
+                                "label": "",
+                                "tcin": "20:18:43:00",
+                                "tcout": "20:18:43:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73123590",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000lk4cdb",
+                                "label": "",
+                                "tcin": "20:21:55:00",
+                                "tcout": "20:21:55:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73315240",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000p4wjav",
+                                "label": "",
+                                "tcin": "20:10:08:00",
+                                "tcout": "20:10:08:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72608768",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [
+                                    {
+                                        "key": "keyword",
+                                        "value": "v"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle2"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "Parking"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle1"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "noel"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "danse"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cleopatre"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "ve"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "cat2"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "bleu"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "test"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "cat1"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "bleute"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "cat"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "ca"
+                                    }
+                                ],
+                                "id": "003000pgrwfi",
+                                "label": "SegmentsanstitreSegmentsanstitreSegmentsanstitreSegmentsanstitreSegmentsans titre Segment sans titre Segment sans titre Segment sans titre Segment sans titre Segment sans titreSegment sans titreSegment sans titre Segment sans titre",
+                                "tcin": "20:15:41:00",
+                                "tcout": "20:16:41:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72821085",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000rltywy",
+                                "label": "",
+                                "tcin": "20:14:16:00",
+                                "tcout": "20:14:16:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72856784",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000uyy2nx",
+                                "label": "",
+                                "tcin": "20:22:02:00",
+                                "tcout": "20:22:02:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73322755",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000vuy631",
+                                "label": "",
+                                "tcin": "20:22:02:00",
+                                "tcout": "20:22:02:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73322755",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003000z6iujw",
+                                "label": "",
+                                "tcin": "20:21:53:00",
+                                "tcout": "20:21:53:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73313361",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "0030010enr21",
+                                "label": "",
+                                "tcin": "20:22:02:00",
+                                "tcout": "20:22:02:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73322755",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "0030010u3ixl",
+                                "label": "",
+                                "tcin": "20:21:53:00",
+                                "tcout": "20:21:53:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73313361",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "0030014cc3ez",
+                                "label": "",
+                                "tcin": "20:23:02:00",
+                                "tcout": "20:23:02:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73382881",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "00300179enxc",
+                                "label": "",
+                                "tcin": "20:14:26:00",
+                                "tcout": "20:14:26:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72866179",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001fh4d0p",
+                                "label": "",
+                                "tcin": "20:20:45:00",
+                                "tcout": "20:20:45:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73245720",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001gw2cvm",
+                                "label": "",
+                                "tcin": "20:22:57:00",
+                                "tcout": "20:22:57:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73377244",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001ikf2eu",
+                                "label": "",
+                                "tcin": "20:22:15:00",
+                                "tcout": "20:22:15:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73335908",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [
+                                    {
+                                        "key": "keyword",
+                                        "value": "Amenagement"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cat2"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "décès"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle4"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle5"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle2"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "Parking"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle3"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "cle1"
+                                    },
+                                    {
+                                        "key": "keyword",
+                                        "value": "Accès"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "cat5"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "cat2"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "président"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "cat3"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "Segmentation"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "Erreur"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "france"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "Journée Programme"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "historique"
+                                    },
+                                    {
+                                        "key": "category",
+                                        "value": "télévision"
+                                    }
+                                ],
+                                "id": "003001msj9nn",
+                                "label": "Kamala Harris Vs Donald Trump",
+                                "description": "Il a été un militant redoutablement efficace. Le voir, c'était le voir mêler comédie, fureur, optimisme, noirceur et cynisme comme jamais auparavant. C'était un communicateur expert. Il a gagné de nouveaux partisans et a gardé les anciens sous son charme», est-il possible de lire dans les colonnes du quotidien qui se demande si «une femme sera-t-elle un jour présidente» . Et de noter que «le lien avec Donald Trump s'est renforcé pour beaucoup de gens après la tentative d'assassinat» lors d’un meeting en Pennsylvanie en juillet : «Les gens ont commencé à le considérer comme un croisement entre Rambo et John Gotti (un mafieux new-yorkais, NDLR)» et «certains ont vu une preuve du divin dans sa survie», permettant au candidat de se rapprocher de «certaines personnes sur le plan spirituel». «La haine des institutions ne saurait être estimée», ni ses «critiques de l’orthodoxie dominante» ni ses «tactiques alarmistes» : «la peur a maintenu les gens accrochés.\nLes «erreurs de calcul» de Kamala",
+                                "tcin": "20:13:46:00",
+                                "tcout": "20:14:56:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "826722",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001qmnmql",
+                                "label": "",
+                                "tcin": "20:01:24:00",
+                                "tcout": "20:01:24:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72084551",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001qwe165",
+                                "label": "Segment sans titre",
+                                "tcin": "20:09:15:00",
+                                "tcout": "20:10:15:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "72424634",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001ulhcd0",
+                                "label": "",
+                                "tcin": "20:22:23:00",
+                                "tcout": "20:22:23:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73343423",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001um0e9u",
+                                "label": "",
+                                "tcin": "20:22:02:00",
+                                "tcout": "20:22:02:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73322755",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001v149bt",
+                                "label": "",
+                                "tcin": "20:22:21:00",
+                                "tcout": "20:22:21:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73341544",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": [
+                    {
+                        "localisation": [
+                            {
+                                "property": [],
+                                "id": "003001w51qe6",
+                                "label": "",
+                                "tcin": "20:22:02:00",
+                                "tcout": "20:22:02:00",
+                                "thumb": "data:image/png;base64,",
+                                "data": {
+                                    "tcThumbnail": "73322755",
+                                    "codeChannel": "FR2",
+                                    "idmChannel": "FR2",
+                                    "labelChannel": "France 2"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

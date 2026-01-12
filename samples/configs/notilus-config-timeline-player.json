@@ -1,0 +1,24 @@
+{
+  "tcOffset" : 0,
+  "player": {
+    "backwardsSrc": "http://localhost:4203/medias/video-timeline.m3u8",
+    "src": "http://localhost:4203/medias/video-timeline.m3u8",
+    "crossOrigin": "anonymous"
+  },
+  "dataSources": [
+    {
+      "url": "http://localhost:4203/metadata/timeline-type.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/timelines.json"
+    }
+  ],
+  "thumbnail": {
+    "baseUrl": "https://picsum.photos/id/237/200/300",
+    "enableThumbnail": true
+  },
+  "pluginsConfiguration": {
+    "TIME_BAR-PLAYER" : {
+     }
+  }
+}

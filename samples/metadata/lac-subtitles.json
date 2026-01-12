@@ -1,0 +1,602 @@
+{
+  "localisation" : [ {
+    "sublocalisations" : {
+      "localisation" : [ {
+        "data" : {
+          "text" : [ "Iquique et sa dune magistrale, on avait l'habitude de la descendre, ce sera pour plus tard, lors des étapes de retour de Bolivie... Bonsoir, bienvenue dans \"Bivouac\", au terme de la 6e étape au Chili. En moto, le match Coma/Barreda continue... En autos, y a-t-il un match?" ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Iquique et sa dune" ]
+            },
+            "tcin" : "00:01:29.0080",
+            "tcout" : "00:01:31.0040",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "magistrale, on avait l'habitude de" ]
+            },
+            "tcin" : "00:01:31.0040",
+            "tcout" : "00:01:33.0960",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "la descendre, ce sera pour plus" ]
+            },
+            "tcin" : "00:01:33.0960",
+            "tcout" : "00:01:35.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "tard, lors des étapes de retour de" ]
+            },
+            "tcin" : "00:01:35.0600",
+            "tcout" : "00:01:37.0440",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Bolivie... Bonsoir, bienvenue dans" ]
+            },
+            "tcin" : "00:01:37.0440",
+            "tcout" : "00:01:39.0360",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "\"Bivouac\", au terme de la 6e étape" ]
+            },
+            "tcin" : "00:01:39.0360",
+            "tcout" : "00:01:49.0800",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "au Chili. En moto, le match" ]
+            },
+            "tcin" : "00:01:49.0800",
+            "tcout" : "00:01:51.0240",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Coma/Barreda continue... En autos," ]
+            },
+            "tcin" : "00:01:51.0240",
+            "tcout" : "00:01:55.0960",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "y a-t-il un match?" ]
+            },
+            "tcin" : "00:01:55.0960",
+            "tcout" : "00:01:58.0280",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Oui, au départ, on avait cinq pilotes chez Honda. On a beaucoup vu Barreda mais aujourd'hui, Rodriguez qui était resté un peu en retrait a montré qu'il savait naviguer... On va faire le résumé en compagnie d'Hugo Payen, qui a terminé 49e aujourd'hui... Et c'est parti pour les images... 688 kilomètres à parcourir, dont 296 de course. D'un côté les KTM, de l'autre les Honda... On parle stratégie." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Oui, au départ, on" ]
+            },
+            "tcin" : "00:02:26.0120",
+            "tcout" : "00:02:27.0760",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "avait cinq pilotes chez Honda. On a" ]
+            },
+            "tcin" : "00:02:27.0760",
+            "tcout" : "00:02:28.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "beaucoup vu Barreda mais" ]
+            },
+            "tcin" : "00:02:28.0880",
+            "tcout" : "00:02:31.0520",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "aujourd'hui, Rodriguez qui était" ]
+            },
+            "tcin" : "00:02:31.0520",
+            "tcout" : "00:02:33.0360",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "resté un peu en retrait a montré" ]
+            },
+            "tcin" : "00:02:33.0360",
+            "tcout" : "00:02:35.0160",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "qu'il savait naviguer... On va" ]
+            },
+            "tcin" : "00:02:35.0160",
+            "tcout" : "00:02:38.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "faire le résumé en compagnie d'Hugo" ]
+            },
+            "tcin" : "00:02:38.0600",
+            "tcout" : "00:02:40.0000",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Payen, qui a terminé 49e" ]
+            },
+            "tcin" : "00:02:40.0000",
+            "tcout" : "00:02:53.0560",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "aujourd'hui... Et c'est parti pour" ]
+            },
+            "tcin" : "00:02:53.0560",
+            "tcout" : "00:02:56.0360",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "les images... 688 kilomètres à" ]
+            },
+            "tcin" : "00:02:56.0360",
+            "tcout" : "00:03:00.0680",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "parcourir, dont 296 de course. D'un" ]
+            },
+            "tcin" : "00:03:00.0680",
+            "tcout" : "00:03:03.0920",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "côté les KTM, de l'autre les" ]
+            },
+            "tcin" : "00:03:03.0920",
+            "tcout" : "00:03:05.0280",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Honda... On parle stratégie." ]
+            },
+            "tcin" : "00:03:05.0280",
+            "tcout" : "00:03:17.0320",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Des ambitions? Pour l'instant, vous êtes 45e..." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Des ambitions? Pour" ]
+            },
+            "tcin" : "00:09:01.0720",
+            "tcout" : "00:09:04.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "l'instant, vous êtes 45e..." ]
+            },
+            "tcin" : "00:09:04.0600",
+            "tcout" : "00:09:08.0880",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Certaines dunes font 600 mètres d'altitude... Puis, on plonge vers le Pacifique et la ligne d'arrivée. Helder Rodrigues remporte cette étape devant l'Australien Toby Price et l'autre Portugais, Gonçalves, avec l'autre Honda. Joan Barreda termine 6e et Marc Coma perd 2 minutes sur lui..." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Certaines dunes font" ]
+            },
+            "tcin" : "00:06:50.0100",
+            "tcout" : "00:06:51.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "600 mètres d'altitude... Puis, on" ]
+            },
+            "tcin" : "00:06:51.0600",
+            "tcout" : "00:06:54.0040",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "plonge vers le Pacifique et la" ]
+            },
+            "tcin" : "00:06:54.0040",
+            "tcout" : "00:07:03.0400",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "ligne d'arrivée. Helder Rodrigues" ]
+            },
+            "tcin" : "00:07:03.0400",
+            "tcout" : "00:07:06.0160",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "remporte cette étape devant" ]
+            },
+            "tcin" : "00:07:06.0160",
+            "tcout" : "00:07:08.0440",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "l'Australien Toby Price et l'autre" ]
+            },
+            "tcin" : "00:07:08.0440",
+            "tcout" : "00:07:14.0240",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Portugais, Gonçalves, avec l'autre" ]
+            },
+            "tcin" : "00:07:14.0240",
+            "tcout" : "00:07:16.0800",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Honda. Joan Barreda termine 6e et" ]
+            },
+            "tcin" : "00:07:16.0800",
+            "tcout" : "00:07:20.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Marc Coma perd 2 minutes sur lui..." ]
+            },
+            "tcin" : "00:07:20.0880",
+            "tcout" : "00:07:35.0880",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Gæl, êtes-vous avec un amateur?" ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Gæl, êtes-vous avec" ]
+            },
+            "tcin" : "00:11:16.0160",
+            "tcout" : "00:11:17.0520",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "un amateur?" ]
+            },
+            "tcin" : "00:11:18.0020",
+            "tcout" : "00:11:33.0020",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Je suis du côté du team normand de Villedie-les-Poeles, dans la Manche... Comment ça va?" ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Je suis du côté du team" ]
+            },
+            "tcin" : "00:11:35.0120",
+            "tcout" : "00:11:41.0360",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "normand de Villedie-les-Poeles," ]
+            },
+            "tcin" : "00:11:41.0360",
+            "tcout" : "00:11:44.0240",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans la Manche... Comment ça va?" ]
+            },
+            "tcin" : "00:11:44.0240",
+            "tcout" : "00:11:46.0280",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Joan Barreda va le suivre, il est parti derrière. Le match qui a commencé depuis au moins trois jours continue. On se demandait comment allait se comporter la Honda face aux KTM, pour l'instant, elle est fiable et aux mains de grands pilotes. Helder Rodriguez, qui était en demi-teinte jusqu'à maintenant, va vraiment accélérer. Il va trouver le bon cap en suivant les bons rails. Il va prendre carrément la voie de chemin de fer! Vous l'avez déjà fait?" ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Joan Barreda va le" ]
+            },
+            "tcin" : "00:03:54.0560",
+            "tcout" : "00:03:56.0280",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "suivre, il est parti derrière. Le" ]
+            },
+            "tcin" : "00:03:56.0280",
+            "tcout" : "00:03:57.0760",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "match qui a commencé depuis au" ]
+            },
+            "tcin" : "00:03:57.0760",
+            "tcout" : "00:04:00.0960",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "moins trois jours continue. On se" ]
+            },
+            "tcin" : "00:04:00.0960",
+            "tcout" : "00:04:02.0840",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "demandait comment allait se" ]
+            },
+            "tcin" : "00:04:02.0840",
+            "tcout" : "00:04:06.0800",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "comporter la Honda face aux KTM," ]
+            },
+            "tcin" : "00:04:06.0800",
+            "tcout" : "00:04:13.0200",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "pour l'instant, elle est fiable et" ]
+            },
+            "tcin" : "00:04:13.0200",
+            "tcout" : "00:04:14.0600",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "aux mains de grands pilotes. Helder" ]
+            },
+            "tcin" : "00:04:14.0600",
+            "tcout" : "00:04:16.0360",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Rodriguez, qui était en demi-teinte" ]
+            },
+            "tcin" : "00:04:16.0360",
+            "tcout" : "00:04:19.0080",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "jusqu'à maintenant, va vraiment" ]
+            },
+            "tcin" : "00:04:19.0080",
+            "tcout" : "00:04:22.0920",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "accélérer. Il va trouver le bon cap" ]
+            },
+            "tcin" : "00:04:22.0920",
+            "tcout" : "00:04:26.0720",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "en suivant les bons rails. Il va" ]
+            },
+            "tcin" : "00:04:26.0720",
+            "tcout" : "00:04:28.0080",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "prendre carrément la voie de chemin" ]
+            },
+            "tcin" : "00:04:28.0080",
+            "tcout" : "00:04:33.0080",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de fer! Vous l'avez déjà fait?" ]
+            },
+            "tcin" : "00:04:33.0080",
+            "tcout" : "00:04:35.0960",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "J'avais besoin d'un nouveau challenge. Après six Dakar, j'ai fini dans toutes les catégories, alors il me fallait un nouveau challenge. La malle-moto, c'est le plus dur de ce que l'on peut faire dans le Dakar..." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "J'avais besoin d'un nouveau" ]
+            },
+            "tcin" : "00:09:52.0640",
+            "tcout" : "00:09:56.0680",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "challenge. Après six Dakar, j'ai" ]
+            },
+            "tcin" : "00:09:56.0680",
+            "tcout" : "00:09:57.0920",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "fini dans toutes les catégories," ]
+            },
+            "tcin" : "00:09:57.0920",
+            "tcout" : "00:09:59.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "alors il me fallait un nouveau" ]
+            },
+            "tcin" : "00:09:59.0880",
+            "tcout" : "00:10:02.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "challenge. La malle-moto, c'est le" ]
+            },
+            "tcin" : "00:10:02.0880",
+            "tcout" : "00:10:05.0200",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "plus dur de ce que l'on peut faire" ]
+            },
+            "tcin" : "00:10:05.0200",
+            "tcout" : "00:10:05.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "dans le Dakar..." ]
+            },
+            "tcin" : "00:10:05.0880",
+            "tcout" : "00:10:14.0120",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Vous êtes un peu plus qu'un amateur, vous faites pas mal de moto durant l'année?" ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Vous êtes un peu plus" ]
+            },
+            "tcin" : "00:08:42.0200",
+            "tcout" : "00:08:46.0840",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "qu'un amateur, vous faites pas mal" ]
+            },
+            "tcin" : "00:08:46.0840",
+            "tcout" : "00:08:47.0640",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "de moto durant l'année?" ]
+            },
+            "tcin" : "00:08:47.0640",
+            "tcout" : "00:08:49.0040",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      }, {
+        "data" : {
+          "text" : [ "Oui, Mini 6, Toyota 0! Le match est lancé depuis Buenos Aires, avec un net avantage au triple tenant du titre Mini. Du côté des motos, si Joan Barreda semble sur des rails pour la victoire finale, c'est une autre Honda qui a semble-t-il aujourd'hui mené grand train..." ]
+        },
+        "sublocalisations" : {
+          "localisation" : [ {
+            "data" : {
+              "text" : [ "Oui, Mini 6, Toyota 0!" ]
+            },
+            "tcin" : "00:01:58.0280",
+            "tcout" : "00:02:01.0800",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Le match est lancé depuis Buenos" ]
+            },
+            "tcin" : "00:02:01.0800",
+            "tcout" : "00:02:03.0200",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Aires, avec un net avantage au" ]
+            },
+            "tcin" : "00:02:03.0200",
+            "tcout" : "00:02:07.0480",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "triple tenant du titre Mini. Du" ]
+            },
+            "tcin" : "00:02:07.0480",
+            "tcout" : "00:02:10.0200",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "côté des motos, si Joan Barreda" ]
+            },
+            "tcin" : "00:02:10.0200",
+            "tcout" : "00:02:12.0000",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "semble sur des rails pour la" ]
+            },
+            "tcin" : "00:02:12.0000",
+            "tcout" : "00:02:14.0560",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "victoire finale, c'est une autre" ]
+            },
+            "tcin" : "00:02:14.0560",
+            "tcout" : "00:02:22.0880",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "Honda qui a semble-t-il aujourd'hui" ]
+            },
+            "tcin" : "00:02:22.0880",
+            "tcout" : "00:02:24.0320",
+            "tclevel" : 2
+          }, {
+            "data" : {
+              "text" : [ "mené grand train..." ]
+            },
+            "tcin" : "00:02:24.0320",
+            "tcout" : "00:02:26.0120",
+            "tclevel" : 2
+          } ]
+        },
+        "type" : "text",
+        "tclevel" : 1
+      } ]
+    },
+    "type" : "text",
+    "tclevel" : 0
+  } ],
+  "type" : "text",
+  "algorithm" : "Extracteur de sous-titres null",
+  "processor" : "null null",
+  "processed" : 1595341892,
+  "version" : 1,
+  "id": "lac-subtitle"
+}

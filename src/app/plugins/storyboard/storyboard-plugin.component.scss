@@ -1,0 +1,418 @@
+@import '../../core/styles/typo';
+@import '../../core/styles/variables';
+
+:host {
+  position: relative;
+  user-select: none;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: $amalia-font-family !important;
+  font-weight: normal;
+
+
+  .row {
+    min-height: 45px;
+    max-height: 45px;
+    background-color: var(--INA-Blanc, #FFF);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .interval {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    margin-inline-end: 20px;
+    color: #4A4A4A;
+    font-size: 14px;
+
+
+    .label {
+      font-weight: bold;
+    }
+
+    .tc {
+      font-size: 14px;
+    }
+
+    .selected {
+      color: $amalia-plugin-storyboard-box-color;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0;
+      line-height: 16px;
+      font-weight: normal;
+
+      .second-span {
+        margin: -4px;
+        padding: 0;
+      }
+    }
+
+    .amalia-svg-down.icon {
+      width: 16px;
+      height: 16px;
+      margin-left: 10px;
+      color: #0B7698;
+      position: relative;
+      top: 3px;
+
+      &.active {
+        transform: rotate(180deg);
+      }
+    }
+
+    ul {
+      display: none;
+      list-style: none;
+      position: absolute;
+      z-index: 100;
+      background-color: white;
+      text-align: right;
+      padding: 0;
+      right: 0;
+      margin-left: -50px;
+      top: 21px;
+      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.22);
+      border: 1px solid $amalia-plugin-storyboard-box-border-color;
+      border-radius: 4px;
+      font-size: 14px;
+
+      &.active {
+        display: block;
+      }
+
+      li {
+        list-style: none;
+        padding: 5px 27px;
+        margin: 0;
+        cursor: pointer;
+
+        &.label {
+          background-color: #F3F3F3;
+          line-height: 16px;
+          color: #34495E;
+        }
+
+        &:hover {
+          background-color: #F2F5F9;
+        }
+
+        &.selected {
+          font-weight: bold;
+          color: #0B7698;
+        }
+      }
+    }
+  }
+
+  .storyboard-size {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: 20px;
+
+    div.size {
+      border: solid 1px $amalia-plugin-storyboard-box-color;
+      margin-right: 10px;
+
+      &:hover,
+      &.selected {
+        border: solid 1px $amalia-plugin-storyboard-box-color;
+        background-color: $amalia-plugin-storyboard-box-color;
+      }
+    }
+
+    .medium {
+      width: 24px;
+      height: 16px;
+      border: solid 1px $amalia-plugin-storyboard-box-color;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .large {
+      width: 30px;
+      height: 21px;
+      border: solid 1px $amalia-plugin-storyboard-box-color;
+      cursor: pointer;
+    }
+
+    .first,
+    .last {
+      flex: 1;
+    }
+
+  }
+
+  .storyboard {
+    border: 1px solid $amalia-plugin-storyboard-box-border-color;
+    flex-wrap: wrap;
+    height: $amalia-plugin-storyboard-height;
+    width: inherit;
+    display: flex;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    will-change: scroll-position;
+    z-index: 1;
+    padding-top: 5px;
+
+    .vs-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      flex-flow: row;
+      flex-wrap: wrap;
+      height: inherit;
+      width: inherit;
+      justify-content: center;
+      align-items: center;
+      align-content: flex-start;
+      z-index: 2;
+
+      .thumbnail {
+        position: relative;
+        cursor: pointer;
+        margin: 5px 5px;
+        border-radius: 4px;
+        overflow: hidden;
+        border: solid 1px $amalia-plugin-storyboard-bg-color;
+
+        .image {
+          background-image: url("/assets/images/placeholder.png");
+          background-color: transparent;
+        }
+
+        &:hover {
+          border-color: $amalia-plugin-storyboard-box-color;
+        }
+
+        &.active {
+          border-color: $amalia-plugin-storyboard-box-color;
+          background-color: $amalia-plugin-storyboard-box-color;
+          box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.25);
+
+          .label {
+            background-color: $amalia-plugin-storyboard-box-color;
+            color: #FFFFFF;
+            font-weight: bold;
+          }
+        }
+
+        &.medium {
+          width: $amalia-plugin-storyboard-thumbnail-mw;
+          height: $amalia-plugin-storyboard-thumbnail-mh;
+        }
+
+        &.large {
+          width: $amalia-plugin-storyboard-thumbnail-lw;
+          height: $amalia-plugin-storyboard-thumbnail-lh;
+        }
+
+        img {
+          width: 100%;
+          height: calc(100% - 20px);
+          display: block;
+          overflow: hidden;
+          object-fit: contain;
+          /* Fit logo in the image size */
+          -o-object-fit: contain;
+          /* Fit logo fro opera browser */
+          object-position: center;
+          /* Set logo position */
+          -o-object-position: center;
+          border-radius: 3px 3px 0 0;
+        }
+
+        .label {
+          background-color: $amalia-plugin-storyboard-label-bg;
+          width: 100%;
+          height: 20px;
+          line-height: 20px;
+          font-size: 12px;
+          text-align: center;
+          color: #222222;
+          font-family: $amalia-font-family-lato;
+          letter-spacing: 0;
+        }
+
+      }
+    }
+
+    .vs-scroll {
+      transform-origin: 0 0;
+      flex: 0 0 auto;
+      display: flex;
+      scroll-behavior: smooth;
+
+      &.active {
+        display: block;
+      }
+    }
+  }
+
+  .auto-scroll {
+    position: absolute;
+    right: 25px;
+    bottom: 8px;
+    display: none;
+
+    &.active {
+      display: block;
+      position: absolute;
+      z-index: 1;
+    }
+
+    .icon {
+      width: 32px;
+      height: 32px;
+      display: inline;
+      cursor: pointer;
+
+      &.selected,
+      &:hover {
+        --hover: #0B7698;
+        color: $amalia-plugin-timeline-bg-color;
+      }
+    }
+  }
+
+  .storyboard-container {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    .horizontal-storyboard {
+      width: max-content;
+      display: flex;
+      flex-direction: row;
+      background: #F2F5F9;
+      border-top: 24px solid #F2F5F9;
+      border-bottom: 24px solid #F2F5F9;
+
+      .thumbnail {
+        width: 225px;
+        height: 126px;
+        border-radius: 4px;
+        margin-right: 85px;
+
+        >img {
+          width: 225px;
+          height: 126px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .horizontal-interval {
+      width: max-content;
+      height: 40px;
+      background-color: #80C2D8;
+      display: flex;
+      flex-direction: row;
+
+      .label {
+        text-align: center;
+        position: relative;
+        color: #34495E;
+        font-size: 12px;
+        line-height: 20px;
+        width: 225px;
+        margin-right: 85px;
+
+        .unity {
+          width: 1px;
+          height: 12px;
+          background-color: #0B7698;
+          margin: 0 auto 0;
+        }
+      }
+    }
+  }
+
+  //scrollBar style
+  ::-webkit-scrollbar-track {
+    border: 1px solid $amalia-plugin-storyboard-box-border-color;
+    padding: 2px 0;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: $amalia-plugin-storyboard-box-color;
+  }
+
+  .interval-h {
+    font-size: 14px;
+    height: 60px;
+    background: #fff;
+    width: 100%;
+
+    .selected {
+      font-weight: bold;
+      color: $amalia-plugin-storyboard-box-color;
+      cursor: pointer;
+    }
+
+    .tc {
+      font-size: 14px;
+    }
+
+    .amalia-svg-down.icon {
+      width: 16px;
+      height: 10px;
+      margin-left: 10px;
+    }
+
+    .label {
+      position: absolute;
+      margin: 0;
+      line-height: 16px;
+      right: 15px;
+    }
+
+    >ul {
+      list-style: none;
+      position: absolute;
+      z-index: 100;
+      background-color: white;
+      text-align: right;
+      padding: 0;
+      top: 10px;
+      right: 13px;
+
+      li {
+        list-style: none;
+        padding: 5px 20px 5px 20px;
+        margin: 0;
+
+        &.text {
+          background-color: #F3F3F3;
+          line-height: 20px;
+          color: #34495E;
+          font-weight: bold;
+          right: 0;
+        }
+
+        &:hover {
+          background-color: #F2F5F9;
+        }
+
+        &.selected {
+          font-weight: bold;
+          color: #0B7698;
+        }
+      }
+    }
+  }
+}

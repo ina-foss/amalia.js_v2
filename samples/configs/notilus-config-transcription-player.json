@@ -1,0 +1,384 @@
+{
+  "tcOffset": 6000,
+  "debug": false,
+  "player": {
+    "src": "http://localhost:4203/medias/stock.mp4",
+    "crossOrigin": "anonymous"
+  },
+  "dataSources": [
+    {
+      "url": "http://localhost:4203/metadata/FPVDB07032005.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/jt-t.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/transcription-stock.json"
+    }
+  ],
+  "thumbnail": {
+    "baseUrl": "https://image.wsmedia.d.sas.ina/thumbs/5xjt4ZG3gCNHzy+FGMs4/OjyT6fbaxfOCsjRRkHqPbN2GuRv2NAD4a3PKlDHl+vfkFPbO7ucDjAX3RQIQt53JEI/BlORk7Y2fKLH2PgdtXD1RNEpNMwai+FyZHyr2Z6zKHCAnZH3f3yctgAFoxez5HovC8MA5vKSR1Hd1DTulaUcksmJVHdT2W0y/sDCWff6HULuq9l+MLqiL+1OasdKiYJpH8iiFJcij/9qCbCrlREQSYWfWXoETUAuYiRJzrTRW0ZDhSPC8Dl2eI9Z2xVuCWH2BHfMj6qe7bxf3VbxpmoeuuZ7+gJmkwdjuZcS0P/fP6VGmOcUtmhlbiUKckqFfPGRrTVj+kDKHdvZ+Xi+b7K1qaoCAooa6jYatDUTSJDue3gfQ/mtkBoPTzWE102ln5A+BdJh1LPgnBNEH6uISC0bibOu4ZqDaYfJT3OJ8x/Muso6nYA0Hcpa4AFiQoSXJ7sI8AuDbKqwUhjogMrDy51fe5ZVOqrF5wbIX1DKz8AmDlxalGSsNbmU24/oljeszx+qoEtRiCCj/4cb4jhKdmaJa8kmkd2Uih9mSqrs+WLFfxpjSn56E5sCnmWfjtR6o6A/g9YOj8C3eoPrjThclG/0pDAOv41ELoaxiyKLBmODhObTjLj9oW8s35bNQl/jRka4VCf1hj6DR1ahSEiHzw9nRVkM3ka70MAajZGSk8bopr1yH5vmQ2MO0pSWez6v7g==/sl_iv/YXtyIP/ucQMbF3I928quYQ==/sl_hm/",
+    "enableThumbnail": true
+  },
+  "pluginsConfiguration": {
+    "CONTROL_BAR-PLAYER": {
+      "data": [
+        {
+          "label": "Barre de progression",
+          "control": "progressBar"
+        },
+        {
+          "label": "Playback rate custom steps",
+          "control": "playbackRateCustomSteps"
+        },
+        {
+          "label": "Playback rate steps",
+          "control": "playbackRateSteps"
+        },
+        {
+          "label": "Capture Image",
+          "control": "download",
+          "icon": "screenshot",
+          "zone": 1,
+          "order": 2,
+          "priority": 2,
+          "key": "c",
+          "data": {
+            "href": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/G3ntJNT9yjD0ImuwiDaM48nT4sGPMAxTDF4P3nLQDfvJfmgrVWJDeO4mCzaLVQWAw3xtNpN2ftPzSzAtxKpQujFSL9WDScy9bDW09t1089Kp59ibPU14ZsVYwGE2tK9KBiNWzgOSwytx+dHT0G6SRGDNBlVX9SHejvCyM3W0sFh1nMgccbeaie55bUYDsBE9fcAXLp1UO3D+Jd4mNFDDBb3mv5LlJOSewE9rgGeAE5s/tt++yR8/NZQzKQmIH6+uscgQQSExiYGyGlxppVwRO5U+zle/m0djfQaaD6pnRThYNWlfc7Q+qwp7EScdlLcHsBNiX8v0KRKEq99ffI3b5v3vv9qhiQjp6Zq9zVZQPXOkQ4wKhCspXrri+Zr6gHR9VccuOZgUnGVPdIHGxXtQ3mFcMyUE81UPWsJoDUbI2IRI7IfTodvpYcDbXeuAAKRY55oMh4rNkD87iZ5p4OfKopTbx2N6GcSF/lvQH0ndce3Yuk08aecM4JoSZSIFgVUja2ebGPiIX1j/7FzQ0JqvThTM2LEMtmjHvKPiZOmIBvmtylQVFpo1nQ0GcyFhGyIgI4Va8tPT/2Uo7R0pmsJkQrZC3m3JE4HUlucjA3T7tUoUviXpiPECwEi6dQ+EZS9w0xYlW05vwhzHo8izX2tgq8TVmMOWu/3LD5/VZO/X2Z1SDZDrgWJW0/8Wv15tkccB/sl_iv/Ai+zgqgE0YWhkGDSLQx8xQ==/sl_hm/"
+          }
+        },
+        {
+          "label": "Download",
+          "control": "download",
+          "icon": "download",
+          "zone": 1,
+          "order": 1,
+          "priority": 2,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          }
+        },
+        {
+          "label": "Playback Rate",
+          "control": "playbackRate",
+          "zone": 1,
+          "priority": 1,
+          "order": 3
+        },
+        {
+          "label": "backward-start",
+          "icon": "backward-start",
+          "control": "backward-start",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "backward-frame",
+          "icon": "backward-frame",
+          "control": "backward-frame",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "backward-5seconds",
+          "icon": "backward-5seconds",
+          "control": "backward-5seconds",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "slow-backward",
+          "icon": "slow-backward",
+          "control": "slow-backward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "backward",
+          "icon": "backward",
+          "control": "backward",
+          "zone": 2,
+          "priority": 1,
+          "data": {
+            "speed": -2
+          }
+        },
+        {
+          "label": "Play / Pause",
+          "control": "playPause",
+          "zone": 2,
+          "priority": 1,
+          "key": "espace"
+        },
+        {
+          "label": "forward",
+          "icon": "forward",
+          "control": "forward",
+          "zone": 2,
+          "priority": 1,
+          "data": {
+            "speed": 6
+          }
+        },
+        {
+          "label": "slow-forward",
+          "icon": "slow-forward",
+          "control": "slow-forward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "forward-5seconds",
+          "icon": "forward-5seconds",
+          "control": "forward-5seconds",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "forward-frame",
+          "icon": "forward-frame",
+          "control": "forward-frame",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "forward-end",
+          "icon": "forward-end",
+          "control": "forward-end",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "Sous titres",
+          "control": "subtitles",
+          "icon": "subtitle",
+          "zone": 3,
+          "priority": 1
+        },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 3,
+          "priority": 1,
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
+          }
+        },
+
+        {
+          "label": "Fullscreen",
+          "control": "toggleFullScreen",
+          "icon": "fullscreen",
+          "zone": 3,
+          "priority": 1,
+          "key": "f"
+          },
+        {
+          "label": "Aspect ratio (a)",
+          "control": "aspectRatio",
+          "zone": 3,
+          "key": "c",
+          "priority": 3
+        },
+        {
+          "label": "Menu",
+          "control": "menu",
+          "icon": "dots",
+          "zone": 3
+        },
+
+        {
+          "label": "Epingler slider",
+          "control": "pinControls",
+          "icon": "pin",
+          "zone": 3,
+          "priority": 1
+        },
+        {
+          "label": "Slider",
+          "control": "displaySlider",
+          "icon": "slider",
+          "zone": 3,
+          "priority": 1
+        }
+      ]
+    },
+    "CONTROL_BAR-PLAYER2": {
+      "data": [
+        {
+          "label": "Barre de progression",
+          "control": "progressBar"
+        },
+        {
+          "label": "Playback rate custom steps",
+          "control": "playbackRateCustomSteps"
+        },
+        {
+          "label": "Playback rate steps",
+          "control": "playbackRateSteps"
+        },
+        {
+          "label": "Capture Image",
+          "control": "download",
+          "icon": "screenshot",
+          "zone": 1,
+          "order": 2,
+          "priority": 2,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          }
+        },
+        {
+          "label": "Download",
+          "control": "download",
+          "icon": "download",
+          "zone": 1,
+          "order": 1,
+          "priority": 2,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          }
+        },
+        {
+          "label": "Playback Rate",
+          "control": "playbackRate",
+          "zone": 1,
+          "priority": 1,
+          "order": 3
+        },
+        {
+          "label": "backward-start",
+          "icon": "backward-start",
+          "control": "backward-start",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "backward-frame",
+          "icon": "backward-frame",
+          "control": "backward-frame",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "backward-5seconds",
+          "icon": "backward-5seconds",
+          "control": "backward-5seconds",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "slow-backward",
+          "icon": "slow-backward",
+          "control": "slow-backward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "backward",
+          "icon": "backward",
+          "control": "backward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "Play / Pause",
+          "control": "playPause",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "forward",
+          "icon": "forward",
+          "control": "forward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "slow-forward",
+          "icon": "slow-forward",
+          "control": "slow-forward",
+          "zone": 2,
+          "priority": 1
+        },
+        {
+          "label": "forward-5seconds",
+          "icon": "forward-5seconds",
+          "control": "forward-5seconds",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "forward-frame",
+          "icon": "forward-frame",
+          "control": "forward-frame",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "forward-end",
+          "icon": "forward-end",
+          "control": "forward-end",
+          "zone": 2,
+          "priority": 2
+        },
+        {
+          "label": "Sous titres",
+          "control": "subtitles",
+          "icon": "subtitle",
+          "zone": 3,
+          "priority": 1
+        },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 3,
+          "priority": 1,
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
+          }
+        },
+
+        {
+          "label": "Fullscreen",
+          "control": "toggleFullScreen",
+          "icon": "fullscreen",
+          "zone": 3,
+          "priority": 1,
+          "key": "f"
+          },
+        {
+          "label": "Aspect ratio (a)",
+          "control": "aspectRatio",
+          "zone": 3,
+          "priority": 3
+        },
+        {
+          "label": "Menu",
+          "control": "menu",
+          "icon": "dots",
+          "zone": 3
+        },
+
+        {
+          "label": "Epingler slider",
+          "control": "pinControls",
+          "icon": "pin",
+          "zone": 3,
+          "priority": 1
+        },
+        {
+          "label": "Slider",
+          "control": "displaySlider",
+          "icon": "slider",
+          "zone": 3,
+          "priority": 1
+        }
+      ]
+    }
+  }
+}

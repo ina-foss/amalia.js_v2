@@ -1,0 +1,511 @@
+{
+	"id": "F24_14301445_21032014",
+	"type": "hierarchic_transcription",
+	"algorithm": "transcription_tool",
+	"processor": "vocapia_processor",
+	"processed": "9254742974467",
+	"localisation": [
+		{
+			"sublocalisations": {
+				"localisation": [
+								{
+						"tcin": "00:00:12.00",
+						"tcout": "00:14:59.99",
+						"tclevel": 1,
+						"sublocalisations": {
+							"localisation": [
+														{
+									"data": {
+										"text": [
+																				"Bonjour à tous et bienvenue dans Paris, à la une de l'actualité aujourd'hui encore lu. un Ukraine au centre du sommet de l'Union européenne à Bruxelles, le pays a signé le volet politique de son accord d'adhésion. Par ailleurs, les 28 pour rallonger rallonger la liste des personnes a été sanctionnés pour leur rôle dans la crise en Crimée. Le président français vient de s'exprimer à ce propos, en France, la tribune de l'ancien président Nicolas Sarkozy dans Le Figaro fait réagir ce matin après sa mise sur écoutes par décision de justice, ils dénoncent des pratiques dignes de la Stasi, la police politique d'Allemagne de l'Est des propos insupportables pour son successeur à l'Élysée, enfin, les Turcs sont privés de Twitter le Premier ministre en a décidé ainsi, il a fait couper le réseau social sur lequel était des messages mettant en cause dans l'actuel scandale de corruption, nous verrons",
+																				""
+										]
+									},
+									"tcin": "00:00:12.00",
+									"tcout": "00:00:59.23",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Le destin de l'Ukraine, une nouvelle fois discutée à Bruxelles, les autorités de Kiev font un pas vers l'intégration à l'Union européenne en signant le volet politique d'un accord d'association. Par ailleurs, les pays membres pour allonger la liste des personnalités russes et pro-russes sanctionnés pour leur participation dans la crise en Crimée, la dissuasion n'est pas militaire, elle doit être économique, a affirmé le président français dans ce dossier sur les sanctions écoutez François Hollande.",
+																				""
+										]
+									},
+									"tcin": "00:01:13.30",
+									"tcout": "00:01:41.80",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Des sanctions individuelles ont été prises, notamment à l'égard de 33 personnalités, la seconde décision a été de suspendre même d'annuler un certain nombre de réunions qui devaient avoir lieu, notamment celle entre l'Europe, l'Union européenne et la Russie, et enfin, il a été décidé de réduire les relations comme commercial, économique et financière entre l'Europe et la Crimée.",
+																				""
+										]
+									},
+									"tcin": "00:01:42.87",
+									"tcout": "00:02:20.05",
+									"tclevel": 2,
+									"label": "françois hollande"
+								},
+														{
+									"data": {
+										"text": [
+																				"Armel Charrier est avec moi sur ce plateau pour parler de cette intervention du président français, alors que François Hollande parle de sanctions économiques, est-ce que cela va être suffisant dans cette crise pour faire plier la Russie.",
+																				""
+										]
+									},
+									"tcin": "00:02:20.05",
+									"tcout": "00:02:32.15",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Alors tout dépend en fait, c'est l'ampleur et la force des sanctions économiques parce que vous vous souvenez, les toutes premières qui avaient été prises avaient fait rire en fait au niveau de la Douma, certains avaient même dit que justement, c'était une heure de gloire d'apprendre que des non pas très connu, pouvait ainsi être visés par des sanctions économiques européennes, en fait, à partir du moment donné cher on touche des personnes qui sont vraiment proche de Vladimir Poutine, et où les sanctions sont très dures avec pas de visa du tout et à un gel des avoirs à la à conséquence peut être plus importante, mais la vraie réponse, c'est celle qu'a porté Barack Obama qui en gèle tout ce qui touche à la banque de Russie parce que là, on l'a vu sur l'Iran, dans ces cas-là, ça fait dire que on vous ne pouvez absolument plus rentrer dans le jeu financier sur la planète, et là, effectivement, les conséquences sont très importantes : l'Europe n'en est pas encore là, mais elle peut travailler aussi avec les États-Unis pour avoir ses réactions.",
+																				""
+										]
+									},
+									"tcin": "00:02:32.15",
+									"tcout": "00:03:20.29",
+									"tclevel": 2,
+									"label": "armelle charrier"
+								},
+														{
+									"data": {
+										"text": [
+																				"L'Union européenne pour l'instant n'en est pas encore effectivement elle veut jouer l'apaisement et à ce que François Hollande je disais tout à l'heure, a parlé de dissuasion militaire, a dit qu'on n'était pas encore là ce qu'il faut en arriver là pour qu'il y ait vraiment quelque chose qui bouge du côté de la Russie.",
+																				""
+										]
+									},
+									"tcin": "00:03:20.29",
+									"tcout": "00:03:37.37",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Ce qui est intéressant, c'est que vous avez entendu François Hollande a dit on prend des décisions et on les prend à 28 et ce n'est pas évident et on doit bien penser que sur cette question-là, c'est le cas, parce que la question de la dissuasion, la question de la douceur, la question du dialogue potentiel c'est éventuellement l'Europe de l'Ouest qui peut avoir c'est celle qui dépend du gaz allemand, c'est celle du gaz russe, pardon, par exemple les Allemands ça peut être le Royaume-Uni, ça peut être la la France qui a des désaccords pour vendre le Mistral, mais en revanche, tous les pays qui a qui sont au plus près les Russes qui connaissent les Russes on pense par exemple aux pays Baltes, on pense à la Pologne, on pense à tous ces pays là, eux ils ont une nature tout à fait autre. D'abord, ils ont des communautés russophones sur territoire donc très inquiets de ce qui s'est passé en Crimée, d'autres par contre parle avec des estoniens quand vous parlez avec des Finlandais quand vous parlez avec des Polonais qui ont parfaitement connu ce que c'était que l'empire soviétique, ils vous disent que l'appétit de l'ogre russe, ils le connaissent, ils s'en méfient et c'est certainement pour ça que l'option militaire, les quand même penser à défaut d'aller jusqu'au bout et que l'idée est de savoir : est-ce qu'il faut réveiller l'OTAN, ce qui n'est pas faite, ce qui sera très compliqué, mais cette idée-là commence à germer. C'est pour ça qu'on voit des petits avions français par exemple, arrivé du côté des pays baltes. Alors",
+																				""
+										]
+									},
+									"tcin": "00:03:37.37",
+									"tcout": "00:04:45.32",
+									"tclevel": 2,
+									"label": "armelle charrier"
+								},
+														{
+									"data": {
+										"text": [
+																				"la peur justement des pays baltes, on en parlera dans une demi-heure dans notre focus mais en attendant, la France a annoncé la fin de sa coopération militaire avec la Russie et la suspension donc de toutes les manoeuvres conjointes. La déclaration a été faite par le ministre français de la Défense qui est actuellement en déplacement en Lituanie et au bord de la de la Baltique, donc, et il a également affirmé le ministre que la France était prête à envoyer quatre avions de chasse si l'OTAN décidé de renforcer sa protection aérienne des pays baltes des sanctions qui n'impressionne pas vraiment la Russie pour l'instant, le président Vladimir Poutine vient de mettre la dernière main au rattachement de la Crimée à la Russie en signant la loi d'application de cette décision, un peu plus tôt sans surprise des membres du Parlement russe avaient ratifié à l'unanimité le traité de rattachement, dans les faits, tout cela a été en depuis sa mort. Dans l'actualité également les échanges de politesse en France entre l'opposition et le gouvernement, les socialistes au pouvoir, compare ce matin l'ancien président Nicolas Sarkozy à Silvio Berlusconi, en réponse à une tribune de l'ancien chef de l'État dans Le Figaro, il dénonce ce matin l'acharnement du pouvoir socialiste, qu'il compare à l'ancienne police politique d'Allemagne de l'Est la Stasi.",
+																				""
+										]
+									},
+									"tcin": "00:04:45.32",
+									"tcout": "00:05:57.90",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Ce matin, il n'a rien changé à ses habitudes, direction son bureau pour Nicolas Sarkozy, sa tribune fracassante a exaspéré la gauche. Jamais cité mais premiers visés, François Hollande a répondu au coeur de la nuit bruxelloise en marge du sommet européen.",
+																				""
+										]
+									},
+									"tcin": "00:05:57.90",
+									"tcout": "00:06:20.33",
+									"tclevel": 2,
+									"label": "speaker 4"
+								},
+														{
+									"data": {
+										"text": [
+																				"Laisser penser que notre pays, notre République puisse ne pas être fondé sur les libertés, c'est introduire un doute qui n'a pas sa place et toute comparaison avec des dictatures et forcément insupportable.",
+																				""
+										]
+									},
+									"tcin": "00:06:20.33",
+									"tcout": "00:06:39.46",
+									"tclevel": 2,
+									"label": "françois hollande"
+								},
+														{
+									"data": {
+										"text": [
+																				"Dans le viseur de la gauche, cette phrase de Nicolas Sarkozy au sujet des écoutes, ce n'est pas un extrait du merveilleux film La Vie des autres sur l'Allemagne de l'Est et les activités de la Stasi, il ne s'agit pas des agissements de tel dictateur, il s'agit de la France une comparaison avec la police politique de l'ex-Allemagne de l'Est qui scandalise le gouvernement Nicolas ça. Cause il au fond",
+																				""
+										]
+									},
+									"tcin": "00:06:39.46",
+									"tcout": "00:07:02.11",
+									"tclevel": 2,
+									"label": "speaker 4"
+								},
+														{
+									"data": {
+										"text": [
+																				"tout détruire pour se protéger de tout casser pour échapper à la justice, Nicolas Sarkozy a droit à la présomption d'innocence,",
+																				""
+										]
+									},
+									"tcin": "00:07:02.11",
+									"tcout": "00:07:13.38",
+									"tclevel": 2,
+									"label": "manuel valls"
+								},
+														{
+									"data": {
+										"text": [
+																				"mais il n'est pas au-dessus des lois, la violence qui a sous la plume, c'est la violence contre les institutions de la France, c'est la violence contre la police qui l'a commandé lorsqu'il était ministre de l'Intérieur, c'est la violence contre la justice dont il était le garant de l'indépendance lorsqu'il était président de la République, c'est en quelque sorte une forme de coup d'état verbal.",
+																				""
+										]
+									},
+									"tcin": "00:07:13.46",
+									"tcout": "00:07:33.20",
+									"tclevel": 2,
+									"label": "michel sapin"
+								},
+														{
+									"data": {
+										"text": [
+																				"La droite en revanche estime qu'il était indispensable que l'ancien président s'exprime. On n'est jamais assez violent lorsqu'on on attaque Nicolas Sarkozy et lui le serait trop, quand il se défend :",
+																				""
+										]
+									},
+									"tcin": "00:07:33.20",
+									"tcout": "00:07:45.61",
+									"tclevel": 2,
+									"label": "jean-françois copé"
+								},
+														{
+									"data": {
+										"text": [
+																				"je crois qu'il y a vraiment deux poids deux mesures, une nouvelle fois, quand on se met à écouter tout le monde à tort et à travers, vers quel type de société d'origine se dirige-t-on ça s'appelle dans l'histoire, le totalitarisme.",
+																				""
+										]
+									},
+									"tcin": "00:07:45.97",
+									"tcout": "00:07:57.96",
+									"tclevel": 2,
+									"label": "henri guaino"
+								},
+														{
+									"data": {
+										"text": [
+																				"De son côté, Marine Le Pen qualifie la tribune de Nicolas Sarkozy, je cite, d'indignation parfaitement artificiel, est mal vu.",
+																				""
+										]
+									},
+									"tcin": "00:07:57.96",
+									"tcout": "00:08:05.65",
+									"tclevel": 2,
+									"label": "speaker 4"
+								},
+														{
+									"data": {
+										"text": [
+																				"La Libye qui se débat toujours avec ses luttes internes, l'aéroport de Tripoli et fermé, le trafic suspendu aujourd'hui deux roquettes se sont abattues sur la piste principale de l'aéroport à l'aube, ne faisant que des dégâts matériels, l'aéroport est contrôlée depuis la chute de Mouammar Kadhafi par d'ex-rebelles de la ville de ten. Les Turcs sont privés de Twitter le Premier ministre rejette et perdent Anne a fait couper le réseau social dans le pays via l'autorité des télécommunications, des informations le mettant en cause dans le scandale de corruption qui agite le pays et tête sur Twitter écoutez.",
+																				""
+										]
+									},
+									"tcin": "00:08:06.20",
+									"tcout": "00:08:42.38",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Hum.",
+																				""
+										]
+									},
+									"tcin": "00:08:42.38",
+									"tcout": "00:08:45.55",
+									"tclevel": 2,
+									"label": "speaker 9"
+								},
+														{
+									"data": {
+										"text": [
+																				"On va passer à Fatma acquise Boga, notre correspondante à Istanbul, on viendra tout à l'heure sur les déclarations du Premier ministre turc a Fatma, merci d'être avec nous, alors le président turc lui a fait savoir son désaccord face à cette censure vient en truites justement.",
+																				""
+										]
+									},
+									"tcin": "00:08:45.55",
+									"tcout": "00:09:02.19",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Mais c'est effectivement un coup dur pour prouver à Amman le président également rappelons-le au passage, l'un des fondateurs du Parti de la justice et du développement, et bien affirmé que cette interdiction était tout simplement, écrit-il, le gouvernement a tant et tant bien que mal de défendre sa position, mais quant aux réactions et à la condamnation, les liens, il n'a-t-il pas par le biais de et peut-être interdiction qui est faite de ne pas durer très longtemps d'ailleurs, la compagnie, elle a été un acte a indiqué qu'on résout le problème l'Union et la honte ça également affaibli ce matin la pour faire appel de cette décision et il est sinon on des conventions internationales prévoyant à la protection de nous a fait fondamental dont la Turquie est signataire.",
+																				""
+										]
+									},
+									"tcin": "00:09:02.19",
+									"tcout": "00:09:46.34",
+									"tclevel": 2,
+									"label": "speaker 10"
+								},
+														{
+									"data": {
+										"text": [
+																				"Alors, cette interdiction n'a pas vraiment calmé la la contestation contre le pouvoir des manifestations sont prévues aujourd'hui.",
+																				""
+										]
+									},
+									"tcin": "00:09:46.34",
+									"tcout": "00:09:54.06",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Oui effectivement quelques appels à manifester estimé également et c'est important de noter les appels au calme date plus dit si le reflux qui est le plus petit de prendre des gens aussi de la provocation, il appelle les contestataires par la voie des urnes dans des eaux et du Pakistan, où on on place un crochet au de défier l'été dernier, les manifestants de la en les qualifiant de très peur marginal les la fille d'avoir mené une de coup d'État, un bonheur avait donné rendez-vous dans l'isoloir, on est donc à quelques autres, ce rendez-vous qui leur vie toute prétention de la.",
+																				""
+										]
+									},
+									"tcin": "00:09:54.06",
+									"tcout": "00:10:30.43",
+									"tclevel": 2,
+									"label": "speaker 10"
+								},
+														{
+									"data": {
+										"text": [
+																				"On a perdu la liaison avec cette Boga, on a compris l'essentiel Fatma merci beaucoup les dernières législatives en Thaïlande ont été tout bonnement annulée par la cour constitutionnelle annulé parce qu'elles n'ont pas pu se dérouler sur tout le territoire en même temps, la crise politique et de relancer dans le pays même si sur le terrain, la situation s'améliore la capitale Bangkok n'est plus aujourd'hui en état de siège. Carte.",
+																				""
+										]
+									},
+									"tcin": "00:10:30.43",
+									"tcout": "00:10:53.43",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Je la un marin. L'arrêt vient de tomber et les élections législatives sont annulés organisé le mois dernier le vote avait été remporté par le parti, poids, taille : celui de la première ministre chinoise.",
+																				""
+										]
+									},
+									"tcin": "00:10:53.43",
+									"tcout": "00:11:10.00",
+									"tclevel": 2,
+									"label": "speaker 11"
+								},
+														{
+									"data": {
+										"text": [
+																				"Internet nous considérons que les élections du 2 février de d'avoir lieu sur tout le territoire, le même jour un mis",
+																				""
+										]
+									},
+									"tcin": "00:11:10.38",
+									"tcout": "00:11:19.77",
+									"tclevel": 2,
+									"label": "speaker 12"
+								},
+														{
+									"data": {
+										"text": [
+																				"en couveuse, il. Ces stations de l'opposition à travers le pays, c'est d'une circonscription sur cinq n'a pu ouvrir ses bureaux de vote. Impossible donc d'atteindre le quorum à la Chambre des représentants, selon certains spécialistes, l'annulation du vote est l'occasion pour les particuliers des si.",
+																				""
+										]
+									},
+									"tcin": "00:11:19.98",
+									"tcout": "00:11:40.66",
+									"tclevel": 2,
+									"label": "speaker 11"
+								},
+														{
+									"data": {
+										"text": [
+																				"à si le parti pourrait taille pouvait convaincre le Parti démocrate et le Parti tête de ce des prochaines élections opposant et ce serait conditionnée à laquelle on pourrait assister, ça me fait une écossais.",
+																				""
+										]
+									},
+									"tcin": "00:11:40.66",
+									"tcout": "00:11:51.93",
+									"tclevel": 2,
+									"label": "speaker 13"
+								},
+														{
+									"data": {
+										"text": [
+																				"Le mouvement de contestation pourrait débuter en novembre dernier, cette crise politique oppose d'un côté, les représentants des classes moyennes et des élites de l'autre, les chemises rouges, partisans de l'usine Shinawatra la première ministre depuis le début du mouvement, 23 personnes ont été tuées et plusieurs centaines d'autres blessés.",
+																				""
+										]
+									},
+									"tcin": "00:11:51.93",
+									"tcout": "00:12:13.30",
+									"tclevel": 2,
+									"label": "speaker 11"
+								},
+														{
+									"data": {
+										"text": [
+																				"Les familles des disparus de la Malaisie Airlines perdent patience presque deux semaines après la disparition de l'avion des radars toujours aucune certitude, même si des débris flottants près de l'australien ont été repérés par satellite face à l'absence d'explication en Chine, la rumeur folle d'un complot de la Malaisie unir.",
+																				""
+										]
+									},
+									"tcin": "00:12:13.30",
+									"tcout": "00:12:32.66",
+									"tclevel": 2,
+									"label": "audrey racine"
+								},
+														{
+									"data": {
+										"text": [
+																				"Hein. La recherche du Boeing de la mal déjà Airlines quatre avions militaires Australiens Néo-zélandais américains passent au peigne fin 23000 kilomètres carrés, une zone isolée à 2200 kilomètres au sud-ouest de la ville australienne de peur car jeudi comme des rats, fait part d'une nouvelle piste deux objets flottants par satellite au sud de l'océan Indien.",
+																				""
+										]
+									},
+									"tcin": "00:12:32.66",
+									"tcout": "00:12:56.01",
+									"tclevel": 2,
+									"label": "speaker 14"
+								},
+														{
+									"data": {
+										"text": [
+																				"Voulait pas une Ferrari DVD où et quand à",
+																				""
+										]
+									},
+									"tcin": "00:12:56.01",
+									"tcout": "00:12:59.93",
+									"tclevel": 2,
+									"label": "speaker 15"
+								},
+														{
+									"data": {
+										"text": [
+																				"nous faisons tout ce qui est en notre pouvoir pour essayer d'en savoir davantage sur ces débris",
+																				""
+										]
+									},
+									"tcin": "00:12:59.93",
+									"tcout": "00:13:04.67",
+									"tclevel": 2,
+									"label": "speaker 13"
+								},
+														{
+									"data": {
+										"text": [
+																				"est mais à voir, il",
+																				""
+										]
+									},
+									"tcin": "00:13:04.67",
+									"tcout": "00:13:08.25",
+									"tclevel": 2,
+									"label": "speaker 15"
+								},
+														{
+									"data": {
+										"text": [
+																				"pourrait simplement s'agir d'un container tombé d'un navire en Syrie n'a.",
+																				""
+										]
+									},
+									"tcin": "00:13:08.25",
+									"tcout": "00:13:13.54",
+									"tclevel": 2,
+									"label": "speaker 13"
+								},
+														{
+									"data": {
+										"text": [
+																				"Mmh. La Malaisie, partage cette prudence critiquée pour sa gestion de la crise et ses informations contradictoires, elle insiste sur la nécessité de vérifier la nature des objets repérés.",
+																				""
+										]
+									},
+									"tcin": "00:13:13.77",
+									"tcout": "00:13:24.33",
+									"tclevel": 2,
+									"label": "speaker 14"
+								},
+														{
+									"data": {
+										"text": [
+																				"Ah oui oui, tous les efforts sont faits pour localiser les objets détectés par images satellites, nous devons le redire observation, même si elles sont crédibles doivent encore être confirmés. Comme quoi. Les recherches",
+																				""
+										]
+									},
+									"tcin": "00:13:24.33",
+									"tcout": "00:13:35.19",
+									"tclevel": 2,
+									"label": "speaker 16"
+								},
+														{
+									"data": {
+										"text": [
+																				"mobilisent 26 pays donc deux couloirs allant du sud de l'océan Indien l'Asie centrale, au total 18 navires, 29 avions et 6 hélicoptères sont à pied d'oeuvre, l'inquiétude des familles de passagers, elle est",
+																				""
+										]
+									},
+									"tcin": "00:13:35.19",
+									"tcout": "00:13:47.69",
+									"tclevel": 2,
+									"label": "speaker 14"
+								},
+														{
+									"data": {
+										"text": [
+																				"toujours au. Si fort alors la à dans à la j'espère que mon fils est sain et que tous les passagers sont vivants, c'est bien à l'heure et que nous sommes. Les conditions",
+																				""
+										]
+									},
+									"tcin": "00:13:47.69",
+									"tcout": "00:13:57.73",
+									"tclevel": 2,
+									"label": "speaker 11"
+								},
+														{
+									"data": {
+										"text": [
+																				"météorologiques sont meilleurs ce vendredi et devrait faciliter les opérations de recherche.",
+																				""
+										]
+									},
+									"tcin": "00:13:57.73",
+									"tcout": "00:14:03.47",
+									"tclevel": 2,
+									"label": "speaker 14"
+								},
+														{
+									"data": {
+										"text": [
+																				"On termine avec du sport et le tirage au sort très attendu des quarts de finale de la Ligue des champions, vous allez voir les affiches le Paris Saint-Germain, seul club français en lice sera opposé et actuel si le choc aura lieu entre le tenant du titre, le Bayern de Munich et Manchester, les Mighty de puis match 100 pourcent espagnol espagnol entre le FC Barcelone de Leo Messi et l'Atletico Madrid et enfin le Real de Madrid, lui, rencontrera le Borussia Dortmund. Mmh. Voilà pour ce journal, on va passer au rappel de l'essentiel de l'actualité, l'Ukraine est donc encore au centre du sommet de l'Union. Européenne aujourd'hui à Bruxelles le pays à signer le volet politique de son accord d'adhésion. Par ailleurs, les 28 rallonger la liste des personnes a été sanctionnés pour leur rôle dans la crise en Crimée. Le président français s'est exprimé tout à l'heure à ce propos, vous avez pu suivre son intervention sur France 24 en France, la tribune de l'ancien président Nicolas Sarkozy dans Le Figaro fait réagir ce matin après sa mise sur écoute.",
+																				""
+										]
+									},
+									"tcin": "00:14:03.68",
+									"tcout": "00:14:59.99",
+									"tclevel": 2,
+									"label": "audrey racine"
+								}
+							]
+						}
+					},
+								{
+						"ArrayData": "null"
+					}
+				]
+			},
+			"tclevel": 0
+		},
+		{
+			"ArrayData": "null"
+		}
+	]
+}

@@ -1,0 +1,242 @@
+{
+    "tcOffset": 72000,
+    "player": {
+        "backwardsSrc": "https://front.wsmedia.sas.ina/wsmedia/flux:tv:FR2:20231010T200000:1800?type=stream&protocol=hls&rewind=1",
+        "src": "https://front.wsmedia.sas.ina/wsmedia/flux:tv:FR2:20231010T200000:1800?type=stream&protocol=hls",
+        "autoplay": false,
+        "hls": {
+            "enable": true,
+            "config": {
+                "maxBufferLength": 12,
+                "maxMaxBufferLength": 60,
+                "backBufferLength": 0,
+                "enableWorker": false,
+                "startPosition": 0
+            }
+        },
+        "crossOrigin": "anonymous",
+        "ratio": "16:9"
+    },
+    "thumbnail": {
+        "baseUrl": "https://front.wsmedia.sas.ina/wsmedia/flux:tv:FR2:20231010T200000:1800?type=download&category=thumbnail",
+        "enableThumbnail": true,
+        "tcParam": "start"
+    },
+    "dataSources": [
+        {
+            "url": "http://localhost:4203/metadata/metadata_transcription.json"
+        }
+    ],
+    "debug": false,
+    "logLevel": "info",
+    "pluginsConfiguration": {
+        "CONTROL_BAR-PLAYER": {
+            "data": [
+                {
+                    "label": "Barre de progression",
+                    "control": "progressBar",
+                    "priority": 1
+                },
+                {
+                    "label": "Télécharger",
+                    "control": "download",
+                    "icon": "download",
+                    "zone": 1,
+                    "order": 1,
+                    "data": {
+                        "href": "https://video.wsmedia.sas.ina/video/VZkQ67ZMHDVdrlX7NZjkWMNvN0u1Nb_3d2aBZrfg7oiwXc23p_JbD1ZZbOR9lpPnboN3HnQe2xqaayaoGw02Bp5498RMpCLhTbdCq4hwWPmlvZ5K-IMN0KHKcCMc-RWMdpcM0KoPWA4xDga_PokXIRDXchfHjLuXyJr9TEqQkEEamaHkbVCCe73v5vaCrgoOTffNLS1CMFzFmhYu9mYV-doDAbCL5X5KABRciXGt7xNsfFY_EyCcEEXHiJDRrs7nfZE15DGUAZLBH4N1uCsjKvrNzLoCS-FRYa47RNWYgd-IOijnZXLGU_V5T_bKNRvuqbw8b94SU4QElmyhxpMdak4ZEPbfsuebjFiue-dl60EjB9dQ9o3RKpWkUC76onuLbwBlFT0AERz4CKhB1ZX5YaSBXt7ZCU7704WRaiwWr-E9u1dZkYH9ekRr3qZKsd9-fuI-hoMkwmQXVBqUBnpItZq2WMkTml4J7RGBCYhY0bAZqSht98Z8jh0lW8-1PFlAjURGvmMS9fEC28aq5p5k-M6FU29iSSNhyjUos-Uz9U5qCHfWb8bCihqtaGxapNHk53uxo6HSlmcTxDilLRT3WUFBODWE5Ldbrw0I7vQnPF7nsjV8teewg_AkUUFExPp6vwDbQ2_C4XzX9c8QbwOvIbhnh2Ko1lTbhREHWt_CTavsEbXZZf_CcSLRjupgJCrhNthyWk-QmYfXdZgTlZ0qqwiAzIwlfZfPJ9AmxyuRQaTsYbTDUWzqAqRISHdbpfZ7jk9E7suDV8ldIicPmjoD1fdqAtTIWRZwISPYOHyc57s9RcVHXbdrA2c5aWthP0vH3Kkc90s-UxPZioc-ZFpKo5WdvGMhRryDKd8iqqEVmQp45QtxlgWoMwIA3AWR55E8bnnKw-uHwsOQgmW_kPzhUAXWwOA79ZxyxjiM-4mgxn170aHB9hw_VhXDy63dQj5YjhTCqUJNoeWvEGVSG52hzF1uZufoZx1Bk-cd0t6S_oo/sl_iv/kn3zyCEVDC7-fre6dqFj1w/sl_hm/"
+                    },
+                    "priority": 3,
+                    "key": "d"
+                },
+                {
+                    "label": "Playback rate custom steps",
+                    "control": "playbackRateCustomSteps"
+                },
+                {
+                    "label": "Playback rate steps",
+                    "control": "playbackRateSteps"
+                },
+                {
+                    "label": "Capture",
+                    "control": "download",
+                    "icon": "screenshot",
+                    "key": "c",
+                    "zone": 1,
+                    "order": 2,
+                    "data": {
+                        "tcParam": "start",
+                        "href": "https://image.wsmedia.sas.ina/thumbs/zVtVetjSvJWYpWylnrc6vipgliRbavflNs9k9xrbXT0xyBnIdPP2lQLC4pqCiL97bGlstLfg-iEpwjCTYXY3T-IEpnsmUiI20q9KdY8rk8elzpYJP2wI6lxoess9Nsfyib5J7WsIP0UPj88y41cZiPseWlUxm59HqNGrMQSZrPh5Amsvb7t8Yt-MVr1_ONPlTBadQ7QsUjE7isAk6tQs2TflIiNI0gDLzHdN7StrsvMx2FRQWPujjWInJLy-UmSGeq2SqoqFw59xtDY0wqYK92-QErL54aLXNiXjyWirCNivv5PSal4hjvSIuRhx1ZfZfhkUtVxboc76tU4Dba3cgxt5Xt4NLvcu2hZp3mZ2Yg15RmrdvtoNBwX5zuPHQP2avcFHfO1SdBXy3Er0k0V-UPb_IZ59rti95YGev_JtJDtiMcIN2-o2Ohn77W5FlLSkspRGev-KZ6gq00jRXU3nry9Cn6NctgJzS8PqQB-pff0FAioialt62-E7EhdRkOkn8t24AzuzX90xpvpG2-N3oZKZh5GZO58hovWu9phtB2IiUIbisvKz9xLMqcX6WvFhs2YLaUI5hc_VpFoMe53dJxPB6V5UxN40Ny9xOuKmZAkqMZmuPKQ-Mj6JVKxOP4UPN-QRUUvLwhvtIRsFHvi_kKVBu37aOd2fsilWp-iZ7FqT134RBg4fdGPzxbQ0Qe1jCuv2c1Wbcjmc__9-E-oWlBnLSt71rF90qtW1Dsv7on2TuQzC1FI_9t3wtkrzxR_PjBQFp2B3IcpIrKaaQK8mcytMJtSJhBU8vb4Tco31et59iYDeQZ8umxs6wl8PbLadU8ulv_prYnyHz80V4LCg-fs4d8Jx32jtr4uVjSkjhN3MOkyiWHi2AsHmhFV3soAttE_KyhKXouvc1SHRdQwj-vgOENmVbZkAeW-q3bpHMKPC4pp9vHJLaqQ0cYsIoOyv7hDPi-YCUNADcGVGJtflT1vhRv-suMJzOqOx2uVlrklwgt3qiTyLn7BGWbOwHDSi/sl_iv/3LLewdA78fJ9K1aSMxuZsg/sl_hm/"
+                    },
+                    "priority": 1
+                },
+                {
+                    "label": "Playback Rate",
+                    "control": "playbackRate",
+                    "zone": 1,
+                    "priority": 1,
+                    "order": 3
+                },
+                {
+                    "label": "Aller au début du média",
+                    "icon": "backward-start",
+                    "control": "backward-start",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Shift + ArrowLeft"
+                },
+                {
+                    "label": "Retour image par image",
+                    "icon": "backward-frame",
+                    "control": "backward-frame",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowLeft"
+                },
+                {
+                    "label": "Retour 5 secondes par 5 secondes",
+                    "icon": "backward-5seconds",
+                    "control": "backward-5seconds",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowLeft"
+                },
+                {
+                    "label": "Retour ralenti",
+                    "icon": "slow-backward",
+                    "control": "slow-backward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + Shift + ArrowLeft"
+                },
+                {
+                    "label": "Retour rapide",
+                    "icon": "backward",
+                    "control": "backward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + ArrowLeft"
+                },
+                {
+                    "label": "Pause / Lire",
+                    "control": "playPause",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "espace"
+                },
+                {
+                    "label": "Avance rapide",
+                    "icon": "forward",
+                    "control": "forward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + ArrowRight"
+                },
+                {
+                    "label": "Avance ralentie",
+                    "icon": "slow-forward",
+                    "control": "slow-forward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + Shift + ArrowRight"
+                },
+                {
+                    "label": "Avance 5 secondes par 5 secondes",
+                    "icon": "forward-5seconds",
+                    "control": "forward-5seconds",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowRight"
+                },
+                {
+                    "label": "Avance image par image",
+                    "icon": "forward-frame",
+                    "control": "forward-frame",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowRight"
+                },
+                {
+                    "label": "Aller à la fin du média",
+                    "icon": "forward-end",
+                    "control": "forward-end",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Shift + ArrowRight"
+                },
+                {
+                    "label": "Désactiver le son",
+                    "control": "volume",
+                    "zone": 3,
+                    "priority": 1,
+                    "key": "m",
+                    "data": {
+                        "channelMergeVolume": false,
+                        "channelMergerNode": "",
+                        "tracks": [
+                            {
+                                "track": 1,
+                                "label": "fre"
+                            },
+                            {
+                                "track": 2,
+                                "label": "fra"
+                            },
+                            {
+                                "track": 3,
+                                "label": "qaa"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "label": "Plein écran",
+                    "control": "toggleFullScreen",
+                    "icon": "fullscreen",
+                    "zone": 3,
+                    "priority": 1,
+                    "key": "f"
+                },
+                {
+                    "label": "Aspect ratio",
+                    "control": "aspectRatio",
+                    "zone": 3,
+                    "priority": 3,
+                    "key": "a"
+                },
+                {
+                    "label": "Figer",
+                    "control": "pinControls",
+                    "icon": "pin",
+                    "zone": 3,
+                    "priority": 1,
+                    "order": 1,
+                    "key": "g"
+                },
+                {
+                    "label": "Afficher les vitesses",
+                    "control": "displaySlider",
+                    "icon": "slider",
+                    "zone": 3,
+                    "priority": 2,
+                    "order": 1,
+                    "key": "v"
+                },
+                {
+                    "label": "Plus d'options",
+                    "control": "menu",
+                    "icon": "dots",
+                    "zone": 3,
+                    "key": "r"
+                }
+            ],
+            "pinnedControls": true
+        }
+    },
+    "displaySizes": {
+        "large": 900,
+        "medium": 700,
+        "small": 550,
+        "xsmall": 340
+    }
+}

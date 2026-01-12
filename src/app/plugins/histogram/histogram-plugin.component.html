@@ -1,0 +1,29 @@
+<div class="histogram-container {{displayState}}" [ngClass]="{'pinned' : pinned , 'pinnedControlbar' : pinnedControlbar}">
+    <div #histograms class="histograms">
+        <div class="histogram" *ngFor="let histogram of listOfHistograms" [ngClass]="{'zoom-histogram':histogram.zoom}"
+             [ngStyle]="{height:100/listOfHistograms?.length+'%'}" (click)="handleHistogramClick($event)">
+            <div class="label" *ngIf="histogram?.label !=''">{{histogram.label}}</div>
+            <div class="svg-content">
+                <svg xmlns="http://www.w3.org/2000/svg" [attr.viewBox]="histogram.viewBox" height="100%" width="100%" preserveAspectRatio="none">
+                    <path [attr.d]="histogram.paths[0]" fill="#34495E" stroke-opacity="1" stroke="#34495E"
+                          stroke-width="1"></path>
+                    <path [attr.d]="histogram.paths[1]" fill="#34495E" stroke-opacity="1"
+                          stroke="#34495E" stroke-width="1"></path>
+                </svg>
+            </div>
+            <div class="cursor"></div>
+        </div>
+        <div class="slider" #sliderElement (mouseenter)="active=true" (mouseleave)="active=false" *ngIf="withFocus">
+            <span class="drag-left" [ngClass]="{'active':active}">
+                <svg class="amalia-svg-drag-drop-size icon">
+                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
+                </svg>
+            </span>
+            <span class="drag-right" [ngClass]="{'active':active}">
+                <svg class="amalia-svg-drag-drop-size icon">
+                     <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#drag-drop'"></use>
+                </svg>
+            </span>
+        </div>
+    </div>
+</div>

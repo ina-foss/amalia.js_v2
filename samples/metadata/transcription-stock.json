@@ -1,0 +1,4220 @@
+{
+  "localisation": [
+    {
+      "sublocalisations": {
+        "localisation": [
+          {
+            "data": {
+              "text": [
+                "Hum ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Hum"
+                    ]
+                  },
+                  "tcin": "00:12:34.0180",
+                  "tcout": "00:12:34.0890",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:12:34.0890",
+                  "tcout": "00:12:34.0890",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:12:34.0180",
+            "tcout": "00:12:35.0190",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Les nazis avaient posté une sentinelle le senti , et je m' en souviens encore ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Les"
+                    ]
+                  },
+                  "tcin": "00:14:12.0030",
+                  "tcout": "00:14:12.0150",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "nazis"
+                    ]
+                  },
+                  "tcin": "00:14:12.0150",
+                  "tcout": "00:14:12.0430",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avaient"
+                    ]
+                  },
+                  "tcin": "00:14:12.0450",
+                  "tcout": "00:14:12.0520",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "posté"
+                    ]
+                  },
+                  "tcin": "00:14:12.0620",
+                  "tcout": "00:14:12.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "une"
+                    ]
+                  },
+                  "tcin": "00:14:12.0870",
+                  "tcout": "00:14:12.0960",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sentinelle"
+                    ]
+                  },
+                  "tcin": "00:14:13.0230",
+                  "tcout": "00:14:13.0370",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:14:14.0220",
+                  "tcout": "00:14:14.0320",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "senti"
+                    ]
+                  },
+                  "tcin": "00:14:14.0340",
+                  "tcout": "00:14:14.0530",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:14.0530",
+                  "tcout": "00:14:15.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "et"
+                    ]
+                  },
+                  "tcin": "00:14:15.0180",
+                  "tcout": "00:14:15.0280",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "je"
+                    ]
+                  },
+                  "tcin": "00:14:15.0280",
+                  "tcout": "00:14:15.0410",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "m'"
+                    ]
+                  },
+                  "tcin": "00:14:15.0410",
+                  "tcout": "00:14:15.0460",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "en"
+                    ]
+                  },
+                  "tcin": "00:14:15.0460",
+                  "tcout": "00:14:15.0500",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "souviens"
+                    ]
+                  },
+                  "tcin": "00:14:15.0500",
+                  "tcout": "00:14:15.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "encore"
+                    ]
+                  },
+                  "tcin": "00:14:15.0820",
+                  "tcout": "00:14:16.0200",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:14:16.0200",
+                  "tcout": "00:14:16.0200",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:14:11.0870",
+            "tcout": "00:14:16.0250",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Elle ne se sentit la maman Charlotte serré et et et me dire n' pas peur , il est gentil , monsieur , c'est ce moment -là , quand on en reparle justement les exclus la même absolument la même angoisse revient la même le même sentiment , c'est exact , on oublie curieusement le cerveau il n' oublie rien ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Elle"
+                    ]
+                  },
+                  "tcin": "00:14:17.0710",
+                  "tcout": "00:14:17.0840",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ne"
+                    ]
+                  },
+                  "tcin": "00:14:18.0900",
+                  "tcout": "00:14:18.0980",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "se"
+                    ]
+                  },
+                  "tcin": "00:14:18.0980",
+                  "tcout": "00:14:19.0080",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sentit"
+                    ]
+                  },
+                  "tcin": "00:14:19.0120",
+                  "tcout": "00:14:19.0380",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:14:19.0490",
+                  "tcout": "00:14:19.0560",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "maman"
+                    ]
+                  },
+                  "tcin": "00:14:19.0560",
+                  "tcout": "00:14:19.0850",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Charlotte"
+                    ]
+                  },
+                  "tcin": "00:14:20.0020",
+                  "tcout": "00:14:20.0400",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "serré"
+                    ]
+                  },
+                  "tcin": "00:14:20.0520",
+                  "tcout": "00:14:20.0850",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "et"
+                    ]
+                  },
+                  "tcin": "00:14:21.0760",
+                  "tcout": "00:14:21.0890",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "et"
+                    ]
+                  },
+                  "tcin": "00:14:22.0000",
+                  "tcout": "00:14:22.0170",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "et"
+                    ]
+                  },
+                  "tcin": "00:14:22.0420",
+                  "tcout": "00:14:22.0500",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "me"
+                    ]
+                  },
+                  "tcin": "00:14:22.0570",
+                  "tcout": "00:14:22.0700",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "dire"
+                    ]
+                  },
+                  "tcin": "00:14:22.0700",
+                  "tcout": "00:14:23.0010",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "n'"
+                    ]
+                  },
+                  "tcin": "00:14:23.0560",
+                  "tcout": "00:14:23.0640",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pas"
+                    ]
+                  },
+                  "tcin": "00:14:23.0710",
+                  "tcout": "00:14:23.0860",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "peur"
+                    ]
+                  },
+                  "tcin": "00:14:23.0900",
+                  "tcout": "00:14:24.0090",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:24.0090",
+                  "tcout": "00:14:24.0090",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:14:24.0090",
+                  "tcout": "00:14:24.0160",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "est"
+                    ]
+                  },
+                  "tcin": "00:14:24.0190",
+                  "tcout": "00:14:24.0230",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "gentil"
+                    ]
+                  },
+                  "tcin": "00:14:24.0230",
+                  "tcout": "00:14:24.0440",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:24.0440",
+                  "tcout": "00:14:24.0750",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "monsieur"
+                    ]
+                  },
+                  "tcin": "00:14:24.0750",
+                  "tcout": "00:14:24.0910",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:24.0910",
+                  "tcout": "00:14:25.0650",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "c'est"
+                    ]
+                  },
+                  "tcin": "00:14:25.0650",
+                  "tcout": "00:14:26.0000",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ce"
+                    ]
+                  },
+                  "tcin": "00:14:26.0020",
+                  "tcout": "00:14:26.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "moment"
+                    ]
+                  },
+                  "tcin": "00:14:26.0250",
+                  "tcout": "00:14:26.0540",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "-là"
+                    ]
+                  },
+                  "tcin": "00:14:26.0540",
+                  "tcout": "00:14:26.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:26.0820",
+                  "tcout": "00:14:26.0850",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "quand"
+                    ]
+                  },
+                  "tcin": "00:14:26.0850",
+                  "tcout": "00:14:27.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "on"
+                    ]
+                  },
+                  "tcin": "00:14:27.0070",
+                  "tcout": "00:14:27.0210",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "en"
+                    ]
+                  },
+                  "tcin": "00:14:27.0210",
+                  "tcout": "00:14:27.0260",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "reparle"
+                    ]
+                  },
+                  "tcin": "00:14:27.0260",
+                  "tcout": "00:14:27.0690",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "justement"
+                    ]
+                  },
+                  "tcin": "00:14:27.0690",
+                  "tcout": "00:14:27.0950",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:14:28.0440",
+                  "tcout": "00:14:28.0540",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "exclus"
+                    ]
+                  },
+                  "tcin": "00:14:28.0540",
+                  "tcout": "00:14:28.0710",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:14:29.0020",
+                  "tcout": "00:14:29.0110",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "même"
+                    ]
+                  },
+                  "tcin": "00:14:29.0140",
+                  "tcout": "00:14:29.0390",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "absolument"
+                    ]
+                  },
+                  "tcin": "00:14:30.0050",
+                  "tcout": "00:14:30.0640",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:14:30.0660",
+                  "tcout": "00:14:30.0750",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "même"
+                    ]
+                  },
+                  "tcin": "00:14:30.0750",
+                  "tcout": "00:14:30.0970",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "angoisse"
+                    ]
+                  },
+                  "tcin": "00:14:30.0970",
+                  "tcout": "00:14:31.0310",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "revient"
+                    ]
+                  },
+                  "tcin": "00:14:31.0310",
+                  "tcout": "00:14:31.0650",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:14:31.0750",
+                  "tcout": "00:14:31.0840",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "même"
+                    ]
+                  },
+                  "tcin": "00:14:31.0840",
+                  "tcout": "00:14:32.0100",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:14:32.0190",
+                  "tcout": "00:14:32.0270",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "même"
+                    ]
+                  },
+                  "tcin": "00:14:32.0270",
+                  "tcout": "00:14:32.0450",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sentiment"
+                    ]
+                  },
+                  "tcin": "00:14:32.0560",
+                  "tcout": "00:14:32.0940",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:32.0940",
+                  "tcout": "00:14:33.0360",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "c'est"
+                    ]
+                  },
+                  "tcin": "00:14:33.0360",
+                  "tcout": "00:14:33.0590",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "exact"
+                    ]
+                  },
+                  "tcin": "00:14:33.0590",
+                  "tcout": "00:14:33.0920",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:33.0920",
+                  "tcout": "00:14:34.0240",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "on"
+                    ]
+                  },
+                  "tcin": "00:14:34.0240",
+                  "tcout": "00:14:34.0370",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "oublie"
+                    ]
+                  },
+                  "tcin": "00:14:34.0400",
+                  "tcout": "00:14:34.0610",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "curieusement"
+                    ]
+                  },
+                  "tcin": "00:14:34.0900",
+                  "tcout": "00:14:35.0440",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:14:35.0440",
+                  "tcout": "00:14:35.0550",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "cerveau"
+                    ]
+                  },
+                  "tcin": "00:14:35.0550",
+                  "tcout": "00:14:35.0940",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:14:36.0230",
+                  "tcout": "00:14:36.0270",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "n'"
+                    ]
+                  },
+                  "tcin": "00:14:36.0270",
+                  "tcout": "00:14:36.0380",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "oublie"
+                    ]
+                  },
+                  "tcin": "00:14:36.0380",
+                  "tcout": "00:14:36.0600",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "rien"
+                    ]
+                  },
+                  "tcin": "00:14:36.0730",
+                  "tcout": "00:14:36.0980",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:14:36.0980",
+                  "tcout": "00:14:36.0980",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:14:17.0710",
+            "tcout": "00:14:37.0280",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Politique , sachez d' abord que le numéro deux du Front national Bruno Gollnisch , a été condamné à trois mois de prison avec sursis pour des propos sur les chambres à gaz le 11 octobre 2004 , il avait déclaré , je cite : ne pas remettre en cause les déportations ni les millions de morts des camps nazis , avant d' ajouter : quant à savoir la façon dont les gens sont morts , ce débat doit avoir lieu . Il avait ensuite indiqué qu' il le nie et pas les chambres à gaz , mais qu' il souhaitait que les historiens puissent en discuter librement , Bruno Gollnisch , condamne , je cite encore une dérive de la police de la pensée , il indique qu' il va faire appel encore un couac , je vous le disais dans la campagne de Ségolène Royal , qui a suspendu Arnaud Montebourg de ses fonctions de porte- parole boutade ou dérapage , le député avait estimé que François Hollande était le seul défaut de la candidate . Alexandre Kara , Diane Richard ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Politique"
+                    ]
+                  },
+                  "tcin": "00:14:49.0200",
+                  "tcout": "00:14:49.0660",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:49.0660",
+                  "tcout": "00:14:49.0660",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sachez"
+                    ]
+                  },
+                  "tcin": "00:14:49.0660",
+                  "tcout": "00:14:50.0060",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "d'"
+                    ]
+                  },
+                  "tcin": "00:14:50.0350",
+                  "tcout": "00:14:50.0420",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "abord"
+                    ]
+                  },
+                  "tcin": "00:14:50.0420",
+                  "tcout": "00:14:50.0660",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "que"
+                    ]
+                  },
+                  "tcin": "00:14:50.0660",
+                  "tcout": "00:14:50.0760",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:14:50.0760",
+                  "tcout": "00:14:50.0870",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "numéro"
+                    ]
+                  },
+                  "tcin": "00:14:50.0870",
+                  "tcout": "00:14:51.0260",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "deux"
+                    ]
+                  },
+                  "tcin": "00:14:51.0260",
+                  "tcout": "00:14:51.0540",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "du"
+                    ]
+                  },
+                  "tcin": "00:14:51.0650",
+                  "tcout": "00:14:51.0830",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Front"
+                    ]
+                  },
+                  "tcin": "00:14:51.0830",
+                  "tcout": "00:14:52.0010",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "national"
+                    ]
+                  },
+                  "tcin": "00:14:52.0010",
+                  "tcout": "00:14:52.0480",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Bruno"
+                    ]
+                  },
+                  "tcin": "00:14:52.0480",
+                  "tcout": "00:14:52.0760",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Gollnisch"
+                    ]
+                  },
+                  "tcin": "00:14:52.0840",
+                  "tcout": "00:14:53.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:53.0180",
+                  "tcout": "00:14:53.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "a"
+                    ]
+                  },
+                  "tcin": "00:14:53.0180",
+                  "tcout": "00:14:53.0210",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "été"
+                    ]
+                  },
+                  "tcin": "00:14:53.0210",
+                  "tcout": "00:14:53.0410",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "condamné"
+                    ]
+                  },
+                  "tcin": "00:14:53.0410",
+                  "tcout": "00:14:53.0780",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:14:53.0780",
+                  "tcout": "00:14:53.0840",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "trois"
+                    ]
+                  },
+                  "tcin": "00:14:53.0840",
+                  "tcout": "00:14:54.0080",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "mois"
+                    ]
+                  },
+                  "tcin": "00:14:54.0080",
+                  "tcout": "00:14:54.0270",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:14:54.0270",
+                  "tcout": "00:14:54.0330",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "prison"
+                    ]
+                  },
+                  "tcin": "00:14:54.0330",
+                  "tcout": "00:14:54.0710",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avec"
+                    ]
+                  },
+                  "tcin": "00:14:54.0710",
+                  "tcout": "00:14:54.0910",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sursis"
+                    ]
+                  },
+                  "tcin": "00:14:54.0910",
+                  "tcout": "00:14:55.0340",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pour"
+                    ]
+                  },
+                  "tcin": "00:14:55.0340",
+                  "tcout": "00:14:55.0550",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "des"
+                    ]
+                  },
+                  "tcin": "00:14:55.0550",
+                  "tcout": "00:14:55.0660",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "propos"
+                    ]
+                  },
+                  "tcin": "00:14:55.0660",
+                  "tcout": "00:14:56.0100",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sur"
+                    ]
+                  },
+                  "tcin": "00:14:56.0100",
+                  "tcout": "00:14:56.0330",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:14:56.0330",
+                  "tcout": "00:14:56.0430",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "chambres"
+                    ]
+                  },
+                  "tcin": "00:14:56.0430",
+                  "tcout": "00:14:56.0870",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:14:56.0870",
+                  "tcout": "00:14:56.0920",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "gaz"
+                    ]
+                  },
+                  "tcin": "00:14:56.0920",
+                  "tcout": "00:14:57.0400",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:14:57.0770",
+                  "tcout": "00:14:57.0880",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "11"
+                    ]
+                  },
+                  "tcin": "00:14:57.0880",
+                  "tcout": "00:14:58.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "octobre"
+                    ]
+                  },
+                  "tcin": "00:14:58.0070",
+                  "tcout": "00:14:58.0520",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "2004"
+                    ]
+                  },
+                  "tcin": "00:14:58.0520",
+                  "tcout": "00:14:59.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:59.0070",
+                  "tcout": "00:14:59.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:14:59.0070",
+                  "tcout": "00:14:59.0150",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avait"
+                    ]
+                  },
+                  "tcin": "00:14:59.0180",
+                  "tcout": "00:14:59.0290",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "déclaré"
+                    ]
+                  },
+                  "tcin": "00:14:59.0290",
+                  "tcout": "00:14:59.0690",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:14:59.0690",
+                  "tcout": "00:14:59.0690",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "je"
+                    ]
+                  },
+                  "tcin": "00:14:59.0690",
+                  "tcout": "00:14:59.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "cite"
+                    ]
+                  },
+                  "tcin": "00:14:59.0820",
+                  "tcout": "00:15:00.0140",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ":"
+                    ]
+                  },
+                  "tcin": "00:15:00.0140",
+                  "tcout": "00:15:00.0170",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ne"
+                    ]
+                  },
+                  "tcin": "00:15:00.0170",
+                  "tcout": "00:15:00.0280",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pas"
+                    ]
+                  },
+                  "tcin": "00:15:00.0280",
+                  "tcout": "00:15:00.0470",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "remettre"
+                    ]
+                  },
+                  "tcin": "00:15:00.0470",
+                  "tcout": "00:15:00.0840",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "en"
+                    ]
+                  },
+                  "tcin": "00:15:00.0840",
+                  "tcout": "00:15:00.0910",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "cause"
+                    ]
+                  },
+                  "tcin": "00:15:00.0990",
+                  "tcout": "00:15:01.0300",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:15:01.0300",
+                  "tcout": "00:15:01.0400",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "déportations"
+                    ]
+                  },
+                  "tcin": "00:15:01.0550",
+                  "tcout": "00:15:02.0160",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ni"
+                    ]
+                  },
+                  "tcin": "00:15:02.0160",
+                  "tcout": "00:15:02.0290",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:15:02.0290",
+                  "tcout": "00:15:02.0400",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "millions"
+                    ]
+                  },
+                  "tcin": "00:15:02.0400",
+                  "tcout": "00:15:02.0750",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:15:02.0750",
+                  "tcout": "00:15:02.0830",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "morts"
+                    ]
+                  },
+                  "tcin": "00:15:02.0880",
+                  "tcout": "00:15:03.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "des"
+                    ]
+                  },
+                  "tcin": "00:15:03.0070",
+                  "tcout": "00:15:03.0200",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "camps"
+                    ]
+                  },
+                  "tcin": "00:15:03.0200",
+                  "tcout": "00:15:03.0390",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "nazis"
+                    ]
+                  },
+                  "tcin": "00:15:03.0390",
+                  "tcout": "00:15:03.0690",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:03.0690",
+                  "tcout": "00:15:04.0100",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avant"
+                    ]
+                  },
+                  "tcin": "00:15:04.0100",
+                  "tcout": "00:15:04.0380",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "d'"
+                    ]
+                  },
+                  "tcin": "00:15:04.0380",
+                  "tcout": "00:15:04.0440",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ajouter"
+                    ]
+                  },
+                  "tcin": "00:15:04.0440",
+                  "tcout": "00:15:04.0960",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ":"
+                    ]
+                  },
+                  "tcin": "00:15:04.0960",
+                  "tcout": "00:15:05.0470",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "quant"
+                    ]
+                  },
+                  "tcin": "00:15:05.0470",
+                  "tcout": "00:15:05.0750",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:15:05.0750",
+                  "tcout": "00:15:05.0810",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "savoir"
+                    ]
+                  },
+                  "tcin": "00:15:05.0810",
+                  "tcout": "00:15:06.0450",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:15:06.0450",
+                  "tcout": "00:15:06.0520",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "façon"
+                    ]
+                  },
+                  "tcin": "00:15:06.0540",
+                  "tcout": "00:15:06.0960",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "dont"
+                    ]
+                  },
+                  "tcin": "00:15:06.0960",
+                  "tcout": "00:15:07.0120",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:15:07.0120",
+                  "tcout": "00:15:07.0230",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "gens"
+                    ]
+                  },
+                  "tcin": "00:15:07.0230",
+                  "tcout": "00:15:07.0370",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sont"
+                    ]
+                  },
+                  "tcin": "00:15:07.0400",
+                  "tcout": "00:15:07.0570",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "morts"
+                    ]
+                  },
+                  "tcin": "00:15:07.0620",
+                  "tcout": "00:15:07.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:07.0820",
+                  "tcout": "00:15:07.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ce"
+                    ]
+                  },
+                  "tcin": "00:15:07.0820",
+                  "tcout": "00:15:07.0920",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "débat"
+                    ]
+                  },
+                  "tcin": "00:15:07.0940",
+                  "tcout": "00:15:08.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "doit"
+                    ]
+                  },
+                  "tcin": "00:15:08.0230",
+                  "tcout": "00:15:08.0420",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avoir"
+                    ]
+                  },
+                  "tcin": "00:15:08.0420",
+                  "tcout": "00:15:08.0680",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "lieu"
+                    ]
+                  },
+                  "tcin": "00:15:08.0680",
+                  "tcout": "00:15:08.0940",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:15:08.0940",
+                  "tcout": "00:15:09.0290",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Il"
+                    ]
+                  },
+                  "tcin": "00:15:09.0290",
+                  "tcout": "00:15:09.0380",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avait"
+                    ]
+                  },
+                  "tcin": "00:15:09.0400",
+                  "tcout": "00:15:09.0570",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ensuite"
+                    ]
+                  },
+                  "tcin": "00:15:09.0570",
+                  "tcout": "00:15:09.0780",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "indiqué"
+                    ]
+                  },
+                  "tcin": "00:15:09.0830",
+                  "tcout": "00:15:10.0130",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "qu'"
+                    ]
+                  },
+                  "tcin": "00:15:10.0130",
+                  "tcout": "00:15:10.0190",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:15:10.0190",
+                  "tcout": "00:15:10.0260",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:15:10.0280",
+                  "tcout": "00:15:10.0330",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "nie"
+                    ]
+                  },
+                  "tcin": "00:15:10.0360",
+                  "tcout": "00:15:10.0580",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "et"
+                    ]
+                  },
+                  "tcin": "00:15:10.0580",
+                  "tcout": "00:15:10.0640",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pas"
+                    ]
+                  },
+                  "tcin": "00:15:10.0640",
+                  "tcout": "00:15:10.0970",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:15:11.0230",
+                  "tcout": "00:15:11.0350",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "chambres"
+                    ]
+                  },
+                  "tcin": "00:15:11.0350",
+                  "tcout": "00:15:11.0630",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:15:11.0630",
+                  "tcout": "00:15:11.0670",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "gaz"
+                    ]
+                  },
+                  "tcin": "00:15:11.0670",
+                  "tcout": "00:15:11.0930",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:11.0930",
+                  "tcout": "00:15:11.0930",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "mais"
+                    ]
+                  },
+                  "tcin": "00:15:11.0930",
+                  "tcout": "00:15:12.0020",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "qu'"
+                    ]
+                  },
+                  "tcin": "00:15:12.0040",
+                  "tcout": "00:15:12.0100",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:15:12.0100",
+                  "tcout": "00:15:12.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "souhaitait"
+                    ]
+                  },
+                  "tcin": "00:15:12.0180",
+                  "tcout": "00:15:12.0410",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "que"
+                    ]
+                  },
+                  "tcin": "00:15:12.0470",
+                  "tcout": "00:15:12.0550",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:15:12.0550",
+                  "tcout": "00:15:12.0730",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "historiens"
+                    ]
+                  },
+                  "tcin": "00:15:12.0730",
+                  "tcout": "00:15:13.0190",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "puissent"
+                    ]
+                  },
+                  "tcin": "00:15:13.0250",
+                  "tcout": "00:15:13.0500",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "en"
+                    ]
+                  },
+                  "tcin": "00:15:13.0500",
+                  "tcout": "00:15:13.0570",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "discuter"
+                    ]
+                  },
+                  "tcin": "00:15:13.0570",
+                  "tcout": "00:15:14.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "librement"
+                    ]
+                  },
+                  "tcin": "00:15:14.0070",
+                  "tcout": "00:15:14.0600",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:14.0600",
+                  "tcout": "00:15:15.0050",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Bruno"
+                    ]
+                  },
+                  "tcin": "00:15:15.0050",
+                  "tcout": "00:15:15.0260",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Gollnisch"
+                    ]
+                  },
+                  "tcin": "00:15:15.0260",
+                  "tcout": "00:15:15.0530",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:15.0530",
+                  "tcout": "00:15:15.0600",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "condamne"
+                    ]
+                  },
+                  "tcin": "00:15:15.0600",
+                  "tcout": "00:15:16.0080",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:16.0080",
+                  "tcout": "00:15:16.0240",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "je"
+                    ]
+                  },
+                  "tcin": "00:15:16.0240",
+                  "tcout": "00:15:16.0380",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "cite"
+                    ]
+                  },
+                  "tcin": "00:15:16.0380",
+                  "tcout": "00:15:16.0600",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "encore"
+                    ]
+                  },
+                  "tcin": "00:15:16.0600",
+                  "tcout": "00:15:16.0900",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "une"
+                    ]
+                  },
+                  "tcin": "00:15:16.0900",
+                  "tcout": "00:15:17.0020",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "dérive"
+                    ]
+                  },
+                  "tcin": "00:15:17.0020",
+                  "tcout": "00:15:17.0560",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:15:17.0680",
+                  "tcout": "00:15:17.0880",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:15:17.0880",
+                  "tcout": "00:15:18.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "police"
+                    ]
+                  },
+                  "tcin": "00:15:18.0210",
+                  "tcout": "00:15:18.0670",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:15:18.0690",
+                  "tcout": "00:15:18.0770",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:15:18.0770",
+                  "tcout": "00:15:18.0910",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pensée"
+                    ]
+                  },
+                  "tcin": "00:15:19.0030",
+                  "tcout": "00:15:19.0510",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:19.0510",
+                  "tcout": "00:15:19.0540",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:15:19.0540",
+                  "tcout": "00:15:19.0710",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "indique"
+                    ]
+                  },
+                  "tcin": "00:15:19.0710",
+                  "tcout": "00:15:20.0030",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "qu'"
+                    ]
+                  },
+                  "tcin": "00:15:20.0040",
+                  "tcout": "00:15:20.0090",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:15:20.0090",
+                  "tcout": "00:15:20.0200",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "va"
+                    ]
+                  },
+                  "tcin": "00:15:20.0200",
+                  "tcout": "00:15:20.0320",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "faire"
+                    ]
+                  },
+                  "tcin": "00:15:20.0370",
+                  "tcout": "00:15:20.0570",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "appel"
+                    ]
+                  },
+                  "tcin": "00:15:20.0570",
+                  "tcout": "00:15:21.0010",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "encore"
+                    ]
+                  },
+                  "tcin": "00:15:21.0800",
+                  "tcout": "00:15:22.0100",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "un"
+                    ]
+                  },
+                  "tcin": "00:15:22.0100",
+                  "tcout": "00:15:22.0180",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "couac"
+                    ]
+                  },
+                  "tcin": "00:15:22.0360",
+                  "tcout": "00:15:22.0680",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:22.0680",
+                  "tcout": "00:15:22.0710",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "je"
+                    ]
+                  },
+                  "tcin": "00:15:22.0710",
+                  "tcout": "00:15:22.0890",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "vous"
+                    ]
+                  },
+                  "tcin": "00:15:22.0890",
+                  "tcout": "00:15:22.0970",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:15:22.0970",
+                  "tcout": "00:15:23.0050",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "disais"
+                    ]
+                  },
+                  "tcin": "00:15:23.0050",
+                  "tcout": "00:15:23.0330",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "dans"
+                    ]
+                  },
+                  "tcin": "00:15:23.0330",
+                  "tcout": "00:15:23.0440",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:15:23.0440",
+                  "tcout": "00:15:23.0550",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "campagne"
+                    ]
+                  },
+                  "tcin": "00:15:23.0550",
+                  "tcout": "00:15:23.0880",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:15:23.0880",
+                  "tcout": "00:15:24.0000",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Ségolène"
+                    ]
+                  },
+                  "tcin": "00:15:24.0000",
+                  "tcout": "00:15:24.0390",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Royal"
+                    ]
+                  },
+                  "tcin": "00:15:24.0390",
+                  "tcout": "00:15:24.0810",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:24.0810",
+                  "tcout": "00:15:24.0810",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "qui"
+                    ]
+                  },
+                  "tcin": "00:15:24.0810",
+                  "tcout": "00:15:24.0970",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "a"
+                    ]
+                  },
+                  "tcin": "00:15:24.0970",
+                  "tcout": "00:15:25.0060",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "suspendu"
+                    ]
+                  },
+                  "tcin": "00:15:25.0060",
+                  "tcout": "00:15:25.0980",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Arnaud"
+                    ]
+                  },
+                  "tcin": "00:15:26.0020",
+                  "tcout": "00:15:26.0200",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Montebourg"
+                    ]
+                  },
+                  "tcin": "00:15:26.0290",
+                  "tcout": "00:15:26.0670",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:15:26.0670",
+                  "tcout": "00:15:26.0790",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ses"
+                    ]
+                  },
+                  "tcin": "00:15:26.0790",
+                  "tcout": "00:15:26.0940",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "fonctions"
+                    ]
+                  },
+                  "tcin": "00:15:26.0940",
+                  "tcout": "00:15:27.0330",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:15:27.0330",
+                  "tcout": "00:15:27.0450",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "porte-"
+                    ]
+                  },
+                  "tcin": "00:15:27.0530",
+                  "tcout": "00:15:27.0860",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "parole"
+                    ]
+                  },
+                  "tcin": "00:15:27.0860",
+                  "tcout": "00:15:28.0310",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "boutade"
+                    ]
+                  },
+                  "tcin": "00:15:28.0810",
+                  "tcout": "00:15:29.0360",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ou"
+                    ]
+                  },
+                  "tcin": "00:15:29.0390",
+                  "tcout": "00:15:29.0540",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "dérapage"
+                    ]
+                  },
+                  "tcin": "00:15:29.0540",
+                  "tcout": "00:15:30.0220",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:30.0220",
+                  "tcout": "00:15:30.0220",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:15:30.0220",
+                  "tcout": "00:15:30.0360",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "député"
+                    ]
+                  },
+                  "tcin": "00:15:30.0360",
+                  "tcout": "00:15:30.0840",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avait"
+                    ]
+                  },
+                  "tcin": "00:15:30.0960",
+                  "tcout": "00:15:31.0220",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "estimé"
+                    ]
+                  },
+                  "tcin": "00:15:31.0220",
+                  "tcout": "00:15:31.0750",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "que"
+                    ]
+                  },
+                  "tcin": "00:15:31.0920",
+                  "tcout": "00:15:32.0050",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "François"
+                    ]
+                  },
+                  "tcin": "00:15:32.0050",
+                  "tcout": "00:15:32.0460",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Hollande"
+                    ]
+                  },
+                  "tcin": "00:15:32.0460",
+                  "tcout": "00:15:32.0810",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "était"
+                    ]
+                  },
+                  "tcin": "00:15:32.0890",
+                  "tcout": "00:15:33.0330",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:15:33.0570",
+                  "tcout": "00:15:33.0730",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "seul"
+                    ]
+                  },
+                  "tcin": "00:15:33.0730",
+                  "tcout": "00:15:34.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "défaut"
+                    ]
+                  },
+                  "tcin": "00:15:34.0070",
+                  "tcout": "00:15:34.0510",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:15:34.0560",
+                  "tcout": "00:15:34.0670",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:15:34.0670",
+                  "tcout": "00:15:34.0790",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "candidate"
+                    ]
+                  },
+                  "tcin": "00:15:34.0790",
+                  "tcout": "00:15:35.0330",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:15:35.0330",
+                  "tcout": "00:15:35.0650",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Alexandre"
+                    ]
+                  },
+                  "tcin": "00:15:35.0650",
+                  "tcout": "00:15:35.0990",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Kara"
+                    ]
+                  },
+                  "tcin": "00:15:36.0080",
+                  "tcout": "00:15:36.0260",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:36.0260",
+                  "tcout": "00:15:36.0300",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Diane"
+                    ]
+                  },
+                  "tcin": "00:15:36.0300",
+                  "tcout": "00:15:36.0480",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Richard"
+                    ]
+                  },
+                  "tcin": "00:15:36.0530",
+                  "tcout": "00:15:36.0760",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:15:36.0760",
+                  "tcout": "00:15:36.0760",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:14:48.0930",
+            "tcout": "00:15:36.0800",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Ségolène Royal n' a qu' un seul défaut , c'est son compagnon ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Ségolène"
+                    ]
+                  },
+                  "tcin": "00:15:45.0480",
+                  "tcout": "00:15:45.0900",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Royal"
+                    ]
+                  },
+                  "tcin": "00:15:45.0900",
+                  "tcout": "00:15:46.0150",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "n'"
+                    ]
+                  },
+                  "tcin": "00:15:46.0210",
+                  "tcout": "00:15:46.0240",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "a"
+                    ]
+                  },
+                  "tcin": "00:15:46.0260",
+                  "tcout": "00:15:46.0320",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "qu'"
+                    ]
+                  },
+                  "tcin": "00:15:46.0340",
+                  "tcout": "00:15:46.0400",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "un"
+                    ]
+                  },
+                  "tcin": "00:15:46.0410",
+                  "tcout": "00:15:46.0460",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "seul"
+                    ]
+                  },
+                  "tcin": "00:15:46.0460",
+                  "tcout": "00:15:46.0680",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "défaut"
+                    ]
+                  },
+                  "tcin": "00:15:46.0680",
+                  "tcout": "00:15:47.0110",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:15:47.0110",
+                  "tcout": "00:15:48.0090",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "c'est"
+                    ]
+                  },
+                  "tcin": "00:15:48.0090",
+                  "tcout": "00:15:48.0190",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "son"
+                    ]
+                  },
+                  "tcin": "00:15:48.0220",
+                  "tcout": "00:15:48.0350",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "compagnon"
+                    ]
+                  },
+                  "tcin": "00:15:48.0350",
+                  "tcout": "00:15:48.0710",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:15:48.0710",
+                  "tcout": "00:15:48.0710",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:15:45.0480",
+            "tcout": "00:15:49.0010",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "850000 euros , les nouveaux propriétaires eux paieront donc peut-être l' impôt de solidarité sur la fortune , dont le seuil est fixé à 760000 euros ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "850000"
+                    ]
+                  },
+                  "tcin": "00:18:15.0230",
+                  "tcout": "00:18:15.0870",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "euros"
+                    ]
+                  },
+                  "tcin": "00:18:15.0880",
+                  "tcout": "00:18:16.0520",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:18:16.0520",
+                  "tcout": "00:18:16.0520",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:18:16.0520",
+                  "tcout": "00:18:16.0660",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "nouveaux"
+                    ]
+                  },
+                  "tcin": "00:18:16.0660",
+                  "tcout": "00:18:16.0890",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "propriétaires"
+                    ]
+                  },
+                  "tcin": "00:18:16.0890",
+                  "tcout": "00:18:17.0620",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "eux"
+                    ]
+                  },
+                  "tcin": "00:18:17.0690",
+                  "tcout": "00:18:17.0880",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "paieront"
+                    ]
+                  },
+                  "tcin": "00:18:18.0010",
+                  "tcout": "00:18:18.0340",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "donc"
+                    ]
+                  },
+                  "tcin": "00:18:18.0340",
+                  "tcout": "00:18:18.0570",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "peut-être"
+                    ]
+                  },
+                  "tcin": "00:18:18.0620",
+                  "tcout": "00:18:19.0170",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "l'"
+                    ]
+                  },
+                  "tcin": "00:18:19.0170",
+                  "tcout": "00:18:19.0240",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "impôt"
+                    ]
+                  },
+                  "tcin": "00:18:19.0240",
+                  "tcout": "00:18:19.0540",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:18:19.0540",
+                  "tcout": "00:18:19.0690",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "solidarité"
+                    ]
+                  },
+                  "tcin": "00:18:19.0690",
+                  "tcout": "00:18:20.0300",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "sur"
+                    ]
+                  },
+                  "tcin": "00:18:20.0450",
+                  "tcout": "00:18:20.0600",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:18:20.0600",
+                  "tcout": "00:18:20.0710",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "fortune"
+                    ]
+                  },
+                  "tcin": "00:18:20.0710",
+                  "tcout": "00:18:21.0250",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:18:21.0250",
+                  "tcout": "00:18:21.0640",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "dont"
+                    ]
+                  },
+                  "tcin": "00:18:21.0640",
+                  "tcout": "00:18:21.0760",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:18:21.0760",
+                  "tcout": "00:18:21.0880",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "seuil"
+                    ]
+                  },
+                  "tcin": "00:18:21.0880",
+                  "tcout": "00:18:22.0150",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "est"
+                    ]
+                  },
+                  "tcin": "00:18:22.0150",
+                  "tcout": "00:18:22.0200",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "fixé"
+                    ]
+                  },
+                  "tcin": "00:18:22.0280",
+                  "tcout": "00:18:22.0590",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:18:22.0590",
+                  "tcout": "00:18:22.0650",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "760000"
+                    ]
+                  },
+                  "tcin": "00:18:22.0650",
+                  "tcout": "00:18:23.0300",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "euros"
+                    ]
+                  },
+                  "tcin": "00:18:23.0300",
+                  "tcout": "00:18:23.0950",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:18:23.0990",
+                  "tcout": "00:18:23.0990",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:18:15.0140",
+            "tcout": "00:18:24.0060",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Au coeur des débats de 4 jours la légitime défense n' a pas été retenu par le tribunal , conformément aux réquisitions du parquet , il a prononcé une peine dite pédagogique ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Au"
+                    ]
+                  },
+                  "tcin": "00:22:39.0310",
+                  "tcout": "00:22:39.0500",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "coeur"
+                    ]
+                  },
+                  "tcin": "00:22:39.0500",
+                  "tcout": "00:22:39.0730",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "des"
+                    ]
+                  },
+                  "tcin": "00:22:39.0730",
+                  "tcout": "00:22:39.0850",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "débats"
+                    ]
+                  },
+                  "tcin": "00:22:39.0850",
+                  "tcout": "00:22:40.0070",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:22:40.0120",
+                  "tcout": "00:22:40.0240",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "4"
+                    ]
+                  },
+                  "tcin": "00:22:40.0240",
+                  "tcout": "00:22:40.0770",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "jours"
+                    ]
+                  },
+                  "tcin": "00:22:40.0770",
+                  "tcout": "00:22:41.0190",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "la"
+                    ]
+                  },
+                  "tcin": "00:22:41.0320",
+                  "tcout": "00:22:41.0460",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "légitime"
+                    ]
+                  },
+                  "tcin": "00:22:41.0460",
+                  "tcout": "00:22:41.0910",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "défense"
+                    ]
+                  },
+                  "tcin": "00:22:41.0980",
+                  "tcout": "00:22:42.0320",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "n'"
+                    ]
+                  },
+                  "tcin": "00:22:42.0320",
+                  "tcout": "00:22:42.0370",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "a"
+                    ]
+                  },
+                  "tcin": "00:22:42.0370",
+                  "tcout": "00:22:42.0430",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pas"
+                    ]
+                  },
+                  "tcin": "00:22:42.0430",
+                  "tcout": "00:22:42.0670",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "été"
+                    ]
+                  },
+                  "tcin": "00:22:42.0670",
+                  "tcout": "00:22:42.0840",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "retenu"
+                    ]
+                  },
+                  "tcin": "00:22:42.0840",
+                  "tcout": "00:22:43.0260",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "par"
+                    ]
+                  },
+                  "tcin": "00:22:43.0260",
+                  "tcout": "00:22:43.0410",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "le"
+                    ]
+                  },
+                  "tcin": "00:22:43.0410",
+                  "tcout": "00:22:43.0520",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "tribunal"
+                    ]
+                  },
+                  "tcin": "00:22:43.0520",
+                  "tcout": "00:22:44.0170",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:22:44.0170",
+                  "tcout": "00:22:44.0370",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "conformément"
+                    ]
+                  },
+                  "tcin": "00:22:44.0370",
+                  "tcout": "00:22:45.0110",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "aux"
+                    ]
+                  },
+                  "tcin": "00:22:45.0110",
+                  "tcout": "00:22:45.0140",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "réquisitions"
+                    ]
+                  },
+                  "tcin": "00:22:45.0140",
+                  "tcout": "00:22:45.0760",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "du"
+                    ]
+                  },
+                  "tcin": "00:22:45.0760",
+                  "tcout": "00:22:45.0890",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "parquet"
+                    ]
+                  },
+                  "tcin": "00:22:45.0890",
+                  "tcout": "00:22:46.0340",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:22:46.0340",
+                  "tcout": "00:22:46.0800",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:22:46.0800",
+                  "tcout": "00:22:46.0900",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "a"
+                    ]
+                  },
+                  "tcin": "00:22:46.0900",
+                  "tcout": "00:22:46.0960",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "prononcé"
+                    ]
+                  },
+                  "tcin": "00:22:46.0960",
+                  "tcout": "00:22:47.0410",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "une"
+                    ]
+                  },
+                  "tcin": "00:22:47.0410",
+                  "tcout": "00:22:47.0550",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "peine"
+                    ]
+                  },
+                  "tcin": "00:22:47.0550",
+                  "tcout": "00:22:47.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "dite"
+                    ]
+                  },
+                  "tcin": "00:22:47.0820",
+                  "tcout": "00:22:48.0130",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pédagogique"
+                    ]
+                  },
+                  "tcin": "00:22:48.0220",
+                  "tcout": "00:22:49.0010",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:22:49.0010",
+                  "tcout": "00:22:49.0010",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:22:39.0310",
+            "tcout": "00:22:49.0140",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Libre mais visiblement éprouvé , Noël Basset a désormais l' interdiction de détenir une arme pendant cinq ans ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Libre"
+                    ]
+                  },
+                  "tcin": "00:23:00.0200",
+                  "tcout": "00:23:00.0610",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "mais"
+                    ]
+                  },
+                  "tcin": "00:23:00.0810",
+                  "tcout": "00:23:00.0950",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "visiblement"
+                    ]
+                  },
+                  "tcin": "00:23:01.0100",
+                  "tcout": "00:23:01.0570",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "éprouvé"
+                    ]
+                  },
+                  "tcin": "00:23:01.0570",
+                  "tcout": "00:23:02.0130",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:23:02.0130",
+                  "tcout": "00:23:02.0560",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Noël"
+                    ]
+                  },
+                  "tcin": "00:23:02.0560",
+                  "tcout": "00:23:02.0820",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Basset"
+                    ]
+                  },
+                  "tcin": "00:23:02.0820",
+                  "tcout": "00:23:03.0230",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "a"
+                    ]
+                  },
+                  "tcin": "00:23:03.0380",
+                  "tcout": "00:23:03.0520",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "désormais"
+                    ]
+                  },
+                  "tcin": "00:23:03.0520",
+                  "tcout": "00:23:03.0950",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "l'"
+                    ]
+                  },
+                  "tcin": "00:23:03.0950",
+                  "tcout": "00:23:04.0020",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "interdiction"
+                    ]
+                  },
+                  "tcin": "00:23:04.0020",
+                  "tcout": "00:23:04.0640",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:23:04.0640",
+                  "tcout": "00:23:04.0770",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "détenir"
+                    ]
+                  },
+                  "tcin": "00:23:04.0770",
+                  "tcout": "00:23:05.0220",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "une"
+                    ]
+                  },
+                  "tcin": "00:23:05.0250",
+                  "tcout": "00:23:05.0350",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "arme"
+                    ]
+                  },
+                  "tcin": "00:23:05.0390",
+                  "tcout": "00:23:05.0700",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pendant"
+                    ]
+                  },
+                  "tcin": "00:23:05.0810",
+                  "tcout": "00:23:06.0060",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "cinq"
+                    ]
+                  },
+                  "tcin": "00:23:06.0060",
+                  "tcout": "00:23:06.0370",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "ans"
+                    ]
+                  },
+                  "tcin": "00:23:06.0370",
+                  "tcout": "00:23:06.0410",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:23:06.0410",
+                  "tcout": "00:23:06.0410",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:23:00.0200",
+            "tcout": "00:23:06.0450",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Il répond quand même ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Il"
+                    ]
+                  },
+                  "tcin": "00:28:56.0600",
+                  "tcout": "00:28:56.0730",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "répond"
+                    ]
+                  },
+                  "tcin": "00:28:56.0730",
+                  "tcout": "00:28:57.0050",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "quand"
+                    ]
+                  },
+                  "tcin": "00:28:58.0150",
+                  "tcout": "00:28:58.0250",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "même"
+                    ]
+                  },
+                  "tcin": "00:28:58.0250",
+                  "tcout": "00:28:58.0340",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:28:58.0340",
+                  "tcout": "00:28:58.0340",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:28:56.0390",
+            "tcout": "00:28:58.0460",
+            "tclevel": 1
+          },
+          {
+            "data": {
+              "text": [
+                "Si durant cette période , tout à fait importante pour l' animal de socialisation . Il y a un problème , il est évident que l' animal va en subir les conséquences . Elle va avoir à terme à un comportement complètement des regrets ."
+              ]
+            },
+            "sublocalisations": {
+              "localisation": [
+                {
+                  "data": {
+                    "text": [
+                      "Si"
+                    ]
+                  },
+                  "tcin": "00:31:14.0040",
+                  "tcout": "00:31:14.0150",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "durant"
+                    ]
+                  },
+                  "tcin": "00:31:14.0220",
+                  "tcout": "00:31:14.0630",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "cette"
+                    ]
+                  },
+                  "tcin": "00:31:14.0630",
+                  "tcout": "00:31:14.0900",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "période"
+                    ]
+                  },
+                  "tcin": "00:31:14.0980",
+                  "tcout": "00:31:15.0300",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:31:15.0300",
+                  "tcout": "00:31:15.0370",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "tout"
+                    ]
+                  },
+                  "tcin": "00:31:15.0370",
+                  "tcout": "00:31:15.0660",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:31:15.0660",
+                  "tcout": "00:31:15.0740",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "fait"
+                    ]
+                  },
+                  "tcin": "00:31:15.0810",
+                  "tcout": "00:31:16.0090",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "importante"
+                    ]
+                  },
+                  "tcin": "00:31:16.0160",
+                  "tcout": "00:31:16.0940",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "pour"
+                    ]
+                  },
+                  "tcin": "00:31:16.0980",
+                  "tcout": "00:31:17.0120",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "l'"
+                    ]
+                  },
+                  "tcin": "00:31:17.0120",
+                  "tcout": "00:31:17.0190",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "animal"
+                    ]
+                  },
+                  "tcin": "00:31:17.0190",
+                  "tcout": "00:31:17.0730",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "de"
+                    ]
+                  },
+                  "tcin": "00:31:17.0790",
+                  "tcout": "00:31:17.0980",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "socialisation"
+                    ]
+                  },
+                  "tcin": "00:31:18.0400",
+                  "tcout": "00:31:19.0440",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:31:19.0440",
+                  "tcout": "00:31:19.0880",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Il"
+                    ]
+                  },
+                  "tcin": "00:31:19.0880",
+                  "tcout": "00:31:19.0990",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "y"
+                    ]
+                  },
+                  "tcin": "00:31:20.0020",
+                  "tcout": "00:31:20.0090",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "a"
+                    ]
+                  },
+                  "tcin": "00:31:20.0140",
+                  "tcout": "00:31:20.0210",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "un"
+                    ]
+                  },
+                  "tcin": "00:31:20.0210",
+                  "tcout": "00:31:20.0300",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "problème"
+                    ]
+                  },
+                  "tcin": "00:31:20.0300",
+                  "tcout": "00:31:21.0010",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      ","
+                    ]
+                  },
+                  "tcin": "00:31:21.0010",
+                  "tcout": "00:31:21.0190",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "il"
+                    ]
+                  },
+                  "tcin": "00:31:21.0190",
+                  "tcout": "00:31:21.0400",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "est"
+                    ]
+                  },
+                  "tcin": "00:31:21.0400",
+                  "tcout": "00:31:21.0580",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "évident"
+                    ]
+                  },
+                  "tcin": "00:31:21.0580",
+                  "tcout": "00:31:21.0990",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "que"
+                    ]
+                  },
+                  "tcin": "00:31:21.0990",
+                  "tcout": "00:31:22.0080",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "l'"
+                    ]
+                  },
+                  "tcin": "00:31:22.0080",
+                  "tcout": "00:31:22.0130",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "animal"
+                    ]
+                  },
+                  "tcin": "00:31:22.0130",
+                  "tcout": "00:31:22.0640",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "va"
+                    ]
+                  },
+                  "tcin": "00:31:23.0270",
+                  "tcout": "00:31:23.0510",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "en"
+                    ]
+                  },
+                  "tcin": "00:31:23.0510",
+                  "tcout": "00:31:23.0660",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "subir"
+                    ]
+                  },
+                  "tcin": "00:31:23.0730",
+                  "tcout": "00:31:24.0020",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "les"
+                    ]
+                  },
+                  "tcin": "00:31:24.0020",
+                  "tcout": "00:31:24.0130",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "conséquences"
+                    ]
+                  },
+                  "tcin": "00:31:24.0130",
+                  "tcout": "00:31:24.0750",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:31:24.0750",
+                  "tcout": "00:31:24.0750",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "Elle"
+                    ]
+                  },
+                  "tcin": "00:31:24.0750",
+                  "tcout": "00:31:24.0830",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "va"
+                    ]
+                  },
+                  "tcin": "00:31:24.0940",
+                  "tcout": "00:31:25.0210",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "avoir"
+                    ]
+                  },
+                  "tcin": "00:31:25.0250",
+                  "tcout": "00:31:25.0880",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:31:25.0910",
+                  "tcout": "00:31:26.0080",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "terme"
+                    ]
+                  },
+                  "tcin": "00:31:26.0080",
+                  "tcout": "00:31:26.0420",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "à"
+                    ]
+                  },
+                  "tcin": "00:31:26.0510",
+                  "tcout": "00:31:26.0600",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "un"
+                    ]
+                  },
+                  "tcin": "00:31:26.0600",
+                  "tcout": "00:31:26.0670",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "comportement"
+                    ]
+                  },
+                  "tcin": "00:31:26.0810",
+                  "tcout": "00:31:27.0390",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "complètement"
+                    ]
+                  },
+                  "tcin": "00:31:27.0390",
+                  "tcout": "00:31:28.0040",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "des"
+                    ]
+                  },
+                  "tcin": "00:31:28.0510",
+                  "tcout": "00:31:28.0680",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "regrets"
+                    ]
+                  },
+                  "tcin": "00:31:28.0680",
+                  "tcout": "00:31:28.0960",
+                  "tclevel": 2
+                },
+                {
+                  "data": {
+                    "text": [
+                      "."
+                    ]
+                  },
+                  "tcin": "00:31:28.0960",
+                  "tcout": "00:31:28.0960",
+                  "tclevel": 2
+                }
+              ]
+            },
+            "type": "text",
+            "tcin": "00:31:14.0000",
+            "tcout": "00:31:29.0160",
+            "tclevel": 1
+          }
+        ]
+      },
+      "type": "text",
+      "tcin": "00:12:34.0180",
+      "tcout": "00:31:29.0160",
+      "tclevel": 0
+    }
+  ],
+  "type": "text",
+  "algorithm": "vrbs_part 2.2",
+  "processor": "vrbs_trans.fre 4.0",
+  "processed": 1595341551,
+  "version": 1,
+  "id": "254"
+}

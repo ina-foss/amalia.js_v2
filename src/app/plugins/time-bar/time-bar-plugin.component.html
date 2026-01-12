@@ -1,0 +1,12 @@
+<div class="timebar {{theme}} {{displayState}}" *ngIf="timeTimeBar >= 0 && durationTimeBar >= 0">
+    <div class="start {{displayState}}" [ngClass]="{'active' : active}" (click)="copyToClipBoard(startTc,$event)" (doubleClick)="copyAllToClipBoard(startTc,$event)">
+        <span>{{labelTcIn}} : </span>{{startTc|tcFormat:displayFormat:fps}}
+    </div>
+    <div class="currentTime {{displayState}}" [ngClass]="{'active' : active}" (click)="copyToClipBoard(timeTimeBar,$event)" (doubleClick)="copyAllToClipBoard(timeTimeBar,$event)">
+        {{timeTimeBar|tcFormat:displayFormat:fps}}</div>
+    <div class="end {{displayState}}" [ngClass]="{'active' : active}" (click)="copyToClipBoard(durationTimeBar,$event)" (doubleClick)="copyAllToClipBoard(durationTimeBar,$event)">
+        <span>{{labelTcOut}} : </span>{{durationTimeBar|tcFormat:displayFormat:fps}}
+    </div>
+    <div class="tooltip" #tooltip>Copié!</div>
+    <div class="tooltip" #tooltip2>Copié avec fps!</div>
+</div>

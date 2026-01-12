@@ -1,0 +1,139 @@
+@import '../../core/styles/typo';
+@import '../../core/styles/variables';
+
+:host {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  z-index: $amalia-plugin-histogram-zindex;
+  font-family: $amalia-font-family !important;
+  font-size: $amalia-font-size !important;
+  font-weight: normal;
+
+  .histogram-container {
+    background: #34495E;
+    height: 100%;
+    z-index: 1;
+
+    &.pinned {
+      height:  $amalia-plugin-histogram-pinned;
+    }
+
+    &.pinnedControlbar {
+      height: $amalia-plugin-histogram-pinned-control-bar;
+    }
+
+    .label {
+      background-color: $amalia-ctrl-bar-bg-color;
+      padding: 2px 3px 2px 8px;
+      color: white;
+      width: 10%;
+      position: absolute;
+      font-size: 14px;
+      min-width: max-content;
+      z-index: 3;
+
+      &.right {
+        top: 50%;
+      }
+    }
+
+    .histograms {
+      position: relative;
+      background-color: $amalia-plugin-histograms-bg;
+      display: block;
+      justify-content: space-between;
+      flex-flow: column wrap;
+      height: 100%;
+
+
+      .cursor {
+        position: absolute;
+        background-color: white;
+        width: 2px;
+        height: 100%;
+        z-index: 1;
+        top: 0;
+      }
+
+      .svg-content {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+      }
+
+      .slider {
+        touch-action: none;
+        user-select: none;
+        position: absolute;
+        border: solid 2px $amalia-plugin-histogram-slider-border;
+        height: calc(50% - 5px);
+        min-width: 1% !important;
+        max-width: 100% !important;
+        width: 10%;
+        background-color: $amalia-plugin-histogram-slider-bg;
+        z-index: 2;
+        display: block;
+        cursor: move;
+        top: 0;
+
+        .drag-left,
+        .drag-right {
+          position: absolute;
+          display: block;
+          width: 15px;
+          height: 20px;
+          background-color: white;
+          top: 50%;
+          margin-top: -10px;
+          margin-left: -7px;
+          z-index: 3;
+          cursor: e-resize;
+
+          &.active {
+            display: block;
+          }
+
+          .amalia-svg-drag-drop-size {
+            width: 10px;
+            position: relative;
+            height: 15px;
+            left: 2.5px;
+            color: #0B7698;
+          }
+        }
+
+        .drag-right {
+          left: 100%;
+        }
+
+
+      }
+
+      .histogram {
+        display: block;
+        background-color: $amalia-plugin-histogram-bg;
+        position: relative;
+        border-bottom: solid 1px white;
+        overflow: hidden;
+
+        &.zoom-histogram {
+          background-color: $amalia-plugin-histogram-zoom-bg ;
+
+          .cursor {
+            width: 3px;
+          }
+        }
+      }
+    }
+  }
+}
+

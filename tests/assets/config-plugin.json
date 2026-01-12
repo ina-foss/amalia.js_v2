@@ -1,0 +1,44 @@
+{
+  "player": {
+    "src": "http://localhost:4201/medias/outputlm.mp4",
+    "crossOrigin": "*.ina",
+    "poster": "url du post",
+    "autoplay": true,
+    "duration": 5000,
+    "defaultVolume": 100,
+    "ratio": "16:9"
+    },
+    "thumbnail": {
+      "baseUrl": "https://picsum.photos/id/237/200/300",
+      "enableThumbnail": true,
+      "tcParam": "tc"
+    },
+  "displaySizes": {
+    "large": 940,
+    "medium": 740,
+    "small": 640,
+    "xsmall": 340
+  },
+    "dataSources": [
+      {
+        "url": "http://localhost:4201/metadata/jt-d.json"
+      }
+    ],
+    "pluginsConfiguration": {
+      "CONTROL_BAR": {
+        "data": [
+          {
+            "label": "Barre de progression",
+            "control": "progressBar"
+          }
+        ]
+      },
+      "TIME_BAR": {
+        "data": [
+          {"timeFormat" : "f",
+           "theme" : "outside"
+          }
+        ]
+      }
+    }
+}

@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Amalia</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        .content {
+            position: relative;
+            display: grid;
+            height: calc(100vh - 100px);
+            column-gap: 5px;
+            row-gap: 15px;
+            grid-auto-rows: minmax(300px, auto);
+            transition: all ease-in-out 0.25s;
+        }
+
+        .player {
+            --amalia-ctrl-bar-z-index: 2;
+            --amalia-ctrl-bar-pin-z-index: 1;
+            --amalia-ctrl-bar-slider-z-index: 3;
+            --amalia-ctrl-bar-bg-color: rgba(34, 34, 34, 0.9);
+            --amalia-ctrl-bar-btn-hover: #0B7698;
+            --amalia-ctrl-bar-progress-bar-color: #ffffff;
+            --amalia-ctrl-bar-progress-bar-color-hover: rgba(0, 134, 177, 0.8);
+            --amalia-ctrl-bar-extract-pin: rgba(0, 177, 156, 0.8);
+            --amalia-ctrl-bar-extract-pin-z-index: 2;
+            --amalia-ctrl-bar-extract-duration-z-index: 2;
+            --amalia-ctrl-bar-extract-duration-color: rgba(0, 177, 156, 0.8);
+        }
+    </style>
+</head>
+<body>
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Showcase Amalia</h5>
+</div>
+<div class="content" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: 1fr 1fr;">
+    <div style="grid-area: 1 / 1 / 2 / 2" id="player" class="player"></div>
+    <div style="grid-area: 2 / 1 /  3 / 2" id="timeline">Timeline</div>
+    <div style="grid-area: 1 / 2 / 3 / 3; overflow-x:auto" id="annotation">Annotation</div>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log("Dom ready");
+
+            //  loadTranscriptionSample().then(() => {
+            loadTimelineSample().then(() => {
+                console.log('Done');
+            }).catch(error => {
+                console.log("Error", error);
+            });
+            document.getElementById('timeline').addEventListener('click', addTimeline);
+            document.getElementById('annotation').addEventListener('click', addAnnotation);
+        });
+
+        async function loadResource() {
+            const url = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls';
+            const rewindUrl = 'https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=stream&protocol=hls&rewind=1';
+
+            let thumbnailUrlResponse = await fetch('https://front.wsmedia.sas.ina/wsmedia/stock:FPVDB14111905.01?type=download&category=thumbnail', {method: 'GET'});
+            let thumbnailUrl = await thumbnailUrlResponse.text();
+
+            const pluginsConfiguration = {
+                "CONTROL_BAR-PLAYER": {
+                    data: [
+                        {
+                            label: 'Barre de progression',
+                            control: 'progressBar',
+                            priority: 1
+                        },
+                        {
+                            label: "Télécharger",
+                            control: "download",
+                            icon: "download",
+                            zone: 1,
+                            order: 1,
+                            data: {
+                                href: ""
+                            },
+                            priority: 3,
+                            key: 'd',
+                        },
+                        /*{
+                          "label": "Sous titres",
+                          "control": "subtitles",
+                          "icon": "subtitle",
+                          "zone": 3,
+                          "priority": 3
+                        },*/
+                        {
+                            label: 'Playback rate custom steps',
+                            control: 'playbackRateCustomSteps'
+                        },
+                        {
+                            label: 'Playback rate steps',
+                            control: 'playbackRateSteps'
+                        },
+                        {
+                            label: 'Capture',
+                            control: 'download',
+                            icon: 'screenshot',
+                            key: 'c',
+                            zone: 1,
+                            order: 2,
+                            data: {'tcParam': 'start', 'href': ''},
+                            priority: 1
+                        },
+                        {
+                            label: 'Playback Rate',
+                            control: 'playbackRate',
+                            zone: 1,
+                            priority: 1,
+                            order: 3
+                        },
+                        {
+                            label: 'heure précédente',
+                            icon: 'backward-1h',
+                            control: 'backward-1h',
+                            zone: 2,
+                            priority: 1,
+                            key: 'alt + shift + ArrowLeft'
+                        },
+                        {
+                            label: 'Aller au début du média',
+                            icon: 'backward-start',
+                            control: 'backward-start',
+                            zone: 2,
+                            priority: 1,
+                            key: 'Shift + ArrowLeft'
+                        },
+                        {
+                            label: 'Retour image par image',
+                            icon: 'backward-frame',
+                            control: 'backward-frame',
+                            zone: 2,
+                            priority: 1,
+                            key: 'ArrowLeft'
+                        },
+                        {
+                            label: 'Retour 10 secondes par 10 secondes',
+                            icon: 'backward-10seconds',
+                            control: 'backward-10seconds',
+                            zone: 2,
+                            priority: 1,
+                            key: 'ArrowLeft'
+                        },
+
+                        {
+                            label: 'Retour ralenti',
+                            icon: 'slow-backward',
+                            control: 'slow-backward',
+                            zone: 2,
+                            priority: 1,
+                            key: 'Control + Shift + ArrowLeft'
+                        },
+                        {
+                            label: 'Retour rapide',
+                            icon: 'backward',
+                            control: 'backward',
+                            zone: 2,
+                            priority: 1,
+                            key: 'Control + ArrowLeft'
+                        },
+                        {
+                            label: 'Pause / Lire',
+                            control: 'playPause',
+                            zone: 2,
+                            priority: 1,
+                            key: 'espace'
+                        },
+                        {
+                            label: 'Avance rapide',
+                            icon: 'forward',
+                            control: 'forward',
+                            zone: 2,
+                            priority: 1,
+                            key: 'Control + ArrowRight'
+                        },
+                        {
+                            label: 'Avance ralentie',
+                            icon: 'slow-forward',
+                            control: 'slow-forward',
+                            zone: 2,
+                            priority: 1,
+                            key: 'Control + Shift + ArrowRight'
+                        },
+                        {
+                            label: 'Avance 10 secondes par 10 secondes',
+                            icon: 'forward-10seconds',
+                            control: 'forward-10seconds',
+                            zone: 2,
+                            priority: 1,
+                            key: 'ArrowRight'
+                        },
+
+                        {
+                            label: 'Avance image par image',
+                            icon: 'forward-frame',
+                            control: 'forward-frame',
+                            zone: 2,
+                            priority: 1,
+                            key: 'ArrowRight'
+                        },
+                        {
+                            label: 'Aller à la fin du média',
+                            icon: 'forward-end',
+                            control: 'forward-end',
+                            zone: 2,
+                            priority: 1,
+                            key: 'Shift + ArrowRight'
+                        },
+                        {
+                            label: 'heure suivante',
+                            icon: 'forward-1h',
+                            control: 'forward-1h',
+                            zone: 2,
+                            priority: 1,
+                            key: 'alt + shift + ArrowRight'
+                        },
+                        {
+                            label: 'Désactiver le son',
+                            control: 'volume',
+                            zone: 3,
+                            priority: 1,
+                            key: 'm',
+                            data: {'channelMergeVolume': false, 'channelMergerNode': ''},
+                        },
+                        {
+                            label: 'Plein écran',
+                            control: 'toggleFullScreen',
+                            icon: 'fullscreen',
+                            zone: 3,
+                            priority: 1,
+                            key: 'f'
+                        },
+                        {
+                            "label": "Aspect ratio",
+                            "control": "aspectRatio",
+                            "zone": 3,
+                            "priority": 3,
+                            "key": "a"
+                        },
+                        {
+                            label: 'Figer',
+                            control: 'pinControls',
+                            icon: 'pin',
+                            zone: 3,
+                            priority: 1,
+                            order: 1,
+                            key: 'g',
+                        },
+                        {
+                            label: 'Afficher les vitesses',
+                            control: 'displaySlider',
+                            icon: 'slider',
+                            zone: 3,
+                            priority: 2,
+                            order: 1,
+                            key: 'v',
+                        },
+                        {
+                            label: 'Plus doptions',
+                            control: 'menu',
+                            icon: 'dots',
+                            zone: 3,
+                            key: 'r'
+                        }
+                    ],
+                    pinnedControls: true,
+                }
+            }
+            fetch(rewindUrl)
+                    .then((response) => response.text())
+                    .then((rewindData) => {
+                        fetch(url)
+                                .then((response) => response.text())
+                                .then((data) => {
+                                    const config = {
+                                        debug: true,
+                                        logLevel: "info",
+                                        timeFormat: "f",
+                                        tcOffset: 3000,
+                                        player: {
+                                            src: data,
+                                            // src: "http://localhost:4203/medias/outputlm.mp4",
+                                            hls: {
+                                                enable: true,
+                                                config: {
+                                                    debug: false,
+                                                    maxBufferLength: 10,
+                                                    maxMaxBufferLength: 60,
+                                                    backBufferLength: 0,
+                                                    fragLoadingMaxRetry: 3,
+                                                    fragLoadingRetryDelay: 1000,
+                                                    enableWorker: false
+                                                }
+                                            },
+                                            crossOrigin: "anonymous",
+                                            backwardsSrc: rewindData
+                                        },
+                                        thumbnail: {
+                                            baseUrl: thumbnailUrl,
+                                            enableThumbnail: true,
+                                            tcParam: "start"
+                                        },
+                                        dataSources: [
+                                            {
+                                                "url": "http://localhost:4203/metadata/transcription.json"
+                                            },
+                                            {
+                                                "url": "https://notilus.api.d.sas.ina/notilusDossier/segments/stock?itemBusinessIdentifier=KPCAA790118.03&tcin=0&tcout=90000&format=AMALIA:forAnnotations"
+                                            }
+                                        ],
+                                        pluginsConfiguration
+                                    };
+                                    let playerElement = `<amalia-player id="player" player-id="PLAYER" `;
+                                    playerElement += `config='${JSON.stringify(config)}' >`;
+                                    playerElement += `<amalia-control-bar player-id="PLAYER"></amalia-control-bar></amalia-player>`;
+                                    document.getElementById("player").innerHTML = playerElement;
+                                });
+                    });
+        }
+
+        const createPlayer = (config) => {
+
+            const playerId = "PLAYER";
+            const playerContainer = document.getElementById("player");
+            const player = document.createElement('amalia-player');
+            player.setAttribute('player-id', playerId);
+            player.setAttribute('id', `ajs-${playerId}`);
+            player.setAttribute('config', JSON.stringify(config));
+            player.setAttribute('class', `${'timebar'}`);
+            player.setAttribute('type', 'audio');
+            // Create control bar
+            const controlBar = document.createElement('amalia-control-bar');
+            controlBar.setAttribute('player-id', playerId);
+            const controlBarPluginConfig = {pinnedControls: true};
+            controlBar.setAttribute('plugin-configuration', JSON.stringify(controlBarPluginConfig));
+            player.appendChild(controlBar);
+            playerContainer.appendChild(player);
+
+            //timebar
+            const timebar = document.createElement('amalia-time-bar');
+            timebar.setAttribute('player-id', playerId);
+            const pluginConfig = {
+                "data": {
+                    "timeFormat": "hours",
+                    "theme": "outside"
+                }
+            };
+            timebar.setAttribute('plugin-configuration', JSON.stringify(pluginConfig));
+            playerContainer.appendChild(timebar);
+            return player;
+        }
+
+        function loadFluxAudioResource() {
+            const config = {
+                "tcOffset": 21600,
+                "player": {
+                    "backwardsSrc": "",
+                    "src": "",
+                    "autoplay": false,
+                    "poster": "/assets/images/newAudioBackGround.png",
+                    "posterBackground": "amalia-primary-color",
+                    "hls": {
+                        "enable": true,
+                        "config": {
+                            "maxBufferLength": 12,
+                            "maxMaxBufferLength": 60,
+                            "backBufferLength": 0,
+                            "enableWorker": false,
+                            "startPosition": 0
+                        }
+                    },
+                    "crossOrigin": "anonymous"
+                },
+                "thumbnail": {
+                    "baseUrl": "",
+                    "enableThumbnail": false,
+                    "tcParam": "start"
+                },
+                "dataSources": [],
+                "debug": false,
+                "logLevel": "info",
+                "pluginsConfiguration": {
+                    "CONTROL_BAR-PLAYER": {
+                        "data": [
+                            {
+                                "label": "Barre de progression",
+                                "control": "progressBar",
+                                "priority": 1
+                            },
+                            {
+                                "label": "Télécharger",
+                                "control": "download",
+                                "icon": "download",
+                                "zone": 1,
+                                "order": 2,
+                                "data": {
+                                    "href": "https://audio.wsmedia.sas.ina/audio/Z4wp9sZDSO4g-zC8fJpW8WlAxlS0Az1MJULfzw2cgZSJRCPaxb4E_5SWOUDTrnBeyHOx6kGiZCFuhtXjfuBeUCS9SuSKUisltp_sBP8kSgreDhotV8J6RmhiJkiFnpzbyyF5g-dJWJEpzogyOJA0Ccks-OAxJ6kQ5A9HwnqxLbpyPB1DCD2XdYvVVIBlFjql3dwXDHN9aeOsCdA_-oi5dkNt9ypWUjbTuaxCdHGiVXmtoVLorbbh2gHZGwBDRDlhFdw8x5KAraTB9uAqj8Ff_qZabATQqJe7Fy5ug_GQOOnWEhYj3n7xjD2WTmSCqWjccffqZ3AwogQ_KvJz_HbjKsLx1xmLjU5bQpUaTU90EIhnAEwPrFvLMiCy_WwngGiMzaWq0ahYRTjsmaOQdjW1bVXzi9lSi0HQAIm9GIu-b9qISlecUMAfnt-Dc2LaiwyoH_zWpscwY_8ah5e16ylLtquMGkTS9tviUrqp4USQJDWwMDH_AlujbwfHUMMaAElDopk9cV9NMD_jThas8-8qQK0mOs-4NvrX2ehNnfzcXS_Mb0sW86zkVE8kq5bjezbFRJ3TjgruuEbdiooJsWQFzYTlFuy05n7_Bg16nu8phRHz0W2A2pbdq1wpFlo5oxOH7ZgZF1FZsqODzbyK8kO80IcgXpnPgVHgVQaPFG91VOuf8120HzMk_GWiHCTstLsUbs-MGM2jR-5O3S5mH857DdbL6LRd-78lQZUNgXBnVsjPwW-5ncekO646rFH3LtzI1F6Bf9-CP2a6JOGn2jDImHsnCb87tMQOLS28U9VsF7AL2SMbm47VLBV7633UWUz19RRm7dPUuhljtcKrAdi0G35TM-5WoUDYD15Lg8IaTIr2MFx4CmrQahdMvdJBGJ-TSAHKCF7JASR1UADYRkGx721yQCpcRCG99Fj_JUfeLiT9f7nmTJUaqCinR8QBfg-mDceitSDxNwXsTCG2Zg0cU7cIepN-ckvcs2Ie-wzJviU/sl_iv/jU3iHSezivjdnG8K6FtBgQ/sl_hm/"
+                                },
+                                "priority": 3,
+                                "key": "d"
+                            },
+                            {
+                                "label": "Playback rate custom steps",
+                                "control": "playbackRateCustomSteps"
+                            },
+                            {
+                                "label": "Playback rate steps",
+                                "control": "playbackRateSteps"
+                            },
+                            {
+                                "label": "Playback Rate",
+                                "control": "playbackRate",
+                                "zone": 1,
+                                "priority": 1,
+                                "order": 3
+                            },
+                            {
+                                "label": "Aller au début du média",
+                                "icon": "backward-start",
+                                "control": "backward-start",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "Shift + ArrowLeft"
+                            },
+                            {
+                                "label": "Retour 1 seconde par 1 seconde",
+                                "icon": "backward-second",
+                                "control": "backward-second",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "ArrowLeft"
+                            },
+                            {
+                                "label": "Retour ralenti",
+                                "icon": "slow-backward",
+                                "control": "slow-backward",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "Control + Shift + ArrowLeft"
+                            },
+                            {
+                                "label": "Retour rapide",
+                                "icon": "backward",
+                                "control": "backward",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "Control + ArrowLeft"
+                            },
+                            {
+                                "label": "Pause / Lire",
+                                "control": "playPause",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "espace"
+                            },
+                            {
+                                "label": "Avance rapide",
+                                "icon": "forward",
+                                "control": "forward",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "Control + ArrowRight"
+                            },
+                            {
+                                "label": "Avance ralentie",
+                                "icon": "slow-forward",
+                                "control": "slow-forward",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "Control + Shift + ArrowRight"
+                            },
+                            {
+                                "label": "Avance 1 seconde par 1 seconde",
+                                "icon": "forward-second",
+                                "control": "forward-second",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "ArrowRight"
+                            },
+                            {
+                                "label": "Aller à la fin du média",
+                                "icon": "forward-end",
+                                "control": "forward-end",
+                                "zone": 2,
+                                "priority": 1,
+                                "key": "Shift + ArrowRight"
+                            },
+                            {
+                                "label": "Désactiver le son",
+                                "control": "volume",
+                                "zone": 3,
+                                "priority": 1,
+                                "key": "m",
+                                "data": {
+                                    "channelMergeVolume": false,
+                                    "channelMergerNode": "",
+                                    "tracks": [
+                                        {
+                                            "track": 1,
+                                            "label": "und"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "label": "Plein écran",
+                                "control": "toggleFullScreen",
+                                "icon": "fullscreen",
+                                "zone": 3,
+                                "priority": 1,
+                                "key": "f"
+                            },
+                            {
+                                "label": "Plus d'options",
+                                "control": "menu",
+                                "icon": "dots",
+                                "zone": 3,
+                                "key": "r"
+                            },
+                            {
+                                "label": "Figer",
+                                "control": "pinControls",
+                                "icon": "pin",
+                                "zone": 3,
+                                "priority": 1,
+                                "key": "g"
+                            },
+                            {
+                                "label": "Afficher les vitesses",
+                                "control": "displaySlider",
+                                "icon": "slider",
+                                "zone": 3,
+                                "priority": 2,
+                                "key": "v"
+                            }
+                        ]
+                    }
+                },
+                "displaySizes": {
+                    "large": 900,
+                    "medium": 700,
+                    "small": 550,
+                    "xsmall": 340
+                }
+            };
+
+            createPlayer(config);
+        }
+
+        async function loadTranscriptionSample() {
+            const response = await fetch('http://localhost:4203/metadata/transcription_tf1_vocapia.json');
+            const config = await response.json();
+
+            let thumbnailUrlResponse = await fetch(config.thumbnail.baseUrl, {method: 'GET'});
+            config.thumbnail.baseUrl = await thumbnailUrlResponse.text();
+
+            let srcUrlResponse = await fetch(config.player.src, {method: 'GET'});
+            config.player.src = await srcUrlResponse.text();
+
+            let backwardsSrcResponse = await fetch(config.player.backwardsSrc, {method: 'GET'});
+            const backwardsSrcResponseText = backwardsSrcResponse?.text();
+            if (backwardsSrcResponseText) {
+                config.player.backwardsSrc = await fetch(backwardsSrcResponseText);
+            }
+
+            createPlayer(config);
+        }
+
+        async function loadTimelineSample() {
+            const response = await fetch('http://localhost:4203/metadata/timeline_player_config_sample.json');
+            const config = await response.json();
+
+            let thumbnailUrlResponse = await fetch(config.thumbnail.baseUrl, {method: 'GET'});
+            config.thumbnail.baseUrl = await thumbnailUrlResponse.text();
+
+            let srcUrlResponse = await fetch(config.player.src, {method: 'GET'});
+            config.player.src = await srcUrlResponse.text();
+
+            let backwardsSrcResponse = await fetch(config.player.backwardsSrc, {method: 'GET'});
+            const backwardsSrcResponseText = backwardsSrcResponse?.text();
+            if (backwardsSrcResponseText) {
+                config.player.backwardsSrc = await fetch(backwardsSrcResponseText);
+            }
+
+            createPlayer(config);
+        }
+
+        async function loadStockAudioResource() {
+            const playerId = "PLAYER";
+            const response = await fetch('http://localhost:4203/configs/base-config-stock-audio-with-histogram.json');
+            const config = await response.json();
+
+            const playerContainer = document.getElementById("player");
+            const player = document.createElement('amalia-player');
+            player.setAttribute('player-id', playerId);
+            player.setAttribute('id', `ajs-${playerId}`);
+            player.setAttribute('config', JSON.stringify(config));
+            player.setAttribute('class', `${'timebar'}`);
+            player.setAttribute('type', 'audio');
+            // Create control bar
+            const controlBar = document.createElement('amalia-control-bar');
+            controlBar.setAttribute('player-id', playerId);
+            const controlBarPluginConfig = {pinnedControls: true};
+            controlBar.setAttribute('plugin-configuration', JSON.stringify(controlBarPluginConfig));
+            player.appendChild(controlBar);
+
+            //Histogram
+            const histo_config = {
+                "metadataIds": [
+                    "waveform-1024-0",
+                    "waveform-1024-1",
+                    "waveform-4096-0",
+                    "waveform-4096-1"
+                ],
+                "data": {
+                    "withFocus": true,
+                    "enableMirror": false,
+                    "labels": [
+                        "",
+                        "",
+                        "Canal Gauche",
+                        "Canal Droit"
+                    ],
+                    "zoomMetadataIdx": [
+                        2,
+                        3
+                    ],
+                    "focusMin": 10,
+                    "focusMax": 40,
+                    "focusMinOffset": 10,
+                    "focusMaxOffset": 90
+                }
+            }
+            const histo = document.createElement('amalia-histogram');
+            histo.setAttribute('player-id', playerId);
+            histo.setAttribute('plugin-configuration', JSON.stringify(histo_config));
+            player.appendChild(histo);
+
+            playerContainer.appendChild(player);
+
+            //timebar
+            const timebar = document.createElement('amalia-time-bar');
+            timebar.setAttribute('player-id', playerId);
+            const pluginConfig = {
+                "data": {
+                    "timeFormat": "hours",
+                    "theme": "outside"
+                }
+            };
+            timebar.setAttribute('plugin-configuration', JSON.stringify(pluginConfig));
+            playerContainer.appendChild(timebar);
+        }
+
+        const addStoryboard = () => {
+            document.getElementById('storyboard').removeEventListener('click', addStoryboard);
+            document.getElementById("storyboard").innerHTML = `<amalia-storyboard  player-id="PLAYER"  plugin-configuration='{"data":{"baseUrl":"https://image.wsmedia.i.sas.ina/thumbs/VBgozLdgTD9terBfYwaw_dr7sqlSR4kfQGpTWz6jNxkBM97OnKCvLeUHM8-BYR3fp43HNhXcb_F_KCf6sB1oqMx-drnlQRSQ85VNmu1ZJynONhh8IAXymGlZ-iEYALH9f4LuLlWiH_6b0yniUdMn6qczlUrnfrkV9BcC6SKszssKDwrYyxR6CQzBD3xRslvNJJYaM7hI0T6Yd0gGzylvI5ywfni_iHDVIRqk_sgShw5xt4o-2fleWfgZ8vaeGz79zNJ8kh9oDkgMfKM_-I2eOPjJHHeyi7FZoS700C7n2LdJ7_mIh6v03Mv2kvjoVeHrayeQZ9-i21JDpKGL6TOnxt6RZxzbGEhdgCaINCgVZJ4BW9xlaftS4uUBIFlaLt31GjldFN8dSnWgPGTkerR8dfTX6XXQBDB_wBj2IiA422Hiw8-oriVAOjbnfiEc2HpzWWPP_-p407wH9NT8R-b9Tb7jWmwrb6jKakl3Lw67n6OXj6wymONv47uuIRki_b7h7z3lNHgxkWGxAvJn4axqKNP4N179g3hD8x8GLQUJ7DruBekEunkXdUB7W2AGh_hU1t3g9ie2tI5BLlAfojWei1kCZ8v04_djectBHtN5ka_LH-pF5wLIK8FukJEWotkkEm4phPoenatpYEW8xZVDPchFDPPVvrLC_euHIU6VTXAOa4LN9K1AP2eh-ZXXxydAaJnpFu_QWrHvcrG6DOqNRLO6Nh2hmxC_rGBg33lGk88vCy1fUuqCLG9jE6157pjCig7ckqAMCbIlC6tFUVtTPdH2lvh7RzhHYg76fnWZXhkVM_Afs9_7tUb1dCGtMa4b30jx7_SZBbJ3TztuN9CUbtNlfw_iNvs0KLR_aQr02j7LjgvRVnUR37fe_pTeHXCr36oco-HQQIts995MKVQjhtqdIMnlbxh1EP2Op5vQAUh20EZA483PFHUXvKV8eEkcOk5M2Qal04RK1cIs0lCww4bynmyWgkSwhU-MAd5fS1I/sl_iv/84Ev5lYLL2BmeVxWhaNmvg/sl_hm/","theme":"v","tcParam":"start","itemPerLine":5}}'></amalia-storyboard>`;
+        };
+
+        const addTimeline = () => {
+            document.getElementById('timeline').removeEventListener('click', addTimeline);
+            document.getElementById('timeline').innerHTML = `<amalia-timeline player-id="PLAYER" plugin-configuration='{"metadataIds":null}'></amalia-timeline>`;
+        };
+
+        const addTranscription = () => {
+            document.getElementById('transcription').removeEventListener('click', addTranscription);
+
+            const pluginConfig = {
+                "metadataIds": [
+                    "transcription-vrbs_part"
+                ],
+                "data": {
+                    "title": "Transcription",
+                    "label": "Rechercher dans la transcription",
+                    "description": "",
+                    "key": "Enter",
+                    "parseLevel": 1,
+                    "progressBar": true,
+                    "autoScroll": true,
+                    "withSubLocalisations": true
+                }
+            };
+            document.getElementById('transcription').innerHTML = `<amalia-transcription player-id="PLAYER" plugin-configuration='${JSON.stringify(pluginConfig)}'></amalia-transcription>`;
+        };
+
+        const addAnnotation = () => {
+            console.log("addAnnotation");
+            document.getElementById('annotation').removeEventListener('click', addAnnotation);
+            const pluginConfig = {
+                "metadataIds": [
+                    "annotation"
+                ],
+                "data": {
+                    "title": "Annotation",
+                    "label": "Segmentation",
+                    "description": "",
+                    "key": "Enter",
+                    "parseLevel": 1,
+                    "progressBar": true,
+                    "autoScroll": true,
+                    "withSubLocalisations": true
+                }
+            };
+            document.getElementById('annotation').innerHTML = `<amalia-annotation player-id="PLAYER" plugin-configuration='${JSON.stringify(pluginConfig)}'></amalia-annotation>`;
+        };
+        </script>
+        </div>
+        </body>
+        </html>

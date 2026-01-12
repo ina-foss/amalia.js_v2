@@ -1,0 +1,268 @@
+{
+    "tcOffset": 46800,
+    "player": {
+        "backwardsSrc": "I0VYVE0zVQojRVhULVgtVkVSU0lPTjozCiNFWFQtWC1QTEFZTElTVC1UWVBFOlZPRAojRVhULVgtVEFSR0VURFVSQVRJT046NgojRVhULVgtTUVESUEtU0VRVUVOQ0U6MQojRVhULVgtRElTQ09O...",
+        "src": "I0VYVE0zVQojRVhULVgtVkVSU0lPTjozCiNFWFQtWC1QTEFZTElTVC1UWVBFOlZPRAojRVhULVgtVEFSR0VURFVSQVRJT046NgojRVhULVgtTUVESUEtU0VRVUVOQ0U6MQojRVhUSU5GOjYuMCwKaHR0cHM6Ly92aW...",
+        "autoplay": false,
+        "hls": {
+            "enable": true,
+            "config": {
+                "maxBufferLength": 12,
+                "maxMaxBufferLength": 60,
+                "backBufferLength": 0,
+                "enableWorker": false,
+                "startPosition": 0
+            }
+        },
+        "crossOrigin": "anonymous",
+        "ratio": "16:9"
+    },
+    "thumbnail": {
+        "baseUrl": "https://image.wsmedia.sas.ina/thumbs/tJBuzC2EczSq-OxmP9xCIpRrnTaBFv9wbtoFJd14EVDvtm...",
+        "enableThumbnail": true,
+        "tcParam": "start"
+    },
+    "dataSources": [
+        {
+            "url": "http://localhost/metadata/sample-timeline-02.json",
+            "_comment": "exemple de url de prod https://calypso.api.sas.ina/notilusLdd/notilus/search/plugin?pluginName=facesRecognition&format=amalia&clientId=FACES_RECOGNITION-&channel=LCI&startDate=2023-01-25 13:00:00&endDate=2023-01-25 17:00:00",
+            "headers": [
+                "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TmFVN3lyZk4xTEhOUFZXU1JDajVzd1JWa003Uk84MWkyYndBQmsyal9RIn0.eyJl..."
+            ],
+            "plugin": "timelines"
+        },
+        {
+            "url": "https://calypso.api.x.sas.ina/notilusLdd/notilus/search/plugin?pluginName=transcriptions&format=amalia-mot&clientId=transcription-vrbs_lma.fre_7.1&channel=LCI&startDate=2023-01-25 13:00:00&endDate=2023-01-25 17:00:00&algoname=vrbs_lma.fre_7.1",
+            "headers": [
+                "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TmFVN3lyZk4xTEhOUFZXU1JDajVzd1JWa003Uk84MWkyYndBQmsy..."
+            ],
+            "plugin": "transcription-vrbs_lma.fre_7.1"
+        },
+        {
+            "url": "https://calypso.api.x.sas.ina/notilusLdd/notilus/search/plugin?pluginName=transcriptions&format=amalia-mot&clientId=transcription-vrbs_part&channel=LCI&startDate=2023-01-25 13:00:00&endDate=2023-01-25 17:00:00&algoname=vrbs_part",
+            "headers": [
+                "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TmFVN3lyZk4xTEhOUFZXU1JDa..."
+            ],
+            "plugin": "transcription-vrbs_part"
+        },
+        {
+            "url": "https://calypso.api.x.sas.ina/notilusLdd/notilus/search/plugin?pluginName=transcriptions&format=amalia-mot&clientId=transcription-whisper&channel=LCI&startDate=2023-01-25 13:00:00&endDate=2023-01-25 17:00:00&algoname=whisper",
+            "headers": [
+                "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TmFVN3lyZk4xTEhOUFZXU1JDajVzd1JWa003Uk84MWkyYndBQmsyal9RIn0.ey..."
+            ],
+            "plugin": "transcription-whisper"
+        },
+        {
+            "url": "http://localhost/metadata/sample-timeline-01.json",
+            "_comment": "exemple de url de prod https://calypso.api.sas.ina/notilusLdd/notilus/search/plugin?pluginName=soundSegments&format=amalia&clientId=SEGMENTATION-&channel=LCI&startDate=2023-01-25 13:00:00&endDate=2023-01-25 17:00:00",
+            "headers": [
+                "Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1TmFVN3lyZk4xTEhOUFZXU1JDajVzd1JWa003Uk84MWky..."
+            ],
+            "plugin": "timelines"
+        }
+    ],
+    "debug": false,
+    "logLevel": "info",
+    "pluginsConfiguration": {
+        "CONTROL_BAR-PLAYER": {
+            "data": [
+                {
+                    "label": "Barre de progression",
+                    "control": "progressBar",
+                    "priority": 1
+                },
+                {
+                    "label": "Télécharger",
+                    "control": "download",
+                    "icon": "download",
+                    "zone": 1,
+                    "order": 1,
+                    "data": {
+                        "href": "https://video.wsmedia.sas.ina/video/1LIQegdGdat_zFiviEd6rQ2PV9UbEKHgmFirrBbpCrMhGz6Ln1me..."
+                    },
+                    "priority": 3,
+                    "key": "d"
+                },
+                {
+                    "label": "Playback rate custom steps",
+                    "control": "playbackRateCustomSteps"
+                },
+                {
+                    "label": "Playback rate steps",
+                    "control": "playbackRateSteps"
+                },
+                {
+                    "label": "Capture",
+                    "control": "download",
+                    "icon": "screenshot",
+                    "key": "c",
+                    "zone": 1,
+                    "order": 2,
+                    "data": {
+                        "tcParam": "start",
+                        "href": "https://image.wsmedia.sas.ina/thumbs/tJBuzC2EczSq-OxmP9xCIpRrnTaBFv9wbtoFJd14EVDvtmGp_TS..."
+                    },
+                    "priority": 1
+                },
+                {
+                    "label": "Playback Rate",
+                    "control": "playbackRate",
+                    "zone": 1,
+                    "priority": 1,
+                    "order": 3
+                },
+                {
+                    "label": "Aller au début du média",
+                    "icon": "backward-start",
+                    "control": "backward-start",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Shift + ArrowLeft"
+                },
+                {
+                    "label": "Retour image par image",
+                    "icon": "backward-frame",
+                    "control": "backward-frame",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowLeft"
+                },
+                {
+                    "label": "Retour 5 secondes par 5 secondes",
+                    "icon": "backward-5seconds",
+                    "control": "backward-5seconds",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowLeft"
+                },
+                {
+                    "label": "Retour ralenti",
+                    "icon": "slow-backward",
+                    "control": "slow-backward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + Shift + ArrowLeft"
+                },
+                {
+                    "label": "Retour rapide",
+                    "icon": "backward",
+                    "control": "backward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + ArrowLeft"
+                },
+                {
+                    "label": "Pause / Lire",
+                    "control": "playPause",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "espace"
+                },
+                {
+                    "label": "Avance rapide",
+                    "icon": "forward",
+                    "control": "forward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + ArrowRight"
+                },
+                {
+                    "label": "Avance ralentie",
+                    "icon": "slow-forward",
+                    "control": "slow-forward",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Control + Shift + ArrowRight"
+                },
+                {
+                    "label": "Avance 5 secondes par 5 secondes",
+                    "icon": "forward-5seconds",
+                    "control": "forward-5seconds",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowRight"
+                },
+                {
+                    "label": "Avance image par image",
+                    "icon": "forward-frame",
+                    "control": "forward-frame",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "ArrowRight"
+                },
+                {
+                    "label": "Aller à la fin du média",
+                    "icon": "forward-end",
+                    "control": "forward-end",
+                    "zone": 2,
+                    "priority": 1,
+                    "key": "Shift + ArrowRight"
+                },
+                {
+                    "label": "Désactiver le son",
+                    "control": "volume",
+                    "zone": 3,
+                    "priority": 1,
+                    "key": "m",
+                    "data": {
+                        "channelMergeVolume": false,
+                        "channelMergerNode": "",
+                        "tracks": [
+                            {
+                                "track": 1,
+                                "label": "fra"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "label": "Plein écran",
+                    "control": "toggleFullScreen",
+                    "icon": "fullscreen",
+                    "zone": 3,
+                    "priority": 1,
+                    "key": "f"
+                },
+                {
+                    "label": "Aspect ratio",
+                    "control": "aspectRatio",
+                    "zone": 3,
+                    "priority": 3,
+                    "key": "a"
+                },
+                {
+                    "label": "Figer",
+                    "control": "pinControls",
+                    "icon": "pin",
+                    "zone": 3,
+                    "priority": 1,
+                    "order": 1,
+                    "key": "g"
+                },
+                {
+                    "label": "Afficher les vitesses",
+                    "control": "displaySlider",
+                    "icon": "slider",
+                    "zone": 3,
+                    "priority": 2,
+                    "order": 1,
+                    "key": "v"
+                },
+                {
+                    "label": "Plus d'options",
+                    "control": "menu",
+                    "icon": "dots",
+                    "zone": 3,
+                    "key": "r"
+                }
+            ],
+            "pinnedControls": true
+        }
+    },
+    "displaySizes": {
+        "large": 900,
+        "medium": 700,
+        "small": 550,
+        "xsmall": 340
+    }
+}
