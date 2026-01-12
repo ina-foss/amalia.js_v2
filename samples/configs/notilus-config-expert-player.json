@@ -1,0 +1,240 @@
+{
+  "tcOffset": 100,
+  "player": {
+    "src" : "http://localhost:4203/medias/vid.m3u8",
+    "backwardsSrc":"http://localhost:4203/medias/vid-inverse.m3u8",
+    "crossOrigin": "anonymous",
+    "ratio": "16:8",
+    "hls": {
+      "enable": true,
+      "config": {"maxBufferLength": 12}
+    }
+  },
+  "dataSources": [
+    {
+      "url": "http://localhost:4203/metadata/jt-d.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/jt-t.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/sample-transcription.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/subtitles-lac.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/transcription.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/transcription-stock.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/subtitles-flux.json"
+    },
+    {
+      "url": "https://lvltojson.wsmedia.d.sas.ina/waveform/GWki2E2e/eYMpjDXNByl2CTiBlgAHkB5lpgkrErC5e7FUrHzGcQXysGBClNRhWy326W6ur+oVCqMC8LWexBFNky4iGSsIspcN4KCOGNeEiP3CV62vdjx1WSa94AoWNHbew64PJnY4T7RMBS2Eqmo3en+Yv8/4neuw7I07u7c7q13CglsLKcFjtB7ucLUrLj4Y/JgT/S6VgdEkut4M31bb1F+bOnal1zEIyTFNGnWdLkLYQ7e1CNbBXtl9b68jT6f49sS6czGioFNrz7muqGwvh7PNGD/k2JW6aOMIXXC4eOLtMArkEqiqQbRKDWkNpB6xDw0IWuQs7q6auf+8TP5lN3fqRY1vWqv/dN45jEQ0GETp0zQBSaKr9JTeTJ1w4WIDebA1xvYnuoCvWkBWRWkJrKSG8qrOFfA4ieHX4UgUwjkJSu5JJ9z8STzOIJ0+Pfo1vdpIv5lQvYzJ/7GMeboTCo+xy+IlTbeQvP1KqNuVfr0tGo1AUJWX2ezQJ+WcXUhDBILZeiBcH+bGIeZ/emNSiSnuFt6DCq89VWRZEOSoA8HJZXNoS+L33cDj2kHWMuhrQlIrxkIzHOlkx21+uRkN//hGHEjL1jIrVjGuQQWKM0enuPstIHYVw3QZr61JxOIwrc3AeWk8TmTWlcgDCzXD0IMu7/SSk7J1rUcx9b+Rdte4FQCSwkwi+QOG4msV2mEZfVeVzEHMs5qpCPVFhW1ZZjlk1CXKZ96p/hU+lcJyCmKodbXiS8IvG2mq7Gs8J5k/sl_iv/xCXiChOP5GbZYFQZkHU6aQ==/sl_hm/?canal=0&format=4096&mid=waveform-4096-0"
+    }
+  ],
+  "thumbnail": {
+    "baseUrl": "https://image.wsmedia.d.sas.ina/thumbs/5xjt4ZG3gCNHzy+FGMs4/OjyT6fbaxfOCsjRRkHqPbN2GuRv2NAD4a3PKlDHl+vfkFPbO7ucDjAX3RQIQt53JEI/BlORk7Y2fKLH2PgdtXD1RNEpNMwai+FyZHyr2Z6zKHCAnZH3f3yctgAFoxez5HovC8MA5vKSR1Hd1DTulaUcksmJVHdT2W0y/sDCWff6HULuq9l+MLqiL+1OasdKiYJpH8iiFJcij/9qCbCrlREQSYWfWXoETUAuYiRJzrTRW0ZDhSPC8Dl2eI9Z2xVuCWH2BHfMj6qe7bxf3VbxpmoeuuZ7+gJmkwdjuZcS0P/fP6VGmOcUtmhlbiUKckqFfPGRrTVj+kDKHdvZ+Xi+b7K1qaoCAooa6jYatDUTSJDue3gfQ/mtkBoPTzWE102ln5A+BdJh1LPgnBNEH6uISC0bibOu4ZqDaYfJT3OJ8x/Muso6nYA0Hcpa4AFiQoSXJ7sI8AuDbKqwUhjogMrDy51fe5ZVOqrF5wbIX1DKz8AmDlxalGSsNbmU24/oljeszx+qoEtRiCCj/4cb4jhKdmaJa8kmkd2Uih9mSqrs+WLFfxpjSn56E5sCnmWfjtR6o6A/g9YOj8C3eoPrjThclG/0pDAOv41ELoaxiyKLBmODhObTjLj9oW8s35bNQl/jRka4VCf1hj6DR1ahSEiHzw9nRVkM3ka70MAajZGSk8bopr1yH5vmQ2MO0pSWez6v7g==/sl_iv/YXtyIP/ucQMbF3I928quYQ==/sl_hm/",
+    "enableThumbnail": true,
+    "tcParam": "start",
+    "width": 170
+  },
+  "pluginsConfiguration": {
+    "CONTROL_BAR-PLAYER": {
+      "data": [
+        {
+          "label": "Barre de progression",
+          "control": "progressBar"
+        },
+        {
+          "label": "Playback rate custom steps",
+          "control": "playbackRateCustomSteps"
+        },
+        {
+          "label": "Playback rate steps",
+          "control": "playbackRateSteps"
+        },
+        {
+          "label": "Capture Image",
+          "control": "download",
+          "icon": "screenshot",
+          "key": "c",
+          "zone": 1,
+          "order": 2,
+          "priority": 2,
+          "data": {
+            "href": "https://traitgpu02.wsmedia.p.sas.ina/thumbs/eiyAOeoaAjbO5RrLK8U0dLg+qXCIYjjz2atGAajal7seT06kejUxvEUecBrNbpSuSeBgJ+9JPh4+KgypaA6hQzYxMfQ3Yd+M9Uk6/zlBovvz/DxRXvOvg+IT5rrozBzjNnRLb4aLhXd7leU2gFLgNsmCGwuLbPZTX2oqSuFC7PSjINk8SpHdiiy7FOm3ve3vk4VM0wzMDpPX8VodrpED7gmm29KblQCHJAigOBBgC7U3ua0mA3/kJOfellGqwkIrHrFMmVNVWW48Craa8p4WB14OoVdRoli1pwp+jmnNa/Jiae7paNsn7S+qv6I5ELR6UuceMdp2FGo8lmWmhxxq43jnKUfS51aOuSBDmLNzBWjpKjI86jpEB9SLlRTLyTYF4CUkUoDnqnUIEwHQ7pCK+f9zUGO4WQUn+w5ZdEAzij/yVOhx28zCDNvG5QoHAHakXFH3FwUk4Sj2taTLXDVJdtoeMOdm4R0oXiMutXbR6kZtDP6GcWYuHXXuaP1XzwXRI3xSB13oOm4GtAnUoX6aOAyfmmxtWFjSabsiaVEjZoeYYvQnktReOO+NelQKpzc+iJowXCsqAVYH/BnToC56DtpXATBAQbImtmrthWXmX06LsEe/grSNFltJ5P1WMVZJre+fPU0ZPWM3s6nxC9j8QbOPEvp8CUjyG9KNcL0A6nmZX6mECtpTszEZ+QJj1/WcfSw9qkcagKDTIKxyru6SGI43F9VO4QkTwvxHaa6jmfbTMJs77ZDFNViEQpx+7PgNUqBuXW8X518zpk/CYY4U6l9BQMD1vNQevQ5Cay51BMtM/w/ww6N4yGe/ajgPqU2f9EElgA9pOO5bUOZFZSle5hqr3nSCIfS/5AqYDTJb6fGArQwNkE8caTGzJVXexNtWy3dkbC3LW+v62mBzPMK7hliyFBwcXV11I8VLllFNFts=/sl_iv/eNov/3yzXO3VpajexHiPNA==/sl_hm/",
+            "tcParam": "start"
+          }
+        },
+        {
+          "label": "Download",
+          "control": "download",
+          "icon": "download",
+          "zone": 1,
+          "order": 1,
+          "key": "",
+          "priority": 2,
+          "data": {
+            "href": "localhost"
+          }
+        },
+        {
+          "label": "Playback Rate",
+          "control": "playbackRate",
+          "zone": 1,
+          "priority": 1,
+          "order": 3
+        },
+        {
+          "label": "backward-start",
+          "icon": "backward-start",
+          "control": "backward-start",
+          "zone": 2,
+          "priority": 2,
+          "key": "Control + Alt + ArrowLeft"
+        },
+        {
+          "label": "backward-frame",
+          "icon": "backward-frame",
+          "control": "backward-frame",
+          "zone": 2,
+          "priority": 2,
+          "key": "d"
+        },
+        {
+          "label": "backward-5seconds",
+          "icon": "backward-5seconds",
+          "control": "backward-5seconds",
+          "zone": 2,
+          "priority": 2,
+          "key": "Alt + ArrowLeft"
+        },
+        {
+          "label": "slow-backward",
+          "icon": "slow-backward",
+          "control": "slow-backward",
+          "zone": 2,
+          "priority": 1,
+          "key": "f"
+        },
+        {
+          "label": "backward",
+          "icon": "backward",
+          "control": "backward",
+          "zone": 2,
+          "priority": 1,
+          "key": "h"
+        },
+        {
+          "label": "Play / Pause",
+          "control": "playPause",
+          "zone": 2,
+          "priority": 1,
+          "key": "espace"
+        },
+        {
+          "label": "forward",
+          "icon": "forward",
+          "control": "forward",
+          "zone": 2,
+          "priority": 1,
+          "key": "Control + ArrowRight"
+        },
+        {
+          "label": "slow-forward",
+          "icon": "slow-forward",
+          "control": "slow-forward",
+          "zone": 2,
+          "priority": 1,
+          "key": "j"
+        },
+        {
+          "label": "forward-5seconds",
+          "icon": "forward-5seconds",
+          "control": "forward-5seconds",
+          "zone": 2,
+          "priority": 2,
+          "key": "Alt + ArrowRight"
+        },
+        {
+          "label": "forward-frame",
+          "icon": "forward-frame",
+          "control": "forward-frame",
+          "zone": 2,
+          "priority": 2,
+          "key": "ArrowRight"
+        },
+        {
+          "label": "forward-end",
+          "icon": "forward-end",
+          "control": "forward-end",
+          "zone": 2,
+          "priority": 2,
+          "key": "Control + Alt + ArrowRight"
+        },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 3,
+          "priority": 1,
+          "key": "m",
+          "data" : {
+            "channelMergeVolume" : false,
+            "channelMergerNode" : "r"
+
+          }
+        },
+        {
+          "label": "Sous titres",
+          "control": "subtitles",
+          "icon": "subtitle",
+          "zone": 3,
+          "priority": 2,
+          "key": "o"
+        },
+        {
+          "label": "Fullscreen",
+          "control": "toggleFullScreen",
+          "icon": "fullscreen",
+          "zone": 3,
+          "priority": 1,
+          "key": "p"
+        },
+        {
+          "label": "Changer l'aspect ratio (a)",
+          "control": "aspectRatio",
+          "zone": 3,
+          "priority": 2,
+          "key": "q"
+        },
+        {
+          "label": "Menu",
+          "control": "menu",
+          "icon": "dots",
+          "zone": 3,
+          "key": "r"
+        },
+        {
+          "label": "Epingler slider",
+          "control": "pinControls",
+          "icon": "pin",
+          "zone": 3,
+          "priority": 1,
+          "key": "s"
+        },
+        {
+          "label": "Slider",
+          "control": "displaySlider",
+          "icon": "slider",
+          "zone": 3,
+          "priority": 1,
+          "key": "t"
+        }
+      ]
+    }
+  }
+}

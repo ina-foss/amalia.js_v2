@@ -1,0 +1,351 @@
+import {TestBed, ComponentFixture} from '@angular/core/testing';
+import {HistogramPluginComponent} from './histogram-plugin.component';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {ChangeDetectorRef} from '@angular/core';
+import {MediaPlayerService} from '../../service/media-player-service';
+import {PlayerEventType} from '../../core/constant/event-type';
+import {MediaPlayerElement} from "../../core/media-player-element";
+import {DefaultConfigLoader} from "../../core/config/loader/default-config-loader";
+import {DefaultConfigConverter} from "../../core/config/converter/default-config-converter";
+import {DefaultLogger} from "../../core/logger/default-logger";
+import {ConfigurationManager} from "../../core/config/configuration-manager";
+import {MetadataManager} from "../../core/metadata/metadata-manager";
+import {DefaultMetadataLoader} from "../../core/metadata/loader/default-metadata-loader";
+import {DefaultMetadataConverter} from "../../core/metadata/converter/default-metadata-converter";
+import {HttpClient} from "@angular/common/http";
+import {AmaliaException} from "../../core/exception/amalia-exception";
+import {MediaElement} from "../../core/media/media-element";
+
+const initTestData = (component: HistogramPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
+    mediaPlayerElement = new MediaPlayerElement();
+    logger = new DefaultLogger();
+    component.logger = logger;
+    const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+    mediaPlayerElement.configurationManager = new ConfigurationManager(loader, logger);
+    mediaPlayerElement.configurationManager.configData = {
+        "tcOffset": null,
+        "player": {
+            "backwardsSrc": "",
+            "src": "",
+            "autoplay": false,
+            "crossOrigin": "anonymous"
+        },
+        "thumbnail": {
+            "baseUrl": "",
+            "enableThumbnail": false,
+            "tcParam": "start"
+        },
+        "dataSources": [
+            {
+                "url": "/notilusDossier/segments/stock?itemBusinessIdentifier=95F05001SA0338_01&tcin=0&tcout=28800000&format=AMALIA&clientId=annotations",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "annotations"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=0&format=1024&mid=waveform-1024-0",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=1&format=1024&mid=waveform-1024-1",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=0&format=4096&mid=waveform-4096-0",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            },
+            {
+                "url": "https://lvltojson.wsmedia.sas.ina/waveform/.../sl_hm/?canal=1&format=4096&mid=waveform-4096-1",
+                "headers": [
+                    "Authorization: Bearer ..."
+                ],
+                "plugin": "histogram"
+            }
+        ],
+        "debug": false,
+        "logLevel": "info",
+        "displaySizes": {
+            "large": 900,
+            "medium": 700,
+            "small": 550,
+            "xsmall": 340
+        }
+    };
+    component.pluginConfiguration = {
+        name: "",
+        "metadataIds": [
+            "waveform-1024-0",
+            "waveform-1024-1",
+            "waveform-4096-0",
+            "waveform-4096-1"
+        ],
+        "data": {
+            "withFocus": true,
+            "enableMirror": false,
+            "zoomMetadataIdx": [
+                2,
+                3
+            ],
+            "labels": [
+                "",
+                "",
+                "Canal Gauche",
+                "Canal Droit"
+            ],
+            "focusMin": 10,
+            "focusMax": 40,
+            "focusMinOffset": 10,
+            "focusMaxOffset": 90
+        }
+    };
+    httpClient = TestBed.inject(HttpClient);
+    const metadataLoader = new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger);
+    mediaPlayerElement.metadataManager = new MetadataManager(mediaPlayerElement.configurationManager, metadataLoader, logger);
+    component.mediaPlayerElement = mediaPlayerElement;
+    return mediaPlayerElement;
+}
+const initTestConfig = () => {
+    return async () => {
+        await TestBed.configureTestingModule({
+            declarations: [HistogramPluginComponent],
+            imports: [HttpClientTestingModule],
+            providers: [MediaPlayerService, ChangeDetectorRef]
+        }).compileComponents();
+    };
+}
+describe('HistogramPluginComponent', () => {
+    let component: HistogramPluginComponent;
+    let fixture: ComponentFixture<HistogramPluginComponent>;
+    let httpClient: HttpClient;
+    let logger: DefaultLogger;
+    let mediaPlayerElement: MediaPlayerElement;
+
+    beforeEach(initTestConfig());
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HistogramPluginComponent);
+        component = fixture.componentInstance;
+        mediaPlayerElement = initTestData(component, mediaPlayerElement, logger, httpClient);
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+    it('should call eventEmitter.removeListener for registered events', () => {
+        mediaPlayerElement.configurationManager.configData = {
+            ...mediaPlayerElement.configurationManager.configData,
+            loadMetadataOnDemand: true
+        };
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        const mockOff = spyOn(component.mediaPlayerElement.eventEmitter, 'off');
+        component.ngOnDestroy();
+        const expects = mockOff.calls.all();
+        expect(expects[0].args[0]).toEqual(PlayerEventType.INIT);
+        expect(expects[0].args[1].name).toEqual('bound init');
+
+        expect(expects[1].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(expects[1].args[1].name).toEqual('bound handlePinnedControlbarChange');
+
+        expect(expects[2].args[0]).toEqual(PlayerEventType.TIME_CHANGE);
+        expect(expects[2].args[1].name).toEqual('bound handleOnTimeChange');
+
+        expect(expects[3].args[0]).toEqual(PlayerEventType.DURATION_CHANGE);
+        expect(expects[3].args[1].name).toEqual('bound handleOnDurationChange');
+
+        expect(expects[4].args[0]).toEqual(PlayerEventType.METADATA_LOADED);
+        expect(expects[4].args[1].name).toEqual('bound handleMetadataLoaded');
+
+        expect(expects[5].args[0]).toEqual(PlayerEventType.PLAYER_RESIZED);
+        expect(expects[5].args[1].name).toEqual('bound handleWindowResize');
+    });
+    it('should remove events from eventEmitter', () => {
+        mediaPlayerElement.configurationManager.configData = {
+            ...mediaPlayerElement.configurationManager.configData,
+            loadMetadataOnDemand: true
+        };
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        const nbListeners_1 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.TIME_CHANGE);
+        expect(nbListeners_1).toBeGreaterThanOrEqual(1);
+        const nbListeners_2 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.DURATION_CHANGE);
+        expect(nbListeners_2).toBeGreaterThanOrEqual(1);
+        const nbListeners_3 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.METADATA_LOADED);
+        expect(nbListeners_3).toBeGreaterThanOrEqual(1);
+        const nbListeners_4 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PLAYER_RESIZED);
+        expect(nbListeners_4).toBeGreaterThanOrEqual(1);
+        const nbListeners_5 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.INIT);
+        expect(nbListeners_5).toBeGreaterThanOrEqual(1);
+        const nbListeners_6 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(nbListeners_6).toBeGreaterThanOrEqual(1);
+
+        component.ngOnDestroy();
+        const nbListernsAfterDestroy_1 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.TIME_CHANGE);
+        expect(nbListernsAfterDestroy_1).toEqual(0);
+        const nbListernsAfterDestroy_2 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.DURATION_CHANGE);
+        expect(nbListernsAfterDestroy_2).toEqual(0);
+        const nbListernsAfterDestroy_3 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.METADATA_LOADED);
+        expect(nbListernsAfterDestroy_3).toEqual(0);
+        const nbListernsAfterDestroy_4 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PLAYER_RESIZED);
+        expect(nbListernsAfterDestroy_4).toEqual(0);
+        const nbListernsAfterDestroy_5 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.INIT);
+        expect(nbListernsAfterDestroy_5).toEqual(0);
+        const nbListernsAfterDestroy_6 = component.mediaPlayerElement.eventEmitter.listenerCount(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(nbListernsAfterDestroy_6).toEqual(0);
+
+    });
+
+    it('ngOnInit should initialize the component', () => {
+        const init = spyOn(component, 'initWrapperWithoutAutoBind');
+        mediaPlayerElement.configurationManager.configData = {
+            ...mediaPlayerElement.configurationManager.configData,
+            loadMetadataOnDemand: true
+        };
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        expect(init).toHaveBeenCalled();
+    });
+
+    it('ngOnInit should throw an exception', () => {
+        const debug = spyOn(DefaultLogger.prototype, 'debug');
+        component.ngOnInit();
+        expect(debug).toHaveBeenCalledWith("An error occured when initializing the pluging HISTOGRAM", new AmaliaException(`Error to init plugin HISTOGRAM (player id : null).`));
+    });
+
+    it('ngOnInit should handle pinned control bar change and other events', () => {
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        const onEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'on');
+        component.mediaPlayerElement.getConfiguration().loadMetadataOnDemand = true;
+        component.ngOnInit();
+        expect(onEvent).toHaveBeenCalledTimes(6);
+        const expected = onEvent.calls.all();
+
+        expect(expected[0].args[0]).toEqual(PlayerEventType.INIT);
+        expect(expected[0].args[1].name).toEqual('bound init');
+
+        expect(expected[1].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE);
+        expect(expected[1].args[1].name).toEqual('bound handlePinnedControlbarChange');
+
+        expect(expected[2].args[0]).toEqual(PlayerEventType.TIME_CHANGE);
+        expect(expected[2].args[1].name).toEqual('bound handleOnTimeChange');
+
+        expect(expected[3].args[0]).toEqual(PlayerEventType.DURATION_CHANGE);
+        expect(expected[3].args[1].name).toEqual('bound handleOnDurationChange');
+
+        expect(expected[4].args[0]).toEqual(PlayerEventType.METADATA_LOADED);
+        expect(expected[4].args[1].name).toEqual('bound handleMetadataLoaded');
+
+        expect(expected[5].args[0]).toEqual(PlayerEventType.PLAYER_RESIZED);
+        expect(expected[5].args[1].name).toEqual('bound handleWindowResize');
+    });
+
+    it('ngAfterViewInit should handle metadata loaded', () => {
+        component.mediaPlayerElement.getConfiguration().loadMetadataOnDemand = true;
+        const handleMetadataLoaded = spyOn(component, 'handleMetaDataLoadedWrapperWithoutAutoBind');
+        const getDuration = spyOn(component, 'getDuration');
+        getDuration.and.returnValue(14921);
+        component.ngAfterViewInit();
+        expect(handleMetadataLoaded).toHaveBeenCalled();
+    });
+
+    it('handleMetadataLoaded should emit PlayerEventType.ERROR event', () => {
+        const emitEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'emit');
+        const getDuration = spyOn(component, 'getDuration');
+        getDuration.and.returnValue(14921);
+        component.handleMetadataLoaded();
+        expect(emitEvent).toHaveBeenCalledWith(PlayerEventType.ERROR, 'Les formes d\'ondes n\'ont pas pu ètre chargées');
+    });
+    it('handleMetadataLoaded should emit PLAYER_LOADING_END event', () => {
+        const emitEvent = spyOn(component.mediaPlayerElement.eventEmitter, 'emit');
+        const getDuration = spyOn(component, 'getDuration');
+        const getHistoList = spyOn(component.mediaPlayerElement.metadataManager, 'getHistograms');
+        getDuration.and.returnValue(14921);
+        getHistoList.and.returnValue([
+            {
+                "posbins": "DA8XFBMTFBISEhIRERETFBcZGBcTExAYHBgbHBkXFRYTExUVExQTEhIWFRMRGRAQFBEXGRgYExoREA4QFRAPFA4PFxcWDxITFRMNERIMCxMUExMdGhIQDxIRFBQTGBkjKB8eFRYXFBcYFhgTDBEODQwPDw4MDREOEBASDgweGhcYFhQTERQaGBgREBQYIBQSEQ4PEBMTExASDxIRCwwNDhcWFBwXIiAZFxwZFxYTFhYUFRoUExYVGCIiHiEfGxkUFRcWFRgZHh4cDxAOEA4NDhIUFRERDxEREBESEBMRFBIUEBISGBgYFxUVExQVGBgXFxYYHBgXEw0YEhEQDxANDg0XGRQaDAsQEBATFRMRERAPDgoNCwwPDA0QDRMXGRcLCQsLDQ4XGBcSEA8QDg4NCg4YFRcWDAwLEwoHDA0MEw8RGRYPEBcXGRYXFxoWFxkVGBUZEhASFhIQDhMWExcUERIXFxgVFg4TExQWFhIWFBQREQ8RExcPFBEbGxodHB4aGRohICAfFBkWHBkWDhAQFQ8TDRQSEBITFBIQDAsPDxcVGR4bHh8bHSIeGhoODg8ODQwOCwsMDQ0ODhEOEQ8NChATDxEYFhEREhYVFRYXFRgRExAYHhsZFhYbEg8ZGRgZGBgYIBwVHSMaFRMcGhgYGRIXFhQTFQ8NDQ8KCAkPDQsKCwkJCAkHCAYICA4KCQoICgkJCQkJBwcICQkICQkMCgsKDAgGCAgHCAoICAUJCgoGCAsKDAwKBgQGBQoKCgUJChASGRwfISAZExEQCwwJDQsMDAwJCggKCggIBwYHCQoKDg4NDAoMCwsKDQ0NCwwJCQcHBwwHBQUGBQgHCAsLCAsLDQsJBAoHCAkJBwUICAcHBQYHDAgGBwoEBAUFBAUFBAICBgQDCAwHCQsIBgYGBgYNCQcHBwcHBQcICAkFBQUFCAgGBQkIBQgGCAgHCAwICgkKCQoKCAYFDwkGBwgHBwcHBQsGBQcFBwcJCAYGBQYKERAODw4PDwkNDBMQEBASEgsKCQgICQ4ICAcHCgsSEg0UDw4RDQ0LCgoKEhAQEQ8ODQsODAwKCQoTDwsOEA8NDg8NDgsNEQwPEg0LEQ4NDAoHBwwUEhAODQwLCw8NCAkICAgJCgkJCA4QDAoKDA8SCwsGBgcHBwkIBwUHCAgHCAkHCQ0LCQoQCgoKCgkJCgsMCgsTEBIREAsKCAgICQsJCw8NDQ4NCgoJCgcHCAYHBwoVCAwMDRERDw4QFg0QDAkMCwoLCAkNEA4RFBMODhAOEQoJCwkMDAoJCAsMBwwKCAkICQgLCAwMCAYJCwgKCwsMCgsNCw0ODgkMDAsJCgoLCwsKCQkJCQwHCAgHBQYFBA==",
+                "negbins": "Cw4TEQ8QEA8VFREUEhQRERQWFRQPDw0WHBgZHBgVFRYQDxEREBQSEhITEQ8OFQ8QEg4UFxYVDxwSEQ8SFhEQFg4MExMTDBARFBIMDhAKCRMUFBMbGREPDhEQExMRFRYeHRocFBUXExYXFRkVDRMQDw0REQ8NDhANDxASDQsdHBkaGBUUExYaGBgSERQWBAQUEQ8QDxITFBIUEBMSDA0ODhUTERkXHx0ZFxwVFhYTFhUUFBcUExMVFiEgGx4cGRgSExYTEhQWGxoYDg8NDw0MDRATExESEBISERETEBQSFRMVERMTFxYWFRIQDw8QExMSEhETFhQZEQwXFBMSEREODw4XGBMZDg4TFBMXGRYUExEQDwoMCw4RDRATDxQWGRcLCAoKDw8XGBcSDwwNDAsOCxAWExUVDQ0MEwsIDg4OFBARGBUNDhYVGBUWFhoWFhgVFxUYEw0OEg4PDg8RDxIQDg4SEhMQEQ4PDw8SEg8RExIQEA0OExYOEA0WFhUYFxkVFBUcGxsaEBQSFxUSCw0NEQwPChAPDQ8QEA4NCQkMDRgVFRoXHBoZGhsaHBoPDxAPDw0PCwsNDQ4PDxIPEg8KCA0PDA0TERAODhETERITERQODw0UGRYVEhIWEQ4VFRQVFRQUHBgSGR4VEQ8XFhMTFBAVFBMREw4MDA4KCAkODQsLCwoJCQkICAYGCA8JCwkJDAcJCgwMCgkKCwkJCQkMCgsJCwgHCwsJCQoHBwUICQkGCAkICQkJBwYIBwsKCgUKChATGh0gISEZFBIUERINDgkKCgwKCgcKCgoKCQgICggJCwwLCggKCQsJCwsLCgoICQYFBgwGBAQHBgsJCQ4RCQoJCwoJBgsJDQ8PCwYGDQwKBQoLEQwLCAsHBwkIBwgJBQMDBwQDCQ4JCQwJBgYFBQULCAYFBQYGBAYHCAkFBQQEBwYFBQkIBAgFBwcGBwwJDQoMDQ0LCQUEDwsIBwsKCgkKBg4GBQgHCQkKCQYGBgYJEBAODg4PDgkMDBIPDw8REQsKCQcICQ0HBwcGCQoREAsSDwsPCwwJCAgJEg8REhAPDwwODw8MDAwSDgoNDw4NDQ4MDQoMEAwPEQ0NEQ4NDAwICAwUEhAODQwKCw4NCQgHCAgICQgICgwODAkKDA4RCwwGBwgICAkJCQcJCwoKCgsJCg0KCQoQCgoKCQgHCAgKCAkSDxEQDwsNCgoKCw4LDQwKCgsMCgoJCggICQYHCAgTCQ4PDg4SDAsNEwoNDAoNDAsMCAoNEA4QFBIODhAOEQwMDgwPDwwMBwkKCA0LCAoICQgKBgoKBwgLDgoMDQ0ODAwODA0ODggMCwoKCwsJCgoKCQkJCAsHCAcGBQYFBA==",
+                "nbbins": 1024,
+                "posmax": 40,
+                "negmax": 33,
+                "id": "waveform-1024-0"
+            },
+            {
+                "posbins": "CA4MDQoPEhAOHB0WExAYFxUUDxMdDw8SFBEXFBEUEhISDxIWFBUREBEQFRITEQ8REQ8SEg8TDhQOFBMVEBkQGRIXGhscFhsWFxcaGBQWGhsVExAVEhQTFBAPEg8RGBodFyEcGxsVGBcWHB4cGx0eGhoVGBwZFBYYFBEVFxYXFhgWEBEUFRUNFxUXFxQUExEXFBIOFxIVFBIUERUTDxQSFBATERERGhoWExUWFhIXDRMNEQ0eHRcaFBERExAODBQMFg8SFhEUDxAMGh0bFRkaGhgdFBghHBEREhMSExgiGhQLERkNCxATFw0KFAkUDw0WEhUSGhALEBASDQ4MGxwPDBMHEQ4PDwwQHBkWEx0ZEhMcFhYQDwwPEgoUFRMSFBUUEBkUFhMXFQ0NDA4PExUIHR4RCgkQCwoJDA0MCBUTExUUGBEVExUTERgVEhAlIRcTHxMeGxAQEhAPEhAQEg0NDg4PFBwREBEUFRkPDxANGxwSEgseGBkVFhcYHCAgIyciJigrIxodKhomHxkXFBYTGRYTFhYUFSAVFBQSFhUVGBcYHBYVGBkSGhgTHRQRExgODgoJERgSChAQEQsMCgwTDAsKEgsXCwgVEQwPDQgTDw4MCw8LDA8KDRUTEAwQDRAODhESEA8NEBYRGBAODw0ODQ0LDA4WISoaGhsYHRkZExoXFhgWEB0WFBoVDhUSEBIVEQ8TFRMSFR0VGRoXGRYZHhYXFhUSEBIOExAODxIWFxcSGxkfIRslGhIXDhMRFBISDw8TDg8NDxAQDg8OEA4OFBIUEhITExUSEhcSERASDw4ZExASEQ8MEhIQEhAQEBQLDQ8JDQ0KCA8MDA4SDw4GHRUZEhYUExkSGg0cGxwnDxoaFhIaFjAmHyobGxwXFxwZFxcXGB4aHR0TGRsZGBoVFRcWFRcTFQ8WFhYYFRYSGxoPFRQSExMXIigRDxUTFhMVEhEUERgaFBQUFxEbCx0gHRcnKCkYKh4iHx0eIiIlHCMdIBwbHRobGRsYHBUVFxAQFhIZFxIXHBYUGRYWEhUYGBsWFBgbGBgdGyAgICAcGxwgHxgMEg4RDBURDBAPDA0SDg4TEwQTDgwODwkODBAQFBUQDxoVEhASERQaDxQQExETDhEODw0QDhEREhISDhIPDxARExANExEQFBQQEA0TFREUEhMTEBAVDhUWFBIRExUSERYQEhAQFRMREBMSFBEOHhobGBgXGBgcFhYVGRcWGBYWERkVEBUTEBQWEhcVEhcSGREXECMWFxgdFRcWGBYVHBYWFQ4WHxcXExwgGxwZHB0VEhoSGBkQFBMTDQ4NDRYeFxYRExETDhESFBIPDxEOEQ8RGAwODAwPDQ0PDgwNDBAMDQsaFx8bHhgRDxMfEhgfHBENDA4KCQwMDRAQDxIPDxMNEw8OEhMUExIRFhYXFg8TEhYREQ0OEBQSDRIQDxAUDQsNDg8OCg0KCQ4NCgwHDA0MCgoNDgwRERAMCwsMDA0NEBAPERIMDAwRDhAXFxUUGhgTHRkeGB0TDAoOCwgKCQgMCwsMCwkJCREODAwODAkUERgYFRkVGhgXFxkUFRUUDg0PDhEWEg4MDg4REBIPEA0ODw0PDA4ODQsLCAwKEQ8OEhoXFxcTFxMVFhgXGBgWFhILDQwICwoMDgsNCRAXEhAOCggJCAUHCAgHCg8VEQ0KChEMCwwUExATDg4OEA0PFBkVGhoXGhYTEA0PDw8QDxIQGhYYFRkZFxEsGBAXGBEXHhQVFxUYGRcZGRkbGRQdFhUYExYdFR4YFRYWFhcZGBEdFBUXFhocFhIRExMVCBQRExIPDB8aFRMOERIXFhEODQwRCw0TExIRFhUXGBIVEhUSFRMdGREWExMRChMVEhESFxgVGRMaEhsZFhgeFxUSGBAZFRIZEg4KDBcRExIQEhQYFA8YFhIXGRUcGBANCBgXFxYSFhsPCSAWFREUEhAQEBQPExEQDhAPEA4RExIUEw4gHRETDhMPDBMgEw4NCxQUExYhGxkYJhQfGxYWIyAaHB8cHBgcJhgcHh0cFB4fFxEaFx0VGSwdHhsjICIiIh8kIRsjHBEOGxkVHBwZEg0cGhwhIhIfGBcXIBMSFBEUDA0JDRETDREQExQWFxIRDwwNEhMaDgsKBhgVERAdGAoPFRIJDhUVEw4VGBQTDxEREB0TExYNDg8VDgsLCw4MBwkPDQ0OFA4IBh4NGxccFRYYEBMTHx0eHRwgGxocGxwfHCEeHiAfIBkZHBodHh4jIyEiIyAaHBkYHBsfGhcZCxMMDw0QDAwPEA8OEBELDQwNDQ8IDBMKDA0QDRAKCgkMCgsJCwoQDA8ODAwLDQ4NExAIDxEODwwPEhIQDwoPDxUMERIODQ0UEA8LCgkIDgoLERUQDxgXDxANDhEUCxIRFxwaEhMUGBcaEgwLEBAUEREPERcVFhIZFhYbDhgXGA4XFxQXExMXHhMXDxkXEiMWFxMMDxMPERcODhESGBQVICcbHxkWGB0gFhcfFxoWEBgTGRcSEhsgHxMQFg8KDxEVGhUWHhwYGhQVHhYaHhcbFA8aGxsVER4fHx8XCh0XFzgyGRISFBoUEhkfIRoiISUnHB4VGBwWEQ4QEREaHyAZFyAUIhMgHBQSGRQVHhYYIRUPEw8YFRoaFBcWFxISEhkVFBESFRYWEg8SEA0MDw0LDg0LChQQDw8PEgQICQcFDQkIBgkNDRMPDQ4KDg0MCwkJCQsMCQoPDAgICQgMCQoJCAoHBwgNCAcHCAQHCgcKCAYFBgcEBgcJDgwIBgQMEQ8RCAwICQoICwkKCQsJCQcJCAkKCwwKCQkFDAcHCQkIBwoLCwgICwkIBwkIBgcGCQUKCAkGBwsHCAkGCwcJCAsICQoJCAcICgoMDA4KDQoJCgoODQgLCgkICgoNDAwIBwkGBgYFCAkICQcJBwgIBgYIBwYHCQsNCQgJBwgIBgkHCQoFBAQEDQoGBwcGCxQHBwkQBwUDBQcICgwJCgwICQwKCw0PCgsLDA4PDgcGBwQGBwUEAwQHBgUFBgYEBAYNDQgQBgUODgkLBgcGBQQFDgwGCAYKCgsJCBwfIA8FDBUiGicgEhgkJhkcGiYtGhYXIiQwHQ8QGBsSDgsSEBQUFgoMDggODQ4LDAwHCQoHBw0TDAcNDAsMCw8MEAsMCwwMDA0JCgwHCQsLCQkICAoGCAwLCwgICQsJCAkHCAYICAcFCQYFBgYIBQcJCQoLCAUOCQkIDQsJCw0QCxALDg8PCw0NDwwKDAsLCAkLCg4NCg4MCAgJDQ4LCgkLCw0NDQ4NDA4QDg0KDQkNDAsLDAwMCQoICQkJCAcFCAgEBQoIBgQIBwwGCBQJBgQKBwMEBgcGBQIBBQYLBQUEBQQGCgsKBgYFCAcJCQgMCwwLDQkMCwQKCA4KCQwJCwwLDg0KDgwKDAoKBw0IBAMDBQ0KCwcHBgoGBwUIDAkKDAgICgoKBwgFBgQFBAgKBQcIBwgKBggGCgYICAYFBQQFBAUEBgcJBgcIGgYGCAcGDAUGBgcFBwUICAcICRAHBAMFAwYEBAYGBQQFBAMJBAQEBgMFBgQEBQcFBQQFAQAEAwQBAgMEAgQJCAkCAQQEAwIEBAMGEBASBAoGCQUJCwcGCgwGCRIOBwcECQMJBAQFBggFBgcFBAcJBQgFBgUKCAgaCg0IBQkGBwYJBgUGBgkGBgcECQoLBQcEBQUDBwMLCgUHCgcIBgYHDQcKCAkHAwUIBwcEBAQGBgMFBQYFBwQMBwYGBg0EBQgFBAEIBQcDChINCAQGAwgFBQUGCAwGBgQHCAgJBwUNCQcIBwQKBwgDDQgKEQsLCgkDCQoKDQwKBgcJBQgVDwgIBggGBxgNCgYEDggFBgcHBQQFBQUGCAkJJBAHBQYEBQgIBwUIBgkJCAUHBgcJCgYHBQYFCQcGBgoGBAUGBQkKEQoHAwYFBAcDBwQHCgYEBgUGBwgHBQgIBQYFBwcRDQYGBAUHBgUGBgcGBQYGBQYHBgcICAwQERQMEQoVEw0QDg4RDA8PEBANDQwMFQ8MEhIKDQkIBw0KEAwMCwwLEBETERcRDxAPDxAQEA8QEQ8SEQ4bExISDgsJCwgKCgsKCgkKBgkFBw0GBwYHCAsLCw4RDQsLBgcKCAkGCAgGCQcGBwgGCw4HBgcGEhETExERCSAQDhARCQseERQKEw8MExIODQwOEhQQDAcPEw8LDAoLCwsLCQoKCgoMCQoLCgkTERIQEA4REQ8QFBENDxQSCxIMEg0LEA8NDQ4PDwsKCggSEgkODA0MDQ0NCwgLCgkJCQoICQwKCQoWFBEPDhIPDQ0JBwwNDQ4RDRcSDQsNExAMDgwLDREPCwsNFhUJEAoQCxAQCQcOCw4MDQwSEg8QDxMKBg0PDxESEBURDQkQDgwJDg0PFQ8NEQ0PDQwPDA0NDQ0KDAgGDQ0FBQkKCwcDAhQNDAwYGhIPEBMSEQoUEg8NEA8PDg0MDQsMDAwJCwsMCgoNDw8MEA0ODg4LBwsGCQoICQcICAgJCAkIBwsGCQYJCQkIDQsICQkKCQoJDAQFCQUMDw8MCxIOEQ8ODg0HCAoJCwwLCwcIBhATDBAPDxcUDQ8PDQkJCxAMBwkGBQUCBQkHCAcGBwcGBwgHCAgICQgGCREHBQYFBgYIBggEBAUFBwsICAkICAcNBgULCAUHBwoLCQkKCQYHBgcHBQ4LEgsJDQwNCggLCQoHCgsMCAwJGRILCQoLCgkLCQsKCgsNCAcKCggICwkKCQcNBgsJCQ4KCgsODwoKDAsJDAYNDBYWEBAQDhEPEA4OGhINDhYRDhEQDgwKBwsKCgkIBQsHBwgJCAgKBwgICQsJDQkLCwYLBg4KCAwMDAoWDw0PEAgQDwsKEAcREQwYCwUKCQkLDAkKCAkICQkODgcFBwcHCggECAgICAgJBQYGBwkHBgQFBggJCgkIDAsMHSEMBAYIFAkKDAgODAoLCA0VDRIRFBgYCwkOCxMRCw0OFBIODRARFh8TDA4NDQ4KEBsPDAoHCAsLCBALCQsMCAwMDgwFCQoMCwsIBgoGCAYKDQkNEBARDRQREQkOEA0KHBMVExUQEhIQFxEPDwoUCwwNDA0RFQ4LDhQaGAkFBAgRDAcHCQ4OCwoICQoKDAwLCQ0NDgkKCQkMCwoLBwgDBgsLCg0LCgwNDAgJCQcGDQkLDAoJCgsKCQUGBQoOBwUECw0UBwQHBgkLBg4ICQwIBQcLDBANDBMHDAsNBwMFBQYIBwcJBQ4KDQoKCgoGBAkNCQsICwsOCgoMCwwLDwgJDAcJDAsNDgwOCw0NCwoHChQOCA0KDhcNFA0JBggJDQwLDw0NCgoODggJCggJCgwKCwoLCwoJCQsMCgkLDQsKCg0KCgoKCgoLCggGCQgKCgkKCQsGCwoJDQ0NCAYHCAcGCQoLCQYGBwcGBwUGBgUGBgcGBQUFCAcFBgE=",
+                "negbins": "Bw0MDAkOEQ8MFRgSDw0TExIQDA8bDAsPEA4SEQ4QDg4VERUZFhgVExUOEQ8VFRIVFBIOFRIWERYRERARDBUNFhAUFxgZFBgTFBUXFRETFRYQDwwRDhAOEA0MDwwNFBodFyEbGxsUGBcWGBwcGx0dGhoVGBgWExYXExEUFxUWFRcVDQ0QEREKExATEhAQEA4TEA8MFxIVFBITERQTDxQSFBASEREQFxUSDhESEg4SChAKDQoaGBIWEQ0PExAODRUMFw4PEg4QDA0KFxsZExcYGBYbEhUeFw8ODxAPEBkkHRYMEhsOCxEUGQ4LFgoVEA4ZFBYUHBIMEhEUDg8MHh8RDhUIDgsMDAoNGRQSEBcVDhAYExIODAkMDgkSExISExISDhcTFhIVEw0MDQwMDxEGGhsOCAgNCQgHCgsKBhMSExUUGBEWExUTERgVEg8jIBYTHhIcGQ8QEQ8OERAPEQwNDQ0OExoQDw8TFBcODg8MGRoREQkbFhcTFBUVGB4eHR4cHB4fGxgaHBcjHhgWExUSGBUSFRUTFB8VExMRFRQVFxYXGxUUFxgRGBkUHhYTFRsQEAwLEhsUCxESEgwNCw4VDQwKEwwaDAkXEg4RDwgVEA8NDRAMDRALDhYRDgsODA4MDRAQDg4MEhoTFw4NDgwNDQsLCw0SHS0cHB0bHxsbFRwZGBkYEh8YFhoXEBcUEhMWExEUFxUUGB0VGBoWGRYYHhYWFhcTERMQFBIPEBQWFRUQGBcZAAABAAAACBUTFxITDxATEBAOERESEBENEA4NExETEhESEhUSEhkTEhETEA8bFRIUExANFBQSExIRERULDhAJDg4LCRENDA8UEQ8GHBMVDxMREBUPFgsYFxgiDxoaFhEZFishGyUZGxsXFxwZFxcXGB4bHRoQFRYVFBoVFBcWFBcTFA8WFhYYFRYSFxYPFRQSExMWHSMQDxUTFhMVEhEUEBQVExQUFxAWCRweHBcmJygWKBofHBsaHh4iGSAaHhoZHBgYGBoXGhISFA8PFREXFREWGhQRFRESEBIVFhgTEBMYFhcbGB0dHR0ZFhYaHBcKEQwQChMQCw4ODAwSDAwREQMRDQsNDwgNCw8PEhQPDhkTEA8RERMZDhIQExMVDxIPEQ4RDxISExMTDxMQEBESFBAOExEQFRUQEQ0UFhIVEhMTEREWDhYXFBMRFBYUEhcQ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CgsCAgMFAwIEBAMIFBMWBAsHCgYLDQgHCQoECBgPCAcFCAMIBAUFBQcEBQYEAwcHBAYEBQQIBgcXCAsHBAcFBgUIBQQFBQcFBQYEBwgJBQYEBAQDBgMKCQQGCAYHBQYHDQcLCQoGAgUIBwYDAwMFBQIEBAUFBwQLBgUFBQsEBAcEAwEJBgcCChIMBwQFAgcFBAUGCAsFBQMGBwYIBgQMCAYHBgUJBgcDDgkKEQsLDAoDCg0NEA4LBwgLBQkYFAsLBwsICh0QDQcDEgkEBQYGBAMEBAQFCAgIJRIKBggGBwkJBwUIBwwNCwcKCQoMDggKBwgHDAoICA0JBgYHBQwNFQ0JBAYEAwYDBgMGDQkGCAcICQsKBwsKBwgGCggSDgYKBgUIBwUHBgcGBQYGBQYHBgcICAoMERQLEAkVEgwPDg0QDA8PDxAMDQwMFQ4MEREKDQkIBwwKDwwLCwsLEBASEBUQDQ8ODg8PDw0PEA8RDw0bEhIQDgsJCggKCgsKCgkKBgkFBwwGBwYHCAsLCg4QDAoJBQYJBwgFBwcGCAYGBgcFCw0HBQYFERASEhAQCR0NCwwNCQseEA8HEw8LEQ0LCgwOEhEMCQUOEg8KCggJCQoJCAkICAgKBwgKCQgSEBIPEA0REA4QFhMOEBYUDBQNFA4MERAODxAREQwLCwkREQkRDxAPEBAPDQoNDAsLDAwLCw8MDAsWFBAODhEODAwIBwsMCw0QDBYRDAsMEg8MDgwKDBAOCwsMFBMIDwgPCg4OCAcNCg0MDAsSEQ4QDhIJBg0PDhASEBQRDQgRDgwKEA8PFQ4NEQ0PDQsODA0NDQ0JDQoHDg8GBQoLDAgDAxMMCwwXGRIPEBMSEQkUEg4NDw4ODg0LDAsMCwsJCwsLCgoMDg8LEA0NDg4LBwsHCQkHCAcHBwcJCAkHBwwFCAUJCAgIDAsHCAkJCAkICwUHCwcODg0LChAMDw0NDg0HBwkJCwsKCgcIBg4SDA8PDhYTDA8ODQgICxEMBwkHBgYDBQkICQgHCAgHCAgHCQgICgkHCRAHBwgHCAgLCAoGBQYHCQ8JCgwLCggQBwYOCgcJCQ0NCwsMCwgJCAoKBg4LEgsJDQwNCggLCQoHCgsMCAwKGBILCgoLCwkLCQsKCgsNCAcKCQgHCAcIBwUKBQkIBwsIBwgLCwcICgkHCgULCxUWEA8PDhAOEA4NGRANDRUQDRAPDQwKBw4MDAwKBw8KCAoLCgoNCQoKCw4LEAsODggNCBEMCw8PCwcSDAsMDAYNCwkIDQYODQoXCwUKCgkLDAkLCAkHCQkODwgGBwcICwkECAkICQkJBQcGCAkHBgYGCAkLCQgGCgkKHB4NBQcLFQsNDwsRDg0OCgwRCg4OEhcWDgsLCREOCQoLEA4MCw0OFBsQCgsKCgsIDhcNDgsHCAwMCREMCQwNCQ0ODg0GCgwNCwsIBgsHCQcKDQoNDxARDRMSEQkNEA0KGhMVExUQERIQFREQDwoTCwwNDA0SFQ4LDhQZFwkGBgoSDwoJCxIQDwwKCw0MDhAOCw8QEQoNCwsPDg0NCQoECAoIBwsICAgLDAkKCgcHDgoMDQsKCwsLCgUGBQoPCAUECgwUBwQHBgoLBg4ICQoGBAYICQ0KCQ8GCQkKBgQHBggKCgkLBxIMDw0MDAwIBQsQCw0KDQ4QDA0PDQ8NEgoLDwkMDQwOEA0PCw4PDAsIChQOCA0KDRYMEw0JBggIDAwLDg0MCgoNDQcICgcKCwwLCwsMDAsKCQkLCQgKDAoJCQwKCgoKCQoLCggGCQgJCgkJCAoGCgkIDAwLBwYHCAcGCAoLCAYGBgYGBwUFBgQGBQcFBQUEBwYFBgE=",
+                "nbbins": 4091,
+                "posmax": 56,
+                "negmax": 52,
+                "id": "waveform-4096-0"
+            }
+        ]);
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        component.mediaPlayerElement.getConfiguration().loadMetadataOnDemand = true;
+        fixture.detectChanges();
+        expect(emitEvent).toHaveBeenCalledWith(PlayerEventType.PLAYER_LOADING_END);
+    });
+});
+
+describe('HistogramPluginComponent test with fixture.detectChanges', () => {
+    let component: HistogramPluginComponent;
+    let fixture: ComponentFixture<HistogramPluginComponent>;
+    let httpClient: HttpClient;
+    let logger: DefaultLogger;
+    let mediaPlayerElement: MediaPlayerElement;
+    beforeEach(initTestConfig());
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(HistogramPluginComponent);
+        component = fixture.componentInstance;
+        mediaPlayerElement = initTestData(component, mediaPlayerElement, logger, httpClient);
+        const getPlayer = spyOn(component.playerService, 'get');
+        getPlayer.and.returnValue(mediaPlayerElement);
+        const getDuration = spyOn(component, 'getDuration');
+        getDuration.and.returnValue(14921);
+        const getHistoList = spyOn(component.mediaPlayerElement.metadataManager, 'getHistograms');
+        getHistoList.and.returnValue([
+            {
+                "posbins": "DA8XFBMTFBISEhIRERETFBcZGBcTExAYHBgbHBkXFRYTExUVExQTEhIWFRMRGRAQFBEXGRgYExoREA4QFRAPFA4PFxcWDxITFRMNERIMCxMUExMdGhIQDxIRFBQTGBkjKB8eFRYXFBcYFhgTDBEODQwPDw4MDREOEBASDgweGhcYFhQTERQaGBgREBQYIBQSEQ4PEBMTExASDxIRCwwNDhcWFBwXIiAZFxwZFxYTFhYUFRoUExYVGCIiHiEfGxkUFRcWFRgZHh4cDxAOEA4NDhIUFRERDxEREBESEBMRFBIUEBISGBgYFxUVExQVGBgXFxYYHBgXEw0YEhEQDxANDg0XGRQaDAsQEBATFRMRERAPDgoNCwwPDA0QDRMXGRcLCQsLDQ4XGBcSEA8QDg4NCg4YFRcWDAwLEwoHDA0MEw8RGRYPEBcXGRYXFxoWFxkVGBUZEhASFhIQDhMWExcUERIXFxgVFg4TExQWFhIWFBQREQ8RExcPFBEbGxodHB4aGRohICAfFBkWHBkWDhAQFQ8TDRQSEBITFBIQDAsPDxcVGR4bHh8bHSIeGhoODg8ODQwOCwsMDQ0ODhEOEQ8NChATDxEYFhEREhYVFRYXFRgRExAYHhsZFhYbEg8ZGRgZGBgYIBwVHSMaFRMcGhgYGRIXFhQTFQ8NDQ8KCAkPDQsKCwkJCAkHCAYICA4KCQoICgkJCQkJBwcICQkICQkMCgsKDAgGCAgHCAoICAUJCgoGCAsKDAwKBgQGBQoKCgUJChASGRwfISAZExEQCwwJDQsMDAwJCggKCggIBwYHCQoKDg4NDAoMCwsKDQ0NCwwJCQcHBwwHBQUGBQgHCAsLCAsLDQsJBAoHCAkJBwUICAcHBQYHDAgGBwoEBAUFBAUFBAICBgQDCAwHCQsIBgYGBgYNCQcHBwcHBQcICAkFBQUFCAgGBQkIBQgGCAgHCAwICgkKCQoKCAYFDwkGBwgHBwcHBQsGBQcFBwcJCAYGBQYKERAODw4PDwkNDBMQEBASEgsKCQgICQ4ICAcHCgsSEg0UDw4RDQ0LCgoKEhAQEQ8ODQsODAwKCQoTDwsOEA8NDg8NDgsNEQwPEg0LEQ4NDAoHBwwUEhAODQwLCw8NCAkICAgJCgkJCA4QDAoKDA8SCwsGBgcHBwkIBwUHCAgHCAkHCQ0LCQoQCgoKCgkJCgsMCgsTEBIREAsKCAgICQsJCw8NDQ4NCgoJCgcHCAYHBwoVCAwMDRERDw4QFg0QDAkMCwoLCAkNEA4RFBMODhAOEQoJCwkMDAoJCAsMBwwKCAkICQgLCAwMCAYJCwgKCwsMCgsNCw0ODgkMDAsJCgoLCwsKCQkJCQwHCAgHBQYFBA==",
+                "negbins": "Cw4TEQ8QEA8VFREUEhQRERQWFRQPDw0WHBgZHBgVFRYQDxEREBQSEhITEQ8OFQ8QEg4UFxYVDxwSEQ8SFhEQFg4MExMTDBARFBIMDhAKCRMUFBMbGREPDhEQExMRFRYeHRocFBUXExYXFRkVDRMQDw0REQ8NDhANDxASDQsdHBkaGBUUExYaGBgSERQWBAQUEQ8QDxITFBIUEBMSDA0ODhUTERkXHx0ZFxwVFhYTFhUUFBcUExMVFiEgGx4cGRgSExYTEhQWGxoYDg8NDw0MDRATExESEBISERETEBQSFRMVERMTFxYWFRIQDw8QExMSEhETFhQZEQwXFBMSEREODw4XGBMZDg4TFBMXGRYUExEQDwoMCw4RDRATDxQWGRcLCAoKDw8XGBcSDwwNDAsOCxAWExUVDQ0MEwsIDg4OFBARGBUNDhYVGBUWFhoWFhgVFxUYEw0OEg4PDg8RDxIQDg4SEhMQEQ4PDw8SEg8RExIQEA0OExYOEA0WFhUYFxkVFBUcGxsaEBQSFxUSCw0NEQwPChAPDQ8QEA4NCQkMDRgVFRoXHBoZGhsaHBoPDxAPDw0PCwsNDQ4PDxIPEg8KCA0PDA0TERAODhETERITERQODw0UGRYVEhIWEQ4VFRQVFRQUHBgSGR4VEQ8XFhMTFBAVFBMREw4MDA4KCAkODQsLCwoJCQkICAYGCA8JCwkJDAcJCgwMCgkKCwkJCQkMCgsJCwgHCwsJCQoHBwUICQkGCAkICQkJBwYIBwsKCgUKChATGh0gISEZFBIUERINDgkKCgwKCgcKCgoKCQgICggJCwwLCggKCQsJCwsLCgoICQYFBgwGBAQHBgsJCQ4RCQoJCwoJBgsJDQ8PCwYGDQwKBQoLEQwLCAsHBwkIBwgJBQMDBwQDCQ4JCQwJBgYFBQULCAYFBQYGBAYHCAkFBQQEBwYFBQkIBAgFBwcGBwwJDQoMDQ0LCQUEDwsIBwsKCgkKBg4GBQgHCQkKCQYGBgYJEBAODg4PDgkMDBIPDw8REQsKCQcICQ0HBwcGCQoREAsSDwsPCwwJCAgJEg8REhAPDwwODw8MDAwSDgoNDw4NDQ4MDQoMEAwPEQ0NEQ4NDAwICAwUEhAODQwKCw4NCQgHCAgICQgICgwODAkKDA4RCwwGBwgICAkJCQcJCwoKCgsJCg0KCQoQCgoKCQgHCAgKCAkSDxEQDwsNCgoKCw4LDQwKCgsMCgoJCggICQYHCAgTCQ4PDg4SDAsNEwoNDAoNDAsMCAoNEA4QFBIODhAOEQwMDgwPDwwMBwkKCA0LCAoICQgKBgoKBwgLDgoMDQ0ODAwODA0ODggMCwoKCwsJCgoKCQkJCAsHCAcGBQYFBA==",
+                "nbbins": 1024,
+                "posmax": 40,
+                "negmax": 33,
+                "id": "waveform-1024-0"
+            },
+            {
+                "posbins": "CA4MDQoPEhAOHB0WExAYFxUUDxMdDw8SFBEXFBEUEhISDxIWFBUREBEQFRITEQ8REQ8SEg8TDhQOFBMVEBkQGRIXGhscFhsWFxcaGBQWGhsVExAVEhQTFBAPEg8RGBodFyEcGxsVGBcWHB4cGx0eGhoVGBwZFBYYFBEVFxYXFhgWEBEUFRUNFxUXFxQUExEXFBIOFxIVFBIUERUTDxQSFBATERERGhoWExUWFhIXDRMNEQ0eHRcaFBERExAODBQMFg8SFhEUDxAMGh0bFRkaGhgdFBghHBEREhMSExgiGhQLERkNCxATFw0KFAkUDw0WEhUSGhALEBASDQ4MGxwPDBMHEQ4PDwwQHBkWEx0ZEhMcFhYQDwwPEgoUFRMSFBUUEBkUFhMXFQ0NDA4PExUIHR4RCgkQCwoJDA0MCBUTExUUGBEVExUTERgVEhAlIRcTHxMeGxAQEhAPEhAQEg0NDg4PFBwREBEUFRkPDxANGxwSEgseGBkVFhcYHCAgIyciJigrIxodKhomHxkXFBYTGRYTFhYUFSAVFBQSFhUVGBcYHBYVGBkSGhgTHRQRExgODgoJERgSChAQEQsMCgwTDAsKEgsXCwgVEQwPDQgTDw4MCw8LDA8KDRUTEAwQDRAODhESEA8NEBYRGBAODw0ODQ0LDA4WISoaGhsYHRkZExoXFhgWEB0WFBoVDhUSEBIVEQ8TFRMSFR0VGRoXGRYZHhYXFhUSEBIOExAODxIWFxcSGxkfIRslGhIXDhMRFBISDw8TDg8NDxAQDg8OEA4OFBIUEhITExUSEhcSERASDw4ZExASEQ8MEhIQEhAQEBQLDQ8JDQ0KCA8MDA4SDw4GHRUZEhYUExkSGg0cGxwnDxoaFhIaFjAmHyobGxwXFxwZFxcXGB4aHR0TGRsZGBoVFRcWFRcTFQ8WFhYYFRYSGxoPFRQSExMXIigRDxUTFhMVEhEUERgaFBQUFxEbCx0gHRcnKCkYKh4iHx0eIiIlHCMdIBwbHRobGRsYHBUVFxAQFhIZFxIXHBYUGRYWEhUYGBsWFBgbGBgdGyAgICAcGxwgHxgMEg4RDBURDBAPDA0SDg4TEwQTDgwODwkODBAQFBUQDxoVEhASERQaDxQQExETDhEODw0QDhEREhISDhIPDxARExANExEQFBQQEA0TFREUEhMTEBAVDhUWFBIRExUSERYQEhAQFRMREBMSFBEOHhobGBgXGBgcFhYVGRcWGBYWERkVEBUTEBQWEhcVEhcSGREXECMWFxgdFRcWGBYVHBYWFQ4WHxcXExwgGxwZHB0VEhoSGBkQFBMTDQ4NDRYeFxYRExETDhESFBIPDxEOEQ8RGAwODAwPDQ0PDgwNDBAMDQsaFx8bHhgRDxMfEhgfHBENDA4KCQwMDRAQDxIPDxMNEw8OEhMUExIRFhYXFg8TEhYREQ0OEBQSDRIQDxAUDQsNDg8OCg0KCQ4NCgwHDA0MCgoNDgwRERAMCwsMDA0NEBAPERIMDAwRDhAXFxUUGhgTHRkeGB0TDAoOCwgKCQgMCwsMCwkJCREODAwODAkUERgYFRkVGhgXFxkUFRUUDg0PDhEWEg4MDg4REBIPEA0ODw0PDA4ODQsLCAwKEQ8OEhoXFxcTFxMVFhgXGBgWFhILDQwICwoMDgsNCRAXEhAOCggJCAUHCAgHCg8VEQ0KChEMCwwUExATDg4OEA0PFBkVGhoXGhYTEA0PDw8QDxIQGhYYFRkZFxEsGBAXGBEXHhQVFxUYGRcZGRkbGRQdFhUYExYdFR4YFRYWFhcZGBEdFBUXFhocFhIRExMVCBQRExIPDB8aFRMOERIXFhEODQwRCw0TExIRFhUXGBIVEhUSFRMdGREWExMRChMVEhESFxgVGRMaEhsZFhgeFxUSGBAZFRIZEg4KDBcRExIQEhQYFA8YFhIXGRUcGBANCBgXFxYSFhsPCSAWFREUEhAQEBQPExEQDhAPEA4RExIUEw4gHRETDhMPDBMgEw4NCxQUExYhGxkYJhQfGxYWIyAaHB8cHBgcJhgcHh0cFB4fFxEaFx0VGSwdHhsjICIiIh8kIRsjHBEOGxkVHBwZEg0cGhwhIhIfGBcXIBMSFBEUDA0JDRETDREQExQWFxIRDwwNEhMaDgsKBhgVERAdGAoPFRIJDhUVEw4VGBQTDxEREB0TExYNDg8VDgsLCw4MBwkPDQ0OFA4IBh4NGxccFRYYEBMTHx0eHRwgGxocGxwfHCEeHiAfIBkZHBodHh4jIyEiIyAaHBkYHBsfGhcZCxMMDw0QDAwPEA8OEBELDQwNDQ8IDBMKDA0QDRAKCgkMCgsJCwoQDA8ODAwLDQ4NExAIDxEODwwPEhIQDwoPDxUMERIODQ0UEA8LCgkIDgoLERUQDxgXDxANDhEUCxIRFxwaEhMUGBcaEgwLEBAUEREPERcVFhIZFhYbDhgXGA4XFxQXExMXHhMXDxkXEiMWFxMMDxMPERcODhESGBQVICcbHxkWGB0gFhcfFxoWEBgTGRcSEhsgHxMQFg8KDxEVGhUWHhwYGhQVHhYaHhcbFA8aGxsVER4fHx8XCh0XFzgyGRISFBoUEhkfIRoiISUnHB4VGBwWEQ4QEREaHyAZFyAUIhMgHBQSGRQVHhYYIRUPEw8YFRoaFBcWFxISEhkVFBESFRYWEg8SEA0MDw0LDg0LChQQDw8PEgQICQcFDQkIBgkNDRMPDQ4KDg0MCwkJCQsMCQoPDAgICQgMCQoJCAoHBwgNCAcHCAQHCgcKCAYFBgcEBgcJDgwIBgQMEQ8RCAwICQoICwkKCQsJCQcJCAkKCwwKCQkFDAcHCQkIBwoLCwgICwkIBwkIBgcGCQUKCAkGBwsHCAkGCwcJCAsICQoJCAcICgoMDA4KDQoJCgoODQgLCgkICgoNDAwIBwkGBgYFCAkICQcJBwgIBgYIBwYHCQsNCQgJBwgIBgkHCQoFBAQEDQoGBwcGCxQHBwkQBwUDBQcICgwJCgwICQwKCw0PCgsLDA4PDgcGBwQGBwUEAwQHBgUFBgYEBAYNDQgQBgUODgkLBgcGBQQFDgwGCAYKCgsJCBwfIA8FDBUiGicgEhgkJhkcGiYtGhYXIiQwHQ8QGBsSDgsSEBQUFgoMDggODQ4LDAwHCQoHBw0TDAcNDAsMCw8MEAsMCwwMDA0JCgwHCQsLCQkICAoGCAwLCwgICQsJCAkHCAYICAcFCQYFBgYIBQcJCQoLCAUOCQkIDQsJCw0QCxALDg8PCw0NDwwKDAsLCAkLCg4NCg4MCAgJDQ4LCgkLCw0NDQ4NDA4QDg0KDQkNDAsLDAwMCQoICQkJCAcFCAgEBQoIBgQIBwwGCBQJBgQKBwMEBgcGBQIBBQYLBQUEBQQGCgsKBgYFCAcJCQgMCwwLDQkMCwQKCA4KCQwJCwwLDg0KDgwKDAoKBw0IBAMDBQ0KCwcHBgoGBwUIDAkKDAgICgoKBwgFBgQFBAgKBQcIBwgKBggGCgYICAYFBQQFBAUEBgcJBgcIGgYGCAcGDAUGBgcFBwUICAcICRAHBAMFAwYEBAYGBQQFBAMJBAQEBgMFBgQEBQcFBQQFAQAEAwQBAgMEAgQJCAkCAQQEAwIEBAMGEBASBAoGCQUJCwcGCgwGCRIOBwcECQMJBAQFBggFBgcFBAcJBQgFBgUKCAgaCg0IBQkGBwYJBgUGBgkGBgcECQoLBQcEBQUDBwMLCgUHCgcIBgYHDQcKCAkHAwUIBwcEBAQGBgMFBQYFBwQMBwYGBg0EBQgFBAEIBQcDChINCAQGAwgFBQUGCAwGBgQHCAgJBwUNCQcIBwQKBwgDDQgKEQsLCgkDCQoKDQwKBgcJBQgVDwgIBggGBxgNCgYEDggFBgcHBQQFBQUGCAkJJBAHBQYEBQgIBwUIBgkJCAUHBgcJCgYHBQYFCQcGBgoGBAUGBQkKEQoHAwYFBAcDBwQHCgYEBgUGBwgHBQgIBQYFBwcRDQYGBAUHBgUGBgcGBQYGBQYHBgcICAwQERQMEQoVEw0QDg4RDA8PEBANDQwMFQ8MEhIKDQkIBw0KEAwMCwwLEBETERcRDxAPDxAQEA8QEQ8SEQ4bExISDgsJCwgKCgsKCgkKBgkFBw0GBwYHCAsLCw4RDQsLBgcKCAkGCAgGCQcGBwgGCw4HBgcGEhETExERCSAQDhARCQseERQKEw8MExIODQwOEhQQDAcPEw8LDAoLCwsLCQoKCgoMCQoLCgkTERIQEA4REQ8QFBENDxQSCxIMEg0LEA8NDQ4PDwsKCggSEgkODA0MDQ0NCwgLCgkJCQoICQwKCQoWFBEPDhIPDQ0JBwwNDQ4RDRcSDQsNExAMDgwLDREPCwsNFhUJEAoQCxAQCQcOCw4MDQwSEg8QDxMKBg0PDxESEBURDQkQDgwJDg0PFQ8NEQ0PDQwPDA0NDQ0KDAgGDQ0FBQkKCwcDAhQNDAwYGhIPEBMSEQoUEg8NEA8PDg0MDQsMDAwJCwsMCgoNDw8MEA0ODg4LBwsGCQoICQcICAgJCAkIBwsGCQYJCQkIDQsICQkKCQoJDAQFCQUMDw8MCxIOEQ8ODg0HCAoJCwwLCwcIBhATDBAPDxcUDQ8PDQkJCxAMBwkGBQUCBQkHCAcGBwcGBwgHCAgICQgGCREHBQYFBgYIBggEBAUFBwsICAkICAcNBgULCAUHBwoLCQkKCQYHBgcHBQ4LEgsJDQwNCggLCQoHCgsMCAwJGRILCQoLCgkLCQsKCgsNCAcKCggICwkKCQcNBgsJCQ4KCgsODwoKDAsJDAYNDBYWEBAQDhEPEA4OGhINDhYRDhEQDgwKBwsKCgkIBQsHBwgJCAgKBwgICQsJDQkLCwYLBg4KCAwMDAoWDw0PEAgQDwsKEAcREQwYCwUKCQkLDAkKCAkICQkODgcFBwcHCggECAgICAgJBQYGBwkHBgQFBggJCgkIDAsMHSEMBAYIFAkKDAgODAoLCA0VDRIRFBgYCwkOCxMRCw0OFBIODRARFh8TDA4NDQ4KEBsPDAoHCAsLCBALCQsMCAwMDgwFCQoMCwsIBgoGCAYKDQkNEBARDRQREQkOEA0KHBMVExUQEhIQFxEPDwoUCwwNDA0RFQ4LDhQaGAkFBAgRDAcHCQ4OCwoICQoKDAwLCQ0NDgkKCQkMCwoLBwgDBgsLCg0LCgwNDAgJCQcGDQkLDAoJCgsKCQUGBQoOBwUECw0UBwQHBgkLBg4ICQwIBQcLDBANDBMHDAsNBwMFBQYIBwcJBQ4KDQoKCgoGBAkNCQsICwsOCgoMCwwLDwgJDAcJDAsNDgwOCw0NCwoHChQOCA0KDhcNFA0JBggJDQwLDw0NCgoODggJCggJCgwKCwoLCwoJCQsMCgkLDQsKCg0KCgoKCgoLCggGCQgKCgkKCQsGCwoJDQ0NCAYHCAcGCQoLCQYGBwcGBwUGBgUGBgcGBQUFCAcFBgE=",
+                "negbins": "Bw0MDAkOEQ8MFRgSDw0TExIQDA8bDAsPEA4SEQ4QDg4VERUZFhgVExUOEQ8VFRIVFBIOFRIWERYRERARDBUNFhAUFxgZFBgTFBUXFRETFRYQDwwRDhAOEA0MDwwNFBodFyEbGxsUGBcWGBwcGx0dGhoVGBgWExYXExEUFxUWFRcVDQ0QEREKExATEhAQEA4TEA8MFxIVFBITERQTDxQSFBASEREQFxUSDhESEg4SChAKDQoaGBIWEQ0PExAODRUMFw4PEg4QDA0KFxsZExcYGBYbEhUeFw8ODxAPEBkkHRYMEhsOCxEUGQ4LFgoVEA4ZFBYUHBIMEhEUDg8MHh8RDhUIDgsMDAoNGRQSEBcVDhAYExIODAkMDgkSExISExISDhcTFhIVEw0MDQwMDxEGGhsOCAgNCQgHCgsKBhMSExUUGBEWExUTERgVEg8jIBYTHhIcGQ8QEQ8OERAPEQwNDQ0OExoQDw8TFBcODg8MGRoREQkbFhcTFBUVGB4eHR4cHB4fGxgaHBcjHhgWExUSGBUSFRUTFB8VExMRFRQVFxYXGxUUFxgRGBkUHhYTFRsQEAwLEhsUCxESEgwNCw4VDQwKEwwaDAkXEg4RDwgVEA8NDRAMDRALDhYRDgsODA4MDRAQDg4MEhoTFw4NDgwNDQsLCw0SHS0cHB0bHxsbFRwZGBkYEh8YFhoXEBcUEhMWExEUFxUUGB0VGBoWGRYYHhYWFhcTERMQFBIPEBQWFRUQGBcZAAABAAAACBUTFxITDxATEBAOERESEBENEA4NExETEhESEhUSEhkTEhETEA8bFRIUExANFBQSExIRERULDhAJDg4LCRENDA8UEQ8GHBMVDxMREBUPFgsYFxgiDxoaFhEZFishGyUZGxsXFxwZFxcXGB4bHRoQFRYVFBoVFBcWFBcTFA8WFhYYFRYSFxYPFRQSExMWHSMQDxUTFhMVEhEUEBQVExQUFxAWCRweHBcmJygWKBofHBsaHh4iGSAaHhoZHBgYGBoXGhISFA8PFREXFREWGhQRFRESEBIVFhgTEBMYFhcbGB0dHR0ZFhYaHBcKEQwQChMQCw4ODAwSDAwREQMRDQsNDwgNCw8PEhQPDhkTEA8RERMZDhIQExMVDxIPEQ4RDxISExMTDxMQEBESFBAOExEQFRUQEQ0UFhIVEhMTEREWDhYXFBMRFBYUEhcQ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CgsCAgMFAwIEBAMIFBMWBAsHCgYLDQgHCQoECBgPCAcFCAMIBAUFBQcEBQYEAwcHBAYEBQQIBgcXCAsHBAcFBgUIBQQFBQcFBQYEBwgJBQYEBAQDBgMKCQQGCAYHBQYHDQcLCQoGAgUIBwYDAwMFBQIEBAUFBwQLBgUFBQsEBAcEAwEJBgcCChIMBwQFAgcFBAUGCAsFBQMGBwYIBgQMCAYHBgUJBgcDDgkKEQsLDAoDCg0NEA4LBwgLBQkYFAsLBwsICh0QDQcDEgkEBQYGBAMEBAQFCAgIJRIKBggGBwkJBwUIBwwNCwcKCQoMDggKBwgHDAoICA0JBgYHBQwNFQ0JBAYEAwYDBgMGDQkGCAcICQsKBwsKBwgGCggSDgYKBgUIBwUHBgcGBQYGBQYHBgcICAoMERQLEAkVEgwPDg0QDA8PDxAMDQwMFQ4MEREKDQkIBwwKDwwLCwsLEBASEBUQDQ8ODg8PDw0PEA8RDw0bEhIQDgsJCggKCgsKCgkKBgkFBwwGBwYHCAsLCg4QDAoJBQYJBwgFBwcGCAYGBgcFCw0HBQYFERASEhAQCR0NCwwNCQseEA8HEw8LEQ0LCgwOEhEMCQUOEg8KCggJCQoJCAkICAgKBwgKCQgSEBIPEA0REA4QFhMOEBYUDBQNFA4MERAODxAREQwLCwkREQkRDxAPEBAPDQoNDAsLDAwLCw8MDAsWFBAODhEODAwIBwsMCw0QDBYRDAsMEg8MDgwKDBAOCwsMFBMIDwgPCg4OCAcNCg0MDAsSEQ4QDhIJBg0PDhASEBQRDQgRDgwKEA8PFQ4NEQ0PDQsODA0NDQ0JDQoHDg8GBQoLDAgDAxMMCwwXGRIPEBMSEQkUEg4NDw4ODg0LDAsMCwsJCwsLCgoMDg8LEA0NDg4LBwsHCQkHCAcHBwcJCAkHBwwFCAUJCAgIDAsHCAkJCAkICwUHCwcODg0LChAMDw0NDg0HBwkJCwsKCgcIBg4SDA8PDhYTDA8ODQgICxEMBwkHBgYDBQkICQgHCAgHCAgHCQgICgkHCRAHBwgHCAgLCAoGBQYHCQ8JCgwLCggQBwYOCgcJCQ0NCwsMCwgJCAoKBg4LEgsJDQwNCggLCQoHCgsMCAwKGBILCgoLCwkLCQsKCgsNCAcKCQgHCAcIBwUKBQkIBwsIBwgLCwcICgkHCgULCxUWEA8PDhAOEA4NGRANDRUQDRAPDQwKBw4MDAwKBw8KCAoLCgoNCQoKCw4LEAsODggNCBEMCw8PCwcSDAsMDAYNCwkIDQYODQoXCwUKCgkLDAkLCAkHCQkODwgGBwcICwkECAkICQkJBQcGCAkHBgYGCAkLCQgGCgkKHB4NBQcLFQsNDwsRDg0OCgwRCg4OEhcWDgsLCREOCQoLEA4MCw0OFBsQCgsKCgsIDhcNDgsHCAwMCREMCQwNCQ0ODg0GCgwNCwsIBgsHCQcKDQoNDxARDRMSEQkNEA0KGhMVExUQERIQFREQDwoTCwwNDA0SFQ4LDhQZFwkGBgoSDwoJCxIQDwwKCw0MDhAOCw8QEQoNCwsPDg0NCQoECAoIBwsICAgLDAkKCgcHDgoMDQsKCwsLCgUGBQoPCAUECgwUBwQHBgoLBg4ICQoGBAYICQ0KCQ8GCQkKBgQHBggKCgkLBxIMDw0MDAwIBQsQCw0KDQ4QDA0PDQ8NEgoLDwkMDQwOEA0PCw4PDAsIChQOCA0KDRYMEw0JBggIDAwLDg0MCgoNDQcICgcKCwwLCwsMDAsKCQkLCQgKDAoJCQwKCgoKCQoLCggGCQgJCgkJCAoGCgkIDAwLBwYHCAcGCAoLCAYGBgYGBwUFBgQGBQcFBQUEBwYFBgE=",
+                "nbbins": 4091,
+                "posmax": 56,
+                "negmax": 52,
+                "id": "waveform-4096-0"
+            }
+        ]);
+        fixture.detectChanges();
+    });
+
+    it('handleOnTimeChange should be called', () => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        const getCurrentTime = spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime');
+        getCurrentTime.and.returnValue(35);
+        component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
+        expect(getCurrentTime).not.toHaveBeenCalled();
+
+    });
+});

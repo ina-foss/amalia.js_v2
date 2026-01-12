@@ -1,0 +1,224 @@
+@import '../core/styles/typo';
+@import '../core/styles/variables';
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: $amalia-font-family !important;
+  font-size: $amalia-font-size !important;
+  font-weight: normal;
+  user-select: none;
+  z-index: $amalia-default-z-index;
+  padding: 0;
+  margin: 0;
+  background-color: $amalia-player-bg-color;
+
+  .amalia-player-bg-color1 {
+    background-color: $amalia-player-bg-color1;
+    z-index: $amalia-video-bg-z-index !important;
+  }
+
+  .amalia-primary-color {
+    background-color: black;
+    z-index: $amalia-video-bg-z-index !important;
+  }
+
+  .amalia-secondary-color {
+    background-color: $amalia-secondary-color;
+    z-index: $amalia-video-bg-z-index !important;
+  }
+
+  .poster-icon {
+    width: 100% !important;
+    height: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 1;
+  }
+
+  .media-player {
+    position: relative;
+    height: 100%;
+    z-index: $amalia-default-z-index;
+    margin: 0 auto 0;
+
+    &.pinned {
+      video.poster-icon {
+        width: 100% !important;
+        height: 100% !important;
+        left: 0 !important;
+        top: -53px !important;
+      }
+    }
+
+    &.pinnedControlbar {
+      video.poster-icon {
+        width: 100% !important;
+        height: 100% !important;
+        left: 0 !important;
+        top: -31.5px !important;
+      }
+    }
+
+    video.player {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: $amalia-default-z-index;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .preview-thumbnail {
+    position: absolute;
+    z-index: 3;
+    //background-color: black;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .context-menu {
+    position: absolute;
+    top: 0;
+    background-color: $amalia-ctrl-bar-bg-color;
+    z-index: $amalia-context-menu-z-index;
+    font-family: $amalia-font-family !important;
+    font-size: 11px;
+    color: white;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        margin: 0;
+        padding: 10px 10px 10px 15px;
+
+        &:hover {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  .error, .loader {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $amalia-player-bg-color2;
+    line-height: 20px;
+    color: $amalia-player-bg-color;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: $amalia-error-z-index;
+    text-align: center;
+    font-family: $amalia-font-family !important;
+
+    .amalia-svg-error-size {
+      color: $amalia-primary-color;
+    }
+
+    svg {
+      margin-top: 10%;
+    }
+  }
+
+  .p-progress-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: url("../../assets/amalia/images/newAudioBackGround.png") center/100px no-repeat, $amalia-primary-color;
+    z-index: $amalia-loading-plugin-histogram-z-index;
+  }
+
+  .p-progress-spinner-pinned {
+    height: calc(100% - 106px);
+  }
+
+  .p-progress-spinner-pinnedControlbar {
+    height: calc(100% - 63px);
+  }
+
+  .p-progress-spinner-svg {
+    position: absolute;
+    display: inline;
+    animation: p-progress-spinner-rotate 2s linear infinite;
+    transform-origin: center center;
+    height: 50px;
+    width: 50px;
+    left: calc(50% - 25px);
+    top: calc(50% - 25px + 60px);
+  }
+
+  .p-progress-spinner-circle {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: 0;
+    stroke: white;
+    animation: p-progress-spinner-dash 1.5s ease-in-out infinite;
+    stroke-linecap: round
+  }
+}
+
+@keyframes p-progress-spinner-rotate {
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes p-progress-spinner-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px
+  }
+  to {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px
+  }
+}
+
+.tooltip {
+  position: absolute;
+  z-index: $amalia-volume-bar-z-index;
+  display: block;
+  margin: 5px;
+  word-wrap: break-word;
+  opacity: 0;
+
+  &.show {
+    opacity: $amalia-tooltip-opacity;
+    z-index: 5;
+  }
+
+  .tooltip-arrow {
+    position: absolute;
+    display: block;
+    width: 20px;
+    height: 20px;
+
+    &::before {
+      position: absolute;
+      content: "";
+      border-color: transparent;
+      border-style: solid;
+    }
+  }
+}
+
+
+

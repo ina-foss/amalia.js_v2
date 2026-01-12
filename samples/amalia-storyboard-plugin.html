@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Amalia</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="main.js" type="module"></script>
+</head>
+<body>
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Storyboard Plugin</h5>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 p-2" style="height: 500px;">
+            <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
+            <amalia-player player-id="PLAYER" config="http://localhost:4203/configs/base-config.json">
+                <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
+            </amalia-player>
+        </div>
+        <div class="col-6 p-2">
+            <div id="storyboard">
+                <amalia-storyboard plugin-configuration='{"data":{"baseUrl":"https://image.wsmedia.d.sas.ina/thumbs/lzPs02+gTYw9meo1/AjwQmSPsEcRFbpAxp3nxeLkNI3Pz5876dsfNGBgXhWT+0oyxVKdDBngb/aqocwcBFN+f6Uc4pn3h0aa3sSu6Q2BbzQBtW62lP6jZ6eKZ1l1OZ3PRuuvwNvKhqUxkEXinWEDswg5XlitLnO/pAKKbHVvzs6nSP+e1Fg58eeLzOgjIQ6z/8cM1eo+QTjD1ozkN1gOo9Pv/e+foPMqS1ZD3NGPaNOk/vl2yCGqbMkPJSn6REYQ6ZSDxJ+ZrK6r8nF5sBREaI+7+7r+bqkkfUzqjVq1mM5VRGxF3NG7LpmbxwvIrS0Ar8q0i5U/X7Qp1nb+XHNULAZCY+C7LwuKUgeEZCumB41S87AtmNspJsYWBGCJdQWs+ghyhtzjq4Ir5e6rJiDSSZKKW85q6KuQfNLfzKJoosRIqYshoOZgw8V1pGeoKHfYYOa61yq8D6r3ihceP7oG3VDdki+ttsRpUhcNfogo2JxZfh7zXRLih7/TZgmtlMRs5oQu2xFRbEcpzcy9r5+ZN2t9shfRc/auW842sy8ycV6nq2HbDgWkffBOJ0woSka7HiN7Bgd9ZnOd/VP9ZLiyK+QafRjZAruK9ZhFmjCEygbs9gQDZ8OEwpBXbU3tpL9eLDEYVGzQg98/0lyohPWF2wc5+laKIij9T5w5rsBSr4/3RPDujd7UWJ4a/fThML870UagZO2q3YM5QJtxpGEfBA==/sl_iv//nr27XM8PEBsKUbStfZlgg==/sl_hm/","theme":"v","tcParam":"start","itemPerLine":5}}'>
+                </amalia-storyboard>
+            </div>
+        </div>
+    </div>
+    <!--<div class="row" style="margin-top: 80px;">
+        <div class="col-6 p-2" style="height: 500px;">
+            <amalia-storyboard plugin-configuration='{"data":{"baseUrl":"https://picsum.photos/id/237/160/90","theme":"v"}}'>
+            </amalia-storyboard>
+        </div>
+    </div>-->
+</div>
+<!--<footer class="border-top">
+    <div class="row pt-3 pl-3">
+        <div class="col-12 col-md">
+            <img class="mb-2 d-inline" src="assets/logo.svg" alt="" width="40" height="40">
+            <small class="d-block mb-3 text-muted">&copy; 2020</small>
+        </div>
+    </div>
+</footer>-->
+</body>
+</html>

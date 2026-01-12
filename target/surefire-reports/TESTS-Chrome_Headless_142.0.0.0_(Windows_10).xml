@@ -1,0 +1,281 @@
+<?xml version="1.0"?>
+<testsuite name="Chrome Headless 142.0.0.0 (Windows 10)" package="" timestamp="2025-11-21T07:46:38" id="0" hostname="DDTPB00290114" tests="270" errors="0" failures="0" time="4.372">
+  <properties>
+    <property name="browser.fullName" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/142.0.0.0 Safari/537.36"/>
+  </properties>
+  <testcase name="Test Media player element Init Media player element " time="0.469" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Media player element"/>
+  <testcase name="AppModule should create the module" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).AppModule"/>
+  <testcase name="AppModule should execute  ngBootStrap" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).AppModule"/>
+  <testcase name="AppModule should create AmaliaComponent" time="0.016" classname="Chrome_Headless_142_0_0_0_(Windows_10).AppModule"/>
+  <testcase name="HistogramPluginComponent should create" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent ngOnInit should throw an exception" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent handleMetadataLoaded should emit PLAYER_LOADING_END event" time="0.034" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent should remove events from eventEmitter" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent handleMetadataLoaded should emit PlayerEventType.ERROR event" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent ngOnInit should initialize the component" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent ngAfterViewInit should handle metadata loaded" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent ngOnInit should handle pinned control bar change and other events" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="HistogramPluginComponent should call eventEmitter.removeListener for registered events" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should call downloadSegmentJsonFormat on &quot;Ctrl + d&quot; shortcut" time="0.169" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should init segment data" time="0.144" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should call setTcOut on &quot;o&quot; shortcut" time="0.079" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should call initializeNewSegment on &quot;i&quot; shortcut" time="0.081" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments Should handle edit event in manageSegment when no other segment is being edited" time="0.084" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should clone a segment" time="0.107" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should update a thumbnail" time="0.096" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should remove a segment with confirm" time="0.111" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should not call any method for unrelated shortcut" time="0.094" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should play the media" time="0.101" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should handle validate event in manageSegment" time="0.111" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments Should handle edit event in manageSegment when other segment is being edited and confirm" time="0.143" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should call applyShortcut if target matches plugin name" time="0.116" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should cancel new segment edition" time="0.119" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments should not call applyShortcut if target does not match plugin name" time="0.117" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent ManageSegments Should handle edit event in manageSegment when other segment is being edited and cancel" time="0.162" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent ManageSegments"/>
+  <testcase name="AnnotationPluginComponent - Méthodes spécifiques should initialize segment data with initSegmentData" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent - Méthodes spécifiques"/>
+  <testcase name="AnnotationPluginComponent - Méthodes spécifiques should call initializeNewSegment and return a segment object" time="0.012" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent - Méthodes spécifiques"/>
+  <testcase name="AnnotationPluginComponent - Méthodes spécifiques Should handleMetadataLoaded" time="0.057" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent - Méthodes spécifiques"/>
+  <testcase name="Test Logger Test log level" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Logger"/>
+  <testcase name="Test Logger Default loader" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Logger"/>
+  <testcase name="Test Event Test player event type" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Event"/>
+  <testcase name="ControlBarPluginComponent should handle time change inversed" time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should handle aspect ratio change" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should initialize playback rates" time="0.016" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should handle time change" time="0.01" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should handle playback rate change" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should handle duration change" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should change playback rate" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should toggle fullscreen mode" time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should create" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="ControlBarPluginComponent should handle mouse enter and leave events" time="0.009" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent"/>
+  <testcase name="Test HLS Source extension test handle error " time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test HLS Source extension"/>
+  <testcase name="Test HLS Source extension Media player element " time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test HLS Source extension"/>
+  <testcase name="Test HLS Source extension test switch function " time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test HLS Source extension"/>
+  <testcase name="Test HLS Source extension test destroy function " time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test HLS Source extension"/>
+  <testcase name="test text utils Test text utils:  " time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).test text utils"/>
+  <testcase name="Test Metadata manager Test MetaDataManager loadDataSourceForPlugin Annotations" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="Test Metadata manager Test MetaDataManager loadDataSourceForPlugin TimeLines" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="Test Metadata manager Test transcription " time="0.031" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="Test Metadata manager Test timeline " time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="Test Metadata manager Test Metadata: metadata manager " time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="Test Metadata manager Test histogram " time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="Test Metadata manager Test Metadata: loader" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="Test Metadata manager Test MetaDataManager refreshDataSourceHeaders Annotation" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Metadata manager"/>
+  <testcase name="PreventCtrlScrollDirective should prevent default behavior on Ctrl + Scroll" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).PreventCtrlScrollDirective"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleShortCutsKeyDownEvent: émet SHORTCUT_KEYDOWN quand muteShortcuts=false" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleUnmuteShortcuts: ne doit pas modifier mute pour un élément non prévu" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleUnmuteShortcuts: doit désactiver mute si $event est undefined" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleMuteShortcuts: ne doit pas activer mute pour un élément non prévu" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleUnmuteShortcuts: doit désactiver mute pour un élément contentEditable" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleUnmuteShortcuts: doit désactiver mute pour les cibles &lt;input>, &lt;textarea>, &lt;select> et non &lt;button>" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleMuteShortcuts: doit activer mute si $event est undefined" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleShortCutsKeyDownEvent: n’émet rien quand muteShortcuts=true" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleMuteShortcuts: doit activer mute pour un élément contentEditable" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleShortCutsKeyDownEvent: transforme la barre d’espace en &quot;espace&quot;" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="AmaliaComponent - keyboard shortcuts handleMuteShortcuts: doit activer mute pour les cibles &lt;input>, &lt;textarea>, &lt;select>, &lt;button>" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent - keyboard shortcuts"/>
+  <testcase name="Test metadata utils Test Metadata: metadata manager transcription" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test metadata utils"/>
+  <testcase name="Test metadata utils Test Metadata: metadata manager Wave form" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test metadata utils"/>
+  <testcase name="Test metadata utils Test Metadata: metadata timeline" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test metadata utils"/>
+  <testcase name="AnnotationPluginComponent should download segment JSON format for a flux" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent"/>
+  <testcase name="AnnotationPluginComponent should export segments to Excel for a stock" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent"/>
+  <testcase name="AnnotationPluginComponent should export segments to Excel for a flux" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent"/>
+  <testcase name="AnnotationPluginComponent should set annotations info from config" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent"/>
+  <testcase name="AnnotationPluginComponent should create" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent"/>
+  <testcase name="AnnotationPluginComponent should download segment JSON format for a stock" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationPluginComponent"/>
+  <testcase name="Test Media element Test events" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Media element"/>
+  <testcase name="Test Media element Tests poster" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Media element"/>
+  <testcase name="Test Media element Tests framerate" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Media element"/>
+  <testcase name="Test Media element Media player element " time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Media element"/>
+  <testcase name="TimelinePluginComponent For Stock Should call init, handleMetaDataLoaded and handleOnDurationChange" time="0.075" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent For Stock"/>
+  <testcase name="ConfigurationManager Create configuration manager with http loader" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).ConfigurationManager"/>
+  <testcase name="ConfigurationManager Create configuration manager with default loader" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).ConfigurationManager"/>
+  <testcase name="Test default Source extension test handle error " time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test default Source extension"/>
+  <testcase name="Test default Source extension test destroy function " time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test default Source extension"/>
+  <testcase name="Test default Source extension test switch function " time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test default Source extension"/>
+  <testcase name="TranscriptionPluginComponent should handle shortcut" time="0.029" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should create" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should copy single localisation and emit event" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should clear search list" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should scroll to searched word" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should search word correctly" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should handle metadata loaded" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should initialize plugin correctly" time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should handle time change" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="TranscriptionPluginComponent should copy all transcriptions and emit event" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).TranscriptionPluginComponent"/>
+  <testcase name="SortablejsDirective should create" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).SortablejsDirective"/>
+  <testcase name="Error type Test Error message" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Error type"/>
+  <testcase name="Test Base utils Test get unique id utils:  " time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Base utils"/>
+  <testcase name="Test Base utils Test text utils:  " time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Base utils"/>
+  <testcase name="FileService should be created" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).FileService"/>
+  <testcase name="FileService should download a JSON file without a fileName" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).FileService"/>
+  <testcase name="FileService should export data to Excel" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).FileService"/>
+  <testcase name="FileService should download a JSON file" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).FileService"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked screenshot: captureImage(100)" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked forward-1h: en reverseMode, avance logique => time - 3600" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked forward-second: pauseOnly, moveNextFrame(frames) et pas de play() si en pause" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked backward: déclenche prevPlaybackRate()" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked aspectRatio: appelle changeAspectRatio()" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked slow-backward: déclenche prevSlowPlaybackRate()" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked backward-1h: recule de 3600 s (mode normal)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked backward-5seconds: pauseOnly, movePrevFrame(frames) et play() si non en pause" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked backward-start: remet la vitesse à 1 puis seekToBegin()" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked subtitles: appelle updateSubtitlePosition()" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked forward-10seconds: pauseOnly puis moveNextFrame(10*framerate) et play() si non en pause" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked backward-frame: pauseOnly puis movePrevFrame(1)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked forward: déclenche nextPlaybackRate()" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked download: appelle downloadUrl(control)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked forward-frame: pauseOnly puis moveNextFrame(1)" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked viewRatio: appelle playPause() (même comportement que playPause)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked pinControls: appelle la méthode privée pinControls()" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked slow-forward: déclenche nextSlowPlaybackRate()" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked par défaut: log.warn(&quot;Control not implemented&quot;, control)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked forward-end: remet la vitesse à 1 puis seekToEnd()" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked volume: appelle la méthode privée toggleVolume()" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked toggleFullScreen: appelle la méthode privée toggleFullScreen()" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked appelle seekTc(), ()" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked displaySlider: appelle la méthode privée displaySlider()" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked playPause: appelle mediaPlayer.playPause() et ferme le menu si ouvert" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked controlClicked"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut ArrowDown: affiche le slider volume, -5 sur L/R (min 0) puis encore -5 puis hideAll après 1500ms" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut ne fait rien si aucun raccourci ne correspond (et pas ArrowUp/ArrowDown)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis encore le slider puis hideAll après 1500ms" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut ArrowDown: affiche le slider volume, -5 sur L/R (min 0), puis hideAll après 1500ms" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut doit appeler handleMuteUnmuteVolume si un raccourci volume correspond" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis hideAll après 1500ms" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut"/>
+  <testcase name="ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut doit appeler controlClicked et mettre à jour keypressed si un raccourci (non volume) correspond" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent – applyShortcut &amp; controlClicked applyShortcut"/>
+  <testcase name="TimelinePluginComponent 3  should ignore invalid indexes in listOfBlocksIndexes" time="0.014" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="TimelinePluginComponent 3  should skip DOM updates if currentTime or duration is not finite" time="0.013" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="TimelinePluginComponent 3  should update mapOfBlocksIndexes based on event array" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="TimelinePluginComponent 3  should fallback to mainTimelineLeftPosition if listBlockTimeline is null" time="0.013" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="TimelinePluginComponent 3  should export tv days" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="TimelinePluginComponent 3  should correctly position and size the cursor elements" time="0.02" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="TimelinePluginComponent 3  should not set height if accordion is null" time="0.014" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="TimelinePluginComponent 3  should not update mapOfBlocksIndexes if event is not an array" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 3 "/>
+  <testcase name="InaMessagesComponent #showWarn quand appelé avec un message, alors ajoute un message d'avertissement" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #showInfo quand appelé avec un message, alors ajoute un message d'information" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #showError quand appelé avec un message, alors ajoute un message d'erreur" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #addMessage quand appelé avec un message, alors ajoute ce message" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #setMessages quand appelé avec plusieurs messages, alors remplace tous les messages existants" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #showSuccess quand appelé avec un message, alors ajoute un message de succès" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #constructor quand le composant est initialisé, alors il a les valeurs par défaut" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #clear quand appelé, alors supprime tous les messages" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #removeMessage quand appelé avec un index valide, alors supprime le message à cet index" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="InaMessagesComponent #trackByFn quand appelé, alors retourne une chaîne unique pour le message" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).InaMessagesComponent"/>
+  <testcase name="AmaliaComponent contribution juridique should set current time in setCurrentTime" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent contribution juridique"/>
+  <testcase name="AmaliaComponent contribution juridique should emit current time in sendCurrentTime" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent contribution juridique"/>
+  <testcase name="AmaliaComponent contribution juridique should emit duration in sendDuration" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent contribution juridique"/>
+  <testcase name="Utils Utils:  " time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils"/>
+  <testcase name="Utils devrait retourner false si aucun élément du composedPath n'a l'ID donné" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : button button disabled => false" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : button"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : button button non-disabled => true" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : button"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : textarea textarea disabled => false" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : textarea"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : textarea textarea readonly => false" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : textarea"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : textarea textarea actif et éditable => true" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : textarea"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Pseudo-sélecteur :read-write si ':read-write' retourne false, le fallback s'applique (ex: input readonly => false)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Pseudo-sélecteur :read-write"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Pseudo-sélecteur :read-write si ':read-write' lève une erreur, on retombe sur le fallback" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Pseudo-sélecteur :read-write"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Pseudo-sélecteur :read-write utilise ':read-write' quand il est supporté (retourne true)" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Pseudo-sélecteur :read-write"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : select select disabled => false" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : select"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : select select non-disabled => true" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : select"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : input input readonly => false" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : input"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : input input actif et éditable => true" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : input"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts Fallback manuel : input input disabled => false" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts Fallback manuel : input"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts retourne false si el est null" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts retourne false si el n'est pas un HTMLElement (ex: SVGElement)" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts contenteditable div non contenteditable => false" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts contenteditable"/>
+  <testcase name="Utils Utils.needsToMutePlayerShortcuts contenteditable div contenteditable => true" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils Utils.needsToMutePlayerShortcuts contenteditable"/>
+  <testcase name="Utils devrait retourner true si l'élément avec l'ID est dans le composedPath" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils"/>
+  <testcase name="Utils devrait gérer un composedPath vide" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils"/>
+  <testcase name="ControlBarPluginComponent 2 should apply volume shortcut and call handleMuteUnmuteVolume" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="ControlBarPluginComponent 2 should apply shortcut and call controlClicked" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="ControlBarPluginComponent 2 should increase volume on ArrowUp shortcut" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="ControlBarPluginComponent 2 should apply shortcut and call controlClicked" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="ControlBarPluginComponent 2 should set pluginConfSetThroughInit to false" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="ControlBarPluginComponent 2 should call init() with no need to call emit(INIT) and with a call to emit(INIT)" time="0.032" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="ControlBarPluginComponent 2 should decrease volume on ArrowDown shortcut" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="ControlBarPluginComponent 2 should call init() with no need to call emit(INIT)" time="0.027" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent 2"/>
+  <testcase name="AmaliaComponent should handle context menu" time="0.013" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handleFullScreenChange second path" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handleFullScreenChange" time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should initialize media player on init with the config on and type string" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should displayControlBar" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should initialize media player on init" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handle window resize" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should initialize media player on init with the config on and call onInitConfig" time="0.022" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should create" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handle error event" time="0.009" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handle play event" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handlePinnedSliderChange" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handlePinnedControlbarChange" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should set preview thumbnail" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="AmaliaComponent should handle erase error event" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).AmaliaComponent"/>
+  <testcase name="Test Storage Manager Preference storage Manager " time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Storage Manager"/>
+  <testcase name="Test Format utils Test FormatTime test hour" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test seconds in unit" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test ms" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test only minutes" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test ms" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test frames" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test default" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test mms" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test convertFormattedTcToSeconds test frames" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test Format string" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test seconds" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="Test Format utils Test FormatTime test minutes" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test Format utils"/>
+  <testcase name="TimelinePluginComponent 2 should update the element's position correctly" time="0.018" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 should not apply transform if the selected block is fully within the container" time="0.012" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 should apply positive translateX if selected block overflows to the left" time="0.012" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should removeBlock" time="0.282" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should updateTreeComponent" time="0.032" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should closeMenu" time="0.201" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 should update the element's position and size correctly" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 should position the selected block and apply transform if needed" time="0.009" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 devrait positionner correctement les éléments et ajuster le translateX" time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 should adjust bottom and reset top if selected block overflows below container" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should handle unZoom" time="0.016" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should manage onDragStart and onDrop" time="0.026" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should call init, handleMetaDataLoaded and handleOnDurationChange" time="0.032" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should updateMouseEvent" time="0.015" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should manage callSeek" time="0.012" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should handleMouseEnterOnTc" time="0.191" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="TimelinePluginComponent 2 Should handle refreshTimeCursor" time="0.015" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent 2"/>
+  <testcase name="AnnotationsService should set focused annotation and unsubscribe others" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationsService"/>
+  <testcase name="AnnotationsService should remove annotation and update focus if needed" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationsService"/>
+  <testcase name="AnnotationsService should set focus to next available annotation" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationsService"/>
+  <testcase name="AnnotationsService should return focused annotation" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationsService"/>
+  <testcase name="AnnotationsService should return all annotations" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationsService"/>
+  <testcase name="AnnotationsService should register an annotation" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).AnnotationsService"/>
+  <testcase name="Test HLS custom loader test Audio channel " time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Test HLS custom loader"/>
+  <testcase name="TimelinePluginComponent should toggle all nodes" time="0.009" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should toggle state" time="0.01" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should handle metadata properties" time="0.012" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should toggle config state" time="0.01" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should toggle all blocks state" time="0.009" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should get new child node from metadata element" time="0.01" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should initialize with default values" time="0.013" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should get new node from metadata element" time="0.012" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should create" time="0.01" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should toggle filter" time="0.01" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="TimelinePluginComponent should handle display blocks" time="0.011" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimelinePluginComponent"/>
+  <testcase name="ToastComponent should create" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).ToastComponent"/>
+  <testcase name="ControlBarPluginComponent (focused methods) updateThumbnail() doit calculer le tc et appeler setThumbnail avec l’URL et le currentTime attendus" time="0.008" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods)"/>
+  <testcase name="ControlBarPluginComponent (focused methods) updateThumbnail() ne doit rien faire si tc n’est pas fini (containerWidth = 0)" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods)"/>
+  <testcase name="ControlBarPluginComponent (focused methods) aspectRatioMouseEnter() appelle hideAll(&quot;ratio&quot;), ouvre la liste et la referme après 4s" time="0.006" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) aspectRatioMouseEnter()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) aspectRatioMouseEnter() annule un timer précédent s’il existe" time="0.016" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) aspectRatioMouseEnter()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) handleDisplayState() affiche uniquement les priorités 5 en mode &quot;m&quot; et filtre notInMenu" time="0.007" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) handleDisplayState()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) handleDisplayState() affiche p5+p4+p3+p2 en mode &quot;xs&quot;" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) handleDisplayState()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) handleDisplayState() affiche p5+p4+p3 en mode &quot;s&quot;" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) handleDisplayState()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) handleDisplayState() affiche p5+p4 en mode &quot;sm&quot;" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) handleDisplayState()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) hideAll() doit replier aussi le menu quand control != &quot;menu&quot;" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) hideAll()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) hideAll() ne change rien si tous sont déjà fermés" time="0.005" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) hideAll()"/>
+  <testcase name="ControlBarPluginComponent (focused methods) hideAll() doit replier tous les panneaux sauf &quot;menu&quot; quand control=&quot;menu&quot;" time="0.004" classname="Chrome_Headless_142_0_0_0_(Windows_10).ControlBarPluginComponent (focused methods) hideAll()"/>
+  <testcase name="HistogramPluginComponent test with fixture.detectChanges handleOnTimeChange should be called" time="0.002" classname="Chrome_Headless_142_0_0_0_(Windows_10).HistogramPluginComponent test with fixture.detectChanges"/>
+  <testcase name="Utils copyToClipBoard Error should handle error gracefully" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils copyToClipBoard Error"/>
+  <testcase name="TimeBar plugin test Test functions plugin timebarcode" time="0.003" classname="Chrome_Headless_142_0_0_0_(Windows_10).TimeBar plugin test"/>
+  <testcase name="Utils copyToClipBoard should remove show class after 1 second" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils copyToClipBoard"/>
+  <testcase name="Utils copyToClipBoard should add show class and set position when tooltip is provided" time="0.001" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils copyToClipBoard"/>
+  <testcase name="Utils copyToClipBoard should copy text to clipboard" time="0" classname="Chrome_Headless_142_0_0_0_(Windows_10).Utils copyToClipBoard"/>
+  <system-out>
+    <![CDATA[
+]]>
+  </system-out>
+  <system-err/>
+</testsuite>

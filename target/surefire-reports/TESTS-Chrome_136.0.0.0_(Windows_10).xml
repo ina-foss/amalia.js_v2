@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<testsuite name="Chrome 136.0.0.0 (Windows 10)" package="" timestamp="2025-05-10T18:52:24" id="0" hostname="DDTPB00290114" tests="132" errors="1" failures="0" time="0">
+  <properties>
+    <property name="browser.fullName" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"/>
+  </properties>
+  <system-out>
+    <![CDATA[Chrome 136.0.0.0 (Windows 10) ERROR
+  Disconnected reconnect failed before timeout of 2000ms (server shutting down)
+
+]]>
+  </system-out>
+  <system-err/>
+</testsuite>

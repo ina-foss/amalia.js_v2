@@ -1,0 +1,416 @@
+// Toast-like variables for messages component
+$messages-background: #ffffff;
+$messages-shadow-color: var(--surface-border, #e2e8f0);
+$messages-success-color: green;
+$messages-error-color: red;
+$messages-info-color: #b3ddf4;
+$messages-warning-color: yellow;
+$messages-text-color: var(--text-color);
+$messages-icon-color: var(--surface-0); // Changed from surface-900 to surface-0 (white)
+$messages-close-color: var(--surface-900);
+
+:host ::ng-deep {
+  .p-messages {
+    margin: 0;
+    padding: 0;
+
+    .p-message {
+      margin: 0 0 1rem 0;
+      border-radius: 8px;
+      box-shadow: 0px 4px 16px 0px $messages-shadow-color;
+      padding: 0;
+      border: none;
+      background: $messages-background;
+
+      &.p-message-info {
+        background: $messages-background;
+        color: $messages-info-color;
+        border-left: 6px solid $messages-info-color;
+
+        .p-message-wrapper {
+          padding: var(--spacings-space-md, 5px);
+          display: flex;
+          align-items: center;
+          background-color: transparent;
+          gap: var(--border-radius-lg, 12px);
+
+          .p-message-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 100px;
+            background: $messages-info-color;
+            margin-right: 0;
+
+            &.pi-info:before {
+              content: "i";
+              color: black;
+              font-size: 18px;
+              font-weight: 500;
+            }
+
+            i {
+              color: $messages-icon-color;
+              font-size: 1.6rem;
+              line-height: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .p-message-summary {
+            display: none;
+          }
+
+          .p-message-detail {
+            font-size: 14px;
+            color: #242424;
+            font-weight: bold;
+            line-height: 1.4;
+            margin: 0;
+            flex: 1;
+          }
+
+          .p-message-close {
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            margin-right: 5px;
+            margin-top: 5px;
+            background: transparent;
+            border: none;
+            color: black !important;
+
+            &:hover {
+              background: transparent;
+              cursor: pointer;
+            }
+
+            .pi-times {
+              font-size: 14px;
+              color: #555;
+              font-weight: normal;
+            }
+          }
+        }
+      }
+
+      &.p-message-success {
+        background: $messages-background;
+        color: $messages-success-color;
+        border-left: 6px solid $messages-success-color;
+
+        .p-message-wrapper {
+          padding: var(--spacings-space-md, 5px);
+          display: flex;
+          align-items: center;
+          background-color: transparent;
+          gap: var(--border-radius-lg, 12px);
+
+          .p-message-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 100px;
+            background: $messages-success-color;
+            margin-right: 0;
+
+            i {
+              color: $messages-icon-color;
+              font-size: 1.6rem;
+              line-height: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .p-message-detail {
+            font-size: 14px;
+            color: $messages-text-color;
+            font-weight: bold;
+            line-height: 1.4;
+            margin: 0;
+            flex: 1;
+          }
+        }
+      }
+
+      &.p-message-warn {
+        background: $messages-background;
+        color: $messages-warning-color;
+        border-left: 6px solid $messages-warning-color;
+
+        .p-message-wrapper {
+          padding: var(--spacings-space-md, 5px);
+          display: flex;
+          align-items: center;
+          background-color: transparent;
+          gap: var(--border-radius-lg, 12px);
+
+          .p-message-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 100px;
+            background: $messages-warning-color;
+            margin-right: 0;
+
+            i {
+              color: $messages-icon-color;
+              font-size: 1.6rem;
+              line-height: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .p-message-detail {
+            font-size: 14px;
+            color: $messages-text-color;
+            font-weight: bold;
+            line-height: 1.4;
+            margin: 0;
+            flex: 1;
+          }
+        }
+      }
+
+      &.p-message-error {
+        background: $messages-background;
+        color: $messages-error-color;
+        border-left: 6px solid $messages-error-color;
+
+        .p-message-wrapper {
+          padding: var(--spacings-space-md, 5px);
+          display: flex;
+          align-items: center;
+          background-color: transparent;
+          gap: var(--border-radius-lg, 12px);
+
+          .p-message-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 100px;
+            background: $messages-error-color;
+            margin-right: 0;
+
+            i {
+              color: $messages-icon-color;
+              font-size: 1.6rem;
+              line-height: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+          }
+
+          .p-message-detail {
+            font-size: 14px;
+            color: $messages-text-color;
+            font-weight: bold;
+            line-height: 1.4;
+            margin: 0;
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+
+  // Override Info message to match toast design
+  .p-message-info {
+    background: $messages-background;
+    color: $messages-info-color;
+    font-weight: 700;
+    border-left: 6px solid $messages-info-color;
+
+    .p-message-wrapper {
+      gap: var(--border-radius-lg, 12px);
+
+      .p-message-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 100px;
+        background: $messages-info-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          color: $messages-icon-color;
+          font-size: 1.6rem;
+          line-height: 1;
+        }
+      }
+
+      .p-message-detail {
+        color: $messages-icon-color;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // Override Success message to match toast design
+  .p-message-success {
+    background: $messages-background;
+    color: $messages-success-color;
+    font-weight: 700;
+    border-left: 6px solid $messages-success-color;
+
+    .p-message-wrapper {
+      gap: var(--border-radius-lg, 12px);
+
+      .p-message-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 100px;
+        background: $messages-success-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          color: $messages-icon-color;
+          font-size: 1.6rem;
+          line-height: 1;
+        }
+      }
+
+      .p-message-detail {
+        color: $messages-icon-color;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // Override Warning message to match toast design
+  .p-message-warn {
+    background: $messages-background;
+    color: $messages-warning-color;
+    font-weight: 700;
+    border-left: 6px solid $messages-warning-color;
+
+    .p-message-wrapper {
+      gap: var(--border-radius-lg, 12px);
+
+      .p-message-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 100px;
+        background: $messages-warning-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          color: $messages-icon-color;
+          font-size: 1.6rem;
+          line-height: 1;
+        }
+      }
+
+      .p-message-detail {
+        color: $messages-icon-color;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // Common styles for all message wrappers and details
+  .p-message-wrapper {
+    background: #ffffff;
+    padding: var(--spacings-space-md, 5px);
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    gap: var(--border-radius-lg, 12px);
+
+    .p-message-detail {
+      font-size: 14px;
+      color: $messages-text-color;
+      font-weight: bold;
+      line-height: 1.4;
+      margin: 0;
+      flex: 1;
+    }
+
+    .p-message-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      border-radius: 100px;
+      margin-right: 0;
+
+      i {
+        color: $messages-icon-color;
+        font-size: 1.6rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.pi-exclamation-triangle,
+        &.pi-info {
+          font-size: 1.9rem;
+          margin-top: 1px;
+        }
+      }
+    }
+  }
+
+  // Override Error message to match toast design
+  .p-message-error {
+    background: $messages-background;
+    color: $messages-error-color;
+    font-weight: 700;
+    border-left: 6px solid $messages-error-color;
+
+    .p-message-wrapper {
+      gap: var(--border-radius-lg, 12px);
+
+      .p-message-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 100px;
+        background: $messages-error-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+          color: $messages-icon-color;
+          font-size: 1.6rem;
+          line-height: 1;
+        }
+      }
+
+      .p-message-detail {
+        color: $messages-icon-color;
+        font-weight: 700;
+      }
+    }
+  }
+}
