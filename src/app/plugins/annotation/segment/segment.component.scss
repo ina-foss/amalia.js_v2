@@ -6,7 +6,7 @@
 
   .segment-selected {
     .p-card {
-      border: 1.75px solid $colors-primitive-primary-color;
+      border: 2.5px solid $colors-primitive-primary-color;
     }
   }
 
@@ -16,160 +16,10 @@
     text-overflow: ellipsis;
   }
 
-  .editable-segment {
-
-    .p-component {
-      font-family: $amalia-font-family-lato;
-      font-size: 14px;
-    }
-
-    .p-card {
-      border-radius: 8px;
-      /* card/shadow */
-      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.20), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
-      filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
-    }
-
-    .p-card-body {
-      padding: $amalia-spacings-border-radius-md 17.5px;
-      row-gap: 0;
-    }
-
-    .p-card-content {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .p-card-footer {
-      display: flex;
-      padding: $amalia-spacings-border-radius-md 0 0 0 !important;
-      justify-content: flex-end;
-      align-items: flex-start;
-      gap: 7px;
-      flex-shrink: 0;
-      align-self: stretch;
-    }
-
-    .segment-title {
-      width: 100%;
-
-      textarea {
-        overflow: auto;
-        white-space: wrap;
-        width: 100%;
-        max-height: 66px;
-      }
-    }
-
-    .p-inputtext.ng-dirty.ng-invalid {
-      border-color: $amalia-colors-semantic-error-state !important;
-    }
-
-    .p-inputtext:enabled:focus {
-      border: 1px solid $amalia-primary-color;
-      box-shadow: 0 0 0 2.8px $amalia-box-shadow;
-    }
-
-    .p-inputwrapper-focus {
-      .p-inputtext {
-        border: 1px solid $amalia-primary-color;
-        box-shadow: 0 0 0 2.8px $amalia-box-shadow;
-      }
-    }
-
-    .segment-title-alignment {
-      display: flex;
-      justify-content: flex-end;
-      color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
-    }
-
-
-    .segment-tc {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      width: 100%;
-
-      .tc-input {
-        width: 100%;
-        flex-grow: 1;
-        flex-shrink: 1;
-      }
-    }
-
-    .segment-tc-wrap {
-      flex-wrap: wrap;
-    }
-
-    .segment-details {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: $amalia-spacings-space-space-sm;
-
-      textarea {
-        width: 100%;
-      }
-
-      .segment-categories {
-        width: 100%;
-
-        .p-autocomplete {
-          width: 100%
-        }
-
-        .p-autocomplete-multiple-container {
-          width: 100%
-        }
-      }
-
-      .segment-categories-alignment {
-        display: flex;
-        justify-content: flex-end;
-        color: $amalia-plugin-colors-semantic-error-state;
-      }
-
-      .segment-description {
-        width: 100%;
-      }
-
-      .segment-description-alignment {
-        display: flex;
-        justify-content: flex-end;
-        color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
-      }
-
-      .segment-keywords {
-        width: 100%;
-
-        .p-autocomplete {
-          width: 100%
-        }
-
-        .p-autocomplete-multiple-container {
-          width: 100%
-        }
-      }
-
-      .segment-keywords-alignment {
-        display: flex;
-        justify-content: flex-end;
-        color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
-      }
-
-    }
-
-    .new-segment-actions {}
-
-    .p-float-label input:focus~label,
-    .p-float-label input.p-filled~label,
-    .p-float-label textarea:focus~label,
-    .p-float-label textarea.p-filled~label,
-    .p-float-label .p-inputwrapper-focus~label,
-    .p-float-label .p-inputwrapper-filled~label {
-      display: none;
-    }
+  .segment-title-alignment {
+    display: flex;
+    justify-content: flex-end;
+    color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
   }
 
   .readonly-segment {
@@ -193,7 +43,7 @@
       border-radius: 8px;
       /* overlay/container/shadow */
       box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30);
-      padding: $amalia-spacings-border-radius-lg;
+      padding: $amalia-spacings-border-radius-sm $amalia-spacings-border-radius-md;
     }
 
     .p-card-header {
@@ -206,10 +56,147 @@
       color: $panel-content-color;
       text-overflow: ellipsis;
       font-family: $amalia-font-family-lato;
-      font-size: 21px;
+      font-size: 16px;
       font-style: normal;
       font-weight: 700;
-      line-height: normal;
+      line-height: 30px;
+      cursor: pointer;
+
+      &:hover {
+        border-radius: var(--spacings-border-radius-radius-sm, 4px);
+        background: $amalia-plugin-segmentation-hover-bg-color;
+      }
+    }
+
+    .readonly-title-container {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: $amalia-spacings-space-space-xs;
+    }
+
+    .readonly-title-edit {
+      display: flex;
+      flex-direction: row;
+      border-radius: 8px;
+      gap: $amalia-spacings-space-space-xs;
+      background: #fff;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #ced4da;
+
+      textarea {
+        width: 100%;
+        max-height: 32px;
+        border: none;
+        outline: none;
+        resize: none;
+        background: transparent;
+
+        &:focus {
+          box-shadow: none;
+        }
+      }
+
+      .p-inputtextarea {
+        border: none !important;
+        box-shadow: none !important;
+        font-size: 14px !important;
+      }
+    }
+
+    .title-edit-actions {
+      display: flex;
+      flex-direction: row;
+      max-height: 32px;
+      gap: $amalia-spacings-space-space-xs;
+      flex-shrink: 0;
+      align-items: center;
+      padding-right: 8px;
+
+      .p-button-icon-only {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        padding: 7px !important;
+      }
+    }
+
+    .readonly-segment-tc-item {
+      span {
+        cursor: pointer;
+      }
+    }
+
+    .readonly-tc-edit {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: $amalia-spacings-space-space-xs;
+
+      .tc-input-inline {
+        width: 100px;
+        padding: 0.25rem 0.5rem;
+        font-size: 14px;
+      }
+    }
+
+    .readonly-description-edit-container {
+      padding: 4px 0;
+      display: flex;
+      flex-direction: column;
+      gap: $amalia-spacings-space-space-xs;
+    }
+
+    .readonly-description-edit {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: $amalia-spacings-space-space-xs;
+      border: 1px solid #ced4da;
+      border-radius: 8px;
+      padding: 4px;
+      background: #fff;
+
+      textarea {
+        width: 100%;
+        border: none;
+        outline: none;
+        resize: none;
+        background: transparent;
+
+        &:focus {
+          box-shadow: none;
+        }
+      }
+
+      .p-inputtextarea {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .description-edit-actions {
+      display: flex;
+      flex-direction: row;
+      gap: $amalia-spacings-space-space-xs;
+      flex-shrink: 0;
+      align-items: center;
+      padding-right: 8px;
+
+      .p-button-icon-only {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        padding: 7px !important;
+      }
+    }
+
+    .segment-description-alignment {
+      display: flex;
+      justify-content: flex-end;
+      color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
     }
 
     .header-buttons {
@@ -390,6 +377,21 @@
           padding: $amalia-spacings-border-radius-sm 0;
           align-items: center;
 
+          .readonly-segment-categories-readonly {
+            cursor: pointer;
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: $amalia-spacings-space-space-sm;
+            align-items: center;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+
           .readonly-segment-no-categories {
             color: var(--colors-text-subtitle, #757575);
             font-family: Lato;
@@ -397,6 +399,10 @@
             font-style: normal;
             font-weight: 400;
             line-height: normal;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
           }
 
           p-chip {
@@ -427,6 +433,21 @@
           padding: $amalia-spacings-border-radius-sm 0;
           align-items: center;
 
+          .readonly-segment-keywords-readonly {
+            cursor: pointer;
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: $amalia-spacings-space-space-sm;
+            align-items: center;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+
           .readonly-segment-no-keywords {
             color: var(--colors-text-subtitle, #757575);
             font-family: Lato;
@@ -434,6 +455,10 @@
             font-style: normal;
             font-weight: 400;
             line-height: normal;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
           }
 
           p-chip {
@@ -459,6 +484,10 @@
       font-style: normal;
       font-weight: 400;
       line-height: normal;
+
+      &:hover {
+        background: $amalia-plugin-segmentation-hover-bg-color;
+      }
     }
 
     .collapsed {
@@ -479,33 +508,33 @@
 
     .readonly-segment-description {
       width: 100%;
-      margin-bottom: $amalia-spacings-space-space-sm;
-      margin-top: 4px;
+      margin-bottom: 0;
+      margin-top: 0;
 
       .readonly-segment-description-icon {
         display: flex;
         flex-direction: column;
         align-items: center;
-        background-color: white;
+        background-color: transparent;
       }
 
       .withShadowUp {
         max-height: 12px;
         cursor: pointer;
-        bottom: calc(-1 * $amalia-spacings-space-space-sm);
+        bottom: -4px;
         position: relative;
       }
 
       .withShadowDown {
         max-height: 12px;
         cursor: pointer;
-        bottom: calc(-1 * $amalia-spacings-space-space-sm);
+        bottom: -4px;
         position: relative;
       }
 
       .icon {
-        height: 20px;
-        width: 15px;
+        height: 14px;
+        width: 14px;
         position: relative;
         color: $amalia-primary-color;
         ;
@@ -513,6 +542,11 @@
 
       .amalia-svg-down-size {
         transition: all 0.5s ease-in-out;
+      }
+
+      &:hover {
+        cursor: pointer;
+        background: $amalia-plugin-segmentation-hover-bg-color;
       }
     }
   }

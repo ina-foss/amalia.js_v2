@@ -30,7 +30,7 @@ export interface ExportColumnsHeader {
     "Lien de l\'imagette": string;
     "Id Document": string;
     "Type Document": string;
-    "Titre de l\'instance":string;
+    "Titre de l\'instance": string;
 }
 
 @Component({
@@ -177,6 +177,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 if (annotationLocalisations && annotationLocalisations.length > 0) {
                     this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations.map(al => {
                         al.data.hierarchy_technical_id = this.technical_id;
+                        al.data.media = al.media;
+                        al.data.isTitleEditing = false;
+                        al.data.isTcInEditing = false;
+                        al.data.isTcOutEditing = false;
+                        al.data.isTcEditing = false;
+                        al.data.isCategoriesEditing = false;
+                        al.data.isKeywordsEditing = false;
+                        al.data.isDescriptionEditing = false;
                         return al;
                     }));
                     this.subscriptionToEventsEmitters.push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
@@ -249,11 +257,17 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             const segmentToBeAdded: AnnotationLocalisation = {
                 label: '',
                 data: {
-                    displayMode: "readonly",
                     selected: true,
                     tcMax: maxDuration,
                     tcThumbnail: tcIn,
                     hierarchy_technical_id: this.technical_id,
+                    isTitleEditing:false,
+                    isTcInEditing:false,
+                    isTcOutEditing:false,
+                    isTcEditing:false,
+                    isCategoriesEditing:false,
+                    isKeywordsEditing:false,
+                    isDescriptionEditing:false,
                 },
                 tc: 0,
                 tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset
@@ -336,40 +350,11 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     public editSegment(segment) {
         if (segment) {
-            const editing = this.segmentsInfo?.subLocalisations?.find((editModeSegment => editModeSegment.data.displayMode !== "readonly"));
-            if (editing && editing !== segment) {
-                const msg = (editing.label === undefined || editing.label === '') ? SegmentComponent.SEGMENT_SANS_TITRE : editing.label;
-                this.confirmationService.confirm({
-                    message: `Etes-vous sûr de vouloir annuler les modifications du segment ['${msg} ']`,
-                    header: 'Confirmation',
-                    icon: 'pi pi-exclamation-triangle',
-                    rejectButtonStyleClass: "p-button-text",
-                    rejectLabel: "Non",
-                    acceptLabel: "Oui",
-                    key: this.technical_id,
-                    accept: () => {
-                        this.cancelNewSegmentEdition(editing);
-                        this.segmentBeforeEdition = structuredClone(segment);
-                        segment.data.displayMode = "edit";
-                        editing.data.selected = false;
-                        segment.data.selected = true;
-                        if (segment.label !== undefined && segment.label.includes(SegmentComponent.SEGMENT_SANS_TITRE)) {
-                            segment.label = '';
-                        }
-                    },
-                    reject: () => {
-                        editing.data.selected = true;
-                        segment.data.selected = false;
-                    }
-                });
-            } else {
-                this.segmentBeforeEdition = structuredClone(segment);
-                this.unselectAllSegments();
-                segment.data.selected = true;
-                segment.data.displayMode = "edit";
-                if (segment.label !== undefined && segment.label.includes(SegmentComponent.SEGMENT_SANS_TITRE)) {
-                    segment.label = '';
-                }
+            this.segmentBeforeEdition = structuredClone(segment);
+            this.unselectAllSegments();
+            segment.data.selected = true;
+            if (segment.label !== undefined && segment.label.includes(SegmentComponent.SEGMENT_SANS_TITRE)) {
+                segment.label = '';
             }
         }
     }
@@ -381,10 +366,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public saveSegment(event) {
         if (event.status === 'success') {
             event.payload.segment.data.selected = true;
-            event.payload.segment.data.displayMode = "readonly";
-            //code to save the segmentsIfo into the persistence unit
         }
-
     }
 
     public cancelNewSegmentEdition(segment) {
@@ -396,7 +378,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 }
             }
         }
-        segment.data.displayMode = "readonly";
     }
 
     public removeSegment(segment) {
@@ -436,9 +417,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         console.groupEnd();
     }
 
-    displayEventResponseStatus(event) {
+    displayEventResponseStatus(params: { event: any, noSuccessSnackBar?: boolean }) {
+        const { event, noSuccessSnackBar = false } = params;
         if (event.status) {
-            this.displaySnackBar(event.responseMessage, event.status);
+            (noSuccessSnackBar === false) && this.displaySnackBar(event.responseMessage, event.status);
             if (event.status === 'success') {
                 this.syncOtherAnnotationsComponents();
                 this.cdr.detectChanges();
@@ -448,12 +430,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
     }
 
-    manageEventResponseStatus(event) {
+    manageEventResponseStatus(event, noSuccessSnackBar: boolean = false) {
         this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
             undefined,
             {
                 fn: this.displayEventResponseStatus.bind(this),
-                param: event
+                param: { event, noSuccessSnackBar }
             }, this.intervalStep,
             10000,
             this.setDataLoading.bind(this)));
@@ -473,7 +455,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     10000,
                     this.setDataLoading.bind(this)));
                 //On gère ici l'affichage d'un message en réponse au status de l'évènement
-                this.manageEventResponseStatus(event);
+                this.manageEventResponseStatus(event, true);
                 return;
             case 'edit':
                 this.editSegment(event.payload);
@@ -519,7 +501,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 }, this.intervalStep,
                     10000,
                     this.setDataLoading.bind(this)));
-                this.manageEventResponseStatus(event);
+                this.manageEventResponseStatus(event, true);
                 return;
             }
             case 'playMedia':
@@ -572,7 +554,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     private cloneSegment(sourceSegment: AnnotationLocalisation): AnnotationLocalisation {
         const newSegmentCopy = structuredClone(sourceSegment);
-        newSegmentCopy.data.displayMode = "readonly";
         newSegmentCopy.data.selected = true;
         newSegmentCopy.label = (sourceSegment.label === '' || sourceSegment.label === undefined) ? `Copie de ${SegmentComponent.SEGMENT_SANS_TITRE}` : 'Copie de ' + sourceSegment.label;
         newSegmentCopy.id = undefined;
@@ -599,20 +580,16 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public setTcInFn(event: any) {
-        const readOnlyMode = (event.payload.segment.data.displayMode === 'readonly');
-        if (event.status === 'success' || !readOnlyMode) {
+        if (event.status === 'success') {
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tcIn = event.payload.updatedSegment.tcIn;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
-
         }
-
     }
 
     public setTcIn() {
         const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
         if (selectedSegment) {
-            const readOnlyMode = (selectedSegment.data.displayMode === 'readonly');
             const updatedSegment = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
             const maxTcOut = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
@@ -629,7 +606,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 };
 
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined || !readOnlyMode),
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined),
                     undefined,
                     {
                         fn: this.setTcInFn.bind(this),
@@ -637,9 +614,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     }, this.intervalStep,
                     10000,
                     this.setDataLoading.bind(this)));
-                if (readOnlyMode) {
-                    this.manageEventResponseStatus(event);
-                }
+                this.manageEventResponseStatus(event, true);
 
             } else {
                 this.displaySnackBar('le TC Début doit être compris entre le TC Début et le TC OUT de l\'intégral');
@@ -648,19 +623,16 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public setTcOutFn(event: any) {
-        const readOnlyMode = (event.payload.segment.data.displayMode === 'readonly');
-        if (event.status === 'success' || !readOnlyMode) {
+        if (event.status === 'success') {
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
         }
-
     }
 
     public setTcOut() {
         const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
         const maxTcOut = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
         if (selectedSegment) {
-            const readOnlyMode = (selectedSegment.data.displayMode === 'readonly');
             const updatedSegment = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
             if (mediaTc < selectedSegment.tcIn || mediaTc > maxTcOut) {
@@ -676,16 +648,14 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 };
 
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined || !readOnlyMode),
+                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined),
                     undefined, {
                     fn: this.setTcOutFn.bind(this),
                     param: event
                 }, this.intervalStep,
                     10000,
                     this.setDataLoading.bind(this)));
-                if (readOnlyMode) {
-                    this.manageEventResponseStatus(event);
-                }
+                this.manageEventResponseStatus(event, true);
             }
         }
 
