@@ -10,7 +10,7 @@ export class MediaPlayerService {
     public amaliaComponentsCount = new Map<string, number>();
 
     /**
-     * In charge of creating an instance or return existing instance
+     * In charge to crate instance or return existing instance
      * @param key instance id, this this case id is player id
      */
     public get(key: string): MediaPlayerElement {

@@ -325,8 +325,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * In charge to update player size with aspect ratio
      */
-    @HostListener('window:resize', ['$event'])
-    private updatePlayerSizeWithAspectRatio() {
+    @HostListener('window:resize')
+    updatePlayerSizeWithAspectRatio() {
         const htmlElement = this.mediaPlayer.nativeElement;
         if (this.aspectRatio && this.aspectRatio !== '') {
             this.ratio = this.aspectRatio.replace(':', '-');

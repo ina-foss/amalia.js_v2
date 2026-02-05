@@ -394,7 +394,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.allNodesChecked = true;
     }
 
-
     getNewChildNodeFromMetadataElement = (metadata: any, color: string) => {
         return {
             key: metadata.id,

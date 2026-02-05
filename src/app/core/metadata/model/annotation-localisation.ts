@@ -1,4 +1,5 @@
 export interface AnnotationLocalisation {
+    media?: string;
     id?: string;
     label?: string;
     thumb?: string;
@@ -14,7 +15,6 @@ export interface AnnotationLocalisation {
         lastModificationUser?: string;
         creationUser?: string;
         selected?: boolean;
-        displayMode?: "new" | "edit" | "readonly";
         startDate?: Date;
         endDate?: Date;
         startDateParent?: string;
@@ -34,6 +34,13 @@ export interface AnnotationLocalisation {
         idDocument?: string;
         typeDocument?: string;
         instanceTitle?: string;
+        isTitleEditing?: boolean;
+        isTcInEditing?: boolean;
+        isTcOutEditing?: boolean;
+        isTcEditing?: boolean;
+        isCategoriesEditing?: boolean;
+        isKeywordsEditing?: boolean;
+        isDescriptionEditing?: boolean;
     };
     property?: {
         key: string;

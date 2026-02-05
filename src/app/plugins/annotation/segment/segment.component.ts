@@ -10,11 +10,11 @@ import {
     ViewChild
 } from '@angular/core';
 import { AnnotationAction, AnnotationLocalisation } from "../../../core/metadata/model/annotation-localisation";
-import { debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer, Subject } from "rxjs";
+import { debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer } from "rxjs";
 import { FormatUtils } from "../../../core/utils/format-utils";
 import { DEFAULT } from "../../../core/constant/default";
 import { MessageService } from "primeng/api";
-import { switchMap, throttleTime } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { AutoCompleteCompleteEvent } from "primeng/autocomplete";
 import { NgForm } from "@angular/forms";
 import { ToastComponent } from "../../../core/toast/toast.component";
@@ -47,7 +47,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     //InputSignals
     public tcIn = input<number>(0);
     public tcOut = input<number>(0);
-    public displayMode = input<"new" | "edit" | "readonly">("readonly");
+
 
     //Outputs
     @Output()
@@ -58,6 +58,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public segmentForm: NgForm;
     @ViewChild('titlediv')
     public titlediv: ElementRef;
+    @ViewChild('titleInputEdit')
+    public titleInputEdit: ElementRef<HTMLTextAreaElement>;
+    @ViewChild('titleInputReadonly')
+    public titleInputReadonly: ElementRef<HTMLTextAreaElement>;
     @ViewChild('descp')
     public descp: ElementRef;
     @ViewChild('readOnlyCategoriesDiv')
@@ -68,6 +72,18 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public toast: ToastComponent;
     @ViewChild('tcInInputRef')
     public tcInInputRef: ElementRef;
+    @ViewChild('tcInReadonlyInput')
+    public tcInReadonlyInput: ElementRef<HTMLInputElement>;
+    @ViewChild('tcOutReadonlyInput')
+    public tcOutReadonlyInput: ElementRef<HTMLInputElement>;
+    @ViewChild('tcReadonlyInput')
+    public tcReadonlyInput: ElementRef<HTMLInputElement>;
+    @ViewChild('categoriesReadonlyWrapper')
+    public categoriesReadonlyWrapper: ElementRef<HTMLElement>;
+    @ViewChild('keywordsReadonlyWrapper')
+    public keywordsReadonlyWrapper: ElementRef<HTMLElement>;
+    @ViewChild('descriptionReadonlyTextarea')
+    public descriptionReadonlyTextarea: ElementRef<HTMLTextAreaElement>;
     @ViewChild('tcOutInputRef')
     public tcOutInputRef: ElementRef;
     @ViewChild('tcInputRef')
@@ -77,6 +93,18 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public isEllipsed: boolean = false;
     public isDescriptionCollapsed: boolean = true;
     public isDescriptionTruncated: boolean = false;
+
+    private titleBeforeEdit: string = '';
+    private tcInBeforeEdit: string = '';
+    private tcOutBeforeEdit: string = '';
+    private tcBeforeEdit: string = '';
+    private categoriesBeforeEdit: string[] = [];
+    private keywordsBeforeEdit: string[] = [];
+    private descriptionBeforeEdit: string = '';
+
+    private titleBeforeEdition: string = '';
+    private titleEditionAlreadyActivated: boolean = false;
+    private titleEditSubscriptions: Subscription[] = [];
 
     public timeFormatPattern = this.tcDisplayFormat === 'f' ? /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d:)(\d{2})$/ : /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
     private formChangesSubscriptions: Subscription[] = [];
@@ -130,7 +158,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         effect(() => {
-            if (this.displayMode() !== "readonly") {
+            if (this.segment.data.isTitleEditing === true || this.segment.data.isTcInEditing === true || this.segment.data.isTcOutEditing === true || this.segment.data.isTcEditing === true || this.segment.data.isCategoriesEditing === true || this.segment.data.isKeywordsEditing === true || this.segment.data.isDescriptionEditing === true) {
                 this.activateEdition();
             } else {
                 this.formChangesSubscriptions.forEach(subscription => {
@@ -352,9 +380,35 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    private activateEdition() {
+    private clearTitleEditSubscriptions() {
+        this.titleEditSubscriptions.forEach(s => s.unsubscribe());
+        this.titleEditSubscriptions = [];
+        this.titleEditionAlreadyActivated = false;
+    }
+
+    private activateEdition(options?: { titleOnly?: boolean }) {
+        const titleOnly = !!options?.titleOnly;
+        if (titleOnly) {
+            if (this.titleEditionAlreadyActivated) {
+                return;
+            }
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            setTimeout(() => {
+                this.activateTitleEdition(this.titleEditSubscriptions);
+
+                const titleEl = this.titleInputReadonly?.nativeElement;
+                if (titleEl) {
+                    titleEl.focus();
+                    titleEl.select();
+                }
+            }, 0);
+            this.titleEditionAlreadyActivated = true;
+            return;
+        }
+
         if (!this.editionAlreadyActivated) {
             this.propertyBeforeEdition = structuredClone(this.property());
+            this.titleBeforeEdition = this.segment?.label ?? '';
             this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
             this.tcInFormatted = FormatUtils.formatTime(this.segment.tcIn, this.tcDisplayFormat, this.fps);
             this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
@@ -370,9 +424,15 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 //keywords
                 this.activateKeywordsEdition();
                 //title
-                this.activateTitleEdition();
+                this.activateTitleEdition(this.formChangesSubscriptions);
                 //description
                 this.activateDescriptionEdition();
+
+                const titleEl = this.titleInputEdit?.nativeElement;
+                if (titleEl) {
+                    titleEl.focus();
+                    titleEl.select();
+                }
             }, 200);
             this.editionAlreadyActivated = true;
         }
@@ -465,7 +525,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
         }
     }
-    private activateTitleEdition = () => {
+    private activateTitleEdition = (subscriptions: Subscription[] = this.formChangesSubscriptions) => {
         const titleFormControl = this.segmentForm.form.controls['title'];
         if (titleFormControl) {
             const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
@@ -475,7 +535,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     titleFormControl.setErrors(null);
                 }
             });
-            this.formChangesSubscriptions.push(titleChangesSubscription);
+            subscriptions.push(titleChangesSubscription);
         }
     }
     private activateDescriptionEdition = () => {
@@ -500,8 +560,318 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 100);
     }
 
+    public startTitleEdit() {
+        this.titleBeforeEdit = this.segment?.label ?? '';
+        this.segment.data.isTitleEditing = true;
+        setTimeout(() => {
+            this.activateEdition({ titleOnly: true });
+        });
+    }
+
+    public confirmTitleEdit() {
+        const value = this.segment?.label ?? '';
+        if (value.length > 250) {
+            return;
+        }
+        this.actionEmitter.emit({ type: "validate", payload: this.segment });
+        this.setIsEllipsed();
+        this.clearTitleEditSubscriptions();
+        this.segment.data.isTitleEditing = false;
+    }
+
+    public onTitleEditKeydown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.cancelTitleEdit();
+            return;
+        }
+
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.confirmTitleEdit();
+        }
+    }
+
+    public cancelTitleEdit() {
+        if (this.segment) {
+            this.segment.label = this.titleBeforeEdit;
+        }
+        this.setIsEllipsed();
+        this.clearTitleEditSubscriptions();
+        this.segment.data.isTitleEditing = false;
+    }
+
+    public onTitleBlur() {
+        this.unmuteShortCuts();
+        this.confirmTitleEdit();
+    }
+
+    // TcIn inline editing
+    public startTcInEdit() {
+        this.tcInBeforeEdit = this.tcInFormatted;
+        this.segment.data.isTcInEditing = true;
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+
+        setTimeout(() => {
+            const el = this.tcInReadonlyInput?.nativeElement;
+            if (el) {
+                el.focus();
+                el.select();
+            }
+        }, 0);
+    }
+
+    public confirmTcInEdit() {
+        this.doCheckTcIn();
+        if (!this.segmentForm.form.controls['tcIn']?.errors) {
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
+            this.segment.data.isTcInEditing = false;
+        }
+    }
+
+    public cancelTcInEdit() {
+        this.tcInFormatted = this.tcInBeforeEdit;
+        this.segment.tcIn = FormatUtils.convertTcToSeconds(this.tcInBeforeEdit);
+        this.segment.data.isTcInEditing = false;
+    }
+
+    public onTcInKeydown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.cancelTcInEdit();
+            return;
+        }
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.confirmTcInEdit();
+        }
+    }
+
+    public onTcInBlur() {
+        this.unmuteShortCuts();
+        this.confirmTcInEdit();
+    }
+
+    // TcOut inline editing
+    public startTcOutEdit() {
+        this.tcOutBeforeEdit = this.tcOutFormatted;
+        this.segment.data.isTcOutEditing = true;
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+
+        setTimeout(() => {
+            const el = this.tcOutReadonlyInput?.nativeElement;
+            if (el) {
+                el.focus();
+                el.select();
+            }
+        }, 0);
+    }
+
+    public confirmTcOutEdit() {
+        this.doCheckTcOut();
+        if (!this.segmentForm.form.controls['tcOut']?.errors) {
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
+            this.segment.data.isTcOutEditing = false;
+        }
+    }
+
+    public cancelTcOutEdit() {
+        this.tcOutFormatted = this.tcOutBeforeEdit;
+        this.segment.tcOut = FormatUtils.convertTcToSeconds(this.tcOutBeforeEdit);
+        this.segment.data.isTcOutEditing = false;
+    }
+
+    public onTcOutKeydown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.cancelTcOutEdit();
+            return;
+        }
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.confirmTcOutEdit();
+        }
+    }
+
+    public onTcOutBlur() {
+        this.unmuteShortCuts();
+        this.confirmTcOutEdit();
+    }
+
+    // Tc inline editing
+    public startTcEdit() {
+        this.tcBeforeEdit = this.tcFormatted;
+        this.segment.data.isTcEditing = true;
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+
+        setTimeout(() => {
+            const el = this.tcReadonlyInput?.nativeElement;
+            if (el) {
+                el.focus();
+                el.select();
+            }
+        }, 0);
+    }
+
+    public confirmTcEdit() {
+        this.doCheckTc();
+        if (!this.segmentForm.form.controls['tc']?.errors) {
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
+            this.segment.data.isTcEditing = false;
+        }
+    }
+
+    public cancelTcEdit() {
+        this.tcFormatted = this.tcBeforeEdit;
+        this.segment.tc = FormatUtils.convertTcToSeconds(this.tcBeforeEdit);
+        this.segment.data.isTcEditing = false;
+    }
+
+    public onTcKeydown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.cancelTcEdit();
+            return;
+        }
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.confirmTcEdit();
+        }
+    }
+
+    public onTcBlur() {
+        this.unmuteShortCuts();
+        this.confirmTcEdit();
+    }
+
+    // Categories inline editing
+    public startCategoriesEdit() {
+        this.categoriesBeforeEdit = [...this.categories()];
+        this.segment.data.isCategoriesEditing = true;
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+
+        setTimeout(() => {
+            const wrapper = this.categoriesReadonlyWrapper?.nativeElement;
+            const input = wrapper?.querySelector('input') as HTMLInputElement | null;
+            if (input) {
+                input.focus();
+                input.select?.();
+            }
+        }, 0);
+    }
+
+    public confirmCategoriesEdit() {
+        if (this.categories().length <= 10) {
+            this.segment.property = this.property();
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
+            this.segment.data.isCategoriesEditing = false;
+        }
+    }
+
+    public cancelCategoriesEdit() {
+        this.categories.set([...this.categoriesBeforeEdit]);
+        this.segment.property = this.property();
+        this.segment.data.isCategoriesEditing = false;
+    }
+
+    public onCategoriesBlur() {
+        this.unmuteShortCuts();
+        this.confirmCategoriesEdit();
+    }
+
+    // Keywords inline editing
+    public startKeywordsEdit() {
+        this.keywordsBeforeEdit = [...this.keywords()];
+        this.segment.data.isKeywordsEditing = true;
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+
+        setTimeout(() => {
+            const wrapper = this.keywordsReadonlyWrapper?.nativeElement;
+            const input = wrapper?.querySelector('input') as HTMLInputElement | null;
+            if (input) {
+                input.focus();
+                input.select?.();
+            }
+        }, 0);
+    }
+
+    public confirmKeywordsEdit() {
+        if (this.keywords().length <= 10) {
+            this.segment.property = this.property();
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
+            this.segment.data.isKeywordsEditing = false;
+        }
+    }
+
+    public cancelKeywordsEdit() {
+        this.keywords.set([...this.keywordsBeforeEdit]);
+        this.segment.property = this.property();
+        this.segment.data.isKeywordsEditing = false;
+    }
+
+    public onKeywordsBlur() {
+        this.unmuteShortCuts();
+        this.confirmKeywordsEdit();
+    }
+
+    // Description inline editing
+    public startDescriptionEdit() {
+        this.descriptionBeforeEdit = this.segment?.description ?? '';
+        this.segment.data.isDescriptionEditing = true;
+        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+
+        setTimeout(() => {
+            const el = this.descriptionReadonlyTextarea?.nativeElement;
+            if (el) {
+                el.focus();
+                el.select();
+            }
+        }, 0);
+    }
+
+    public confirmDescriptionEdit() {
+        const value = this.segment?.description ?? '';
+        if (value.length <= 1000) {
+            this.actionEmitter.emit({ type: "validate", payload: this.segment });
+            this.segment.data.isDescriptionEditing = false;
+            this.setIsDescriptionTruncated();
+        }
+    }
+
+    public cancelDescriptionEdit() {
+        if (this.segment) {
+            this.segment.description = this.descriptionBeforeEdit;
+        }
+        this.segment.data.isDescriptionEditing = false;
+        this.setIsDescriptionTruncated();
+    }
+
+    public onDescriptionKeydown(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.cancelDescriptionEdit();
+        }
+    }
+    
+    public onDescriptionBlur() {
+        this.unmuteShortCuts();
+        this.confirmDescriptionEdit();
+    }
+
     public cancelNewSegmentCreation() {
         this.actionEmitter.emit({ type: "cancel", payload: this.segment });
+        if (this.segment) {
+            this.segment.label = this.titleBeforeEdition;
+        }
         this.setCategoriesFromProperty(this.propertyBeforeEdition);
         this.setKeywordsFromProperty(this.propertyBeforeEdition);
     }
@@ -664,7 +1034,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     @HostListener("window:resize", [])
     updateTcsDisplay() {
-        if (this.segment.data.displayMode !== 'readonly' && this.tcInInputRef && this.tcOutInputRef && this.tcInputRef && this.segmentTcRef) {
+        if (this.tcInInputRef && this.tcOutInputRef && this.tcInputRef && this.segmentTcRef) {
             const tcInInputRef = this.tcInInputRef.nativeElement;
             if (tcInInputRef.scrollWidth > tcInInputRef.clientWidth) {
                 this.editableSegmentTcWrap = true;
@@ -766,9 +1136,19 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             this.applyShortcut(event);
         }
     }
+
+    editionInProgess(): boolean {
+        return this.segment.data.isTitleEditing
+            || this.segment.data.isKeywordsEditing
+            || this.segment.data.isCategoriesEditing
+            || this.segment.data.isDescriptionEditing
+            || this.segment.data.isTcEditing
+            || this.segment.data.isTcInEditing
+            || this.segment.data.isTcOutEditing;
+    }
+
     applyShortcut(event: ShortcutEvent) {
         if (this.segment.data.selected === true
-            && this.segment.data.displayMode === 'edit'
             && ((event.shortcut.key === 'enter' && event.shortcut.ctrl !== true)
                 || (event.shortcut.key === 's' && event.shortcut.ctrl === true))
             && event.shortcut.shift !== true
@@ -778,7 +1158,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         if (this.segment.data.selected === true
-            && this.segment.data.displayMode === 'edit'
+            && this.editionInProgess()
             && event.shortcut.key === 'escape'
             && event.shortcut.ctrl !== true
             && event.shortcut.shift !== true

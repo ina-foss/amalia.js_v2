@@ -561,7 +561,6 @@ describe('AnnotationPluginComponent', () => {
             {
                 "label": "Soleil levant",
                 "data": {
-                    "displayMode": "readonly",
                     "selected": true,
                     "tcMax": 2264,
                     "tcThumbnail": 600000,
@@ -785,7 +784,6 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
                     },
                     "tc": 0,
                     "tcIn": 48600,
@@ -801,7 +799,6 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
                     },
                     "tc": 0,
                     "tcIn": 48600,
@@ -817,7 +814,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
+
                     },
                     "tc": 0,
                     "tcIn": 47816,
@@ -833,7 +830,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
+
                     },
                     "tc": 0,
                     "tcIn": 46800,
@@ -879,7 +876,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
+
                     },
                     "tc": 0,
                     "tcIn": 46800,
@@ -895,7 +892,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
+
                     },
                     "tc": 0,
                     "tcIn": 46800,
@@ -911,7 +908,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
+
                     },
                     "tc": 0,
                     "tcIn": 48600,
@@ -927,7 +924,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
+
                     },
                     "tc": 0,
                     "tcIn": 47932,
@@ -943,7 +940,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                         "codeChannel": "LCI",
                         "idmChannel": "LCI",
                         "labelChannel": "La Chaîne Info",
-                        "displayMode": "readonly"
+
                     },
                     "tc": 0,
                     "tcIn": 48600,
@@ -983,7 +980,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1030,7 +1027,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1047,7 +1044,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1064,7 +1061,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1081,7 +1078,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1099,7 +1096,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1116,7 +1113,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1133,7 +1130,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1150,7 +1147,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1167,7 +1164,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1184,7 +1181,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1201,7 +1198,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1218,7 +1215,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1235,7 +1232,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                     "codeChannel": "LCI",
                     "idmChannel": "LCI",
                     "labelChannel": "La Chaîne Info",
-                    "displayMode": "readonly",
+
                     "media": "VIDEO",
                 },
                 "tc": 0,
@@ -1314,22 +1311,28 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         tick(5000);
         expect(event.payload.updatedSegment).toEqual(component.segmentBeforeEdition);
         expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_UPDATE, event);
-        expect(spyOnManageEventResponseStatus).toHaveBeenCalledWith(event);
+        expect(spyOnManageEventResponseStatus).toHaveBeenCalledWith(event, true);
         expect(spyOnSaveSegment).toHaveBeenCalledWith(event);
         expect(event.payload.segment.data.selected).toEqual(true);
-        expect(event.payload.segment.data.displayMode).toEqual("readonly");
-        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith(event);
-        expect(spyOnDisplaySnackBar).toHaveBeenCalledWith(event.responseMessage, event.status);
+        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith({ event, noSuccessSnackBar: true });
         flush();
     }));
-    it('Should handle edit event in manageSegment when no other segment is being edited', () => {
+    it('Should handle edit event in manageSegment', () => {
         const segmentToEdit = component.segmentsInfo.subLocalisations.find(segment => segment.id === "0030005ajj53");
         const event: any = {
             type: 'edit',
             payload: segmentToEdit
         };
         //s'assurer qu'auncun segment n'est en cours de modification (edit ou new)
-        component.segmentsInfo.subLocalisations.forEach(segment => segment.data.displayMode = "readonly");
+        component.segmentsInfo.subLocalisations.forEach(segment => {
+            segment.data.isTitleEditing = false;
+            segment.data.isDescriptionEditing = false;
+            segment.data.isCategoriesEditing = false;
+            segment.data.isKeywordsEditing = false;
+            segment.data.isTcEditing = false;
+            segment.data.isTcInEditing = false;
+            segment.data.isTcOutEditing = false;
+        });
         const spyOnEmit = spyOn(mediaPlayerElement.eventEmitter, 'emit');
         const spyOnEditSegment = spyOn(component, 'editSegment').and.callThrough();
         const spyOnunselectAllSegments = spyOn(component, 'unselectAllSegments').and.callThrough();
@@ -1337,97 +1340,9 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_EDITING, event);
         expect(spyOnEditSegment).toHaveBeenCalledWith(event.payload);
         expect(spyOnunselectAllSegments).toHaveBeenCalled();
-        expect(segmentToEdit.data.displayMode).toEqual("edit");
         expect(segmentToEdit.data.selected).toEqual(true);
     });
-    it('Should handle edit event in manageSegment when other segment is being edited and confirm', fakeAsync(() => {
-        const segmentBeingEdited = component.segmentsInfo.subLocalisations.find(segment => segment.id === "00300004tppk");
-        component.segmentBeforeEdition = structuredClone(segmentBeingEdited);
-        segmentBeingEdited.data.displayMode = "edit";
-        const event: any = {
-            "type": "edit",
-            "payload": segmentBeingEdited
-        };
 
-        const segmentToEdit = component.segmentsInfo.subLocalisations.find(segment => segment.id === "003001m8oxpz");
-        const newEvent: any = {
-            "type": "edit",
-            "payload": segmentToEdit
-        };
-        const spyOnEmit = spyOn(mediaPlayerElement.eventEmitter, 'emit');
-        const spyOnEditSegment = spyOn(component, 'editSegment').and.callThrough();
-        const spyOncancelNewSegmentEdition = spyOn(component, 'cancelNewSegmentEdition').and.callThrough();
-        component.manageSegment(newEvent);
-        expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_EDITING, newEvent);
-        expect(spyOnEditSegment).toHaveBeenCalledWith(newEvent.payload);
-        tick();
-        fixture.changeDetectorRef.detectChanges();
-        const spans = fixture.debugElement.queryAll(
-            el => el.nativeElement.tagName.toLowerCase() === 'span' &&
-                el.nativeElement.classList.contains('p-button-label') &&
-                el.nativeElement.textContent.trim() === 'Oui'
-        );
-        expect(spans.length).toBe(1);
-        spans[0].nativeElement.click();
-        fixture.changeDetectorRef.detectChanges();
-        tick(1000);
-        expect(spyOncancelNewSegmentEdition).toHaveBeenCalledWith(event.payload);
-        expect(event.payload.data.displayMode).toEqual("readonly");
-        expect(newEvent.payload.id).toEqual(component.segmentBeforeEdition.id);
-        expect(newEvent.payload.data.displayMode).toEqual("edit");
-        expect(event.payload.data.selected).toEqual(false);
-        expect(newEvent.payload.data.selected).toEqual(true);
-        tick(5000);
-        flush();
-    }));
-    it('Should handle edit event in manageSegment when other segment is being edited and cancel', fakeAsync(() => {
-        const segmentBeingEdited = component.segmentsInfo.subLocalisations.find(segment => segment.id === "0030002trcfx");
-        component.segmentBeforeEdition = structuredClone(segmentBeingEdited);
-        segmentBeingEdited.data.displayMode = "edit";
-
-        const segmentToEdit = component.segmentsInfo.subLocalisations.find(segment => segment.id === "003000ai0qgw");
-        const newEvent: any = {
-            "type": "edit",
-            "payload": segmentToEdit
-        };
-        const spyOnEmit = spyOn(mediaPlayerElement.eventEmitter, 'emit');
-        const spyOnEditSegment = spyOn(component, 'editSegment').and.callThrough();
-        component.manageSegment(newEvent);
-        expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_EDITING, newEvent);
-        expect(spyOnEditSegment).toHaveBeenCalledWith(newEvent.payload);
-        tick();
-        fixture.changeDetectorRef.detectChanges();
-        const spans = fixture.debugElement.queryAll(
-            el => el.nativeElement.tagName.toLowerCase() === 'span' &&
-                el.nativeElement.classList.contains('p-button-label') &&
-                el.nativeElement.textContent.trim() === 'Non'
-        );
-        expect(spans.length).toBe(1);
-        spans[0].nativeElement.click();
-        fixture.changeDetectorRef.detectChanges();
-        tick(1000);
-        expect(segmentBeingEdited.data.selected).toEqual(true);
-        expect(segmentToEdit.data.selected).toEqual(false);
-        tick(5000);
-        flush();
-    }));
-    it('should cancel new segment edition', () => {
-        const segmentBeingEdited = component.segmentsInfo.subLocalisations.find(segment => segment.id === "003000zayrxm");
-        component.segmentBeforeEdition = structuredClone(segmentBeingEdited);
-        segmentBeingEdited.description = "I am being Edited!";
-        const event: any = {
-            "type": "cancel",
-            "payload": segmentBeingEdited
-        };
-        const spyOnEmit = spyOn(mediaPlayerElement.eventEmitter, 'emit').and.callThrough();
-        const spyOncancelNewSegmentEdition = spyOn(component, 'cancelNewSegmentEdition').and.callThrough();
-        component.manageSegment(event);
-        expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_CANCEL_EDITING, event);
-
-        expect(spyOncancelNewSegmentEdition).toHaveBeenCalled();
-        expect(segmentBeingEdited.data.displayMode).toEqual("readonly");
-        expect(segmentBeingEdited.description).toEqual(component.segmentBeforeEdition.description);
-    });
     it('should clone a segment', fakeAsync(() => {
         const segmentToBeCloned = component.segmentsInfo.subLocalisations.find(segment => segment.id === "003000pgbg2x");
         segmentToBeCloned.label = "I am being cloned!";
@@ -1456,14 +1371,12 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         tick(200);
         expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_ADD, event_of_cloned);
         expect(spyOnCloneSegment).toHaveBeenCalledWith(event.payload);
-        expect(event.payload.data.displayMode).toEqual("readonly");
         expect(spyOnAddSegmentAtIndex).toHaveBeenCalledWith(param);
         expect(event_of_cloned.payload.id).toBeUndefined();
-        expect(event_of_cloned.payload.data.displayMode).toEqual("readonly");
         expect(event_of_cloned.payload.data.selected).toEqual(true);
         expect(event_of_cloned.payload.label).toEqual('Copie de I am being cloned!');
         expect(spyOnManageEventResponseStatus).toHaveBeenCalledWith(event_of_cloned);
-        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith(event_of_cloned);
+        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith({ event: event_of_cloned, noSuccessSnackBar: false });
         expect(spyOnDisplaySnackBar).toHaveBeenCalledWith(event_of_cloned.responseMessage, event_of_cloned.status);
         tick(5000);
         mediaPlayerElement.eventEmitter.off(PlayerEventType.ANNOTATION_ADD, setEvent_of_cloned);
@@ -1507,7 +1420,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_REMOVE, event_of_remove);
         expect(spyOnRemoveSegmentFromSegmentsInfo).toHaveBeenCalledWith(event_of_remove);
         expect(spyOnManageEventResponseStatus).toHaveBeenCalledWith(event_of_remove);
-        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith(event_of_remove);
+        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith({ event: event_of_remove, noSuccessSnackBar: false });
         expect(spyOnDisplaySnackBar).toHaveBeenCalledWith(event_of_remove.responseMessage, event_of_remove.status);
         expect(component.segmentsInfo.subLocalisations.find(segment => segment.id === "003001388lb3")).toBeUndefined();
         tick(5000);
@@ -1525,7 +1438,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         const spyOnUpdateThumbnail = spyOn(component, 'updatethumbnail').and.callThrough();
         const spyOnManageEventResponseStatus = spyOn(component, 'manageEventResponseStatus').and.callThrough();
         const spyOnDisplayEventResponseStatus = spyOn(component, 'displayEventResponseStatus').and.callThrough();
-        const spyOnDisplaySnackBar = spyOn(component, 'displaySnackBar').and.callThrough();
+        //const spyOnDisplaySnackBar = spyOn(component, 'displaySnackBar').and.callThrough();
         const videoElement = document.createElement('video');
         mediaPlayerElement.setMediaPlayer(videoElement);
         const mediaPlayer = component.mediaPlayerElement.getMediaPlayer();
@@ -1541,9 +1454,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
         expect(spyOnCaptureImage).toHaveBeenCalled();
         expect(spyOnEmit).toHaveBeenCalledWith(PlayerEventType.ANNOTATION_UPDATE, event);
         expect(spyOnUpdateThumbnail).toHaveBeenCalledWith(event);
-        expect(spyOnManageEventResponseStatus).toHaveBeenCalledWith(event);
-        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith(event);
-        expect(spyOnDisplaySnackBar).toHaveBeenCalledWith(event.responseMessage, event.status);
+        expect(spyOnManageEventResponseStatus).toHaveBeenCalledWith(event, true);
+        expect(spyOnDisplayEventResponseStatus).toHaveBeenCalledWith({ event, noSuccessSnackBar: true });
         expect(segmentToUpdateThumbnail.thumb).toEqual("updated thumbnail");
         tick(5000);
         flush();
