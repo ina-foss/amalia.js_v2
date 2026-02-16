@@ -421,7 +421,7 @@
           .readonly-segment-tc-item {
             display: flex;
             width: fit-content;
-            height: 36px;
+            height: 32px;
             flex-direction: column;
             justify-content: center;
 
@@ -509,6 +509,7 @@
             background: $colors-primitive-primary-color;
             color: #fff;
             padding: 6px 8px 6px 5px !important;
+            max-height: 32px;
           }
 
           .p-chip-text {
@@ -590,6 +591,7 @@
 
           .p-chip {
             padding: 6px 8px 6px 5px !important;
+            max-height: 32px;
           }
 
           .p-chip-text {
@@ -636,15 +638,25 @@
       width: 100%;
       margin-bottom: 0;
       margin-top: 0;
+      position: relative;
 
-      .readonly-segment-description-toggle {
-        display: inline;
+      .readonly-segment-description-afficher-plus {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(to right, transparent, #fff 20%);
+        padding-left: 24px;
+        color: $amalia-primary-color;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 150%;
         cursor: pointer;
-        white-space: nowrap;
       }
 
-      .readonly-segment-description-afficher-plus,
       .readonly-segment-description-afficher-moins {
+        display: inline;
         color: $amalia-primary-color;
         font-family: Lato;
         font-size: 14px;
@@ -652,6 +664,13 @@
         font-weight: 700;
         line-height: normal;
         cursor: pointer;
+        margin-left: 4px;
+      }
+
+      &.description-collapsed {
+        p {
+          padding-right: 80px;
+        }
       }
 
       &:hover {

@@ -64,6 +64,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public titleInputReadonly: ElementRef<HTMLTextAreaElement>;
     @ViewChild('descp')
     public descp: ElementRef;
+    @ViewChild('afficherplus')
+    public afficherplus: ElementRef<HTMLSpanElement>;
+    @ViewChild('affichermoins')
+    public affichermoins: ElementRef<HTMLSpanElement>;
     @ViewChild('readOnlyCategoriesDiv')
     public readOnlyCategoriesDiv: ElementRef;
     @ViewChild('readOnlyKeywordsDiv')
@@ -1078,15 +1082,47 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
                     const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
                     this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 3);
+                    this.positionToggleSpan();
                 }
             }
         });
     }
 
+    private positionToggleSpan() {
+        setTimeout(() => {
+            const descEl = this.descp?.nativeElement as HTMLElement;
+            if (!descEl) return;
+
+            const containerRect = descEl.parentElement?.getBoundingClientRect();
+            if (!containerRect) return;
+
+            if (this.isDescriptionCollapsed && this.afficherplus?.nativeElement) {
+                const spanEl = this.afficherplus.nativeElement as HTMLElement;
+                const descRect = descEl.getBoundingClientRect();
+                const lineHeight = parseFloat(window.getComputedStyle(descEl).lineHeight) || 21;
+                const lastLineBottom = descRect.top + descEl.clientHeight;
+                const lastLineTop = lastLineBottom - lineHeight;
+
+                spanEl.style.position = 'absolute';
+                spanEl.style.top = `${lastLineTop - containerRect.top}px`;
+                spanEl.style.right = '0';
+                spanEl.style.bottom = 'auto';
+            }
+
+            if (!this.isDescriptionCollapsed && this.affichermoins?.nativeElement) {
+                const spanEl = this.affichermoins.nativeElement as HTMLElement;
+                spanEl.style.position = 'relative';
+                spanEl.style.top = 'auto';
+                spanEl.style.right = 'auto';
+                spanEl.style.bottom = 'auto';
+            }
+        }, 10);
+    }
 
     public toggleDescription(event: Event) {
         event.preventDefault();
         this.isDescriptionCollapsed = !this.isDescriptionCollapsed;
+        this.positionToggleSpan();
     }
 
     private isIncludedInArrayIgnoreCase(array, searchItem) {
