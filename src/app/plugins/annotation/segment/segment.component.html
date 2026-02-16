@@ -154,16 +154,18 @@
                     </div>
                 </div>
                 <div *ngIf="(segment.data.isDescriptionEditing===false) && segment.description && segment.description.length !== 0 && segment.description.trim().length !== 0"
-                    class="readonly-segment-description">
+                    class="readonly-segment-description"
+                    [ngClass]="{'description-collapsed': isDescriptionCollapsed, 'description-expanded': !isDescriptionCollapsed}">
                     <p #descp [class.collapsed]="isDescriptionCollapsed" (click)="startDescriptionEdit()"
-                        style="cursor: pointer;">{{ segment.description }}<span *ngIf="isDescriptionTruncated"
-                            class="readonly-segment-description-toggle"
-                            [ngClass]="{'toggle-collapsed': isDescriptionCollapsed, 'toggle-expanded': !isDescriptionCollapsed}"
-                            (click)="toggleDescription($event)"><span *ngIf="isDescriptionCollapsed"
-                                class="readonly-segment-description-afficher-plus"> Afficher +</span><span
-                                *ngIf="!isDescriptionCollapsed"
-                                class="readonly-segment-description-afficher-moins"> Afficher -</span></span></p>
-                </div>
+                        style="cursor: pointer;">{{ segment.description }}
+                        <span #affichermoins *ngIf="isDescriptionTruncated && !isDescriptionCollapsed"
+                            class="readonly-segment-description-afficher-moins"
+                            (click)="toggleDescription($event)">Afficher -</span>
+                    </p>
+                    <span #afficherplus *ngIf="isDescriptionTruncated && isDescriptionCollapsed"
+                        class="readonly-segment-description-afficher-plus"
+                        (click)="toggleDescription($event)">Afficher +</span>
+                    </div>
                 <div *ngIf="segment.data.isDescriptionEditing===true" class="readonly-description-edit-container">
                     <div class="readonly-description-edit">
                         <textarea #descriptionEditTextarea id="descriptionReadonly" name="description"
