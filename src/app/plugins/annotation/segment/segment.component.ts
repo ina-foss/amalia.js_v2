@@ -1205,7 +1205,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         document.body.removeChild(temp);
-        return visibleText.trimEnd();
+        return visibleText.trimEnd() + '...';
     }
 
     private isIncludedInArrayIgnoreCase(array, searchItem) {
