@@ -261,13 +261,13 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     tcMax: maxDuration,
                     tcThumbnail: tcIn,
                     hierarchy_technical_id: this.technical_id,
-                    isTitleEditing:false,
-                    isTcInEditing:false,
-                    isTcOutEditing:false,
-                    isTcEditing:false,
-                    isCategoriesEditing:false,
-                    isKeywordsEditing:false,
-                    isDescriptionEditing:false,
+                    isTitleEditing: false,
+                    isTcInEditing: false,
+                    isTcOutEditing: false,
+                    isTcEditing: false,
+                    isCategoriesEditing: false,
+                    isKeywordsEditing: false,
+                    isDescriptionEditing: false,
                 },
                 tc: 0,
                 tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset
@@ -297,7 +297,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             }, this.intervalStep,
                 10000,
                 this.setDataLoading.bind(this)));
-            this.manageEventResponseStatus(event);
+            this.manageEventResponseStatus(event, true);
         } else {
             this.logWaitForTcOffsetComplete();
         }
@@ -333,7 +333,6 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
 
     }
-
 
     public setSegmentsTcOffsetAndTcMax() {
         if (this.mediaPlayerElementReady()) {

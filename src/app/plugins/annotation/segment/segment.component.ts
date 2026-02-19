@@ -28,6 +28,7 @@ import { AnnotationsService } from 'src/app/service/annotations.service';
     selector: 'amalia-segment',
     templateUrl: './segment.component.html',
     styleUrl: './segment.component.scss',
+    imports: [ToastComponent],
 })
 export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     //Inputs
@@ -64,6 +65,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public titleInputReadonly: ElementRef<HTMLTextAreaElement>;
     @ViewChild('descp')
     public descp: ElementRef;
+    @ViewChild('descp2')
+    public descp2: ElementRef;
     @ViewChild('afficherplus')
     public afficherplus: ElementRef<HTMLSpanElement>;
     @ViewChild('affichermoins')
@@ -97,6 +100,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public isEllipsed: boolean = false;
     public isDescriptionCollapsed: boolean = true;
     public isDescriptionTruncated: boolean = false;
+    public truncatedDescription: string = '';
 
     private titleBeforeEdit: string = '';
     private tcInBeforeEdit: string = '';
@@ -108,9 +112,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private ignoreNextCategoriesBlur: boolean = false;
     private ignoreNextKeywordsBlur: boolean = false;
+    private ignoreNextTitleBlur: boolean = false;
+    private ignoreNextDescriptionBlur: boolean = false;
 
     private titleBeforeEdition: string = '';
-    private titleEditionAlreadyActivated: boolean = false;
     private titleEditSubscriptions: Subscription[] = [];
 
     public timeFormatPattern = this.tcDisplayFormat === 'f' ? /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d:)(\d{2})$/ : /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
@@ -120,7 +125,6 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public tcFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
     public setTcInvoked: boolean = false;
     public propertyBeforeEdition: { key: string; value: string }[] = [];
-    private editionAlreadyActivated: boolean = false;
 
     filteredCategories: string[];
     filteredKeywords: string[];
@@ -166,7 +170,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
         effect(() => {
             if (this.segment.data.isTitleEditing === true || this.segment.data.isTcInEditing === true || this.segment.data.isTcOutEditing === true || this.segment.data.isTcEditing === true || this.segment.data.isCategoriesEditing === true || this.segment.data.isKeywordsEditing === true || this.segment.data.isDescriptionEditing === true) {
-                this.activateEdition();
+                //no code needed, edition is already activated
             } else {
                 this.formChangesSubscriptions.forEach(subscription => {
                     subscription.unsubscribe();
@@ -390,58 +394,67 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     private clearTitleEditSubscriptions() {
         this.titleEditSubscriptions.forEach(s => s.unsubscribe());
         this.titleEditSubscriptions = [];
-        this.titleEditionAlreadyActivated = false;
     }
 
-    private activateEdition(options?: { titleOnly?: boolean }) {
+    private activateEdition(options?: {
+        titleOnly?: boolean;
+        descriptionOnly?: boolean;
+        tcInOnly?: boolean;
+        tcOutOnly?: boolean;
+        tcOnly?: boolean;
+        categoriesOnly?: boolean;
+        keyWordsOnly?: boolean;
+    }) {
         const titleOnly = !!options?.titleOnly;
-        if (titleOnly) {
-            if (this.titleEditionAlreadyActivated) {
-                return;
-            }
-            this.actionEmitter.emit({ type: "edit", payload: this.segment });
-            setTimeout(() => {
-                this.activateTitleEdition(this.titleEditSubscriptions);
+        const descriptionOnly = !!options?.descriptionOnly;
+        const tcInOnly = !!options?.tcInOnly;
+        const tcOutOnly = !!options?.tcOutOnly;
+        const tcOnly = !!options?.tcOnly;
+        const categoriesOnly = !!options?.categoriesOnly;
+        const keyWordsOnly = !!options?.keyWordsOnly;
 
-                const titleEl = this.titleInputReadonly?.nativeElement;
-                if (titleEl) {
-                    titleEl.focus();
-                    titleEl.select();
-                }
-            }, 0);
-            this.titleEditionAlreadyActivated = true;
+        if (titleOnly) {
+            this.titleBeforeEdition = this.segment?.label ?? '';
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            this.activateTitleEdition(this.titleEditSubscriptions);
             return;
         }
-
-        if (!this.editionAlreadyActivated) {
-            this.propertyBeforeEdition = structuredClone(this.property());
-            this.titleBeforeEdition = this.segment?.label ?? '';
+        if (tcInOnly) {
+            //tcIn edition
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            setTimeout(() => { this.activateTcInEdition(); }, 0);
+            return;
+        }
+        if (tcOutOnly) {
+            //tcout edition
             this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
-            this.tcInFormatted = FormatUtils.formatTime(this.segment.tcIn, this.tcDisplayFormat, this.fps);
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            setTimeout(() => { this.activateTcOutEdition(); }, 0);
+            return;
+        }
+        if (tcOnly) {
+            //tc edition
             this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
-            setTimeout(() => {
-                //tcout edition
-                this.activateTcOutEdition();
-                //tcIn edition
-                this.activateTcInEdition();
-                //tc edition
-                this.activateTcEdition();
-                //categories
-                this.activateCategoriesEdition();
-                //keywords
-                this.activateKeywordsEdition();
-                //title
-                this.activateTitleEdition(this.formChangesSubscriptions);
-                //description
-                this.activateDescriptionEdition();
-
-                const titleEl = this.titleInputEdit?.nativeElement;
-                if (titleEl) {
-                    titleEl.focus();
-                    titleEl.select();
-                }
-            }, 200);
-            this.editionAlreadyActivated = true;
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            setTimeout(() => { this.activateTcEdition(); }, 0);
+            return;
+        }
+        if (categoriesOnly) {
+            //categories
+            this.propertyBeforeEdition = structuredClone(this.property());
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            setTimeout(() => { this.activateCategoriesEdition(); }, 0);
+            return;
+        }
+        if (keyWordsOnly) {
+            //keywords
+            this.propertyBeforeEdition = structuredClone(this.property());
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            setTimeout(() => { this.activateKeywordsEdition(); }, 0);
+        }
+        if (descriptionOnly) {        //description
+            this.actionEmitter.emit({ type: "edit", payload: this.segment });
+            setTimeout(() => { this.activateDescriptionEdition(); }, 0);
         }
     }
 
@@ -560,7 +573,6 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public editSegment() {
-        this.editionAlreadyActivated = false;
         this.actionEmitter.emit({ type: "edit", payload: this.segment });
         setTimeout(() => {
             this.updateTcsDisplay();
@@ -570,9 +582,14 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public startTitleEdit() {
         this.titleBeforeEdit = this.segment?.label ?? '';
         this.segment.data.isTitleEditing = true;
+        this.activateEdition({ titleOnly: true });
         setTimeout(() => {
-            this.activateEdition({ titleOnly: true });
-        });
+            const el = this.titleInputReadonly?.nativeElement;
+            if (el) {
+                el.focus();
+                el.select();
+            }
+        }, 0);
     }
 
     public confirmTitleEdit() {
@@ -611,16 +628,23 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public onTitleBlur() {
+        if (this.ignoreNextTitleBlur) {
+            this.ignoreNextTitleBlur = false;
+            return;
+        }
         this.unmuteShortCuts();
         this.confirmTitleEdit();
+    }
+
+    public onTitleActionMouseDown() {
+        this.ignoreNextTitleBlur = true;
     }
 
     // TcIn inline editing
     public startTcInEdit() {
         this.tcInBeforeEdit = this.tcInFormatted;
         this.segment.data.isTcInEditing = true;
-        this.actionEmitter.emit({ type: "edit", payload: this.segment });
-
+        this.activateEdition({ tcInOnly: true });
         setTimeout(() => {
             const el = this.tcInReadonlyInput?.nativeElement;
             if (el) {
@@ -629,6 +653,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         }, 0);
     }
+
+
 
     public confirmTcInEdit() {
         this.doCheckTcIn();
@@ -667,8 +693,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public startTcOutEdit() {
         this.tcOutBeforeEdit = this.tcOutFormatted;
         this.segment.data.isTcOutEditing = true;
-        this.actionEmitter.emit({ type: "edit", payload: this.segment });
-
+        this.activateEdition({ tcOutOnly: true });
         setTimeout(() => {
             const el = this.tcOutReadonlyInput?.nativeElement;
             if (el) {
@@ -715,7 +740,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public startTcEdit() {
         this.tcBeforeEdit = this.tcFormatted;
         this.segment.data.isTcEditing = true;
-        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+        this.activateEdition({ tcOnly: true });
 
         setTimeout(() => {
             const el = this.tcReadonlyInput?.nativeElement;
@@ -763,7 +788,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public startCategoriesEdit() {
         this.categoriesBeforeEdit = [...this.categories()];
         this.segment.data.isCategoriesEditing = true;
-        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+        this.activateEdition({ categoriesOnly: true });
 
         setTimeout(() => {
             const wrapper = this.categoriesEditWrapper?.nativeElement;
@@ -811,7 +836,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public startKeywordsEdit() {
         this.keywordsBeforeEdit = [...this.keywords()];
         this.segment.data.isKeywordsEditing = true;
-        this.actionEmitter.emit({ type: "edit", payload: this.segment });
+        this.activateEdition({ keyWordsOnly: true });
 
         setTimeout(() => {
             const wrapper = this.keywordsEditWrapper?.nativeElement;
@@ -961,8 +986,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public startDescriptionEdit() {
         this.descriptionBeforeEdit = this.segment?.description ?? '';
         this.segment.data.isDescriptionEditing = true;
-        this.actionEmitter.emit({ type: "edit", payload: this.segment });
-
+        this.activateEdition({ descriptionOnly: true });
         setTimeout(() => {
             const el = this.descriptionEditTextarea?.nativeElement;
             if (el) {
@@ -998,9 +1022,17 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public onDescriptionBlur() {
+        if (this.ignoreNextDescriptionBlur) {
+            this.ignoreNextDescriptionBlur = false;
+            return;
+        }
         this.unmuteShortCuts();
         this.confirmDescriptionEdit();
         this.segment.data.isDescriptionEditing = false;
+    }
+
+    public onDescriptionActionMouseDown() {
+        this.ignoreNextDescriptionBlur = true;
     }
 
     public cancelNewSegmentCreation() {
@@ -1096,16 +1128,14 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             const containerRect = descEl.parentElement?.getBoundingClientRect();
             if (!containerRect) return;
 
+            this.truncatedDescription = this.getVisibleText(descEl);
+
             if (this.isDescriptionCollapsed && this.afficherplus?.nativeElement) {
                 const spanEl = this.afficherplus.nativeElement as HTMLElement;
-                const descRect = descEl.getBoundingClientRect();
-                const lineHeight = parseFloat(window.getComputedStyle(descEl).lineHeight) || 21;
-                const lastLineBottom = descRect.top + descEl.clientHeight;
-                const lastLineTop = lastLineBottom - lineHeight;
 
-                spanEl.style.position = 'absolute';
-                spanEl.style.top = `${lastLineTop - containerRect.top}px`;
-                spanEl.style.right = '0';
+                spanEl.style.position = 'relative';
+                spanEl.style.top = 'auto';
+                spanEl.style.right = 'auto';
                 spanEl.style.bottom = 'auto';
             }
 
@@ -1123,6 +1153,60 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         event.preventDefault();
         this.isDescriptionCollapsed = !this.isDescriptionCollapsed;
         this.positionToggleSpan();
+        setTimeout(() => {
+            const descEl = this.descp?.nativeElement as HTMLElement;
+            if (descEl) {
+                this.truncatedDescription = this.getVisibleText(descEl);
+            }
+        }, 100);
+    }
+    getVisibleText(element: HTMLElement): string {
+        const style = window.getComputedStyle(element);
+        const lineHeight = parseFloat(style.lineHeight);
+        const maxLines = 3; // votre -webkit-line-clamp
+        const maxHeight = lineHeight * maxLines;
+
+        const fullText = this.segment.description || '';
+
+        // Utiliser la largeur du parent si l'élément est caché (display: none)
+        let width = element.clientWidth;
+        if (width === 0 && element.parentElement) {
+            width = element.parentElement.clientWidth;
+        }
+
+        // Créer un élément temporaire pour mesurer
+        const temp = document.createElement('p');
+        temp.style.cssText = `
+    position: absolute;
+    visibility: hidden;
+    width: ${width}px;
+    font: ${style.font};
+    line-height: ${style.lineHeight};
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  `;
+        document.body.appendChild(temp);
+
+        // Calculer la hauteur des marges du <p>
+        const tempStyle = window.getComputedStyle(temp);
+        const marginTop = parseFloat(tempStyle.marginTop) || 0;
+        const marginBottom = parseFloat(tempStyle.marginBottom) || 0;
+        const totalMargin = marginTop + marginBottom;
+
+        let visibleText = '';
+        for (let i = 0; i < fullText.length; i++) {
+            temp.textContent = fullText.substring(0, i + 1);
+            // Soustraire les marges pour obtenir la hauteur réelle du contenu
+            const contentHeight = temp.offsetHeight - totalMargin;
+            if (contentHeight > maxHeight) {
+                visibleText = fullText.substring(0, i);
+                break;
+            }
+            visibleText = fullText.substring(0, i + 1);
+        }
+
+        document.body.removeChild(temp);
+        return visibleText.trimEnd();
     }
 
     private isIncludedInArrayIgnoreCase(array, searchItem) {

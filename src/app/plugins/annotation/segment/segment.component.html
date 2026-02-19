@@ -9,16 +9,18 @@
                     segment.label }}
                 </div>
                 <div *ngIf="segment.data.isTitleEditing === true" class="readonly-title-container">
-                    <div class="readonly-title-edit">
+                    <div class="readonly-title-edit" [class.error-line]="segment.label && segment.label.length > 250">
                         <textarea #titleInputReadonly id="title" name="title" [(ngModel)]="segment.label" rows="1"
                             cols="30" pInputTextarea [autoResize]="true" (focus)="muteShortCuts()"
                             (blur)="onTitleBlur()" (keydown)="onTitleEditKeydown($event)"
                             placeholder="Ajouter un titre"></textarea>
                         <div class="title-edit-actions">
-                            <p-button icon="pi pi-check" [text]="true" severity="success" (click)="confirmTitleEdit()"
-                                [disabled]="segment.label && segment.label.length > 250" tooltip="Valider" />
-                            <p-button icon="pi pi-times" [rounded]="true" [outlined]="true" size="small"
-                                severity="danger" (click)="cancelTitleEdit()" tooltip="Annuler" />
+                            <i class="pi pi-check" (click)="confirmTitleEdit()" (mousedown)="onTitleActionMouseDown()"
+                                [style.pointer-events]="segment.label && segment.label.length > 250 ? 'none' : 'auto'"
+                                [style.opacity]="segment.label && segment.label.length > 250 ? '0.5' : '1'"
+                                tooltip="Valider"></i>
+                            <i class="pi pi-times-circle" (click)="cancelTitleEdit()"
+                                (mousedown)="onTitleActionMouseDown()" tooltip="Annuler"></i>
                         </div>
                     </div>
                     <small class="segment-title-alignment"
@@ -28,13 +30,13 @@
                     </small>
                 </div>
                 <div class="header-buttons">
-                    <p-button id="btnclone" icon="pi pi-clone" (click)="cloneSegment()" [text]="true"
-                        severity="secondary" tooltip="Dupliquer un segment" />
-                    <p-button id="btnremove" icon="pi pi-trash" (click)="removeSegment()" [text]="true"
-                        severity="danger" tooltip="Supprimer" />
+                    <i id="btnclone" class="pi pi-clone" (click)="cloneSegment()" severity="secondary"
+                        tooltip="Dupliquer un segment"></i>
+                    <i id="btnremove" class="pi pi-trash" (click)="removeSegment()" severity="danger"
+                        tooltip="Supprimer"></i>
                     <p-button *ngIf="segment.data.idDocument" id="btnclone" icon="pi pi-fw pi-file"
-                        (click)="openNotilusMaterial()" [rounded]="true" severity="secondary" styleClass="notilus-filled-circle"
-                        tooltip="Ouvrir dans Notilus" />
+                        (click)="openNotilusMaterial()" [rounded]="true" severity="secondary"
+                        styleClass="notilus-filled-circle" tooltip="Ouvrir dans Notilus" />
                 </div>
             </ng-template>
             <p-divider />
@@ -58,8 +60,9 @@
                     <div class="readonly-segment-info-content">
                         <div class="readonly-segment-tc">
                             <div class="readonly-segment-tc-item">
-                                <span *ngIf="segment.data.isTcInEditing === false" (click)="startTcInEdit()">
-                                    Début : {{ segment.tcIn | tcFormat:tcDisplayFormat }}
+                                <span *ngIf="segment.data.isTcInEditing === false" (click)="startTcInEdit()"
+                                    class="tc-label">
+                                    Début : <span class="tc-value">{{ segment.tcIn | tcFormat:tcDisplayFormat }}</span>
                                 </span>
                                 <div *ngIf="segment.data.isTcInEditing === true" class="readonly-tc-edit">
                                     <span>Début :</span>
@@ -69,8 +72,9 @@
                                 </div>
                             </div>
                             <div class="readonly-segment-tc-item">
-                                <span *ngIf="segment.data.isTcOutEditing === false" (click)="startTcOutEdit()">
-                                    Fin : {{ segment.tcOut | tcFormat:tcDisplayFormat }}
+                                <span *ngIf="segment.data.isTcOutEditing === false" (click)="startTcOutEdit()"
+                                    class="tc-label">
+                                    Fin : <span class="tc-value">{{ segment.tcOut | tcFormat:tcDisplayFormat }}</span>
                                 </span>
                                 <div *ngIf="segment.data.isTcOutEditing === true" class="readonly-tc-edit">
                                     <span>Fin :</span>
@@ -80,8 +84,9 @@
                                 </div>
                             </div>
                             <div class="readonly-segment-tc-item">
-                                <span *ngIf="segment.data.isTcEditing === false" (click)="startTcEdit()">
-                                    Durée : {{ segment.tc |tcFormat:tcDisplayFormat }}
+                                <span *ngIf="segment.data.isTcEditing === false" (click)="startTcEdit()"
+                                    class="tc-label">
+                                    Durée : <span class="tc-value">{{ segment.tc |tcFormat:tcDisplayFormat }}</span>
                                 </span>
                                 <div *ngIf="segment.data.isTcEditing === true" class="readonly-tc-edit">
                                     <span>Durée :</span>
@@ -114,7 +119,13 @@
                                         [suggestions]="filteredCategories" (completeMethod)="searchCategories($event)"
                                         [multiple]="true" inputId="categories" [forceSelection]="false"
                                         (ngModelChange)="addToAvailableCategories($event)" (onFocus)="muteShortCuts()"
-                                        (onBlur)="onCategoriesBlur()"></p-autoComplete>
+                                        (onBlur)="onCategoriesBlur()"
+                                        [class.error-line]="categories() && categories().length > 10"></p-autoComplete>
+                                    <small class="segment-categories-alignment"
+                                        *ngIf="categories() && categories().length > 10" id="categories-error">
+                                        10 Catégories maximum.
+                                    </small>
+
                                 </div>
                             </ng-container>
                         </div>
@@ -140,7 +151,13 @@
                                         [suggestions]="filteredKeywords" (completeMethod)="searchKeywords($event)"
                                         [multiple]="true" inputId="keywords" [forceSelection]="false"
                                         (ngModelChange)="addToAvailableKeywords($event)" (onFocus)="muteShortCuts()"
-                                        (onBlur)="onKeywordsBlur()"></p-autoComplete>
+                                        (onBlur)="onKeywordsBlur()"
+                                        [class.error-line]="keywords() && keywords().length > 10"></p-autoComplete>
+                                    <small class="segment-keywords-alignment"
+                                        *ngIf="keywords() && keywords().length >10" id="keywords-error">
+                                        10 Mots-clés maximum.
+                                    </small>
+
                                 </div>
                             </ng-container>
                         </div>
@@ -154,31 +171,40 @@
                     </div>
                 </div>
                 <div *ngIf="(segment.data.isDescriptionEditing===false) && segment.description && segment.description.length !== 0 && segment.description.trim().length !== 0"
-                    class="readonly-segment-description"
-                    [ngClass]="{'description-collapsed': isDescriptionCollapsed, 'description-expanded': !isDescriptionCollapsed}">
-                    <p #descp [class.collapsed]="isDescriptionCollapsed" (click)="startDescriptionEdit()"
+                    class="readonly-segment-description">
+                    <p #descp (click)="startDescriptionEdit()"
+                        [style.display]="(!isDescriptionTruncated || !isDescriptionCollapsed) ? 'block' : 'none'"
                         style="cursor: pointer;">{{ segment.description }}
                         <span #affichermoins *ngIf="isDescriptionTruncated && !isDescriptionCollapsed"
                             class="readonly-segment-description-afficher-moins"
-                            (click)="toggleDescription($event)">Afficher -</span>
+                            (click)="toggleDescription($event); $event.stopPropagation()">Afficher -</span>
+
                     </p>
-                    <span #afficherplus *ngIf="isDescriptionTruncated && isDescriptionCollapsed"
-                        class="readonly-segment-description-afficher-plus"
-                        (click)="toggleDescription($event)">Afficher +</span>
-                    </div>
+                    <p #descp2 (click)="startDescriptionEdit()"
+                        [style.display]="isDescriptionTruncated && isDescriptionCollapsed ? 'block' : 'none'"
+                        style="cursor: pointer;">{{ truncatedDescription }}
+                        <span #afficherplus *ngIf="isDescriptionTruncated && isDescriptionCollapsed"
+                            class="readonly-segment-description-afficher-plus"
+                            (click)="toggleDescription($event); $event.stopPropagation()">Afficher +</span>
+
+                    </p>
+
+                </div>
                 <div *ngIf="segment.data.isDescriptionEditing===true" class="readonly-description-edit-container">
-                    <div class="readonly-description-edit">
+                    <div class="readonly-description-edit"
+                        [class.error-line]="segment.description && segment.description.length > 1000">
                         <textarea #descriptionEditTextarea id="descriptionReadonly" name="description"
                             [(ngModel)]="segment.description" rows="5" cols="30" pInputTextarea [autoResize]="true"
                             (focus)="muteShortCuts()" (blur)="onDescriptionBlur()"
                             (keydown)="onDescriptionKeydown($event)" placeholder="Ajouter une description"></textarea>
                         <div class="description-edit-actions">
-                            <p-button icon="pi pi-check" [text]="true" severity="success"
-                                (click)="confirmDescriptionEdit()"
-                                [disabled]="segment.description && segment.description.length > 1000"
-                                tooltip="Valider" />
-                            <p-button icon="pi pi-times" [rounded]="true" [outlined]="true" size="small"
-                                severity="danger" (click)="cancelDescriptionEdit()" tooltip="Annuler" />
+                            <i class="pi pi-check" (click)="confirmDescriptionEdit()"
+                                (mousedown)="onDescriptionActionMouseDown()"
+                                [style.pointer-events]="segment.description && segment.description.length > 1000 ? 'none' : 'auto'"
+                                [style.opacity]="segment.description && segment.description.length > 1000 ? '0.5' : '1'"
+                                tooltip="Valider"></i>
+                            <i class="pi pi-times-circle" (click)="cancelDescriptionEdit()"
+                                (mousedown)="onDescriptionActionMouseDown()" tooltip="Annuler"></i>
                         </div>
                     </div>
                     <small class="segment-description-alignment"
