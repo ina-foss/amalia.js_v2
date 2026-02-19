@@ -28,7 +28,6 @@ import { AnnotationsService } from 'src/app/service/annotations.service';
     selector: 'amalia-segment',
     templateUrl: './segment.component.html',
     styleUrl: './segment.component.scss',
-    imports: [ToastComponent],
 })
 export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     //Inputs
