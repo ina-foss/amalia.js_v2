@@ -60,6 +60,8 @@
       .p-autocomplete {
         border-color: var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
         box-shadow: none !important;
+        border-style: solid !important;
+        border-width: thin !important;
       }
     }
 
@@ -131,7 +133,8 @@
         resize: none;
         background: transparent;
         color: var(--chip-color, #595959);
-        font-family: $amalia-font-family-lato;;
+        font-family: $amalia-font-family-lato;
+        ;
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
@@ -457,7 +460,7 @@
           align-items: center;
 
           .p-autocomplete {
-            box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5) !important;
+            box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5);
             border-radius: 8px !important;
 
             .p-inputtext {
@@ -555,7 +558,7 @@
           }
 
           .p-autocomplete {
-            box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5) !important;
+            box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5);
             border-radius: 8px !important;
 
             .p-inputtext {
