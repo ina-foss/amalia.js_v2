@@ -1027,7 +1027,6 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.unmuteShortCuts();
         this.confirmDescriptionEdit();
-        this.segment.data.isDescriptionEditing = false;
     }
 
     public onDescriptionActionMouseDown() {

@@ -105,7 +105,7 @@
 
     .readonly-title-container {
       width: 100%;
-      height: 32px;
+      height: 28px;
       display: flex;
       flex-direction: column;
       gap: $amalia-spacings-space-space-xs;
@@ -125,11 +125,17 @@
 
       textarea {
         width: 100%;
-        max-height: 32px;
+        max-height: 30px;
         border: none;
         outline: none;
         resize: none;
         background: transparent;
+        color: var(--chip-color, #595959);
+        font-family: $amalia-font-family-lato;;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
 
         &:focus {
           box-shadow: none;
@@ -137,10 +143,15 @@
       }
     }
 
+    .readonly-title-edit.error-line {
+      border: 1px solid var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
+      box-shadow: none !important;
+    }
+
     .title-edit-actions {
       display: flex;
       flex-direction: row;
-      max-height: 32px;
+      max-height: 30px;
       gap: $amalia-spacings-space-space-xs;
       flex-shrink: 0;
       align-items: center;
@@ -207,6 +218,11 @@
         border: none !important;
         box-shadow: none !important;
       }
+    }
+
+    .readonly-description-edit.error-line {
+      border: 1px solid var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
+      box-shadow: none !important;
     }
 
     .description-edit-actions {
@@ -411,6 +427,7 @@
               font-family: Lato;
               font-size: 14px;
               font-style: normal;
+              font-weight: 600;
 
               &:hover {
                 border-radius: var(--spacings-border-radius-radius-sm, 4px);
