@@ -1,6 +1,6 @@
 {
   "player": {
-    "src": "http://localhost:4201/medias/outputlm.mp4",
+    "src": "http://localhost:4210/medias/outputlm.mp4",
     "crossOrigin": "*.ina",
     "poster": "url du post",
     "autoplay": true,
@@ -21,7 +21,7 @@
   },
     "dataSources": [
       {
-        "url": "http://localhost:4201/metadata/jt-d.json"
+        "url": "http://localhost:4210/metadata/jt-d.json"
       }
     ],
     "pluginsConfiguration": {

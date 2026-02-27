@@ -553,7 +553,7 @@ describe('AnnotationPluginComponent', () => {
                     "vcle2",
                     "ve"
                 ],
-                "link": "http://localhost:4201/asset/stock:FPVDB07032005.01:600:7200",
+                "link": "http://localhost:4210/asset/stock:FPVDB07032005.01:600:7200",
                 "assetId": "stock:FPVDB07032005.01:600:7200"
             }
         };
@@ -657,7 +657,7 @@ describe('AnnotationPluginComponent', () => {
         };
         component.init();
         const expectedJsonData: ExportColumnsHeader[] = [{
-            "Lien": "http://localhost:4201/asset/stock:FPVDB07032005.01:600:7200",
+            "Lien": "http://localhost:4210/asset/stock:FPVDB07032005.01:600:7200",
             "ID du materiel": "stock:FPVDB07032005.01:600:7200",
             "ID du segment": "0030008sxdwp",
             "Titre": "Soleil levant",

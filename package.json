@@ -6,7 +6,7 @@
     "main": "amalia.min.js",
     "scripts": {
         "ng": "ng",
-        "start": "npm run build:icon && ng serve --port 4201 --configuration development",
+        "start": "npm run build:icon && ng serve --port 4210 --configuration development",
         "start-examples": "http-server samples/ -i --cors * '*' -z -f -p 4203 -d ",
         "gendoc": "typedoc --out docs/api --tsconfig tsconfig.app.json --entryPointStrategy expand src/app --exclude **/*.spec.ts --name Amalia --readme ./docs/README.md",
         "gendoc-md": "typedoc --plugin typedoc-plugin-markdown --out docs/api-md --tsconfig tsconfig.app.json --entryPointStrategy expand src/app --exclude **/*.spec.ts --name Amalia --readme ./docs/README.md",
