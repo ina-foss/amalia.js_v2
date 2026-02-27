@@ -27,7 +27,7 @@ describe('TimeBar plugin test', () => {
     let httpTestingController: HttpTestingController;
     const logger: LoggerInterface = new DefaultLogger();
     const loader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
-    const mediaSrc = 'http://localhost:4201/medias/outputlm.mp4';
+    const mediaSrc = 'http://localhost:4210/medias/outputlm.mp4';
     const configPlugin: PluginConfigData<TimeBarConfig> = { name: 'TIME_BAR', data: { timeFormat: 'f', theme: 'outside' } };
     const eventEmitter = new EventEmitter();
     eventEmitter.setMaxListeners(1001);

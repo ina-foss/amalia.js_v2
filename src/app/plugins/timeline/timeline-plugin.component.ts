@@ -804,8 +804,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             if (ancestor) {
                 const ancestorBoundRect = ancestor.host.getBoundingClientRect();
                 if (selectedBlockElementBoundRect.bottom > ancestorBoundRect.bottom) {
-                    selectedBlockElement.style.bottom = `${ancestorBoundRect.bottom - rect.top + 10}px`;
+                    const display = selectedBlockElement.style.display;
+                    selectedBlockElement.style.display = 'none';
+                    selectedBlockElement.style.bottom = `${ancestorBoundRect.bottom - rect.top + 16}px`;
                     selectedBlockElement.style.top = `auto`;
+                    selectedBlockElement.style.display = display;
                 }
             }
 

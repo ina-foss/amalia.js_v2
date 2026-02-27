@@ -78,12 +78,12 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public tcOutReadonlyInput: ElementRef<HTMLInputElement>;
     @ViewChild('tcReadonlyInput')
     public tcReadonlyInput: ElementRef<HTMLInputElement>;
-    @ViewChild('categoriesReadonlyWrapper')
-    public categoriesReadonlyWrapper: ElementRef<HTMLElement>;
-    @ViewChild('keywordsReadonlyWrapper')
-    public keywordsReadonlyWrapper: ElementRef<HTMLElement>;
-    @ViewChild('descriptionReadonlyTextarea')
-    public descriptionReadonlyTextarea: ElementRef<HTMLTextAreaElement>;
+    @ViewChild('categoriesEditWrapper')
+    public categoriesEditWrapper: ElementRef<HTMLElement>;
+    @ViewChild('keywordsEditWrapper')
+    public keywordsEditWrapper: ElementRef<HTMLElement>;
+    @ViewChild('descriptionEditTextarea')
+    public descriptionEditTextarea: ElementRef<HTMLTextAreaElement>;
     @ViewChild('tcOutInputRef')
     public tcOutInputRef: ElementRef;
     @ViewChild('tcInputRef')
@@ -101,6 +101,9 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     private categoriesBeforeEdit: string[] = [];
     private keywordsBeforeEdit: string[] = [];
     private descriptionBeforeEdit: string = '';
+
+    private ignoreNextCategoriesBlur: boolean = false;
+    private ignoreNextKeywordsBlur: boolean = false;
 
     private titleBeforeEdition: string = '';
     private titleEditionAlreadyActivated: boolean = false;
@@ -759,7 +762,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         this.actionEmitter.emit({ type: "edit", payload: this.segment });
 
         setTimeout(() => {
-            const wrapper = this.categoriesReadonlyWrapper?.nativeElement;
+            const wrapper = this.categoriesEditWrapper?.nativeElement;
             const input = wrapper?.querySelector('input') as HTMLInputElement | null;
             if (input) {
                 input.focus();
@@ -783,8 +786,21 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public onCategoriesBlur() {
+        if (this.ignoreNextCategoriesBlur) {
+            this.ignoreNextCategoriesBlur = false;
+            setTimeout(() => {
+                const wrapper = this.categoriesEditWrapper?.nativeElement;
+                const input = wrapper?.querySelector('input') as HTMLInputElement | null;
+                input?.focus();
+            }, 0);
+            return;
+        }
+
         this.unmuteShortCuts();
         this.confirmCategoriesEdit();
+        setTimeout(() => {
+            this.updateCategoriesAndKeywordsDisplay();
+        }, 10)
     }
 
     // Keywords inline editing
@@ -794,7 +810,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         this.actionEmitter.emit({ type: "edit", payload: this.segment });
 
         setTimeout(() => {
-            const wrapper = this.keywordsReadonlyWrapper?.nativeElement;
+            const wrapper = this.keywordsEditWrapper?.nativeElement;
             const input = wrapper?.querySelector('input') as HTMLInputElement | null;
             if (input) {
                 input.focus();
@@ -818,8 +834,123 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public onKeywordsBlur() {
+        if (this.ignoreNextKeywordsBlur) {
+            this.ignoreNextKeywordsBlur = false;
+            setTimeout(() => {
+                const wrapper = this.keywordsEditWrapper?.nativeElement;
+                const input = wrapper?.querySelector('input') as HTMLInputElement | null;
+                input?.focus();
+            }, 0);
+            return;
+        }
+
         this.unmuteShortCuts();
         this.confirmKeywordsEdit();
+        setTimeout(() => {
+            this.updateCategoriesAndKeywordsDisplay();
+        }, 10)
+    }
+
+    public onCategoriesMouseDown(event: MouseEvent) {
+        const target = event.target as HTMLElement | null;
+        if (!target) {
+            return;
+        }
+        if (target.closest('.p-autocomplete-token-icon')) {
+            this.ignoreNextCategoriesBlur = true;
+        }
+    }
+
+    public onCategoriesEscape(event: KeyboardEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.cancelCategoriesEdit();
+        this.unmuteShortCuts();
+        setTimeout(() => {
+            this.updateCategoriesAndKeywordsDisplay();
+        }, 10);
+    }
+
+    public onKeywordsMouseDown(event: MouseEvent) {
+        const target = event.target as HTMLElement | null;
+        if (!target) {
+            return;
+        }
+        if (target.closest('.p-autocomplete-token-icon')) {
+            this.ignoreNextKeywordsBlur = true;
+        }
+    }
+
+    public onKeywordsEscape(event: KeyboardEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.cancelKeywordsEdit();
+        this.unmuteShortCuts();
+        setTimeout(() => {
+            this.updateCategoriesAndKeywordsDisplay();
+        }, 10);
+    }
+
+    public onCategoriesEnter(event: KeyboardEvent) {
+        const target = event.target as HTMLInputElement | null;
+        const query = target?.value?.trim() ?? '';
+
+        if (query.length > 0) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!this.isIncludedInArrayIgnoreCase(this.categories(), query)) {
+                this.categories.set([...this.categories(), query]);
+                this.addToAvailableCategories([query]);
+                this.segment.property = this.property();
+            }
+
+            if (target) {
+                target.value = '';
+            }
+
+            this.cdr.detectChanges();
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        this.confirmCategoriesEdit();
+        setTimeout(() => {
+            this.updateCategoriesAndKeywordsDisplay();
+        }, 10)
+    }
+
+    public onKeywordsEnter(event: KeyboardEvent) {
+        const target = event.target as HTMLInputElement | null;
+        const query = target?.value?.trim() ?? '';
+
+        if (query.length > 0) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!this.isIncludedInArrayIgnoreCase(this.keywords(), query)) {
+                this.keywords.set([...this.keywords(), query]);
+                this.addToAvailableKeywords([query]);
+                this.segment.property = this.property();
+            }
+
+            if (target) {
+                target.value = '';
+            }
+
+            this.cdr.detectChanges();
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        this.confirmKeywordsEdit();
+        setTimeout(() => {
+            this.updateCategoriesAndKeywordsDisplay();
+        }, 10)
     }
 
     // Description inline editing
@@ -829,7 +960,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         this.actionEmitter.emit({ type: "edit", payload: this.segment });
 
         setTimeout(() => {
-            const el = this.descriptionReadonlyTextarea?.nativeElement;
+            const el = this.descriptionEditTextarea?.nativeElement;
             if (el) {
                 el.focus();
                 el.select();
@@ -861,10 +992,11 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             this.cancelDescriptionEdit();
         }
     }
-    
+
     public onDescriptionBlur() {
         this.unmuteShortCuts();
         this.confirmDescriptionEdit();
+        this.segment.data.isDescriptionEditing = false;
     }
 
     public cancelNewSegmentCreation() {
@@ -945,7 +1077,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.descp.nativeElement.getBoundingClientRect();
                     const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
                     const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
-                    this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 4);
+                    this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 3);
                 }
             }
         });
