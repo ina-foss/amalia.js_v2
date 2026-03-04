@@ -460,6 +460,39 @@ describe('SegmentComponent', () => {
             expect(component.keywords()).toContain('NewKey');
             expect(input.value).toBe('');
         }));
+
+        it('should ignore blur and refocus input when ignoreNextKeywordsBlur is true', fakeAsync(() => {
+            (component as any).ignoreNextKeywordsBlur = true;
+            const input = document.createElement('input');
+            const wrapper = document.createElement('div');
+            wrapper.appendChild(input);
+            component.keywordsEditWrapper = new ElementRef(wrapper);
+
+            const focusSpy = spyOn(input, 'focus');
+            const confirmSpy = spyOn(component, 'confirmKeywordsEdit');
+
+            component.onKeywordsBlur();
+            tick();
+
+            expect((component as any).ignoreNextKeywordsBlur).toBeFalse();
+            expect(focusSpy).toHaveBeenCalled();
+            expect(confirmSpy).not.toHaveBeenCalled();
+        }));
+
+        it('should unmute shortcuts and confirm edit on blur when flag is false', fakeAsync(() => {
+            (component as any).ignoreNextKeywordsBlur = false;
+            component.keywords.set(['Key1']);
+            const unmuteSpy = spyOn(component, 'unmuteShortCuts');
+            const confirmSpy = spyOn(component, 'confirmKeywordsEdit');
+            const updateDisplaySpy = spyOn(component, 'updateCategoriesAndKeywordsDisplay');
+
+            component.onKeywordsBlur();
+            tick(20);
+
+            expect(unmuteSpy).toHaveBeenCalled();
+            expect(confirmSpy).toHaveBeenCalled();
+            expect(updateDisplaySpy).toHaveBeenCalled();
+        }));
     });
 
     describe('Description Editing', () => {
