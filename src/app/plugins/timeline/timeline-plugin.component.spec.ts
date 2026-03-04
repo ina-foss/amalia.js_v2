@@ -34,6 +34,7 @@ import { MessagesModule } from 'primeng/messages';
 import { ToastComponent } from "../../core/toast/toast.component";
 import { PlayerEventType } from 'src/app/core/constant/event-type';
 import { MessageService } from 'primeng/api';
+import { Utils } from 'src/app/core/utils/utils';
 
 describe('TimelinePluginComponent', () => {
     let component: TimelinePluginComponent;
@@ -4451,6 +4452,84 @@ describe('TimelinePluginComponent 2', () => {
         expect(selectedBlockElement.style.top).toBe('120px');
     }));
 
+    it('Should reposition selectedBlockElement when it overflows ancestor bottom boundary', fakeAsync(() => {
+        const mockEvent = {
+            clientX: 200,
+            clientY: 200,
+            target: document.createElement('div')
+        } as unknown as MouseEvent;
+
+        const mockLocalisation = { id: 5 } as unknown as TimelineLocalisation;
+
+        const selectedBlockElement = document.createElement('div');
+        const listOfBlocksContainer = document.createElement('div');
+
+        // Target rect - the element that triggered the mouse enter
+        spyOn(mockEvent.target as any, 'getBoundingClientRect').and.returnValue({
+            left: 100,
+            top: 200,
+            right: 200,
+            bottom: 250,
+            width: 100,
+            height: 50,
+            x: 100,
+            y: 200,
+            toJSON: () => { }
+        });
+
+        // Selected block element rect - positioned below the target, overflowing ancestor
+        spyOn(selectedBlockElement, 'getBoundingClientRect').and.returnValue({
+            left: 100,
+            right: 200,
+            top: 220,
+            bottom: 500, // This exceeds ancestorBoundRect.bottom (400)
+            width: 100,
+            height: 280,
+            x: 100,
+            y: 220,
+            toJSON: () => { }
+        });
+
+        spyOn(listOfBlocksContainer, 'getBoundingClientRect').and.returnValue({
+            left: 90,
+            right: 300,
+            top: 0,
+            bottom: 600,
+            width: 210,
+            height: 600,
+            x: 90,
+            y: 0,
+            toJSON: () => { }
+        });
+
+        // Mock the ancestor (shadow root host) with a smaller bottom boundary
+        const mockAncestorHost = document.createElement('div');
+        spyOn(mockAncestorHost, 'getBoundingClientRect').and.returnValue({
+            left: 0,
+            right: 500,
+            top: 0,
+            bottom: 400, // selectedBlockElement.bottom (500) > this (400)
+            width: 500,
+            height: 400,
+            x: 0,
+            y: 0,
+            toJSON: () => { }
+        });
+
+        const mockShadowRoot = { host: mockAncestorHost } as unknown as ShadowRoot;
+        spyOn(Utils, 'getShadowRoot').and.returnValue(mockShadowRoot);
+
+        component.selectedBlockElement = new ElementRef(selectedBlockElement);
+        component.listOfBlocksContainer = new ElementRef(listOfBlocksContainer);
+
+        component.handleMouseEnterOnTc(mockEvent, mockLocalisation);
+        tick(10);
+
+        // Verify that the element was repositioned
+        // bottom = ancestorBoundRect.bottom - rect.top + 16 = 400 - 200 + 16 = 216
+        expect(selectedBlockElement.style.bottom).toBe('216px');
+        expect(selectedBlockElement.style.top).toBe('auto');
+    }));
 
 });
 
@@ -4849,58 +4928,58 @@ describe('getNodeLabelAndIcon', () => {
         }
     });
 
-  it('SEGMENTATION → libellé "Segmentation sonore" + icône volume', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.SEGMENTATION });
-    expect(level1Label).toBe('Segmentation sonore');
-    expect(icon).toBe('pi pi-fw pi-volume-down');
-  });
+    it('SEGMENTATION → libellé "Segmentation sonore" + icône volume', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.SEGMENTATION });
+        expect(level1Label).toBe('Segmentation sonore');
+        expect(icon).toBe('pi pi-fw pi-volume-down');
+    });
 
-  it('FACES_RECOGNITION → libellé "Reconnaissance faciale" + icône œil', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.FACES_RECOGNITION });
-    expect(level1Label).toBe('Reconnaissance faciale');
-    expect(icon).toBe('pi pi-fw pi-eye');
-  });
+    it('FACES_RECOGNITION → libellé "Reconnaissance faciale" + icône œil', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.FACES_RECOGNITION });
+        expect(level1Label).toBe('Reconnaissance faciale');
+        expect(icon).toBe('pi pi-fw pi-eye');
+    });
 
-  it('DAY_SCHEDULE → libellé "Partie journée de programme" + icône calendrier', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.DAY_SCHEDULE });
-    expect(level1Label).toBe('Partie journée de programme');
-    expect(icon).toBe('pi pi-fw pi-calendar');
-  });
+    it('DAY_SCHEDULE → libellé "Partie journée de programme" + icône calendrier', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.DAY_SCHEDULE });
+        expect(level1Label).toBe('Partie journée de programme');
+        expect(icon).toBe('pi pi-fw pi-calendar');
+    });
 
-  it('DOCUMENTS_LIES → libellé "Documents liés segmentés" + icône fichier', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.DOCUMENTS_LIES });
-    expect(level1Label).toBe('Documents liés segmentés');
-    expect(icon).toBe('pi pi-fw pi-file');
-  });
+    it('DOCUMENTS_LIES → libellé "Documents liés segmentés" + icône fichier', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.DOCUMENTS_LIES });
+        expect(level1Label).toBe('Documents liés segmentés');
+        expect(icon).toBe('pi pi-fw pi-file');
+    });
 
-  it('EXTRAITS_UTILISATEUR → libellé "Extraits utilisateur" + icône tags', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.EXTRAITS_UTILISATEUR });
-    expect(level1Label).toBe('Extraits utilisateur');
-    expect(icon).toBe('pi pi-fw pi-tags');
-  });
+    it('EXTRAITS_UTILISATEUR → libellé "Extraits utilisateur" + icône tags', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.EXTRAITS_UTILISATEUR });
+        expect(level1Label).toBe('Extraits utilisateur');
+        expect(icon).toBe('pi pi-fw pi-tags');
+    });
 
-  it('type inconnu → libellé vide + icône undefined', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: 'UNKNOWN_TYPE' });
-    expect(level1Label).toBe('');
-    expect(icon).toBeUndefined();
-  });
+    it('type inconnu → libellé vide + icône undefined', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: 'UNKNOWN_TYPE' });
+        expect(level1Label).toBe('');
+        expect(icon).toBeUndefined();
+    });
 
-  it('trim du tiret final : "FACES_RECOGNITION-" → "Reconnaissance faciale"', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: `${DataType.FACES_RECOGNITION}-` });
-    expect(level1Label).toBe('Reconnaissance faciale'); // sans le '-'
-    expect(icon).toBe('pi pi-fw pi-eye');
-  });
+    it('trim du tiret final : "FACES_RECOGNITION-" → "Reconnaissance faciale"', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: `${DataType.FACES_RECOGNITION}-` });
+        expect(level1Label).toBe('Reconnaissance faciale'); // sans le '-'
+        expect(icon).toBe('pi pi-fw pi-eye');
+    });
 
-  it('types avec suffixes : "SEGMENTATION-foo" → remplace le préfixe et conserve le suffixe', () => {
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: `${DataType.SEGMENTATION}-foo` });
-    expect(level1Label).toBe('Segmentation sonore-foo');
-    expect(icon).toBe('pi pi-fw pi-volume-down');
-  });
+    it('types avec suffixes : "SEGMENTATION-foo" → remplace le préfixe et conserve le suffixe', () => {
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: `${DataType.SEGMENTATION}-foo` });
+        expect(level1Label).toBe('Segmentation sonore-foo');
+        expect(icon).toBe('pi pi-fw pi-volume-down');
+    });
 
-  it('multiple occurrences du mot-clé → tous remplacés', () => {
-    const complexType = `${DataType.DOCUMENTS_LIES}-${DataType.DOCUMENTS_LIES}-X`;
-    const { level1Label, icon } = component.getNodeLabelAndIcon({ type: complexType });
-    expect(level1Label).toBe('Documents liés segmentés-Documents liés segmentés-X');
-    expect(icon).toBe('pi pi-fw pi-file');
-  });
+    it('multiple occurrences du mot-clé → tous remplacés', () => {
+        const complexType = `${DataType.DOCUMENTS_LIES}-${DataType.DOCUMENTS_LIES}-X`;
+        const { level1Label, icon } = component.getNodeLabelAndIcon({ type: complexType });
+        expect(level1Label).toBe('Documents liés segmentés-Documents liés segmentés-X');
+        expect(icon).toBe('pi pi-fw pi-file');
+    });
 });
