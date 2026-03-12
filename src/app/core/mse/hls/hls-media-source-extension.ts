@@ -7,6 +7,7 @@ import { EventEmitter } from 'events';
 import { CustomFragmentLoader } from './hls-custom-f-loader';
 import { LoggerInterface } from '../../logger/logger-interface';
 import { Utils } from '../../utils/utils';
+import { C2paHlsBridge, C2paManifestHelper, C2PAConfig } from '../../../../../../src/app/player-expert/service/hls-c2pa-bridge';
 
 /* tslint:disable:no-string-literal */
 function createCustomFragmentLoader(config: any): Loader<FragmentLoaderContext> {
@@ -28,6 +29,10 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     public readonly mediaElement: HTMLVideoElement;
     private readonly eventEmitter: EventEmitter;
     private hlsPlayer: Hls;
+
+    // C2PA Bridge Integration
+    private c2paBridge: C2paHlsBridge | null = null;
+    private c2paEnabled = false;
 
     constructor(mediaElement: HTMLVideoElement, eventEmitter: EventEmitter, config: PlayerConfigData, logger: LoggerInterface) {
         this.mediaElement = mediaElement;
@@ -146,6 +151,12 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
     }
 
     public destroy() {
+        // Cleanup C2PA bridge
+        if (this.c2paBridge) {
+            this.c2paBridge.dispose();
+            this.c2paBridge = null;
+            this.c2paEnabled = false;
+        }
         this.hlsPlayer.stopLoad();
         this.hlsPlayer.detachMedia();
         Utils.unsubscribeTargetedElementEventListeners(this, this.hlsPlayer);
@@ -183,6 +194,82 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
 
     setMaxBufferLengthConfig(value) {
         this.hlsPlayer.config.maxBufferLength = value;
+    }
+
+    // =========================================================================
+    // C2PA Integration Methods
+    // =========================================================================
+
+    /**
+     * Enable C2PA validation for HLS streams
+     * @param c2paConfig Optional C2PA configuration
+     */
+    public enableC2PA(c2paConfig?: C2PAConfig): void {
+        if (this.c2paEnabled) {
+            this.logger.warn('C2PA already enabled');
+            return;
+        }
+
+        const config: C2PAConfig = c2paConfig || {
+            enableTrustListVerification: false,
+            wasmSrc: 'https://cdn.jsdelivr.net/npm/@contentauth/c2pa-web@0.4.1/dist/resources/c2pa_bg.wasm'
+        };
+
+        this.c2paBridge = new C2paHlsBridge(config, this.hlsPlayer);
+        this.c2paEnabled = true;
+        this.logger.info('C2PA validation enabled for HLS stream');
+    }
+
+    /**
+     * Disable C2PA validation
+     */
+    public disableC2PA(): void {
+        if (this.c2paBridge) {
+            this.c2paBridge.dispose();
+            this.c2paBridge = null;
+        }
+        this.c2paEnabled = false;
+        this.logger.info('C2PA validation disabled');
+    }
+
+    /**
+     * Check if C2PA validation is enabled
+     */
+    public isC2PAEnabled(): boolean {
+        return this.c2paEnabled;
+    }
+
+    /**
+     * Check if C2PA runtime is ready
+     */
+    public isC2PAReady(): boolean {
+        return this.c2paBridge?.libReady() ?? false;
+    }
+
+    /**
+     * Get C2PA metadata for a specific timecode
+     * @param timeCode The timecode in seconds
+     * @returns C2paManifestHelper or null if not found
+     */
+    public getC2PAMetaByTimeCode(timeCode: number): C2paManifestHelper | null {
+        if (!this.c2paBridge) {
+            return null;
+        }
+        return this.c2paBridge.getC2PAMetaByTimeCode(timeCode);
+    }
+
+    /**
+     * Get the C2PA bridge instance for advanced usage
+     */
+    public getC2PABridge(): C2paHlsBridge | null {
+        return this.c2paBridge;
+    }
+
+    /**
+     * Get the underlying HLS.js instance
+     */
+    public getHlsPlayer(): Hls {
+        return this.hlsPlayer;
     }
 }
 
