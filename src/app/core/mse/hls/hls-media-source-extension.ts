@@ -7,7 +7,7 @@ import { EventEmitter } from 'events';
 import { CustomFragmentLoader } from './hls-custom-f-loader';
 import { LoggerInterface } from '../../logger/logger-interface';
 import { Utils } from '../../utils/utils';
-import { C2paHlsBridge, C2paManifestHelper, C2PAConfig } from '../../../../../../src/app/player-expert/service/hls-c2pa-bridge';
+import { C2PAConfig, C2paHlsBridge, C2paManifestHelper } from '../../utils/hls-c2pa-bridge';
 
 /* tslint:disable:no-string-literal */
 function createCustomFragmentLoader(config: any): Loader<FragmentLoaderContext> {
