@@ -1,7 +1,8 @@
-import {HLSMediaSourceExtension} from './hls-media-source-extension';
-import {EventEmitter} from 'events';
-import {PlayerConfigData} from '../../config/model/player-config-data';
-import {DefaultLogger} from '../../logger/default-logger';
+import { HLSMediaSourceExtension } from './hls-media-source-extension';
+import { EventEmitter } from 'events';
+import { PlayerConfigData } from '../../config/model/player-config-data';
+import { DefaultLogger } from '../../logger/default-logger';
+import { C2PAConfig } from '../../utils/hls-c2pa-bridge';
 import Hls from 'hls.js';
 
 describe('Test HLS Source extension', () => {
@@ -9,7 +10,7 @@ describe('Test HLS Source extension', () => {
     const backwardSrc = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
     const eventEmitter = new EventEmitter();
     const component = document.createElement('video');
-    const logger =  new DefaultLogger('root-player');
+    const logger = new DefaultLogger('root-player');
     const config: PlayerConfigData = {
         autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc
         , backwardsSrc: backwardSrc
@@ -66,6 +67,307 @@ describe('Test HLS Source extension', () => {
     it('test destroy function ', () => {
         hlsPlayer.destroy();
         expect(hlsPlayer).toBeTruthy();
+    });
+
+    describe('handleManifestParsed', () => {
+        it('should set mediaType to AUDIO when no videoCodec in levels', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc, backwardsSrc: backwardSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            testPlayer.handleManifestParsed(null, { levels: [{ audioCodec: 'mp4a.40.2' }] });
+
+            expect(testPlayer.mediaType).toBe('AUDIO');
+            testPlayer.destroy();
+        });
+
+        it('should set mediaType to VIDEO when videoCodec exists in levels', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc, backwardsSrc: backwardSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            testPlayer.handleManifestParsed(null, { levels: [{ videoCodec: 'avc1.42E01E', audioCodec: 'mp4a.40.2' }] });
+
+            expect(testPlayer.mediaType).toBe('VIDEO');
+            testPlayer.destroy();
+        });
+
+        it('should set mediaType to VIDEO if any level has videoCodec', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc, backwardsSrc: backwardSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            testPlayer.handleManifestParsed(null, {
+                levels: [
+                    { audioCodec: 'mp4a.40.2' },
+                    { videoCodec: 'avc1.42E01E' }
+                ]
+            });
+
+            expect(testPlayer.mediaType).toBe('VIDEO');
+            testPlayer.destroy();
+        });
+    });
+
+    describe('getConfig', () => {
+        it('should return the HLS player config', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc, backwardsSrc: backwardSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            const hlsConfig = testPlayer.getConfig();
+
+            expect(hlsConfig).toBeDefined();
+            expect(hlsConfig.enableWorker).toBe(false);
+            testPlayer.destroy();
+        });
+    });
+
+    describe('setMaxBufferLengthConfig', () => {
+        it('should set maxBufferLength in HLS config', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc, backwardsSrc: backwardSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            testPlayer.setMaxBufferLengthConfig(60);
+
+            expect(testPlayer.getConfig().maxBufferLength).toBe(60);
+            testPlayer.destroy();
+        });
+    });
+
+    describe('getHlsPlayer', () => {
+        it('should return the underlying HLS.js instance', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc, backwardsSrc: backwardSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            const hls = testPlayer.getHlsPlayer();
+
+            expect(hls).toBeDefined();
+            expect(hls instanceof Hls).toBeTrue();
+            testPlayer.destroy();
+        });
+    });
+
+    describe('C2PA Integration', () => {
+        let testPlayer: HLSMediaSourceExtension;
+
+        beforeEach(() => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc, backwardsSrc: backwardSrc
+            };
+            testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+        });
+
+        afterEach(() => {
+            testPlayer.destroy();
+        });
+
+        describe('isC2PAEnabled', () => {
+            it('should return false by default', () => {
+                expect(testPlayer.isC2PAEnabled()).toBeFalse();
+            });
+
+            it('should return true after enableC2PA is called', () => {
+                testPlayer.enableC2PA();
+                expect(testPlayer.isC2PAEnabled()).toBeTrue();
+            });
+
+            it('should return false after disableC2PA is called', () => {
+                testPlayer.enableC2PA();
+                testPlayer.disableC2PA();
+                expect(testPlayer.isC2PAEnabled()).toBeFalse();
+            });
+        });
+
+        describe('enableC2PA', () => {
+            it('should enable C2PA with default config when no config provided', () => {
+                testPlayer.enableC2PA();
+
+                expect(testPlayer.isC2PAEnabled()).toBeTrue();
+                expect(testPlayer.getC2PABridge()).not.toBeNull();
+            });
+
+            it('should enable C2PA with custom config', () => {
+                const customConfig: C2PAConfig = {
+                    enableTrustListVerification: true,
+                    wasmSrc: 'https://custom.wasm'
+                };
+
+                testPlayer.enableC2PA(customConfig);
+
+                expect(testPlayer.isC2PAEnabled()).toBeTrue();
+            });
+
+            it('should not re-enable C2PA if already enabled', () => {
+                testPlayer.enableC2PA();
+                const bridge1 = testPlayer.getC2PABridge();
+
+                testPlayer.enableC2PA();
+                const bridge2 = testPlayer.getC2PABridge();
+
+                expect(bridge1).toBe(bridge2);
+            });
+        });
+
+        describe('disableC2PA', () => {
+            it('should disable C2PA and clear bridge', () => {
+                testPlayer.enableC2PA();
+                testPlayer.disableC2PA();
+
+                expect(testPlayer.isC2PAEnabled()).toBeFalse();
+                expect(testPlayer.getC2PABridge()).toBeNull();
+            });
+
+            it('should handle disableC2PA when C2PA was never enabled', () => {
+                expect(() => testPlayer.disableC2PA()).not.toThrow();
+                expect(testPlayer.isC2PAEnabled()).toBeFalse();
+            });
+        });
+
+        describe('isC2PAReady', () => {
+            it('should return false when C2PA is not enabled', () => {
+                expect(testPlayer.isC2PAReady()).toBeFalse();
+            });
+
+            it('should return false immediately after enabling (async init)', () => {
+                testPlayer.enableC2PA();
+                // C2PA init is async, so it won't be ready immediately
+                expect(testPlayer.isC2PAReady()).toBeFalse();
+            });
+        });
+
+        describe('getC2PAMetaByTimeCode', () => {
+            it('should return null when C2PA is not enabled', () => {
+                const result = testPlayer.getC2PAMetaByTimeCode(10);
+                expect(result).toBeNull();
+            });
+
+            it('should return null when no metadata exists for timecode', () => {
+                testPlayer.enableC2PA();
+                const result = testPlayer.getC2PAMetaByTimeCode(10);
+                expect(result).toBeNull();
+            });
+        });
+
+        describe('getC2PABridge', () => {
+            it('should return null when C2PA is not enabled', () => {
+                expect(testPlayer.getC2PABridge()).toBeNull();
+            });
+
+            it('should return the bridge instance when C2PA is enabled', () => {
+                testPlayer.enableC2PA();
+                expect(testPlayer.getC2PABridge()).not.toBeNull();
+            });
+        });
+    });
+
+    describe('setSrc edge cases', () => {
+        it('should handle non-URL src by adding base64 header', () => {
+            const base64Content = 'I0VYVE0zVQ==';
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: base64Content
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            testPlayer.setSrc(testConfig);
+
+            expect(testPlayer.getSrc()).toContain('data:application/vnd.apple.mpegurl;base64,');
+            testPlayer.destroy();
+        });
+
+        it('should handle config with autoplay true', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: true, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+            spyOn(component, 'play').and.returnValue(Promise.resolve());
+
+            testPlayer.setSrc(testConfig);
+
+            expect(component.play).toHaveBeenCalled();
+            testPlayer.destroy();
+        });
+
+        it('should handle invalid config with null src', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: null as any
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            testPlayer.setSrc(testConfig);
+
+            expect(testPlayer.getSrc()).toBeNull();
+            testPlayer.destroy();
+        });
+    });
+
+    describe('destroy with C2PA', () => {
+        it('should cleanup C2PA bridge when destroy is called', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+
+            testPlayer.enableC2PA();
+            expect(testPlayer.getC2PABridge()).not.toBeNull();
+
+            testPlayer.destroy();
+
+            expect(testPlayer.getC2PABridge()).toBeNull();
+            expect(testPlayer.isC2PAEnabled()).toBeFalse();
+        });
+    });
+
+    describe('handleError edge cases', () => {
+        it('should emit ERROR for fatal hlsError when not in reverse mode', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+            testPlayer.setSrc(testConfig);
+            spyOn(eventEmitter, 'emit');
+
+            testPlayer.handleError({ fatal: true });
+
+            expect(eventEmitter.emit).toHaveBeenCalled();
+            testPlayer.destroy();
+        });
+
+        it('should not emit ERROR for non-fatal hlsError', () => {
+            const testConfig: PlayerConfigData = {
+                autoplay: false, crossOrigin: null, data: null, defaultVolume: 0,
+                duration: null, poster: '', src: mediaSrc
+            };
+            const testPlayer = new HLSMediaSourceExtension(component, eventEmitter, testConfig, logger);
+            testPlayer.setSrc(testConfig);
+            const emitSpy = spyOn(eventEmitter, 'emit');
+
+            testPlayer.handleError('hlsError');
+
+            // hlsError without fatal=true should not emit
+            expect(emitSpy).not.toHaveBeenCalled();
+            testPlayer.destroy();
+        });
     });
 });
 
