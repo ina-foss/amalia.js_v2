@@ -161,7 +161,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     }
 
     copyToClipBoard(tc: number, event: MouseEvent) {
-        const text = FormatUtils.formatTime(tc, 's', this.fps);
+        const text = FormatUtils.formatTime(tc, 'f', this.fps);
         Utils.copyToClipBoard(text, this.tooltip?.nativeElement, event.clientX, event.clientY);
     }
     copyAllToClipBoard(tc: number, event: MouseEvent) {
