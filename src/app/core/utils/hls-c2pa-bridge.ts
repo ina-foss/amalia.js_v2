@@ -280,7 +280,7 @@ export class C2paHlsBridge {
   // Validation Queue
   // -------------------------------------------------------------------------
 
-  private async runValidationQueue(levelKey: string): Promise<void> {
+  async runValidationQueue(levelKey: string): Promise<void> {
     const entry = this.fragValidationMap[levelKey];
     if (!entry || entry.validatorQueueRunning || !this.c2pa) {
       this.warn(`[${levelKey}] C2PA not ready or queue already running.`);

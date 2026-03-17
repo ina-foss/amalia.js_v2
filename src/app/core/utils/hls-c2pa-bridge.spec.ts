@@ -965,5 +965,272 @@ describe('hls-c2pa-bridge', () => {
                 expect(helper.getItem('ISSUER')).toBe('unknown');
             });
         });
+
+        describe('runValidationQueue', () => {
+            it('should return early when entry does not exist', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                await expectAsync(bridge.runValidationQueue('nonexistent-key')).toBeResolved();
+                bridge.dispose();
+            });
+
+            it('should return early when c2pa is not initialized', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                // Set up entry but c2pa is not ready
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [{ sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 }],
+                    initSegmentData: { size: 100, type: 'video/mp4' }
+                };
+                (bridge as any).c2pa = null;
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                bridge.dispose();
+            });
+
+            it('should return early when queue is already running', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: true,
+                    queuedForCheckFragments: [{ sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 }],
+                    initSegmentData: { size: 100, type: 'video/mp4' }
+                };
+                (bridge as any).c2pa = {};
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                bridge.dispose();
+            });
+
+            it('should return early when init segment data is missing', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [{ sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 }],
+                    initSegmentData: { size: 0, type: 'video/mp4' }
+                };
+                (bridge as any).c2pa = {};
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                bridge.dispose();
+            });
+
+            it('should return early when queue is empty', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [],
+                    initSegmentData: { size: 100, type: 'video/mp4' }
+                };
+                (bridge as any).c2pa = {};
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                bridge.dispose();
+            });
+
+            it('should handle case when fragment is undefined after shift', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                // Create a custom queue object that returns undefined on shift
+                const mockQueue = {
+                    length: 1,
+                    shift: () => undefined
+                };
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: mockQueue,
+                    initSegmentData: { size: 100, type: 'video/mp4' }
+                };
+                (bridge as any).c2pa = {};
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                expect((bridge as any).fragValidationMap['main-0'].validatorQueueRunning).toBe(false);
+                bridge.dispose();
+            });
+
+            it('should process fragment and handle null manifestInfo', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const mockFromBlobFragment = jasmine.createSpy('fromBlobFragment').and.returnValue(Promise.resolve(null));
+                (bridge as any).c2pa = {
+                    reader: {
+                        fromBlobFragment: mockFromBlobFragment
+                    }
+                };
+
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [{ sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 }],
+                    initSegmentData: { size: 100, type: 'video/mp4' },
+                    timeCodeMappingTree: { search: () => [], insert: jasmine.createSpy('insert') }
+                };
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                expect(mockFromBlobFragment).toHaveBeenCalled();
+                bridge.dispose();
+            });
+
+            it('should process fragment and create manifest helper', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const mockManifestStore = {
+                    active_manifest: 'manifest-1',
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            signature_info: { issuer: 'Test Issuer' }
+                        }
+                    },
+                    validation_status: []
+                };
+
+                const mockManifestInfo = {
+                    manifestStore: jasmine.createSpy('manifestStore').and.returnValue(Promise.resolve(mockManifestStore))
+                };
+
+                const mockFromBlobFragment = jasmine.createSpy('fromBlobFragment').and.returnValue(Promise.resolve(mockManifestInfo));
+                (bridge as any).c2pa = {
+                    reader: {
+                        fromBlobFragment: mockFromBlobFragment
+                    }
+                };
+
+                const insertSpy = jasmine.createSpy('insert');
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [{ sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 }],
+                    initSegmentData: { size: 100, type: 'video/mp4' },
+                    timeCodeMappingTree: { search: () => [], insert: insertSpy, remove: jasmine.createSpy('remove') }
+                };
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                expect(insertSpy).toHaveBeenCalled();
+                bridge.dispose();
+            });
+
+            it('should remove duplicate intervals', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const mockManifestStore = {
+                    active_manifest: 'manifest-1',
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            signature_info: { issuer: 'Test Issuer' }
+                        }
+                    },
+                    validation_status: []
+                };
+
+                const mockManifestInfo = {
+                    manifestStore: jasmine.createSpy('manifestStore').and.returnValue(Promise.resolve(mockManifestStore))
+                };
+
+                const mockFromBlobFragment = jasmine.createSpy('fromBlobFragment').and.returnValue(Promise.resolve(mockManifestInfo));
+                (bridge as any).c2pa = {
+                    reader: {
+                        fromBlobFragment: mockFromBlobFragment
+                    }
+                };
+
+                const removeSpy = jasmine.createSpy('remove');
+                const existingSegment = { interval: { low: 0, high: 10 } };
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [{ sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 }],
+                    initSegmentData: { size: 100, type: 'video/mp4' },
+                    timeCodeMappingTree: {
+                        search: () => [existingSegment],
+                        insert: jasmine.createSpy('insert'),
+                        remove: removeSpy
+                    }
+                };
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                expect(removeSpy).toHaveBeenCalled();
+                bridge.dispose();
+            });
+
+            it('should handle validation errors gracefully', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const mockFromBlobFragment = jasmine.createSpy('fromBlobFragment').and.returnValue(Promise.reject(new Error('Validation failed')));
+                (bridge as any).c2pa = {
+                    reader: {
+                        fromBlobFragment: mockFromBlobFragment
+                    }
+                };
+
+                const fragment = { sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 };
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [fragment],
+                    initSegmentData: { size: 100, type: 'video/mp4' },
+                    timeCodeMappingTree: { search: () => [], insert: jasmine.createSpy('insert') }
+                };
+
+                await expectAsync(bridge.runValidationQueue('main-0')).toBeResolved();
+                expect((bridge as any).fragValidationMap['main-0'].validatorQueueRunning).toBe(false);
+                bridge.dispose();
+            });
+
+            it('should delete fragment data after processing', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const mockFromBlobFragment = jasmine.createSpy('fromBlobFragment').and.returnValue(Promise.resolve(null));
+                (bridge as any).c2pa = {
+                    reader: {
+                        fromBlobFragment: mockFromBlobFragment
+                    }
+                };
+
+                const fragment: any = { sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 };
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [fragment],
+                    initSegmentData: { size: 100, type: 'video/mp4' },
+                    timeCodeMappingTree: { search: () => [], insert: jasmine.createSpy('insert') }
+                };
+
+                await bridge.runValidationQueue('main-0');
+                // After processing, fragment.data should be deleted
+                expect('data' in fragment).toBe(true);
+                bridge.dispose();
+            });
+
+            it('should recursively process remaining fragments', async () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const mockFromBlobFragment = jasmine.createSpy('fromBlobFragment').and.returnValue(Promise.resolve(null));
+                (bridge as any).c2pa = {
+                    reader: {
+                        fromBlobFragment: mockFromBlobFragment
+                    }
+                };
+
+                const fragment1 = { sn: 1, data: new ArrayBuffer(100), start: 0, end: 10 };
+                const fragment2 = { sn: 2, data: new ArrayBuffer(100), start: 10, end: 20 };
+                (bridge as any).fragValidationMap['main-0'] = {
+                    validatorQueueRunning: false,
+                    queuedForCheckFragments: [fragment1, fragment2],
+                    initSegmentData: { size: 100, type: 'video/mp4' },
+                    timeCodeMappingTree: { search: () => [], insert: jasmine.createSpy('insert') }
+                };
+
+                await bridge.runValidationQueue('main-0');
+                // Both fragments should have been processed
+                expect(mockFromBlobFragment).toHaveBeenCalledTimes(2);
+                bridge.dispose();
+            });
+        });
     });
 });
