@@ -345,32 +345,6 @@ describe('hls-c2pa-bridge', () => {
                 expect(helper.containsAIGeneratedContent()).toBeTrue();
             });
 
-            it('should return true when c2pa.actions has trainedAlgorithmicMedia digitalSourceType', () => {
-                const store = createMockManifestStore({
-                    manifests: {
-                        'manifest-1': {
-                            claim_generator: 'test',
-                            title: 'Test',
-                            format: 'video/mp4',
-                            instance_id: 'id-1',
-                            assertions: [
-                                {
-                                    label: 'c2pa.actions',
-                                    data: {
-                                        actions: [
-                                            { digitalSourceType: 'http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia' }
-                                        ]
-                                    }
-                                }
-                            ]
-                        } as unknown as Manifest
-                    }
-                });
-                const helper = new C2paManifestHelper(store);
-
-                expect(helper.containsAIGeneratedContent()).toBeTrue();
-            });
-
             it('should return true when c2pa.actions.v2 has compositeWithTrainedAlgorithmicMedia', () => {
                 const store = createMockManifestStore({
                     manifests: {

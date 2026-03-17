@@ -32,9 +32,7 @@ export interface C2PAConfig {
 // ============================================================================
 
 const GEN_AI_DST = new Set<string>([
-  'http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia',
   'https://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia',
-  'http://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia',
   'https://cv.iptc.org/newscodes/digitalsourcetype/compositeWithTrainedAlgorithmicMedia'
 ]);
 
