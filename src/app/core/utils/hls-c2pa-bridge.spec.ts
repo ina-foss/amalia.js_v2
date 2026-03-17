@@ -174,6 +174,158 @@ describe('hls-c2pa-bridge', () => {
                 expect(helper.containsAIGeneratedContent()).toBeFalse();
             });
 
+            it('should return false when assertions is undefined', () => {
+                const store = createMockManifestStore({
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            assertions: undefined
+                        } as unknown as Manifest
+                    }
+                });
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.containsAIGeneratedContent()).toBeFalse();
+            });
+
+            it('should return false when com.adobe.generative-ai has non-object data', () => {
+                const store = createMockManifestStore({
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            assertions: [
+                                { label: 'com.adobe.generative-ai', data: null }
+                            ]
+                        } as unknown as Manifest
+                    }
+                });
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.containsAIGeneratedContent()).toBeFalse();
+            });
+
+            it('should return false when c2pa.actions has non-object data', () => {
+                const store = createMockManifestStore({
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            assertions: [
+                                { label: 'c2pa.actions', data: 'string-data' }
+                            ]
+                        } as unknown as Manifest
+                    }
+                });
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.containsAIGeneratedContent()).toBeFalse();
+            });
+
+            it('should return false when c2pa.actions has non-array actions', () => {
+                const store = createMockManifestStore({
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            assertions: [
+                                { label: 'c2pa.actions', data: { actions: 'not-an-array' } }
+                            ]
+                        } as unknown as Manifest
+                    }
+                });
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.containsAIGeneratedContent()).toBeFalse();
+            });
+
+            it('should return false when digitalSourceType is not a string', () => {
+                const store = createMockManifestStore({
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            assertions: [
+                                {
+                                    label: 'c2pa.actions',
+                                    data: {
+                                        actions: [
+                                            { digitalSourceType: 12345 }
+                                        ]
+                                    }
+                                }
+                            ]
+                        } as unknown as Manifest
+                    }
+                });
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.containsAIGeneratedContent()).toBeFalse();
+            });
+
+            it('should return false when digitalSourceType is undefined', () => {
+                const store = createMockManifestStore({
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            assertions: [
+                                {
+                                    label: 'c2pa.actions',
+                                    data: {
+                                        actions: [
+                                            { someOtherProperty: 'value' }
+                                        ]
+                                    }
+                                }
+                            ]
+                        } as unknown as Manifest
+                    }
+                });
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.containsAIGeneratedContent()).toBeFalse();
+            });
+
+            it('should check all manifests not just active one', () => {
+                const store = createMockManifestStore({
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            assertions: []
+                        } as unknown as Manifest,
+                        'manifest-2': {
+                            claim_generator: 'test2',
+                            title: 'Test2',
+                            format: 'video/mp4',
+                            instance_id: 'id-2',
+                            assertions: [
+                                { label: 'com.adobe.generative-ai', data: { type: 'generated' } }
+                            ]
+                        } as unknown as Manifest
+                    }
+                });
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.containsAIGeneratedContent()).toBeTrue();
+            });
+
             it('should return true when com.adobe.generative-ai assertion exists', () => {
                 const store = createMockManifestStore({
                     manifests: {
@@ -411,6 +563,16 @@ describe('hls-c2pa-bridge', () => {
                 expect(mockHls.on).toHaveBeenCalledWith(Hls.Events.FRAG_LOADING, jasmine.any(Function));
                 bridge.dispose();
             });
+
+            it('should use default wasmSrc when not provided', () => {
+                const configWithoutWasm: C2PAConfig = {
+                    enableTrustListVerification: false
+                };
+                const bridge = new C2paHlsBridge(configWithoutWasm, mockHls);
+
+                expect(bridge.libReady()).toBeFalse();
+                bridge.dispose();
+            });
         });
 
         describe('libReady', () => {
@@ -430,6 +592,12 @@ describe('hls-c2pa-bridge', () => {
 
                 expect(mockHls.off).toHaveBeenCalledWith(Hls.Events.FRAG_LOADING, jasmine.any(Function));
             });
+
+            it('should handle multiple dispose calls gracefully', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+                bridge.dispose();
+                expect(() => bridge.dispose()).not.toThrow();
+            });
         });
 
         describe('getC2PAMetaByTimeCode', () => {
@@ -438,6 +606,39 @@ describe('hls-c2pa-bridge', () => {
 
                 const result = bridge.getC2PAMetaByTimeCode(10);
                 expect(result).toBeNull();
+                bridge.dispose();
+            });
+
+            it('should search timeCodeMappingTree when entry exists', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+                const searchSpy = jasmine.createSpy('search').and.returnValue([]);
+
+                // Set up mock entry with timeCodeMappingTree
+                (bridge as any).fragValidationMap['main-0'] = {
+                    timeCodeMappingTree: {
+                        search: searchSpy
+                    }
+                };
+
+                bridge.getC2PAMetaByTimeCode(10);
+
+                expect(searchSpy).toHaveBeenCalled();
+                bridge.dispose();
+            });
+
+            it('should return manifestReader when match found', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+                const mockManifestReader = { isValid: () => true } as any;
+
+                (bridge as any).fragValidationMap['main-0'] = {
+                    timeCodeMappingTree: {
+                        search: () => [{ manifestReader: mockManifestReader }]
+                    }
+                };
+
+                const result = bridge.getC2PAMetaByTimeCode(10);
+
+                expect(result).toBe(mockManifestReader);
                 bridge.dispose();
             });
         });
@@ -449,6 +650,319 @@ describe('hls-c2pa-bridge', () => {
                 const result = bridge.getTamperedWithIntervals();
                 expect(result).toEqual([]);
                 bridge.dispose();
+            });
+
+            it('should return intervals where manifest is invalid', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const invalidInterval = { low: 0, high: 10 };
+                const validInterval = { low: 10, high: 20 };
+
+                (bridge as any).fragValidationMap['main-0'] = {
+                    timeCodeMappingTree: {
+                        items: [
+                            {
+                                value: {
+                                    manifestReader: { isValid: () => false },
+                                    interval: invalidInterval
+                                }
+                            },
+                            {
+                                value: {
+                                    manifestReader: { isValid: () => true },
+                                    interval: validInterval
+                                }
+                            }
+                        ]
+                    }
+                };
+
+                const result = bridge.getTamperedWithIntervals();
+
+                expect(result.length).toBe(1);
+                expect(result[0]).toEqual(jasmine.objectContaining({ low: 0, high: 10 }));
+                bridge.dispose();
+            });
+
+            it('should return empty array when all manifests are valid', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                (bridge as any).fragValidationMap['main-0'] = {
+                    timeCodeMappingTree: {
+                        items: [
+                            {
+                                value: {
+                                    manifestReader: { isValid: () => true },
+                                    interval: { low: 0, high: 10 }
+                                }
+                            }
+                        ]
+                    }
+                };
+
+                const result = bridge.getTamperedWithIntervals();
+
+                expect(result).toEqual([]);
+                bridge.dispose();
+            });
+        });
+
+        describe('onFragLoading callback', () => {
+            it('should handle fragment without loader', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                // Get the registered callback
+                const onCall = mockHls.on.calls.first();
+                const callback = onCall.args[1] as any;
+
+                // Create fragment data without loader
+                const fragmentData = {
+                    frag: {
+                        loader: null,
+                        type: 'main',
+                        level: 0,
+                        sn: 1,
+                        start: 0,
+                        duration: 10
+                    }
+                };
+
+                // Should not throw when loader is null
+                expect(() => callback(Hls.Events.FRAG_LOADING, fragmentData)).not.toThrow();
+                bridge.dispose();
+            });
+
+            it('should handle fragment with loader but no callbacks', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const onCall = mockHls.on.calls.first();
+                const callback = onCall.args[1] as any;
+
+                const fragmentData = {
+                    frag: {
+                        loader: { callbacks: null },
+                        type: 'main',
+                        level: 0,
+                        sn: 1,
+                        start: 0,
+                        duration: 10
+                    }
+                };
+
+                expect(() => callback(Hls.Events.FRAG_LOADING, fragmentData)).not.toThrow();
+                bridge.dispose();
+            });
+
+            it('should intercept fragment success callback', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const onCall = mockHls.on.calls.first();
+                const callback = onCall.args[1] as any;
+
+                const originalOnSuccess = jasmine.createSpy('originalOnSuccess');
+                const fragmentData = {
+                    frag: {
+                        loader: {
+                            callbacks: {
+                                onSuccess: originalOnSuccess
+                            }
+                        },
+                        type: 'main',
+                        level: 0,
+                        sn: 'initSegment',
+                        start: 0,
+                        duration: 10
+                    }
+                };
+
+                // Register the callback
+                callback(Hls.Events.FRAG_LOADING, fragmentData);
+
+                // The onSuccess should have been replaced
+                expect(fragmentData.frag.loader.callbacks.onSuccess).not.toBe(originalOnSuccess);
+                bridge.dispose();
+            });
+
+            it('should handle init segment', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const onCall = mockHls.on.calls.first();
+                const callback = onCall.args[1] as any;
+
+                const originalOnSuccess = jasmine.createSpy('originalOnSuccess');
+                const fragmentData = {
+                    frag: {
+                        loader: {
+                            callbacks: {
+                                onSuccess: originalOnSuccess
+                            }
+                        },
+                        type: 'main',
+                        level: 0,
+                        sn: 'initSegment',
+                        start: 0,
+                        duration: 10
+                    }
+                };
+
+                callback(Hls.Events.FRAG_LOADING, fragmentData);
+
+                // Call the replaced onSuccess with mock response
+                const mockResponse = { data: new ArrayBuffer(100) };
+                fragmentData.frag.loader.callbacks.onSuccess(mockResponse, {}, {}, {});
+
+                // Original should have been called
+                expect(originalOnSuccess).toHaveBeenCalledWith(mockResponse, {}, {}, {});
+                bridge.dispose();
+            });
+
+            it('should handle media fragment after init segment', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const onCall = mockHls.on.calls.first();
+                const callback = onCall.args[1] as any;
+
+                // First, send init segment
+                const initOriginalOnSuccess = jasmine.createSpy('initOriginalOnSuccess');
+                const initFragmentData = {
+                    frag: {
+                        loader: {
+                            callbacks: {
+                                onSuccess: initOriginalOnSuccess
+                            }
+                        },
+                        type: 'main',
+                        level: 0,
+                        sn: 'initSegment',
+                        start: 0,
+                        duration: 0
+                    }
+                };
+
+                callback(Hls.Events.FRAG_LOADING, initFragmentData);
+                initFragmentData.frag.loader.callbacks.onSuccess({ data: new ArrayBuffer(100) }, {}, {}, {});
+
+                // Now send a media fragment
+                const mediaOriginalOnSuccess = jasmine.createSpy('mediaOriginalOnSuccess');
+                const mediaFragmentData = {
+                    frag: {
+                        loader: {
+                            callbacks: {
+                                onSuccess: mediaOriginalOnSuccess
+                            }
+                        },
+                        type: 'main',
+                        level: 0,
+                        sn: 1,
+                        start: 0,
+                        duration: 10
+                    }
+                };
+
+                callback(Hls.Events.FRAG_LOADING, mediaFragmentData);
+                mediaFragmentData.frag.loader.callbacks.onSuccess({ data: new ArrayBuffer(200) }, {}, {}, {});
+
+                expect(mediaOriginalOnSuccess).toHaveBeenCalled();
+                bridge.dispose();
+            });
+
+            it('should handle media fragment received without init segment', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const onCall = mockHls.on.calls.first();
+                const callback = onCall.args[1] as any;
+
+                // Send media fragment without init segment first
+                const mediaOriginalOnSuccess = jasmine.createSpy('mediaOriginalOnSuccess');
+                const mediaFragmentData = {
+                    frag: {
+                        loader: {
+                            callbacks: {
+                                onSuccess: mediaOriginalOnSuccess
+                            }
+                        },
+                        type: 'main',
+                        level: 0,
+                        sn: 1,
+                        start: 0,
+                        duration: 10
+                    }
+                };
+
+                callback(Hls.Events.FRAG_LOADING, mediaFragmentData);
+                // Should not throw even without init segment
+                expect(() => mediaFragmentData.frag.loader.callbacks.onSuccess({ data: new ArrayBuffer(200) }, {}, {}, {})).not.toThrow();
+                bridge.dispose();
+            });
+        });
+
+        describe('logging methods', () => {
+            it('should have log method defined', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                expect((bridge as any).log).toBeDefined();
+                expect(typeof (bridge as any).log).toBe('function');
+                bridge.dispose();
+            });
+
+            it('should have warn method defined', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                expect((bridge as any).warn).toBeDefined();
+                expect(typeof (bridge as any).warn).toBe('function');
+                bridge.dispose();
+            });
+
+            it('should have error method defined', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                expect((bridge as any).error).toBeDefined();
+                expect(typeof (bridge as any).error).toBe('function');
+                bridge.dispose();
+            });
+        });
+
+        describe('getCurrentLevelKey', () => {
+            it('should return key based on current HLS level', () => {
+                const bridge = new C2paHlsBridge(config, mockHls);
+
+                const key = (bridge as any).getCurrentLevelKey();
+
+                expect(key).toBe('main-0');
+                bridge.dispose();
+            });
+
+            it('should reflect different HLS levels', () => {
+                const mockHls2 = jasmine.createSpyObj('Hls', ['on', 'off'], {
+                    currentLevel: 2
+                });
+                const bridge = new C2paHlsBridge(config, mockHls2);
+
+                const key = (bridge as any).getCurrentLevelKey();
+
+                expect(key).toBe('main-2');
+                bridge.dispose();
+            });
+        });
+
+        describe('getItem edge cases', () => {
+            it('should return unknown when issuer is not in signature_info', () => {
+                const store: ManifestStore = {
+                    active_manifest: 'manifest-1',
+                    manifests: {
+                        'manifest-1': {
+                            claim_generator: 'test',
+                            title: 'Test',
+                            format: 'video/mp4',
+                            instance_id: 'id-1',
+                            signature_info: {}
+                        } as unknown as Manifest
+                    },
+                    validation_status: []
+                } as ManifestStore;
+                const helper = new C2paManifestHelper(store);
+
+                expect(helper.getItem('ISSUER')).toBe('unknown');
             });
         });
     });
