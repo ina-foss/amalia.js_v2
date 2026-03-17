@@ -108,6 +108,7 @@
       margin: 0;
       width: 100%;
       height: 3px;
+      pointer-events: none;
 
       .time-extract-duration {
         background-color: $amalia-ctrl-bar-extract-duration-color;
@@ -117,6 +118,7 @@
         z-index: $amalia-ctrl-bar-extract-duration-z-index;
         height: 3px;
         top: -1px;
+        pointer-events: none;
       }
 
       .time-extract {
@@ -128,6 +130,7 @@
         display: block;
         border-radius: 2px;
         z-index: $amalia-ctrl-bar-extract-pin-z-index;
+        pointer-events: auto;
       }
 
       &.on {
