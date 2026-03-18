@@ -101,7 +101,7 @@ describe('TimeBar plugin test', () => {
         plugin.tooltip = new ElementRef(tooltipElement);
         // Appel de la méthode
         plugin.copyToClipBoard(10, mockEvent);
-        expect(FormatUtils.formatTime).toHaveBeenCalledWith(10, 's', 25);
+        expect(FormatUtils.formatTime).toHaveBeenCalledWith(10, 'f', 25);
         expect(Utils.copyToClipBoard).toHaveBeenCalledWith(
             '00:10',
             plugin.tooltip.nativeElement,

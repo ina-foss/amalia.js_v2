@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Étape 1 : Aller dans le dossier core et lancer la build
-cd /c/windsurf/amalia/core || exit
+cd /c/Users/arkaramoko/core || exit
 echo "📦 Lancement de la build..."
 npm run build
 
@@ -11,7 +11,7 @@ echo "🔗 Création du lien npm..."
 npm link
 
 # Étape 3 : Aller dans le dossier du front
-cd /c/windsurf/player-expert/front || exit
+cd /c/Users/arkaramoko/front || exit
 
 # Étape 4 : Trouver et tuer le processus sur le port 4201
 echo "🛑 Vérification du port 4201..."
