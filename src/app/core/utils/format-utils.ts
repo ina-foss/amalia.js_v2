@@ -22,7 +22,7 @@ export class FormatUtils {
         const hStr = h.toFixed().padStart(2, '0');
         seconds = Math.floor(seconds % 60);
         minute = Math.floor(minute % 60);
-        const hoursStr = hours.toFixed().padStart(2, '0');
+        const hoursStr = (hours % 24).toFixed().padStart(2, '0');
         const minuteStr = minute.toFixed().padStart(2, '0');
         const secondsStr = seconds.toFixed().padStart(2, '0');
         const fpsStr = fps.toFixed().padStart(2, '0');

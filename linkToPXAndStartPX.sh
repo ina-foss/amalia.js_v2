@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Étape 1 : Aller dans le dossier core et lancer la build
-cd /c/Users/arkaramoko/core || exit
+# Configuration - chemin vers le front de player-expert
+PX_FRONT_PATH="${PX_FRONT_PATH:-../../player-expert/front}"
+
+# Étape 1 : lancer la build
 echo "📦 Lancement de la build..."
 npm run build
 
@@ -11,7 +13,7 @@ echo "🔗 Création du lien npm..."
 npm link
 
 # Étape 3 : Aller dans le dossier du front
-cd /c/Users/arkaramoko/front || exit
+cd "$PX_FRONT_PATH" || exit
 
 # Étape 4 : Trouver et tuer le processus sur le port 4201
 echo "🛑 Vérification du port 4201..."
