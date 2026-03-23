@@ -1,8 +1,8 @@
 {
   "tcOffset" : 0,
   "player": {
-    "backwardsSrc": "http://localhost:4203/medias/video-timeline.m3u8",
-    "src": "http://localhost:4203/medias/video-timeline.m3u8",
+    "backwardsSrc": "https://ccavmedia-dd.akamaized.net/c2pa/reuls/master.m3u8",
+    "src": "https://ccavmedia-dd.akamaized.net/c2pa/reuls/master.m3u8",
     "crossOrigin": "anonymous"
   },
   "dataSources": [
