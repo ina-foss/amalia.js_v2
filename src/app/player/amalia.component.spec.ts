@@ -420,7 +420,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         expect(payload.shortcut.meta).toBeFalse();
     });
 
-    it('handleShortCutsKeyDownEvent: transforme la barre d’espace en "espace"', () => {
+    it(`handleShortCutsKeyDownEvent: transforme la barre d'espace en "espace"`, () => {
         component.muteShortcuts = false;
         emitSpy.calls.reset();
 
@@ -441,7 +441,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         expect(payload.shortcut.key).toBe('espace');
     });
 
-    it('handleShortCutsKeyDownEvent: n’émet rien quand muteShortcuts=true', () => {
+    it(`handleShortCutsKeyDownEvent: n'émet rien quand muteShortcuts=true`, () => {
         component.muteShortcuts = true;
         emitSpy.calls.reset();
 
@@ -455,5 +455,59 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
 
         component.handleShortCutsKeyDownEvent(evt);
         expect(emitSpy).not.toHaveBeenCalled();
+    });
+
+    it('handleShortCutsKeyDownEvent: ne bloque pas Ctrl+C (raccourci natif copier)', () => {
+        component.muteShortcuts = false;
+        emitSpy.calls.reset();
+
+        const evt = {
+            key: 'c',
+            ctrlKey: true,
+            shiftKey: false,
+            altKey: false,
+            metaKey: false,
+            preventDefault: jasmine.createSpy('preventDefault')
+        } as any;
+
+        component.handleShortCutsKeyDownEvent(evt);
+
+        expect(evt.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('handleShortCutsKeyDownEvent: ne bloque pas Meta+C (raccourci natif Mac copier)', () => {
+        component.muteShortcuts = false;
+        emitSpy.calls.reset();
+
+        const evt = {
+            key: 'c',
+            ctrlKey: false,
+            shiftKey: false,
+            altKey: false,
+            metaKey: true,
+            preventDefault: jasmine.createSpy('preventDefault')
+        } as any;
+
+        component.handleShortCutsKeyDownEvent(evt);
+
+        expect(evt.preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('handleShortCutsKeyDownEvent: bloque les raccourcis personnalisés non-natifs', () => {
+        component.muteShortcuts = false;
+        emitSpy.calls.reset();
+
+        const evt = {
+            key: 'f',
+            ctrlKey: false,
+            shiftKey: false,
+            altKey: false,
+            metaKey: false,
+            preventDefault: jasmine.createSpy('preventDefault')
+        } as any;
+
+        component.handleShortCutsKeyDownEvent(evt);
+
+        expect(evt.preventDefault).toHaveBeenCalled();
     });
 });
