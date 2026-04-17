@@ -71,6 +71,7 @@ describe('Test Media player element', () => {
         // mpe.loadConfiguration(configData);
         expect(mpe.getThumbnailUrl(140)).toEqual('https://picsum.photos/id/237/200/300?tc=140');
         expect(mpe.getThumbnailUrl(180, true)).toEqual('https://picsum.photos/id/237/200/300?width=170&tc=180');
+        expect(mpe.getThumbnailUrl(247.592909, true)).toEqual('https://picsum.photos/id/237/200/300?width=170&tc=247.6');
         expect(mpe.aspectRatio).toEqual('16:9');
 
     });

@@ -19,6 +19,7 @@ import { LoggerLevel } from './logger/logger-level';
  * In charge to create player
  */
 export class MediaPlayerElement {
+    private static readonly THUMBNAIL_TC_STEP = 0.04;
     public configurationManager: ConfigurationManager;
     public _metadataManager: MetadataManager;
     public defaultLoader: Loader<Array<Metadata>>;
@@ -215,12 +216,21 @@ export class MediaPlayerElement {
             const baseUrl = this.getConfiguration().thumbnail.baseUrl;
             const tcParam = this.getConfiguration().thumbnail.tcParam ? this.getConfiguration().thumbnail.tcParam : 'start';
             const widthParam = this.getConfiguration().thumbnail.width;
+            const roundedTc = this.roundThumbnailTimeCode(tc);
             if (widthParam > 0 && onHover) {
-                return baseUrl.search('\\?') === -1 ? `${baseUrl}?width=${widthParam}&${tcParam}=${tc}` : `${baseUrl}&width=${widthParam}&${tcParam}=${tc}`;
+                return baseUrl.search('\\?') === -1 ? `${baseUrl}?width=${widthParam}&${tcParam}=${roundedTc}` : `${baseUrl}&width=${widthParam}&${tcParam}=${roundedTc}`;
             } else {
-                return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${tc}` : `${baseUrl}&${tcParam}=${tc}`;
+                return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${roundedTc}` : `${baseUrl}&${tcParam}=${roundedTc}`;
             }
         }
+    }
+
+    private roundThumbnailTimeCode(tc: number): number {
+        if (!Number.isFinite(tc)) {
+            return tc;
+        }
+        const rounded = Math.round((tc + Number.EPSILON) / MediaPlayerElement.THUMBNAIL_TC_STEP) * MediaPlayerElement.THUMBNAIL_TC_STEP;
+        return Number(rounded.toFixed(2));
     }
 
     /**
