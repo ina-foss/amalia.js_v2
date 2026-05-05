@@ -272,13 +272,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     pinControlsElement: ElementRef;
     aspectRatioMouseEnterTimeOut: any;
     volumeMouseEnterTimeOut: any;
-
+    private pendingFrameJump = 0;
+    private readonly debouncedSeek: _.DebouncedFunc<() => void>;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2) {
         super(playerService);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
         this.thumbnailService = thumbnailService;
         this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
+        this.debouncedSeek = _.debounce(() => this.executeFrameJump(), ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
 
     listenToDisplaySliderDisplayChanges() {
@@ -627,6 +629,28 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
+     * Execute accumulated frame jump after debounce delay.
+     * This prevents multiple rapid seeks when clicking 5-second buttons quickly.
+     */
+    private executeFrameJump(): void {
+        if (this.pendingFrameJump === 0) return;
+
+        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        const paused = mediaPlayer?.isPaused();
+
+        if (this.pendingFrameJump > 0) {
+            mediaPlayer.pauseOnly();
+            mediaPlayer.moveNextFrame(this.pendingFrameJump);
+        } else {
+            mediaPlayer.pauseOnly();
+            mediaPlayer.movePrevFrame(Math.abs(this.pendingFrameJump));
+        }
+
+        !paused && mediaPlayer.play();
+        this.pendingFrameJump = 0;
+    }
+
+    /**
      * Invoked player with specified control function name
      * @param control control name
      */
@@ -658,10 +682,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.prevSlowPlaybackRate();
                 break;
             case 'backward-5seconds':
-                frames = 5 * mediaPlayer.framerate;
-                mediaPlayer.pauseOnly();
-                mediaPlayer.movePrevFrame(frames);
-                !paused && mediaPlayer.play();
+                this.pendingFrameJump -= 5 * mediaPlayer.framerate;
+                this.debouncedSeek();
                 break;
             case 'backward-second':
                 frames = mediaPlayer.framerate;
@@ -696,10 +718,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.nextSlowPlaybackRate();
                 break;
             case 'forward-5seconds':
-                frames = 5 * mediaPlayer.framerate;
-                mediaPlayer.pauseOnly();
-                mediaPlayer.moveNextFrame(frames);
-                !paused && mediaPlayer.play();
+                this.pendingFrameJump += 5 * mediaPlayer.framerate;
+                this.debouncedSeek();
                 break;
             case 'forward-10seconds':
                 frames = 10 * mediaPlayer.framerate;

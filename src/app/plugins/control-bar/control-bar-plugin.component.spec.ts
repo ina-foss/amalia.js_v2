@@ -914,16 +914,37 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             expect(spyPrevSlow).toHaveBeenCalledTimes(1);
         });
 
-        it('backward-5seconds: pauseOnly, movePrevFrame(frames) et play() si non en pause', () => {
+        it('backward-5seconds: accumule les frames et exécute après debounce', fakeAsync(() => {
             mediaPlayer.framerate = 25; // 5 s => 125 frames
             mediaPlayer.isPaused.and.returnValue(false);
 
             component.controlClicked('backward-5seconds');
-
+            
+            // Avant le debounce, rien n'est exécuté
+            expect(mediaPlayer.pauseOnly).not.toHaveBeenCalled();
+            expect(mediaPlayer.movePrevFrame).not.toHaveBeenCalled();
+            
+            // Après le délai de debounce (150ms)
+            tick(150);
+            
             expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
             expect(mediaPlayer.movePrevFrame).toHaveBeenCalledOnceWith(125);
             expect(mediaPlayer.play).toHaveBeenCalled();
-        });
+        }));
+
+        it('backward-5seconds: accumule plusieurs clics rapides', fakeAsync(() => {
+            mediaPlayer.framerate = 25; // 5 s => 125 frames
+            mediaPlayer.isPaused.and.returnValue(false);
+
+            // 3 clics rapides = 375 frames (15 secondes)
+            component.controlClicked('backward-5seconds');
+            component.controlClicked('backward-5seconds');
+            component.controlClicked('backward-5seconds');
+            
+            tick(150);
+            
+            expect(mediaPlayer.movePrevFrame).toHaveBeenCalledOnceWith(375);
+        }));
 
         it('forward-second: pauseOnly, moveNextFrame(frames) et pas de play() si en pause', () => {
             mediaPlayer.framerate = 30; // 1 s => 30 frames
@@ -981,6 +1002,38 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             component.controlClicked('slow-forward');
             expect(spyNextSlow).toHaveBeenCalledTimes(1);
         });
+
+        it('forward-5seconds: accumule les frames et exécute après debounce', fakeAsync(() => {
+            mediaPlayer.framerate = 25; // 5 s => 125 frames
+            mediaPlayer.isPaused.and.returnValue(false);
+
+            component.controlClicked('forward-5seconds');
+            
+            // Avant le debounce, rien n'est exécuté
+            expect(mediaPlayer.pauseOnly).not.toHaveBeenCalled();
+            expect(mediaPlayer.moveNextFrame).not.toHaveBeenCalled();
+            
+            // Après le délai de debounce (150ms)
+            tick(150);
+            
+            expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
+            expect(mediaPlayer.moveNextFrame).toHaveBeenCalledOnceWith(125);
+            expect(mediaPlayer.play).toHaveBeenCalled();
+        }));
+
+        it('forward-5seconds: accumule plusieurs clics rapides', fakeAsync(() => {
+            mediaPlayer.framerate = 25; // 5 s => 125 frames
+            mediaPlayer.isPaused.and.returnValue(false);
+
+            // 3 clics rapides = 375 frames (15 secondes)
+            component.controlClicked('forward-5seconds');
+            component.controlClicked('forward-5seconds');
+            component.controlClicked('forward-5seconds');
+            
+            tick(150);
+            
+            expect(mediaPlayer.moveNextFrame).toHaveBeenCalledOnceWith(375);
+        }));
 
         it('forward-10seconds: pauseOnly puis moveNextFrame(10*framerate) et play() si non en pause', () => {
             mediaPlayer.framerate = 24; // 10 s => 240 frames
