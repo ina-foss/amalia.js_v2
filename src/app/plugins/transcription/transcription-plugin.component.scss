@@ -290,9 +290,9 @@
             margin-right: 3px;
 
             &.activated {
-              color: black;
-              font-style: italic;
-              font-weight: 700;
+              color: $amalia-plugin-transcription-activated-text-color;
+              font-style: $amalia-plugin-transcription-activated-font-style;
+              font-weight: $amalia-plugin-transcription-activated-font-weight;
             }
 
             &.named-entity {
@@ -319,8 +319,8 @@
             }
 
             &:hover {
-              font-weight: 700;
-              text-decoration: underline;
+              font-weight: $amalia-plugin-transcription-hover-font-weight;
+              text-decoration: $amalia-plugin-transcription-hover-text-decoration;
             }
           }
         }

@@ -51,6 +51,11 @@ $amalia-plugin-transcription-named-entity-tc: var(--amalia-plugin-transcription-
 $amalia-plugin-transcription-segment-bg-color: var(--amalia-plugin-transcription-segment-bg-color, #EDEDED);
 $amalia-plugin-transcription-text-founded-color: var(--amalia-plugin-transcription-text-founded-color, #FFE900);
 $amalia-plugin-transcription-selected-text-color: var(--amalia-plugin-transcription-selected-text-color, #FF7766);
+$amalia-plugin-transcription-activated-text-color: var(--amalia-plugin-transcription-selected-text-color, #000000);
+$amalia-plugin-transcription-activated-font-style: var(--amalia-plugin-transcription-activated-text-style, italic);
+$amalia-plugin-transcription-activated-font-weight: var(--amalia-plugin-transcription-activated-font-weight, 700);
+$amalia-plugin-transcription-hover-font-weight: var(--amalia-plugin-transcription-hover-font-weight, 700);
+$amalia-plugin-transcription-hover-text-decoration : var(--amalia-plugin-transcription-hover-text-decoration, underline);
 
 $amalia-plugin-subtitle-bg: var(--amalia-plugin-subtitle-bg, rgba(34, 34, 34, 0.8));
 $amalia-plugin-subtitle-color: var(--amalia-plugin-subtitle-color, rgb(255, 255, 255));
