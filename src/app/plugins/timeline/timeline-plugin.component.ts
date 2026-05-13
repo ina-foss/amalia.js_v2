@@ -23,7 +23,7 @@ import { Utils } from '../../core/utils/utils';
 import { TimeLineBlock, TimelineLocalisation } from '../../core/metadata/model/timeline-localisation';
 import * as _ from 'lodash';
 import { Metadata } from '@ina/amalia-model';
-import { TreeNode } from 'primeng/api/treenode';
+import { TreeNode } from 'primeng/api';
 import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
 import { ToastComponent } from "../../core/toast/toast.component";
 

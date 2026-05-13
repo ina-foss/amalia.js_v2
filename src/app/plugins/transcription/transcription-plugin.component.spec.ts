@@ -238,4 +238,58 @@ describe('TranscriptionPluginComponent', () => {
         expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expectedText);
         expect(component.mediaPlayerElement.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PLAYER_COPY_BOARD, expectedText);
     });
+
+    it('should select segment at tc 0 on time change', () => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
+        component.pluginConfiguration.data.mode = 2;
+        component.pluginConfiguration.data.autoScroll = true;
+
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <div class="segment" data-tcin="0" data-tcout="2">
+                <div class="subsegment">
+                    <div class="text">
+                        <span class="w" data-tcin="0" data-tcout="2">Bonjour</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        component.transcriptionElement = new ElementRef(container);
+
+        component._handleOnTimeChangeForTesting();
+
+        expect(container.querySelector('.segment.selected')).toBeTruthy();
+    });
+
+    it('should refresh selected segment before sync scroll', () => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
+        component.pluginConfiguration.data.mode = 2;
+        component.pluginConfiguration.data.autoScroll = true;
+
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <div class="segment" data-tcin="0" data-tcout="2">
+                <div class="subsegment">
+                    <div class="text">
+                        <span class="w" data-tcin="0" data-tcout="2">Bonjour</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        component.transcriptionElement = new ElementRef(container);
+        component.displaySynchro = true;
+        const handleOnTimeChangeSpy = spyOn<any>(component, 'handleOnTimeChange').and.callThrough();
+
+        component.scrollToSelectedSegment();
+
+        expect(handleOnTimeChangeSpy).toHaveBeenCalled();
+        expect(container.querySelector('.segment.selected')).toBeTruthy();
+        expect(component.displaySynchro).toBeFalse();
+    });
 });

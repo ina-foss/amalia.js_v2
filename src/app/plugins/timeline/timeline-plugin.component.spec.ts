@@ -1,7 +1,7 @@
 import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
 import { TimelinePluginComponent } from './timeline-plugin.component';
 import { MediaPlayerService } from '../../service/media-player-service';
-import { TreeNode } from 'primeng/api/treenode';
+import { TreeNode } from 'primeng/api';
 import { DataType } from "../../core/constant/data-type";
 import { CheckboxModule } from "primeng/checkbox";
 import { TreeModule } from "primeng/tree";

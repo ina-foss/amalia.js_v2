@@ -192,7 +192,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         const tcIn = this.pluginConfiguration?.data?.tcIn;
         this.currentTime = tcIn > 0 ? this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcIn : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        if (this.currentTime && this.pluginConfiguration.data.autoScroll && this.transcriptionElement) {
+        if (Number.isFinite(this.currentTime) && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             if (this.pluginConfiguration.data.mode === 1) {
                 this.disableRemoveAllSelectedNodes();
@@ -540,8 +540,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
 
     public scrollToSelectedSegment() {
-        const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
+        let scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+        if (!scrollNode) {
+            this.handleOnTimeChange();
+            scrollNode = this.transcriptionElement.nativeElement
+                .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+        }
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
