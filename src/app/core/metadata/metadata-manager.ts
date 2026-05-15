@@ -11,6 +11,7 @@ import {Histogram} from './model/histogram';
 import {TimelineLocalisation} from './model/timeline-localisation';
 import * as _ from 'lodash';
 import {AnnotationLocalisation} from "./model/annotation-localisation";
+import {HistogramLoader} from './loader/histogram-loader';
 
 /**
  * In charge to handle metadata
@@ -21,12 +22,24 @@ export class MetadataManager {
     private listOfMetadata: Map<string, Metadata> = new Map<string, Metadata>();
     private toLoadData = 0;
     private readonly defaultLoader: Loader<Array<Metadata>>;
+    /**
+     * Dedicated loader used when a {@link ConfigDataSource} declares
+     * `plugin === 'histogram'`. Built in-core so it survives the player config
+     * serialisation (functions cannot be passed via the `config` HTML attribute).
+     */
+    private readonly histogramLoader: Loader<Array<Metadata>> | undefined;
     public static AUTHORIZATION_HEADER = 'Authorization: Bearer';
 
-    constructor(configurationManager: ConfigurationManager, defaultLoader: Loader<Array<Metadata>>, logger: LoggerInterface) {
+    constructor(
+        configurationManager: ConfigurationManager,
+        defaultLoader: Loader<Array<Metadata>>,
+        logger: LoggerInterface,
+        histogramLoader?: Loader<Array<Metadata>>
+    ) {
         this.configurationManager = configurationManager;
         this.defaultLoader = defaultLoader;
         this.logger = logger;
+        this.histogramLoader = histogramLoader;
     }
 
     /**
@@ -233,7 +246,12 @@ export class MetadataManager {
         if (loadData && loadData.url) {
             this.logger.info("loadDataSource", loadData.headers);
             let annotationMetadata = loadData.plugin && loadData.plugin === 'annotations';
-            const loader: Loader<Array<Metadata>> = loadData.loader ? loadData.loader : this.defaultLoader;
+            const histogramMetadata = loadData.plugin === 'histogram' && !!this.histogramLoader;
+            const loader: Loader<Array<Metadata>> = loadData.loader
+                ? loadData.loader
+                : histogramMetadata
+                    ? this.histogramLoader
+                    : this.defaultLoader;
             loader
                     .load(loadData.url, loadData.headers)
                     .then(listOfMetadata => {

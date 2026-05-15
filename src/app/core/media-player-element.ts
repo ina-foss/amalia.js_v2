@@ -83,18 +83,24 @@ export class MediaPlayerElement {
 
     /**
      * In  charge to init config
-     * @param config param
-     * @param defaultLoader default loader
-     * @param configLoader configuration loader when empty we use default configuration loader
+     * @param config           param
+     * @param defaultLoader    default loader
+     * @param configLoader     configuration loader when empty we use default configuration loader
+     * @param histogramLoader  optional loader used for `dataSources` whose `plugin === 'histogram'`
      */
-    public async init(config: object, defaultLoader?: Loader<Array<Metadata>>, configLoader?: Loader<ConfigData>): Promise<PlayerState> {
+    public async init(
+        config: object,
+        defaultLoader?: Loader<Array<Metadata>>,
+        configLoader?: Loader<ConfigData>,
+        histogramLoader?: Loader<Array<Metadata>>
+    ): Promise<PlayerState> {
         this.defaultLoader = defaultLoader;
         configLoader = configLoader ? configLoader : new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
         // Init configuration manager
         this.configurationManager = new ConfigurationManager(configLoader, this.logger);
         // Init metadata manager
         this.isMetadataLoaded = false;
-        this._metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger);
+        this._metadataManager = new MetadataManager(this.configurationManager, this.defaultLoader, this.logger, histogramLoader);
         // Init player
         return await new Promise<PlayerState>((resolve, reject) => {
             // load configuration
