@@ -15,6 +15,7 @@ import { DefaultConfigLoader } from '../core/config/loader/default-config-loader
 import { DefaultConfigConverter } from '../core/config/converter/default-config-converter';
 import { DefaultMetadataConverter } from '../core/metadata/converter/default-metadata-converter';
 import { DefaultMetadataLoader } from '../core/metadata/loader/default-metadata-loader';
+import { HistogramLoader } from '../core/metadata/loader/histogram-loader';
 import { MediaPlayerElement } from '../core/media-player-element';
 import { AmaliaPlayerImageSource, AmaliaPlayerSettings } from './photo/business/AmaliaPlayerSettings';
 import { HttpClient } from '@angular/common/http';
@@ -306,7 +307,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             } else {
                 this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
             }
-            this.mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
+            const histogramLoader = new HistogramLoader(this.httpClient, this.logger);
+            this.mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader, histogramLoader)
                 .then((state) => this.onInitConfig(state))
                 .catch((state) => this.onErrorInitConfig(state));
             // bind events
