@@ -14,7 +14,7 @@ describe('Photo Utils', () => {
 
     it('truncate should keep short string and truncate long string', () => {
         const short = 'short';
-        expect(Utils.truncate(short, 3, '...')).toBe('short');
+        expect(Utils.truncate(short, 10, '...')).toBe('short');
 
         const long = 'x'.repeat(80);
         expect(Utils.truncate(long, 10, '..')).toBe('xxxxxxxxxx..');
@@ -45,4 +45,3 @@ describe('Photo Utils', () => {
         expect(Utils.roundToSteps(21, steps, 'next')).toBe(40);
     });
 });
-

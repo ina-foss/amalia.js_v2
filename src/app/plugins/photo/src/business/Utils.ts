@@ -8,20 +8,21 @@ export default class Utils {
      * @return boolean
      */
     public static inArray(needle: any, haystack: any[]): boolean {
-        return haystack.filter((f: any) => {
+        return haystack.some((f: any) => {
             return JSON.stringify(f) === JSON.stringify(needle);
-        }).length > 0;
+        });
     }
 
     public static guid(): string {
-        const ts: number = Math.round(new Date().getTime() + (Math.random() * 100));
-        return 'amaliaPhotoPlayer' + ts.toString();
+        const randomSeed = new Uint32Array(1);
+        globalThis.crypto.getRandomValues(randomSeed);
+        return 'amaliaPhotoPlayer-' + Date.now().toString() + '-' + randomSeed[0].toString();
     }
 
     public static truncate(str: string, limit: number = 60, overflow: string = '...') {
         const arrStr: string[] = str.trim().split('');
 
-        if (arrStr.length > 60) {
+        if (arrStr.length > limit) {
             return arrStr.slice(0, limit).join('') + overflow;
         }
         return str;

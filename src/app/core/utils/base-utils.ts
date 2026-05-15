@@ -33,9 +33,10 @@ export class BaseUtils {
      */
     public static getUniqueId(parts: number = 1): string {
         const stringArr = [];
+        const randomBuffer = new Uint16Array(parts);
+        globalThis.crypto.getRandomValues(randomBuffer);
         for (let i = 0; i < parts; i++) {
-            // tslint:disable-next-line:no-bitwise
-            const S4 = (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+            const S4 = randomBuffer[i].toString(16).padStart(4, '0');
             stringArr.push(S4);
         }
         return stringArr.join('-');
