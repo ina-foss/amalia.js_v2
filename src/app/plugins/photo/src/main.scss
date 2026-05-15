@@ -1,0 +1,382 @@
+@import "~cropperjs/dist/cropper.min.css";
+
+.ajs-photo-amalia-photo {
+  user-select: none;
+  font-family: Arial, "Trebuchet MS", sans-serif;
+  display: block;
+
+  &.ajs-photo-reduced,
+  &.ajs-photo-simple {
+    .ajs-photo-cropper-content {
+      text-align: center;
+
+      & > img {
+        visibility: visible;
+        max-width: 100%;
+        max-height: 100%;
+        margin: auto;
+      }
+    }
+  }
+
+  &.ajs-photo-advanced {
+    .ajs-photo-cropper-content > img {
+      visibility: hidden;
+      width: unset;
+    }
+  }
+
+  &.ajs-photo-reduced {
+    .ajs-photo-content-left {
+      display: none;
+    }
+  }
+  .ajs-photo-content-left {
+    float: left;
+    min-width: 185px;
+    max-width: 185px;
+    vertical-align: top;
+    display: table-cell;
+    background-color: #34495E;
+
+    .ajs-photo-gallery-content {
+      overflow-y: scroll;
+      scrollbar-color: #0086B1 white;
+      scrollbar-width: thin;
+
+      &::-webkit-scrollbar {
+        width: 10px;
+        background-color: #F5F5F5;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+        border: solid white 2px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, .3);
+        background-color: #0086B1;
+      }
+
+      .ajs-photo-thumbs {
+        display: inline-block;
+
+        .ajs-photo-img-thumb {
+          width: 76px;
+          height: 41px;
+          margin: 7px 2px 1px 7px;
+          box-sizing: border-box;
+          overflow: hidden;
+          display: inline-block;
+          float: left;
+          background-color: black;
+          position: relative;
+
+          &.ajs-photo-active {
+            outline: 2px solid #fff;
+          }
+
+          img.ajs-photo-thumb {
+            max-width: 76px;
+            max-height: 41px;
+            width: auto;
+            height: auto;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+          }
+        }
+      }
+    }
+  }
+
+  .ajs-photo-tooltiped {
+    .ajs-photo-tooltip {
+      opacity: 0;
+      position: absolute;
+      z-index: 1;
+      color: white;
+      font-size: 12px;
+      background: black;
+      padding: 5px;
+      top: -24px;
+      border-radius: 5px;
+      width: max-content;
+      display: none;
+    }
+
+    &:hover {
+      .ajs-photo-tooltip {
+        transition-delay: 1s;
+        transition-property: opacity;
+        opacity: 1;
+        display: block;
+      }
+    }
+  }
+
+  .ajs-photo-disable {
+    opacity: 0.3;
+  }
+
+  .ajs-photo-btn-disable {
+    cursor: inherit !important;
+  }
+
+  .ajs-photo-btn {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: inherit;
+    cursor: pointer;
+    width: 39px;
+    height: 41px;
+    display: inline-flex;
+    padding-left: 10px;
+
+    &.ajs-photo-icon-download {
+      background-image: url("./assets/download.svg");
+    }
+
+    &.ajs-photo-icon-fit-screen {
+      background-image: url("./assets/fit-screen.svg");
+      width: 49px;
+    }
+
+    &.ajs-photo-icon-fullsize {
+      background-image: url("./assets/fullsize.svg");
+      width: 49px;
+    }
+
+    &.ajs-photo-icon-magnify {
+      background-image: url("./assets/magnify.svg");
+    }
+
+    &.ajs-photo-icon-magnify-off {
+      background-image: url("./assets/magnify-off.svg");
+    }
+
+    &.ajs-photo-icon-rotate {
+      background-image: url("./assets/rotate.svg");
+    }
+
+    &.ajs-photo-icon-fliph {
+      background-image: url("./assets/reverse_horizontal.svg");
+    }
+
+    &.ajs-photo-icon-flipv {
+      background-image: url("./assets/reverse_vertical.svg");
+    }
+
+    &.ajs-photo-icon-fullscreen {
+      background-image: url("./assets/fullscreen.svg");
+    }
+
+    &.ajs-photo-icon-fullscreen-off {
+      background-image: url("./assets/fullscreen-off.svg");
+    }
+
+    &.ajs-photo-icon-switch-mode {
+      background-image: url("./assets/switch-mode.svg");
+    }
+
+    &.ajs-photo-icon-close {
+      background-image: url("./assets/close.svg");
+      color: white;
+      height: 30px;
+      padding-top: 15px;
+      background-position: center right;
+      margin-right: 10px;
+      width: 85px;
+
+      &:after {
+        content: 'Fermer';
+      }
+    }
+  }
+
+  .ajs-photo-content-right {
+    float: right;
+    display: table-cell;
+    background-color: #80C2D8;
+
+    .ajs-photo-magnifier-glass {
+      position: absolute;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      cursor: none;
+      width: 175px;
+      height: 175px;
+      z-index: 1;
+      box-shadow: 0 0 20px #999;
+    }
+
+    .ajs-photo-cropper-content {
+      position: relative;
+      overflow: hidden;
+      .cropper-wrap-box {
+        background-image: none;
+      }
+
+      &.ajs-photo-magnify {
+        // overflow: visible;
+      }
+
+      .ajs-photo-reduced-view {
+        float: left;
+        overflow: hidden;
+        position: relative;
+        background-color: black;
+        &.ajs-photo-vx4 img {
+          width: auto;
+          height: auto;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          margin: auto;
+        }
+        &.ajs-photo-vx2 img {
+          height: auto;
+          width: auto;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          margin: auto;
+        }
+      }
+
+      .ajs-photo-top-box {
+        text-align: initial;
+        height: 47px;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 49.58%, rgba(117, 117, 117, 0) 100%);
+        position: absolute;
+        width: 100%;
+        top: 0;
+
+        .ajs-photo-top-left {
+          float: left;
+          width: 33%;
+        }
+
+        .ajs-photo-top-right {
+          float: right;
+          width: 33%;
+
+          a {
+            float: right;
+          }
+        }
+
+        .ajs-photo-top-middle {
+          float: left;
+          width: 33%;
+          padding-top: 11px;
+          color: #fff;
+          font-size: 16px;
+          letter-spacing: 0.12px;
+          line-height: 19px;
+          margin: 0 auto;
+          text-align: center;
+        }
+      }
+
+      .ajs-photo-percentage-info {
+        margin: auto;
+        width: 120px;
+
+        .ajs-photo-operator {
+          width: 24px;
+          height: 40px;
+          float: left;
+          color: #fff;
+          font-size: 30px;
+          text-align: center;
+          cursor: pointer;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: inherit;
+
+          &.ajs-photo-minus {
+            background-image: url("./assets/minus.svg");
+          }
+
+          &.ajs-photo-plus {
+            background-image: url("./assets/plus.svg");
+          }
+        }
+
+        .ajs-photo-result {
+          cursor: pointer;
+          height: 19px;
+          width: 40px;
+          color: #FFFFFF;
+          font-weight: bold;
+          line-height: 19px;
+          text-align: center;
+          float: left;
+          font-size: 16px;
+          margin-top: 11px;
+          margin-left: 14px;
+          margin-right: 14px;
+
+          &:after {
+            content: '%';
+          }
+        }
+      }
+
+      .ajs-photo-toolbar {
+        text-align: initial;
+        height: 41px;
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        background-color: rgba(34, 34, 34, 0.9);
+
+        &.ajs-photo-fullscreen {
+          z-index: 0;
+          background-color: #000;
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          left: 0;
+        }
+
+        .ajs-photo-toolbar-left {
+          float: left;
+          width: 33%;
+
+          a {
+            float: left;
+            position: relative;
+          }
+        }
+
+        .ajs-photo-toolbar-middle {
+          float: left;
+          width: 33%;
+
+          a {
+            float: left;
+            position: relative;
+          }
+        }
+
+        .ajs-photo-toolbar-right {
+          float: right;
+          width: 33%;
+
+          a {
+            float: right;
+            position: relative;
+          }
+        }
+      }
+    }
+  }
+
+}

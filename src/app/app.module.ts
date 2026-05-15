@@ -48,6 +48,7 @@ import { PreventCtrlScrollDirective } from './core/directive/inaSortablejs/preve
 import { MinusIcon } from 'primeng/icons/minus';
 import { CheckIcon } from 'primeng/icons/check';
 import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { PhotoPluginComponent } from './plugins/photo/photo-plugin.component';
 
 @NgModule({
     imports: [
@@ -95,6 +96,7 @@ import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.compone
         TimelinePluginComponent,
         SortablejsDirective,
         AnnotationPluginComponent,
+        PhotoPluginComponent,
         SegmentComponent,
         PreventCtrlScrollDirective,
     ],
@@ -135,5 +137,6 @@ export class AppModule {
         this.addCustomElement(HistogramPluginComponent, 'amalia-histogram');
         this.addCustomElement(TimelinePluginComponent, 'amalia-timeline');
         this.addCustomElement(AnnotationPluginComponent, 'amalia-annotation');
+        this.addCustomElement(PhotoPluginComponent, 'amalia-photo');
     }
 }
