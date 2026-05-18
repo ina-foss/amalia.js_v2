@@ -241,4 +241,221 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         expect(fakeMedia.pause).toHaveBeenCalled();
         expect(fakeWavesurfer.renderer.renderProgress).toHaveBeenCalledWith(0.5);
     });
+
+    it('should fall back to setTime on SEEKING when no renderer is available', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        // Simulate a wavesurfer instance without renderer.renderProgress.
+        delete (fakeWavesurfer as any).renderer;
+        fakeWavesurfer.setTime.calls.reset();
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, 30);
+        expect(fakeMedia.pause).toHaveBeenCalled();
+        expect(fakeWavesurfer.setTime).toHaveBeenCalledWith(30);
+    });
+
+    it('should noop on TIME_CHANGE when wavesurfer is not yet built', () => {
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        // No metadata registered → no wavesurfer.
+        component.ngOnInit();
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
+        expect(fakeWavesurfer.setTime).not.toHaveBeenCalled();
+    });
+
+    it('should ignore NaN currentTime on TIME_CHANGE', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        fakeMedia.getCurrentTime.and.returnValue(NaN);
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        fakeWavesurfer.setTime.calls.reset();
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
+        expect(fakeWavesurfer.setTime).not.toHaveBeenCalled();
+    });
+
+    it('should re-render on DURATION_CHANGE when peaks are already loaded', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1, 2], [-1, -2]);
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        createSpy.calls.reset();
+        // New duration → triggers re-render via createOrUpdateWavesurfer.
+        fakeMedia.getDuration.and.returnValue(240);
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.DURATION_CHANGE);
+        expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('should re-fetch metadata on DURATION_CHANGE when peaks are not yet loaded', () => {
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        // Defer init until after listeners are attached: no peaks at init.
+        mediaPlayerElement.isMetadataLoaded = false;
+        component.ngOnInit();
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.INIT);
+        // Now register peaks but do not fire METADATA_LOADED yet.
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        mediaPlayerElement.isMetadataLoaded = true;
+        fakeMedia.getDuration.and.returnValue(300);
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.DURATION_CHANGE);
+        expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('should ignore DURATION_CHANGE when duration has not changed', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        createSpy.calls.reset();
+        // Same duration as before — should be a noop.
+        fakeMedia.getDuration.and.returnValue(120);
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.DURATION_CHANGE);
+        expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('should swallow exceptions thrown by wavesurfer.destroy', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        component.ngOnInit();
+        fakeWavesurfer.destroy.and.throwError('boom');
+        expect(() => component.ngOnDestroy()).not.toThrow();
+    });
+
+    it('should not call WaveSurfer.create when wavesurferContainer is missing', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        component.wavesurferContainer = undefined as any;
+        component.handleMetadataLoaded();
+        expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('should expose handleMetaDataLoadedWrapperWithoutAutoBind as a public alias', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        component.handleMetaDataLoadedWrapperWithoutAutoBind();
+        expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('should expose initWrapperWithoutAutoBind that runs init()', () => {
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        // The plugin needs a configured player before init() can run.
+        // First call ngOnInit (without loadMetadataOnDemand) so PluginBase is ready
+        // but does not auto-bind init listeners again.
+        const initSpy = spyOn(component, 'init').and.callThrough();
+        component.initWrapperWithoutAutoBind();
+        expect(initSpy).toHaveBeenCalled();
+    });
+
+    it('should run loadMetadataOnDemand path through ngOnInit and ngAfterViewInit', () => {
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        (mediaPlayerElement.configurationManager.configData as any).loadMetadataOnDemand = true;
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        const initWrapperSpy = spyOn(component, 'initWrapperWithoutAutoBind').and.callThrough();
+        component.ngOnInit();
+        expect(initWrapperSpy).toHaveBeenCalled();
+        // ngAfterViewInit should also call handleMetadataLoaded directly.
+        createSpy.calls.reset();
+        component.ngAfterViewInit();
+        expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('should noop in ngAfterViewInit when loadMetadataOnDemand is disabled', () => {
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+        // Default: loadMetadataOnDemand absent/false.
+        component.ngAfterViewInit();
+        expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('should swallow extractPeaks errors and emit ERROR', () => {
+        // Insert metadata with an id whose getMetadata throws inside extractPeaks.
+        const id = METADATA_ID;
+        mediaPlayerElement.metadataManager.addMetadata({id, type: 'WAVEFORM_PEAKS', data: {}} as any);
+        spyOn(mediaPlayerElement.metadataManager, 'getMetadata').and.throwError('boom');
+        const emitSpy = spyOn(mediaPlayerElement.eventEmitter, 'emit').and.callThrough();
+        component.handleMetadataLoaded();
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.ERROR, jasmine.any(String));
+        expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('should use metadata.localisation as a fallback peaks source', () => {
+        mediaPlayerElement.metadataManager.addMetadata({
+            id: METADATA_ID,
+            type: 'WAVEFORM_PEAKS',
+            localisation: {posbins: [5, 6], negbins: [-5, -6]} as any
+        } as any);
+        component.handleMetadataLoaded();
+        expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('should disable Zoom plugin and use spectrogram defaults when withSpectrogram is true', () => {
+        component.pluginConfiguration.data.withSpectrogram = true;
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        component.handleMetadataLoaded();
+        const created = createSpy.calls.mostRecent().args[0] as any;
+        expect(created.minPxPerSec).toEqual(HistogramPluginComponent.DEFAULT_MIN_PX_PER_SEC_SPECTROGRAM);
+        // splitChannels is set to false (no left/right split) when spectrogram is on.
+        expect(created.splitChannels).toBe(false);
+    });
+
+    it('should wire wavesurfer "interaction" handler back to mediaPlayer.setCurrentTime', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        component.handleMetadataLoaded();
+        // The component registers two `on()` handlers: 'interaction' and 'ready'.
+        const interactionCall = fakeWavesurfer.on.calls.allArgs().find(args => args[0] === 'interaction');
+        expect(interactionCall).toBeDefined();
+        const interactionHandler = interactionCall![1] as (t: number) => void;
+        interactionHandler(45);
+        expect(fakeMedia.setCurrentTime).toHaveBeenCalledWith(45);
+    });
+
+    it('should invert interaction time when the player is in reverseMode', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        fakeMedia.reverseMode = true;
+        fakeMedia.getDuration.and.returnValue(100);
+        component.handleMetadataLoaded();
+        const interactionHandler = fakeWavesurfer.on.calls.allArgs().find(args => args[0] === 'interaction')![1] as (t: number) => void;
+        interactionHandler(20);
+        expect(fakeMedia.setCurrentTime).toHaveBeenCalledWith(80);
+    });
+
+    it('should mirror getCurrentTime/seekTo on the minimap sub-wavesurfer when "ready" fires', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        const miniWavesurfer: any = {};
+        fakeWavesurfer.getActivePlugins.and.returnValue([{miniWavesurfer}]);
+        component.handleMetadataLoaded();
+        const readyHandler = fakeWavesurfer.on.calls.allArgs().find(args => args[0] === 'ready')![1] as () => void;
+        readyHandler();
+        expect(typeof miniWavesurfer.getCurrentTime).toBe('function');
+        expect(typeof miniWavesurfer.seekTo).toBe('function');
+        // Exercise the overridden seekTo (covers overriddenSeekTo body).
+        fakeWavesurfer.getDuration.and.returnValue(200);
+        miniWavesurfer.seekTo(0.5);
+        expect(fakeWavesurfer.setTime).toHaveBeenCalledWith(100);
+    });
+
+    it('should skip minimap mirroring when no minimap plugin is found', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        fakeWavesurfer.getActivePlugins.and.returnValue([{}]); // no miniWavesurfer
+        component.handleMetadataLoaded();
+        const readyHandler = fakeWavesurfer.on.calls.allArgs().find(args => args[0] === 'ready')![1] as () => void;
+        expect(() => readyHandler()).not.toThrow();
+    });
+
+    it('should invert progress in overriddenSeekTo when reverseMode is on', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        fakeMedia.reverseMode = true;
+        component.handleMetadataLoaded();
+        // Trigger ready handler to expose miniWavesurfer.seekTo (which uses the same override).
+        const miniWavesurfer: any = {};
+        fakeWavesurfer.getActivePlugins.and.returnValue([{miniWavesurfer}]);
+        const readyHandler = fakeWavesurfer.on.calls.allArgs().find(args => args[0] === 'ready')![1] as () => void;
+        readyHandler();
+        fakeWavesurfer.getDuration.and.returnValue(100);
+        miniWavesurfer.seekTo(0.25);
+        // reverseMode ⇒ t = 1 - 0.25 = 0.75 → 100 * 0.75 = 75
+        expect(fakeWavesurfer.setTime).toHaveBeenCalledWith(75);
+    });
+
+    it('overriddenGetCurrentTime should delegate to mediaPlayer.getCurrentTime', () => {
+        registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
+        fakeMedia.getCurrentTime.and.returnValue(7);
+        component.handleMetadataLoaded();
+        // The wavesurfer's getCurrentTime was overridden in createOrUpdateWavesurfer.
+        const overridden = (fakeWavesurfer as any).getCurrentTime;
+        expect(typeof overridden).toBe('function');
+        expect(overridden()).toBe(7);
+    });
 });

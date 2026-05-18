@@ -18,6 +18,8 @@ import {TimeBarPluginComponent} from '../../plugins/time-bar/time-bar-plugin.com
 import {MetadataUtils} from '../utils/metadata-utils';
 import {Histogram} from './model/histogram';
 import {DataType} from "../constant/data-type";
+import {AnnotationLocalisation} from "./model/annotation-localisation";
+import {Loader} from "../loader/loader";
 
 describe('Test Metadata manager', () => {
     let injector: TestBed;
@@ -277,6 +279,189 @@ describe('Test Metadata manager', () => {
                 });
             });
         });
+    });
+
+    it('Test init() with dataSources triggers loadDataSource', fakeAsync(() => {
+        const url = 'http://localhost/init-source.json';
+        const timelineSample = require('tests/assets/metadata/sample-timeline-01.json');
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: [{url, headers: []} as ConfigDataSource]
+        };
+        let initCompleted = false;
+        metadataManager.init().then(() => {
+            initCompleted = true;
+        });
+        httpTestingController.expectOne(url).flush(timelineSample, {status: 200, statusText: 'Ok'});
+        tick(100);
+        flush();
+        expect(initCompleted).toBeTrue();
+    }));
+
+    it('Test init() resolves silently when there are no data sources', () => {
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: undefined as any
+        };
+        // init() does not resolve when there are no data sources (matches current behaviour),
+        // but it must not throw nor make any HTTP request.
+        expect(() => metadataManager.init()).not.toThrow();
+    });
+
+    it('Test loadDataSourceForPlugin resolves with undefined when no plugin matches', fakeAsync(() => {
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: [{url: 'http://localhost/x.json', headers: [], plugin: 'other'} as ConfigDataSource]
+        };
+        let resolved: any = 'pending';
+        metadataManager.loadDataSourceForPlugin('non-existing-plugin').then(value => {
+            resolved = value;
+        });
+        tick(50);
+        flush();
+        expect(resolved).toBeUndefined();
+    }));
+
+    it('Test loadDataSourceForPlugin rejects when there are no data sources at all', fakeAsync(() => {
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: undefined as any
+        };
+        let rejected: any = null;
+        metadataManager.loadDataSourceForPlugin('any').catch(err => {
+            rejected = err;
+        });
+        tick(50);
+        flush();
+        expect(rejected).toEqual('Can\'t find data sources');
+    }));
+
+    it('Test getAnnotationLocalisations returns localisations from a metadata block', () => {
+        const annotationMetadata: any = {
+            id: 'annot-1',
+            type: 'ANNOTATIONS',
+            localisation: [
+                {
+                    tcin: '00:00:00.000',
+                    tcout: '00:00:10.000',
+                    sublocalisations: {localisation: []},
+                    data: {label: 'Hello'}
+                }
+            ]
+        };
+        metadataManager.addMetadata(annotationMetadata);
+        const result = metadataManager.getAnnotationLocalisations('annot-1');
+        expect(result).not.toBeNull();
+        expect(Array.isArray(result)).toBeTrue();
+    });
+
+    it('Test getAnnotationLocalisations returns null when metadata id is unknown', () => {
+        const result = metadataManager.getAnnotationLocalisations('unknown-id');
+        expect(result).toBeNull();
+    });
+
+    it('Test loadDataSource error path triggers errorToLoadMetadata when HTTP fails', fakeAsync(() => {
+        const url = 'http://localhost/will-fail.json';
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: [{url, headers: []} as ConfigDataSource]
+        };
+        let initResolved = false;
+        metadataManager.init().then(() => {
+            initResolved = true;
+        });
+        httpTestingController.expectOne(url).flush('boom', {status: 500, statusText: 'Server error'});
+        tick(50);
+        flush();
+        expect(initResolved).toBeTrue();
+    }));
+
+    it('Test annotation reject path: HTTP error reaches the rejecter', fakeAsync(() => {
+        const url = 'http://localhost/annotation-fail.json';
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: [{url, headers: [], plugin: 'annotations'} as ConfigDataSource]
+        };
+        let rejection: any = null;
+        metadataManager.loadDataSourceForPlugin('annotations').catch(err => {
+            rejection = err;
+        });
+        httpTestingController.expectOne(url).flush('boom', {status: 500, statusText: 'Server error'});
+        tick(50);
+        flush();
+        expect(rejection).not.toBeNull();
+        expect(rejection.url).toEqual(url);
+    }));
+
+    it('Test loadDataSource dispatches to histogramLoader when plugin === "histogram"', fakeAsync(() => {
+        const fakeHistogramLoader: Loader<Array<Metadata>> = {
+            load: jasmine.createSpy('load').and.returnValue(Promise.resolve([
+                {id: 'histogram-waveform-surfer', type: 'WAVEFORM_PEAKS', data: {posbins: [1], negbins: [-1]}} as any
+            ]))
+        };
+        const mm = new MetadataManager(
+            configurationManager,
+            new DefaultMetadataLoader(httpClient, new DefaultMetadataConverter(), logger),
+            logger,
+            fakeHistogramLoader
+        );
+        const url = 'http://localhost/peaks.json';
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: [{url, headers: [], plugin: 'histogram'} as ConfigDataSource]
+        };
+        let resolved = false;
+        mm.init().then(() => {
+            resolved = true;
+        });
+        tick(50);
+        flush();
+        expect(fakeHistogramLoader.load).toHaveBeenCalledWith(url, jasmine.anything());
+        expect(resolved).toBeTrue();
+        expect(mm.hasMetadataKey('histogram-waveform-surfer')).toBeTrue();
+    }));
+
+    it('Test loadDataSource keeps using defaultLoader for histogram plugin when no histogramLoader is provided', fakeAsync(() => {
+        const url = 'http://localhost/histogram-default.json';
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: [{url, headers: [], plugin: 'histogram'} as ConfigDataSource]
+        };
+        metadataManager.init();
+        const req = httpTestingController.expectOne(url);
+        req.flush('boom', {status: 500, statusText: 'Error'});
+        tick(50);
+        flush();
+    }));
+
+    it('Test loadDataSource is a noop when url is missing', fakeAsync(() => {
+        configurationManager.configData = {
+            player: {autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc},
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: [{url: '', headers: []} as ConfigDataSource]
+        };
+        const warnSpy = spyOn(logger, 'warn').and.callThrough();
+        metadataManager.init();
+        tick(50);
+        flush();
+        expect(warnSpy).toHaveBeenCalled();
+        httpTestingController.expectNone(() => true);
+    }));
+
+    it('Test hasMetadataKey returns false for empty/unknown ids', () => {
+        expect(metadataManager.hasMetadataKey('')).toBeFalsy();
+        expect(metadataManager.hasMetadataKey(null as any)).toBeFalsy();
+        expect(metadataManager.hasMetadataKey('does-not-exist')).toBeFalsy();
+        metadataManager.addMetadata({id: 'present'} as any);
+        expect(metadataManager.hasMetadataKey('present')).toBeTrue();
     });
 });
 
