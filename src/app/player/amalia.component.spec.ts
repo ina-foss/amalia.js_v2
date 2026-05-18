@@ -282,9 +282,6 @@ class MediaPlayerServiceStub {
     decrement() { }
 }
 class ThumbnailServiceStub { }
-class DomSanitizerStub {
-    bypassSecurityTrustUrl(v: string) { return v; }
-}
 
 describe('AmaliaComponent - keyboard shortcuts', () => {
     let component: AmaliaComponent;
@@ -294,8 +291,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         component = new AmaliaComponent(
             new MediaPlayerServiceStub() as any,
             {} as any,                       // HttpClient non utilisé ici
-            new ThumbnailServiceStub() as any,
-            new DomSanitizerStub() as any
+            new ThumbnailServiceStub() as any
         );
 
         // Stub très simple du mediaPlayerElement + eventEmitter

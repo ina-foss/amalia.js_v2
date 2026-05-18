@@ -28,7 +28,6 @@ import { HttpConfigLoader } from '../core/config/loader/http-config-loader';
 import { BaseUtils } from '../core/utils/base-utils';
 import { MediaPlayerService } from '../service/media-player-service';
 import { ThumbnailService } from '../service/thumbnail-service';
-import { DomSanitizer } from '@angular/platform-browser';
 
 import * as _ from 'lodash';
 import { ControlBarPluginComponent } from '../plugins/control-bar/control-bar-plugin.component';
@@ -144,8 +143,6 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * Thumbnail service
      */
     private readonly thumbnailService: ThumbnailService;
-    // dom sanitizer
-    private sanitizer: DomSanitizer;
     /**
      * Metadata converter, converter metadata parameter
      */
@@ -236,7 +233,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * thumbnail blob preview on seeking
      */
-    public thumbnailBlobVideo;
+    public thumbnailBlobVideo = '';
 
     public throttleFunc;
     /**
@@ -255,9 +252,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         ' amalia-secondary-color': false
     };
 
-    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, sanitizer: DomSanitizer) {
+    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService) {
         this.httpClient = httpClient;
-        this.sanitizer = sanitizer;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
         this.throttleFunc = _.throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, { trailing: false });
@@ -598,7 +594,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             if (this.previewThumbnailUrl) {
                 this.thumbnailService.getThumbnail(this.previewThumbnailUrl, tc).then((blob) => {
                     if (typeof (blob) !== 'undefined') {
-                        this.thumbnailBlobVideo = this.sanitizer.bypassSecurityTrustUrl(blob);
+                        this.thumbnailBlobVideo = blob;
                     }
                 });
             }
