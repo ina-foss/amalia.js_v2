@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { TranscriptionPluginComponent } from './transcription-plugin.component';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { ElementRef } from '@angular/core';
@@ -292,4 +293,229 @@ describe('TranscriptionPluginComponent', () => {
         expect(container.querySelector('.segment.selected')).toBeTruthy();
         expect(component.displaySynchro).toBeFalse();
     });
+
+    it('should call media seek in callSeek', () => {
+        const media = {
+            setCurrentTime: jasmine.createSpy('setCurrentTime')
+        } as any;
+        spyOn(component.mediaPlayerElement, 'getMediaPlayer').and.returnValue(media);
+
+        component.callSeek(42);
+
+        expect(media.setCurrentTime).toHaveBeenCalledWith(42);
+    });
+
+    it('should set typing and clear selected class on handleChangeInput', () => {
+        const node = document.createElement('span');
+        node.className = 'w selected-text';
+        component.transcriptionElement.nativeElement.appendChild(node);
+        component.searching = true;
+
+        component.handleChangeInput('abc');
+
+        expect(component.typing).toBeTrue();
+        expect(component.searching).toBeFalse();
+        expect(node.classList.contains('selected-text')).toBeFalse();
+    });
+
+    it('seekToWord should apply stock offset and tcDelta', () => {
+        const media = {
+            setCurrentTime: jasmine.createSpy('setCurrentTime'),
+            getDuration: jasmine.createSpy('getDuration').and.returnValue(100),
+            reverseMode: false
+        } as any;
+        spyOn(component.mediaPlayerElement, 'getMediaPlayer').and.returnValue(media);
+        spyOn(component as any, 'scroll');
+        component.pluginConfiguration.data.resourceType = 'stock' as any;
+        component.pluginConfiguration.data.tcIn = 10 as any;
+        component.pluginConfiguration.data.tcDelta = 2 as any;
+
+        const target = document.createElement('span');
+        target.setAttribute('data-tcin', '50');
+        component.seekToWord({ target } as any);
+
+        expect(media.setCurrentTime).toHaveBeenCalledWith(38);
+        expect((component as any).scroll).toHaveBeenCalled();
+    });
+
+    it('seekToWord should apply reverse mode', () => {
+        const media = {
+            setCurrentTime: jasmine.createSpy('setCurrentTime'),
+            getDuration: jasmine.createSpy('getDuration').and.returnValue(100),
+            reverseMode: true
+        } as any;
+        spyOn(component.mediaPlayerElement, 'getMediaPlayer').and.returnValue(media);
+        component.pluginConfiguration.data.resourceType = 'flux' as any;
+        component.pluginConfiguration.data.tcDelta = 0 as any;
+
+        const target = document.createElement('span');
+        target.setAttribute('data-tcin', '30');
+        component.seekToWord({ target } as any);
+
+        expect(media.setCurrentTime).toHaveBeenCalledWith(70);
+    });
+
+    it('handleScroll should set ignoreNextScroll and call updateSynchro', () => {
+        const spy = spyOn(component, 'updateSynchro');
+
+        component.handleScroll(true);
+
+        expect(component.ignoreNextScroll).toBeTrue();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('parseTranscription should read metadata and filter by tcIn/duration', () => {
+        component.pluginConfiguration.metadataIds = ['m1'] as any;
+        component.pluginConfiguration.data.parseLevel = 0 as any;
+        component.pluginConfiguration.data.withSubLocalisations = false as any;
+        component.pluginConfiguration.data.tcIn = 10 as any;
+        component.pluginConfiguration.data.duration = 20 as any;
+        const getTranscriptionLocalisations = spyOn(component.mediaPlayerElement.metadataManager as any, 'getTranscriptionLocalisations')
+            .and.returnValue([
+                { tcIn: 1, tcOut: 5, text: 'drop', annotations: [] },
+                { tcIn: 12, tcOut: 15, text: 'keep', annotations: [] },
+                { tcIn: 40, tcOut: 45, text: 'drop2', annotations: [] }
+            ] as any);
+
+        (component as any).parseTranscription();
+
+        expect(getTranscriptionLocalisations).toHaveBeenCalled();
+        expect(component.transcriptions.length).toBe(1);
+        expect((component.transcriptions[0] as any).text).toBe('keep');
+    });
+
+    it('searchWord should find words, mark them and set scroll', () => {
+        component.pluginConfiguration.data.label = 'placeholder' as any;
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+            <div class="segment"><div class="subsegment"><div class="text">
+              <span class="w">bonjour</span>
+              <span class="w">salut</span>
+            </div></div></div>`;
+        component.transcriptionElement = new ElementRef(wrapper);
+
+        component.searchWord('bon');
+
+        expect(component.searching).toBeTrue();
+        expect(component.listOfSearchedNodes.length).toBe(1);
+        expect(component.listOfSearchedNodes[0].classList.contains('selected-text')).toBeTrue();
+    });
+
+    it('scrollToSearchedWord should wrap indexes up and down', () => {
+        const a = document.createElement('span');
+        const b = document.createElement('span');
+        const parent = document.createElement('div');
+        const p2 = document.createElement('div');
+        parent.appendChild(p2);
+        p2.appendChild(a);
+        p2.appendChild(b);
+        component.transcriptionElement = new ElementRef(parent);
+        component.listOfSearchedNodes = [a as any, b as any];
+        (component as any).searchedWordIndex = 1;
+
+        component.scrollToSearchedWord('down');
+        expect((component as any).searchedWordIndex).toBe(0);
+
+        component.scrollToSearchedWord('up');
+        expect((component as any).searchedWordIndex).toBe(1);
+    });
+
+    it('clearSearchList should reset state and css classes', () => {
+        const n = document.createElement('span');
+        n.className = 'w selected-text founded-text';
+        component.transcriptionElement.nativeElement.appendChild(n);
+        component.listOfSearchedNodes = [n as any];
+        component.searching = true;
+
+        component.clearSearchList();
+
+        expect(component.searching).toBeFalse();
+        expect(component.listOfSearchedNodes).toBeNull();
+        expect(n.classList.contains('selected-text')).toBeFalse();
+        expect(n.classList.contains('founded-text')).toBeFalse();
+    });
+
+    it('handleShortcut should search, iterate and clear on backspace', () => {
+        component.searchText.nativeElement.value = 'foo';
+        component.pluginConfiguration.data.key = 'Enter' as any;
+        const clearSpy = spyOn(component, 'clearSearchList').and.callThrough();
+        const searchSpy = spyOn(component, 'searchWord').and.callFake(() => {
+            component.listOfSearchedNodes = [document.createElement('span') as any];
+        });
+        const scrollSpy = spyOn(component, 'scrollToSearchedWord');
+        component.listOfSearchedNodes = [];
+        (component as any).searchedWordIndex = 0;
+
+        component.handleShortcut({ key: 'Enter' } as any);
+        component.searching = false;
+        component.handleShortcut({ key: 'Enter' } as any);
+        component.handleShortcut({ key: 'Backspace' } as any);
+
+        expect(searchSpy).toHaveBeenCalledWith('foo');
+        expect(scrollSpy).toHaveBeenCalled();
+        expect(clearSpy).toHaveBeenCalled();
+        expect(component.typing).toBeFalse();
+    });
+
+    it('updateSynchro should set displaySynchro when selected word is not visible', () => {
+        const container = document.createElement('div');
+        container.style.height = '100px';
+        const seg = document.createElement('div');
+        seg.className = 'segment';
+        const sub = document.createElement('div');
+        sub.className = 'subsegment';
+        const text = document.createElement('div');
+        text.className = 'text';
+        const w = document.createElement('span');
+        w.className = 'w selected';
+        text.appendChild(w);
+        sub.appendChild(text);
+        seg.appendChild(sub);
+        container.appendChild(seg);
+        component.transcriptionElement = new ElementRef(container);
+        spyOn(container, 'getBoundingClientRect').and.returnValue({ top: 100 } as any);
+        spyOn(w, 'getBoundingClientRect').and.returnValue({ top: 10 } as any);
+        Object.defineProperty(w, 'clientHeight', { value: 10, configurable: true });
+        Object.defineProperty(container, 'clientHeight', { value: 50, configurable: true });
+        component.automaticallyScrolled = false;
+
+        component.updateSynchro();
+
+        expect(component.displaySynchro).toBeTrue();
+    });
+
+    it('should match composed named entity and apply css class', () => {
+        const container = document.createElement('div');
+        container.innerHTML = `
+          <div class="segment" data-tcin="0" data-tcout="2">
+            <div class="subsegment"><div class="text">
+              <span class="w">Emmanuel</span>
+              <span class="w">Macron</span>
+            </div></div>
+          </div>`;
+        component.transcriptionElement = new ElementRef(container);
+        component.transcriptions = [{
+            tcIn: 0,
+            tcOut: 2,
+            text: 'Emmanuel Macron',
+            annotations: [{ matchedText: 'Emmanuel Macron' }]
+        } as any];
+
+        (component as any).handleMatchedTextStyle();
+
+        const marked = container.querySelectorAll('.named-entity');
+        expect(marked.length).toBe(2);
+    });
+
+    it('scrollToSelectedSegment should reset auto flag after timeout', fakeAsync(() => {
+        const container = document.createElement('div');
+        container.innerHTML = `<div class="segment selected" data-tcin="0" data-tcout="2"></div>`;
+        component.transcriptionElement = new ElementRef(container);
+
+        component.scrollToSelectedSegment();
+        expect(component.automaticallyScrolled).toBeTrue();
+
+        tick(101);
+        expect(component.automaticallyScrolled).toBeFalse();
+    }));
 });

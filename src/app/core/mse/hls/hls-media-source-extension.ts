@@ -56,7 +56,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
         this.hlsPlayer = new Hls(config.hls.config);
         Utils.addListener(this, this.eventEmitter, PlayerEventType.AUDIO_CHANNEL_CHANGE, this.handleAudioChannelChange);
     }
-    mediaType: 'AUDIO' | 'VIDEO' = 'AUDIO';
+    mediaType: 'AUDIO' | 'VIDEO' | 'PICTURE' = 'AUDIO';
 
     /**
      * Is valid url

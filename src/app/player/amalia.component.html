@@ -22,6 +22,7 @@
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata" [poster]="videoPoster"
            [ngClass]="{'poster-icon' : videoPoster !== ''}"
     ></video>
+<div *ngIf="playerConfig.player.media === 'PICTURE' "  #photoHost></div>
     <img #previewThumbnail class="preview-thumbnail"
          [hidden]="!enablePreviewThumbnail"
          [src]="thumbnailBlobVideo" alt="video-preview" fetchPriority="high" importance="high"/>

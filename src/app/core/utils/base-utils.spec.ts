@@ -28,6 +28,20 @@ describe('Test Base utils', () => {
         const id = BaseUtils.getUniqueId(1);
         expect(id).toBeTruthy();
     });
+
+    it('should build image url from base64 content', () => {
+        const createObjectURLSpy = spyOn(URL, 'createObjectURL').and.returnValue('blob:test');
+        const base64 = btoa('png-content');
+        const result = BaseUtils.getEncodedImage(base64);
+        expect(createObjectURLSpy).toHaveBeenCalled();
+        expect(result).toBe('blob:test');
+    });
+
+    it('should generate requested unique id parts', () => {
+        const id = BaseUtils.getUniqueId(3);
+        expect(id.split('-').length).toBe(3);
+        expect(id.split('-').every((chunk) => chunk.length === 4)).toBeTrue();
+    });
 });
 
 

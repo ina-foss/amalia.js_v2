@@ -1363,3 +1363,451 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         }));
     });
 });
+
+describe('ControlBarPluginComponent (coverage boost)', () => {
+    let component: ControlBarPluginComponent;
+    let renderer: jasmine.SpyObj<Renderer2>;
+    let mediaPlayer: any;
+    let eventEmitter: { emit: jasmine.Spy };
+    let thumbnailService: any;
+
+    beforeEach(() => {
+        renderer = jasmine.createSpyObj<Renderer2>('Renderer2', ['addClass', 'removeClass']);
+        thumbnailService = {getThumbnail: jasmine.createSpy('getThumbnail').and.resolveTo('blob:data')};
+
+        component = new ControlBarPluginComponent({} as any, thumbnailService as any, renderer);
+        (component as any).logger = {
+            debug: jasmine.createSpy('debug'),
+            info: jasmine.createSpy('info'),
+            warn: jasmine.createSpy('warn')
+        };
+
+        mediaPlayer = {
+            withMergeVolume: false,
+            reverseMode: false,
+            playbackRate: 1,
+            framerate: 25,
+            mse: {
+                setMaxBufferLengthConfig: jasmine.createSpy('setMaxBufferLengthConfig'),
+                switchToMainSrc: jasmine.createSpy('switchToMainSrc').and.resolveTo(undefined)
+            },
+            setVolume: jasmine.createSpy('setVolume'),
+            setCurrentTime: jasmine.createSpy('setCurrentTime'),
+            getCurrentTime: jasmine.createSpy('getCurrentTime').and.returnValue(12.34),
+            getDuration: jasmine.createSpy('getDuration').and.returnValue(120),
+            getVolume: jasmine.createSpy('getVolume').and.callFake((side?: string) => side ? 20 : 30),
+            isPaused: jasmine.createSpy('isPaused').and.returnValue(false),
+            play: jasmine.createSpy('play'),
+            pause: jasmine.createSpy('pause'),
+            pauseOnly: jasmine.createSpy('pauseOnly'),
+            moveNextFrame: jasmine.createSpy('moveNextFrame'),
+            movePrevFrame: jasmine.createSpy('movePrevFrame'),
+            mute: jasmine.createSpy('mute'),
+            unmute: jasmine.createSpy('unmute'),
+            initAudioChannelMerger: jasmine.createSpy('initAudioChannelMerger'),
+            setReverseMode: jasmine.createSpy('setReverseMode'),
+            seekToBegin: jasmine.createSpy('seekToBegin'),
+            seekToEnd: jasmine.createSpy('seekToEnd'),
+            playPause: jasmine.createSpy('playPause'),
+            captureImage: jasmine.createSpy('captureImage')
+        };
+        eventEmitter = {emit: jasmine.createSpy('emit')};
+
+        component.mediaPlayerElement = {
+            getMediaPlayer: () => mediaPlayer,
+            eventEmitter,
+            getDisplayState: () => 'm',
+            getThumbnailUrl: (tc: number) => `thumb?tc=${tc}`,
+            aspectRatio: '4:3',
+            getConfiguration: () => ({thumbnail: {baseUrl: 'x', enableThumbnail: true}})
+        } as any;
+
+        component.pluginConfiguration = {
+            data: [{control: 'volume', data: {tracks: [{label: 'Track A', track: 'a'}]}}]
+        } as any;
+        component.elements = component.pluginConfiguration.data as any;
+    });
+
+    it('handles display slider/pin icon classes', () => {
+        const pin = document.createElement('div');
+        const pinSvg = document.createElement('svg');
+        pin.appendChild(pinSvg);
+        const slider = document.createElement('div');
+        const sliderSvg = document.createElement('svg');
+        slider.appendChild(sliderSvg);
+
+        slider.style.display = 'none';
+        pin.style.display = 'block';
+        document.body.appendChild(slider);
+        document.body.appendChild(pin);
+        component.displaySliderElement = new ElementRef(slider);
+        component.pinControlsElement = new ElementRef(pin);
+        component.listenToDisplaySliderDisplayChanges();
+        component.listenToPinControlsDisplayChanges();
+        expect(renderer.removeClass).toHaveBeenCalled();
+        expect(renderer.addClass).toHaveBeenCalled();
+        document.body.removeChild(slider);
+        document.body.removeChild(pin);
+    });
+
+    it('updates pin/slider positions for missing element branches', () => {
+        const pin = document.createElement('div');
+        const pinSvg = document.createElement('svg');
+        pin.appendChild(pinSvg);
+        const slider = document.createElement('div');
+        const sliderSvg = document.createElement('svg');
+        slider.appendChild(sliderSvg);
+        component.pinControlsElement = new ElementRef(pin);
+        component.displaySliderElement = undefined as any;
+        component.updatePinAndSpeedSliderPositions();
+
+        component.pinControlsElement = undefined as any;
+        component.displaySliderElement = new ElementRef(slider);
+        component.updatePinAndSpeedSliderPositions();
+        expect(renderer.removeClass).toHaveBeenCalled();
+    });
+
+    it('routes shortcuts and progress bar slide events', () => {
+        const applySpy = spyOn(component, 'applyShortcut');
+        component.handleShortcuts({targets: ['control_bar'], shortcut: {key: 'a', ctrl: false, shift: false, alt: false, meta: false}} as any);
+        expect(applySpy).toHaveBeenCalled();
+
+        spyOn(component, 'getMouseValue').and.returnValue(50);
+        component.inSliding = true;
+        component.duration = 200;
+        component.inverse = true;
+        component.handleProgressBarMouseMove({} as any);
+        expect(component.currentTime).toBe(100);
+        expect(component.time).toBe(100);
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.SEEKING, 100);
+    });
+
+    it('handles callback, menu close and fullscreen flag update', () => {
+        const callbackSpy = spyOn(component.callback, 'emit');
+        component.handleCallback({control: 'playPause'} as any);
+        expect(callbackSpy).toHaveBeenCalled();
+
+        component.enableMenu = true;
+        component.hideControlsMenuOnClickDocument();
+        expect(component.enableMenu).toBeFalse();
+
+        spyOn(component, 'handleDisplayState');
+        Object.defineProperty(document, 'fullscreenElement', {value: {} as Element, configurable: true});
+        component.handleWindowResize();
+        expect(component.handleDisplayState).toHaveBeenCalled();
+        expect(component.fullScreenMode).toBeTrue();
+        Object.defineProperty(document, 'fullscreenElement', {value: null, configurable: true});
+    });
+
+    it('builds default config and shortcuts', () => {
+        const cfg = component.getDefaultConfig();
+        expect(cfg.name).toBe(ControlBarPluginComponent.PLUGIN_NAME);
+        expect(cfg.data.length).toBe(3);
+
+        component.initShortcuts([
+            {control: 'download', key: 'Control + Shift + D'} as any,
+            {control: 'volume', key: 'Alt + M'} as any
+        ]);
+        expect(component.listOfShortcuts.length).toBe(2);
+        expect(component.listOfShortcuts[0].shortcut.ctrl).toBeTrue();
+        expect(component.listOfShortcuts[0].shortcut.shift).toBeTrue();
+        expect(component.listOfShortcuts[1].shortcut.alt).toBeTrue();
+    });
+
+    it('seeks and returns null collections when elements are absent', () => {
+        component.seekTo(42);
+        expect(mediaPlayer.setCurrentTime).toHaveBeenCalledWith(42);
+
+        component.elements = null as any;
+        expect(component.getControlsByZone(1)).toBeNull();
+        expect(component.getControlsByPriority(1, 1)).toBeNull();
+    });
+
+    it('changes volume in merge and non-merge modes', () => {
+        mediaPlayer.withMergeVolume = false;
+        component.changeVolume(40, 'l');
+        expect(mediaPlayer.setVolume).toHaveBeenCalledWith(40, 'l');
+
+        mediaPlayer.withMergeVolume = true;
+        component.volumeLeft = 65;
+        component.volumeRight = 10;
+        component.changeVolume(65, 'l');
+        expect(component.volumeRight).toBe(65);
+        expect(mediaPlayer.setVolume).toHaveBeenCalledWith(65);
+    });
+
+    it('moves slider cursor for reverse, image-mode and normal branches', () => {
+        component.duration = 100;
+        component.currentPlaybackRate = 1;
+        component.moveSliderCursor(40);
+        expect(component.playbackrateByImages).toBeFalse();
+
+        mediaPlayer.reverseMode = true;
+        component.moveSliderCursor(10);
+        expect(mediaPlayer.setCurrentTime).toHaveBeenCalledWith(90);
+
+        mediaPlayer.reverseMode = false;
+        component.playbackrateByImages = true;
+        component.currentPlaybackRate = 2;
+        component.moveSliderCursor(20);
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, 2);
+    });
+
+    it('moves tooltip and toggles aspect/default ratio', fakeAsync(() => {
+        const tooltip = document.createElement('tooltip');
+        document.body.appendChild(tooltip);
+        const host = document.createElement('div');
+        component.controlBarContainer = new ElementRef(host);
+        component.fullScreenMode = true;
+        component.changeTooltipEmplacement();
+        tick(151);
+        expect(host.querySelector('tooltip')).toBeTruthy();
+
+        component.aspectRatio = '4:3';
+        component.changeAspectRatio();
+        expect((component.mediaPlayerElement as any).aspectRatio).toBe('16:9');
+        component.getDefaultAspectRatio();
+        expect(component.aspectRatio).toBe('16:9');
+    }));
+
+    it('updates playback rate, merge state and thumbnail visibility', () => {
+        mediaPlayer.isPaused.and.returnValue(true);
+        component.onChangePlaybackRate(0.5);
+        expect(component.currentPlaybackRateSlider).toBe(0.5);
+        expect(mediaPlayer.play).toHaveBeenCalled();
+
+        component.volumeLeft = 10;
+        component.volumeRight = 40;
+        mediaPlayer.withMergeVolume = false;
+        component.changeSameVolumeState();
+        expect(component.volumeLeft).toBe(40);
+        expect(component.volumeRight).toBe(40);
+
+        component.enableThumbnail = true;
+        component.inSliding = false;
+        component.progressBarMouseEnter({} as any);
+        expect(component.thumbnailHidden).toBeFalse();
+        component.progressBarMouseLeave();
+        expect(component.thumbnailHidden).toBeTrue();
+    });
+
+    it('handles progress bar move/down/up and getMouseValue', () => {
+        const progress = document.createElement('div');
+        Object.defineProperty(progress, 'offsetWidth', {value: 200});
+        const thumb = document.createElement('img');
+        Object.defineProperty(thumb, 'offsetWidth', {value: 50});
+        component.progressBarElement = new ElementRef(progress);
+        component.thumbnailElement = new ElementRef(thumb);
+        component.enableThumbnail = true;
+        component.thumbnailHidden = false;
+        component.inSliding = false;
+        component.duration = 100;
+        component.throttleFunc = jasmine.createSpy('throttle');
+
+        component.progressBarMouseMove({offsetX: 100} as any);
+        expect(component.tcThumbnail).toBe(50);
+        expect(component.thumbnailPosition).toBeGreaterThanOrEqual(0);
+
+        component.handleProgressBarMouseDown();
+        expect(component.inSliding).toBeTrue();
+        spyOn(component, 'moveSliderCursor');
+        component.handleProgressBarMouseUp({offsetX: 50} as any);
+        expect(component.moveSliderCursor).toHaveBeenCalled();
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.SEEKED, 25);
+        expect(component.getMouseValue({offsetX: 100} as any)).toBe(50);
+    });
+
+    it('sets thumbnail only when blob is defined', fakeAsync(() => {
+        const img = document.createElement('img');
+        component.thumbnailElement = new ElementRef(img);
+        const setAttrSpy = spyOn(img, 'setAttribute').and.callThrough();
+        component.setThumbnail('u', 1);
+        flush();
+        expect(setAttrSpy).toHaveBeenCalledWith('src', 'blob:data');
+
+        thumbnailService.getThumbnail.and.resolveTo(undefined);
+        component.setThumbnail('u', 2);
+        flush();
+        expect(setAttrSpy.calls.count()).toBe(1);
+    }));
+
+    it('covers playback helpers and image playback branches', fakeAsync(() => {
+        spyOn(component, 'selectActivePlaybackrate');
+        component.currentPlaybackRate = 2;
+        (component as any).prevPlaybackRate();
+        expect(component.inverse).toBeTrue();
+        expect(mediaPlayer.mse.setMaxBufferLengthConfig).toHaveBeenCalled();
+
+        component.currentPlaybackRate = 2;
+        (component as any).nextPlaybackRate();
+        expect(mediaPlayer.mse.setMaxBufferLengthConfig).toHaveBeenCalled();
+
+        component.currentPlaybackRate = 2;
+        spyOn<any>(component, 'changePlaybackRate').and.callThrough();
+        component.nextPlaybackRateImages(10);
+        expect((component as any).changePlaybackRate).toHaveBeenCalled();
+
+        component.currentPlaybackRate = 2;
+        component.nextPlaybackRateImages(4);
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, 6);
+
+        component.currentPlaybackRate = -2;
+        mediaPlayer.reverseMode = true;
+        component.previousPlaybackRateImages(-4);
+        flush();
+        expect(mediaPlayer.mse.switchToMainSrc).toHaveBeenCalled();
+        expect(mediaPlayer.setReverseMode).toHaveBeenCalledWith(false);
+    }));
+
+    it('covers subtitle, slider, pin, volume and tracks utilities', fakeAsync(() => {
+        component.listOfSubtitles = [{label: 'Bas', key: 'down'}, {label: 'Haut', key: 'up'}];
+        component.subtitlePosition = 'down';
+        component.updateSubtitlePosition();
+        expect(component.subtitlePosition).toBe('down');
+        component.updateSubtitlePosition('down');
+        expect(component.selectedLabel).toBe('Bas');
+
+        component.enablePlaybackSlider = false;
+        component.pinnedSlider = true;
+        component.enablePinnedSlider = true;
+        spyOn<any>(component, 'initDragThumb');
+        (component as any).displaySlider();
+        tick(11);
+        expect(eventEmitter.emit).toHaveBeenCalled();
+
+        (component as any).pinControls();
+        expect(component.pinnedSlider).toBeFalse();
+        component.setVideoAspectRatio('16:9');
+        expect((component.mediaPlayerElement as any).aspectRatio).toBe('16:9');
+
+        component.selectedSlider = 'slider1';
+        component.changeSlider();
+        tick(11);
+        expect(component.selectedSlider).toBe('slider2');
+
+        component.inverse = false;
+        component.duration = 100;
+        component.currentTime = 25;
+        component.switchDisplayCurrentTime();
+        expect(component.time).toBe(75);
+
+        const clickSpy = jasmine.createSpy('click');
+        component.volumeButton = new ElementRef({click: clickSpy} as any);
+        component.volumeLeft = 30;
+        component.volumeRight = 10;
+        (component as any).toggleVolume();
+        expect(mediaPlayer.mute).toHaveBeenCalled();
+        component.volumeLeft = 0;
+        component.volumeRight = 0;
+        (component as any).toggleVolume();
+        expect(mediaPlayer.unmute).toHaveBeenCalled();
+
+        component.volumeMouseEnter({foo: 'bar'});
+        tick(4001);
+        expect(component.enableVolumeSlider).toBeFalse();
+
+        component.initTracks();
+        expect(component.selectedTrack).toBe('a');
+        component.changeAudioTrack('a');
+        expect(component.selectedTrackLabel).toBe('Track A');
+    }));
+
+    it('covers remaining playback and shortcut branches', fakeAsync(() => {
+        component.handlePlaybackRateChangeByImages();
+        expect(component.playbackrateByImages).toBeTrue();
+        component.handlePlaybackRateChangeByImagesStop();
+        expect(component.playbackrateByImages).toBeFalse();
+
+        mediaPlayer.isPaused.and.returnValue(true);
+        (component as any).handlePlaybackRateChange(0.5);
+        expect(mediaPlayer.play).toHaveBeenCalled();
+        expect(component.currentPlaybackRateSlider).toBe(0.5);
+
+        component.inSliding = true;
+        component.duration = 100;
+        component.inverse = false;
+        spyOn(component, 'getMouseValue').and.returnValue(25);
+        component.handleProgressBarMouseMove({} as any);
+        expect(component.time).toBe(25);
+
+        mediaPlayer.framerate = 20;
+        mediaPlayer.isPaused.and.returnValue(false);
+        component.controlClicked('backward-second');
+        component.controlClicked('backward-10seconds');
+        expect(mediaPlayer.movePrevFrame).toHaveBeenCalledWith(20);
+        expect(mediaPlayer.movePrevFrame).toHaveBeenCalledWith(200);
+        expect(mediaPlayer.play).toHaveBeenCalled();
+
+        component.onChangePlaybackRate(2);
+        expect(component.currentPlaybackRateSlider).toBe(2);
+    }));
+
+    it('covers remaining menu/subtitle/fix branches', fakeAsync(() => {
+        spyOn(component, 'selectActivePlaybackrate');
+        spyOn<any>(component, 'changePlaybackRate');
+        spyOn<any>(component, 'initDragThumb');
+
+        component.currentPlaybackRate = -2;
+        mediaPlayer.reverseMode = false;
+        component.previousPlaybackRateImages(-8);
+        expect((component as any).changePlaybackRate).toHaveBeenCalled();
+
+        component.currentPlaybackRate = -2;
+        component.previousPlaybackRateImages(-4);
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, -6);
+
+        component.currentPlaybackRate = 0.5;
+        (component as any).nextSlowPlaybackRate();
+        expect((component as any).changePlaybackRate).toHaveBeenCalled();
+        (component as any).prevSlowPlaybackRate();
+        expect((component as any).changePlaybackRate).toHaveBeenCalledTimes(3);
+
+        component.handlePlayerMouseHover();
+        expect(component.activated).toBeTrue();
+
+        component.enablePlaybackSlider = false;
+        component.pinnedSlider = false;
+        component.enablePinnedSlider = false;
+        (component as any).displaySlider();
+        tick(11);
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PINNED_CONTROLBAR_CHANGE, false);
+
+        component.enablePlaybackSlider = true;
+        component.pinnedSlider = false;
+        component.enablePinnedSlider = false;
+        (component as any).pinControls();
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PINNED_SLIDER_CHANGE, true);
+
+        (component as any).fixControlBar();
+        expect(eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.PINNED_CONTROLBAR_CHANGE, true);
+
+        component.inverse = true;
+        component.currentTime = 10;
+        component.duration = 80;
+        component.switchDisplayCurrentTime();
+        expect(component.inverse).toBeFalse();
+        expect(component.time).toBe(10);
+
+        const clearSpy = spyOn(window, 'clearTimeout').and.callThrough();
+        component.volumeMouseEnterTimeOut = setTimeout(() => undefined, 9999);
+        component.volumeMouseEnter({channelMergeVolume: true});
+        expect(clearSpy).toHaveBeenCalled();
+        tick(4001);
+    }));
+
+    it('covers download URL helpers', () => {
+        const a = document.createElement('a');
+        component.currentTime = 77;
+        component.buildUrlWithTc(a, {data: {href: 'https://host/a', tcParam: 'start'}} as any);
+        expect(a.getAttribute('href')).toBe('https://host/a?start=12.34');
+
+        component.buildUrlWithTc(a, {data: {href: 'https://host/a?x=1', tcParam: 'start'}} as any);
+        expect(a.getAttribute('href')).toBe('https://host/a?x=1&start=77');
+
+        component.elements = [{control: 'download', key: 'd', data: {href: 'https://host/dl', tcParam: 'tc'}}] as any;
+        component.keypressed = 'd';
+        const openSpy = spyOn<any>(component, 'openDownloadUrl');
+        component.downloadUrl('download');
+        expect(openSpy).toHaveBeenCalled();
+    });
+});

@@ -96,6 +96,11 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     @ViewChild('previewThumbnail', { static: true })
     public previewThumbnailElement: ElementRef<HTMLVideoElement>;
 
+  /**
+     * 
+     */
+        @ViewChild('photoHost', { static: true })
+    public photoHost: ElementRef<HTMLDivElement>;
     /**
      * Set player autoplay state
      */
