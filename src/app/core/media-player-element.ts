@@ -14,6 +14,8 @@ import { EventEmitter } from 'events';
 import { PlayerEventType } from './constant/event-type';
 import { PreferenceStorageManager } from './storage/preference-storage-manager';
 import { LoggerLevel } from './logger/logger-level';
+import AmaliaPlayer from '../player/photo/components/AmaliaPlayer';
+import { AmaliaPlayerSettings } from '../player/photo/business/AmaliaPlayerSettings';
 
 /**
  * In charge to create player
@@ -25,6 +27,7 @@ export class MediaPlayerElement {
     public defaultLoader: Loader<Array<Metadata>>;
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
+    private picturePlayer: AmaliaPlayer;
     private readonly _preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
@@ -153,6 +156,34 @@ export class MediaPlayerElement {
      */
     public getMediaPlayer(): MediaElement {
         return this.mediaPlayer;
+    }
+
+    /**
+     * Set picture element. Mirrors {@link setMediaPlayer} for `media === 'PICTURE'`
+     * configurations: instead of wrapping a `<video>` into a {@link MediaElement},
+     * we instantiate an {@link AmaliaPlayer} on the provided host element.
+     *
+     * @param host DOM element that will host the picture player (typically `#photoHost`).
+     * @param settings AmaliaPlayer settings (gallery, toolbar, zoom, etc.).
+     */
+    public setPicturePlayer(host: HTMLElement, settings: AmaliaPlayerSettings): void {
+        if (!host) {
+            this.logger.warn('setPicturePlayer called without a host element');
+            return;
+        }
+        // AmaliaPlayer expects a CSS selector — guarantee the host is uniquely addressable.
+        if (!host.id) {
+            host.id = `amalia-picture-host-${Math.random().toString(36).slice(2, 10)}`;
+        }
+        this.picturePlayer = new AmaliaPlayer(`#${host.id}`, settings);
+        this.logger.debug('set picture player', host);
+    }
+
+    /**
+     * Return picture player instance (only set when `media === 'PICTURE'`).
+     */
+    public getPicturePlayer(): AmaliaPlayer {
+        return this.picturePlayer;
     }
 
     /**

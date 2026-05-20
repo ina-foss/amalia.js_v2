@@ -15,6 +15,7 @@ import { DefaultConfigConverter } from '../core/config/converter/default-config-
 import { DefaultMetadataConverter } from '../core/metadata/converter/default-metadata-converter';
 import { DefaultMetadataLoader } from '../core/metadata/loader/default-metadata-loader';
 import { MediaPlayerElement } from '../core/media-player-element';
+import { AmaliaPlayerSettings } from './photo/business/AmaliaPlayerSettings';
 import { HttpClient } from '@angular/common/http';
 import { DefaultLogger } from '../core/logger/default-logger';
 import { Loader } from '../core/loader/loader';
@@ -277,8 +278,27 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.initDefaultHandlers();
         this.playerConfig = this.config;
         if (this.configLoader && this.metadataConverter && this.metadataLoader) {
-            // set media player in charge to player video or audio files
-            this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
+            // set media player in charge to play video, audio or picture files.
+            if (this.playerConfig?.player?.media === 'PICTURE') {
+                const player = this.playerConfig.player;
+                // Picture-specific fields come from `player.data` (free-form payload),
+                // the rest is mapped explicitly from the typed PlayerConfigData properties.
+                const settings: AmaliaPlayerSettings = {
+                    mode: player.data?.mode,
+                    imagesSrc: player.data?.imagesSrc ?? [],
+                    toolbar: player.data?.toolbar,
+                    showGallery: player.data?.showGallery ?? false,
+                    zoomStep: player.zoomStep,
+                    zoomSteps: player.zoomSteps,
+                    zoomMax: player.zoomMax,
+                    zoomMin: player.zoomMin,
+                    magnifyValue: player.magnifyValue,
+                    magnifyMaxValue: player.magnifyMaxValue
+                };
+                this.mediaPlayerElement.setPicturePlayer(this.photoHost.nativeElement, settings);
+            } else {
+                this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
+            }
             this.mediaPlayerElement.init(this.playerConfig, this.metadataLoader, this.configLoader)
                 .then((state) => this.onInitConfig(state))
                 .catch((state) => this.onErrorInitConfig(state));
