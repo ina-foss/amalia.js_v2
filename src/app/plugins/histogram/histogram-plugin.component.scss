@@ -26,6 +26,14 @@
       height: 100%;
       display: block;
       position: relative;
+      background-color: var(--amalia-plugin-histogram-bg, #80C2D8);
+    }
+
+    // The wavesurfer Minimap plugin is inserted with `insertPosition: 'beforebegin'`,
+    // therefore it becomes a sibling of `.wavesurfer-container` inside `.histogram-container`.
+    // We target every direct child that is NOT the main waveform to apply the zoom (minimap) background.
+    > *:not(.wavesurfer-container) {
+      background-color: var(--amalia-plugin-histogram-zoom-bg, #b2dae7);
     }
   }
 }
