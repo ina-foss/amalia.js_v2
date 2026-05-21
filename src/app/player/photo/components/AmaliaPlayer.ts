@@ -1,9 +1,9 @@
-import {AmaliaPlayerSettings} from "../business/AmaliaPlayerSettings.js";
-import Gallery from "./widgets/Gallery.js";
-import Utils from "../business/Utils.js";
-import AmaliaEventConstants from "../business/AmaliaEventConstants.js";
-import BaseHtmlElement from "./BaseHtmlElement.js";
-import PlayerHtmlElement from "./PlayerHtmlElement.js";
+import {AmaliaPlayerSettings} from "../business/AmaliaPlayerSettings";
+import Gallery from "./widgets/Gallery";
+import Utils from "../business/Utils";
+import AmaliaEventConstants from "../business/AmaliaEventConstants";
+import BaseHtmlElement from "./BaseHtmlElement";
+import PlayerHtmlElement from "./PlayerHtmlElement";
 
 export default class AmaliaPlayer extends BaseHtmlElement{
     private _id: string;

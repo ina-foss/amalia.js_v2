@@ -1,6 +1,6 @@
-import BaseHtmlElement from "../BaseHtmlElement.js";
-import Utils from "../../business/Utils.js";
-import {AmaliaPlayerButtonSettings} from "../../business/AmaliaPlayerSettings.js";
+import BaseHtmlElement from "../BaseHtmlElement";
+import Utils from "../../business/Utils";
+import {AmaliaPlayerButtonSettings} from "../../business/AmaliaPlayerSettings";
 
 export default class BaseButton extends BaseHtmlElement {
 

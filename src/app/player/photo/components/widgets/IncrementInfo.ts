@@ -1,6 +1,6 @@
-import BaseHtmlElement from "../BaseHtmlElement.js";
-import BaseButton from "../buttons/BaseButton.js";
-import Utils from "../../business/Utils.js";
+import BaseHtmlElement from "../BaseHtmlElement";
+import BaseButton from "../buttons/BaseButton";
+import Utils from "../../business/Utils";
 
 export default class IncrementInfo extends BaseHtmlElement {
 

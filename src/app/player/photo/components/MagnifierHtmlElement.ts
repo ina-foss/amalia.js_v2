@@ -1,5 +1,5 @@
-import BaseHtmlElement from "../components/BaseHtmlElement.js";
-import {AmaliaPlayerImageData} from "../business/AmaliaPlayerSettings.js";
+import BaseHtmlElement from "../components/BaseHtmlElement";
+import {AmaliaPlayerImageData} from "../business/AmaliaPlayerSettings";
 
 export default class MagnifierHtmlElement extends BaseHtmlElement {
 

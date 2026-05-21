@@ -1,5 +1,5 @@
 import Cropper from 'cropperjs';
-import {AmaliaPlayerCropperWrapperSettings, AmaliaPlayerImageData} from "./AmaliaPlayerSettings.js";
+import {AmaliaPlayerCropperWrapperSettings, AmaliaPlayerImageData} from "./AmaliaPlayerSettings";
 
 export default class CropperWrapper {
 
@@ -167,7 +167,7 @@ export default class CropperWrapper {
 
         const cropped: boolean = cropData.hasOwnProperty('left');
 
-        // @ts-ignore
+        // @ts-expect-error - `crossOriginUrl` is a private/undocumented Cropper property
         const src: string = this._cropper.crossOriginUrl;
         const src_width: number = imageData.naturalWidth;
         const src_height: number = imageData.naturalHeight;

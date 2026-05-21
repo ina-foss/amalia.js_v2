@@ -1,6 +1,6 @@
 import AmaliaPlayer from "./components/AmaliaPlayer";
 import "./main.scss";
-import Utils from "./business/Utils.js";
+import Utils from "./business/Utils";
 
 export function amaliaPhoto(target: string, settings: any): AmaliaPlayer {
     // default config

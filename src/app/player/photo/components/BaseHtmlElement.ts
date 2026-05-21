@@ -1,5 +1,5 @@
-import Utils from "../business/Utils.js";
-import {AmaliaPlayerButtonSettings} from "../business/AmaliaPlayerSettings.js";
+import Utils from "../business/Utils";
+import {AmaliaPlayerButtonSettings} from "../business/AmaliaPlayerSettings";
 
 export default abstract class BaseHtmlElement {
 

@@ -1,6 +1,6 @@
-import BaseHtmlElement from "../BaseHtmlElement.js";
-import {AmaliaPlayerGalleryItem, AmaliaPlayerImageSource} from "../../business/AmaliaPlayerSettings.js";
-import Utils from "../../business/Utils.js";
+import BaseHtmlElement from "../BaseHtmlElement";
+import {AmaliaPlayerGalleryItem, AmaliaPlayerImageSource} from "../../business/AmaliaPlayerSettings";
+import Utils from "../../business/Utils";
 
 export default class Gallery extends BaseHtmlElement {
 

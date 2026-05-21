@@ -1,5 +1,5 @@
-import BaseButton from "./BaseButton.js";
-import {AmaliaPlayerButtonSettings} from "../../business/AmaliaPlayerSettings.js";
+import BaseButton from "./BaseButton";
+import {AmaliaPlayerButtonSettings} from "../../business/AmaliaPlayerSettings";
 
 export default class FullsizeButton extends BaseButton {
 

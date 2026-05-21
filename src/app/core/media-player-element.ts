@@ -111,7 +111,15 @@ export class MediaPlayerElement {
                 this.logger.state(loggerState);
                 this.logger.logLevel(loggerLevel);
                 this.logger.info(`Config data: ${config}`);
-                this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
+                // Forward logger state to the active player. Only one of mediaPlayer / picturePlayer
+                // is set, depending on `playerConfig.player.media` (AUDIO|VIDEO ⇒ mediaPlayer,
+                // PICTURE ⇒ picturePlayer). AmaliaPlayer does not expose a logger API, so for the
+                // picture branch we just trace its activation here.
+                if (this.mediaPlayer) {
+                    this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
+                } else if (this.picturePlayer) {
+                    this.logger.debug('picture player active, no logger forwarding required');
+                }
                 // Set media source specified by config
                 this.setMediaSource();
                 if (!loadMetadataOnDemand) {
@@ -176,6 +184,14 @@ export class MediaPlayerElement {
             host.id = `amalia-picture-host-${Math.random().toString(36).slice(2, 10)}`;
         }
         this.picturePlayer = new AmaliaPlayer(`#${host.id}`, settings);
+        // AmaliaPlayer's constructor uses `document.querySelector(target)` which cannot traverse
+        // shadow roots. When the caller component uses ViewEncapsulation.ShadowDom, the lookup
+        // fails and AmaliaPlayer falls back to a detached <div>. Re-attach it to the host here
+        // so that this method works regardless of the caller's encapsulation mode.
+        const playerDom = this.picturePlayer.getDom();
+        if (playerDom && playerDom !== host && !host.contains(playerDom)) {
+            host.appendChild(playerDom);
+        }
         this.logger.debug('set picture player', host);
     }
 

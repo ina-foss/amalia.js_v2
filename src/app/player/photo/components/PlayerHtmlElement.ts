@@ -1,24 +1,24 @@
-import BaseHtmlElement from "./BaseHtmlElement.js";
+import BaseHtmlElement from "./BaseHtmlElement";
 import {
     AmaliaPlayerImageData,
     AmaliaPlayerImageSource, AmaliaPlayerSettings, AmaliaPlayerToolbarSettings
-} from "../business/AmaliaPlayerSettings.js";
-import CropperWrapper from "../business/CropperWrapper.js";
-import AmaliaEventConstants from "../business/AmaliaEventConstants.js";
-import DownloadButton from "./buttons/DownloadButton.js";
-import FitScreenButton from "./buttons/FitScreenButton.js";
-import IncrementInfo from "./widgets/IncrementInfo.js";
-import FullscreenButton from "./buttons/FullscreenButton.js";
-import FlipHButton from "./buttons/FlipHButton.js";
-import FlipVButton from "./buttons/FlipVButton.js";
-import RotateButton from "./buttons/RotateButton.js";
-import AmaliaPlayer from "./AmaliaPlayer.js";
-import MagnifyButton from "./buttons/MagnifyButton.js";
-import Utils from "../business/Utils.js";
-import CloseButton from "./buttons/CloseButton.js";
-import SwitchModeButton from "./buttons/SwitchModeButton.js";
-import MagnifierHtmlElement from "./MagnifierHtmlElement.js";
-import FullsizeButton from "./buttons/FullsizeButton.js";
+} from "../business/AmaliaPlayerSettings";
+import CropperWrapper from "../business/CropperWrapper";
+import AmaliaEventConstants from "../business/AmaliaEventConstants";
+import DownloadButton from "./buttons/DownloadButton";
+import FitScreenButton from "./buttons/FitScreenButton";
+import IncrementInfo from "./widgets/IncrementInfo";
+import FullscreenButton from "./buttons/FullscreenButton";
+import FlipHButton from "./buttons/FlipHButton";
+import FlipVButton from "./buttons/FlipVButton";
+import RotateButton from "./buttons/RotateButton";
+import AmaliaPlayer from "./AmaliaPlayer";
+import MagnifyButton from "./buttons/MagnifyButton";
+import Utils from "../business/Utils";
+import CloseButton from "./buttons/CloseButton";
+import SwitchModeButton from "./buttons/SwitchModeButton";
+import MagnifierHtmlElement from "./MagnifierHtmlElement";
+import FullsizeButton from "./buttons/FullsizeButton";
 
 export default class PlayerHtmlElement extends BaseHtmlElement {
 
@@ -291,40 +291,40 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         let fullscreenPromise: Promise<void>;
         if (
             document.fullscreenElement ||
-            // @ts-ignore
+            // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
             document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
         ) {
             this._isFullscreen = false;
             if (document.exitFullscreen) {
                 fullscreenPromise = document.exitFullscreen();
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
             } else if (document.mozCancelFullScreen) {
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
                 fullscreenPromise = document.mozCancelFullScreen();
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
             } else if (document.webkitExitFullscreen) {
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
                 fullscreenPromise = document.webkitExitFullscreen();
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
             } else if (document.msExitFullscreen) {
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
                 fullscreenPromise = document.msExitFullscreen();
             }
         } else {
             this._isFullscreen = true;
             if (this.dom.requestFullscreen) {
                 fullscreenPromise = this.dom.requestFullscreen();
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
             } else if (this.dom.mozRequestFullScreen) {
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
                 fullscreenPromise = this.dom.mozRequestFullScreen();
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
             } else if (this.dom.webkitRequestFullscreen) {
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
                 fullscreenPromise = this.dom.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
             } else if (this.dom.msRequestFullscreen) {
-                // @ts-ignore
+                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
                 fullscreenPromise = this.dom.msRequestFullscreen();
             }
         }

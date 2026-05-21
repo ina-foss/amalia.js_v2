@@ -1,4 +1,5 @@
 import {
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -97,10 +98,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     @ViewChild('previewThumbnail', { static: true })
     public previewThumbnailElement: ElementRef<HTMLVideoElement>;
 
-  /**
-     * 
-     */
-        @ViewChild('photoHost', { static: true })
+    /**
+       * 
+       */
+    @ViewChild('photoHost', { static: false })
     public photoHost: ElementRef<HTMLDivElement>;
     /**
      * Set player autoplay state
@@ -258,7 +259,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         ' amalia-secondary-color': false
     };
 
-    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService) {
+    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, private cdr: ChangeDetectorRef) {
         this.httpClient = httpClient;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
@@ -277,6 +278,11 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         // init default manager (converter, metadata loader)
         this.initDefaultHandlers();
         this.playerConfig = this.config;
+        // The `#photoHost` element is rendered conditionally via `*ngIf="playerConfig.player.media === 'PICTURE'"`.
+        // We must trigger a change detection cycle here so that:
+        //  1. The `*ngIf` is evaluated against the just-assigned `playerConfig`.
+        //  2. The non-static `@ViewChild('photoHost')` query is updated and `photoHost.nativeElement` is available below.
+        this.cdr.detectChanges();
         if (this.configLoader && this.metadataConverter && this.metadataLoader) {
             // set media player in charge to play video, audio or picture files.
             if (this.playerConfig?.player?.media === 'PICTURE') {
@@ -284,9 +290,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                 // Picture-specific fields come from `player.data` (free-form payload),
                 // the rest is mapped explicitly from the typed PlayerConfigData properties.
                 const settings: AmaliaPlayerSettings = {
-                    mode: player.data?.mode,
-                    imagesSrc: player.data?.imagesSrc ?? [],
-                    toolbar: player.data?.toolbar,
+                    mode: player.mode,
+                    imagesSrc: [{ name: 'image', path: player.src as string, thumbPath: player.src as string }],
+                    toolbar: !!this.playerConfig.pluginsConfiguration['CONTROL_BAR'],
                     showGallery: player.data?.showGallery ?? false,
                     zoomStep: player.zoomStep,
                     zoomSteps: player.zoomSteps,
