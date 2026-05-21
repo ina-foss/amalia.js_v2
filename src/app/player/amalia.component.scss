@@ -1,6 +1,9 @@
 @import '../core/styles/typo';
 @import '../core/styles/variables';
-@import '../core/styles.scss';
+// Component uses ViewEncapsulation.ShadowDom so global styles do not penetrate the shadow root.
+// Import the photo stylesheet (which itself imports cropperjs CSS) to make it available in the
+// AmaliaPlayer DOM rendered inside #photoHost.
+@import './photo/main.scss';
 
 :host {
   display: block;
