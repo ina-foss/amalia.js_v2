@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="21px" height="24px" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1148.000000, -1341.000000)">
+            <g transform="translate(1148.000000, 1341.000000)">
+                <polygon fill="#FFFFFF" points="9.8 0 9.8 24 6.03312955e-12 24"></polygon>
+                <path d="M20.5,2.5471293 L11.9442445,23.5 L20.5,23.5 L20.5,2.5471293 Z" stroke="#FFFFFF"
+                      transform="translate(16.100000, 12.000000) scale(-1, 1) translate(-16.100000, -12.000000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

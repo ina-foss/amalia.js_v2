@@ -3,7 +3,10 @@
 .ajs-photo-amalia-photo {
   user-select: none;
   font-family: Arial, "Trebuchet MS", sans-serif;
-  display: block;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
 
   &.ajs-photo-reduced,
   &.ajs-photo-simple {
@@ -135,53 +138,53 @@
     padding-left: 10px;
 
     &.ajs-photo-icon-download {
-      background-image: url("./assets/download.svg");
+      background-image: url("./assets/images/download.svg");
     }
 
     &.ajs-photo-icon-fit-screen {
-      background-image: url("./assets/fit-screen.svg");
+      background-image: url("./assets/images/fit-screen.svg");
       width: 49px;
     }
 
     &.ajs-photo-icon-fullsize {
-      background-image: url("./assets/fullsize.svg");
+      background-image: url("./assets/images/fullsize.svg");
       width: 49px;
     }
 
     &.ajs-photo-icon-magnify {
-      background-image: url("./assets/magnify.svg");
+      background-image: url("./assets/images/magnify.svg");
     }
 
     &.ajs-photo-icon-magnify-off {
-      background-image: url("./assets/magnify-off.svg");
+      background-image: url("./assets/images/magnify-off.svg");
     }
 
     &.ajs-photo-icon-rotate {
-      background-image: url("./assets/rotate.svg");
+      background-image: url("./assets/images/rotate.svg");
     }
 
     &.ajs-photo-icon-fliph {
-      background-image: url("./assets/reverse_horizontal.svg");
+      background-image: url("./assets/images/reverse_horizontal.svg");
     }
 
     &.ajs-photo-icon-flipv {
-      background-image: url("./assets/reverse_vertical.svg");
+      background-image: url("./assets/images/reverse_vertical.svg");
     }
 
     &.ajs-photo-icon-fullscreen {
-      background-image: url("./assets/fullscreen.svg");
+      background-image: url("./assets/images/fullscreen.svg");
     }
 
     &.ajs-photo-icon-fullscreen-off {
-      background-image: url("./assets/fullscreen-off.svg");
+      background-image: url("./assets/images/fullscreen-off.svg");
     }
 
     &.ajs-photo-icon-switch-mode {
-      background-image: url("./assets/switch-mode.svg");
+      background-image: url("./assets/images/switch-mode.svg");
     }
 
     &.ajs-photo-icon-close {
-      background-image: url("./assets/close.svg");
+      background-image: url("./assets/images/close.svg");
       color: white;
       height: 30px;
       padding-top: 15px;
@@ -196,8 +199,11 @@
   }
 
   .ajs-photo-content-right {
-    float: right;
-    display: table-cell;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
     background-color: #80C2D8;
 
     .ajs-photo-magnifier-glass {
@@ -214,6 +220,19 @@
     .ajs-photo-cropper-content {
       position: relative;
       overflow: hidden;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      min-height: 0;
+
+      > img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
       .cropper-wrap-box {
         background-image: none;
       }
@@ -301,11 +320,11 @@
           background-size: inherit;
 
           &.ajs-photo-minus {
-            background-image: url("./assets/minus.svg");
+            background-image: url("./assets/images/minus.svg");
           }
 
           &.ajs-photo-plus {
-            background-image: url("./assets/plus.svg");
+            background-image: url("./assets/images/plus.svg");
           }
         }
 
