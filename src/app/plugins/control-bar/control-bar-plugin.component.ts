@@ -324,7 +324,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // init playbackrates
         this.initPlaybackrates();
         // init volume
-        this.mediaPlayerElement.getMediaPlayer().setVolume(50);
+        this.mediaPlayerElement.getMediaPlayer()?.setVolume(50);
         // init shortcuts
         this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
@@ -377,9 +377,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handleOnDurationChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime();
         this.time = this.currentTime;
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.duration = this.mediaPlayerElement.getMediaPlayer()?.getDuration();
     }
 
     /**
@@ -388,7 +388,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handleOnTimeChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.currentTime = this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime();
         if (!this.inSliding && !isNaN(this.currentTime)) {
             this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(6));
         }
@@ -421,8 +421,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     private handlePlaybackRateChange(playbackRate: number) {
         this.logger.info('Handle playback rate change', playbackRate);
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused() && playbackRate !== 1) {
-            this.mediaPlayerElement.getMediaPlayer().play();
+        if (this.mediaPlayerElement.getMediaPlayer()?.isPaused() && playbackRate !== 1) {
+            this.mediaPlayerElement.getMediaPlayer()?.play();
         }
         this.currentPlaybackRate = playbackRate;
         if (playbackRate === 1) {
@@ -805,15 +805,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param volumeSide volume side (l or r)
      */
     public changeVolume(value: string | number, volumeSide?: string) {
-        if (this.mediaPlayerElement?.getMediaPlayer().withMergeVolume) {
+        if (this.mediaPlayerElement?.getMediaPlayer()?.withMergeVolume) {
             if (volumeSide === 'l') {
                 this.volumeRight = this.volumeLeft;
             } else {
                 this.volumeLeft = this.volumeRight;
             }
-            this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value));
+            this.mediaPlayerElement.getMediaPlayer()?.setVolume(Number(value));
         } else {
-            this.mediaPlayerElement.getMediaPlayer().setVolume(Number(value), volumeSide);
+            this.mediaPlayerElement.getMediaPlayer()?.setVolume(Number(value), volumeSide);
         }
     }
 
@@ -830,16 +830,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.currentPlaybackRate === 1) {
             this.playbackrateByImages = false;
         }
-        if (this.mediaPlayerElement.getMediaPlayer().reverseMode === true) {
+        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        if (!mediaPlayer) { return; }
+        if (mediaPlayer.reverseMode === true) {
             this.currentTime = this.duration - this.currentTime;
-            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+            mediaPlayer.setCurrentTime(this.currentTime);
         } else {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
-            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.currentTime);
+            mediaPlayer.setCurrentTime(this.currentTime);
             if (this.playbackrateByImages) {
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
             } else {
-                this.mediaPlayerElement.getMediaPlayer().playbackRate = oldPlaybackrate;
+                mediaPlayer.playbackRate = oldPlaybackrate;
             }
         }
     }
@@ -933,18 +935,21 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         } else {
             this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
         }
-        if (this.mediaPlayerElement.getMediaPlayer().isPaused() && value !== 1) {
-            this.mediaPlayerElement.getMediaPlayer().play();
+        if (this.mediaPlayerElement.getMediaPlayer()?.isPaused() && value !== 1) {
+            this.mediaPlayerElement.getMediaPlayer()?.play();
         }
-        this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+        const mp = this.mediaPlayerElement.getMediaPlayer();
+        if (mp) { mp.playbackRate = this.currentPlaybackRate; }
     }
 
     /**
      * Change volume state
      */
     public changeSameVolumeState() {
-        this.mediaPlayerElement.getMediaPlayer().withMergeVolume = !this.mediaPlayerElement.getMediaPlayer().withMergeVolume;
-        if (this.mediaPlayerElement.getMediaPlayer().withMergeVolume) {
+        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        if (!mediaPlayer) { return; }
+        mediaPlayer.withMergeVolume = !mediaPlayer.withMergeVolume;
+        if (mediaPlayer.withMergeVolume) {
             const v = Math.max(this.volumeRight, this.volumeLeft);
             this.volumeLeft = v;
             this.volumeRight = v;
@@ -1049,8 +1054,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
-        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
-        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer()?.mse.setMaxBufferLengthConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer()?.mse.setMaxBufferLengthConfig(bufferSize);
     }
 
     /**
@@ -1060,7 +1065,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
         const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
         const bufferSize = this.changeBufferSize(index);
-        this.mediaPlayerElement.getMediaPlayer().mse.setMaxBufferLengthConfig(bufferSize);
+        this.mediaPlayerElement.getMediaPlayer()?.mse.setMaxBufferLengthConfig(bufferSize);
     }
 
     private changeBufferSize(index) {
@@ -1094,12 +1099,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         } else {
             this.currentPlaybackRate = this.getPlaybackStepValue(this.backwardPlaybackRateStep, true);
-            const mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
+            const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+            const mainSource = !mediaPlayer?.reverseMode;
             if (this.currentPlaybackRate < 0 && mainSource === false) {
-                const tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-                this.mediaPlayerElement.getMediaPlayer().mse.switchToMainSrc().then(() => {
-                    this.mediaPlayerElement.getMediaPlayer().setReverseMode(false);
-                    this.mediaPlayerElement.getMediaPlayer().setCurrentTime((Math.max(0, tc)));
+                const tc = mediaPlayer?.getCurrentTime();
+                mediaPlayer?.mse.switchToMainSrc().then(() => {
+                    this.mediaPlayerElement.getMediaPlayer()?.setReverseMode(false);
+                    this.mediaPlayerElement.getMediaPlayer()?.setCurrentTime((Math.max(0, tc)));
                     this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
                 });
             } else {
@@ -1137,7 +1143,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
         if (!ignoreSetPlaybackrate) {
-            this.mediaPlayerElement.getMediaPlayer().playbackRate = playbackRate;
+            const mp = this.mediaPlayerElement.getMediaPlayer();
+            if (mp) { mp.playbackRate = playbackRate; }
         }
         return playbackRate;
     }
@@ -1147,7 +1154,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private changePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
-        this.mediaPlayerElement.getMediaPlayer().playbackRate = this.currentPlaybackRate;
+        const mp = this.mediaPlayerElement.getMediaPlayer();
+        if (mp) { mp.playbackRate = this.currentPlaybackRate; }
         setTimeout(() => this.selectActivePlaybackrate(), 10);
     }
 
@@ -1246,7 +1254,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
         const baseUrl = control.data.href;
         const tcParam = control.data?.tcParam || 'tc';
-        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
+        const currentTime = (this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime() ?? 0).toFixed(2);
         if (baseUrl !== '') {
             element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${currentTime}` : `${baseUrl}&${tcParam}=${this.currentTime}`);
         }
@@ -1256,7 +1264,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Download URL on shortcut
      */
     public downloadUrl(control) {
-        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime().toFixed(2);
+        const currentTime = (this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime() ?? 0).toFixed(2);
         const data = this.elements;
         for (const i in data) {
             if (typeof data[i] === 'object') {
@@ -1351,22 +1359,24 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public mute() {
         this.volumeRight = 0;
         this.volumeLeft = 0;
-        return this.mediaPlayerElement.getMediaPlayer().mute();
+        return this.mediaPlayerElement.getMediaPlayer()?.mute();
     }
 
     /**
      * unmute sound
      */
     public unmute() {
-        this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
-        this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        if (!mediaPlayer) { return; }
+        this.volumeRight = mediaPlayer.getVolume('r');
+        this.volumeLeft = mediaPlayer.getVolume('l');
         if (this.volumeLeft < 50 || this.volumeRight < 50) {
-            this.mediaPlayerElement.getMediaPlayer().setVolume(50, 'r');
-            this.mediaPlayerElement.getMediaPlayer().setVolume(50, 'l');
-            this.volumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
-            this.volumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+            mediaPlayer.setVolume(50, 'r');
+            mediaPlayer.setVolume(50, 'l');
+            this.volumeRight = mediaPlayer.getVolume('r');
+            this.volumeLeft = mediaPlayer.getVolume('l');
         }
-        return this.mediaPlayerElement.getMediaPlayer().unmute();
+        return mediaPlayer.unmute();
     }
 
     public initPlaybackrates() {
@@ -1525,7 +1535,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (value !== 0) {
             this.onChangePlaybackRate(pr);
         } else {
-            this.mediaPlayerElement.getMediaPlayer().pause();
+            this.mediaPlayerElement.getMediaPlayer()?.pause();
         }
     }
 
@@ -1539,7 +1549,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
             this.onChangePlaybackRate(pr);
         } else {
-            this.mediaPlayerElement.getMediaPlayer().pause();
+            this.mediaPlayerElement.getMediaPlayer()?.pause();
         }
         if (click) {
             setTimeout(() => this.selectActivePlaybackrate(), 10);
@@ -1590,14 +1600,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param data volume paramèter
      */
     openVolume(data: any) {
-        this.mediaPlayerElement.getMediaPlayer().initAudioChannelMerger(data);
+        this.mediaPlayerElement.getMediaPlayer()?.initAudioChannelMerger(data);
     }
 
     /**
      * In charge to handle click volume
      */
     handleMuteUnmuteVolume(side = '') {
-        const vol = this.mediaPlayerElement.getMediaPlayer().getVolume();
+        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        if (!mediaPlayer) { return; }
+        const vol = mediaPlayer.getVolume();
         if (side === '') {
             if (vol === 0) {
                 this.unmute();
@@ -1606,11 +1618,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
         } else {
             if (side === 'r') {
-                const oldVolumeRight = this.mediaPlayerElement.getMediaPlayer().getVolume('r');
+                const oldVolumeRight = mediaPlayer.getVolume('r');
                 this.volumeRight = (oldVolumeRight === 0) ? 50 : 0;
                 this.changeVolume(this.volumeRight, side);
             } else if (side === 'l') {
-                const oldVolumeLeft = this.mediaPlayerElement.getMediaPlayer().getVolume('l');
+                const oldVolumeLeft = mediaPlayer.getVolume('l');
                 this.volumeLeft = (oldVolumeLeft === 0) ? 50 : 0;
                 this.changeVolume(this.volumeLeft, side);
             }

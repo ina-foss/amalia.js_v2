@@ -119,6 +119,11 @@ export class MediaPlayerElement {
                     this.mediaPlayer.initLoggerState(loggerState, loggerLevel);
                 } else if (this.picturePlayer) {
                     this.logger.debug('picture player active, no logger forwarding required');
+                    // For picture mode, there is no <video> element so the INIT event (normally
+                    // emitted by handleLoadstart on the video element) never fires. Emit it here
+                    // after the configuration is fully loaded so that plugins (e.g. CONTROL_BAR)
+                    // can re-initialise with the correct pluginsConfiguration.
+                    this._eventEmitter.emit(PlayerEventType.INIT);
                 }
                 // Set media source specified by config
                 this.setMediaSource();

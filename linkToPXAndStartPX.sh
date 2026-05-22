@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration - chemin vers le front de player-expert
-PX_FRONT_PATH="${PX_FRONT_PATH:-../front}"
+PX_FRONT_PATH="${PX_FRONT_PATH:-../../../front}"
 
 # Étape 1 : lancer la build
 echo "📦 Lancement de la build..."

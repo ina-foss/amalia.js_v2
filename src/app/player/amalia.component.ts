@@ -292,7 +292,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                 const settings: AmaliaPlayerSettings = {
                     mode: player.mode,
                     imagesSrc: [{ name: 'image', path: player.src as string, thumbPath: player.src as string }],
-                    toolbar: !!this.playerConfig.pluginsConfiguration['CONTROL_BAR'],
+                    toolbar: false, // Custom CONTROL_BAR plugin replaces the native AmaliaPlayer toolbar
                     showGallery: player.data?.showGallery ?? false,
                     zoomStep: player.zoomStep,
                     zoomSteps: player.zoomSteps,
@@ -876,7 +876,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     }
 
     public controlClicked($event) {
-        this.mediaPlayerElement.getMediaPlayer().playPause();
+        this.mediaPlayerElement.getMediaPlayer()?.playPause();
     }
 
     addListener(element: any, playerEventType: PlayerEventType, func: any) {
