@@ -24,7 +24,6 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         } else {
             console.error('Gallery empty');
         }
-        this.setMode(this._settings.mode);
         return this;
     }
 
@@ -108,6 +107,10 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         this._cropperComponent.magnify();
     }
 
+    public fitToScreen() {
+        this._cropperComponent.fitToScreen();
+    }
+
     public setMode(mode: string = 'standard', width: number = null, height: number = null) {
         this.removeClass('ajs-photo-' + this._cropperComponent.getMode());
         if (width) {
@@ -139,6 +142,25 @@ export default class AmaliaPlayer extends BaseHtmlElement{
 
     public getMode(): string {
         return this._cropperComponent.getMode();
+    }
+
+    /**
+     * Set mode from displayState
+     * l, m, sm => 'advanced', s => 'simple', xs => 'reduced'
+     */
+    public setModeFromDisplayState(displayState: string, width: number = null, height: number = null) {
+        let mode: string;
+        switch (displayState) {
+            case 'xs':
+                mode = 'reduced';
+                break;
+            case 's':
+                mode = 'simple';
+                break;
+            default:
+                mode = 'advanced';
+        }
+        this.setMode(mode, width, height);
     }
 
     public destroy() {

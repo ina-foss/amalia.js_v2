@@ -189,6 +189,8 @@ export class MediaPlayerElement {
             host.id = `amalia-picture-host-${Math.random().toString(36).slice(2, 10)}`;
         }
         this.picturePlayer = new AmaliaPlayer(`#${host.id}`, settings);
+        // Set initial mode based on current displayState
+        this.picturePlayer.setModeFromDisplayState(this.getDisplayState());
         // AmaliaPlayer's constructor uses `document.querySelector(target)` which cannot traverse
         // shadow roots. When the caller component uses ViewEncapsulation.ShadowDom, the lookup
         // fails and AmaliaPlayer falls back to a detached <div>. Re-attach it to the host here

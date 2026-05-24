@@ -272,6 +272,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     pinControlsElement: ElementRef;
     aspectRatioMouseEnterTimeOut: any;
     volumeMouseEnterTimeOut: any;
+    /**
+     * Picture player magnify state
+     */
+    public magnifyEnabled = false;
     private pendingFrameJump = 0;
     private readonly debouncedSeek: _.DebouncedFunc<() => void>;
 
@@ -765,6 +769,35 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             case 'download':
                 this.downloadUrl(control);
                 break;
+            // Picture player controls
+            case 'rotate':
+                this.mediaPlayerElement.getPicturePlayer()?.rotate();
+                break;
+            case 'fliph':
+                this.mediaPlayerElement.getPicturePlayer()?.flipH();
+                break;
+            case 'flipv':
+                this.mediaPlayerElement.getPicturePlayer()?.flipV();
+                break;
+            case 'magnify':
+                this.mediaPlayerElement.getPicturePlayer()?.magnify();
+                this.magnifyEnabled = !this.magnifyEnabled;
+                break;
+            case 'fullsize':
+                this.mediaPlayerElement.getPicturePlayer()?.showRealSize();
+                break;
+            case 'fullscreen':
+                this.mediaPlayerElement.getPicturePlayer()?.toggleFullscreen();
+                break;
+            case 'fitToScreen':
+                this.mediaPlayerElement.getPicturePlayer()?.fitToScreen();
+                break;
+            case 'zoomIn':
+                this.mediaPlayerElement.getPicturePlayer()?.zoom();
+                break;
+            case 'zoomOut':
+                this.mediaPlayerElement.getPicturePlayer()?.unZoom();
+                break;
             default:
                 this.logger.warn('Control not implemented', control);
                 break;
@@ -907,6 +940,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         setTimeout(() => {
             this.updatePinAndSpeedSliderPositions();
         }, 100);
+        // Update picture player mode based on displayState
+        this.updatePicturePlayerMode();
+    }
+
+    /**
+     * Update picture player mode based on current displayState
+     * l, m, sm => 'advanced', s => 'simple', xs => 'reduced'
+     */
+    private updatePicturePlayerMode() {
+        const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
+        if (picturePlayer) {
+            picturePlayer.setModeFromDisplayState(this.displayState);
+        }
     }
 
     /**

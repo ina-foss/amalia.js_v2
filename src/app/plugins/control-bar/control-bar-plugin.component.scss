@@ -229,6 +229,36 @@
         }
       }
 
+      &.zoom-info {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+
+        .zoom-btn {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4px;
+
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+
+        .zoom-result {
+          color: #fff;
+          font-size: 14px;
+          font-weight: bold;
+          min-width: 40px;
+          text-align: center;
+        }
+      }
+
+      &.magnify {
+        cursor: pointer;
+      }
+
       .ui-slider {
         position: relative;
         padding: 0;

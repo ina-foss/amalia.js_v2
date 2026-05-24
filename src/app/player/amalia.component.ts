@@ -290,9 +290,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                 // Picture-specific fields come from `player.data` (free-form payload),
                 // the rest is mapped explicitly from the typed PlayerConfigData properties.
                 const settings: AmaliaPlayerSettings = {
-                    mode: player.mode,
                     imagesSrc: [{ name: 'image', path: player.src as string, thumbPath: player.src as string }],
-                    toolbar: false, // Custom CONTROL_BAR plugin replaces the native AmaliaPlayer toolbar
+                    noToolbar: player.noToolbar ?? true,
+                    noTopbar: player.noTopbar ?? true,
                     showGallery: player.data?.showGallery ?? false,
                     zoomStep: player.zoomStep,
                     zoomSteps: player.zoomSteps,

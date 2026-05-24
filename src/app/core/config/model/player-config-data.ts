@@ -2,7 +2,6 @@ import * as Hls from "hls.js";
 
 export interface PlayerConfigData {
     src: string | MediaStream | MediaSource | Blob | null;
-    mode?: 'standard' | 'advanced';
     backwardsSrc?: string | MediaStream | MediaSource | Blob | null;
     poster?: string;
     posterBackground?: "amalia-player-bg-color1" | "amalia-primary-color" | "amalia-secondary-color";
@@ -16,10 +15,14 @@ export interface PlayerConfigData {
     mpegDash?: { enable: boolean; config?: any };
     ratio?: "16:9" | "4:3";
     media?: "AUDIO" | "VIDEO" | "PICTURE";
+    //picture specific
     zoomStep?: number;
     zoomSteps?: number[];
     zoomMax?: number;
     zoomMin?: number;
     magnifyValue?: number;
     magnifyMaxValue?: number;
+    noTopbar?: boolean;
+    noToolbar?: boolean
+
 }

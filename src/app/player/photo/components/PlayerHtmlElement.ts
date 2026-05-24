@@ -79,17 +79,25 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
         const imgSetting: AmaliaPlayerImageSource = setting.imagesSrc[0];
         this._imagePath = imgSetting.path;
-        const topBar = this.createTopbar();
-        this.setTitle(imgSetting.name);
 
-        const toolbar = this.createToolbar();
 
         this._image = document.createElement('img');
         this._image.src = this._imagePath;
 
         this.dom.appendChild(this._image);
-        this.dom.appendChild(topBar);
-        this.dom.appendChild(toolbar);
+        let topBar: HTMLElement | null = null;
+        if (!setting.noTopbar) {
+            topBar = this.createTopbar();
+            this.setTitle(imgSetting.name);
+            this.dom.appendChild(topBar);
+        }
+        let toolbar: HTMLElement | null = null;
+        if (!setting.noToolbar) {
+            toolbar = this.createToolbar();
+            this.dom.appendChild(toolbar);
+        }
+
+
 
         this._escapeMagnifyRef = this.escapeMagnify.bind(this);
         this.addHideEvents();
@@ -211,10 +219,10 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._releaseControlsRef = this.releaseControls.bind(this);
         }
         this.dom.addEventListener('mousemove', this._showControlsRef);
-        this._topBar.addEventListener('mouseenter', this._blockControlsRef);
-        this._topBar.addEventListener('mouseleave', this._releaseControlsRef);
-        this._toolBar.addEventListener('mouseenter', this._blockControlsRef);
-        this._toolBar.addEventListener('mouseleave', this._releaseControlsRef);
+        this._topBar?.addEventListener('mouseenter', this._blockControlsRef);
+        this._topBar?.addEventListener('mouseleave', this._releaseControlsRef);
+        this._toolBar?.addEventListener('mouseenter', this._blockControlsRef);
+        this._toolBar?.addEventListener('mouseleave', this._releaseControlsRef);
 
         this.resetHideControlTimeout();
         this._hideEventsAdded = true;
@@ -224,10 +232,10 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this._hideEventsAdded = false;
         this._blockControlTimeout = false;
         this.dom.removeEventListener('mousemove', this._showControlsRef);
-        this._topBar.removeEventListener('mouseenter', this._blockControlsRef);
-        this._topBar.removeEventListener('mouseleave', this._releaseControlsRef);
-        this._toolBar.removeEventListener('mouseenter', this._blockControlsRef);
-        this._toolBar.removeEventListener('mouseleave', this._releaseControlsRef);
+        this._topBar?.removeEventListener('mouseenter', this._blockControlsRef);
+        this._topBar?.removeEventListener('mouseleave', this._releaseControlsRef);
+        this._toolBar?.removeEventListener('mouseenter', this._blockControlsRef);
+        this._toolBar?.removeEventListener('mouseleave', this._releaseControlsRef);
         clearTimeout(this._hideControlTimeout);
     }
 
@@ -243,17 +251,23 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private showControls() {
-        if (this._mode !== 'reduced') {
+        if (this._mode !== 'reduced' && this._toolBar) {
             this._toolBar.style.display = 'block';
         }
-        this._topBar.style.display = 'block';
+        if (this._topBar) {
+            this._topBar.style.display = 'block';
+        }
         this.resetHideControlTimeout();
     }
 
     private hideControls() {
         if (!this._blockControlTimeout) {
-            this._toolBar.style.display = 'none';
-            this._topBar.style.display = 'none';
+            if (this._toolBar) {
+                this._toolBar.style.display = 'none';
+            }
+            if (this._topBar) {
+                this._topBar.style.display = 'none';
+            }
         }
     }
 
@@ -265,6 +279,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private eventFitToScreen() {
+        if (!this._cropperWrapper) {
+            return;
+        }
         this._cropperWrapper.fitToCanvas();
         this.triggerEvent(AmaliaEventConstants.fitToScreen, {
             imageData: this._cropperWrapper.getImageData()
@@ -273,6 +290,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private eventFullSize() {
+        if (!this._cropperWrapper) {
+            return;
+        }
         this._cropperWrapper.fitToOrignalSize();
         this.triggerEvent(AmaliaEventConstants.fitToScreen, {
             imageData: this._cropperWrapper.getImageData()
@@ -282,7 +302,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
     private eventDownload() {
         this.triggerEvent(AmaliaEventConstants.download, {
-            imageData: this._cropperWrapper.getImageData()
+            imageData: this._cropperWrapper?.getImageData()
         });
         this.showControls();
     }
@@ -349,15 +369,20 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
     private enableMagnify() {
         this.removeHideEvents();
-        this._btnDownload.disable();
-        this._btnFitScreen.disable();
-        this._btnFullSize.disable();
-        this._btnFlipV.disable();
-        this._btnFlipH.disable();
-        this._btnRotate.disable();
-        this._btnFullScreen.disable();
-        this._zoomInfo.disable();
-        this._btnMagnify.getDom().style.zIndex = '9';
+        this._btnDownload?.disable();
+        this._btnFitScreen?.disable();
+        this._btnFullSize?.disable();
+        this._btnFlipV?.disable();
+        this._btnFlipH?.disable();
+        this._btnRotate?.disable();
+        this._btnFullScreen?.disable();
+        this._zoomInfo?.disable();
+        if (this._btnMagnify) {
+            this._btnMagnify.getDom().style.zIndex = '9';
+        }
+        if (!this._cropperWrapper) {
+            return;
+        }
         const imgData: AmaliaPlayerImageData = this._cropperWrapper.getImageData();
         this._magnifier = new MagnifierHtmlElement(
             '.cropper-container',
@@ -381,17 +406,19 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
     private disableMagnify() {
         this.removeClass('ajs-photo-magnify');
-        this._magnifier.removeFromDom();
+        this._magnifier?.removeFromDom();
         this.addHideEvents();
-        this._btnDownload.enable();
-        this._btnFitScreen.enable();
-        this._btnFullSize.enable();
-        this._btnFlipV.enable();
-        this._btnFlipH.enable();
-        this._btnRotate.enable();
-        this._btnFullScreen.enable();
-        this._zoomInfo.enable();
-        this._btnMagnify.getDom().style.zIndex = 'unset';
+        this._btnDownload?.enable();
+        this._btnFitScreen?.enable();
+        this._btnFullSize?.enable();
+        this._btnFlipV?.enable();
+        this._btnFlipH?.enable();
+        this._btnRotate?.enable();
+        this._btnFullScreen?.enable();
+        this._zoomInfo?.enable();
+        if (this._btnMagnify) {
+            this._btnMagnify.getDom().style.zIndex = 'unset';
+        }
         this.showControls();
         document.removeEventListener('keyup', this._escapeMagnifyRef);
     }
@@ -405,6 +432,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private eventZoom(e: CustomEvent) {
+        if (!this._cropperWrapper) {
+            return;
+        }
         this._cropperWrapper.zoom(e.detail.value);
         if (e.detail.hasOwnProperty('center') && e.detail.center) {
             this._cropperWrapper.center();
@@ -413,6 +443,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private eventRotate() {
+        if (!this._cropperWrapper) {
+            return;
+        }
         this._cropperWrapper.rotate(90);
         this.triggerEvent(AmaliaEventConstants.rotate, {
             imageData: this._cropperWrapper.getImageData()
@@ -421,6 +454,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private eventFlipH() {
+        if (!this._cropperWrapper) {
+            return;
+        }
         this._cropperWrapper.flipHorizontally();
         this.triggerEvent(AmaliaEventConstants.flipHorizontally, {
             imageData: this._cropperWrapper.getImageData()
@@ -429,6 +465,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private eventFlipV() {
+        if (!this._cropperWrapper) {
+            return;
+        }
         this._cropperWrapper.flipVertically();
         this.triggerEvent(AmaliaEventConstants.flipVertically, {
             imageData: this._cropperWrapper.getImageData()
@@ -494,9 +533,13 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this._image.src = this._imagePath;
         switch (requestedMode) {
             case 'reduced':
-                this._btnClose.hide();
-                this._titleBox.style.visibility = 'hidden';
-                this._toolBar.style.display = 'none';
+                this._btnClose?.hide();
+                if (this._titleBox) {
+                    this._titleBox.style.visibility = 'hidden';
+                }
+                if (this._toolBar) {
+                    this._toolBar.style.display = 'none';
+                }
                 if (fourImg) {
                     this._image.style.display = 'none';
                     this.displayReducedGallery(fourImg);
@@ -505,31 +548,37 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
                 }
                 break;
             case 'simple':
-                this._btnClose.show();
-                this._btnDownload.hide();
-                this._btnFitScreen.hide();
-                this._btnFullSize.hide();
-                this._zoomInfo.hide();
-                this._btnMagnify.hide();
-                this._btnRotate.hide();
-                this._btnFlipH.hide();
-                this._btnFlipV.hide();
-                this._titleBox.style.visibility = 'hidden';
-                this._toolBar.style.display = 'block';
+                this._btnClose?.show();
+                this._btnDownload?.hide();
+                this._btnFitScreen?.hide();
+                this._btnFullSize?.hide();
+                this._zoomInfo?.hide();
+                this._btnMagnify?.hide();
+                this._btnRotate?.hide();
+                this._btnFlipH?.hide();
+                this._btnFlipV?.hide();
+                if (this._titleBox) {
+                    this._titleBox.style.visibility = 'hidden';
+                }
+                if (this._toolBar) {
+                    this._toolBar.style.display = 'block';
+                }
                 this._image.style.display = 'block';
                 this.triggerEvent(AmaliaEventConstants.ready);
                 break;
             case 'advanced':
-                this._btnClose.show();
-                this._btnDownload.show();
-                this._btnFitScreen.show();
-                this._btnFullSize.show();
-                this._zoomInfo.show();
-                this._btnMagnify.show();
-                this._btnRotate.show();
-                this._btnFlipH.show();
-                this._btnFlipV.show();
-                this._titleBox.style.visibility = 'visible';
+                this._btnClose?.show();
+                this._btnDownload?.show();
+                this._btnFitScreen?.show();
+                this._btnFullSize?.show();
+                this._zoomInfo?.show();
+                this._btnMagnify?.show();
+                this._btnRotate?.show();
+                this._btnFlipH?.show();
+                this._btnFlipV?.show();
+                if (this._titleBox) {
+                    this._titleBox.style.visibility = 'visible';
+                }
                 this.createCropperInstance();
                 break;
             default:
@@ -582,7 +631,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._image.src = this._imagePath;
             if (this._cropperWrapper && this._mode === 'advanced') {
                 this._cropperWrapper.destroy();
-                    this.createCropperInstance();
+                this.createCropperInstance();
 
             }
             this.setTitle(imageName);
@@ -621,6 +670,10 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this.eventMagnify();
     }
 
+    public fitToScreen() {
+        this.eventFitToScreen();
+    }
+
     public destroy() {
         if (this._cropperWrapper) {
             this._cropperWrapper.destroy();
@@ -628,18 +681,17 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     public removeFromDom() {
-        this._zoomInfo.removeFromDom();
-
-        this._btnFullScreen.removeFromDom();
-        this._btnFlipH.removeFromDom();
-        this._btnFlipV.removeFromDom();
-        this._btnRotate.removeFromDom();
-        this._btnMagnify.removeFromDom();
-        this._btnSwitchMode.removeFromDom();
-        this._btnClose.removeFromDom();
-        this._btnDownload.removeFromDom();
-        this._btnFitScreen.removeFromDom();
-        this._btnFullSize.removeFromDom();
+        this._zoomInfo?.removeFromDom();
+        this._btnFullScreen?.removeFromDom();
+        this._btnFlipH?.removeFromDom();
+        this._btnFlipV?.removeFromDom();
+        this._btnRotate?.removeFromDom();
+        this._btnMagnify?.removeFromDom();
+        this._btnSwitchMode?.removeFromDom();
+        this._btnClose?.removeFromDom();
+        this._btnDownload?.removeFromDom();
+        this._btnFitScreen?.removeFromDom();
+        this._btnFullSize?.removeFromDom();
         super.removeFromDom();
     }
 }

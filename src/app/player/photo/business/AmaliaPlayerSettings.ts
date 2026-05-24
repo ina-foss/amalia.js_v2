@@ -1,7 +1,8 @@
 export interface AmaliaPlayerSettings {
-    mode: string
+    noToolbar?: boolean
+    noTopbar?: boolean
     imagesSrc: AmaliaPlayerImageSource[]
-    toolbar: any
+    toolbar?: any
     showGallery: boolean
     zoomStep?: number
     zoomSteps?: number[]
