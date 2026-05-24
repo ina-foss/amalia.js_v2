@@ -1,0 +1,18 @@
+<div class="pictures-gallery-container"
+     #galleryContainer
+     (scroll)="onScroll()"
+     [style.height.px]="pluginConfiguration?.data?.height || 300">
+    <div class="gallery-thumbs">
+        <div *ngFor="let image of images; let i = index"
+             class="gallery-thumb"
+             [class.active]="i === currentItemIndex"
+             [style.width.px]="pluginConfiguration?.data?.thumbSize || 70"
+             [style.height.px]="pluginConfiguration?.data?.thumbSize || 70"
+             (click)="onImageClick(i)">
+            <img [attr.data-src]="image.thumbPath"
+                 [attr.alt]="image.name"
+                 [attr.title]="image.name"
+                 loading="lazy" />
+        </div>
+    </div>
+</div>

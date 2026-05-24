@@ -111,56 +111,36 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         this._cropperComponent.fitToScreen();
     }
 
-    public setMode(mode: string = 'standard', width: number = null, height: number = null) {
-        this.removeClass('ajs-photo-' + this._cropperComponent.getMode());
-        if (width) {
-            this.dom.style.width = width.toString() + 'px';
-        }
-        if (height) {
-            this.dom.style.height = height.toString() + 'px';
-            if (this._contentLeft) {
-                this._contentLeft.style.height = height.toString() + 'px';
-                this._gallery.getDom().style.height = height.toString() + 'px';
-            }
+    public setDisplayState(displayState: string, width: number = null, height: number = null) {
+        this.removeClass('ajs-photo-' + this._cropperComponent.getDisplayState());
+        const actualWidth = width ?? this.getOffsetWidth();
+        const actualHeight = height ?? this.getOffsetHeight();
+        
+        this.dom.style.width = actualWidth.toString() + 'px';
+        this.dom.style.height = actualHeight.toString() + 'px';
+        if (this._contentLeft) {
+            this._contentLeft.style.height = actualHeight.toString() + 'px';
+            this._gallery.getDom().style.height = actualHeight.toString() + 'px';
         }
 
         let cwidth: number = this.getCropperWidth();
         let fourImg: string[] = null;
-        if (mode === 'reduced') {
+        if (displayState === 'xs') {
             cwidth = this.getOffsetWidth();
             fourImg = this._gallery ? this._gallery.getNextImages(4) : null;
         }
 
-        this._cropperComponent.setMode(mode, cwidth, this.getOffsetHeight(), fourImg);
-        this.addClass('ajs-photo-' + mode);
+        this._cropperComponent.setDisplayState(displayState, cwidth, this.getOffsetHeight(), fourImg);
+        this.addClass('ajs-photo-' + displayState);
 
         if (this._gallery) {
-            this._gallery.setMode(mode);
+            this._gallery.setDisplayState(displayState);
             this._gallery.scrollToActive();
         }
     }
 
-    public getMode(): string {
-        return this._cropperComponent.getMode();
-    }
-
-    /**
-     * Set mode from displayState
-     * l, m, sm => 'advanced', s => 'simple', xs => 'reduced'
-     */
-    public setModeFromDisplayState(displayState: string, width: number = null, height: number = null) {
-        let mode: string;
-        switch (displayState) {
-            case 'xs':
-                mode = 'reduced';
-                break;
-            case 's':
-                mode = 'simple';
-                break;
-            default:
-                mode = 'advanced';
-        }
-        this.setMode(mode, width, height);
+    public getDisplayState(): string {
+        return this._cropperComponent.getDisplayState();
     }
 
     public destroy() {
@@ -170,7 +150,7 @@ export default class AmaliaPlayer extends BaseHtmlElement{
             this._gallery.removeFromDom();
         }
         this.dom.removeAttribute('id');
-        this.removeClass('ajs-photo-' + this.getMode());
+        this.removeClass('ajs-photo-' + this.getDisplayState());
         while (this.dom.hasChildNodes()) {
             this.dom.removeChild(this.dom.lastChild);
         }

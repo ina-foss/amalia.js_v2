@@ -139,9 +139,9 @@ export default class Gallery extends BaseHtmlElement {
         this.dom.scrollTo(0, activeTop - (51 * 3));
     }
 
-    public setMode(mode: string) {
+    public setDisplayState(displayState: string) {
         document.removeEventListener('keydown', this._moveEventRef);
-        if (mode !== 'reduced') {
+        if (displayState !== 'xs') {
             document.addEventListener('keydown', this._moveEventRef);
         }
     }

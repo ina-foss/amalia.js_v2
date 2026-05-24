@@ -940,18 +940,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         setTimeout(() => {
             this.updatePinAndSpeedSliderPositions();
         }, 100);
-        // Update picture player mode based on displayState
-        this.updatePicturePlayerMode();
+        // Update picture player displayState
+        this.updatePicturePlayerDisplayState();
     }
 
     /**
-     * Update picture player mode based on current displayState
-     * l, m, sm => 'advanced', s => 'simple', xs => 'reduced'
+     * Update picture player displayState
      */
-    private updatePicturePlayerMode() {
+    private updatePicturePlayerDisplayState() {
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
         if (picturePlayer) {
-            picturePlayer.setModeFromDisplayState(this.displayState);
+            picturePlayer.setDisplayState(this.displayState);
         }
     }
 

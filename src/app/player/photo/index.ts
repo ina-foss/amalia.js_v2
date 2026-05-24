@@ -5,7 +5,6 @@ import Utils from "./business/Utils";
 export function amaliaPhoto(target: string, settings: any): AmaliaPlayer {
     // default config
     settings = Utils.mergeDeep({}, {
-            mode: 'standard',
             zoomStep: 25,
             zoomSteps: null,
             zoomMax: 300,

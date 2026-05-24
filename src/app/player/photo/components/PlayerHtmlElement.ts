@@ -43,8 +43,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private _isFullscreen: boolean = false;
     private _imagePath: string;
 
-    private _availableModes: string[] = ['reduced', 'simple', 'advanced'];
-    private _mode: string;
+    private _availableDisplayStates: string[] = ['xs', 's', 'sm', 'm', 'l'];
+    private _displayState: string;
     private _width: number;
     private _height: number;
 
@@ -115,7 +115,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         topLeft.className = 'ajs-photo-top-left';
         this._btnSwitchMode = new SwitchModeButton(this._toolbarSettings.switch_mode)
             .addEventListener('click', () => {
-                this.triggerEvent(AmaliaEventConstants.switchMode);
+                this.triggerEvent(AmaliaEventConstants.switchDisplayState);
             });
         topLeft.appendChild(this._btnSwitchMode.getDom());
         this._topBar.appendChild(topLeft);
@@ -251,7 +251,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private showControls() {
-        if (this._mode !== 'reduced' && this._toolBar) {
+        if (this._displayState !== 'xs' && this._toolBar) {
             this._toolBar.style.display = 'block';
         }
         if (this._topBar) {
@@ -484,7 +484,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this._playerInstance.triggerEvent(new CustomEvent(eventName, {
             detail: Utils.mergeDeep({}, {
                 isFullscreen: this._isFullscreen,
-                mode: this._mode
+                displayState: this._displayState
             }, data)
         }));
     }
@@ -514,8 +514,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         });
     }
 
-    public setMode(requestedMode: string, width: number = null, height: number = null, fourImg: string[] = null) {
-        if (!Utils.inArray(requestedMode, this._availableModes)) {
+    public setDisplayState(displayState: string, width: number = null, height: number = null, fourImg: string[] = null) {
+        if (!Utils.inArray(displayState, this._availableDisplayStates)) {
             return;
         }
         if (width !== null) {
@@ -531,8 +531,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         }
         this.destroyReducedGallery();
         this._image.src = this._imagePath;
-        switch (requestedMode) {
-            case 'reduced':
+        switch (displayState) {
+            case 'xs':
                 this._btnClose?.hide();
                 if (this._titleBox) {
                     this._titleBox.style.visibility = 'hidden';
@@ -547,7 +547,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
                     this._image.style.display = 'block';
                 }
                 break;
-            case 'simple':
+            case 's':
                 this._btnClose?.show();
                 this._btnDownload?.hide();
                 this._btnFitScreen?.hide();
@@ -566,7 +566,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
                 this._image.style.display = 'block';
                 this.triggerEvent(AmaliaEventConstants.ready);
                 break;
-            case 'advanced':
+            case 'sm':
+            case 'm':
+            case 'l':
                 this._btnClose?.show();
                 this._btnDownload?.show();
                 this._btnFitScreen?.show();
@@ -584,7 +586,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             default:
                 return;
         }
-        this._mode = requestedMode;
+        this._displayState = displayState;
     }
 
     private createCropperInstance(): void {
@@ -607,7 +609,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
                 this.triggerEvent(AmaliaEventConstants.ready);
                 this.showControls();
             }).addEventListener(CropperWrapper.events.zoom, (e: CustomEvent) => {
-                this._zoomInfo.setResultValue(e.detail.zoomLevel);
+                this._zoomInfo?.setResultValue(e.detail.zoomLevel);
                 this.triggerEvent(AmaliaEventConstants.zoom, {
                     imageData: this._cropperWrapper.getImageData()
                 });
@@ -616,8 +618,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         }
     }
 
-    public getMode(): string {
-        return this._mode;
+    public getDisplayState(): string {
+        return this._displayState;
     }
 
     private _timeoutLoadSrc: any = null;
@@ -629,7 +631,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             }
             this._imagePath = imageSrc;
             this._image.src = this._imagePath;
-            if (this._cropperWrapper && this._mode === 'advanced') {
+            if (this._cropperWrapper && ['sm', 'm', 'l'].includes(this._displayState)) {
                 this._cropperWrapper.destroy();
                 this.createCropperInstance();
 

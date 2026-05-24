@@ -10,6 +10,6 @@ export default class AmaliaEventConstants {
     public static flipHorizontally: string = 'ina.amalia.photo.event.flipHorizontally';
     public static flipVertically: string = 'ina.amalia.photo.event.flipVertically';
     public static close: string = 'ina.amalia.photo.event.close';
-    public static switchMode: string = 'ina.amalia.photo.event.switchMode';
+    public static switchDisplayState: string = 'ina.amalia.photo.event.switchDisplayState';
     public static select: string = 'ina.amalia.photo.event.select';
 }
