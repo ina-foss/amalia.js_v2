@@ -22,6 +22,7 @@ import { AmaliaPlayerSettings } from '../player/photo/business/AmaliaPlayerSetti
  */
 export class MediaPlayerElement {
     private static readonly THUMBNAIL_TC_STEP = 0.04;
+    private static pictureHostCounter = 0;
     public configurationManager: ConfigurationManager;
     public _metadataManager: MetadataManager;
     public defaultLoader: Loader<Array<Metadata>>;
@@ -186,7 +187,7 @@ export class MediaPlayerElement {
         }
         // AmaliaPlayer expects a CSS selector — guarantee the host is uniquely addressable.
         if (!host.id) {
-            host.id = `amalia-picture-host-${Math.random().toString(36).slice(2, 10)}`;
+            host.id = this.generatePictureHostId();
         }
         this.picturePlayer = new AmaliaPlayer(`#${host.id}`, settings);
         // Set initial displayState
@@ -207,6 +208,11 @@ export class MediaPlayerElement {
      */
     public getPicturePlayer(): AmaliaPlayer {
         return this.picturePlayer;
+    }
+
+    private generatePictureHostId(): string {
+        MediaPlayerElement.pictureHostCounter += 1;
+        return `amalia-picture-host-${Date.now().toString(36)}-${MediaPlayerElement.pictureHostCounter.toString(36)}`;
     }
 
     /**
