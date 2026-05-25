@@ -186,7 +186,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
                 }
                 const imageData: AmaliaPlayerImageData = this._cropperWrapper.getImageData();
                 if (imageData) {
-                    // this._cropperWrapper.zoom(imageData.zoomLevel);
                     this._cropperWrapper.fitToCanvas();
                 }
             }, 150);
@@ -426,8 +425,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private getCropperImgPos(e: any) {
         const clientRect = this.dom.getBoundingClientRect();
         return {
-            x: e.pageX - clientRect.left - window.pageXOffset,
-            y: e.pageY - clientRect.top - window.pageYOffset
+            x: e.clientX - clientRect.left,
+            y: e.clientY - clientRect.top
         };
     }
 
@@ -494,7 +493,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         const className: string = dual ? 'ajs-photo-vx2' : 'ajs-photo-vx4';
         const height: number = dual ? this._height : this._height / 2;
         const width: number = this._width / 2;
-        fourImg.reverse().forEach((src: string) => {
+        const reversedImages = [...fourImg].reverse();
+        reversedImages.forEach((src: string) => {
             const div: HTMLDivElement = document.createElement('div');
             div.style.width = width.toString() + 'px';
             div.style.height = height.toString() + 'px';

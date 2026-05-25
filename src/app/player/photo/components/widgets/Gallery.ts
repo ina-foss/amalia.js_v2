@@ -4,14 +4,14 @@ import Utils from "../../business/Utils";
 
 export default class Gallery extends BaseHtmlElement {
 
-    public static events: any = {
+    public static readonly events: any = {
         select: 'ina.amalia.photo.event.gallery.select'
     };
 
     private readonly _moveKeys: string[] = ['ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'];
     private readonly _moveEventRef: any;
 
-    private _thumbs: AmaliaPlayerGalleryItem[] = [];
+    private readonly _thumbs: AmaliaPlayerGalleryItem[] = [];
     private _currentItemIndex: number = 0;
 
     constructor(images: AmaliaPlayerImageSource[], height: number) {

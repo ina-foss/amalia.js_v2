@@ -49,7 +49,7 @@ export default class Utils {
         for (const key of Object.keys(source)) {
             const sourceValue = source[key];
             if (Utils.isObject(sourceValue)) {
-                target[key] = Utils.isObject(target[key]) ? Object.assign({}, target[key]) : {};
+                target[key] = Utils.isObject(target[key]) ? { ...target[key] } : {};
                 Utils.mergeDeepObject(target[key], sourceValue);
                 continue;
             }

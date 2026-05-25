@@ -17,13 +17,13 @@ export interface GalleryItem {
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryConfig> implements OnInit, OnDestroy {
-    public static PLUGIN_NAME = 'PICTURES_GALLERY';
-    public static events = {
+    public static readonly PLUGIN_NAME = 'PICTURES_GALLERY';
+    public static readonly events = {
         select: 'ina.amalia.plugin.pictures-gallery.select'
     };
 
     private readonly _moveKeys: string[] = ['ArrowUp', 'ArrowLeft', 'ArrowRight', 'ArrowDown'];
-    private _moveEventRef: (event: KeyboardEvent) => void;
+    private readonly _moveEventRef: (event: KeyboardEvent) => void;
 
     public images: PicturesGalleryImageSource[] = [];
     private _thumbs: GalleryItem[] = [];
@@ -54,7 +54,7 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
             const metadataManager = this.mediaPlayerElement.metadataManager;
             metadataIds.forEach((metadataId: string) => {
                 const metadata = metadataManager.getMetadata(metadataId);
-                if (metadata && metadata.data) {
+                if (metadata?.data) {
                     this.processMetadata(metadata.data);
                 }
             });
@@ -86,7 +86,7 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
 
     private buildGallery(): void {
         setTimeout(() => {
-            if (this.galleryContainer && this.galleryContainer.nativeElement) {
+            if (this.galleryContainer?.nativeElement) {
                 this.loadAsyncThumbs();
                 document.addEventListener('keydown', this._moveEventRef);
             }

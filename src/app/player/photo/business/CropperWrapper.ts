@@ -6,10 +6,10 @@ export default class CropperWrapper {
     private _zoomLevel: number;
     private readonly _cropper: Cropper;
     private readonly _image: HTMLImageElement;
-    private _settings: AmaliaPlayerCropperWrapperSettings;
+    private readonly _settings: AmaliaPlayerCropperWrapperSettings;
     private readonly _zoomHandlerRef: any;
 
-    public static events: any = {
+    public static readonly events: any = {
         ready: 'ina.amalia.photo.event.cropper.ready',
         zoom: 'ina.amalia.photo.event.cropper.zoom'
     };
@@ -57,7 +57,7 @@ export default class CropperWrapper {
         event.preventDefault();
     }
 
-    public addEventListener(eventName: string, callback: any): CropperWrapper {
+    public addEventListener(eventName: string, callback: any): this {
         this._image.addEventListener(eventName, callback);
         return this;
     }

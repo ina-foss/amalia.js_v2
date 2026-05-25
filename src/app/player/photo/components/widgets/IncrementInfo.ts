@@ -4,15 +4,15 @@ import Utils from "../../business/Utils";
 
 export default class IncrementInfo extends BaseHtmlElement {
 
-    private _btnMinus: BaseButton;
-    private _btnPlus: BaseButton;
-    private _resultSpan: BaseButton;
+    private readonly _btnMinus: BaseButton;
+    private readonly _btnPlus: BaseButton;
+    private readonly _resultSpan: BaseButton;
     private readonly _increment: number;
     private readonly _steps: number[];
     private readonly _max: number;
     private readonly _min: number;
 
-    public static events: any = {
+    public static readonly events: any = {
         change: 'ina.amalia.photo.event.incrementinfo.change'
     };
 
@@ -24,7 +24,9 @@ export default class IncrementInfo extends BaseHtmlElement {
         super();
         this._increment = increment;
         if (steps) {
-            this._steps = steps.sort((a: number, b: number) => a - b);
+            const sortedSteps = [...steps];
+            sortedSteps.sort((a: number, b: number) => a - b);
+            this._steps = sortedSteps;
         }
         this._min = min;
         this._max = max;

@@ -24,7 +24,6 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         } else {
             console.error('Gallery empty');
         }
-        return this;
     }
 
     private getCropperWidth(): number {

@@ -342,7 +342,7 @@
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'magnify'"
                         class="control magnify" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" tabindex="0"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="!magnifyEnabled" class="amalia-svg-magnify-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
@@ -359,14 +359,14 @@
                         class="control zoom-info" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <span tooltip="{{c.data?.minus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomOut')"
-                            (keydown.enter)="controlClicked('zoomOut')" tabindex="0">
+                            (keydown.enter)="controlClicked('zoomOut')" role="button" tabindex="0">
                             <svg class="amalia-svg-minus-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#minus'"></use>
                             </svg>
                         </span>
                         <span tooltip="{{c.data?.result?.tooltip}}" class="zoom-result">100%</span>
                         <span tooltip="{{c.data?.plus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomIn')"
-                            (keydown.enter)="controlClicked('zoomIn')" tabindex="0">
+                            (keydown.enter)="controlClicked('zoomIn')" role="button" tabindex="0">
                             <svg class="amalia-svg-plus-size icon">
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#plus'"></use>
                             </svg>
@@ -379,7 +379,7 @@
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fitToScreen'"
                         class="control fitToScreen" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" tabindex="0"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -392,7 +392,7 @@
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fullsize'"
                         class="control fullsize" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" tabindex="0"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -405,7 +405,7 @@
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'rotate'"
                         class="control rotate" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" tabindex="0"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -418,7 +418,7 @@
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fliph'"
                         class="control fliph" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" tabindex="0"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -431,7 +431,7 @@
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'flipv'"
                         class="control flipv" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" tabindex="0"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -444,7 +444,7 @@
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fullscreen'"
                         class="control fullscreen" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" tabindex="0"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -547,7 +547,7 @@
                     </li>
                     <!-- Picture Player: Magnify -->
                     <li *ngSwitchCase="'magnify'" class="control magnify"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" tabindex="0"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="!magnifyEnabled" class="amalia-svg-magnify-size icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
@@ -559,7 +559,7 @@
                     </li>
                     <!-- Picture Player: Fit to Screen -->
                     <li *ngSwitchCase="'fitToScreen'" class="control fitToScreen"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" tabindex="0"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -568,7 +568,7 @@
                     </li>
                     <!-- Picture Player: Fullsize -->
                     <li *ngSwitchCase="'fullsize'" class="control fullsize"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" tabindex="0"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -577,7 +577,7 @@
                     </li>
                     <!-- Picture Player: Rotate -->
                     <li *ngSwitchCase="'rotate'" class="control rotate"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" tabindex="0"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -586,7 +586,7 @@
                     </li>
                     <!-- Picture Player: Flip Horizontal -->
                     <li *ngSwitchCase="'fliph'" class="control fliph"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" tabindex="0"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -595,7 +595,7 @@
                     </li>
                     <!-- Picture Player: Flip Vertical -->
                     <li *ngSwitchCase="'flipv'" class="control flipv"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" tabindex="0"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -604,7 +604,7 @@
                     </li>
                     <!-- Picture Player: Fullscreen -->
                     <li *ngSwitchCase="'fullscreen'" class="control fullscreen"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" tabindex="0"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -662,3 +662,4 @@
         </div>
     </div>
 </div>
+

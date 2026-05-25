@@ -259,7 +259,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         ' amalia-secondary-color': false
     };
 
-    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, private cdr: ChangeDetectorRef) {
+    constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, private readonly cdr: ChangeDetectorRef) {
         this.httpClient = httpClient;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
