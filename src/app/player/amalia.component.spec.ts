@@ -217,6 +217,182 @@ describe('AmaliaComponent', () => {
     });
 });
 
+describe('AmaliaComponent - runtime controls', () => {
+    let component: AmaliaComponent;
+    let emitSpy: jasmine.Spy;
+    let mediaMock: any;
+
+    beforeEach(() => {
+        component = new AmaliaComponent(
+            new MediaPlayerServiceStub() as any,
+            {} as any,
+            new ThumbnailServiceStub() as any,
+            { detectChanges: () => { } } as any
+        );
+
+        emitSpy = jasmine.createSpy('emit');
+        mediaMock = {
+            reverseMode: false,
+            framerate: 25,
+            pause: jasmine.createSpy('pause'),
+            play: jasmine.createSpy('play'),
+            setCurrentTime: jasmine.createSpy('setCurrentTime'),
+            getCurrentTime: jasmine.createSpy('getCurrentTime').and.returnValue(10),
+            getDuration: jasmine.createSpy('getDuration').and.returnValue(20),
+            getPlaybackRate: jasmine.createSpy('getPlaybackRate').and.returnValue(1),
+            playPause: jasmine.createSpy('playPause')
+        };
+        (component as any).mediaPlayerElement = {
+            eventEmitter: { emit: emitSpy },
+            getMediaPlayer: () => mediaMock,
+            getThumbnailUrl: jasmine.createSpy('getThumbnailUrl').and.returnValue('/thumb.jpg'),
+            getConfiguration: jasmine.createSpy('getConfiguration').and.returnValue({
+                player: { autoplay: true, ratio: '16:9', poster: '/poster.jpg', posterBackground: 'amalia-primary-color' },
+                thumbnail: { enableThumbnail: true },
+                debug: false,
+                logLevel: 'Info'
+            }),
+            preferenceStorageManager: {
+                getItem: jasmine.createSpy('getItem').and.returnValue(null)
+            },
+            toggleFullscreen: jasmine.createSpy('toggleFullscreen')
+        };
+        component.previewThumbnailElement = { nativeElement: document.createElement('img') } as any;
+        component.mediaContainer = { nativeElement: document.createElement('div') } as any;
+        const video = document.createElement('video');
+        const videoParent = document.createElement('div');
+        Object.defineProperty(videoParent, 'offsetWidth', { configurable: true, value: 500 });
+        Object.defineProperty(videoParent, 'offsetHeight', { configurable: true, value: 300 });
+        videoParent.appendChild(video);
+        component.mediaPlayer = { nativeElement: video } as any;
+        (component as any).thumbnailService = {
+            getThumbnail: () => Promise.resolve('blob'),
+            listThumbnails: []
+        };
+        component.playerHover = true;
+    });
+
+    it('should emit keydown/keyup and manage pressed keys list', () => {
+        const evt = { key: ' ', preventDefault: jasmine.createSpy('preventDefault') } as any;
+        component.emitKeyDownEvent(evt);
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.KEYDOWN, 'espace');
+        expect(evt.preventDefault).toHaveBeenCalled();
+
+        component.emitKeyUpEvent();
+        expect(component.listKeys).toEqual([]);
+    });
+
+    it('handleKeyDownEvent should set hover and forward to emitKeyDownEvent', () => {
+        const spy = spyOn(component, 'emitKeyDownEvent');
+        component.playerHover = false;
+        component.handleKeyDownEvent({ key: 'a' } as any);
+        expect(component.playerHover).toBeTrue();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('timer helpers should start/reset timer and hide controls', () => {
+        spyOn(window, 'setTimeout').and.returnValue(123 as any);
+        const clearSpy = spyOn(window, 'clearTimeout');
+        const startSpy = spyOn(component, 'startTimer').and.callThrough();
+
+        component.startTimer();
+        component.resetTimer();
+        component.hideControls();
+
+        expect(component.chrono).toBe(123 as any);
+        expect(clearSpy).toHaveBeenCalled();
+        expect(startSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.PLAYER_MOUSE_LEAVE);
+    });
+
+    it('scrollPlaybackRateImages and clearInterval should control simulated playback', () => {
+        const intervalSpy = spyOn(window, 'setInterval').and.returnValue(55 as any);
+        const clearSpy = spyOn(window, 'clearInterval');
+
+        component.scrollPlaybackRateImages(-2);
+        expect(intervalSpy).toHaveBeenCalled();
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.PLAYER_SIMULATE_SLIDER);
+
+        component.intervalImages = 55 as any;
+        component.tc = 12;
+        component.clearInterval();
+        expect(clearSpy).toHaveBeenCalledWith(55 as any);
+        expect(mediaMock.setCurrentTime).toHaveBeenCalledWith(12);
+        expect(mediaMock.play).toHaveBeenCalled();
+    });
+
+    it('displayImages should advance and rewind with thumbnail loop', () => {
+        component._setEnableThumbnailForTesting(true);
+        const loopSpy = spyOn(component, 'loopImages').and.stub();
+
+        component.tc = 1;
+        component.displayImages(50, 1000, false);
+        expect(component.enablePreviewThumbnail).toBeTrue();
+        expect(loopSpy).toHaveBeenCalled();
+
+        component.tc = 1;
+        component.displayImages(50, 1000, true);
+        expect(mediaMock.setCurrentTime).toHaveBeenCalled();
+    });
+
+    it('showImage should resolve on image load and set thumbnail URL', fakeAsync(() => {
+        const img = component.previewThumbnailElement.nativeElement as unknown as HTMLImageElement;
+        const p = component.showImage(5) as Promise<number>;
+        img.onload(new Event('load'));
+        tick();
+
+        expect((component as any).thumbnailBlobVideo).toBe('/thumb.jpg');
+        p.then((value) => expect(value).toBeGreaterThanOrEqual(0));
+    }));
+
+    it('handleSeeking/handleSeeked should request thumbnails when enabled', () => {
+        component._setEnableThumbnailForTesting(true);
+        const throttleSpy = spyOn(component as any, 'throttleFunc').and.stub();
+        const setPreviewSpy = spyOn<any>(component, 'setPreviewThumbnail').and.callThrough();
+
+        (component as any).handleSeeking(3.14159);
+        expect(component.enablePreviewThumbnail).toBeTrue();
+        expect(throttleSpy).toHaveBeenCalled();
+
+        setPreviewSpy.calls.reset();
+        (component as any).handleSeeked();
+        expect(setPreviewSpy).toHaveBeenCalled();
+    });
+
+    it('onInitConfig/onErrorInitConfig and control click should update state', () => {
+        component.handleLoading();
+        expect(component.inLoading).toBeTrue();
+        component.handleLoadingEnd();
+        expect(component.inLoading).toBeFalse();
+
+        (component as any).onInitConfig('READY' as any);
+        expect(component.autoplay).toBeTrue();
+        expect(component.videoPoster).toBe('/poster.jpg');
+        expect(component.posterBackgound['amalia-primary-color']).toBeTrue();
+
+        (component as any).onErrorInitConfig('ERROR' as any);
+        expect(component.inError).toBeTrue();
+
+        component.controlClicked({} as any);
+        expect(mediaMock.playPause).toHaveBeenCalled();
+    });
+
+    it('handleFullScreenChange should choose module parent when available', () => {
+        const moduleParent = document.createElement('div');
+        moduleParent.classList.add('module', 'player');
+        const mid = document.createElement('div');
+        const child = document.createElement('div');
+        Object.defineProperty(child, 'offsetParent', { configurable: true, value: mid });
+        Object.defineProperty(mid, 'offsetParent', { configurable: true, value: moduleParent });
+        Object.defineProperty(component.mediaPlayer.nativeElement, 'offsetParent', { configurable: true, value: child });
+        Object.defineProperty(component.mediaContainer.nativeElement, 'offsetWidth', { configurable: true, value: 400 });
+        Object.defineProperty(component.mediaContainer.nativeElement, 'offsetHeight', { configurable: true, value: 300 });
+
+        (component as any).handleFullScreenChange();
+        expect((component as any).mediaPlayerElement.toggleFullscreen).toHaveBeenCalledWith(moduleParent);
+    });
+});
+
 
 describe('AmaliaComponent contribution juridique', () => {
     let component: AmaliaComponent;
