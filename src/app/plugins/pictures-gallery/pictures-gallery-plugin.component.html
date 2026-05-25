@@ -8,7 +8,9 @@
              [class.active]="i === currentItemIndex"
              [style.width.px]="pluginConfiguration?.data?.thumbSize || 70"
              [style.height.px]="pluginConfiguration?.data?.thumbSize || 70"
-             (click)="onImageClick(i)">
+             (click)="onImageClick(i)"
+             (keydown.enter)="onImageClick(i)"
+             tabindex="0">
             <img [attr.data-src]="image.thumbPath"
                  [attr.alt]="image.name"
                  [attr.title]="image.name"
