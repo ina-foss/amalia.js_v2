@@ -43,7 +43,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private _isFullscreen: boolean = false;
     private _imagePath: string;
 
-    private _availableDisplayStates: string[] = ['xs', 's', 'sm', 'm', 'l'];
+    private readonly _availableDisplayStates: string[] = ['xs', 's', 'sm', 'm', 'l'];
     private _displayState: string;
     private _width: number;
     private _height: number;
