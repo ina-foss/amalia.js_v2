@@ -103,109 +103,84 @@ export default class MagnifierHtmlElement extends BaseHtmlElement {
         const glassH: number = this.dom.offsetHeight / 2;
 
         const r90: boolean = this._imgData.rotate === 90;
-        const r180: boolean = this._imgData.rotate === 180;
         const r270: boolean = this._imgData.rotate === 270;
-        const flip: boolean = this._imgData.flip === 1;
-        const flop: boolean = this._imgData.flop === 1;
 
         let srcWidth: number = !r90 && !r270 ? this._imgData.src_width : this._imgData.src_height;
         let srcHeight: number = !r90 && !r270 ? this._imgData.src_height : this._imgData.src_width;
 
-        let imgLeft: number;
-        let imgTop: number;
-        let iLeft: number = pLeft;
-        let iTop: number = pTop;
+        const [iLeft, iTop] = this.transformCoordinates(pLeft, pTop, srcWidth, srcHeight);
 
-        if (flip && flop && r180) {
-            // no Transformation
-        } else if (flip && flop && r90) {
-            iLeft = srcHeight - pTop;
-            iTop = pLeft;
-        } else if (flip && flop && r270) {
-            iLeft = pTop;
-            iTop = srcWidth - pLeft;
-        } else if (flip && r90) {
-            iLeft = pTop;
-            iTop = pLeft;
-        } else if (flip && r180) {
-            iLeft = srcWidth - pLeft;
-        } else if (flip && r270) {
-            iLeft = srcHeight - pTop;
-            iTop = srcWidth - pLeft;
-        } else if (flop && r90) {
-            iLeft = srcHeight - pTop;
-            iTop = srcWidth - pLeft;
-        } else if (flop && r180) {
-            iTop = srcHeight - pTop;
-        } else if (flop && r270) {
-            iLeft = pTop;
-            iTop = pLeft;
-        } else if (flip && flop) {
-            iLeft = srcWidth - pLeft;
-            iTop = srcHeight - pTop;
-        } else if (flip) {
-            iTop = srcHeight - pTop;
-        } else if (flop) {
-            iLeft = srcWidth - pLeft;
-        } else if (r90) {
-            iLeft = pTop;
-            iTop = srcWidth - pLeft;
-        } else if (r180) {
-            iLeft = srcWidth - pLeft;
-            iTop = srcHeight - pTop;
-        } else if (r270) {
-            iLeft = srcHeight - pTop;
-            iTop = pLeft;
-        }
-
-        imgLeft = -(iLeft * this._zoom) + glassW + 1;
-        imgTop = -(iTop * this._zoom) + glassH + 1;
+        const imgLeft = -(iLeft * this._zoom) + glassW + 1;
+        const imgTop = -(iTop * this._zoom) + glassH + 1;
 
         return [imgLeft, imgTop];
     }
 
     private getTransformStyle(): string {
-        const tStyle: string[] = [];
-
-        const r90: boolean = this._imgData.rotate === 90;
-        const r180: boolean = this._imgData.rotate === 180;
-        const r270: boolean = this._imgData.rotate === 270;
-        const flip: boolean = this._imgData.flip === 1;
-        const flop: boolean = this._imgData.flop === 1;
-
-        if (flip && flop && r180) {
+        const scaleTransforms = this.getScaleTransforms();
+        if (scaleTransforms === null) {
             return null;
-        } else if (flip && flop && r90) {
-            tStyle.push('scaleX(-1)');
-            tStyle.push('scaleY(-1)');
-        } else if (flip && flop && r270) {
-            tStyle.push('scaleX(-1)');
-            tStyle.push('scaleY(-1)');
-        } else if (flip && r90) {
-            tStyle.push('scaleX(-1)');
-        } else if (flip && r180) {
-            tStyle.push('scaleY(-1)');
-        } else if (flip && r270) {
-            tStyle.push('scaleX(-1)');
-        } else if (flop && r90) {
-            tStyle.push('scaleY(-1)');
-        } else if (flop && r180) {
-            tStyle.push('scaleX(-1)');
-        } else if (flop && r270) {
-            tStyle.push('scaleY(-1)');
-        } else if (flip && flop) {
-            tStyle.push('scaleX(-1)');
-            tStyle.push('scaleY(-1)');
-        } else if (flip) {
-            tStyle.push('scaleY(-1)');
-        } else if (flop) {
-            tStyle.push('scaleX(-1)');
         }
 
+        const tStyle: string[] = [...scaleTransforms];
         if (this._imgData.rotate !== null && this._imgData.rotate > 0) {
             tStyle.push('rotate(' + this._imgData.rotate.toString() + 'deg)');
         }
         return tStyle.length > 0 ? tStyle.join(' ') : null;
+    }
+
+    private transformCoordinates(pLeft: number, pTop: number, srcWidth: number, srcHeight: number): [number, number] {
+        const rotate = this._imgData.rotate ?? 0;
+        const flip = this._imgData.flip === 1;
+        const flop = this._imgData.flop === 1;
+        const key = `${flip ? 1 : 0}${flop ? 1 : 0}-${rotate}`;
+
+        const transforms: { [key: string]: () => [number, number] } = {
+            '11-90': () => [srcHeight - pTop, pLeft],
+            '11-270': () => [pTop, srcWidth - pLeft],
+            '10-90': () => [pTop, pLeft],
+            '10-180': () => [srcWidth - pLeft, pTop],
+            '10-270': () => [srcHeight - pTop, srcWidth - pLeft],
+            '01-90': () => [srcHeight - pTop, srcWidth - pLeft],
+            '01-180': () => [pLeft, srcHeight - pTop],
+            '01-270': () => [pTop, pLeft],
+            '11-0': () => [srcWidth - pLeft, srcHeight - pTop],
+            '10-0': () => [pLeft, srcHeight - pTop],
+            '01-0': () => [srcWidth - pLeft, pTop],
+            '00-90': () => [pTop, srcWidth - pLeft],
+            '00-180': () => [srcWidth - pLeft, srcHeight - pTop],
+            '00-270': () => [srcHeight - pTop, pLeft]
+        };
+
+        const transform = transforms[key];
+        return transform ? transform() : [pLeft, pTop];
+    }
+
+    private getScaleTransforms(): string[] | null {
+        const rotate = this._imgData.rotate ?? 0;
+        const flip = this._imgData.flip === 1;
+        const flop = this._imgData.flop === 1;
+        const key = `${flip ? 1 : 0}${flop ? 1 : 0}-${rotate}`;
+
+        if (key === '11-180') {
+            return null;
+        }
+        if (key === '11-90' || key === '11-270' || key === '11-0') {
+            return ['scaleX(-1)', 'scaleY(-1)'];
+        }
+        if (key === '10-90' || key === '10-270') {
+            return ['scaleX(-1)'];
+        }
+        if (key === '10-180' || key === '10-0') {
+            return ['scaleY(-1)'];
+        }
+        if (key === '01-90' || key === '01-270') {
+            return ['scaleY(-1)'];
+        }
+        if (key === '01-180' || key === '01-0') {
+            return ['scaleX(-1)'];
+        }
+        return [];
     }
 
     public removeFromDom() {

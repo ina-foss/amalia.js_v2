@@ -1,4 +1,5 @@
 export default class Utils {
+    private static guidCounter = 0;
     /**
      * Check if needle is in haystack array
      * @public
@@ -14,8 +15,8 @@ export default class Utils {
     }
 
     public static guid(): string {
-        const ts: number = Math.round(new Date().getTime() + (Math.random() * 100));
-        return 'amaliaPhotoPlayer' + ts.toString();
+        const ts = Date.now().toString(36);
+        return `amaliaPhotoPlayer${ts}${Utils.getUniqueSuffix()}`;
     }
 
     public static truncate(str: string, limit: number = 60, overflow: string = '...') {
@@ -35,27 +36,36 @@ export default class Utils {
         if (!sources.length) {
             return target;
         }
-        const source: any = sources.shift();
-
-        if (Utils.isObject(target) && Utils.isObject(source)) {
-            for (let key in source) {
-                if (!source.hasOwnProperty(key)) {
-                    continue;
-                }
-                if (Utils.isObject(source[key])) {
-                    if (!target[key]) {
-                        Object.assign(target, {[key]: {}});
-                    } else {
-                        target[key] = Object.assign({}, target[key])
-                    }
-                    Utils.mergeDeep(target[key], source[key]);
-                } else {
-                    Object.assign(target, {[key]: source[key]});
-                }
-            }
+        for (const source of sources) {
+            Utils.mergeDeepObject(target, source);
         }
+        return target;
+    }
 
-        return Utils.mergeDeep(target, ...sources);
+    private static mergeDeepObject(target: any, source: any): void {
+        if (!Utils.isObject(target) || !Utils.isObject(source)) {
+            return;
+        }
+        for (const key of Object.keys(source)) {
+            const sourceValue = source[key];
+            if (Utils.isObject(sourceValue)) {
+                target[key] = Utils.isObject(target[key]) ? Object.assign({}, target[key]) : {};
+                Utils.mergeDeepObject(target[key], sourceValue);
+                continue;
+            }
+            target[key] = sourceValue;
+        }
+    }
+
+    private static getUniqueSuffix(): string {
+        const cryptoObj = globalThis?.crypto;
+        if (cryptoObj?.getRandomValues) {
+            const buffer = new Uint32Array(1);
+            cryptoObj.getRandomValues(buffer);
+            return buffer[0].toString(36);
+        }
+        Utils.guidCounter += 1;
+        return Utils.guidCounter.toString(36);
     }
 
     public static roundToMultiple(n: number, m: number): number {

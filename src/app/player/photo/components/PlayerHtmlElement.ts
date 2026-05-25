@@ -518,6 +518,28 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         if (!Utils.inArray(displayState, this._availableDisplayStates)) {
             return;
         }
+        this.updateContainerDimensions(width, height);
+        this.resetDisplayContent();
+
+        switch (displayState) {
+            case 'xs':
+                this.applyExtraSmallDisplayState(fourImg);
+                break;
+            case 's':
+                this.applySmallDisplayState();
+                break;
+            case 'sm':
+            case 'm':
+            case 'l':
+                this.applyMediumToLargeDisplayState();
+                break;
+            default:
+                return;
+        }
+        this._displayState = displayState;
+    }
+
+    private updateContainerDimensions(width: number | null, height: number | null): void {
         if (width !== null) {
             this._width = width;
             this.dom.style.width = width.toString() + 'px';
@@ -526,67 +548,68 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._height = height;
             this.dom.style.height = height.toString() + 'px';
         }
+    }
+
+    private resetDisplayContent(): void {
         if (this._cropperWrapper) {
             this._cropperWrapper.destroy();
         }
         this.destroyReducedGallery();
         this._image.src = this._imagePath;
-        switch (displayState) {
-            case 'xs':
-                this._btnClose?.hide();
-                if (this._titleBox) {
-                    this._titleBox.style.visibility = 'hidden';
-                }
-                if (this._toolBar) {
-                    this._toolBar.style.display = 'none';
-                }
-                if (fourImg) {
-                    this._image.style.display = 'none';
-                    this.displayReducedGallery(fourImg);
-                } else {
-                    this._image.style.display = 'block';
-                }
-                break;
-            case 's':
-                this._btnClose?.show();
-                this._btnDownload?.hide();
-                this._btnFitScreen?.hide();
-                this._btnFullSize?.hide();
-                this._zoomInfo?.hide();
-                this._btnMagnify?.hide();
-                this._btnRotate?.hide();
-                this._btnFlipH?.hide();
-                this._btnFlipV?.hide();
-                if (this._titleBox) {
-                    this._titleBox.style.visibility = 'hidden';
-                }
-                if (this._toolBar) {
-                    this._toolBar.style.display = 'block';
-                }
-                this._image.style.display = 'block';
-                this.triggerEvent(AmaliaEventConstants.ready);
-                break;
-            case 'sm':
-            case 'm':
-            case 'l':
-                this._btnClose?.show();
-                this._btnDownload?.show();
-                this._btnFitScreen?.show();
-                this._btnFullSize?.show();
-                this._zoomInfo?.show();
-                this._btnMagnify?.show();
-                this._btnRotate?.show();
-                this._btnFlipH?.show();
-                this._btnFlipV?.show();
-                if (this._titleBox) {
-                    this._titleBox.style.visibility = 'visible';
-                }
-                this.createCropperInstance();
-                break;
-            default:
-                return;
+    }
+
+    private applyExtraSmallDisplayState(fourImg: string[] | null): void {
+        this._btnClose?.hide();
+        this.setTitleVisibility('hidden');
+        this.setToolbarDisplay('none');
+        if (fourImg) {
+            this._image.style.display = 'none';
+            this.displayReducedGallery(fourImg);
+            return;
         }
-        this._displayState = displayState;
+        this._image.style.display = 'block';
+    }
+
+    private applySmallDisplayState(): void {
+        this._btnClose?.show();
+        this._btnDownload?.hide();
+        this._btnFitScreen?.hide();
+        this._btnFullSize?.hide();
+        this._zoomInfo?.hide();
+        this._btnMagnify?.hide();
+        this._btnRotate?.hide();
+        this._btnFlipH?.hide();
+        this._btnFlipV?.hide();
+        this.setTitleVisibility('hidden');
+        this.setToolbarDisplay('block');
+        this._image.style.display = 'block';
+        this.triggerEvent(AmaliaEventConstants.ready);
+    }
+
+    private applyMediumToLargeDisplayState(): void {
+        this._btnClose?.show();
+        this._btnDownload?.show();
+        this._btnFitScreen?.show();
+        this._btnFullSize?.show();
+        this._zoomInfo?.show();
+        this._btnMagnify?.show();
+        this._btnRotate?.show();
+        this._btnFlipH?.show();
+        this._btnFlipV?.show();
+        this.setTitleVisibility('visible');
+        this.createCropperInstance();
+    }
+
+    private setTitleVisibility(visibility: 'hidden' | 'visible'): void {
+        if (this._titleBox) {
+            this._titleBox.style.visibility = visibility;
+        }
+    }
+
+    private setToolbarDisplay(display: 'none' | 'block'): void {
+        if (this._toolBar) {
+            this._toolBar.style.display = display;
+        }
     }
 
     private createCropperInstance(): void {
