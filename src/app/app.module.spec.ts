@@ -33,7 +33,7 @@ describe('AppModule', () => {
         mockAddCustomElement.and.callThrough();
         module.ngDoBootstrap();
         expect(mockAddCustomElement).toHaveBeenCalledTimes(10);
-        expect(mockAddCustomElement).toHaveBeenCalledWith(jasmine.anything(), 'amalia-photo');
+        expect(mockAddCustomElement).toHaveBeenCalledWith(jasmine.anything(), 'amalia-pictures-gallery');
     });
 });
 

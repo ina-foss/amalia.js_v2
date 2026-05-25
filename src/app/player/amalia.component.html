@@ -18,7 +18,7 @@
     <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata" [poster]="videoPoster"
         [ngClass]="{'poster-icon' : videoPoster !== ''}"></video>
     <!-- Amalia Photo -->
-    <div *ngIf="playerConfig.player.media === 'PICTURE'" #photoHost class="picture-host"></div>
+    <div *ngIf="playerConfig?.player?.media === 'PICTURE'" #photoHost class="picture-host"></div>
     <img #previewThumbnail class="preview-thumbnail" [hidden]="!enablePreviewThumbnail" [src]="thumbnailBlobVideo"
         alt="video-preview" fetchPriority="high" importance="high" />
     <div *ngIf="inError" class="error">

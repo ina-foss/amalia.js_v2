@@ -666,6 +666,7 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             getMediaPlayer: () => mediaPlayer,
             // Petite API dont on n’a pas besoin ici mais que la classe pourrait appeler
             getDisplayState: () => 'm',
+            getPicturePlayer: () => null,
             eventEmitter: {emit: emitSpy},
             aspectRatio: '4:3'
         };
@@ -1114,6 +1115,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
     let mediaPlayerElement = {
         getDisplayState: jasmine.createSpy('getDisplayState').and.returnValue('m'),
         getThumbnailUrl: jasmine.createSpy('getThumbnailUrl').and.callFake((tc: number) => `thumb?tc=${tc}`),
+        getPicturePlayer: jasmine.createSpy('getPicturePlayer').and.returnValue(null),
         // ci-dessous non utilisés par nos 4 méthodes visées, mais utiles au besoin :
         getMediaPlayer: jasmine.createSpy('getMediaPlayer').and.returnValue({}),
         eventEmitter: new EventEmitter()
@@ -1417,6 +1419,7 @@ describe('ControlBarPluginComponent (coverage boost)', () => {
             getMediaPlayer: () => mediaPlayer,
             eventEmitter,
             getDisplayState: () => 'm',
+            getPicturePlayer: () => null,
             getThumbnailUrl: (tc: number) => `thumb?tc=${tc}`,
             aspectRatio: '4:3',
             getConfiguration: () => ({thumbnail: {baseUrl: 'x', enableThumbnail: true}})

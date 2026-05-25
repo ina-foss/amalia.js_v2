@@ -55,6 +55,7 @@ describe('AmaliaComponent', () => {
         fixture = TestBed.createComponent(AmaliaComponent);
         component = fixture.componentInstance;
         thumbnailService = TestBed.inject(ThumbnailService);
+        component.config = config;
     });
 
     it('should create', () => {
@@ -291,7 +292,8 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         component = new AmaliaComponent(
             new MediaPlayerServiceStub() as any,
             {} as any,                       // HttpClient non utilisé ici
-            new ThumbnailServiceStub() as any
+            new ThumbnailServiceStub() as any,
+            { detectChanges: () => { } } as any
         );
 
         // Stub très simple du mediaPlayerElement + eventEmitter
