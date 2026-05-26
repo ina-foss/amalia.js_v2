@@ -16,7 +16,7 @@
      'amalia-primary-color' : posterBackgound['amalia-primary-color'],
      'amalia-secondary-color': posterBackgound['amalia-secondary-color']}" role="button" tabindex="0"
     (click)="controlClicked($event)" (keydown.enter)="controlClicked($event)">
-    <video #video [hidden]="state != PlayerState.INITIALIZED" class="player" preload="metadata" [poster]="videoPoster"
+    <video #video [hidden]="state != PlayerState.INITIALIZED || playerConfig?.player?.media === 'PICTURE'" class="player" preload="metadata" [poster]="videoPoster"
         [ngClass]="{'poster-icon' : videoPoster !== ''}"></video>
     <!-- Amalia Photo -->
     <div *ngIf="playerConfig?.player?.media === 'PICTURE'" #photoHost class="picture-host"></div>

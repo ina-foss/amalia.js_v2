@@ -191,6 +191,13 @@
       min-width: 0;
       min-height: 0;
 
+      &:fullscreen,
+      &:-webkit-full-screen,
+      &:-moz-full-screen {
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+
       &.ajs-photo-magnify {
         overflow: visible;
       }
@@ -239,6 +246,13 @@
         position: absolute;
         width: 100%;
         top: 0;
+        z-index: 2;
+        pointer-events: none;
+
+        .ajs-photo-top-left,
+        .ajs-photo-top-right {
+          pointer-events: auto;
+        }
 
         .ajs-photo-top-left {
           float: left;
@@ -310,7 +324,15 @@
         position: absolute;
         width: 100%;
         bottom: 0;
+        z-index: 2;
         background-color: rgba(34, 34, 34, 0.9);
+        pointer-events: none;
+
+        .ajs-photo-toolbar-left,
+        .ajs-photo-toolbar-middle,
+        .ajs-photo-toolbar-right {
+          pointer-events: auto;
+        }
 
         &.ajs-photo-fullscreen {
           z-index: 0;

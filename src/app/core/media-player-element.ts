@@ -30,6 +30,7 @@ export class MediaPlayerElement {
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
     private picturePlayer: AmaliaPlayer;
+    private _lastPictureZoomLevel: number = 100;
     private _picturePlayerResizeHandler: () => void = null;
     private _picturePlayerHostResizeObserver: ResizeObserver = null;
     private _picturePlayerHostResizeRaf: number = null;
@@ -129,6 +130,10 @@ export class MediaPlayerElement {
                     // after the configuration is fully loaded so that plugins (e.g. CONTROL_BAR)
                     // can re-initialise with the correct pluginsConfiguration.
                     this._eventEmitter.emit(PlayerEventType.INIT);
+                    // The control bar registers its PICTURE_ZOOM_CHANGE listener during the INIT
+                    // handler above (synchronous). Re-emit the last known zoom so the display is
+                    // correct even when the first zoom event fired before INIT.
+                    this._eventEmitter.emit(PlayerEventType.PICTURE_ZOOM_CHANGE, this._lastPictureZoomLevel);
                 }
                 // Set media source specified by config
                 this.setMediaSource();
@@ -212,7 +217,8 @@ export class MediaPlayerElement {
         window.addEventListener('resize', this._picturePlayerResizeHandler);
         // Forward picture player zoom events → PICTURE_ZOOM_CHANGE so the control bar can update its zoom display
         this.picturePlayer.addEventListener(AmaliaEventConstants.zoom, (e: CustomEvent) => {
-            this._eventEmitter.emit(PlayerEventType.PICTURE_ZOOM_CHANGE, e.detail?.imageData?.zoomLevel ?? 100);
+            this._lastPictureZoomLevel = e.detail?.imageData?.zoomLevel ?? 100;
+            this._eventEmitter.emit(PlayerEventType.PICTURE_ZOOM_CHANGE, this._lastPictureZoomLevel);
         });
         // Set initial displayState
         this.picturePlayer.setDisplayState(this.getDisplayState());

@@ -23,19 +23,26 @@ export default class CropperWrapper {
         this._zoomHandlerRef = this.zoomHandler.bind(this);
         this._image.addEventListener('zoom', this._zoomHandlerRef);
 
-        const onePercentWidth: number = this._image.naturalWidth / 100;
-
         this._cropper = new Cropper(this._image, {
             autoCrop: false,
             background: false,
+            movable: true,
+            zoomable: true,
             zoomOnWheel: true,
-            wheelZoomRatio: onePercentWidth * .001,
+            wheelZoomRatio: 0.05,
             dragMode: 'move',
             toggleDragModeOnDblclick: false,
             checkCrossOrigin: true,
             ready() {
                 self._isReady = true;
-                self.fitToCanvas();  // _isReady est true ici
+                // Ensure we stay in move mode for direct image panning.
+                (self._cropper as any).setDragMode?.('move');
+                const naturalWidth: number = self._image.naturalWidth;
+                if (naturalWidth > 0) {
+                    // @ts-expect-error - update internal option after image loads; CropperJS reads it on each wheel event
+                    self._cropper.options.wheelZoomRatio = (naturalWidth / 100) * 0.001;
+                }
+                self.fitToCanvas();
                 self.triggerEvent(new CustomEvent(CropperWrapper.events.ready));
             }
         });
@@ -174,8 +181,11 @@ export default class CropperWrapper {
 
         const cropped: boolean = cropData.hasOwnProperty('left');
 
-        // @ts-expect-error - `crossOriginUrl` is a private/undocumented Cropper property
-        const src: string = this._cropper.crossOriginUrl;
+        // `crossOriginUrl` is private/undocumented and can be undefined depending on image/CORS path.
+        // Fallback to the real image URL used by the underlying <img>.
+        // @ts-expect-error - private Cropper property.
+        const cropperSrc: string = this._cropper.crossOriginUrl;
+        const src: string = cropperSrc || this._image.currentSrc || this._image.src;
         const src_width: number = imageData.naturalWidth;
         const src_height: number = imageData.naturalHeight;
         const left: number = canvasData.left;

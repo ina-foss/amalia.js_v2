@@ -1,9 +1,11 @@
 import {PluginBase} from '../../core/plugin/plugin-base';
 import {
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
     Input,
+    NgZone,
     Output,
     Renderer2,
     ViewChild,
@@ -283,7 +285,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private pendingFrameJump = 0;
     private readonly debouncedSeek: _.DebouncedFunc<() => void>;
 
-    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2) {
+    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2, private readonly cdr: ChangeDetectorRef, private readonly ngZone: NgZone) {
         super(playerService);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
         this.thumbnailService = thumbnailService;
@@ -482,7 +484,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     public handlePictureZoomChange(zoomLevel: number) {
-        this.pictureZoomLevel = zoomLevel ?? 100;
+        this.ngZone.run(() => {
+            this.pictureZoomLevel = zoomLevel ?? 100;
+            this.cdr.markForCheck();
+        });
     }
 
     /**
@@ -780,12 +785,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 break;
             // Picture player controls
             case 'rotate':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.rotate();
                 break;
             case 'fliph':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.flipH();
                 break;
             case 'flipv':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.flipV();
                 break;
             case 'magnify':
@@ -793,18 +801,23 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.magnifyEnabled = !this.magnifyEnabled;
                 break;
             case 'fullsize':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.showRealSize();
                 break;
             case 'fullscreen':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.toggleFullscreen();
                 break;
             case 'fitToScreen':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.fitToScreen();
                 break;
             case 'zoomIn':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.zoom();
                 break;
             case 'zoomOut':
+                if (this.magnifyEnabled) { break; }
                 this.mediaPlayerElement.getPicturePlayer()?.unZoom();
                 break;
             default:

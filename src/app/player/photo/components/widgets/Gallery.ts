@@ -13,6 +13,7 @@ export default class Gallery extends BaseHtmlElement {
 
     private readonly _thumbs: AmaliaPlayerGalleryItem[] = [];
     private _currentItemIndex: number = 0;
+    private _initialSelectedIndex: number = 0;
 
     constructor(images: AmaliaPlayerImageSource[], height: number) {
         super();
@@ -24,8 +25,13 @@ export default class Gallery extends BaseHtmlElement {
         const contentGallery: HTMLDivElement = document.createElement('div');
         this.addClass('ajs-photo-thumbs', contentGallery);
 
+        const selectedIdx: number = images.findIndex((img) => img.selectedImg === true);
+        this._initialSelectedIndex = selectedIdx >= 0 ? selectedIdx : 0;
+        this._currentItemIndex = this._initialSelectedIndex;
+
         images.forEach((imageSrc: AmaliaPlayerImageSource, i: number) => {
-            const classNameThumb: string = i === 0 ? 'ajs-photo-img-thumb ajs-photo-active' : 'ajs-photo-img-thumb';
+            const active: boolean = i === this._initialSelectedIndex;
+            const classNameThumb: string = active ? 'ajs-photo-img-thumb ajs-photo-active' : 'ajs-photo-img-thumb';
             contentGallery.appendChild(this.createImage(imageSrc, classNameThumb, i));
         });
 
@@ -38,41 +44,55 @@ export default class Gallery extends BaseHtmlElement {
         this._moveEventRef = this.moveHandler.bind(this);
     }
 
-    public moveHandler(event: KeyboardEvent): void {
-        if (Utils.inArray(event.key, this._moveKeys)) {
-            event.preventDefault();
+    public getInitialSelectedIndex(): number {
+        return this._initialSelectedIndex;
+    }
 
-            const cols: number = Math.floor(this.dom.clientWidth / 76);
-            const activeImg: HTMLImageElement = this.dom.querySelector('.ajs-photo-img-thumb.ajs-photo-active img');
-            const idx: number = parseInt(activeImg.getAttribute('i'));
-            let next: number = idx;
-            const max: number = this._thumbs.length - 1;
-            switch (event.key) {
-                case 'ArrowUp':
-                    next = Math.max(idx - cols, 0);
-                    break;
-                case 'ArrowDown':
-                    next = Math.min(idx + cols, max);
-                    break;
-                case 'ArrowLeft':
-                    next = Math.max(idx - 1, 0);
-                    break;
-                case 'ArrowRight':
-                    next = Math.min(idx + 1, max);
-                    break;
-            }
-            if (next === idx) {
-                return;
-            }
-            const nextActiveImg: HTMLImageElement = this.dom.querySelector('.ajs-photo-img-thumb img[i="' + next.toString() +'"]');
-            const targetDiv: HTMLElement = nextActiveImg.parentElement;
-            if (targetDiv.offsetTop + targetDiv.offsetHeight > this.dom.offsetTop + this.dom.scrollTop + this.dom.offsetHeight) {
-                this.dom.scrollTo(0, this.dom.scrollTop + targetDiv.offsetHeight + 8);
-            } else if (targetDiv.offsetTop < this.dom.offsetTop + this.dom.scrollTop) {
-                this.dom.scrollTo(0, this.dom.scrollTop - targetDiv.offsetHeight - 8);
-            }
-            targetDiv.click();
+    public moveHandler(event: KeyboardEvent): void {
+        if (!Utils.inArray(event.key, this._moveKeys)) {
+            return;
         }
+        event.preventDefault();
+
+        const cols: number = Math.max(1, Math.floor(this.dom.clientWidth / 76));
+        const activeImg: HTMLImageElement | null = this.dom.querySelector('.ajs-photo-img-thumb.ajs-photo-active img');
+        if (!activeImg) {
+            return;
+        }
+        const idx: number = parseInt(activeImg.getAttribute('i'), 10);
+        let next: number = idx;
+        const max: number = this._thumbs.length - 1;
+        switch (event.key) {
+            case 'ArrowUp':
+                next = Math.max(idx - cols, 0);
+                break;
+            case 'ArrowDown':
+                next = Math.min(idx + cols, max);
+                break;
+            case 'ArrowLeft':
+                next = Math.max(idx - 1, 0);
+                break;
+            case 'ArrowRight':
+                next = Math.min(idx + 1, max);
+                break;
+        }
+        if (next === idx) {
+            return;
+        }
+        const nextActiveImg: HTMLImageElement | null = this.dom.querySelector('.ajs-photo-img-thumb img[i="' + next.toString() + '"]');
+        if (!nextActiveImg?.parentElement) {
+            return;
+        }
+        const targetDiv: HTMLElement = nextActiveImg.parentElement;
+        const containerTop: number = this.dom.scrollTop;
+        const containerBottom: number = containerTop + this.dom.offsetHeight;
+        const itemBottom: number = targetDiv.offsetTop + targetDiv.offsetHeight;
+        if (itemBottom > containerBottom) {
+            this.dom.scrollTo(0, this.dom.scrollTop + targetDiv.offsetHeight + 8);
+        } else if (targetDiv.offsetTop < containerTop) {
+            this.dom.scrollTo(0, this.dom.scrollTop - targetDiv.offsetHeight - 8);
+        }
+        targetDiv.click();
     }
 
     public getNextImages(count: number) {
@@ -104,7 +124,9 @@ export default class Gallery extends BaseHtmlElement {
         div.addEventListener('click', (e) => {
             const current: HTMLElement = e.currentTarget as HTMLElement;
             const active: HTMLElement = this.dom.querySelector('.ajs-photo-img-thumb.ajs-photo-active');
-            active.setAttribute('class', 'ajs-photo-img-thumb');
+            if (active) {
+                active.setAttribute('class', 'ajs-photo-img-thumb');
+            }
             current.setAttribute('class', 'ajs-photo-img-thumb ajs-photo-active');
             this._currentItemIndex = index;
             this.dom.dispatchEvent(new CustomEvent(Gallery.events.select, {
@@ -136,8 +158,13 @@ export default class Gallery extends BaseHtmlElement {
 
     public scrollToActive() {
         const active: HTMLElement = this.dom.querySelector('.ajs-photo-img-thumb.ajs-photo-active');
-        const activeTop = active.offsetTop - this.dom.offsetTop;
-        this.dom.scrollTo(0, activeTop - (51 * 3));
+        if (!active) {
+            return;
+        }
+        const activeTop: number = active.offsetTop - this.dom.offsetTop;
+        const thumbH: number = active.offsetHeight;
+        const center: number = (this.dom.offsetHeight / 2) - (thumbH / 2);
+        this.dom.scrollTo(0, Math.max(0, activeTop - center));
     }
 
     public updateImages(images: AmaliaPlayerImageSource[]) {

@@ -31,11 +31,15 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private readonly _magnifyMaxValue: number = 800;
     private readonly _playerInstance: AmaliaPlayer;
     private readonly _escapeMagnifyRef: any;
+    private readonly _fullscreenChangeRef: any;
 
     private _hideControlTimeout: any;
     private _hideEventsAdded: boolean = false;
     private _createCropperTimeout: any = null;
     private _blockControlTimeout: boolean = false;
+    private _isInFullscreen: boolean = false;
+    private _cropperReadyRef: any = null;
+    private _cropperZoomRef: any = null;
     private _topBar: HTMLDivElement;
     private _toolBar: HTMLDivElement;
     private _titleBox: HTMLDivElement;
@@ -43,6 +47,9 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private _cropperWrapper: CropperWrapper;
     private _isFullscreen: boolean = false;
     private _imagePath: string;
+    private _retryWithoutCorsForSrc: string = null;
+    private readonly _imageLoadRef: any;
+    private readonly _imageErrorRef: any;
 
     private readonly _availableDisplayStates: string[] = ['xs', 's', 'sm', 'm', 'l'];
     private _displayState: string;
@@ -60,6 +67,10 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private _btnFitScreen: FitScreenButton;
     private _btnFullSize: FullsizeButton;
 
+    // Set to true when the user manually adjusts zoom; prevents fitToCanvas() from
+    // overriding the user-set level when PLAYER_RESIZED fires via ResizeObserver.
+    private _manualZoom: boolean = false;
+
     private _magnify: boolean = false;
     private _magnifier: MagnifierHtmlElement;
 
@@ -67,12 +78,12 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
     constructor(setting: AmaliaPlayerSettings, playerInstance: AmaliaPlayer) {
         super();
-        this._zoomMax = setting.zoomMax;
-        this._zoomMin = setting.zoomMin;
-        this._zoomStep = setting.zoomStep;
-        this._zoomSteps = setting.zoomSteps;
-        this._magnifyValue = setting.magnifyValue;
-        this._magnifyMaxValue = setting.magnifyMaxValue;
+        this._zoomMax = setting.zoomMax ?? 300;
+        this._zoomMin = setting.zoomMin ?? 10;
+        this._zoomStep = setting.zoomStep ?? 25;
+        this._zoomSteps = setting.zoomSteps ?? null;
+        this._magnifyValue = setting.magnifyValue ?? 400;
+        this._magnifyMaxValue = setting.magnifyMaxValue ?? 800;
         this._toolbarSettings = Utils.mergeDeep({}, this._toolbarSettings, setting.toolbar);
         this._playerInstance = playerInstance;
         this.dom = document.createElement('div');
@@ -83,7 +94,11 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
 
         this._image = document.createElement('img');
-        this._image.src = this._imagePath;
+        this._imageLoadRef = this.onImageLoad.bind(this);
+        this._imageErrorRef = this.onImageError.bind(this);
+        this._image.addEventListener('load', this._imageLoadRef);
+        this._image.addEventListener('error', this._imageErrorRef);
+        this.setImageSource(this._imagePath);
 
         this.dom.appendChild(this._image);
         if (!setting.noTopbar) {
@@ -97,7 +112,76 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         }
 
         this._escapeMagnifyRef = this.escapeMagnify.bind(this);
+        this._fullscreenChangeRef = this.handleFullscreenChange.bind(this);
+        this.dom.addEventListener('fullscreenchange', this._fullscreenChangeRef);
         this.addHideEvents();
+    }
+
+    private handleFullscreenChange(): void {
+        if (!this._cropperWrapper?.getImageData()) {
+            return;
+        }
+        setTimeout(() => {
+            if (!this._cropperWrapper) {
+                return;
+            }
+            this._cropperWrapper.fitToCanvas();
+            if (this._magnify) {
+                this.refreshMagnifier();
+            }
+        }, 150);
+    }
+
+    private shouldUseAnonymousCrossOrigin(imageSrc: string): boolean {
+        if (!imageSrc) {
+            return false;
+        }
+        if (/^(data:|blob:|file:)/i.test(imageSrc)) {
+            return false;
+        }
+        try {
+            const resolved = new URL(imageSrc, window.location.href);
+            return resolved.origin !== window.location.origin;
+        } catch {
+            return false;
+        }
+    }
+
+    private setImageSource(imageSrc: string): void {
+        this._imagePath = imageSrc;
+        this._retryWithoutCorsForSrc = null;
+        if (this.shouldUseAnonymousCrossOrigin(imageSrc)) {
+            this._image.crossOrigin = 'anonymous';
+        } else {
+            this._image.removeAttribute('crossorigin');
+        }
+        this._image.src = imageSrc;
+    }
+
+    private onImageError(): void {
+        const currentSrc = this._imagePath;
+        if (!currentSrc) {
+            return;
+        }
+        if (!this._image.getAttribute('crossorigin')) {
+            return;
+        }
+        if (this._retryWithoutCorsForSrc === currentSrc) {
+            return;
+        }
+        this._retryWithoutCorsForSrc = currentSrc;
+        this._image.removeAttribute('crossorigin');
+        this._image.src = '';
+        this._image.src = currentSrc;
+    }
+
+    private onImageLoad(): void {
+        if (!['sm', 'm', 'l'].includes(this._displayState)) {
+            return;
+        }
+        if (!this._cropperWrapper) {
+            this.createCropperInstance();
+        }
     }
 
     public setTitle(title: string) {
@@ -177,18 +261,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
         this._btnFullScreen = new FullscreenButton(this._toolbarSettings.fullscreen, this.eventFullscreen.bind(this));
         right.appendChild(this._btnFullScreen.getDom());
-        this.dom.addEventListener('fullscreenchange', () => {
-            this._btnFullScreen.toggleIcon();
-            setTimeout(() => {
-                if (!this._cropperWrapper) {
-                    return;
-                }
-                const imageData: AmaliaPlayerImageData = this._cropperWrapper.getImageData();
-                if (imageData) {
-                    this._cropperWrapper.fitToCanvas();
-                }
-            }, 150);
-        });
         this._btnFlipV = new FlipVButton(this._toolbarSettings.flipv, this.eventFlipV.bind(this));
         right.appendChild(this._btnFlipV.getDom());
         this._btnFlipH = new FlipHButton(this._toolbarSettings.fliph, this.eventFlipH.bind(this));
@@ -280,6 +352,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         if (!this._cropperWrapper) {
             return;
         }
+        this._manualZoom = false;
         this._cropperWrapper.fitToCanvas();
         this.triggerEvent(AmaliaEventConstants.fitToScreen, {
             imageData: this._cropperWrapper.getImageData()
@@ -305,51 +378,48 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this.showControls();
     }
 
+    private recreateCropper(): void {
+        if (this._cropperWrapper) {
+            this._cropperWrapper.destroy();
+            this._cropperWrapper = null;
+        }
+        this._image.style.display = '';
+        this.createCropperInstance();
+        this._zoomInfo?.show();
+        this.showControls();
+    }
+
     private eventFullscreen() {
-        let fullscreenPromise: Promise<void>;
-        if (
-            document.fullscreenElement ||
-            // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-            document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement
-        ) {
+        if (document.fullscreenElement) {
             this._isFullscreen = false;
-            if (document.exitFullscreen) {
-                fullscreenPromise = document.exitFullscreen();
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-            } else if (document.mozCancelFullScreen) {
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-                fullscreenPromise = document.mozCancelFullScreen();
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-            } else if (document.webkitExitFullscreen) {
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-                fullscreenPromise = document.webkitExitFullscreen();
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-            } else if (document.msExitFullscreen) {
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-                fullscreenPromise = document.msExitFullscreen();
-            }
+            document.exitFullscreen().then(() => {
+                this._isInFullscreen = false;
+                this._btnFullScreen?.toggleIcon();
+                if (this._width > 0) { this.dom.style.width = this._width + 'px'; }
+                if (this._height > 0) { this.dom.style.height = this._height + 'px'; }
+                this.recreateCropper();
+                this.triggerEvent(AmaliaEventConstants.fullscreen);
+            }).catch(() => {
+                this._isInFullscreen = false;
+            });
         } else {
             this._isFullscreen = true;
-            if (this.dom.requestFullscreen) {
-                fullscreenPromise = this.dom.requestFullscreen();
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-            } else if (this.dom.mozRequestFullScreen) {
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-                fullscreenPromise = this.dom.mozRequestFullScreen();
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-            } else if (this.dom.webkitRequestFullscreen) {
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-                fullscreenPromise = this.dom.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-            } else if (this.dom.msRequestFullscreen) {
-                // @ts-expect-error - vendor-prefixed fullscreen API not in standard DOM lib
-                fullscreenPromise = this.dom.msRequestFullscreen();
-            }
+            this._isInFullscreen = true;
+            this.dom.style.width = '';
+            this.dom.style.height = '';
+            this.dom.requestFullscreen().then(() => {
+                this._btnFullScreen?.toggleIcon();
+                setTimeout(() => {
+                    this.recreateCropper();
+                }, 300);
+                this.triggerEvent(AmaliaEventConstants.fullscreen);
+                this.showControls();
+            }).catch(() => {
+                this._isInFullscreen = false;
+                if (this._width > 0) { this.dom.style.width = this._width + 'px'; }
+                if (this._height > 0) { this.dom.style.height = this._height + 'px'; }
+            });
         }
-        fullscreenPromise.then(() => {
-            this.triggerEvent(AmaliaEventConstants.fullscreen);
-            this.showControls();
-        });
     }
 
     private eventMagnify() {
@@ -389,6 +459,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         if (!cropperContainer) {
             return;
         }
+        this._magnifier?.removeFromDom();
         this._magnifier = new MagnifierHtmlElement(
             cropperContainer,
             imgData,
@@ -397,6 +468,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._magnifyMaxValue);
         this.dom.prepend(this._magnifier.getDom());
         this.addClass('ajs-photo-magnify');
+        document.removeEventListener('keyup', this._escapeMagnifyRef);
         document.addEventListener('keyup', this._escapeMagnifyRef);
     }
 
@@ -521,13 +593,21 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     public setDisplayState(displayState: string, width: number = null, height: number = null, fourImg: string[] = null) {
+        if (this._isInFullscreen) {
+            return;
+        }
         if (!Utils.inArray(displayState, this._availableDisplayStates)) {
             return;
         }
         const sameDisplayState = this._displayState === displayState;
         if (sameDisplayState && ['sm', 'm', 'l'].includes(displayState) && this._cropperWrapper) {
             this.updateContainerDimensions(width, height);
-            this._cropperWrapper.fitToCanvas();
+            if (this._manualZoom) {
+                // Container may have resized; preserve user zoom, only reposition.
+                this._cropperWrapper.center();
+            } else {
+                this._cropperWrapper.fitToCanvas();
+            }
             if (this._magnify) {
                 this.refreshMagnifier();
             }
@@ -575,15 +655,20 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private updateContainerDimensions(width: number | null, height: number | null): void {
         if (width !== null) {
             this._width = width;
-            this.dom.style.width = width.toString() + 'px';
+            if (!this._isInFullscreen) {
+                this.dom.style.width = width.toString() + 'px';
+            }
         }
         if (height !== null) {
             this._height = height;
-            this.dom.style.height = height.toString() + 'px';
+            if (!this._isInFullscreen) {
+                this.dom.style.height = height.toString() + 'px';
+            }
         }
     }
 
     private resetDisplayContent(): void {
+        this._manualZoom = false;
         if (this._createCropperTimeout) {
             clearTimeout(this._createCropperTimeout);
             this._createCropperTimeout = null;
@@ -593,7 +678,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._cropperWrapper = null;
         }
         this.destroyReducedGallery();
-        this._image.src = this._imagePath;
+        this._image.style.display = '';
+        this.setImageSource(this._imagePath);
     }
 
     private applyExtraSmallDisplayState(fourImg: string[] | null): void {
@@ -651,33 +737,49 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private createCropperInstance(): void {
-        const addEvent: boolean = !this._cropperWrapper;
-        if (this._image.naturalHeight === 0 || this._image.naturalWidth === 0) {
-            this._createCropperTimeout = setTimeout(() => {
-                this._createCropperTimeout = null;
-                this.createCropperInstance();
-            }, 300);
+        if (this._cropperWrapper) {
             return;
         }
+        if (this._image.naturalHeight === 0 || this._image.naturalWidth === 0) {
+            if (!this._createCropperTimeout) {
+                this._createCropperTimeout = setTimeout(() => {
+                    this._createCropperTimeout = null;
+                    this.createCropperInstance();
+                }, 300);
+            }
+            return;
+        }
+        if (this._cropperReadyRef) {
+            this._image.removeEventListener(CropperWrapper.events.ready, this._cropperReadyRef);
+        }
+        if (this._cropperZoomRef) {
+            this._image.removeEventListener(CropperWrapper.events.zoom, this._cropperZoomRef);
+        }
+
         this._cropperWrapper = new CropperWrapper({
             target: this._image,
             zoomMax: this._zoomMax,
             zoomMin: this._zoomMin
         });
-        if (addEvent) {
-            this._cropperWrapper.addEventListener(CropperWrapper.events.ready, () => {
-                const img: HTMLImageElement = this.dom.querySelector('img.cropper-hidden');
-                img.style.display = 'none';
-                this.triggerEvent(AmaliaEventConstants.ready);
-                this.showControls();
-            }).addEventListener(CropperWrapper.events.zoom, (e: CustomEvent) => {
-                this._zoomInfo?.setResultValue(e.detail.zoomLevel);
-                this.triggerEvent(AmaliaEventConstants.zoom, {
-                    imageData: this._cropperWrapper.getImageData()
-                });
-                this.showControls();
+
+        this._cropperReadyRef = () => {
+            this._image.style.display = 'none';
+            if (this._magnify) {
+                this.enableMagnify();
+            }
+            this.triggerEvent(AmaliaEventConstants.ready);
+            this.showControls();
+        };
+        this._cropperZoomRef = (e: CustomEvent) => {
+            this._zoomInfo?.setResultValue(e.detail.zoomLevel);
+            this.triggerEvent(AmaliaEventConstants.zoom, {
+                imageData: this._cropperWrapper?.getImageData()
             });
-        }
+            this.showControls();
+        };
+
+        this._cropperWrapper.addEventListener(CropperWrapper.events.ready, this._cropperReadyRef);
+        this._cropperWrapper.addEventListener(CropperWrapper.events.zoom, this._cropperZoomRef);
     }
 
     public getDisplayState(): string {
@@ -688,6 +790,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     public replaceSrc(imageSrc: string, imageName: string) {
         clearTimeout(this._timeoutLoadSrc);
         this._timeoutLoadSrc = setTimeout(() => {
+            this._manualZoom = false;
             if (this._magnify) {
                 this.eventMagnify();
             }
@@ -699,8 +802,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
                 this._cropperWrapper.destroy();
                 this._cropperWrapper = null;
             }
-            this._imagePath = imageSrc;
-            this._image.src = this._imagePath;
+            this._image.style.display = '';
+            this.setImageSource(imageSrc);
             if (['sm', 'm', 'l'].includes(this._displayState)) {
                 this.createCropperInstance();
             }
@@ -720,6 +823,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._zoomInfo.increment();
             return;
         }
+        this._manualZoom = true;
         this._cropperWrapper.zoom(this._nextZoomStep(this._cropperWrapper.getZoomLevel()));
     }
 
@@ -731,6 +835,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._zoomInfo.decrement();
             return;
         }
+        this._manualZoom = true;
         this._cropperWrapper.zoom(this._prevZoomStep(this._cropperWrapper.getZoomLevel()));
     }
 
@@ -783,6 +888,15 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     public removeFromDom() {
+        this.dom.removeEventListener('fullscreenchange', this._fullscreenChangeRef);
+        this._image.removeEventListener('load', this._imageLoadRef);
+        this._image.removeEventListener('error', this._imageErrorRef);
+        if (this._cropperReadyRef) {
+            this._image.removeEventListener(CropperWrapper.events.ready, this._cropperReadyRef);
+        }
+        if (this._cropperZoomRef) {
+            this._image.removeEventListener(CropperWrapper.events.zoom, this._cropperZoomRef);
+        }
         this._zoomInfo?.removeFromDom();
         this._btnFullScreen?.removeFromDom();
         this._btnFlipH?.removeFromDom();

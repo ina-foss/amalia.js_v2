@@ -58,7 +58,12 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         this._contentRight = document.createElement('div');
         this._contentRight.className = 'ajs-photo-content-right';
 
-        this._cropperComponent = new PlayerHtmlElement(this._settings, this);
+        const selectedIdx: number = this._settings.imagesSrc.findIndex((img) => img.selectedImg === true);
+        const settingsForPlayer = selectedIdx > 0
+            ? { ...this._settings, imagesSrc: [this._settings.imagesSrc[selectedIdx], ...this._settings.imagesSrc.filter((_, i) => i !== selectedIdx)] }
+            : this._settings;
+
+        this._cropperComponent = new PlayerHtmlElement(settingsForPlayer, this);
         this._contentRight.appendChild(this._cropperComponent.getDom());
 
         return this._contentRight;
@@ -156,10 +161,11 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         }
         if (this._gallery) {
             this._gallery.updateImages(uniqueImages);
-        } else if (this._settings?.showGallery && this._settings.imagesSrc.length > 1 && this._contentRight) {
+        } else if (this._settings?.imagesSrc.length > 1 && this._contentRight) {
             this._settings.showGallery = true;
             this.dom.appendChild(this.createGallery());
-            this.setDisplayState(this.getDisplayState());
+            const currentState: string = this.getDisplayState() || 'l';
+            this.setDisplayState(currentState);
         }
     }
 

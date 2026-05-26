@@ -259,6 +259,12 @@
         cursor: pointer;
       }
 
+      &.magnify-locked {
+        opacity: 0.35;
+        pointer-events: none;
+        cursor: default;
+      }
+
       .ui-slider {
         position: relative;
         padding: 0;

@@ -292,9 +292,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                 // the rest is mapped explicitly from the typed PlayerConfigData properties.
                 const settings: AmaliaPlayerSettings = {
                     imagesSrc,
-                    noToolbar: player.noToolbar ?? true,
-                    noTopbar: player.noTopbar ?? true,
-                    showGallery: player.showGallery ?? player.data?.showGallery ?? false,
+                    noToolbar: player.noToolbar ?? false,
+                    noTopbar: player.noTopbar ?? false,
+                    showGallery: player.showGallery ?? player.data?.showGallery ?? imagesSrc.length > 1,
                     zoomStep: player.zoomStep,
                     zoomSteps: player.zoomSteps,
                     zoomMax: player.zoomMax,
@@ -733,7 +733,12 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             };
         }
 
-        const element = this.mediaPlayer.nativeElement.offsetParent as HTMLElement;
+        // In picture mode the video element is hidden, so offsetParent returns null.
+        // Fall back to mediaContainer which is the equivalent starting point.
+        const isPictureMode = this.playerConfig?.player?.media === 'PICTURE';
+        const element = (isPictureMode
+            ? this.mediaContainer.nativeElement
+            : this.mediaPlayer.nativeElement.offsetParent) as HTMLElement;
         if (element) {
             let parent = element.offsetParent as HTMLElement;
             let condition = parent && parent.classList.contains('module') && parent.classList.contains('player');

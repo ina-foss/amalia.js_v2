@@ -356,7 +356,7 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'zoomInfo'"
-                        class="control zoom-info" [attr.aria-label]="c.label"
+                        class="control zoom-info" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <span tooltip="{{c.data?.minus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomOut')"
                             (keydown.enter)="controlClicked('zoomOut')" role="button" tabindex="0">
@@ -377,7 +377,7 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fitToScreen'"
-                        class="control fitToScreen" [attr.aria-label]="c.label"
+                        class="control fitToScreen" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
@@ -390,7 +390,7 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fullsize'"
-                        class="control fullsize" [attr.aria-label]="c.label"
+                        class="control fullsize" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
@@ -403,7 +403,7 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'rotate'"
-                        class="control rotate" [attr.aria-label]="c.label"
+                        class="control rotate" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
@@ -416,7 +416,7 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fliph'"
-                        class="control fliph" [attr.aria-label]="c.label"
+                        class="control fliph" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
@@ -429,7 +429,7 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'flipv'"
-                        class="control flipv" [attr.aria-label]="c.label"
+                        class="control flipv" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
@@ -442,7 +442,7 @@
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
                          ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
                          ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fullscreen'"
-                        class="control fullscreen" [attr.aria-label]="c.label"
+                        class="control fullscreen" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
@@ -558,7 +558,7 @@
                         <span>{{c.label}}</span>
                     </li>
                     <!-- Picture Player: Fit to Screen -->
-                    <li *ngSwitchCase="'fitToScreen'" class="control fitToScreen"
+                    <li *ngSwitchCase="'fitToScreen'" class="control fitToScreen" [class.magnify-locked]="magnifyEnabled"
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -567,7 +567,7 @@
                         <span>{{c.label}}</span>
                     </li>
                     <!-- Picture Player: Fullsize -->
-                    <li *ngSwitchCase="'fullsize'" class="control fullsize"
+                    <li *ngSwitchCase="'fullsize'" class="control fullsize" [class.magnify-locked]="magnifyEnabled"
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -576,7 +576,7 @@
                         <span>{{c.label}}</span>
                     </li>
                     <!-- Picture Player: Rotate -->
-                    <li *ngSwitchCase="'rotate'" class="control rotate"
+                    <li *ngSwitchCase="'rotate'" class="control rotate" [class.magnify-locked]="magnifyEnabled"
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -585,7 +585,7 @@
                         <span>{{c.label}}</span>
                     </li>
                     <!-- Picture Player: Flip Horizontal -->
-                    <li *ngSwitchCase="'fliph'" class="control fliph"
+                    <li *ngSwitchCase="'fliph'" class="control fliph" [class.magnify-locked]="magnifyEnabled"
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -594,7 +594,7 @@
                         <span>{{c.label}}</span>
                     </li>
                     <!-- Picture Player: Flip Vertical -->
-                    <li *ngSwitchCase="'flipv'" class="control flipv"
+                    <li *ngSwitchCase="'flipv'" class="control flipv" [class.magnify-locked]="magnifyEnabled"
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
@@ -603,7 +603,7 @@
                         <span>{{c.label}}</span>
                     </li>
                     <!-- Picture Player: Fullscreen -->
-                    <li *ngSwitchCase="'fullscreen'" class="control fullscreen"
+                    <li *ngSwitchCase="'fullscreen'" class="control fullscreen" [class.magnify-locked]="magnifyEnabled"
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">

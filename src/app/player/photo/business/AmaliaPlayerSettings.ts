@@ -16,6 +16,7 @@ export interface AmaliaPlayerImageSource {
     name: string
     path: string
     thumbPath: string
+    selectedImg?: boolean
 }
 
 export interface AmaliaPlayerButtonSettings {

@@ -284,7 +284,10 @@ describe('MagnifierHtmlElement', () => {
 
         (magnifier as any).moveMagnifier({});
         expect(magnifier.getDom().style.left).toBe('180px');
-        expect(magnifier.getDom().style.top).toBe('-10px');
+        const targetRect = target.getBoundingClientRect();
+        const parentRect = magnifier.getDom().parentElement?.getBoundingClientRect() ?? targetRect;
+        const expectedTop = targetRect.top - parentRect.top - 10;
+        expect(magnifier.getDom().style.top).toBe(`${expectedTop}px`);
     });
 
     it('transform and scale helpers should handle flip/flop combinations', () => {

@@ -6,6 +6,7 @@ function createWrapper() {
     wrapper._image = image;
     wrapper._settings = { zoomMin: 50, zoomMax: 200, target: image };
     wrapper._zoomLevel = 100;
+    wrapper._isReady = true;
     wrapper._zoomHandlerRef = jasmine.createSpy('zoomHandlerRef');
     wrapper._cropper = {
         destroy: jasmine.createSpy('destroy'),
