@@ -16,7 +16,7 @@ import { DefaultConfigConverter } from '../core/config/converter/default-config-
 import { DefaultMetadataConverter } from '../core/metadata/converter/default-metadata-converter';
 import { DefaultMetadataLoader } from '../core/metadata/loader/default-metadata-loader';
 import { MediaPlayerElement } from '../core/media-player-element';
-import { AmaliaPlayerSettings } from './photo/business/AmaliaPlayerSettings';
+import { AmaliaPlayerImageSource, AmaliaPlayerSettings } from './photo/business/AmaliaPlayerSettings';
 import { HttpClient } from '@angular/common/http';
 import { DefaultLogger } from '../core/logger/default-logger';
 import { Loader } from '../core/loader/loader';
@@ -287,13 +287,14 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             // set media player in charge to play video, audio or picture files.
             if (this.playerConfig?.player?.media === 'PICTURE') {
                 const player = this.playerConfig.player;
+                const imagesSrc = this.resolvePictureImages(player);
                 // Picture-specific fields come from `player.data` (free-form payload),
                 // the rest is mapped explicitly from the typed PlayerConfigData properties.
                 const settings: AmaliaPlayerSettings = {
-                    imagesSrc: [{ name: 'image', path: player.src as string, thumbPath: player.src as string }],
+                    imagesSrc,
                     noToolbar: player.noToolbar ?? true,
                     noTopbar: player.noTopbar ?? true,
-                    showGallery: player.data?.showGallery ?? false,
+                    showGallery: player.showGallery ?? player.data?.showGallery ?? false,
                     zoomStep: player.zoomStep,
                     zoomSteps: player.zoomSteps,
                     zoomMax: player.zoomMax,
@@ -319,6 +320,38 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             this.logger.error('Error to initialize media player element.');
         }
         this.callback.emit(this.mediaPlayerElement);
+    }
+
+    private resolvePictureImages(player: any): AmaliaPlayerImageSource[] {
+        const normalize = (item: any, index: number): AmaliaPlayerImageSource | null => {
+            if (!item) {
+                return null;
+            }
+            const path = item.path || item.url || item.src;
+            if (!path) {
+                return null;
+            }
+            return {
+                name: item.name || item.label || `image-${index + 1}`,
+                path,
+                thumbPath: item.thumbPath || item.thumbnail || path
+            };
+        };
+
+        const fromData = player?.data?.imagesSrc || player?.data?.images || (Array.isArray(player?.data) ? player.data : null);
+        if (Array.isArray(fromData) && fromData.length > 0) {
+            const normalized = fromData.map(normalize).filter((item): item is AmaliaPlayerImageSource => !!item);
+            if (normalized.length > 0) {
+                return normalized;
+            }
+        }
+
+        const fallbackPath = typeof player?.src === 'string' ? player.src : '';
+        return [{
+            name: 'image',
+            path: fallbackPath,
+            thumbPath: fallbackPath
+        }];
     }
 
     /**

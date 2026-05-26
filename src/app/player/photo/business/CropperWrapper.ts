@@ -8,6 +8,7 @@ export default class CropperWrapper {
     private readonly _image: HTMLImageElement;
     private readonly _settings: AmaliaPlayerCropperWrapperSettings;
     private readonly _zoomHandlerRef: any;
+    private _isReady: boolean = false;
 
     public static readonly events: any = {
         ready: 'ina.amalia.photo.event.cropper.ready',
@@ -31,8 +32,10 @@ export default class CropperWrapper {
             wheelZoomRatio: onePercentWidth * .001,
             dragMode: 'move',
             toggleDragModeOnDblclick: false,
+            checkCrossOrigin: true,
             ready() {
-                self.fitToCanvas();
+                self._isReady = true;
+                self.fitToCanvas();  // _isReady est true ici
                 self.triggerEvent(new CustomEvent(CropperWrapper.events.ready));
             }
         });
@@ -74,13 +77,13 @@ export default class CropperWrapper {
     }
 
     public rotate(degree: number): void {
-        if (this._cropper) {
+        if (this._isReady) {
             this._cropper.rotate(degree);
         }
     }
 
     public flipHorizontally(): void {
-        if (this._cropper) {
+        if (this._isReady) {
             const data: Cropper.ImageData = this._cropper.getImageData();
             let currentValue: number;
             if (data.rotate === 90 || data.rotate === 270) {
@@ -94,7 +97,7 @@ export default class CropperWrapper {
     }
 
     public flipVertically(): void {
-        if (this._cropper) {
+        if (this._isReady) {
             const data: Cropper.ImageData = this._cropper.getImageData();
             let currentValue: number;
             if (data.rotate === 90 || data.rotate === 270) {
@@ -108,7 +111,7 @@ export default class CropperWrapper {
     }
 
     public zoom(zoomLevel: number = null): void {
-        if (!this._cropper || !zoomLevel) {
+        if (!this._isReady || !zoomLevel) {
             return;
         }
         this._zoomLevel = zoomLevel;
@@ -116,7 +119,7 @@ export default class CropperWrapper {
     }
 
     public center() {
-        if (!this._cropper) {
+        if (!this._isReady) {
             return;
         }
         const imgData: Cropper.ImageData = this._cropper.getImageData();
@@ -124,8 +127,12 @@ export default class CropperWrapper {
         this._cropper.moveTo((containerData.width / 2) - (imgData.width / 2), (containerData.height / 2) - (imgData.height / 2));
     }
 
+    public getZoomLevel(): number {
+        return this._zoomLevel ?? 100;
+    }
+
     public fitToOrignalSize(): number {
-        if (!this._cropper) {
+        if (!this._isReady) {
             return null;
         }
         this._cropper.zoomTo(1);
@@ -135,7 +142,7 @@ export default class CropperWrapper {
     }
 
     public fitToCanvas(): number {
-        if (!this._cropper) {
+        if (!this._isReady) {
             return null;
         }
         const imgData: Cropper.ImageData = this._cropper.getImageData();
@@ -157,7 +164,7 @@ export default class CropperWrapper {
     }
 
     public getImageData(): AmaliaPlayerImageData {
-        if (!this._cropper) {
+        if (!this._isReady) {
             return null;
         }
         const cropData: Cropper.CropBoxData = this._cropper.getCropBoxData();

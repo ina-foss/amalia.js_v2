@@ -364,7 +364,7 @@
                                 <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#minus'"></use>
                             </svg>
                         </span>
-                        <span tooltip="{{c.data?.result?.tooltip}}" class="zoom-result">100%</span>
+                        <span tooltip="{{c.data?.result?.tooltip}}" class="zoom-result">{{ pictureZoomLevel }}%</span>
                         <span tooltip="{{c.data?.plus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomIn')"
                             (keydown.enter)="controlClicked('zoomIn')" role="button" tabindex="0">
                             <svg class="amalia-svg-plus-size icon">

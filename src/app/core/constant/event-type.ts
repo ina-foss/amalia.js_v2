@@ -92,6 +92,10 @@ export enum PlayerEventType {
      */
     ZOOM_RANGE_CHANGE = 'ina.player.ZOOM_RANGE_CHANGE',
     /**
+     * Invoked when picture player zoom level changes
+     */
+    PICTURE_ZOOM_CHANGE = 'ina.player.PICTURE_ZOOM_CHANGE',
+    /**
      * Invoked when selected metadata has changed
      */
     SELECTED_METADATA_CHANGE = 'ina.player.SELECTED_METADATA_CHANGE',

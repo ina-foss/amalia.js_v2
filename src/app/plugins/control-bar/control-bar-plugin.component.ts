@@ -276,6 +276,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Picture player magnify state
      */
     public magnifyEnabled = false;
+    /**
+     * Picture player current zoom level (%)
+     */
+    public pictureZoomLevel = 100;
     private pendingFrameJump = 0;
     private readonly debouncedSeek: _.DebouncedFunc<() => void>;
 
@@ -363,6 +367,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PICTURE_ZOOM_CHANGE, this.handlePictureZoomChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
@@ -474,6 +479,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.handleDisplayState();
         // handle full screen on esc press
         this.fullScreenMode = document.fullscreenElement !== null;
+    }
+
+    public handlePictureZoomChange(zoomLevel: number) {
+        this.pictureZoomLevel = zoomLevel ?? 100;
     }
 
     /**

@@ -1,4 +1,4 @@
-import {AmaliaPlayerSettings} from "../business/AmaliaPlayerSettings";
+import {AmaliaPlayerImageSource, AmaliaPlayerSettings} from "../business/AmaliaPlayerSettings";
 import Gallery from "./widgets/Gallery";
 import Utils from "../business/Utils";
 import AmaliaEventConstants from "../business/AmaliaEventConstants";
@@ -33,7 +33,7 @@ export default class AmaliaPlayer extends BaseHtmlElement{
 
     private init() {
         this.dom.appendChild(this.createCropperComponent());
-        if (this._settings.showGallery) {
+        if (this._settings.showGallery && this._settings.imagesSrc.length > 1) {
             this.dom.appendChild(this.createGallery());
         }
     }
@@ -115,8 +115,12 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         const actualWidth = width ?? this.getOffsetWidth();
         const actualHeight = height ?? this.getOffsetHeight();
         
-        this.dom.style.width = actualWidth.toString() + 'px';
-        this.dom.style.height = actualHeight.toString() + 'px';
+        if (actualWidth > 0) {
+            this.dom.style.width = actualWidth.toString() + 'px';
+        }
+        if (actualHeight > 0) {
+            this.dom.style.height = actualHeight.toString() + 'px';
+        }
         if (this._contentLeft) {
             this._contentLeft.style.height = actualHeight.toString() + 'px';
             this._gallery.getDom().style.height = actualHeight.toString() + 'px';
@@ -136,6 +140,43 @@ export default class AmaliaPlayer extends BaseHtmlElement{
             this._gallery.setDisplayState(displayState);
             this._gallery.scrollToActive();
         }
+    }
+
+    public updateImages(images: AmaliaPlayerImageSource[]) {
+        if (!images || images.length === 0) {
+            return;
+        }
+        const existingPaths = new Set((this._settings?.imagesSrc || []).map((img) => img.path));
+        const uniqueImages = images.filter((img) => !!img?.path && !existingPaths.has(img.path));
+        if (uniqueImages.length === 0) {
+            return;
+        }
+        if (this._settings) {
+            this._settings.imagesSrc = (this._settings.imagesSrc || []).concat(uniqueImages);
+        }
+        if (this._gallery) {
+            this._gallery.updateImages(uniqueImages);
+        } else if (this._settings?.showGallery && this._settings.imagesSrc.length > 1 && this._contentRight) {
+            this._settings.showGallery = true;
+            this.dom.appendChild(this.createGallery());
+            this.setDisplayState(this.getDisplayState());
+        }
+    }
+
+    public selectImageBySource(imageSrc: string, imageName: string = 'image') {
+        if (!imageSrc) {
+            return;
+        }
+        if (this._gallery?.setActiveByImageSrc(imageSrc)) {
+            return;
+        }
+        this._cropperComponent.replaceSrc(imageSrc, imageName);
+        this.triggerEvent(new CustomEvent(AmaliaEventConstants.select, {
+            detail: {
+                imageSrc,
+                imageName
+            }
+        }));
     }
 
     public getDisplayState(): string {

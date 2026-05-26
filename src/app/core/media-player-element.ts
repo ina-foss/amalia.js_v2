@@ -15,7 +15,8 @@ import { PlayerEventType } from './constant/event-type';
 import { PreferenceStorageManager } from './storage/preference-storage-manager';
 import { LoggerLevel } from './logger/logger-level';
 import AmaliaPlayer from '../player/photo/components/AmaliaPlayer';
-import { AmaliaPlayerSettings } from '../player/photo/business/AmaliaPlayerSettings';
+import { AmaliaPlayerImageSource, AmaliaPlayerSettings } from '../player/photo/business/AmaliaPlayerSettings';
+import AmaliaEventConstants from '../player/photo/business/AmaliaEventConstants';
 
 /**
  * In charge to create player
@@ -29,6 +30,9 @@ export class MediaPlayerElement {
     private state: PlayerState = PlayerState.CREATED;
     private mediaPlayer: MediaElement;
     private picturePlayer: AmaliaPlayer;
+    private _picturePlayerResizeHandler: () => void = null;
+    private _picturePlayerHostResizeObserver: ResizeObserver = null;
+    private _picturePlayerHostResizeRaf: number = null;
     private readonly _preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
@@ -189,7 +193,27 @@ export class MediaPlayerElement {
         if (!host.id) {
             host.id = this.generatePictureHostId();
         }
+        // Clean up listeners from any previous picture player instance
+        if (this._picturePlayerResizeHandler) {
+            window.removeEventListener('resize', this._picturePlayerResizeHandler);
+            this._picturePlayerResizeHandler = null;
+        }
+        if (this._picturePlayerHostResizeObserver) {
+            this._picturePlayerHostResizeObserver.disconnect();
+            this._picturePlayerHostResizeObserver = null;
+        }
+        if (this._picturePlayerHostResizeRaf !== null) {
+            cancelAnimationFrame(this._picturePlayerHostResizeRaf);
+            this._picturePlayerHostResizeRaf = null;
+        }
         this.picturePlayer = new AmaliaPlayer(`#${host.id}`, settings);
+        // Forward window resize → PLAYER_RESIZED so plugins (control bar, etc.) respond to container size changes
+        this._picturePlayerResizeHandler = () => this._eventEmitter.emit(PlayerEventType.PLAYER_RESIZED);
+        window.addEventListener('resize', this._picturePlayerResizeHandler);
+        // Forward picture player zoom events → PICTURE_ZOOM_CHANGE so the control bar can update its zoom display
+        this.picturePlayer.addEventListener(AmaliaEventConstants.zoom, (e: CustomEvent) => {
+            this._eventEmitter.emit(PlayerEventType.PICTURE_ZOOM_CHANGE, e.detail?.imageData?.zoomLevel ?? 100);
+        });
         // Set initial displayState
         this.picturePlayer.setDisplayState(this.getDisplayState());
         // AmaliaPlayer's constructor uses `document.querySelector(target)` which cannot traverse
@@ -200,6 +224,29 @@ export class MediaPlayerElement {
         if (playerDom && playerDom !== host && !host.contains(playerDom)) {
             host.appendChild(playerDom);
         }
+        if (typeof ResizeObserver !== 'undefined') {
+            this._picturePlayerHostResizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+                const entry = entries[0];
+                if (!entry) {
+                    return;
+                }
+                const width = Math.floor(entry.contentRect.width);
+                const height = Math.floor(entry.contentRect.height);
+                if (width <= 0 || height <= 0 || !this.picturePlayer) {
+                    return;
+                }
+                if (this._picturePlayerHostResizeRaf !== null) {
+                    cancelAnimationFrame(this._picturePlayerHostResizeRaf);
+                }
+                this._picturePlayerHostResizeRaf = requestAnimationFrame(() => {
+                    this._picturePlayerHostResizeRaf = null;
+                    this.width = width;
+                    this.picturePlayer.setDisplayState(this.getDisplayState(), width, height);
+                    this._eventEmitter.emit(PlayerEventType.PLAYER_RESIZED);
+                });
+            });
+            this._picturePlayerHostResizeObserver.observe(host);
+        }
         this.logger.debug('set picture player', host);
     }
 
@@ -208,6 +255,18 @@ export class MediaPlayerElement {
      */
     public getPicturePlayer(): AmaliaPlayer {
         return this.picturePlayer;
+    }
+
+    /**
+     * Append images to the picture gallery after player creation.
+     * Safe to call before or after `setPicturePlayer`.
+     */
+    public updatePictureGalleryImages(images: AmaliaPlayerImageSource[]): void {
+        this.picturePlayer?.updateImages(images);
+    }
+
+    public selectPictureImage(imageSrc: string, imageName: string = 'image'): void {
+        this.picturePlayer?.selectImageBySource(imageSrc, imageName);
     }
 
     private generatePictureHostId(): string {
@@ -299,6 +358,9 @@ export class MediaPlayerElement {
     public setMediaPlayerWidth(width) {
         this.width = width;
         this.logger.info('Player width : ' + this.width);
+        if (this.picturePlayer && width > 0) {
+            this.picturePlayer.setDisplayState(this.getDisplayState(), width);
+        }
     }
 
     /**
@@ -306,7 +368,7 @@ export class MediaPlayerElement {
      */
     public getDisplayState() {
         let displayState = 'l';
-        if (this.getConfiguration()) {
+        if (this.getConfiguration() && this.width > 0) {
             const lWidth = this.getConfiguration().displaySizes?.large ?? 900;
             const mWidth = this.getConfiguration().displaySizes?.medium ?? 700;
             const sWidth = this.getConfiguration().displaySizes?.small ?? 550;
@@ -321,11 +383,29 @@ export class MediaPlayerElement {
                 displayState = 'm';
             }
         }
+        // In picture mode, keep an interactive state with Cropper enabled.
+        // `xs` and `s` fallback render static/non-draggable views.
+        const isPictureMode = this.getConfiguration()?.player?.media === 'PICTURE' || !!this.picturePlayer;
+        if (isPictureMode && (displayState === 'xs' || displayState === 's')) {
+            displayState = 'sm';
+        }
 
         return displayState;
     }
 
     public unsubscribeListeners() {
-        this.mediaPlayer.unsubscribeListeners();
+        if (this._picturePlayerResizeHandler) {
+            window.removeEventListener('resize', this._picturePlayerResizeHandler);
+            this._picturePlayerResizeHandler = null;
+        }
+        if (this._picturePlayerHostResizeObserver) {
+            this._picturePlayerHostResizeObserver.disconnect();
+            this._picturePlayerHostResizeObserver = null;
+        }
+        if (this._picturePlayerHostResizeRaf !== null) {
+            cancelAnimationFrame(this._picturePlayerHostResizeRaf);
+            this._picturePlayerHostResizeRaf = null;
+        }
+        this.mediaPlayer?.unsubscribeListeners();
     }
 }

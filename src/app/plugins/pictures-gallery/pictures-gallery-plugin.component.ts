@@ -133,6 +133,8 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
         this.currentItemIndex = index;
         const image = this.images[index];
         if (image) {
+            this.mediaPlayerElement.selectPictureImage?.(image.path, image.name);
+            this.mediaPlayerElement.updatePictureGalleryImages?.(this.images);
             this.mediaPlayerElement.eventEmitter.emit(
                 PicturesGalleryPluginComponent.events.select,
                 {
@@ -140,7 +142,8 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
                     imageSrc: image.path,
                     thumbSrc: image.thumbPath,
                     imageName: image.name,
-                    resourceRef: image.resourceRef
+                    resourceRef: image.resourceRef,
+                    images: this.images
                 }
             );
         }

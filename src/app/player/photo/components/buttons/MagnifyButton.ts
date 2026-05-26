@@ -18,7 +18,8 @@ export default class MagnifyButton extends BaseButton {
     public toggleIcon() {
         this._isActif = !this._isActif;
         if (this._isActif) {
-            this.removeClass('ajs-photo-icon-magnify');
+            // Keep base loupe icon visible in active state.
+            this.addClass('ajs-photo-icon-magnify');
             this.addClass('ajs-photo-icon-magnify-off');
             if (this._tooltip_offLabel) {
                 this.setTextContent(this._tooltip_offLabel, 'span.ajs-photo-tooltip');

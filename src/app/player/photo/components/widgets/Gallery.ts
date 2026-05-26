@@ -95,6 +95,7 @@ export default class Gallery extends BaseHtmlElement {
 
         const img: HTMLImageElement = document.createElement('img');
         img.setAttribute('osrc', imageSrc.thumbPath);
+        img.setAttribute('isrc', imageSrc.path);
         img.setAttribute('i', index.toString());
         this.addClass('ajs-photo-thumb', img);
 
@@ -137,6 +138,42 @@ export default class Gallery extends BaseHtmlElement {
         const active: HTMLElement = this.dom.querySelector('.ajs-photo-img-thumb.ajs-photo-active');
         const activeTop = active.offsetTop - this.dom.offsetTop;
         this.dom.scrollTo(0, activeTop - (51 * 3));
+    }
+
+    public updateImages(images: AmaliaPlayerImageSource[]) {
+        const contentGallery = this.dom.querySelector<HTMLElement>('.ajs-photo-thumbs');
+        if (!contentGallery) {
+            return;
+        }
+        const existingPaths = new Set(this._thumbs.map(t => t.img.getAttribute('isrc')));
+        let added = 0;
+        images.forEach((imageSrc: AmaliaPlayerImageSource) => {
+            if (existingPaths.has(imageSrc.path)) {
+                return;
+            }
+            existingPaths.add(imageSrc.path);
+            const absIndex = this._thumbs.length;
+            const el = this.createImage(imageSrc, 'ajs-photo-img-thumb', absIndex);
+            contentGallery.appendChild(el);
+            added++;
+        });
+        if (added > 0) {
+            setTimeout(() => {
+                this.loadAsyncThumbs();
+            }, 100);
+        }
+    }
+
+    public setActiveByImageSrc(imageSrc: string): boolean {
+        if (!imageSrc) {
+            return false;
+        }
+        const img = this.dom.querySelector<HTMLImageElement>(`.ajs-photo-img-thumb img[isrc="${imageSrc}"]`);
+        if (!img?.parentElement) {
+            return false;
+        }
+        img.parentElement.click();
+        return true;
     }
 
     public setDisplayState(displayState: string) {

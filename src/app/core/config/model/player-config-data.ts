@@ -23,6 +23,7 @@ export interface PlayerConfigData {
     magnifyValue?: number;
     magnifyMaxValue?: number;
     noTopbar?: boolean;
-    noToolbar?: boolean
+    noToolbar?: boolean;
+    showGallery?: boolean;
 
 }

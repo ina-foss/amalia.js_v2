@@ -34,6 +34,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
     private _hideControlTimeout: any;
     private _hideEventsAdded: boolean = false;
+    private _createCropperTimeout: any = null;
     private _blockControlTimeout: boolean = false;
     private _topBar: HTMLDivElement;
     private _toolBar: HTMLDivElement;
@@ -85,26 +86,24 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this._image.src = this._imagePath;
 
         this.dom.appendChild(this._image);
-        let topBar: HTMLElement | null = null;
         if (!setting.noTopbar) {
-            topBar = this.createTopbar();
+            const topBar = this.createTopbar();
             this.setTitle(imgSetting.name);
             this.dom.appendChild(topBar);
         }
-        let toolbar: HTMLElement | null = null;
         if (!setting.noToolbar) {
-            toolbar = this.createToolbar();
+            const toolbar = this.createToolbar();
             this.dom.appendChild(toolbar);
         }
-
-
 
         this._escapeMagnifyRef = this.escapeMagnify.bind(this);
         this.addHideEvents();
     }
 
     public setTitle(title: string) {
-        this._titleBox.textContent = Utils.truncate(title);
+        if (this._titleBox) {
+            this._titleBox.textContent = Utils.truncate(title);
+        }
     }
 
     private createTopbar(): HTMLElement {
@@ -355,7 +354,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
     private eventMagnify() {
         this._magnify = !this._magnify;
-        this._btnMagnify.toggleIcon();
+        this._btnMagnify?.toggleIcon();
         if (this._magnify) {
             this.enableMagnify();
         } else {
@@ -383,8 +382,15 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             return;
         }
         const imgData: AmaliaPlayerImageData = this._cropperWrapper.getImageData();
+        if (!imgData) {
+            return;
+        }
+        const cropperContainer = this.dom.querySelector<HTMLElement>('.cropper-container');
+        if (!cropperContainer) {
+            return;
+        }
         this._magnifier = new MagnifierHtmlElement(
-            '.cropper-container',
+            cropperContainer,
             imgData,
             this.getCropperImgPos.bind(this),
             this._magnifyValue,
@@ -518,6 +524,16 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         if (!Utils.inArray(displayState, this._availableDisplayStates)) {
             return;
         }
+        const sameDisplayState = this._displayState === displayState;
+        if (sameDisplayState && ['sm', 'm', 'l'].includes(displayState) && this._cropperWrapper) {
+            this.updateContainerDimensions(width, height);
+            this._cropperWrapper.fitToCanvas();
+            if (this._magnify) {
+                this.refreshMagnifier();
+            }
+            this.showControls();
+            return;
+        }
         this.updateContainerDimensions(width, height);
         this.resetDisplayContent();
 
@@ -539,6 +555,23 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this._displayState = displayState;
     }
 
+    private refreshMagnifier() {
+        this._magnifier?.removeFromDom();
+        const imgData: AmaliaPlayerImageData = this._cropperWrapper?.getImageData();
+        const cropperContainer = this.dom.querySelector<HTMLElement>('.cropper-container');
+        if (!imgData || !cropperContainer) {
+            return;
+        }
+        this._magnifier = new MagnifierHtmlElement(
+            cropperContainer,
+            imgData,
+            this.getCropperImgPos.bind(this),
+            this._magnifyValue,
+            this._magnifyMaxValue
+        );
+        this.dom.prepend(this._magnifier.getDom());
+    }
+
     private updateContainerDimensions(width: number | null, height: number | null): void {
         if (width !== null) {
             this._width = width;
@@ -551,8 +584,13 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private resetDisplayContent(): void {
+        if (this._createCropperTimeout) {
+            clearTimeout(this._createCropperTimeout);
+            this._createCropperTimeout = null;
+        }
         if (this._cropperWrapper) {
             this._cropperWrapper.destroy();
+            this._cropperWrapper = null;
         }
         this.destroyReducedGallery();
         this._image.src = this._imagePath;
@@ -615,7 +653,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private createCropperInstance(): void {
         const addEvent: boolean = !this._cropperWrapper;
         if (this._image.naturalHeight === 0 || this._image.naturalWidth === 0) {
-            setTimeout(() => {
+            this._createCropperTimeout = setTimeout(() => {
+                this._createCropperTimeout = null;
                 this.createCropperInstance();
             }, 300);
             return;
@@ -652,12 +691,18 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             if (this._magnify) {
                 this.eventMagnify();
             }
+            if (this._createCropperTimeout) {
+                clearTimeout(this._createCropperTimeout);
+                this._createCropperTimeout = null;
+            }
+            if (this._cropperWrapper) {
+                this._cropperWrapper.destroy();
+                this._cropperWrapper = null;
+            }
             this._imagePath = imageSrc;
             this._image.src = this._imagePath;
-            if (this._cropperWrapper && ['sm', 'm', 'l'].includes(this._displayState)) {
-                this._cropperWrapper.destroy();
+            if (['sm', 'm', 'l'].includes(this._displayState)) {
                 this.createCropperInstance();
-
             }
             this.setTitle(imageName);
         }, 300);
@@ -668,15 +713,47 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     public zoom() {
-        this._zoomInfo.increment();
+        if (!this._cropperWrapper) {
+            return;
+        }
+        if (this._zoomInfo) {
+            this._zoomInfo.increment();
+            return;
+        }
+        this._cropperWrapper.zoom(this._nextZoomStep(this._cropperWrapper.getZoomLevel()));
     }
 
     public unZoom() {
-        this._zoomInfo.decrement();
+        if (!this._cropperWrapper) {
+            return;
+        }
+        if (this._zoomInfo) {
+            this._zoomInfo.decrement();
+            return;
+        }
+        this._cropperWrapper.zoom(this._prevZoomStep(this._cropperWrapper.getZoomLevel()));
+    }
+
+    private _nextZoomStep(current: number): number {
+        if (this._zoomSteps?.length) {
+            return this._zoomSteps.find(s => s > current) ?? Math.min(current + this._zoomStep, this._zoomMax);
+        }
+        return Math.min(current + this._zoomStep, this._zoomMax);
+    }
+
+    private _prevZoomStep(current: number): number {
+        if (this._zoomSteps?.length) {
+            return [...this._zoomSteps].reverse().find(s => s < current) ?? Math.max(current - this._zoomStep, this._zoomMin);
+        }
+        return Math.max(current - this._zoomStep, this._zoomMin);
     }
 
     public showRealSize() {
-        this._zoomInfo.showRealSize();
+        if (this._cropperWrapper && typeof (this._cropperWrapper as any).fitToOrignalSize === 'function') {
+            this._cropperWrapper.fitToOrignalSize();
+            return;
+        }
+        this._zoomInfo?.showRealSize();
     }
 
     public flipV() {
