@@ -26,6 +26,13 @@ export class DefaultMetadataLoader implements Loader<Array<Metadata>> {
     }
 
     /**
+     * Get the HttpClient instance
+     */
+    public getHttpClient(): HttpClient {
+        return this.httpClient;
+    }
+
+    /**
      * In charge to load metadata
      * @param url for load metadata
      */

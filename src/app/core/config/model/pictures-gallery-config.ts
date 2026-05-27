@@ -3,6 +3,7 @@ export interface PicturesGalleryConfig {
     thumbSize: number;
     enableKeyboardNavigation: boolean;
     lazyLoadOffset: number;
+    images: PicturesGalleryImageSource[];
 }
 
 export interface PicturesGalleryImageSource {

@@ -1,7 +1,7 @@
 <div class="pictures-gallery-container"
      #galleryContainer
      (scroll)="onScroll()"
-     [style.height.px]="pluginConfiguration?.data?.height || 300">
+     [style.min-height.px]="pluginConfiguration?.data?.height || 300">
     <div class="gallery-thumbs">
         <div *ngFor="let picture of images; let i = index"
              class="gallery-thumb"

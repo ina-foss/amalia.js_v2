@@ -7,5 +7,8 @@ export interface ConfigDataSource {
     headers?: Array<string>;
     loader?: Loader<Array<Metadata>>;
     converter?: Converter<Metadata>;
-    plugin?:string;
+    plugin?: string;
+    body?: any;
+    method?: 'GET' | 'POST';
+    photo?: any;
 }

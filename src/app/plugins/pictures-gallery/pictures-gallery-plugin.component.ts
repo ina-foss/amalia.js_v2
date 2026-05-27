@@ -40,6 +40,9 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
 
     override ngOnInit(): void {
         super.ngOnInit();
+        if (this.mediaPlayerElement?.getConfiguration()?.loadMetadataOnDemand) {
+            this.init();
+        }
     }
 
     override init() {
@@ -49,13 +52,23 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
     }
 
     private loadImages(): void {
+        // Option 1: Images passées directement dans la config
+        if (this.pluginConfiguration?.data?.images && Array.isArray(this.pluginConfiguration.data.images)) {
+            this.processMetadata(this.pluginConfiguration.data.images);
+        }
+
+        // Option 2: Images chargées via metadataIds
         const metadataIds = this.pluginConfiguration?.metadataIds;
         if (metadataIds && metadataIds.length > 0) {
             const metadataManager = this.mediaPlayerElement.metadataManager;
             metadataIds.forEach((metadataId: string) => {
-                const metadata = metadataManager.getMetadata(metadataId);
-                if (metadata?.data) {
-                    this.processMetadata(metadata.data);
+                try {
+                    const metadata = metadataManager.getMetadata(metadataId);
+                    if (metadata?.data) {
+                        this.processMetadata(metadata.data);
+                    }
+                } catch (e) {
+                    console.warn(`PicturesGallery: metadata ${metadataId} not found`);
                 }
             });
         }
@@ -220,7 +233,8 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
                 height: 300,
                 thumbSize: 70,
                 enableKeyboardNavigation: true,
-                lazyLoadOffset: 100
+                lazyLoadOffset: 100,
+                images: []
             }
         };
     }
