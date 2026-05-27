@@ -147,7 +147,6 @@ export class PicturesGalleryPluginComponent extends PluginBase<PicturesGalleryCo
         const image = this.images[index];
         if (image) {
             this.mediaPlayerElement.selectPictureImage?.(image.path, image.name);
-            this.mediaPlayerElement.updatePictureGalleryImages?.(this.images);
             this.mediaPlayerElement.eventEmitter.emit(
                 PicturesGalleryPluginComponent.events.select,
                 {

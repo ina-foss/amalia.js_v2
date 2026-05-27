@@ -1,5 +1,4 @@
 import {AmaliaPlayerImageSource, AmaliaPlayerSettings} from "../business/AmaliaPlayerSettings";
-import Gallery from "./widgets/Gallery";
 import Utils from "../business/Utils";
 import AmaliaEventConstants from "../business/AmaliaEventConstants";
 import BaseHtmlElement from "./BaseHtmlElement";
@@ -9,8 +8,6 @@ export default class AmaliaPlayer extends BaseHtmlElement{
     private _id: string;
     private _settings: AmaliaPlayerSettings;
     private _cropperComponent: PlayerHtmlElement;
-    private _gallery: Gallery;
-    private _contentLeft: HTMLDivElement;
     private _contentRight: HTMLDivElement;
 
     constructor(target: string, settings: AmaliaPlayerSettings) {
@@ -27,31 +24,11 @@ export default class AmaliaPlayer extends BaseHtmlElement{
     }
 
     private getCropperWidth(): number {
-        const width: number = this.getOffsetWidth();
-        return this._settings.showGallery && this._gallery ? width - this._gallery.getOffsetWidth() : width;
+        return this.getOffsetWidth();
     }
 
     private init() {
         this.dom.appendChild(this.createCropperComponent());
-        if (this._settings.showGallery && this._settings.imagesSrc.length > 1) {
-            this.dom.appendChild(this.createGallery());
-        }
-    }
-
-    private createGallery(): HTMLElement {
-        this._contentLeft = document.createElement('div');
-        this._contentLeft.className = 'ajs-photo-content-left';
-        this._gallery = new Gallery(this._settings.imagesSrc, this.getOffsetHeight());
-        this._gallery.addEventListener(Gallery.events.select, this.selectImage.bind(this));
-        this._contentLeft.appendChild(this._gallery.getDom());
-        return this._contentLeft;
-    }
-
-    private selectImage(e: any) {
-        this._cropperComponent.replaceSrc(e.detail.imageSrc, e.detail.imageName);
-        this.triggerEvent(new CustomEvent(AmaliaEventConstants.select, {
-            detail: Utils.mergeDeep({}, e.detail)
-        }));
     }
 
     private createCropperComponent(): HTMLElement {
@@ -126,54 +103,14 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         if (actualHeight > 0) {
             this.dom.style.height = actualHeight.toString() + 'px';
         }
-        if (this._contentLeft) {
-            this._contentLeft.style.height = actualHeight.toString() + 'px';
-            this._gallery.getDom().style.height = actualHeight.toString() + 'px';
-        }
 
-        let cwidth: number = this.getCropperWidth();
-        let fourImg: string[] = null;
-        if (displayState === 'xs') {
-            cwidth = this.getOffsetWidth();
-            fourImg = this._gallery ? this._gallery.getNextImages(4) : null;
-        }
-
-        this._cropperComponent.setDisplayState(displayState, cwidth, this.getOffsetHeight(), fourImg);
+        const cwidth: number = displayState === 'xs' ? this.getOffsetWidth() : this.getCropperWidth();
+        this._cropperComponent.setDisplayState(displayState, cwidth, this.getOffsetHeight(), null);
         this.addClass('ajs-photo-' + displayState);
-
-        if (this._gallery) {
-            this._gallery.setDisplayState(displayState);
-            this._gallery.scrollToActive();
-        }
-    }
-
-    public updateImages(images: AmaliaPlayerImageSource[]) {
-        if (!images || images.length === 0) {
-            return;
-        }
-        const existingPaths = new Set((this._settings?.imagesSrc || []).map((img) => img.path));
-        const uniqueImages = images.filter((img) => !!img?.path && !existingPaths.has(img.path));
-        if (uniqueImages.length === 0) {
-            return;
-        }
-        if (this._settings) {
-            this._settings.imagesSrc = (this._settings.imagesSrc || []).concat(uniqueImages);
-        }
-        if (this._gallery) {
-            this._gallery.updateImages(uniqueImages);
-        } else if (this._settings?.imagesSrc.length > 1 && this._contentRight) {
-            this._settings.showGallery = true;
-            this.dom.appendChild(this.createGallery());
-            const currentState: string = this.getDisplayState() || 'l';
-            this.setDisplayState(currentState);
-        }
     }
 
     public selectImageBySource(imageSrc: string, imageName: string = 'image') {
         if (!imageSrc) {
-            return;
-        }
-        if (this._gallery?.setActiveByImageSrc(imageSrc)) {
             return;
         }
         this._cropperComponent.replaceSrc(imageSrc, imageName);
@@ -192,9 +129,6 @@ export default class AmaliaPlayer extends BaseHtmlElement{
     public destroy() {
         this._cropperComponent.removeFromDom();
         this._cropperComponent.destroy();
-        if (this._gallery) {
-            this._gallery.removeFromDom();
-        }
         this.dom.removeAttribute('id');
         this.removeClass('ajs-photo-' + this.getDisplayState());
         while (this.dom.hasChildNodes()) {
@@ -202,7 +136,6 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         }
         this._cropperComponent = null;
         this._id = null;
-        this._gallery = null;
         this._settings = null;
         this.dom = null;
     }

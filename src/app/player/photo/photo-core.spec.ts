@@ -2,7 +2,6 @@ import Utils from './business/Utils';
 import BaseHtmlElement from './components/BaseHtmlElement';
 import BaseButton from './components/buttons/BaseButton';
 import IncrementInfo from './components/widgets/IncrementInfo';
-import Gallery from './components/widgets/Gallery';
 import MagnifierHtmlElement from './components/MagnifierHtmlElement';
 
 class TestHtmlElement extends BaseHtmlElement {
@@ -156,46 +155,6 @@ describe('IncrementInfo', () => {
         widget.showRealSize();
         expect(spy).toHaveBeenCalled();
         expect(widget.getTextContent('.ajs-photo-result')).toBe('100');
-    });
-});
-
-describe('Gallery', () => {
-    const images = [
-        { name: 'A', path: '/a.jpg', thumbPath: '/a_t.jpg' },
-        { name: 'B', path: '/b.jpg', thumbPath: '/b_t.jpg' },
-        { name: 'C', path: '/c.jpg', thumbPath: '/c_t.jpg' }
-    ];
-
-    let gallery: Gallery;
-
-    beforeEach(() => {
-        gallery = new Gallery(images as any, 300);
-        document.body.appendChild(gallery.getDom());
-    });
-
-    afterEach(() => {
-        gallery.removeFromDom();
-    });
-
-    it('should emit select event on thumb click', () => {
-        const spy = jasmine.createSpy('selectSpy');
-        gallery.getDom().addEventListener(Gallery.events.select, spy);
-
-        const firstThumb = gallery.getDom().querySelector('.ajs-photo-img-thumb') as HTMLElement;
-        firstThumb.click();
-        expect(spy).toHaveBeenCalled();
-    });
-
-    it('should return next images', () => {
-        const next = gallery.getNextImages(2);
-        expect(next).toBeTruthy();
-        expect(next?.length).toBe(2);
-    });
-
-    it('should ignore non-navigation keys in moveHandler', () => {
-        const prevent = jasmine.createSpy('preventDefault');
-        gallery.moveHandler({ key: 'a', preventDefault: prevent } as any);
-        expect(prevent).not.toHaveBeenCalled();
     });
 });
 

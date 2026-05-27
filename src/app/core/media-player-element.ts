@@ -263,14 +263,6 @@ export class MediaPlayerElement {
         return this.picturePlayer;
     }
 
-    /**
-     * Append images to the picture gallery after player creation.
-     * Safe to call before or after `setPicturePlayer`.
-     */
-    public updatePictureGalleryImages(images: AmaliaPlayerImageSource[]): void {
-        this.picturePlayer?.updateImages(images);
-    }
-
     public selectPictureImage(imageSrc: string, imageName: string = 'image'): void {
         this.picturePlayer?.selectImageBySource(imageSrc, imageName);
     }

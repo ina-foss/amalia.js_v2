@@ -39,10 +39,14 @@ export class PicturesGalleryLoader implements Loader<Array<Metadata>> {
         const requests = params.urls.map(item =>
             this.httpClient.get(item.metadataUrl, { headers: httpHeaders, responseType: 'text' }).pipe(
                 map(thumbPath => ({
-                    name: item.photo?.imageId || '',
-                    path: item.photo?.thumbPath,
+                    //name: ex. FIC05001004350
+                    name: item.photo?.businessId,
+                    //path: https://wsmedia.api.d.sas.ina/thumbs/IoxGm..._iv/Vifuocxj87o6yi0i/sl_hm/
+                    path: item.photo?.imageId || '',
+                    //thumbPath:https://vignettes.inamediapro.com/notice/352/img0500004339.jpg
                     thumbPath: thumbPath,
-                    resourceRef: item.photo?.idTech || ''
+                    //resourceRef: identifiant technique ex. 001001lru7z0
+                    resourceRef: item.photo?.idTech || '',
                 })),
                 catchError(error => {
                     console.error('Error loading thumbnail:', item.metadataUrl, error);
