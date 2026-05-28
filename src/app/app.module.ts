@@ -19,7 +19,6 @@ import {TooltipModule} from 'ng2-tooltip-directive-major-angular-updates';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.directive";
 import {AnnotationPluginComponent} from './plugins/annotation/annotation-plugin.component';
-import {PicturesGalleryPluginComponent} from './plugins/pictures-gallery/pictures-gallery-plugin.component';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {FloatLabelModule} from 'primeng/floatlabel';
@@ -97,7 +96,6 @@ import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.compone
         SortablejsDirective,
         AnnotationPluginComponent,
         SegmentComponent,
-        PicturesGalleryPluginComponent,
         PreventCtrlScrollDirective,
     ],
     providers: [
@@ -137,6 +135,5 @@ export class AppModule {
         this.addCustomElement(HistogramPluginComponent, 'amalia-histogram');
         this.addCustomElement(TimelinePluginComponent, 'amalia-timeline');
         this.addCustomElement(AnnotationPluginComponent, 'amalia-annotation');
-        this.addCustomElement(PicturesGalleryPluginComponent, 'amalia-pictures-gallery');
     }
 }

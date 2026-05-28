@@ -72,32 +72,20 @@ describe('AmaliaPlayer', () => {
         expect(cropper.fitToScreen).toHaveBeenCalled();
     });
 
-    it('setDisplayState should update dimensions and notify gallery/cropper', () => {
+    it('setDisplayState should update dimensions and notify cropper', () => {
         const player = new AmaliaPlayer('#photo-host', { imagesSrc: [], showGallery: false } as any);
         const host = (player as any).dom as HTMLElement;
         Object.defineProperty(host, 'offsetWidth', { value: 400, configurable: true });
         Object.defineProperty(host, 'offsetHeight', { value: 200, configurable: true });
 
-        const galleryDom = document.createElement('div');
-        const gallery = {
-            getOffsetWidth: () => 100,
-            getNextImages: () => ['a', 'b'],
-            getDom: () => galleryDom,
-            setDisplayState: jasmine.createSpy('setDisplayState'),
-            scrollToActive: jasmine.createSpy('scrollToActive')
-        };
         const cropper = {
             getDisplayState: () => 's',
             setDisplayState: jasmine.createSpy('setDisplayState')
         };
-        (player as any)._gallery = gallery;
-        (player as any)._contentLeft = document.createElement('div');
         (player as any)._cropperComponent = cropper;
 
         player.setDisplayState('xs', 300, 180);
         expect(cropper.setDisplayState).toHaveBeenCalled();
-        expect(gallery.setDisplayState).toHaveBeenCalledWith('xs');
-        expect(gallery.scrollToActive).toHaveBeenCalled();
     });
 });
 

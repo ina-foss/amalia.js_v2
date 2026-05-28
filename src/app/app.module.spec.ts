@@ -32,8 +32,8 @@ describe('AppModule', () => {
         const mockAddCustomElement = spyOn(module, 'addCustomElement');
         mockAddCustomElement.and.callThrough();
         module.ngDoBootstrap();
-        expect(mockAddCustomElement).toHaveBeenCalledTimes(10);
-        expect(mockAddCustomElement).toHaveBeenCalledWith(jasmine.anything(), 'amalia-pictures-gallery');
+        expect(mockAddCustomElement).toHaveBeenCalledTimes(9);
+        expect(mockAddCustomElement).toHaveBeenCalledWith(jasmine.anything(), 'amalia-annotation');
     });
 });
 

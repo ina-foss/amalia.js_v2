@@ -4,7 +4,6 @@ import {ConfigurationManager} from '../config/configuration-manager';
 import {LoggerInterface} from '../logger/logger-interface';
 import {ConfigDataSource} from '../config/model/config-data-source';
 import {Loader} from '../loader/loader';
-import {PicturesGalleryLoader} from '../loader/pictures-gallery-loader';
 import {DefaultMetadataLoader} from './loader/default-metadata-loader';
 import {Utils} from '../utils/utils';
 import {MetadataUtils} from '../utils/metadata-utils';
@@ -79,20 +78,6 @@ export class MetadataManager {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             console.log('[AMALIA] loadDataSourceForPlugin:', plugin, 'dataSources count:', dataSources?.length || 0);
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
-                // Special handling for pictures-gallery: collect all sources and load them together
-                if (plugin.toUpperCase() === 'PICTURES-GALLERY') {
-                    const picturesGallerySources = dataSources.filter(
-                        ds => ds.plugin && ds.plugin.toUpperCase() === 'PICTURES-GALLERY'
-                    );
-                    if (picturesGallerySources.length > 0) {
-                        this.toLoadData = 1; // Single load operation for all pictures
-                        this.loadPicturesGalleryDataSources(picturesGallerySources, resolve, reject);
-                    } else {
-                        resolve(undefined);
-                    }
-                    return;
-                }
-
                 this.toLoadData = 0;
                 dataSources.forEach(dataSource => {
                     if (dataSource.plugin && dataSource.plugin.toUpperCase() === plugin.toUpperCase()) {
@@ -116,30 +101,6 @@ export class MetadataManager {
                 reject('Can\'t find data sources');
             }
         });
-    }
-
-    /**
-     * Load all pictures-gallery data sources together
-     */
-    private async loadPicturesGalleryDataSources(dataSources: ConfigDataSource[], completed: any, reject: any) {
-        const httpClient = (this.defaultLoader as DefaultMetadataLoader).getHttpClient();
-        const loader = new PicturesGalleryLoader(httpClient);
-        
-        const urls = dataSources.map(ds => ({
-            metadataUrl: ds.url,
-            photo: ds.photo
-        }));
-        
-        const headers = dataSources[0]?.headers;
-        
-        loader.load({ urls }, headers)
-            .then(listOfMetadata => {
-                this.logger.info("listOfMetadata pictures-gallery", listOfMetadata);
-                this.onMetadataLoaded(listOfMetadata, completed);
-            })
-            .catch((err) => {
-                this.errorToLoadMetadata('pictures-gallery', completed);
-            });
     }
 
     /**
