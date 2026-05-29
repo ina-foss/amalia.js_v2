@@ -12,6 +12,7 @@ import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {ConfigurationManager} from './config/configuration-manager';
 import {PlayerEventType} from './constant/event-type';
+import AmaliaEventConstants from '../player/photo/business/AmaliaEventConstants';
 
 describe('Test Media player element', () => {
     let injector: TestBed;
@@ -250,6 +251,145 @@ describe('Test Media player element', () => {
         expect(disconnectSpy).toHaveBeenCalled();
         expect(unsubscribeSpy).toHaveBeenCalled();
         expect(mpe._picturePlayerHost).toBeNull();
+    });
+
+    it('aspectRatio should fallback to 16:9 when configuration value is unsupported', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                player: { ratio: '1:1' }
+            })
+        };
+
+        expect(mpe.aspectRatio).toBe('16:9');
+    });
+
+    it('getDisplayState should return m for medium widths and normalize s/xs to sm in picture mode', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                player: { media: 'PICTURE' },
+                displaySizes: { xsmall: 340, small: 550, medium: 700, large: 900 }
+            })
+        };
+
+        mpe.width = 750;
+        expect(mpe.getDisplayState()).toBe('m');
+
+        mpe.width = 500;
+        expect(mpe.getDisplayState()).toBe('sm');
+    });
+
+    it('getThumbnailUrl should keep non finite tc values untouched', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                thumbnail: {
+                    enableThumbnail: true,
+                    baseUrl: 'https://example.local/t.jpg',
+                    tcParam: 'start',
+                    width: 120
+                }
+            })
+        };
+
+        expect(mpe.getThumbnailUrl(Number.NaN as any)).toBe('https://example.local/t.jpg?start=NaN');
+    });
+
+    it('setPicturePlayer should cleanup previous listeners and emit zoom updates', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                player: { media: 'PICTURE' },
+                displaySizes: { xsmall: 340, small: 550, medium: 700, large: 900 }
+            })
+        };
+        const host = document.createElement('div');
+        const shadowParent = document.createElement('div');
+        const shadowRoot = shadowParent.attachShadow({ mode: 'open' });
+        shadowRoot.appendChild(host);
+        spyOn(host, 'getBoundingClientRect').and.returnValue({ width: 640, height: 360 } as DOMRect);
+
+        const previousResizeHandler = () => undefined;
+        mpe._picturePlayerResizeHandler = previousResizeHandler;
+        const removeEventListenerSpy = spyOn(window, 'removeEventListener').and.callThrough();
+        const previousObserverDisconnect = jasmine.createSpy('previousObserverDisconnect');
+        mpe._picturePlayerHostResizeObserver = { disconnect: previousObserverDisconnect };
+        const clearTimeoutSpy = spyOn(window, 'clearTimeout').and.callThrough();
+        mpe._picturePlayerLayoutTimeout = 123 as any;
+        const cancelAnimationFrameSpy = spyOn(window, 'cancelAnimationFrame').and.callThrough();
+        mpe._picturePlayerHostResizeRaf = 10;
+
+        let resizeObserverCallback: ((entries: ResizeObserverEntry[]) => void) | null = null;
+        const observeSpy = jasmine.createSpy('observe');
+        const originalResizeObserver = (globalThis as any).ResizeObserver;
+        const resizeObserverCtor = function(this: any, cb: (entries: ResizeObserverEntry[]) => void) {
+            resizeObserverCallback = cb;
+            this.observe = observeSpy;
+            this.disconnect = jasmine.createSpy('disconnect');
+        } as any;
+        (globalThis as any).ResizeObserver = resizeObserverCtor;
+        (window as any).ResizeObserver = resizeObserverCtor;
+        spyOn(window, 'requestAnimationFrame').and.callFake((cb: FrameRequestCallback) => {
+            cb(0);
+            return 1;
+        });
+
+        const emitSpy = spyOn(mpe.eventEmitter, 'emit').and.callThrough();
+        mpe.setPicturePlayer(host, {
+            imagesSrc: [{ name: 'img-1', path: '/img.jpg', thumbPath: '/img.jpg' }],
+            showGallery: false,
+            noToolbar: true,
+            noTopbar: true
+        } as any);
+
+        expect(host.id).toContain('amalia-picture-host-');
+        expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', previousResizeHandler);
+        expect(previousObserverDisconnect).toHaveBeenCalled();
+        expect(clearTimeoutSpy).toHaveBeenCalled();
+        expect(cancelAnimationFrameSpy).toHaveBeenCalled();
+        expect(observeSpy).toHaveBeenCalledWith(host);
+
+        mpe.getPicturePlayer().getDom().dispatchEvent(new CustomEvent(AmaliaEventConstants.zoom, {
+            detail: { imageData: { zoomLevel: 135 } }
+        }));
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.PICTURE_ZOOM_CHANGE, 135);
+
+        if (resizeObserverCallback) {
+            resizeObserverCallback([]);
+            resizeObserverCallback([{ contentRect: { width: 700, height: 390 } } as ResizeObserverEntry]);
+        }
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.PLAYER_RESIZED);
+
+        mpe.unsubscribeListeners();
+        host.remove();
+        shadowParent.remove();
+        (globalThis as any).ResizeObserver = originalResizeObserver;
+        (window as any).ResizeObserver = originalResizeObserver;
+    });
+
+    it('setPicturePlayer should fallback to default display state when host layout is unavailable', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                player: { media: 'PICTURE' },
+                displaySizes: { xsmall: 340, small: 550, medium: 700, large: 900 }
+            })
+        };
+        spyOn<any>(mpe, 'applyPicturePlayerLayoutFromHost').and.returnValue(false);
+        const host = document.createElement('div');
+        Object.defineProperty(host, 'offsetWidth', { configurable: true, value: 0 });
+        Object.defineProperty(host, 'offsetHeight', { configurable: true, value: 0 });
+
+        mpe.setPicturePlayer(host, {
+            imagesSrc: [{ name: 'img-1', path: '/img.jpg', thumbPath: '/img.jpg' }],
+            showGallery: false,
+            noToolbar: true,
+            noTopbar: true
+        } as any);
+
+        expect(mpe.getPicturePlayer()).toBeTruthy();
+        mpe.unsubscribeListeners();
     });
 });
 

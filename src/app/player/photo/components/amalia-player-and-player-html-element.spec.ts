@@ -228,6 +228,7 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
     });
 
     it('should call cropper wrapper actions on events', () => {
+        spyOn<any>(comp, 'showControls').and.callFake(() => undefined);
         const cropperWrapper = {
             fitToCanvas: jasmine.createSpy('fitToCanvas'),
             fitToOrignalSize: jasmine.createSpy('fitToOrignalSize'),
@@ -465,6 +466,7 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         expect(fsSpy).toHaveBeenCalled();
         expect(destroySpy).toHaveBeenCalled();
     });
+
 });
 
 describe('PlayerHtmlElement (full toolbar branches)', () => {

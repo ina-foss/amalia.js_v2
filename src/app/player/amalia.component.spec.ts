@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, flushMicrotasks, TestBed, tick } from '@angular/core/testing';
 import { AmaliaComponent } from './amalia.component';
 import { MediaPlayerService } from '../service/media-player-service';
 import { ThumbnailService } from '../service/thumbnail-service';
@@ -394,6 +394,164 @@ describe('AmaliaComponent - runtime controls', () => {
 });
 
 
+
+describe('AmaliaComponent - targeted new code coverage', () => {
+    let component: AmaliaComponent;
+    let mediaPlayerElementMock: any;
+
+    beforeEach(() => {
+        component = new AmaliaComponent(
+            {
+                get: jasmine.createSpy('get'),
+                increment: jasmine.createSpy('increment'),
+                decrement: jasmine.createSpy('decrement')
+            } as any,
+            {} as any,
+            { getThumbnail: () => Promise.resolve('blob'), listThumbnails: [] } as any,
+            { detectChanges: jasmine.createSpy('detectChanges') } as any
+        );
+
+        mediaPlayerElementMock = {
+            eventEmitter: { emit: jasmine.createSpy('emit') },
+            init: jasmine.createSpy('init').and.resolveTo(1),
+            setPicturePlayer: jasmine.createSpy('setPicturePlayer'),
+            setMediaPlayer: jasmine.createSpy('setMediaPlayer'),
+            setMediaPlayerWidth: jasmine.createSpy('setMediaPlayerWidth'),
+            getThumbnailUrl: jasmine.createSpy('getThumbnailUrl').and.returnValue('/thumb.jpg'),
+            getMediaPlayer: jasmine.createSpy('getMediaPlayer').and.returnValue({
+                framerate: 25,
+                reverseMode: false,
+                pause: jasmine.createSpy('pause'),
+                play: jasmine.createSpy('play'),
+                setCurrentTime: jasmine.createSpy('setCurrentTime'),
+                getCurrentTime: jasmine.createSpy('getCurrentTime').and.returnValue(1),
+                getDuration: jasmine.createSpy('getDuration').and.returnValue(10),
+                getPlaybackRate: jasmine.createSpy('getPlaybackRate').and.returnValue(1)
+            })
+        };
+
+        (component.playerService as any).get.and.returnValue(mediaPlayerElementMock);
+
+        component.mediaPlayer = { nativeElement: document.createElement('video') } as any;
+        component.photoHost = { nativeElement: document.createElement('div') } as any;
+        component.mediaContainer = { nativeElement: document.createElement('div') } as any;
+        Object.defineProperty(component.mediaContainer.nativeElement, 'offsetWidth', { value: 500, configurable: true });
+        Object.defineProperty(component.mediaContainer.nativeElement, 'offsetHeight', { value: 300, configurable: true });
+        component.previewThumbnailElement = { nativeElement: document.createElement('img') } as any;
+
+        component.configLoader = {} as any;
+        component.metadataConverter = {} as any;
+        component.metadataLoader = {} as any;
+    });
+
+    it('ngOnInit should configure picture player when media is PICTURE', fakeAsync(() => {
+        component.config = {
+            player: {
+                media: 'PICTURE',
+                src: '/fallback.jpg',
+                data: {
+                    images: [null, { url: '/a.jpg', label: 'A' }, { src: '' }]
+                }
+            }
+        } as any;
+
+        component.ngOnInit();
+        tick();
+
+        expect(mediaPlayerElementMock.setPicturePlayer).toHaveBeenCalled();
+        const args = mediaPlayerElementMock.setPicturePlayer.calls.mostRecent().args;
+        expect(args[1].imagesSrc[0].path).toBe('/a.jpg');
+    }));
+
+    it('ngOnInit should log error when handlers are missing', () => {
+        component.configLoader = undefined as any;
+        component.metadataConverter = undefined as any;
+        component.metadataLoader = undefined as any;
+        component.config = { player: { media: 'VIDEO' } } as any;
+
+        spyOn<any>(component, 'initDefaultHandlers').and.callFake(() => undefined);
+        const loggerSpy = spyOn(component.logger, 'error');
+
+        component.ngOnInit();
+
+        expect(loggerSpy).toHaveBeenCalledWith('Error to initialize media player element.');
+    });
+
+    it('ngOnInit should call setPreviewThumbnail(0) when thumbnail is already enabled', fakeAsync(() => {
+        component.config = { player: { media: 'VIDEO' } } as any;
+        (component as any).enableThumbnail = true;
+        const previewSpy = spyOn<any>(component, 'setPreviewThumbnail').and.callFake(() => undefined);
+
+        component.ngOnInit();
+        tick();
+
+        expect(previewSpy).toHaveBeenCalledWith(0);
+    }));
+
+    it('resolvePictureImages should fallback to player.src when data is invalid', () => {
+        const result = (component as any).resolvePictureImages({
+            src: '/fallback.png',
+            data: { images: [null, { foo: 'bar' }] }
+        });
+
+        expect(result.length).toBe(1);
+        expect(result[0].path).toBe('/fallback.png');
+    });
+
+    it('handleAspectRatioChange and document click should emit expected events', () => {
+        const resizeSpy = spyOn(component, 'updatePlayerSizeWithAspectRatio');
+        (component as any).mediaPlayerElement = mediaPlayerElementMock;
+
+        (component as any).handleAspectRatioChange('4:3');
+        component.hideControlsMenuOnClickDocument({ any: 'event' } as any);
+
+        expect(component.aspectRatio).toBe('4:3');
+        expect(resizeSpy).toHaveBeenCalled();
+        expect(mediaPlayerElementMock.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.DOCUMENT_CLICK, { any: 'event' } as any);
+    });
+
+    it('emitKeyDownEvent should append additional keys to listKeys', () => {
+        component.playerHover = true;
+        component.listKeys = ['Control'];
+        (component as any).mediaPlayerElement = mediaPlayerElementMock;
+
+        component.emitKeyDownEvent({ key: 'a', preventDefault: jasmine.createSpy('preventDefault') } as any);
+
+        expect(component.listKeys).toContain('a');
+    });
+
+    it('scrollPlaybackRateImages should invoke displayImages in interval callback', () => {
+        (component as any).mediaPlayerElement = mediaPlayerElementMock;
+        const displaySpy = spyOn(component, 'displayImages').and.callFake(() => undefined);
+        spyOn(window, 'setInterval').and.callFake((cb: any) => {
+            cb();
+            return 1 as any;
+        });
+
+        component.scrollPlaybackRateImages(2);
+
+        expect(displaySpy).toHaveBeenCalled();
+    });
+
+    it('loopImages should reschedule with min delay', fakeAsync(() => {
+        const timeoutSpy = spyOn(window, 'setTimeout').and.returnValue(1 as any);
+        spyOn(component, 'showImage').and.returnValue(Promise.resolve(10));
+
+        component.loopImages(1);
+        flushMicrotasks();
+
+        expect(timeoutSpy).toHaveBeenCalled();
+    }));
+
+    it('showImage should resolve with 0 on error callback', fakeAsync(() => {
+        (component as any).mediaPlayerElement = mediaPlayerElementMock;
+        component.previewThumbnailElement = { nativeElement: document.createElement('img') } as any;
+        const promise = component.showImage(5);
+        component.previewThumbnailElement.nativeElement.onerror(new Event('error'));
+        tick();
+        promise.then((value) => expect(value).toBe(0));
+    }));
+});
 describe('AmaliaComponent contribution juridique', () => {
     let component: AmaliaComponent;
     let fixture: ComponentFixture<AmaliaComponent>;
@@ -685,3 +843,7 @@ describe('AmaliaComponent - keyboard shortcuts', () => {
         expect(evt.preventDefault).toHaveBeenCalled();
     });
 });
+
+
+
+
