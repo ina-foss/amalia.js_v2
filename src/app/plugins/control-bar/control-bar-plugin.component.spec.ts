@@ -1,4 +1,4 @@
-﻿import {ComponentFixture, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
 import {ControlBarPluginComponent} from './control-bar-plugin.component';
 import {MediaPlayerService} from '../../service/media-player-service';
 import {ThumbnailService} from '../../service/thumbnail-service';
@@ -47,7 +47,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     "priority": 1
                 },
                 {
-                    "label": "Plein Ã©cran (f)",
+                    "label": "Plein écran (f)",
                     "control": "toggleFullScreen",
                     "icon": "fullscreen",
                     "zone": 3,
@@ -63,7 +63,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     priority: 1
                 },
                 {
-                    label: "TÃ©lÃ©charger",
+                    label: "Télécharger",
                     control: "download",
                     icon: "download",
                     zone: 1,
@@ -97,7 +97,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     order: 3
                 },
                 {
-                    label: 'Aller au dÃ©but du mÃ©dia',
+                    label: 'Aller au début du média',
                     icon: 'backward-start',
                     control: 'backward-start',
                     zone: 2,
@@ -179,7 +179,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     key: 'Shift + ArrowRight'
                 },
                 {
-                    label: 'Aller Ã  la fin du mÃ©dia',
+                    label: 'Aller à la fin du média',
                     icon: 'forward-end',
                     control: 'forward-end',
                     zone: 2,
@@ -188,7 +188,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     notInMenu: true
                 },
                 {
-                    label: 'DÃ©sactiver le son',
+                    label: 'Désactiver le son',
                     control: 'volume',
                     zone: 3,
                     priority: 2,
@@ -196,7 +196,7 @@ const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: 
                     data: {'channelMergeVolume': false, 'channelMergerNode': ''},
                 },
                 {
-                    label: 'Plein Ã©cran',
+                    label: 'Plein écran',
                     control: 'toggleFullScreen',
                     icon: 'fullscreen',
                     zone: 3,
@@ -581,7 +581,7 @@ describe('ControlBarPluginComponent 2', () => {
 });
 
 
-describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', () => {
+describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
     let component: ControlBarPluginComponent;
 
     // Spies & stubs communs
@@ -614,7 +614,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
         selectRootElement: () => document.createElement('div') as any
     };
 
-    /** CrÃ©e un mediaPlayer mockÃ© avec des spies utiles pour les tests */
+    /** Crée un mediaPlayer mocké avec des spies utiles pour les tests */
     function createMediaPlayerStub() {
         mediaPlayer = {
             framerate: 25,
@@ -645,14 +645,14 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
         const ngZoneStub = {run: (fn: any) => fn()} as unknown as NgZone;
         // Instanciation
         component = new ControlBarPluginComponent(
-                {} as any,           // MediaPlayerService (non utilisé ici)
-                {} as any,           // ThumbnailService (non utilisé ici)
+                {} as any,           // MediaPlayerService (non utilis� ici)
+                {} as any,           // ThumbnailService (non utilis� ici)
                 rendererStub as Renderer2,
                 cdrStub,
                 ngZoneStub
         );
 
-        // Logger neutre pour Ã©viter des erreurs
+        // Logger neutre pour éviter des erreurs
         (component as any).logger = {
             debug: jasmine.createSpy('debug'),
             info: jasmine.createSpy('info'),
@@ -665,25 +665,25 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
         createMediaPlayerStub();
 
         (component as any).mediaPlayerElement = {
-            // Fournit le mediaPlayer mockÃ©
+            // Fournit le mediaPlayer mocké
             getMediaPlayer: () => mediaPlayer,
-            // Petite API dont on nâ€™a pas besoin ici mais que la classe pourrait appeler
+            // Petite API dont on n’a pas besoin ici mais que la classe pourrait appeler
             getDisplayState: () => 'm',
             getPicturePlayer: () => null,
             eventEmitter: {emit: emitSpy},
             aspectRatio: '4:3'
         };
 
-        // Bouton volume (utilisÃ© par applyShortcut pour ArrowUp/ArrowDown)
+        // Bouton volume (utilisé par applyShortcut pour ArrowUp/ArrowDown)
         volumeButtonEl = document.createElement('button');
         spyOn(volumeButtonEl, 'dispatchEvent').and.callThrough();
         component.volumeButton = new ElementRef(volumeButtonEl);
 
-        // Ã‰tat initial des volumes
+        // État initial des volumes
         component.volumeLeft = 50;
         component.volumeRight = 50;
 
-        // Nettoyage des timeouts par dÃ©faut
+        // Nettoyage des timeouts par défaut
         if ((jasmine as any).clock) {
             jasmine.clock().uninstall();
         }
@@ -693,7 +693,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
     // applyShortcut
     // -------------------------------------------------------------------------
     describe('applyShortcut', () => {
-        it('doit appeler controlClicked et mettre Ã  jour keypressed si un raccourci (non volume) correspond', () => {
+        it('doit appeler controlClicked et mettre à jour keypressed si un raccourci (non volume) correspond', () => {
             spyOn(component, 'controlClicked');
 
             component.listOfShortcuts = [
@@ -735,7 +735,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(muteSpy).toHaveBeenCalledTimes(1);
         });
 
-        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis hideAll aprÃ¨s 1500ms', () => {
+        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis hideAll après 1500ms', () => {
             spyOn(component, 'hideAll');
             jasmine.clock().install();
 
@@ -749,13 +749,13 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
 
             component.applyShortcut(evt);
 
-            // Mouseenter dÃ©clenchÃ© sur le bouton volume
+            // Mouseenter déclenché sur le bouton volume
             expect(volumeButtonEl.dispatchEvent).toHaveBeenCalled();
             // Volumes incrementes et bornes a 100
             expect(component.volumeLeft).toBe(100);
             expect(component.volumeRight).toBe(100);
 
-            // hideAll doit Ãªtre appelÃ© aprÃ¨s 1s
+            // hideAll doit être appelé après 1s
             jasmine.clock().tick(1499);
             expect(component.hideAll).not.toHaveBeenCalled();
             jasmine.clock().tick(1);
@@ -765,7 +765,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
         });
 
 
-        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis encore le slider puis hideAll aprÃ¨s 1500ms', () => {
+        it('ArrowUp: affiche le slider volume, +5 sur L/R (max 100), puis encore le slider puis hideAll après 1500ms', () => {
             spyOn(component, 'hideAll');
             jasmine.clock().install();
 
@@ -779,7 +779,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
 
             component.applyShortcut(evt);
 
-            // Mouseenter dÃ©clenchÃ© sur le bouton volume
+            // Mouseenter déclenché sur le bouton volume
             expect(volumeButtonEl.dispatchEvent).toHaveBeenCalled();
             // Volumes incrementes et bornes a 100
             expect(component.volumeLeft).toBe(95);
@@ -791,13 +791,13 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(component.hideAll).not.toHaveBeenCalled();
             expect(component.volumeLeft).toBe(100);
             expect(component.volumeRight).toBe(100);
-            // hideAll doit Ãªtre appelÃ© aprÃ¨s 1,5s
+            // hideAll doit être appelé après 1,5s
             jasmine.clock().tick(1499);
             expect(component.hideAll).toHaveBeenCalledTimes(1);
             jasmine.clock().uninstall();
         });
 
-        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0), puis hideAll aprÃ¨s 1500ms', () => {
+        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0), puis hideAll après 1500ms', () => {
             spyOn(component, 'hideAll');
             jasmine.clock().install();
 
@@ -820,7 +820,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
 
             jasmine.clock().uninstall();
         });
-        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0) puis encore -5 puis hideAll aprÃ¨s 1500ms', () => {
+        it('ArrowDown: affiche le slider volume, -5 sur L/R (min 0) puis encore -5 puis hideAll après 1500ms', () => {
             spyOn(component, 'hideAll');
             jasmine.clock().install();
 
@@ -884,13 +884,13 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(component.enableMenu).toBeFalse();
         });
 
-        it('volume: appelle la mÃ©thode privÃ©e toggleVolume()', () => {
+        it('volume: appelle la méthode privée toggleVolume()', () => {
             const toggleVolumeSpy = spyOn<any>(component, 'toggleVolume');
             component.controlClicked('volume');
             expect(toggleVolumeSpy).toHaveBeenCalledTimes(1);
         });
 
-        it('viewRatio: appelle playPause() (mÃªme comportement que playPause)', () => {
+        it('viewRatio: appelle playPause() (même comportement que playPause)', () => {
             component.controlClicked('viewRatio');
             expect(mediaPlayer.playPause).toHaveBeenCalledTimes(1);
         });
@@ -906,29 +906,29 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(mediaPlayer.captureImage).toHaveBeenCalledOnceWith(100);
         });
 
-        it('backward: dÃ©clenche prevPlaybackRate()', () => {
+        it('backward: déclenche prevPlaybackRate()', () => {
             const spyPrev = spyOn<any>(component, 'prevPlaybackRate');
             component.controlClicked('backward');
             expect(spyPrev).toHaveBeenCalledTimes(1);
         });
 
-        it('slow-backward: dÃ©clenche prevSlowPlaybackRate()', () => {
+        it('slow-backward: déclenche prevSlowPlaybackRate()', () => {
             const spyPrevSlow = spyOn<any>(component, 'prevSlowPlaybackRate');
             component.controlClicked('slow-backward');
             expect(spyPrevSlow).toHaveBeenCalledTimes(1);
         });
 
-        it('backward-5seconds: accumule les frames et exÃ©cute aprÃ¨s debounce', fakeAsync(() => {
+        it('backward-5seconds: accumule les frames et exécute après debounce', fakeAsync(() => {
             mediaPlayer.framerate = 25; // 5 s => 125 frames
             mediaPlayer.isPaused.and.returnValue(false);
 
             component.controlClicked('backward-5seconds');
             
-            // Avant le debounce, rien n'est exÃ©cutÃ©
+            // Avant le debounce, rien n'est exécuté
             expect(mediaPlayer.pauseOnly).not.toHaveBeenCalled();
             expect(mediaPlayer.movePrevFrame).not.toHaveBeenCalled();
             
-            // AprÃ¨s le dÃ©lai de debounce (150ms)
+            // Après le délai de debounce (150ms)
             tick(150);
             
             expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
@@ -987,7 +987,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(mediaPlayer.setCurrentTime).toHaveBeenCalledOnceWith(5400);
         });
 
-        it('backward-start: remet la vitesse Ã  1 puis seekToBegin()', () => {
+        it('backward-start: remet la vitesse à 1 puis seekToBegin()', () => {
             const spyChangeRate = spyOn<any>(component, 'changePlaybackRate');
             component.controlClicked('backward-start');
 
@@ -995,29 +995,29 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(mediaPlayer.seekToBegin).toHaveBeenCalledTimes(1);
         });
 
-        it('forward: dÃ©clenche nextPlaybackRate()', () => {
+        it('forward: déclenche nextPlaybackRate()', () => {
             const spyNext = spyOn<any>(component, 'nextPlaybackRate');
             component.controlClicked('forward');
             expect(spyNext).toHaveBeenCalledTimes(1);
         });
 
-        it('slow-forward: dÃ©clenche nextSlowPlaybackRate()', () => {
+        it('slow-forward: déclenche nextSlowPlaybackRate()', () => {
             const spyNextSlow = spyOn<any>(component, 'nextSlowPlaybackRate');
             component.controlClicked('slow-forward');
             expect(spyNextSlow).toHaveBeenCalledTimes(1);
         });
 
-        it('forward-5seconds: accumule les frames et exÃ©cute aprÃ¨s debounce', fakeAsync(() => {
+        it('forward-5seconds: accumule les frames et exécute après debounce', fakeAsync(() => {
             mediaPlayer.framerate = 25; // 5 s => 125 frames
             mediaPlayer.isPaused.and.returnValue(false);
 
             component.controlClicked('forward-5seconds');
             
-            // Avant le debounce, rien n'est exÃ©cutÃ©
+            // Avant le debounce, rien n'est exécuté
             expect(mediaPlayer.pauseOnly).not.toHaveBeenCalled();
             expect(mediaPlayer.moveNextFrame).not.toHaveBeenCalled();
             
-            // AprÃ¨s le dÃ©lai de debounce (150ms)
+            // Après le délai de debounce (150ms)
             tick(150);
             
             expect(mediaPlayer.pauseOnly).toHaveBeenCalled();
@@ -1057,7 +1057,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(mediaPlayer.moveNextFrame).toHaveBeenCalledOnceWith(1);
         });
 
-        it('forward-end: remet la vitesse Ã  1 puis seekToEnd()', () => {
+        it('forward-end: remet la vitesse à 1 puis seekToEnd()', () => {
             const spyChangeRate = spyOn<any>(component, 'changePlaybackRate');
             component.controlClicked('forward-end');
 
@@ -1065,19 +1065,19 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(mediaPlayer.seekToEnd).toHaveBeenCalledTimes(1);
         });
 
-        it('displaySlider: appelle la mÃ©thode privÃ©e displaySlider()', () => {
+        it('displaySlider: appelle la méthode privée displaySlider()', () => {
             const spyDisplay = spyOn<any>(component, 'displaySlider');
             component.controlClicked('displaySlider');
             expect(spyDisplay).toHaveBeenCalledTimes(1);
         });
 
-        it('pinControls: appelle la mÃ©thode privÃ©e pinControls()', () => {
+        it('pinControls: appelle la méthode privée pinControls()', () => {
             const spyPin = spyOn<any>(component, 'pinControls');
             component.controlClicked('pinControls');
             expect(spyPin).toHaveBeenCalledTimes(1);
         });
 
-        it('toggleFullScreen: appelle la mÃ©thode privÃ©e toggleFullScreen()', () => {
+        it('toggleFullScreen: appelle la méthode privée toggleFullScreen()', () => {
             const spyFs = spyOn<any>(component, 'toggleFullScreen');
             component.controlClicked('toggleFullScreen');
             expect(spyFs).toHaveBeenCalledTimes(1);
@@ -1101,14 +1101,111 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', ()
             expect(spyDl).toHaveBeenCalledOnceWith('download');
         });
 
-        it('par dÃ©faut: log.warn("Control not implemented", control)', () => {
+        it('picture controls should delegate to picture player when magnify is disabled', () => {
+            const picturePlayer = {
+                rotate: jasmine.createSpy('rotate'),
+                flipH: jasmine.createSpy('flipH'),
+                flipV: jasmine.createSpy('flipV'),
+                magnify: jasmine.createSpy('magnify'),
+                showRealSize: jasmine.createSpy('showRealSize'),
+                toggleFullscreen: jasmine.createSpy('toggleFullscreen'),
+                fitToScreen: jasmine.createSpy('fitToScreen'),
+                zoom: jasmine.createSpy('zoom'),
+                unZoom: jasmine.createSpy('unZoom')
+            };
+            (component as any).mediaPlayerElement.getPicturePlayer = () => picturePlayer;
+            component.magnifyEnabled = false;
+
+            component.controlClicked('rotate');
+            component.controlClicked('fliph');
+            component.controlClicked('flipv');
+            component.controlClicked('fullsize');
+            component.controlClicked('fullscreen');
+            component.controlClicked('fitToScreen');
+            component.controlClicked('zoomIn');
+            component.controlClicked('zoomOut');
+            component.controlClicked('magnify');
+
+            expect(picturePlayer.rotate).toHaveBeenCalled();
+            expect(picturePlayer.flipH).toHaveBeenCalled();
+            expect(picturePlayer.flipV).toHaveBeenCalled();
+            expect(picturePlayer.showRealSize).toHaveBeenCalled();
+            expect(picturePlayer.toggleFullscreen).toHaveBeenCalled();
+            expect(picturePlayer.fitToScreen).toHaveBeenCalled();
+            expect(picturePlayer.zoom).toHaveBeenCalled();
+            expect(picturePlayer.unZoom).toHaveBeenCalled();
+            expect(picturePlayer.magnify).toHaveBeenCalled();
+            expect(component.magnifyEnabled).toBeTrue();
+        });
+
+        it('picture controls should no-op (except magnify) when magnify is enabled', () => {
+            const picturePlayer = {
+                rotate: jasmine.createSpy('rotate'),
+                flipH: jasmine.createSpy('flipH'),
+                flipV: jasmine.createSpy('flipV'),
+                magnify: jasmine.createSpy('magnify'),
+                showRealSize: jasmine.createSpy('showRealSize'),
+                toggleFullscreen: jasmine.createSpy('toggleFullscreen'),
+                fitToScreen: jasmine.createSpy('fitToScreen'),
+                zoom: jasmine.createSpy('zoom'),
+                unZoom: jasmine.createSpy('unZoom')
+            };
+            (component as any).mediaPlayerElement.getPicturePlayer = () => picturePlayer;
+            component.magnifyEnabled = true;
+
+            component.controlClicked('rotate');
+            component.controlClicked('fliph');
+            component.controlClicked('flipv');
+            component.controlClicked('fullsize');
+            component.controlClicked('fullscreen');
+            component.controlClicked('fitToScreen');
+            component.controlClicked('zoomIn');
+            component.controlClicked('zoomOut');
+
+            expect(picturePlayer.rotate).not.toHaveBeenCalled();
+            expect(picturePlayer.flipH).not.toHaveBeenCalled();
+            expect(picturePlayer.flipV).not.toHaveBeenCalled();
+            expect(picturePlayer.showRealSize).not.toHaveBeenCalled();
+            expect(picturePlayer.toggleFullscreen).not.toHaveBeenCalled();
+            expect(picturePlayer.fitToScreen).not.toHaveBeenCalled();
+            expect(picturePlayer.zoom).not.toHaveBeenCalled();
+            expect(picturePlayer.unZoom).not.toHaveBeenCalled();
+
+            component.controlClicked('magnify');
+            expect(picturePlayer.magnify).toHaveBeenCalled();
+            expect(component.magnifyEnabled).toBeFalse();
+        });
+
+        it('handlePictureZoomChange should update zoom level and trigger change detection', () => {
+            const cdr = (component as any).cdr;
+            component.handlePictureZoomChange(undefined as any);
+            expect(component.pictureZoomLevel).toBe(100);
+            expect(cdr.markForCheck).toHaveBeenCalled();
+
+            component.handlePictureZoomChange(175);
+            expect(component.pictureZoomLevel).toBe(175);
+        });
+
+        it('updatePicturePlayerDisplayState should propagate display state when picture player exists', () => {
+            const setDisplayState = jasmine.createSpy('setDisplayState');
+            (component as any).displayState = 'sm';
+            (component as any).mediaPlayerElement.getPicturePlayer = () => ({ setDisplayState });
+
+            (component as any).updatePicturePlayerDisplayState();
+            expect(setDisplayState).toHaveBeenCalledWith('sm');
+
+            (component as any).mediaPlayerElement.getPicturePlayer = () => null;
+            (component as any).updatePicturePlayerDisplayState();
+            expect(setDisplayState).toHaveBeenCalledTimes(1);
+        });
+
+        it('par d�faut: log.warn("Control not implemented", control)', () => {
             component.controlClicked('not-implemented');
             expect((component as any).logger.warn)
                     .toHaveBeenCalledWith('Control not implemented', 'not-implemented');
         });
     });
 });
-
 describe('ControlBarPluginComponent (focused methods)', () => {
     let component: ControlBarPluginComponent;
     let fixture: ComponentFixture<ControlBarPluginComponent>;
@@ -1119,7 +1216,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         getDisplayState: jasmine.createSpy('getDisplayState').and.returnValue('m'),
         getThumbnailUrl: jasmine.createSpy('getThumbnailUrl').and.callFake((tc: number) => `thumb?tc=${tc}`),
         getPicturePlayer: jasmine.createSpy('getPicturePlayer').and.returnValue(null),
-        // ci-dessous non utilisÃ©s par nos 4 mÃ©thodes visÃ©es, mais utiles au besoin :
+        // ci-dessous non utilisés par nos 4 méthodes visées, mais utiles au besoin :
         getMediaPlayer: jasmine.createSpy('getMediaPlayer').and.returnValue({}),
         eventEmitter: new EventEmitter()
     } as any;
@@ -1140,7 +1237,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
             'insertBefore',
             'selectRootElement',
             'listen',
-            // on ne les utilise pas toutes, mais Ã§a Ã©vite les erreurs dâ€™API incomplÃ¨te
+            // on ne les utilise pas toutes, mais ça évite les erreurs d’API incomplète
         ]);
 
         await TestBed.configureTestingModule({
@@ -1148,12 +1245,12 @@ describe('ControlBarPluginComponent (focused methods)', () => {
             imports: [HttpClientTestingModule],
             providers: [
                 {provide: Renderer2, useValue: rendererSpy},
-                {provide: MediaPlayerService, useValue: playerService},// si le token rÃ©el est exportÃ©, remplace 'MediaPlayerService' par la classe
+                {provide: MediaPlayerService, useValue: playerService},// si le token réel est exporté, remplace 'MediaPlayerService' par la classe
                 ThumbnailService,     // idem
             ],
             schemas: [NO_ERRORS_SCHEMA]
         })
-                // note: si tu as les classes concrÃ¨tes, remplace les tokens string par les vraies classes
+                // note: si tu as les classes concrètes, remplace les tokens string par les vraies classes
                 .overrideComponent(ControlBarPluginComponent, {
                     set: { // pas de template requis pour ces tests
                         template: '<div></div>'
@@ -1168,9 +1265,9 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         thumbnailService = TestBed.inject(ThumbnailService);
         const getThumbnailMock = spyOn(thumbnailService, 'getThumbnail');
         getThumbnailMock.and.resolveTo('data:image/png;base64,xxx');
-        // ---- Mocks minimaux sur mediaPlayerElement utilisÃ©s par nos mÃ©thodes testÃ©es
+        // ---- Mocks minimaux sur mediaPlayerElement utilisés par nos méthodes testées
         component['mediaPlayerElement'] = mediaPlayerElement;
-        // ---- ViewChild simulÃ©s
+        // ---- ViewChild simulés
         const progressBar = document.createElement('div');
         Object.defineProperty(progressBar, 'offsetWidth', {value: 100}); // largeur container
         component.progressBarElement = new ElementRef(progressBar);
@@ -1181,15 +1278,15 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         const thumbnailImg = document.createElement('img');
         component.thumbnailElement = new ElementRef(thumbnailImg);
 
-        // Valeurs par dÃ©faut utilisÃ©es dans les calculs
+        // Valeurs par défaut utilisées dans les calculs
         component.duration = 200; // ex: 200s
 
         fixture.detectChanges();
     });
 
     // ============ updateThumbnail ============
-    it('updateThumbnail() doit calculer le tc et appeler setThumbnail avec lâ€™URL et le currentTime attendus', () => {
-        // ---- ViewChild simulÃ©s
+    it('updateThumbnail() doit calculer le tc et appeler setThumbnail avec l’URL et le currentTime attendus', () => {
+        // ---- ViewChild simulés
         const progressBar = document.createElement('div');
         Object.defineProperty(progressBar, 'offsetWidth', {value: 100}); // largeur container
         component.progressBarElement = new ElementRef(progressBar);
@@ -1200,7 +1297,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         const thumbnailImg = document.createElement('img');
         component.thumbnailElement = new ElementRef(thumbnailImg);
 
-        // Valeurs par dÃ©faut utilisÃ©es dans les calculs
+        // Valeurs par défaut utilisées dans les calculs
         component.duration = 200; // ex: 200s
 
         // offsetX = 50, containerWidth = 100, duration = 200 -> tc = 100
@@ -1213,8 +1310,8 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         expect(setThumbnailSpy).toHaveBeenCalledOnceWith('thumb?tc=100', 100);
     });
 
-    it('updateThumbnail() ne doit rien faire si tc nâ€™est pas fini (containerWidth = 0)', () => {
-        // ---- ViewChild simulÃ©s
+    it('updateThumbnail() ne doit rien faire si tc n’est pas fini (containerWidth = 0)', () => {
+        // ---- ViewChild simulés
         const progressBar = document.createElement('div');
         Object.defineProperty(progressBar, 'offsetWidth', {value: 0}); // largeur container
         component.progressBarElement = new ElementRef(progressBar);
@@ -1225,7 +1322,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
         const thumbnailImg = document.createElement('img');
         component.thumbnailElement = new ElementRef(thumbnailImg);
 
-        // Valeurs par dÃ©faut utilisÃ©es dans les calculs
+        // Valeurs par défaut utilisées dans les calculs
         component.duration = 200; // ex: 200s
 
         //const progressBarNativeElement = component.progressBarElement.nativeElement as HTMLDivElement;
@@ -1242,24 +1339,24 @@ describe('ControlBarPluginComponent (focused methods)', () => {
     // ============ handleDisplayState ============
     describe('handleDisplayState()', () => {
         beforeEach(() => {
-            // Ã‰lÃ©ment de config couvrant les prioritÃ©s 5/4/3/2 et diffÃ©rentes zones
+            // Élément de config couvrant les priorités 5/4/3/2 et différentes zones
             component.elements = [
                 {control: 'c1', zone: 1, priority: 5},
                 {control: 'c2', zone: 2, priority: 4},
                 {control: 'c3', zone: 3, priority: 3},
                 {control: 'c4', zone: 1, priority: 2},
-                {control: 'c5', zone: 2, priority: 5, notInMenu: true}, // doit Ãªtre filtrÃ©
+                {control: 'c5', zone: 2, priority: 5, notInMenu: true}, // doit être filtré
             ] as any;
-            spyOn(component, 'updatePinAndSpeedSliderPositions'); // on vÃ©rifie lâ€™appel sans exÃ©cuter la logique DOM
+            spyOn(component, 'updatePinAndSpeedSliderPositions'); // on vérifie l’appel sans exécuter la logique DOM
         });
 
-        it('affiche uniquement les prioritÃ©s 5 en mode "m" et filtre notInMenu', fakeAsync(() => {
+        it('affiche uniquement les priorités 5 en mode "m" et filtre notInMenu', fakeAsync(() => {
             (component as any).mediaPlayerElement.getDisplayState = jasmine.createSpy().and.returnValue('m');
 
             component.handleDisplayState();
             tick(120); // > 100ms pour le setTimeout
             const names = component.controls.map((c: any) => c.control);
-            expect(names).toEqual(['c1']); // c5 est filtrÃ© (notInMenu)
+            expect(names).toEqual(['c1']); // c5 est filtré (notInMenu)
             expect(component.updatePinAndSpeedSliderPositions).toHaveBeenCalled();
         }));
 
@@ -1325,7 +1422,7 @@ describe('ControlBarPluginComponent (focused methods)', () => {
             expect(component.enableListRatio).toBeFalse();
         });
 
-        it('ne change rien si tous sont dÃ©jÃ  fermÃ©s', () => {
+        it('ne change rien si tous sont déjà fermés', () => {
             component.enableMenu = false;
             component.enableVolumeSlider = false;
             component.enableListPositionsSubtitle = false;
@@ -1342,26 +1439,26 @@ describe('ControlBarPluginComponent (focused methods)', () => {
 
     // ============ aspectRatioMouseEnter ============
     describe('aspectRatioMouseEnter()', () => {
-        it('appelle hideAll("ratio"), ouvre la liste et la referme aprÃ¨s 4s', fakeAsync(() => {
+        it('appelle hideAll("ratio"), ouvre la liste et la referme après 4s', fakeAsync(() => {
             const hideAllSpy = spyOn(component, 'hideAll').and.callThrough();
 
             component.aspectRatioMouseEnter();
             expect(hideAllSpy).toHaveBeenCalledOnceWith('ratio');
             expect(component.enableListRatio).toBeTrue();
 
-            // aprÃ¨s 4s, la liste se referme
+            // après 4s, la liste se referme
             tick(4000);
             expect(component.enableListRatio).toBeFalse();
         }));
 
-        it('annule un timer prÃ©cÃ©dent sâ€™il existe', fakeAsync(() => {
+        it('annule un timer précédent s’il existe', fakeAsync(() => {
             const clearSpy = spyOn(window, 'clearTimeout').and.callThrough();
             // on installe un timer existant
             component.aspectRatioMouseEnterTimeOut = setTimeout(() => {
             }, 999999);
 
             component.aspectRatioMouseEnter();
-            expect(clearSpy).toHaveBeenCalled(); // le timer prÃ©cÃ©dent est annulÃ©
+            expect(clearSpy).toHaveBeenCalled(); // le timer précédent est annulé
 
             // cleanup timers
             tick(4000);
@@ -1819,5 +1916,8 @@ describe('ControlBarPluginComponent (coverage boost)', () => {
         expect(openSpy).toHaveBeenCalled();
     });
 });
+
+
+
 
 

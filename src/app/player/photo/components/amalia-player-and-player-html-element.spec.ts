@@ -1,5 +1,8 @@
+import { fakeAsync, flush } from '@angular/core/testing';
 import AmaliaPlayer from './AmaliaPlayer';
 import PlayerHtmlElement from './PlayerHtmlElement';
+import MagnifierHtmlElement from './MagnifierHtmlElement';
+import IncrementInfo from './widgets/IncrementInfo';
 
 function createButtonStub() {
     const dom = document.createElement('div');
@@ -310,6 +313,126 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         jasmine.clock().uninstall();
     });
 
+    it('should evaluate anonymous cross origin rules and image source behavior', () => {
+        expect((comp as any).shouldUseAnonymousCrossOrigin('')).toBeFalse();
+        expect((comp as any).shouldUseAnonymousCrossOrigin('data:image/png;base64,AA')).toBeFalse();
+        expect((comp as any).shouldUseAnonymousCrossOrigin('blob:https://example.test/id')).toBeFalse();
+        expect((comp as any).shouldUseAnonymousCrossOrigin('file:///tmp/a.jpg')).toBeFalse();
+        expect((comp as any).shouldUseAnonymousCrossOrigin('https://example.org/a.jpg')).toBeTrue();
+        expect((comp as any).shouldUseAnonymousCrossOrigin('http://localhost:9876/a.jpg')).toBeFalse();
+        expect((comp as any).shouldUseAnonymousCrossOrigin('http://[invalid')).toBeFalse();
+
+        (comp as any).setImageSource('https://example.org/b.jpg');
+        expect((comp as any)._image.getAttribute('crossorigin')).toBe('anonymous');
+
+        (comp as any).setImageSource('/relative.jpg');
+        expect((comp as any)._image.getAttribute('crossorigin')).toBeNull();
+    });
+
+    it('onImageError should retry once without crossorigin and then stop retrying', () => {
+        const image = (comp as any)._image as HTMLImageElement;
+        (comp as any)._imagePath = '/img-retry.jpg';
+        image.setAttribute('crossorigin', 'anonymous');
+
+        (comp as any).onImageError();
+        expect((comp as any)._retryWithoutCorsForSrc).toBe('/img-retry.jpg');
+        expect(image.getAttribute('crossorigin')).toBeNull();
+
+        image.setAttribute('crossorigin', 'anonymous');
+        (comp as any).onImageError();
+        expect((comp as any)._retryWithoutCorsForSrc).toBe('/img-retry.jpg');
+    });
+
+    it('onImageLoad should only create cropper in sm/m/l display states', () => {
+        const createSpy = spyOn<any>(comp, 'createCropperInstance').and.callFake(() => undefined);
+        (comp as any)._displayState = 'xs';
+        (comp as any)._cropperWrapper = null;
+        (comp as any).onImageLoad();
+        expect(createSpy).not.toHaveBeenCalled();
+
+        (comp as any)._displayState = 'm';
+        (comp as any)._cropperWrapper = null;
+        (comp as any).onImageLoad();
+        expect(createSpy).toHaveBeenCalled();
+    });
+
+    it('handleFullscreenChange should refresh cropper and magnifier when enabled', () => {
+        jasmine.clock().install();
+        const fitSpy = jasmine.createSpy('fitToCanvas');
+        const refreshSpy = spyOn<any>(comp, 'refreshMagnifier').and.callFake(() => undefined);
+        (comp as any)._magnify = true;
+        (comp as any)._cropperWrapper = {
+            getImageData: () => ({ zoomLevel: 100 }),
+            fitToCanvas: fitSpy
+        };
+
+        (comp as any).handleFullscreenChange();
+        jasmine.clock().tick(151);
+
+        expect(fitSpy).toHaveBeenCalled();
+        expect(refreshSpy).toHaveBeenCalled();
+        jasmine.clock().uninstall();
+    });
+
+    it('setDisplayState should keep manual zoom and center on same display state', () => {
+        const centerSpy = jasmine.createSpy('center');
+        const fitSpy = jasmine.createSpy('fitToCanvas');
+        const refreshSpy = spyOn<any>(comp, 'refreshMagnifier').and.callFake(() => undefined);
+        (comp as any)._displayState = 'm';
+        (comp as any)._manualZoom = true;
+        (comp as any)._magnify = true;
+        (comp as any)._cropperWrapper = { center: centerSpy, fitToCanvas: fitSpy };
+
+        comp.setDisplayState('m', 500, 250);
+
+        expect(centerSpy).toHaveBeenCalled();
+        expect(fitSpy).not.toHaveBeenCalled();
+        expect(refreshSpy).toHaveBeenCalled();
+    });
+
+    it('setDisplayState should return early in fullscreen mode', () => {
+        const resetSpy = spyOn<any>(comp, 'resetDisplayContent').and.callThrough();
+        (comp as any)._isInFullscreen = true;
+
+        comp.setDisplayState('m', 640, 360);
+
+        expect(resetSpy).not.toHaveBeenCalled();
+    });
+
+    it('zoom and unZoom should use cropper wrapper steps when zoomInfo is unavailable', () => {
+        const zoomSpy = jasmine.createSpy('zoom');
+        (comp as any)._zoomInfo = null;
+        (comp as any)._cropperWrapper = {
+            getZoomLevel: () => 20,
+            zoom: zoomSpy
+        };
+
+        comp.zoom();
+        comp.unZoom();
+
+        expect(zoomSpy).toHaveBeenCalled();
+        expect((comp as any)._manualZoom).toBeTrue();
+    });
+
+    it('eventFullscreen should execute rejection branches', fakeAsync(() => {
+        const dom = comp.getDom() as any;
+        (comp as any)._width = 500;
+        (comp as any)._height = 250;
+
+        Object.defineProperty(document, 'fullscreenElement', { configurable: true, value: null });
+        dom.requestFullscreen = () => Promise.reject('fs-reject');
+        (comp as any).eventFullscreen();
+        flush();
+        expect((comp as any)._isInFullscreen).toBeFalse();
+        expect(dom.style.width).toBe('500px');
+        expect(dom.style.height).toBe('250px');
+
+        Object.defineProperty(document, 'fullscreenElement', { configurable: true, value: {} });
+        spyOn(document, 'exitFullscreen').and.returnValue(Promise.reject('exit-reject'));
+        (comp as any).eventFullscreen();
+        flush();
+        expect((comp as any)._isInFullscreen).toBeFalse();
+    }));
     it('public wrappers should delegate and destroy should cleanup', () => {
         const destroySpy = jasmine.createSpy('destroy');
         (comp as any)._cropperWrapper = { destroy: destroySpy };
@@ -490,3 +613,137 @@ describe('PlayerHtmlElement (full toolbar branches)', () => {
         expect(timeoutSpy).toHaveBeenCalled();
     });
 });
+
+
+
+describe('MagnifierHtmlElement', () => {
+    let target: HTMLElement;
+    let parent: HTMLElement;
+    const imgData = {
+        src: '/img.jpg',
+        src_width: 800,
+        src_height: 600,
+        left: 0,
+        top: 0,
+        rotate: 0,
+        crop_left: null,
+        crop_top: null,
+        crop_width: null,
+        crop_height: null,
+        flop: null,
+        flip: null,
+        zoomLevel: 100
+    } as any;
+
+    beforeEach(() => {
+        parent = document.createElement('div');
+        target = document.createElement('div');
+        parent.appendChild(target);
+        document.body.appendChild(parent);
+
+        Object.defineProperty(target, 'offsetWidth', { value: 400, configurable: true });
+        Object.defineProperty(target, 'offsetHeight', { value: 300, configurable: true });
+        spyOn(target, 'getBoundingClientRect').and.returnValue({ left: 20, top: 10, width: 400, height: 300 } as DOMRect);
+        spyOn(parent, 'getBoundingClientRect').and.returnValue({ left: 0, top: 0, width: 800, height: 600 } as DOMRect);
+    });
+
+    afterEach(() => {
+        parent.remove();
+    });
+
+    it('should build magnifier and update image data', () => {
+        const magnifier = new MagnifierHtmlElement(target, imgData, () => ({ x: 40, y: 50 }), 300, 600);
+        parent.appendChild(magnifier.getDom());
+
+        expect(magnifier.getDom().className).toContain('ajs-photo-magnifier-glass');
+
+        magnifier.updateImageData({ ...imgData, left: 5, top: 6 } as any);
+        expect((magnifier as any)._imgData.left).toBe(5);
+
+        magnifier.removeFromDom();
+        expect(magnifier.getDom().isConnected).toBeFalse();
+    });
+
+    it('should clamp zoom on wheel and stop event propagation', () => {
+        const magnifier = new MagnifierHtmlElement(target, imgData, () => ({ x: 30, y: 40 }), 300, 600);
+        parent.appendChild(magnifier.getDom());
+
+        const event = {
+            deltaY: -1,
+            clientX: 50,
+            clientY: 50,
+            preventDefault: jasmine.createSpy('preventDefault'),
+            stopPropagation: jasmine.createSpy('stopPropagation'),
+            stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation')
+        } as any;
+
+        (magnifier as any).mouseWheel(event);
+
+        expect(event.preventDefault).toHaveBeenCalled();
+        expect(event.stopPropagation).toHaveBeenCalled();
+        expect(event.stopImmediatePropagation).toHaveBeenCalled();
+
+        magnifier.removeFromDom();
+    });
+
+    it('should cover transform helpers', () => {
+        const magnifier = new MagnifierHtmlElement(target, { ...imgData, rotate: 180, flip: 1, flop: 1 } as any, () => ({ x: 10, y: 10 }));
+        expect((magnifier as any).getScaleTransforms()).toBeNull();
+
+        (magnifier as any)._imgData = { ...imgData, rotate: 90, flip: 0, flop: 0 };
+        const t = (magnifier as any).getTransformStyle();
+        expect(t).toContain('rotate(90deg)');
+
+        const coords = (magnifier as any).transformCoordinates(20, 30, 200, 100);
+        expect(coords.length).toBe(2);
+
+        magnifier.removeFromDom();
+    });
+});
+
+describe('IncrementInfo', () => {
+    it('should increment/decrement with fixed step and emit events', () => {
+        const inc = new IncrementInfo(10, null, 10, 200, {} as any);
+        document.body.appendChild(inc.getDom());
+
+        const events: number[] = [];
+        inc.getDom().addEventListener(IncrementInfo.events.change, ((e: CustomEvent) => {
+            events.push(e.detail.value);
+        }) as EventListener);
+
+        inc.setResultValue(100);
+        inc.increment();
+        inc.decrement();
+
+        expect(events).toContain(110);
+        expect(events).toContain(100);
+
+        inc.removeFromDom();
+    });
+
+    it('should use sorted custom steps and respect min/max normalization', () => {
+        const inc = new IncrementInfo(1, [150, 50, 100], 50, 150, {} as any);
+        document.body.appendChild(inc.getDom());
+
+        inc.setResultValue(100);
+        inc.increment();
+        expect((inc as any).getCurrentValue()).toBe(150);
+
+        inc.increment();
+        expect((inc as any).getCurrentValue()).toBe(150);
+
+        inc.decrement();
+        expect((inc as any).getCurrentValue()).toBe(100);
+
+        inc.setResultValue(NaN as any);
+        expect((inc as any).getCurrentValue()).toBe(100);
+
+        inc.showRealSize();
+        expect((inc as any).getCurrentValue()).toBe(100);
+
+        inc.enable();
+        inc.disable();
+        inc.removeFromDom();
+    });
+});
+

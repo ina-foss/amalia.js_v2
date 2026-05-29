@@ -18,6 +18,8 @@ import {TimeBarPluginComponent} from '../../plugins/time-bar/time-bar-plugin.com
 import {MetadataUtils} from '../utils/metadata-utils';
 import {Histogram} from './model/histogram';
 import {DataType} from "../constant/data-type";
+import {PlayerErrorCode} from '../constant/error-type';
+import * as msgpack from 'msgpack-lite';
 
 describe('Test Metadata manager', () => {
     let injector: TestBed;
@@ -68,6 +70,7 @@ describe('Test Metadata manager', () => {
     it('Test Metadata: loader', fakeAsync(() => {
         const converter = new DefaultMetadataConverter();
         const loader = new DefaultMetadataLoader(httpClient, converter, logger);
+        expect(loader.getHttpClient()).toBe(httpClient);
         const metadataPromise = loader.load(testMetadata, null);
 
         // .load('./tests/assets/metadata/sample-transcription.json');
@@ -96,6 +99,87 @@ describe('Test Metadata manager', () => {
         }
         // Call tick with actually processes te response
         tick();
+    }));
+
+    it('Test Metadata: loader should decode msgpack payload', fakeAsync(() => {
+        const mockConverter = {
+            convert: jasmine.createSpy('convert').and.callFake((value: any) => value)
+        };
+        const packed = msgpack.encode([{ id: 'packed-id' }]);
+        const packedBytes = new Uint8Array(packed.length);
+        packedBytes.set(packed);
+        const mockHttpClient: any = {
+            get: jasmine.createSpy('get').and.returnValue({
+                toPromise: () => Promise.resolve(packedBytes.buffer)
+            })
+        };
+        const loader = new DefaultMetadataLoader(mockHttpClient, mockConverter as any, logger);
+
+        let decoded: any[] = null;
+        loader.load(testMetadata, ['x-msgpack:true']).then((data) => {
+            decoded = data;
+        }).catch(() => {
+            fail('Error to decode msgpack metadata');
+        });
+
+        tick();
+        expect(mockHttpClient.get).toHaveBeenCalled();
+        expect(decoded).not.toBeNull();
+        expect(decoded[0].id).toBe('packed-id');
+    }));
+    it('Test Metadata: loader should reject on empty response', fakeAsync(() => {
+        const converter = new DefaultMetadataConverter();
+        const loader = new DefaultMetadataLoader(httpClient, converter, logger);
+        let rejected: any = null;
+
+        loader.load(testMetadata, null).catch((error) => {
+            rejected = error;
+        });
+
+        httpTestingController.expectOne(testMetadata).flush(null, {
+            status: 200,
+            statusText: 'Ok'
+        });
+
+        tick();
+        expect(rejected).toEqual(PlayerErrorCode.ERROR_TO_CONVERT_METADATA);
+    }));
+
+    it('Test Metadata: loader should reject on http error', fakeAsync(() => {
+        const converter = new DefaultMetadataConverter();
+        const loader = new DefaultMetadataLoader(httpClient, converter, logger);
+        let rejected: any = null;
+
+        loader.load(testMetadata, null).catch((error) => {
+            rejected = error;
+        });
+
+        const req = httpTestingController.expectOne(testMetadata);
+        req.flush({ message: 'fail' }, {
+            status: 500,
+            statusText: 'Server Error'
+        });
+
+        tick();
+        expect(rejected).toEqual(PlayerErrorCode.METADATA_HTTP_LOAD_ERROR);
+    }));
+    it('should reject loadDataSourceForPlugin when no dataSources are configured', fakeAsync(() => {
+        const minimalConfig: ConfigData = {
+            player: { autoplay: false, crossOrigin: null, data: null, defaultVolume: 0, duration: null, poster: '', src: mediaSrc },
+            pluginsConfiguration: new Map<string, PluginConfigData<any>>(),
+            dataSources: null
+        };
+        let resolved = false;
+        let rejected = false;
+        configurationManager.load(minimalConfig).then(() => {
+            metadataManager.loadDataSourceForPlugin('annotations')
+                .then(() => { resolved = true; })
+                .catch(() => { rejected = true; });
+        });
+        tick();
+        expect(resolved).toBeFalse();
+        expect(rejected).toBeTrue();
+        flush();
     }));
 
     it('Test Metadata: metadata manager ', () => {
@@ -279,5 +363,12 @@ describe('Test Metadata manager', () => {
         });
     });
 });
+
+
+
+
+
+
+
 
 

@@ -11,6 +11,7 @@ import {DefaultMetadataLoader} from './metadata/loader/default-metadata-loader';
 import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {ConfigurationManager} from './config/configuration-manager';
+import {PlayerEventType} from './constant/event-type';
 
 describe('Test Media player element', () => {
     let injector: TestBed;
@@ -131,6 +132,107 @@ describe('Test Media player element', () => {
         expect(warnSpy).toHaveBeenCalled();
     });
 
+    it('init should emit INIT and PICTURE_ZOOM_CHANGE when picture player is active', async () => {
+        const configData = require('tests/assets/config-mpe.json');
+        configData.loadMetadataOnDemand = true;
+
+        const mpe = new MediaPlayerElement() as any;
+        mpe.picturePlayer = {};
+        const configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), logger);
+        const emitSpy = spyOn(mpe.eventEmitter, 'emit').and.callThrough();
+        spyOn<any>(mpe, 'setMediaSource').and.callFake(() => undefined);
+
+        await mpe.init(configData, undefined, configLoader);
+
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.INIT);
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.PICTURE_ZOOM_CHANGE, 100);
+    });
+
+    it('init should reject with ERROR_LOAD_CONFIG when configuration loading fails', async () => {
+        const mpe = new MediaPlayerElement() as any;
+        spyOn<any>(mpe, 'loadConfiguration').and.returnValue(Promise.reject('boom'));
+
+        await expectAsync(mpe.init({})).toBeRejectedWith(PlayerState.ERROR_LOAD_CONFIG);
+        expect(mpe.getState()).toBe(PlayerState.ERROR_LOAD_CONFIG);
+    });
+
+    it('setMediaPlayer should unsubscribe previous media player listeners', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const unsubscribeSpy = jasmine.createSpy('unsubscribeListeners');
+        mpe.mediaPlayer = { unsubscribeListeners: unsubscribeSpy };
+
+        mpe.setMediaPlayer(document.createElement('video'));
+
+        expect(unsubscribeSpy).toHaveBeenCalled();
+    });
+
+    it('selectPictureImage should delegate to picture player', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const selectSpy = jasmine.createSpy('selectImageBySource');
+        mpe.picturePlayer = { selectImageBySource: selectSpy };
+
+        mpe.selectPictureImage('/img.jpg', 'img');
+
+        expect(selectSpy).toHaveBeenCalledWith('/img.jpg', 'img');
+    });
+
+    it('applyPicturePlayerLayoutFromHost should apply size and emit resize', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const setDisplayStateSpy = jasmine.createSpy('setDisplayState');
+        const host = document.createElement('div');
+        spyOn(host, 'getBoundingClientRect').and.returnValue({ width: 640, height: 360 } as DOMRect);
+        mpe.picturePlayer = { setDisplayState: setDisplayStateSpy };
+        mpe._picturePlayerHost = host;
+        spyOn(mpe, 'getDisplayState').and.returnValue('m');
+        const emitSpy = spyOn(mpe.eventEmitter, 'emit');
+
+        const result = mpe.applyPicturePlayerLayoutFromHost(true);
+
+        expect(result).toBeTrue();
+        expect(mpe.width).toBe(640);
+        expect(setDisplayStateSpy).toHaveBeenCalledWith('m', 640, 360);
+        expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.PLAYER_RESIZED);
+    });
+
+    it('applyPicturePlayerLayoutFromHost should return false when host size is invalid', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const host = document.createElement('div');
+        spyOn(host, 'getBoundingClientRect').and.returnValue({ width: 0, height: 0 } as DOMRect);
+        mpe.picturePlayer = { setDisplayState: jasmine.createSpy('setDisplayState') };
+        mpe._picturePlayerHost = host;
+
+        expect(mpe.applyPicturePlayerLayoutFromHost()).toBeFalse();
+    });
+
+    it('schedulePicturePlayerLayoutRefresh should no-op when picture player host is missing', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const rafSpy = spyOn(window, 'requestAnimationFrame').and.callThrough();
+
+        mpe.picturePlayer = null;
+        mpe._picturePlayerHost = null;
+        mpe.schedulePicturePlayerLayoutRefresh(true);
+
+        expect(rafSpy).not.toHaveBeenCalled();
+    });
+
+    it('schedulePicturePlayerLayoutRefresh should refresh via RAF and timeout', () => {
+        jasmine.clock().install();
+        const mpe = new MediaPlayerElement() as any;
+        mpe.picturePlayer = {};
+        mpe._picturePlayerHost = document.createElement('div');
+        const applySpy = spyOn(mpe, 'applyPicturePlayerLayoutFromHost').and.returnValue(true);
+        spyOn(window, 'requestAnimationFrame').and.callFake((cb: FrameRequestCallback) => {
+            cb(0);
+            return 1;
+        });
+
+        mpe.schedulePicturePlayerLayoutRefresh(false);
+        jasmine.clock().tick(210);
+
+        expect(applySpy).toHaveBeenCalledTimes(2);
+        jasmine.clock().uninstall();
+    });
+
     it('unsubscribeListeners should clear picture listeners and delegate media unsubscribe', () => {
         const mpe = new MediaPlayerElement() as any;
         const removeSpy = spyOn(window, 'removeEventListener').and.callThrough();
@@ -150,3 +252,5 @@ describe('Test Media player element', () => {
         expect(mpe._picturePlayerHost).toBeNull();
     });
 });
+
+

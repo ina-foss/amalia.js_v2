@@ -150,6 +150,87 @@ describe('CropperWrapper', () => {
         expect(tooLow.preventDefault).toHaveBeenCalled();
     });
 
+    it('zoomHandler should prevent default when out of bounds but already clamped', () => {
+        const wrapper = createWrapper();
+        const zoomSpy = spyOn(wrapper, 'zoom').and.callThrough();
+        const event = { detail: { oldRatio: 2.5, ratio: 3 }, preventDefault: jasmine.createSpy('preventDefault') };
+
+        (wrapper as any).zoomHandler(event);
+
+        expect(zoomSpy).not.toHaveBeenCalled();
+        expect(event.preventDefault).toHaveBeenCalled();
+    });
+
+    it('should return early when not ready', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._isReady = false;
+
+        wrapper.rotate(90);
+        wrapper.zoom(120);
+        wrapper.center();
+
+        expect((wrapper as any)._cropper.rotate).not.toHaveBeenCalled();
+        expect((wrapper as any)._cropper.zoomTo).not.toHaveBeenCalled();
+        expect((wrapper as any)._cropper.moveTo).not.toHaveBeenCalled();
+        expect(wrapper.fitToOrignalSize()).toBeNull();
+        expect(wrapper.fitToCanvas()).toBeNull();
+        expect(wrapper.getImageData()).toBeNull();
+    });
+
+    it('zoom should return when zoom level is falsy and getZoomLevel should fallback to 100', () => {
+        const wrapper = createWrapper();
+        wrapper.zoom(0 as any);
+        expect((wrapper as any)._cropper.zoomTo).not.toHaveBeenCalled();
+
+        (wrapper as any)._zoomLevel = undefined;
+        expect(wrapper.getZoomLevel()).toBe(100);
+    });
+
+    it('fitToCanvas should clamp with max/min limits', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._settings.zoomMin = 60;
+        (wrapper as any)._settings.zoomMax = 90;
+        (wrapper as any)._cropper.getImageData.and.returnValue({
+            naturalWidth: 400,
+            naturalHeight: 400,
+            width: 400,
+            height: 400
+        });
+        (wrapper as any)._cropper.getContainerData.and.returnValue({ width: 1000, height: 1000 });
+
+        expect(wrapper.fitToCanvas()).toBe(90);
+
+        (wrapper as any)._cropper.getContainerData.and.returnValue({ width: 100, height: 100 });
+        expect(wrapper.fitToCanvas()).toBe(60);
+    });
+
+    it('getImageData should fallback source and keep crop fields null when cropbox has no left', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._image.src = '/fallback-src.jpg';
+        (wrapper as any)._cropper.crossOriginUrl = '';
+        (wrapper as any)._cropper.getCropBoxData.and.returnValue({} as any);
+        (wrapper as any)._cropper.getImageData.and.returnValue({
+            naturalWidth: 500,
+            naturalHeight: 300,
+            rotate: 0,
+            scaleX: 1,
+            scaleY: 1
+        });
+        (wrapper as any)._cropper.getCanvasData.and.returnValue({
+            naturalWidth: 500,
+            width: 250,
+            left: 0,
+            top: 0
+        });
+
+        const data = wrapper.getImageData();
+
+        expect(data.src).toContain('fallback-src.jpg');
+        expect(data.crop_left).toBeNull();
+        expect(data.crop_top).toBeNull();
+        expect(data.crop_width).toBeNull();
+        expect(data.crop_height).toBeNull();
+    });
     it('getImageData should map cropper data to Amalia image data', () => {
         const wrapper = createWrapper();
         (wrapper as any)._zoomLevel = 140;
@@ -187,3 +268,5 @@ describe('CropperWrapper', () => {
         expect(data.zoomLevel).toBe(140);
     });
 });
+
+
