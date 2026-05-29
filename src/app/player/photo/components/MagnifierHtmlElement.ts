@@ -8,7 +8,7 @@ export default class MagnifierHtmlElement extends BaseHtmlElement {
     private _zoom: number;
     private readonly _originalZoom: number;
     private readonly _maxZoom: number;
-    private readonly _imgData: AmaliaPlayerImageData;
+    private _imgData: AmaliaPlayerImageData;
 
     private readonly _queueMoveMagnifierRef: any;
     private readonly _mouseWheelRef: any;
@@ -52,7 +52,6 @@ export default class MagnifierHtmlElement extends BaseHtmlElement {
         this._queueMoveMagnifierRef = this.queueMoveMagnifier.bind(this);
         this._mouseWheelRef = this.mouseWheel.bind(this);
         this._updateRectRef = this.updateRect.bind(this);
-        this._target.addEventListener("mousemove", this._queueMoveMagnifierRef);
         window.addEventListener("mousemove", this._queueMoveMagnifierRef, true);
         this._target.addEventListener('mousewheel', this._mouseWheelRef, { passive: false });
         this._target.addEventListener('wheel', this._mouseWheelRef, { passive: false });
@@ -167,20 +166,21 @@ export default class MagnifierHtmlElement extends BaseHtmlElement {
         const bgX: number = Math.max(0, Math.min(pos.x, targetWidth));
         const bgY: number = Math.max(0, Math.min(pos.y, targetHeight));
 
-        if (this._lastRenderedX === bgX && this._lastRenderedY === bgY) {
-            return;
+        // Do not skip background recalculation: zoom animation changes background
+        // even when mouse coordinates are stable.
+        if (this._lastRenderedX !== bgX || this._lastRenderedY !== bgY) {
+            this._lastRenderedX = bgX;
+            this._lastRenderedY = bgY;
+
+            // glassX/glassY: convert to glass-parent-relative coords for positioning
+            const targetRect: DOMRect = this._targetRect ?? this._target.getBoundingClientRect();
+            const parentRect: DOMRect = this.getGlassParentRect();
+            const offsetX: number = targetRect.left - parentRect.left;
+            const offsetY: number = targetRect.top - parentRect.top;
+
+            this.dom.style.left = (bgX + offsetX - glassW).toString() + "px";
+            this.dom.style.top = (bgY + offsetY - glassH).toString() + "px";
         }
-        this._lastRenderedX = bgX;
-        this._lastRenderedY = bgY;
-
-        // glassX/glassY: convert to glass-parent-relative coords for positioning
-        const targetRect: DOMRect = this._targetRect ?? this._target.getBoundingClientRect();
-        const parentRect: DOMRect = this.getGlassParentRect();
-        const offsetX: number = targetRect.left - parentRect.left;
-        const offsetY: number = targetRect.top - parentRect.top;
-
-        this.dom.style.left = (bgX + offsetX - glassW).toString() + "px";
-        this.dom.style.top = (bgY + offsetY - glassH).toString() + "px";
         this.moveImgMagnifier(bgX, bgY);
     }
 
@@ -262,6 +262,15 @@ export default class MagnifierHtmlElement extends BaseHtmlElement {
         return scaleMap[key] ?? [];
     }
 
+    public updateImageData(data: AmaliaPlayerImageData): void {
+        this._imgData = data;
+        this._lastRenderedX = null;
+        this._lastRenderedY = null;
+        if (this._lastPointerEvent) {
+            this.moveMagnifier(this._lastPointerEvent);
+        }
+    }
+
     public removeFromDom() {
         if (this._pendingFrame !== null) {
             cancelAnimationFrame(this._pendingFrame);
@@ -271,7 +280,6 @@ export default class MagnifierHtmlElement extends BaseHtmlElement {
             cancelAnimationFrame(this._zoomAnimFrame);
             this._zoomAnimFrame = null;
         }
-        this._target.removeEventListener("mousemove", this._queueMoveMagnifierRef);
         window.removeEventListener("mousemove", this._queueMoveMagnifierRef, true);
         this._target.removeEventListener("mousewheel", this._mouseWheelRef);
         this._target.removeEventListener("wheel", this._mouseWheelRef);

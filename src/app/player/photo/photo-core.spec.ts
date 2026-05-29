@@ -156,6 +156,18 @@ describe('IncrementInfo', () => {
         expect(spy).toHaveBeenCalled();
         expect(widget.getTextContent('.ajs-photo-result')).toBe('100');
     });
+
+    it('should normalize non-integer values for result display', () => {
+        widget.setResultValue(99.6);
+        expect(widget.getTextContent('.ajs-photo-result')).toBe('100');
+    });
+
+    it('should clamp out-of-range values to min and max', () => {
+        widget.setResultValue(0);
+        expect(widget.getTextContent('.ajs-photo-result')).toBe('10');
+        widget.setResultValue(1000);
+        expect(widget.getTextContent('.ajs-photo-result')).toBe('100');
+    });
 });
 
 describe('MagnifierHtmlElement', () => {

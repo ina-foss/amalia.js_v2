@@ -94,8 +94,11 @@ export default class AmaliaPlayer extends BaseHtmlElement{
 
     public setDisplayState(displayState: string, width: number = null, height: number = null) {
         this.removeClass('ajs-photo-' + this._cropperComponent.getDisplayState());
-        const actualWidth = width ?? this.getOffsetWidth();
-        const actualHeight = height ?? this.getOffsetHeight();
+        const parent = this.dom.parentElement as HTMLElement;
+        const parentWidth = parent?.offsetWidth ?? 0;
+        const parentHeight = parent?.offsetHeight ?? 0;
+        const actualWidth = (width ?? parentWidth) || this.getOffsetWidth();
+        const actualHeight = (height ?? parentHeight) || this.getOffsetHeight();
         
         if (actualWidth > 0) {
             this.dom.style.width = actualWidth.toString() + 'px';

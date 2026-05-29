@@ -87,6 +87,73 @@ describe('AmaliaPlayer', () => {
         player.setDisplayState('xs', 300, 180);
         expect(cropper.setDisplayState).toHaveBeenCalled();
     });
+
+    it('setDisplayState should prefer parent container dimensions when width/height are not provided', () => {
+        const player = new AmaliaPlayer('#photo-host', {
+            imagesSrc: [{ name: 'img', path: '/img.jpg', thumbPath: '/thumb.jpg' }],
+            showGallery: false
+        } as any);
+        const root = (player as any).dom as HTMLElement;
+        const parent = root.parentElement as HTMLElement;
+        Object.defineProperty(parent, 'offsetWidth', { value: 920, configurable: true });
+        Object.defineProperty(parent, 'offsetHeight', { value: 510, configurable: true });
+        Object.defineProperty(root, 'offsetWidth', { value: 320, configurable: true });
+        Object.defineProperty(root, 'offsetHeight', { value: 180, configurable: true });
+
+        const cropper = {
+            getDisplayState: () => 's',
+            setDisplayState: jasmine.createSpy('setDisplayState')
+        };
+        (player as any)._cropperComponent = cropper;
+
+        player.setDisplayState('m');
+
+        expect(root.style.width).toBe('920px');
+        expect(root.style.height).toBe('510px');
+        expect(cropper.setDisplayState).toHaveBeenCalled();
+    });
+
+    it('selectImageBySource should no-op on empty source and trigger event on valid source', () => {
+        const player = new AmaliaPlayer('#photo-host', {
+            imagesSrc: [{ name: 'img', path: '/img.jpg', thumbPath: '/thumb.jpg' }],
+            showGallery: false
+        } as any);
+        const replaceSrc = jasmine.createSpy('replaceSrc');
+        const dispatchSpy = spyOn((player as any).dom, 'dispatchEvent').and.callThrough();
+        (player as any)._cropperComponent = {
+            replaceSrc,
+            getDisplayState: () => 'm'
+        };
+
+        player.selectImageBySource('');
+        expect(replaceSrc).not.toHaveBeenCalled();
+
+        player.selectImageBySource('/next.jpg', 'next');
+        expect(replaceSrc).toHaveBeenCalledWith('/next.jpg', 'next');
+        expect(dispatchSpy).toHaveBeenCalled();
+    });
+
+    it('destroy should cleanup component and host dom', () => {
+        const player = new AmaliaPlayer('#photo-host', {
+            imagesSrc: [{ name: 'img', path: '/img.jpg', thumbPath: '/thumb.jpg' }],
+            showGallery: false
+        } as any);
+        const dom = (player as any).dom as HTMLElement;
+        dom.appendChild(document.createElement('div'));
+        const cropper = {
+            removeFromDom: jasmine.createSpy('removeFromDom'),
+            destroy: jasmine.createSpy('destroy'),
+            getDisplayState: () => 'm'
+        };
+        (player as any)._cropperComponent = cropper;
+        player.addClass('ajs-photo-m');
+
+        player.destroy();
+
+        expect(cropper.removeFromDom).toHaveBeenCalled();
+        expect(cropper.destroy).toHaveBeenCalled();
+        expect((player as any).dom).toBeNull();
+    });
 });
 
 describe('PlayerHtmlElement (targeted behaviors)', () => {
@@ -196,6 +263,19 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         } as DOMRect);
         const pos = (comp as any).getCropperImgPos({ clientX: 22, clientY: 39 });
         expect(pos).toEqual({ x: 12, y: 19 });
+    });
+
+    it('should block context menu on player root and cropper container', () => {
+        const rootEvent = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+        expect(comp.getDom().dispatchEvent(rootEvent)).toBeFalse();
+
+        const cropperContainer = document.createElement('div');
+        cropperContainer.className = 'cropper-container';
+        comp.getDom().appendChild(cropperContainer);
+        (comp as any).attachContextMenuBlockers();
+
+        const cropperEvent = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+        expect(cropperContainer.dispatchEvent(cropperEvent)).toBeFalse();
     });
 
     it('should toggle fullscreen through document/fullscreen API', async () => {

@@ -75,4 +75,78 @@ describe('Test Media player element', () => {
         expect(mpe.aspectRatio).toEqual('16:9');
 
     });
+
+    it('should forward host height when resizing picture player', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const picturePlayer = { setDisplayState: jasmine.createSpy('setDisplayState') };
+        const host = document.createElement('div');
+        spyOn(host, 'getBoundingClientRect').and.returnValue({ width: 800, height: 450 } as DOMRect);
+        mpe.picturePlayer = picturePlayer;
+        mpe._picturePlayerHost = host;
+
+        mpe.setMediaPlayerWidth(800);
+
+        expect(picturePlayer.setDisplayState).toHaveBeenCalledWith('l', 800, 450);
+    });
+
+    it('should return sm in picture mode when width maps to xs/s', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                player: { media: 'PICTURE' },
+                displaySizes: { xsmall: 340, small: 550, medium: 700, large: 900 }
+            })
+        };
+        mpe.width = 300;
+        expect(mpe.getDisplayState()).toBe('sm');
+    });
+
+    it('should no-op thumbnail url when thumbnail config disabled', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                thumbnail: { enableThumbnail: false, baseUrl: 'https://example.local/img' }
+            })
+        };
+        expect(mpe.getThumbnailUrl(12.34)).toBeUndefined();
+    });
+
+    it('toggleFullscreen should request and exit fullscreen', async () => {
+        const mpe = new MediaPlayerElement() as any;
+        const element = { requestFullscreen: jasmine.createSpy('requestFullscreen').and.returnValue(Promise.resolve()) };
+        Object.defineProperty(document, 'fullscreenElement', { configurable: true, value: null });
+        await mpe.toggleFullscreen(element as any);
+        expect(element.requestFullscreen).toHaveBeenCalled();
+
+        spyOn(document, 'exitFullscreen').and.returnValue(Promise.resolve());
+        Object.defineProperty(document, 'fullscreenElement', { configurable: true, value: {} });
+        await mpe.toggleFullscreen(element as any);
+        expect(document.exitFullscreen).toHaveBeenCalled();
+    });
+
+    it('setPicturePlayer should warn and return when host is missing', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const warnSpy = spyOn(mpe.logger, 'warn');
+        mpe.setPicturePlayer(null, {} as any);
+        expect(warnSpy).toHaveBeenCalled();
+    });
+
+    it('unsubscribeListeners should clear picture listeners and delegate media unsubscribe', () => {
+        const mpe = new MediaPlayerElement() as any;
+        const removeSpy = spyOn(window, 'removeEventListener').and.callThrough();
+        const disconnectSpy = jasmine.createSpy('disconnect');
+        const unsubscribeSpy = jasmine.createSpy('unsubscribeListeners');
+        mpe._picturePlayerResizeHandler = () => undefined;
+        mpe._picturePlayerHostResizeRaf = requestAnimationFrame(() => undefined);
+        mpe._picturePlayerLayoutTimeout = setTimeout(() => undefined, 1000);
+        mpe._picturePlayerHostResizeObserver = { disconnect: disconnectSpy };
+        mpe.mediaPlayer = { unsubscribeListeners: unsubscribeSpy };
+
+        mpe.unsubscribeListeners();
+
+        expect(removeSpy).toHaveBeenCalled();
+        expect(disconnectSpy).toHaveBeenCalled();
+        expect(unsubscribeSpy).toHaveBeenCalled();
+        expect(mpe._picturePlayerHost).toBeNull();
+    });
 });

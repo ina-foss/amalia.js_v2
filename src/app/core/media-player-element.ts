@@ -34,6 +34,8 @@ export class MediaPlayerElement {
     private _picturePlayerResizeHandler: () => void = null;
     private _picturePlayerHostResizeObserver: ResizeObserver = null;
     private _picturePlayerHostResizeRaf: number = null;
+    private _picturePlayerHost: HTMLElement = null;
+    private _picturePlayerLayoutTimeout: any = null;
     private readonly _preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
@@ -194,6 +196,7 @@ export class MediaPlayerElement {
             this.logger.warn('setPicturePlayer called without a host element');
             return;
         }
+        this._picturePlayerHost = host;
         // AmaliaPlayer expects a CSS selector — guarantee the host is uniquely addressable.
         if (!host.id) {
             host.id = this.generatePictureHostId();
@@ -211,6 +214,10 @@ export class MediaPlayerElement {
             cancelAnimationFrame(this._picturePlayerHostResizeRaf);
             this._picturePlayerHostResizeRaf = null;
         }
+        if (this._picturePlayerLayoutTimeout) {
+            clearTimeout(this._picturePlayerLayoutTimeout);
+            this._picturePlayerLayoutTimeout = null;
+        }
         this.picturePlayer = new AmaliaPlayer(`#${host.id}`, settings);
         // Forward window resize → PLAYER_RESIZED so plugins (control bar, etc.) respond to container size changes
         this._picturePlayerResizeHandler = () => this._eventEmitter.emit(PlayerEventType.PLAYER_RESIZED);
@@ -220,8 +227,13 @@ export class MediaPlayerElement {
             this._lastPictureZoomLevel = e.detail?.imageData?.zoomLevel ?? 100;
             this._eventEmitter.emit(PlayerEventType.PICTURE_ZOOM_CHANGE, this._lastPictureZoomLevel);
         });
-        // Set initial displayState
-        this.picturePlayer.setDisplayState(this.getDisplayState());
+        this.picturePlayer.addEventListener(AmaliaEventConstants.switchDisplayState, () => {
+            this.schedulePicturePlayerLayoutRefresh(true);
+        });
+        // Set initial displayState using measured host dimensions when available.
+        if (!this.applyPicturePlayerLayoutFromHost(false)) {
+            this.picturePlayer.setDisplayState(this.getDisplayState());
+        }
         // AmaliaPlayer's constructor uses `document.querySelector(target)` which cannot traverse
         // shadow roots. When the caller component uses ViewEncapsulation.ShadowDom, the lookup
         // fails and AmaliaPlayer falls back to a detached <div>. Re-attach it to the host here
@@ -230,6 +242,7 @@ export class MediaPlayerElement {
         if (playerDom && playerDom !== host && !host.contains(playerDom)) {
             host.appendChild(playerDom);
         }
+        this.schedulePicturePlayerLayoutRefresh(false);
         if (typeof ResizeObserver !== 'undefined') {
             this._picturePlayerHostResizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
                 const entry = entries[0];
@@ -265,6 +278,51 @@ export class MediaPlayerElement {
 
     public selectPictureImage(imageSrc: string, imageName: string = 'image'): void {
         this.picturePlayer?.selectImageBySource(imageSrc, imageName);
+    }
+
+    private getPictureHostSize(host: HTMLElement): { width: number, height: number } | null {
+        if (!host) {
+            return null;
+        }
+        const rect: DOMRect = host.getBoundingClientRect();
+        const width = Math.floor(rect.width || host.clientWidth || host.offsetWidth || 0);
+        const height = Math.floor(rect.height || host.clientHeight || host.offsetHeight || 0);
+        if (width <= 0 || height <= 0) {
+            return null;
+        }
+        return { width, height };
+    }
+
+    private applyPicturePlayerLayoutFromHost(emitResize: boolean = true): boolean {
+        if (!this.picturePlayer || !this._picturePlayerHost) {
+            return false;
+        }
+        const size = this.getPictureHostSize(this._picturePlayerHost);
+        if (!size) {
+            return false;
+        }
+        this.width = size.width;
+        this.picturePlayer.setDisplayState(this.getDisplayState(), size.width, size.height);
+        if (emitResize) {
+            this._eventEmitter.emit(PlayerEventType.PLAYER_RESIZED);
+        }
+        return true;
+    }
+
+    private schedulePicturePlayerLayoutRefresh(emitResize: boolean): void {
+        if (!this.picturePlayer || !this._picturePlayerHost) {
+            return;
+        }
+        requestAnimationFrame(() => {
+            this.applyPicturePlayerLayoutFromHost(emitResize);
+        });
+        if (this._picturePlayerLayoutTimeout) {
+            clearTimeout(this._picturePlayerLayoutTimeout);
+        }
+        this._picturePlayerLayoutTimeout = setTimeout(() => {
+            this._picturePlayerLayoutTimeout = null;
+            this.applyPicturePlayerLayoutFromHost(emitResize);
+        }, 200);
     }
 
     private generatePictureHostId(): string {
@@ -357,7 +415,8 @@ export class MediaPlayerElement {
         this.width = width;
         this.logger.info('Player width : ' + this.width);
         if (this.picturePlayer && width > 0) {
-            this.picturePlayer.setDisplayState(this.getDisplayState(), width);
+            const hostHeight = this.getPictureHostSize(this._picturePlayerHost)?.height ?? null;
+            this.picturePlayer.setDisplayState(this.getDisplayState(), width, hostHeight);
         }
     }
 
@@ -404,6 +463,11 @@ export class MediaPlayerElement {
             cancelAnimationFrame(this._picturePlayerHostResizeRaf);
             this._picturePlayerHostResizeRaf = null;
         }
+        if (this._picturePlayerLayoutTimeout) {
+            clearTimeout(this._picturePlayerLayoutTimeout);
+            this._picturePlayerLayoutTimeout = null;
+        }
+        this._picturePlayerHost = null;
         this.mediaPlayer?.unsubscribeListeners();
     }
 }

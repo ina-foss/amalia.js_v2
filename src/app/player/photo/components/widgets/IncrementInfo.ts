@@ -59,7 +59,7 @@ export default class IncrementInfo extends BaseHtmlElement {
     }
 
     public increment() {
-        const currentValue: number = parseInt(this._resultSpan.getTextContent('.ajs-photo-result'), 10);
+        const currentValue: number = this.getCurrentValue();
         if (this._max !== null && currentValue === this._max) {
             return;
         }
@@ -85,7 +85,7 @@ export default class IncrementInfo extends BaseHtmlElement {
     }
 
     public decrement() {
-        const currentValue: number = parseInt(this._resultSpan.getTextContent('.ajs-photo-result'), 10);
+        const currentValue: number = this.getCurrentValue();
         if (this._min !== null && currentValue === this._min) {
             return;
         }
@@ -124,8 +124,27 @@ export default class IncrementInfo extends BaseHtmlElement {
     }
 
     public setResultValue(value: number) {
-        this._resultSpan.setTextContent(value.toString(), '.ajs-photo-result');
-        return value;
+        const normalizedValue: number = this.normalizeValue(value);
+        this._resultSpan.setTextContent(normalizedValue.toString(), '.ajs-photo-result');
+        return normalizedValue;
+    }
+
+    private getCurrentValue(): number {
+        return this.normalizeValue(parseInt(this._resultSpan.getTextContent('.ajs-photo-result'), 10));
+    }
+
+    private normalizeValue(value: number): number {
+        if (!Number.isFinite(value)) {
+            return 100;
+        }
+        let normalizedValue: number = Math.round(value);
+        if (this._min !== null && normalizedValue < this._min) {
+            normalizedValue = this._min;
+        }
+        if (this._max !== null && normalizedValue > this._max) {
+            normalizedValue = this._max;
+        }
+        return normalizedValue;
     }
 
     public enable() {

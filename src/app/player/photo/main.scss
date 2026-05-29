@@ -196,6 +196,13 @@
       &:-moz-full-screen {
         width: 100vw !important;
         height: 100vh !important;
+
+        .cropper-container,
+        .cropper-wrap-box,
+        .cropper-drag-box {
+          width: 100% !important;
+          height: 100% !important;
+        }
       }
 
       &.ajs-photo-magnify {
@@ -210,6 +217,22 @@
 
       .cropper-wrap-box {
         background-image: none;
+      }
+
+      // Viewer mode: hide crop-box UI artifacts (rectangle/overlay/handles).
+      .cropper-modal,
+      .cropper-view-box,
+      .cropper-dashed,
+      .cropper-center,
+      .cropper-line,
+      .cropper-point,
+      .cropper-face {
+        opacity: 0 !important;
+      }
+
+      .cropper-view-box {
+        outline: none !important;
+        box-shadow: none !important;
       }
 
       .ajs-photo-reduced-view {
@@ -301,16 +324,20 @@
         .ajs-photo-result {
           cursor: pointer;
           height: 19px;
-          width: 40px;
+          min-width: 56px;
           color: #FFFFFF;
           font-weight: bold;
           line-height: 19px;
           text-align: center;
           float: left;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
           font-size: 16px;
           margin-top: 11px;
-          margin-left: 14px;
-          margin-right: 14px;
+          margin-left: 6px;
+          margin-right: 6px;
+          white-space: nowrap;
 
           &:after {
             content: '%';

@@ -32,6 +32,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private readonly _playerInstance: AmaliaPlayer;
     private readonly _escapeMagnifyRef: any;
     private readonly _fullscreenChangeRef: any;
+    private readonly _preventContextMenuRef: any;
 
     private _hideControlTimeout: any;
     private _hideEventsAdded: boolean = false;
@@ -40,6 +41,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private _isInFullscreen: boolean = false;
     private _cropperReadyRef: any = null;
     private _cropperZoomRef: any = null;
+    private _cropperMoveRef: any = null;
     private _topBar: HTMLDivElement;
     private _toolBar: HTMLDivElement;
     private _titleBox: HTMLDivElement;
@@ -113,8 +115,22 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
         this._escapeMagnifyRef = this.escapeMagnify.bind(this);
         this._fullscreenChangeRef = this.handleFullscreenChange.bind(this);
+        this._preventContextMenuRef = this.preventContextMenu.bind(this);
         this.dom.addEventListener('fullscreenchange', this._fullscreenChangeRef);
         this.addHideEvents();
+        this.attachContextMenuBlockers();
+    }
+
+    private preventContextMenu(event: MouseEvent): void {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        event.stopPropagation();
+    }
+
+    private attachContextMenuBlockers(): void {
+        this.dom.addEventListener('contextmenu', this._preventContextMenuRef);
+        const cropperContainer = this.dom.querySelector<HTMLElement>('.cropper-container');
+        cropperContainer?.addEventListener('contextmenu', this._preventContextMenuRef);
     }
 
     private handleFullscreenChange(): void {
@@ -772,14 +788,19 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         };
         this._cropperZoomRef = (e: CustomEvent) => {
             this._zoomInfo?.setResultValue(e.detail.zoomLevel);
-            this.triggerEvent(AmaliaEventConstants.zoom, {
-                imageData: this._cropperWrapper?.getImageData()
-            });
+            const imageData = this._cropperWrapper?.getImageData();
+            this._magnifier?.updateImageData(imageData);
+            this.triggerEvent(AmaliaEventConstants.zoom, { imageData });
             this.showControls();
+        };
+        this._cropperMoveRef = () => {
+            this._magnifier?.updateImageData(this._cropperWrapper?.getImageData());
         };
 
         this._cropperWrapper.addEventListener(CropperWrapper.events.ready, this._cropperReadyRef);
         this._cropperWrapper.addEventListener(CropperWrapper.events.zoom, this._cropperZoomRef);
+        this._image.addEventListener('cropmove', this._cropperMoveRef);
+        this.attachContextMenuBlockers();
     }
 
     public getDisplayState(): string {
@@ -897,6 +918,11 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         if (this._cropperZoomRef) {
             this._image.removeEventListener(CropperWrapper.events.zoom, this._cropperZoomRef);
         }
+        if (this._cropperMoveRef) {
+            this._image.removeEventListener('cropmove', this._cropperMoveRef);
+        }
+        this.dom.removeEventListener('contextmenu', this._preventContextMenuRef);
+        this.dom.querySelector<HTMLElement>('.cropper-container')?.removeEventListener('contextmenu', this._preventContextMenuRef);
         this._zoomInfo?.removeFromDom();
         this._btnFullScreen?.removeFromDom();
         this._btnFlipH?.removeFromDom();
