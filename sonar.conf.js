@@ -4,7 +4,10 @@ sonarqubeScanner({
     options: {
         'sonar.login': 'admin',
         'sonar.password': 'admin',
-        'sonar.typescript.lcov.reportPaths': './coverage/amalia/lcov.info',
+        // Angular/Karma writes LCOV to coverage/lcov.info in this project.
+        // Keep both keys for compatibility across Sonar versions.
+        'sonar.typescript.lcov.reportPaths': './coverage/lcov.info',
+        'sonar.javascript.lcov.reportPaths': './coverage/lcov.info',
         'sonar.sources': '.',
         'sonar.inclusions': 'src/**',
         'sonar.exclusions': '**.spec.ts,**.mock.ts,index.html'
