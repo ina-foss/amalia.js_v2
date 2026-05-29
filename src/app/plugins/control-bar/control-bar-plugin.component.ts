@@ -675,155 +675,152 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public controlClicked(control: string) {
         this.logger.debug('Click to control', control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        let frames: number;
-        if (this.enableMenu) {
-            this.enableMenu = !this.enableMenu;
+        if (!mediaPlayer) {
+            this.logger.warn('Control not implemented', control);
+            return;
         }
-        const paused = mediaPlayer?.isPaused();
-        switch (control) {
-            case 'playPause':
-                mediaPlayer.playPause();
-                break;
-            case 'volume':
-                this.toggleVolume();
-                break;
-            case 'viewRatio':
-                mediaPlayer.playPause();
-                break;
-            case 'screenshot':
-                mediaPlayer.captureImage(100);
-                break;
-            case 'backward':
-                this.prevPlaybackRate();
-                break;
-            case 'slow-backward':
-                this.prevSlowPlaybackRate();
-                break;
-            case 'backward-5seconds':
-                this.pendingFrameJump -= 5 * mediaPlayer.framerate;
-                this.debouncedSeek();
-                break;
-            case 'backward-second':
-                frames = mediaPlayer.framerate;
-                mediaPlayer.pauseOnly();
-                mediaPlayer.movePrevFrame(frames);
-                !paused && mediaPlayer.play();
-                break;
-            case 'backward-10seconds':
-                frames = 10 * mediaPlayer.framerate;
-                mediaPlayer.pauseOnly();
-                mediaPlayer.movePrevFrame(frames);
-                !paused && mediaPlayer.play();
-                break;
-            case 'backward-frame':
-                mediaPlayer.pauseOnly();
-                mediaPlayer.movePrevFrame(1);
-                break;
-            case 'backward-1h': {
-                let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
-                currentTime = mediaPlayer.reverseMode ? currentTime + 3600 : currentTime - 3600;
-                mediaPlayer.setCurrentTime(currentTime);
-            }
-                break;
-            case 'backward-start':
+        this.closeMenuIfOpen();
+        const paused = mediaPlayer.isPaused();
+
+        if (this.handlePictureControl(control)) {
+            return;
+        }
+        if (this.handleTimelineControl(control, mediaPlayer, paused)) {
+            return;
+        }
+
+        const actions: Record<string, () => void> = {
+            playPause: () => mediaPlayer.playPause(),
+            volume: () => this.toggleVolume(),
+            viewRatio: () => mediaPlayer.playPause(),
+            screenshot: () => mediaPlayer.captureImage(100),
+            backward: () => this.prevPlaybackRate(),
+            'slow-backward': () => this.prevSlowPlaybackRate(),
+            'backward-start': () => {
                 this.changePlaybackRate(1);
                 mediaPlayer.seekToBegin();
-                break;
-            case 'forward':
-                this.nextPlaybackRate();
-                break;
-            case 'slow-forward':
-                this.nextSlowPlaybackRate();
-                break;
-            case 'forward-5seconds':
-                this.pendingFrameJump += 5 * mediaPlayer.framerate;
-                this.debouncedSeek();
-                break;
-            case 'forward-10seconds':
-                frames = 10 * mediaPlayer.framerate;
-                mediaPlayer.pauseOnly();
-                mediaPlayer.moveNextFrame(frames);
-                !paused && mediaPlayer.play();
-                break;
-            case 'forward-1h': {
-                let currentTime = mediaPlayer.reverseMode ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime() : mediaPlayer.getCurrentTime();
-                currentTime = mediaPlayer.reverseMode ? currentTime - 3600 : currentTime + 3600;
-                mediaPlayer.setCurrentTime(currentTime);
-            }
-                break;
-            case 'forward-second':
-                frames = mediaPlayer.framerate;
-                mediaPlayer.pauseOnly();
-                mediaPlayer.moveNextFrame(frames);
-                !paused && mediaPlayer.play();
-                break;
-            case 'forward-frame':
-                mediaPlayer.pauseOnly();
-                mediaPlayer.moveNextFrame(1);
-                break;
-            case 'forward-end':
+            },
+            forward: () => this.nextPlaybackRate(),
+            'slow-forward': () => this.nextSlowPlaybackRate(),
+            'forward-end': () => {
                 this.changePlaybackRate(1);
                 mediaPlayer.seekToEnd();
-                break;
-            case 'displaySlider':
-                this.displaySlider();
-                break;
-            case 'pinControls':
-                this.pinControls();
-                break;
-            case 'toggleFullScreen':
-                this.toggleFullScreen();
-                break;
-            case 'aspectRatio':
-                this.changeAspectRatio();
-                break;
-            case 'subtitles':
-                this.updateSubtitlePosition();
-                break;
-            case 'download':
-                this.downloadUrl(control);
-                break;
-            // Picture player controls
-            case 'rotate':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.rotate();
-                break;
-            case 'fliph':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.flipH();
-                break;
-            case 'flipv':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.flipV();
-                break;
-            case 'magnify':
-                this.mediaPlayerElement.getPicturePlayer()?.magnify();
-                this.magnifyEnabled = !this.magnifyEnabled;
-                break;
-            case 'fullsize':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.showRealSize();
-                break;
-            case 'fullscreen':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.toggleFullscreen();
-                break;
-            case 'fitToScreen':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.fitToScreen();
-                break;
-            case 'zoomIn':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.zoom();
-                break;
-            case 'zoomOut':
-                if (this.magnifyEnabled) { break; }
-                this.mediaPlayerElement.getPicturePlayer()?.unZoom();
-                break;
-            default:
-                this.logger.warn('Control not implemented', control);
-                break;
+            },
+            displaySlider: () => this.displaySlider(),
+            pinControls: () => this.pinControls(),
+            toggleFullScreen: () => this.toggleFullScreen(),
+            aspectRatio: () => this.changeAspectRatio(),
+            subtitles: () => this.updateSubtitlePosition(),
+            download: () => this.downloadUrl(control)
+        };
+
+        const action = actions[control];
+        if (action) {
+            action();
+            return;
         }
+        this.logger.warn('Control not implemented', control);
+    }
+
+    private closeMenuIfOpen(): void {
+        if (this.enableMenu) {
+            this.enableMenu = false;
+        }
+    }
+
+    private handlePictureControl(control: string): boolean {
+        const picturePlayer = this.mediaPlayerElement.getPicturePlayer?.();
+        if (control === 'magnify') {
+            picturePlayer?.magnify();
+            this.magnifyEnabled = !this.magnifyEnabled;
+            return true;
+        }
+
+        const pictureActions: Record<string, () => void> = {
+            rotate: () => picturePlayer?.rotate(),
+            fliph: () => picturePlayer?.flipH(),
+            flipv: () => picturePlayer?.flipV(),
+            fullsize: () => picturePlayer?.showRealSize(),
+            fullscreen: () => picturePlayer?.toggleFullscreen(),
+            fitToScreen: () => picturePlayer?.fitToScreen(),
+            zoomIn: () => picturePlayer?.zoom(),
+            zoomOut: () => picturePlayer?.unZoom()
+        };
+
+        const action = pictureActions[control];
+        if (!action) {
+            return false;
+        }
+        if (!this.magnifyEnabled) {
+            action();
+        }
+        return true;
+    }
+
+    private handleTimelineControl(control: string, mediaPlayer: any, paused: boolean): boolean {
+        if (control === 'backward-5seconds') {
+            this.pendingFrameJump -= 5 * mediaPlayer.framerate;
+            this.debouncedSeek();
+            return true;
+        }
+        if (control === 'forward-5seconds') {
+            this.pendingFrameJump += 5 * mediaPlayer.framerate;
+            this.debouncedSeek();
+            return true;
+        }
+
+        const frameMoves: Record<string, number> = {
+            'backward-second': -mediaPlayer.framerate,
+            'backward-10seconds': -10 * mediaPlayer.framerate,
+            'forward-second': mediaPlayer.framerate,
+            'forward-10seconds': 10 * mediaPlayer.framerate
+        };
+        if (frameMoves[control] !== undefined) {
+            this.jumpFrames(mediaPlayer, frameMoves[control], paused);
+            return true;
+        }
+
+        if (control === 'backward-frame') {
+            mediaPlayer.pauseOnly();
+            mediaPlayer.movePrevFrame(1);
+            return true;
+        }
+        if (control === 'forward-frame') {
+            mediaPlayer.pauseOnly();
+            mediaPlayer.moveNextFrame(1);
+            return true;
+        }
+        if (control === 'backward-1h') {
+            this.shiftTimeByHour(mediaPlayer, -1);
+            return true;
+        }
+        if (control === 'forward-1h') {
+            this.shiftTimeByHour(mediaPlayer, 1);
+            return true;
+        }
+        return false;
+    }
+
+    private jumpFrames(mediaPlayer: any, frames: number, paused: boolean): void {
+        mediaPlayer.pauseOnly();
+        if (frames < 0) {
+            mediaPlayer.movePrevFrame(Math.abs(frames));
+        } else {
+            mediaPlayer.moveNextFrame(frames);
+        }
+        if (!paused) {
+            mediaPlayer.play();
+        }
+    }
+
+    private shiftTimeByHour(mediaPlayer: any, direction: 1 | -1): void {
+        let currentTime = mediaPlayer.reverseMode
+            ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime()
+            : mediaPlayer.getCurrentTime();
+        currentTime = mediaPlayer.reverseMode
+            ? currentTime - (direction * 3600)
+            : currentTime + (direction * 3600);
+        mediaPlayer.setCurrentTime(currentTime);
     }
 
     /**
