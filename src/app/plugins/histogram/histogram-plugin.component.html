@@ -1,3 +1,11 @@
-<div class="histogram-container">
+<div class="histogram-container"
+     [ngClass]="{'pinned': pinned, 'pinnedControlbar': pinnedControlbar}"
+     tabindex="0"
+     (mouseenter)="onHistogramMouseEnter()"
+     (mouseleave)="onHistogramMouseLeave()">
+    <div #minimapContainer class="minimap-container">
+        <div #minimapHitArea class="minimap-hit-area"></div>
+    </div>
     <div #wavesurferContainer class="wavesurfer-container"></div>
+    <div #timelineContainer class="timeline-container"></div>
 </div>

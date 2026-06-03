@@ -48,13 +48,31 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     public static DEFAULT_PAD_PEAKS = 32;
     public static DEFAULT_WAVE_COLOR = 'rgb(54,76,97)';
     public static DEFAULT_CURSOR_COLOR = '#ffffff';
-    public static DEFAULT_MIN_PX_PER_SEC = 20;
+    public static DEFAULT_MINIMAP_OVERLAY_COLOR = 'rgba(100,100,100,0.5)';
+    public static DEFAULT_MIN_PX_PER_SEC = 0;
     public static DEFAULT_MIN_PX_PER_SEC_SPECTROGRAM = 180;
     public static DEFAULT_MINIMAP_HEIGHT = 30;
+    public static DEFAULT_WAVEFORM_HEIGHT = 128;
+    private static readonly DURATION_CHANGE_EPSILON_SECONDS = 0.1;
+    private static readonly RERENDER_DEBOUNCE_MS = 200;
     private static readonly ERROR_MSG_WAVE_FORMS = 'Les formes d\'ondes n\'ont pas pu être chargées';
 
     @ViewChild('wavesurferContainer')
-    public wavesurferContainer: ElementRef<HTMLElement>;
+    public wavesurferContainer!: ElementRef<HTMLElement>;
+    @ViewChild('timelineContainer')
+    public timelineContainer!: ElementRef<HTMLElement>;
+    @ViewChild('minimapContainer')
+    public minimapContainer!: ElementRef<HTMLElement>;
+    @ViewChild('minimapHitArea')
+    public minimapHitArea!: ElementRef<HTMLElement>;
+
+    public pinned = false;
+    public pinnedControlbar = false;
+    private resizeDebounce: any = null;
+    private waveformResizeObserver: ResizeObserver | null = null;
+    private timelineScrollUnsubscribes: Array<() => void> = [];
+    private minimapViewportDragCleanup: (() => void) | null = null;
+    private lastAppliedWaveformHeight = 0;
 
     /** Wavesurfer instance, created once peaks are loaded. */
     private wavesurfer: WaveSurfer | null = null;
@@ -101,8 +119,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.START_SEEKING, this.handleStartSeeking);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
         // If metadata are already loaded by the time this plugin is created
         // (typical lazy-load via `loadDataSourceForPlugin('histogram')` resolved
         // before insertion), render immediately. Otherwise we rely on the
@@ -198,7 +214,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * Create the wavesurfer instance (destroying any previous one).
      */
     private createOrUpdateWavesurfer(): void {
-        if (!this.wavesurferContainer || !this.peaks) {
+        if (!this.wavesurferContainer || !this.timelineContainer || !this.minimapContainer || !this.minimapHitArea || !this.peaks) {
             return;
         }
         this.destroyWavesurfer();
@@ -206,27 +222,41 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const data = this.pluginConfiguration.data;
         const withSpectrogram = !!data.withSpectrogram;
         const waveColor = data.waveColor ?? HistogramPluginComponent.DEFAULT_WAVE_COLOR;
+        const progressColor = data.progressColor ?? waveColor;
+        const minimapWaveColor = data.minimapWaveColor ?? waveColor;
+        const minimapProgressColor = data.minimapProgressColor ?? progressColor;
+        const minimapOverlayColor = data.minimapOverlayColor ?? HistogramPluginComponent.DEFAULT_MINIMAP_OVERLAY_COLOR;
         const cursorColor = data.cursorColor ?? HistogramPluginComponent.DEFAULT_CURSOR_COLOR;
         const minimapHeight = data.minimapHeight ?? HistogramPluginComponent.DEFAULT_MINIMAP_HEIGHT;
         const minPxPerSec = data.minPxPerSec ?? (withSpectrogram
                 ? HistogramPluginComponent.DEFAULT_MIN_PX_PER_SEC_SPECTROGRAM
                 : HistogramPluginComponent.DEFAULT_MIN_PX_PER_SEC);
-        const splitChannels = withSpectrogram ? false : [{waveColor}, {waveColor}];
+        const splitChannels = withSpectrogram ? false : [{waveColor, progressColor}, {waveColor, progressColor}];
+        const waveformHeight = this.getWaveformChannelHeight(splitChannels);
+        const minimapChannelHeight = this.getChannelHeight(minimapHeight, splitChannels);
+
+        const minimapPlugin = Minimap.create({
+            container: this.minimapContainer.nativeElement,
+            overlayColor: minimapOverlayColor,
+            barWidth: 1,
+            barGap: 0.1,
+            cursorColor,
+            cursorWidth: 2,
+            splitChannels: splitChannels as any,
+            waveColor: minimapWaveColor,
+            progressColor: minimapProgressColor,
+            height: minimapChannelHeight,
+            minPxPerSec: 0,
+            fillParent: true,
+            interact: false,
+            dragToSeek: false
+        });
+        minimapPlugin.on('click', (progress: number) => this.navigateMinimapToProgress(progress));
+        this.attachMinimapViewportDrag();
 
         const plugins: any[] = [
-            Timeline.create(),
-            Minimap.create({
-                insertPosition: 'beforebegin',
-                overlayColor: 'rgba(100,100,100,0.5)',
-                barWidth: 1,
-                barGap: 0.1,
-                cursorColor,
-                cursorWidth: 2,
-                splitChannels: splitChannels as any,
-                waveColor,
-                height: minimapHeight,
-                dragToSeek: false
-            })
+            Timeline.create({ container: this.timelineContainer.nativeElement }),
+            minimapPlugin
         ];
         if (!withSpectrogram) {
             plugins.push(Zoom.create({exponentialZooming: true, maxZoom: 400}));
@@ -239,43 +269,40 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             normalize: true,
             splitChannels: splitChannels as any,
             waveColor,
+            progressColor,
+            height: waveformHeight,
             minPxPerSec,
+            fillParent: true,
             hideScrollbar: true,
-            autoCenter: true,
-            autoScroll: true,
+            autoCenter: false,
+            autoScroll: false,
             dragToSeek: false,
             cursorColor,
             cursorWidth: 2,
             plugins
         });
 
-        // Sync wavesurfer's "current time" with the Amalia player.
-        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        const overriddenGetCurrentTime = () => mediaPlayer.getCurrentTime();
-        const overriddenSeekTo = (progress: number) => {
-            const t = mediaPlayer.reverseMode ? 1 - progress : progress;
-            this.wavesurfer?.setTime(this.wavesurfer.getDuration() * t);
-        };
-        (this.wavesurfer as any).getCurrentTime = overriddenGetCurrentTime;
-        (this.wavesurfer as any).seekTo = overriddenSeekTo;
-
         // User-driven seeking on the waveform delegates back to the main player.
         this.wavesurfer.on('interaction', (newTime: number) => {
-            const target = mediaPlayer.reverseMode ? this.duration - newTime : newTime;
-            mediaPlayer.setCurrentTime(target);
+            this.seekMediaPlayerToTime(newTime);
         });
-
-        // Once wavesurfer is ready, mirror the override on the minimap sub-wavesurfer.
-        this.wavesurfer.on('ready', () => {
-            const minimapPlugin: any = this.wavesurfer?.getActivePlugins().find((p: any) => p.miniWavesurfer);
-            if (minimapPlugin?.miniWavesurfer) {
-                minimapPlugin.miniWavesurfer.getCurrentTime = overriddenGetCurrentTime;
-                minimapPlugin.miniWavesurfer.seekTo = overriddenSeekTo;
-            }
-        });
+        this.lastAppliedWaveformHeight = waveformHeight;
+        this.attachWaveformResizeObserver();
+        this.attachTimelineScrollSync();
     }
 
     private destroyWavesurfer(): void {
+        if (this.animationFrameId !== null) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+        this.queuedTime = null;
+        this.waveformResizeObserver?.disconnect();
+        this.waveformResizeObserver = null;
+        this.detachTimelineScrollSync();
+        this.minimapViewportDragCleanup?.();
+        this.minimapViewportDragCleanup = null;
+        this.lastAppliedWaveformHeight = 0;
         if (this.wavesurfer) {
             try {
                 this.wavesurfer.destroy();
@@ -286,48 +313,316 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         }
     }
 
-    /** Push the player time onto the waveform cursor on every TIME_CHANGE. */
-    private handleOnTimeChange = (): void => {
+    private getChannelHeight(totalHeight: number, splitChannels: false | Array<unknown>): number {
+        const safeHeight = Math.max(1, Math.floor(totalHeight || HistogramPluginComponent.DEFAULT_WAVEFORM_HEIGHT));
+        return splitChannels ? Math.max(1, Math.floor(safeHeight / splitChannels.length)) : safeHeight;
+    }
+
+    private getWaveformChannelHeight(splitChannels: false | Array<unknown>): number {
+        return this.getChannelHeight(this.wavesurferContainer?.nativeElement?.clientHeight ?? 0, splitChannels);
+    }
+
+    private getConfiguredSplitChannels(): false | Array<unknown> {
+        return this.pluginConfiguration.data.withSpectrogram ? false : [{}, {}];
+    }
+
+    private attachWaveformResizeObserver(): void {
+        if (!this.wavesurferContainer || typeof ResizeObserver !== 'function') {
+            return;
+        }
+        this.waveformResizeObserver?.disconnect();
+        this.waveformResizeObserver = new ResizeObserver(() => this.scheduleWaveformSizeSync());
+        this.waveformResizeObserver.observe(this.wavesurferContainer.nativeElement);
+    }
+
+    private attachTimelineScrollSync(): void {
+        if (!this.wavesurfer || !this.timelineContainer) {
+            return;
+        }
+        this.detachTimelineScrollSync();
+        const sync = (scrollLeft = this.wavesurfer?.getScroll() ?? 0) => {
+            this.syncTimelineWidth();
+            this.timelineContainer.nativeElement.scrollLeft = scrollLeft;
+        };
+        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('scroll', (_visibleStartTime, _visibleEndTime, scrollLeft) => sync(scrollLeft)));
+        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('redraw', () => setTimeout(() => sync(), 0)));
+        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('zoom', () => setTimeout(() => sync(), 0)));
+        setTimeout(() => sync(), 0);
+    }
+
+    private detachTimelineScrollSync(): void {
+        this.timelineScrollUnsubscribes.forEach(unsubscribe => unsubscribe());
+        this.timelineScrollUnsubscribes = [];
+    }
+
+    private syncTimelineWidth(): void {
+        if (!this.wavesurfer || !this.timelineContainer) {
+            return;
+        }
+        const timeline = this.timelineContainer.nativeElement.querySelector('[part="timeline"]') as HTMLElement | null;
+        const scrollWidth = this.wavesurfer.getWrapper()?.scrollWidth ?? 0;
+        if (timeline && scrollWidth > 0) {
+            timeline.style.width = `${scrollWidth}px`;
+        }
+    }
+
+    private scheduleWaveformSizeSync(): void {
+        clearTimeout(this.resizeDebounce);
+        this.resizeDebounce = setTimeout(() => this.syncWaveformSize(), HistogramPluginComponent.RERENDER_DEBOUNCE_MS);
+    }
+
+    private syncWaveformSize(): void {
         if (!this.wavesurfer) {
             return;
         }
+        const splitChannels = this.getConfiguredSplitChannels();
+        const waveformHeight = this.getWaveformChannelHeight(splitChannels);
+        if (waveformHeight === this.lastAppliedWaveformHeight) {
+            return;
+        }
+        this.lastAppliedWaveformHeight = waveformHeight;
+        this.wavesurfer.setOptions({height: waveformHeight, fillParent: true});
         const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        // setTime is synchronous; guard against NaN.
+        this.renderVisualProgress(currentTime);
+    }
+
+    private lastRenderedTime = -1;
+    private queuedTime: number | null = null;
+    private animationFrameId: number | null = null;
+    private static readonly MIN_TIME_DELTA_BEFORE_REPAINT = 0.02;
+
+    private clampProgress(progress: number): number {
+        return Math.max(0, Math.min(progress, 1));
+    }
+
+    private renderProgressRatio(progress: number): void {
+        if (!this.wavesurfer || isNaN(progress)) {
+            return;
+        }
+        const safeProgress = this.clampProgress(progress);
+        this.wavesurfer.getRenderer().renderProgress(safeProgress, false);
+
+        const activePlugins = this.wavesurfer.getActivePlugins() as any[];
+        const minimapPlugin = activePlugins.find((plugin: any) => plugin?.miniWavesurfer);
+        minimapPlugin?.miniWavesurfer?.getRenderer?.().renderProgress(safeProgress, false);
+    }
+
+    private renderVisualProgress(time: number): void {
+        if (!this.wavesurfer || !this.duration || isNaN(time)) {
+            return;
+        }
+        this.renderProgressRatio(time / this.duration);
+    }
+
+    private attachMinimapViewportDrag(): void {
+        const hitArea = this.minimapHitArea?.nativeElement;
+        if (!hitArea) {
+            return;
+        }
+
+        this.minimapViewportDragCleanup?.();
+        hitArea.style.cursor = 'pointer';
+        hitArea.style.touchAction = 'none';
+
+        let activePointerId: number | null = null;
+        let draggingViewport = false;
+        let hasMoved = false;
+        let startX = 0;
+
+        const stopEvent = (event: Event) => {
+            event.preventDefault();
+            event.stopPropagation();
+        };
+        const getProgressFromPointer = (event: PointerEvent) => {
+            const rect = hitArea.getBoundingClientRect();
+            return this.clampProgress((event.clientX - rect.left) / Math.max(1, rect.width));
+        };
+        const onPointerDown = (event: PointerEvent) => {
+            if (!this.wavesurfer) {
+                return;
+            }
+            stopEvent(event);
+            activePointerId = event.pointerId;
+            draggingViewport = this.canScrollWaveform();
+            hasMoved = false;
+            startX = event.clientX;
+            hitArea.style.cursor = draggingViewport ? 'grabbing' : 'pointer';
+            hitArea.setPointerCapture?.(event.pointerId);
+            if (draggingViewport) {
+                this.panWaveformViewportToProgress(getProgressFromPointer(event));
+            }
+        };
+        const onPointerMove = (event: PointerEvent) => {
+            if (activePointerId !== event.pointerId || !this.wavesurfer) {
+                return;
+            }
+            stopEvent(event);
+            const deltaX = event.clientX - startX;
+            hasMoved = hasMoved || Math.abs(deltaX) > 4;
+            if (draggingViewport) {
+                this.panWaveformViewportToProgress(getProgressFromPointer(event));
+            }
+        };
+        const onPointerUp = (event: PointerEvent) => {
+            if (activePointerId !== event.pointerId) {
+                return;
+            }
+            stopEvent(event);
+            if (!draggingViewport && !hasMoved) {
+                this.seekMediaPlayerToProgress(getProgressFromPointer(event));
+            }
+            activePointerId = null;
+            draggingViewport = false;
+            hasMoved = false;
+            hitArea.style.cursor = 'pointer';
+            hitArea.releasePointerCapture?.(event.pointerId);
+        };
+        const onClick = (event: MouseEvent) => {
+            // WaveSurfer's minimap click seeks its own hidden instance first.
+            // We handle the click on pointerup so the Amalia player remains the source of truth.
+            stopEvent(event);
+        };
+
+        hitArea.addEventListener('pointerdown', onPointerDown, true);
+        hitArea.addEventListener('pointermove', onPointerMove, true);
+        hitArea.addEventListener('pointerup', onPointerUp, true);
+        hitArea.addEventListener('pointercancel', onPointerUp, true);
+        hitArea.addEventListener('click', onClick, true);
+        this.minimapViewportDragCleanup = () => {
+            hitArea.removeEventListener('pointerdown', onPointerDown, true);
+            hitArea.removeEventListener('pointermove', onPointerMove, true);
+            hitArea.removeEventListener('pointerup', onPointerUp, true);
+            hitArea.removeEventListener('pointercancel', onPointerUp, true);
+            hitArea.removeEventListener('click', onClick, true);
+        };
+    }
+
+    private canScrollWaveform(): boolean {
+        const metrics = this.getWaveformViewportMetrics();
+        return !!metrics && metrics.totalWidth > metrics.visibleWidth;
+    }
+
+    private panWaveformViewportToProgress(progress: number): void {
+        if (!this.wavesurfer || isNaN(progress)) {
+            return;
+        }
+        const metrics = this.getWaveformViewportMetrics();
+        if (!metrics || metrics.totalWidth <= metrics.visibleWidth) {
+            return;
+        }
+        const maxScroll = metrics.totalWidth - metrics.visibleWidth;
+        const targetScroll = Math.max(0, Math.min(this.clampProgress(progress) * metrics.totalWidth - metrics.visibleWidth / 2, maxScroll));
+        this.wavesurfer.setScroll(targetScroll);
+        if (this.timelineContainer) {
+            this.timelineContainer.nativeElement.scrollLeft = targetScroll;
+        }
+    }
+
+    private navigateMinimapToProgress(progress: number): void {
+        if (this.canScrollWaveform()) {
+            this.panWaveformViewportToProgress(progress);
+            return;
+        }
+        this.seekMediaPlayerToProgress(progress);
+    }
+
+    private getWaveformViewportMetrics(): { totalWidth: number; visibleWidth: number } | null {
+        if (!this.wavesurfer) {
+            return null;
+        }
+        const wrapper = this.wavesurfer.getWrapper();
+        const totalWidth = Math.max(wrapper?.clientWidth ?? 0, wrapper?.scrollWidth ?? 0);
+        const visibleWidth = this.wavesurfer.getWidth();
+        if (!totalWidth || !visibleWidth) {
+            return null;
+        }
+        return {totalWidth, visibleWidth};
+    }
+
+    private seekMediaPlayerToProgress(progress: number): void {
+        if (!this.duration || isNaN(progress)) {
+            return;
+        }
+        this.seekMediaPlayerToTime(this.clampProgress(progress) * this.duration);
+    }
+
+    private seekMediaPlayerToTime(time: number): void {
+        if (!this.duration || isNaN(time)) {
+            return;
+        }
+        const safeTime = Math.max(0, Math.min(time, this.duration));
+        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        const target = mediaPlayer.reverseMode ? this.duration - safeTime : safeTime;
+        mediaPlayer.setCurrentTime(target);
+        this.renderVisualProgress(target);
+    }
+
+    private queueTimeRender(time: number): void {
+        if (!this.wavesurfer || isNaN(time)) return;
+        if (this.lastRenderedTime >= 0
+            && Math.abs(time - this.lastRenderedTime) < HistogramPluginComponent.MIN_TIME_DELTA_BEFORE_REPAINT) {
+            return;
+        }
+        this.queuedTime = time;
+        if (this.animationFrameId !== null) return;
+        this.animationFrameId = requestAnimationFrame(() => {
+            this.animationFrameId = null;
+            if (!this.wavesurfer || this.queuedTime === null) return;
+            this.renderVisualProgress(this.queuedTime);
+            this.lastRenderedTime = this.queuedTime;
+            this.queuedTime = null;
+        });
+    }
+
+    /** Push the player time onto the waveform cursor on every TIME_CHANGE. */
+    private handleOnTimeChange = (): void => {
+        if (!this.wavesurfer) return;
+        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (!isNaN(currentTime)) {
-            this.wavesurfer.setTime(currentTime);
+            this.queueTimeRender(currentTime);
         }
     };
 
     private handleOnDurationChange = (): void => {
         const newDuration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        if (newDuration && newDuration !== this.duration) {
-            this.duration = newDuration;
-            if (this.peaks) {
+        if (!newDuration || isNaN(newDuration)) {
+            return;
+        }
+        if (Math.abs(newDuration - this.duration) < HistogramPluginComponent.DURATION_CHANGE_EPSILON_SECONDS) {
+            return;
+        }
+
+        this.duration = newDuration;
+        clearTimeout(this.resizeDebounce);
+        this.resizeDebounce = setTimeout(() => {
+            if (this.wavesurfer) {
+                this.wavesurfer.setOptions({duration: this.duration});
+            } else if (this.peaks) {
                 this.createOrUpdateWavesurfer();
             } else if (this.mediaPlayerElement.isMetadataLoaded) {
                 this.handleMetadataLoaded();
             }
-        }
+        }, HistogramPluginComponent.RERENDER_DEBOUNCE_MS);
     };
 
-    private handleStartSeeking = (): void => {
-        this.mediaPlayerElement.getMediaPlayer().pause();
-    };
+    public onHistogramMouseEnter(): void {
+        setTimeout(() => this.syncBottomInsetIfNeeded(), 0);
+    }
 
-    private handleSeeking = (time: number): void => {
-        this.mediaPlayerElement.getMediaPlayer().pause();
-        if (this.wavesurfer && this.duration > 0) {
-            // Update progress directly without re-emitting interaction events.
-            const renderer: any = (this.wavesurfer as any).renderer;
-            if (renderer?.renderProgress) {
-                renderer.renderProgress(time / this.duration);
-            } else {
-                this.wavesurfer.setTime(time);
-            }
-        }
-    };
+    public onHistogramMouseLeave(): void {
+        setTimeout(() => this.syncBottomInsetIfNeeded(), 0);
+    }
+
+    private syncBottomInsetIfNeeded(): void {
+        // Subclasses or future implementations can override this.
+    }
+
+    public onResize(): void {
+        this.scheduleWaveformSizeSync();
+    }
 
     override ngOnDestroy(): void {
+        clearTimeout(this.resizeDebounce);
         this.destroyWavesurfer();
         super.ngOnDestroy();
     }

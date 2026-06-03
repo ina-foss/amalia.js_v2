@@ -114,6 +114,8 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         fakeWavesurfer = buildFakeWaveSurfer();
         createSpy = spyOn(WaveSurfer, 'create').and.returnValue(fakeWavesurfer as unknown as WaveSurfer);
         component.wavesurferContainer = {nativeElement: document.createElement('div')} as any;
+        component.timelineContainer = {nativeElement: document.createElement('div')} as any;
+        component.minimapContainer = {nativeElement: document.createElement('div')} as any;
     });
 
     it('should create the component', () => {
@@ -124,8 +126,8 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         const config = component.getDefaultConfig();
         expect(config.name).toEqual(HistogramPluginComponent.PLUGIN_NAME);
         expect(config.data.padPeaks).toEqual(HistogramPluginComponent.DEFAULT_PAD_PEAKS);
-        expect(config.data.waveColor).toEqual(HistogramPluginComponent.DEFAULT_WAVE_COLOR);
-        expect(config.data.cursorColor).toEqual(HistogramPluginComponent.DEFAULT_CURSOR_COLOR);
+        expect(config.data.waveColor).toBeUndefined();
+        expect(config.data.cursorColor).toBeUndefined();
         expect((config.data as any).urlWaveform).toBeUndefined();
     });
 

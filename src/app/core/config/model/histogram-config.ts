@@ -22,6 +22,22 @@ export interface HistogramConfig {
      */
     waveColor?: string;
     /**
+     * Wavesurfer progress color (played portion). Default: same as waveColor.
+     */
+    progressColor?: string;
+    /**
+     * Minimap waveform color (unplayed portion). Default: `waveColor`.
+     */
+    minimapWaveColor?: string;
+    /**
+     * Minimap progress color (played portion). Default: `progressColor`.
+     */
+    minimapProgressColor?: string;
+    /**
+     * Minimap selection overlay color. Default: `rgba(100,100,100,0.5)`.
+     */
+    minimapOverlayColor?: string;
+    /**
      * Wavesurfer cursor color. Default: `#ffffff`.
      */
     cursorColor?: string;
@@ -33,4 +49,14 @@ export interface HistogramConfig {
      * Minimap height in px. Default: 30.
      */
     minimapHeight?: number;
+    /**
+     * When true, the histogram reserves space for pinned control-bar states
+     * (same visual behavior as video mode). Enabled by default.
+     */
+    enableControlBarSync?: boolean;
+    /**
+     * When true, histogram time updates are slightly throttled to reduce
+     * visual flicker/stroboscopic effect. Enabled by default.
+     */
+    enableStrobeReduction?: boolean;
 }

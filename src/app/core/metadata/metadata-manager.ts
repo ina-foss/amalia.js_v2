@@ -254,14 +254,14 @@ export class MetadataManager {
                 : histogramMetadata
                     ? this.histogramLoader
                     : this.defaultLoader;
-            loader
+            loader.load(loadData.url, loadData.headers)
                     .then(listOfMetadata => {
                         this.logger.info("listOfMetadata", listOfMetadata);
                         if (annotationMetadata) {
                             const listOfAnnotations = listOfMetadata.map(metadata => {
-                                const localisation = metadata.localisation;
-                                const subLocalisations = localisation[0].sublocalisations;
-                                return subLocalisations[0].localisation[0];
+                                const localisation = metadata.localisation as any;
+                                const subLocalisations = localisation?.[0]?.sublocalisations;
+                                return subLocalisations?.[0]?.localisation?.[0];
                             });
                             const metaDataToBeLoaded = [{id: 'annotations', localisation: listOfAnnotations}];
                             this.logger.debug("annotations", listOfAnnotations);

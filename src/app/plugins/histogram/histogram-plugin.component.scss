@@ -5,36 +5,70 @@
   position: absolute;
   top: 0;
   left: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  width: 100%;
+  right: 0;
+  bottom: var(--amalia-histogram-bottom-inset, 0px);
+  overflow: hidden;
   z-index: $amalia-plugin-histogram-zindex;
   font-family: $amalia-font-family !important;
   font-size: $amalia-font-size !important;
   font-weight: normal;
 
   .histogram-container {
-    background: #34495E;
+    background: #272A2C;
     height: 100%;
     width: 100%;
     z-index: 1;
+    display: grid;
+    grid-template-rows: var(--amalia-plugin-histogram-minimap-height, 30px) minmax(0, 1fr) 20px;
+    outline: none;
+    overflow: hidden;
+
+    &.pinned {
+      height: $amalia-plugin-histogram-pinned;
+    }
+
+    &.pinnedControlbar {
+      height: $amalia-plugin-histogram-pinned-control-bar;
+    }
 
     .wavesurfer-container {
       width: 100%;
       height: 100%;
       display: block;
       position: relative;
+      min-height: 0;
+      overflow: hidden;
+      background-color: var(--amalia-plugin-histogram-bg, #80C2D8);
+
+      > div {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+      }
+    }
+
+    .timeline-container {
+      height: 20px;
+      min-height: 0;
+      overflow: hidden;
       background-color: var(--amalia-plugin-histogram-bg, #80C2D8);
     }
 
-    // The wavesurfer Minimap plugin is inserted with `insertPosition: 'beforebegin'`,
-    // therefore it becomes a sibling of `.wavesurfer-container` inside `.histogram-container`.
-    // We target every direct child that is NOT the main waveform to apply the zoom (minimap) background.
-    > *:not(.wavesurfer-container) {
+    .minimap-container {
+      height: var(--amalia-plugin-histogram-minimap-height, 30px);
+      min-height: 0;
+      overflow: hidden;
       background-color: var(--amalia-plugin-histogram-zoom-bg, #b2dae7);
+      position: relative;
+
+      .minimap-hit-area {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        cursor: pointer;
+        touch-action: none;
+      }
     }
   }
 }
-
