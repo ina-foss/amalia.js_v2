@@ -1,4 +1,4 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {HistogramPluginComponent} from './histogram-plugin.component';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ChangeDetectorRef} from '@angular/core';
@@ -17,21 +17,36 @@ import WaveSurfer from 'wavesurfer.js';
 
 interface FakeWaveSurfer {
     setTime: jasmine.Spy;
+    setOptions: jasmine.Spy;
+    setScroll: jasmine.Spy;
     destroy: jasmine.Spy;
     on: jasmine.Spy;
     getDuration: jasmine.Spy;
     getActivePlugins: jasmine.Spy;
+    getRenderer: jasmine.Spy;
+    getWrapper: jasmine.Spy;
+    getWidth: jasmine.Spy;
+    getScroll: jasmine.Spy;
     renderer: { renderProgress: jasmine.Spy };
 }
 
-const buildFakeWaveSurfer = (): FakeWaveSurfer => ({
-    setTime: jasmine.createSpy('setTime'),
-    destroy: jasmine.createSpy('destroy'),
-    on: jasmine.createSpy('on'),
-    getDuration: jasmine.createSpy('getDuration').and.returnValue(120),
-    getActivePlugins: jasmine.createSpy('getActivePlugins').and.returnValue([]),
-    renderer: {renderProgress: jasmine.createSpy('renderProgress')}
-});
+const buildFakeWaveSurfer = (): FakeWaveSurfer => {
+    const renderer = {renderProgress: jasmine.createSpy('renderProgress')};
+    return {
+        setTime: jasmine.createSpy('setTime'),
+        setOptions: jasmine.createSpy('setOptions'),
+        setScroll: jasmine.createSpy('setScroll'),
+        destroy: jasmine.createSpy('destroy'),
+        on: jasmine.createSpy('on').and.returnValue(() => undefined),
+        getDuration: jasmine.createSpy('getDuration').and.returnValue(120),
+        getActivePlugins: jasmine.createSpy('getActivePlugins').and.returnValue([]),
+        getRenderer: jasmine.createSpy('getRenderer').and.returnValue(renderer),
+        getWrapper: jasmine.createSpy('getWrapper').and.returnValue({clientWidth: 1000, scrollWidth: 1000}),
+        getWidth: jasmine.createSpy('getWidth').and.returnValue(1000),
+        getScroll: jasmine.createSpy('getScroll').and.returnValue(0),
+        renderer
+    };
+};
 
 interface FakeMediaElement {
     getDuration: jasmine.Spy;
@@ -116,6 +131,7 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         component.wavesurferContainer = {nativeElement: document.createElement('div')} as any;
         component.timelineContainer = {nativeElement: document.createElement('div')} as any;
         component.minimapContainer = {nativeElement: document.createElement('div')} as any;
+        component.minimapHitArea = {nativeElement: document.createElement('div')} as any;
     });
 
     it('should create the component', () => {
@@ -126,8 +142,8 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         const config = component.getDefaultConfig();
         expect(config.name).toEqual(HistogramPluginComponent.PLUGIN_NAME);
         expect(config.data.padPeaks).toEqual(HistogramPluginComponent.DEFAULT_PAD_PEAKS);
-        expect(config.data.waveColor).toBeUndefined();
-        expect(config.data.cursorColor).toBeUndefined();
+        expect(config.data.waveColor).toEqual(HistogramPluginComponent.DEFAULT_WAVE_COLOR);
+        expect(config.data.cursorColor).toEqual(HistogramPluginComponent.DEFAULT_CURSOR_COLOR);
         expect((config.data as any).urlWaveform).toBeUndefined();
     });
 
@@ -221,11 +237,15 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
     it('should sync wavesurfer time on TIME_CHANGE', () => {
         registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
         fakeMedia.getCurrentTime.and.returnValue(42);
+        spyOn(window, 'requestAnimationFrame').and.callFake((callback: FrameRequestCallback): number => {
+            callback(0);
+            return 1;
+        });
         spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
         component.ngOnInit();
         mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
         expect(fakeMedia.getCurrentTime).toHaveBeenCalled();
-        expect(fakeWavesurfer.setTime).toHaveBeenCalledWith(42);
+        expect(fakeWavesurfer.renderer.renderProgress).toHaveBeenCalledWith(0.35, false);
     });
 
     it('should pause player on START_SEEKING', () => {
@@ -241,7 +261,7 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         component.ngOnInit();
         mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, 60);
         expect(fakeMedia.pause).toHaveBeenCalled();
-        expect(fakeWavesurfer.renderer.renderProgress).toHaveBeenCalledWith(0.5);
+        expect(fakeWavesurfer.renderer.renderProgress).toHaveBeenCalledWith(0.5, false);
     });
 
     it('should fall back to setTime on SEEKING when no renderer is available', () => {
@@ -250,6 +270,7 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         component.ngOnInit();
         // Simulate a wavesurfer instance without renderer.renderProgress.
         delete (fakeWavesurfer as any).renderer;
+        fakeWavesurfer.getRenderer.and.returnValue(undefined);
         fakeWavesurfer.setTime.calls.reset();
         mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, 30);
         expect(fakeMedia.pause).toHaveBeenCalled();
@@ -274,7 +295,7 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         expect(fakeWavesurfer.setTime).not.toHaveBeenCalled();
     });
 
-    it('should re-render on DURATION_CHANGE when peaks are already loaded', () => {
+    it('should re-render on DURATION_CHANGE when peaks are already loaded', fakeAsync(() => {
         registerPeaksMetadata(mediaPlayerElement, [1, 2], [-1, -2]);
         spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
         component.ngOnInit();
@@ -282,10 +303,11 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         // New duration → triggers re-render via createOrUpdateWavesurfer.
         fakeMedia.getDuration.and.returnValue(240);
         mediaPlayerElement.eventEmitter.emit(PlayerEventType.DURATION_CHANGE);
-        expect(createSpy).toHaveBeenCalled();
-    });
+        tick(250);
+        expect(fakeWavesurfer.setOptions).toHaveBeenCalledWith({duration: 240});
+    }));
 
-    it('should re-fetch metadata on DURATION_CHANGE when peaks are not yet loaded', () => {
+    it('should re-fetch metadata on DURATION_CHANGE when peaks are not yet loaded', fakeAsync(() => {
         spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
         // Defer init until after listeners are attached: no peaks at init.
         mediaPlayerElement.isMetadataLoaded = false;
@@ -296,8 +318,9 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         mediaPlayerElement.isMetadataLoaded = true;
         fakeMedia.getDuration.and.returnValue(300);
         mediaPlayerElement.eventEmitter.emit(PlayerEventType.DURATION_CHANGE);
+        tick(250);
         expect(createSpy).toHaveBeenCalled();
-    });
+    }));
 
     it('should ignore DURATION_CHANGE when duration has not changed', () => {
         registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
@@ -425,7 +448,7 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         // Exercise the overridden seekTo (covers overriddenSeekTo body).
         fakeWavesurfer.getDuration.and.returnValue(200);
         miniWavesurfer.seekTo(0.5);
-        expect(fakeWavesurfer.setTime).toHaveBeenCalledWith(100);
+        expect(fakeMedia.setCurrentTime).toHaveBeenCalledWith(60);
     });
 
     it('should skip minimap mirroring when no minimap plugin is found', () => {
@@ -445,10 +468,9 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         fakeWavesurfer.getActivePlugins.and.returnValue([{miniWavesurfer}]);
         const readyHandler = fakeWavesurfer.on.calls.allArgs().find(args => args[0] === 'ready')![1] as () => void;
         readyHandler();
-        fakeWavesurfer.getDuration.and.returnValue(100);
         miniWavesurfer.seekTo(0.25);
-        // reverseMode ⇒ t = 1 - 0.25 = 0.75 → 100 * 0.75 = 75
-        expect(fakeWavesurfer.setTime).toHaveBeenCalledWith(75);
+        // reverseMode uses the media duration captured at render time: 120 - (0.25 * 120) = 90.
+        expect(fakeMedia.setCurrentTime).toHaveBeenCalledWith(90);
     });
 
     it('overriddenGetCurrentTime should delegate to mediaPlayer.getCurrentTime', () => {

@@ -119,6 +119,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.START_SEEKING, this.handleStartSeeking);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
         // If metadata are already loaded by the time this plugin is created
         // (typical lazy-load via `loadDataSourceForPlugin('histogram')` resolved
         // before insertion), render immediately. Otherwise we rely on the
@@ -282,9 +284,22 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             plugins
         });
 
+        const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
+        const overriddenGetCurrentTime = () => mediaPlayer.getCurrentTime();
+        const overriddenSeekTo = (progress: number) => this.seekMediaPlayerToProgress(progress);
+        (this.wavesurfer as any).getCurrentTime = overriddenGetCurrentTime;
+        (this.wavesurfer as any).seekTo = overriddenSeekTo;
+
         // User-driven seeking on the waveform delegates back to the main player.
         this.wavesurfer.on('interaction', (newTime: number) => {
             this.seekMediaPlayerToTime(newTime);
+        });
+        this.wavesurfer.on('ready', () => {
+            const minimapPlugin: any = this.wavesurfer?.getActivePlugins().find((plugin: any) => plugin?.miniWavesurfer);
+            if (minimapPlugin?.miniWavesurfer) {
+                minimapPlugin.miniWavesurfer.getCurrentTime = overriddenGetCurrentTime;
+                minimapPlugin.miniWavesurfer.seekTo = overriddenSeekTo;
+            }
         });
         this.lastAppliedWaveformHeight = waveformHeight;
         this.attachWaveformResizeObserver();
@@ -400,11 +415,17 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             return;
         }
         const safeProgress = this.clampProgress(progress);
-        this.wavesurfer.getRenderer().renderProgress(safeProgress, false);
+        const renderer = (this.wavesurfer as any).getRenderer?.() ?? (this.wavesurfer as any).renderer;
+        if (renderer?.renderProgress) {
+            renderer.renderProgress(safeProgress, false);
+        } else {
+            this.wavesurfer.setTime(safeProgress * this.duration);
+        }
 
         const activePlugins = this.wavesurfer.getActivePlugins() as any[];
         const minimapPlugin = activePlugins.find((plugin: any) => plugin?.miniWavesurfer);
-        minimapPlugin?.miniWavesurfer?.getRenderer?.().renderProgress(safeProgress, false);
+        const minimapRenderer = minimapPlugin?.miniWavesurfer?.getRenderer?.() ?? minimapPlugin?.miniWavesurfer?.renderer;
+        minimapRenderer?.renderProgress?.(safeProgress, false);
     }
 
     private renderVisualProgress(time: number): void {
@@ -603,6 +624,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 this.handleMetadataLoaded();
             }
         }, HistogramPluginComponent.RERENDER_DEBOUNCE_MS);
+    };
+
+    private handleStartSeeking = (): void => {
+        this.mediaPlayerElement.getMediaPlayer().pause();
+    };
+
+    private handleSeeking = (time: number): void => {
+        this.mediaPlayerElement.getMediaPlayer().pause();
+        this.renderVisualProgress(time);
     };
 
     public onHistogramMouseEnter(): void {
