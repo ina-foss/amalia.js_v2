@@ -1,6 +1,6 @@
-import {AmaliaPlayerImageSource, AmaliaPlayerSettings} from "../business/AmaliaPlayerSettings";
+import { AmaliaPlayerSettings} from "../business/AmaliaPlayerSettings";
 import Utils from "../business/Utils";
-import AmaliaEventConstants from "../business/AmaliaEventConstants";
+import { PlayerEventType } from "../../../core/constant/event-type";
 import BaseHtmlElement from "./BaseHtmlElement";
 import PlayerHtmlElement from "./PlayerHtmlElement";
 
@@ -117,7 +117,7 @@ export default class AmaliaPlayer extends BaseHtmlElement{
             return;
         }
         this._cropperComponent.replaceSrc(imageSrc, imageName);
-        this.triggerEvent(new CustomEvent(AmaliaEventConstants.select, {
+        this.triggerEvent(new CustomEvent(PlayerEventType.PICTURE_SELECT, {
             detail: {
                 imageSrc,
                 imageName

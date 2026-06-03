@@ -7,19 +7,21 @@
 </div>
 <div #mediaContainer (mouseenter)="displayControlBar(true);resetTimer();playerHover= true;"
     (mouseover)="playerHover= true;focus()" (mouseout)="displayControlBar(false);playerHover= false"
-    (focus)="displayControlBar(true);resetTimer();playerHover= true;" (blur)="displayControlBar(false);playerHover= false"
+    (focus)="displayControlBar(true);resetTimer();playerHover= true;"
+    (blur)="displayControlBar(false);playerHover= false"
     (mousemove)="resetTimer();displayControlBar(true);focus();playerHover= true;" (load)="startTimer()"
     (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{ratio}}" (onresize)="handleWindowResize()"
     [ngClass]="{'pinned' : pinned,
      'pinnedControlbar' : pinnedControlbar,
      'amalia-player-bg-color1' : posterBackgound['amalia-player-bg-color1'],
      'amalia-primary-color' : posterBackgound['amalia-primary-color'],
-     'amalia-secondary-color': posterBackgound['amalia-secondary-color']}" role="button" tabindex="0"
+     'amalia-secondary-color': posterBackgound['amalia-secondary-color']}" tabindex="0"
     (click)="controlClicked($event)" (keydown.enter)="controlClicked($event)">
-    <video #video [hidden]="state != PlayerState.INITIALIZED || playerConfig?.player?.media === 'PICTURE'" class="player" preload="metadata" [poster]="videoPoster"
+    <video #video *ngIf="playerConfig?.player?.media != 'PICTURE'" [hidden]="state != PlayerState.INITIALIZED"
+        class="player" preload="metadata" [poster]="videoPoster"
         [ngClass]="{'poster-icon' : videoPoster !== ''}"></video>
     <!-- Amalia Photo -->
-    <div *ngIf="playerConfig?.player?.media === 'PICTURE'" #photoHost class="picture-host"></div>
+    <div #photoHost *ngIf="playerConfig?.player?.media === 'PICTURE'" class="picture-host"></div>
     <img #previewThumbnail class="preview-thumbnail" [hidden]="!enablePreviewThumbnail" [src]="thumbnailBlobVideo"
         alt="video-preview" fetchPriority="high" importance="high" />
     <div *ngIf="inError" class="error">

@@ -96,6 +96,58 @@ export enum PlayerEventType {
      */
     PICTURE_ZOOM_CHANGE = 'ina.player.PICTURE_ZOOM_CHANGE',
     /**
+     * Invoked when picture player is ready
+     */
+    PICTURE_READY = 'ina.amalia.photo.event.ready',
+    /**
+     * Invoked when picture player fit to screen
+     */
+    PICTURE_FIT_TO_SCREEN = 'ina.amalia.photo.event.fitToScreen',
+    /**
+     * Invoked when picture player full size
+     */
+    PICTURE_FULL_SIZE = 'ina.amalia.photo.event.fullSize',
+    /**
+     * Invoked when picture player download
+     */
+    PICTURE_DOWNLOAD = 'ina.amalia.photo.event.download',
+    /**
+     * Invoked when picture player fullscreen
+     */
+    PICTURE_FULLSCREEN = 'ina.amalia.photo.event.fullscreen',
+    /**
+     * Invoked when picture player zoom
+     */
+    PICTURE_ZOOM = 'ina.amalia.photo.event.zoom',
+    /**
+     * Invoked when picture player magnify
+     */
+    PICTURE_MAGNIFY = 'ina.amalia.photo.event.magnify',
+    /**
+     * Invoked when picture player rotate
+     */
+    PICTURE_ROTATE = 'ina.amalia.photo.event.rotate',
+    /**
+     * Invoked when picture player flip horizontally
+     */
+    PICTURE_FLIP_HORIZONTALLY = 'ina.amalia.photo.event.flipHorizontally',
+    /**
+     * Invoked when picture player flip vertically
+     */
+    PICTURE_FLIP_VERTICALLY = 'ina.amalia.photo.event.flipVertically',
+    /**
+     * Invoked when picture player close
+     */
+    PICTURE_CLOSE = 'ina.amalia.photo.event.close',
+    /**
+     * Invoked when picture player switch display state
+     */
+    PICTURE_SWITCH_DISPLAY_STATE = 'ina.amalia.photo.event.switchDisplayState',
+    /**
+     * Invoked when picture player select image
+     */
+    PICTURE_SELECT = 'ina.amalia.photo.event.select',
+    /**
      * Invoked when selected metadata has changed
      */
     SELECTED_METADATA_CHANGE = 'ina.player.SELECTED_METADATA_CHANGE',

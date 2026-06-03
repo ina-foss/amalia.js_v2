@@ -1,6 +1,5 @@
 import Utils from './business/Utils';
 import BaseHtmlElement from './components/BaseHtmlElement';
-import BaseButton from './components/buttons/BaseButton';
 import IncrementInfo from './components/widgets/IncrementInfo';
 import MagnifierHtmlElement from './components/MagnifierHtmlElement';
 
@@ -85,41 +84,6 @@ describe('BaseHtmlElement', () => {
         instance.removeEventListener('click', spy);
         instance.getDom().dispatchEvent(new Event('click'));
         expect(spy).toHaveBeenCalledTimes(1);
-    });
-});
-
-describe('BaseButton', () => {
-    afterEach(() => {
-        document.querySelectorAll('a').forEach((el) => el.remove());
-    });
-
-    it('should trigger click action when enabled', () => {
-        const action = jasmine.createSpy('action');
-        const btn = new BaseButton({ className: 'my-btn', tooltip: null, shortcut: null } as any, action);
-        document.body.appendChild(btn.getDom());
-
-        btn.getDom().dispatchEvent(new Event('click'));
-        expect(action).toHaveBeenCalled();
-    });
-
-    it('should remove click action when disabled', () => {
-        const action = jasmine.createSpy('action');
-        const btn = new BaseButton({ className: 'my-btn', tooltip: null, shortcut: null } as any, action);
-        document.body.appendChild(btn.getDom());
-
-        btn.disable();
-        btn.getDom().dispatchEvent(new Event('click'));
-        expect(action).not.toHaveBeenCalled();
-    });
-
-    it('should trigger keyboard shortcut action', () => {
-        const action = jasmine.createSpy('action');
-        const btn = new BaseButton({ className: 'my-btn', tooltip: null, shortcut: 'x' } as any, action);
-        document.body.appendChild(btn.getDom());
-
-        document.dispatchEvent(new KeyboardEvent('keyup', { key: 'x' }));
-        expect(action).toHaveBeenCalled();
-        btn.removeFromDom();
     });
 });
 

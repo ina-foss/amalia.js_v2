@@ -389,7 +389,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
     @HostListener('window:resize')
     updatePlayerSizeWithAspectRatio() {
-        const htmlElement = this.mediaPlayer.nativeElement;
+        const htmlElement: HTMLElement = this.mediaPlayer?.nativeElement ?? this.photoHost?.nativeElement;
+        if (!htmlElement) {
+            return;
+        }
         if (this.aspectRatio && this.aspectRatio !== '') {
             this.ratio = this.aspectRatio.replace(':', '-');
             const isFullscreen = document.fullscreenElement != null;
@@ -438,7 +441,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param isFullscreen plein écran
      * @param htmlElement conteneur parent de la video
      */
-    private getMaxHeight = (isFullscreen: boolean, htmlElement: HTMLVideoElement) => {
+    private getMaxHeight = (isFullscreen: boolean, htmlElement: HTMLElement) => {
         const maxParentHeight = !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.height : htmlElement.parentElement.offsetHeight;
         const maxHeightWhenNotPinned = this.pinnedControlbar ? maxParentHeight - 50 : maxParentHeight;
         return this.pinned ? maxParentHeight - 100 : maxHeightWhenNotPinned;
@@ -448,7 +451,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param isFullscreen plein écran
      * @param htmlElement conteneur parent de la video
      */
-    private getMaxWidth = (isFullscreen: boolean, htmlElement: HTMLVideoElement) => {
+    private getMaxWidth = (isFullscreen: boolean, htmlElement: HTMLElement) => {
         // Quand nous sortons du mode plein écran, maxWidth est la largeur du parent(mediaContainer) de la balise video(mediaPlayer) avant sa mise en plein écran
         // sinon, maxWidth est la largeur du parent de la balise video
         return !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.width : htmlElement.parentElement.offsetWidth;

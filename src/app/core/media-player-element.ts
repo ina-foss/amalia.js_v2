@@ -16,7 +16,6 @@ import { PreferenceStorageManager } from './storage/preference-storage-manager';
 import { LoggerLevel } from './logger/logger-level';
 import AmaliaPlayer from '../player/photo/components/AmaliaPlayer';
 import { AmaliaPlayerImageSource, AmaliaPlayerSettings } from '../player/photo/business/AmaliaPlayerSettings';
-import AmaliaEventConstants from '../player/photo/business/AmaliaEventConstants';
 
 /**
  * In charge to create player
@@ -229,11 +228,11 @@ export class MediaPlayerElement {
         this._picturePlayerResizeHandler = () => this._eventEmitter.emit(PlayerEventType.PLAYER_RESIZED);
         window.addEventListener('resize', this._picturePlayerResizeHandler);
         // Forward picture player zoom events → PICTURE_ZOOM_CHANGE so the control bar can update its zoom display
-        this.picturePlayer.addEventListener(AmaliaEventConstants.zoom, (e: CustomEvent) => {
+        this.picturePlayer.addEventListener(PlayerEventType.PICTURE_ZOOM, (e: CustomEvent) => {
             this._lastPictureZoomLevel = e.detail?.imageData?.zoomLevel ?? 100;
             this._eventEmitter.emit(PlayerEventType.PICTURE_ZOOM_CHANGE, this._lastPictureZoomLevel);
         });
-        this.picturePlayer.addEventListener(AmaliaEventConstants.switchDisplayState, () => {
+        this.picturePlayer.addEventListener(PlayerEventType.PICTURE_SWITCH_DISPLAY_STATE, () => {
             this.schedulePicturePlayerLayoutRefresh(true);
         });
         // Set initial displayState using measured host dimensions when available.

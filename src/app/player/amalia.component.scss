@@ -84,6 +84,23 @@
     }
   }
 
+  // When no amalia-time-bar is present as sibling of amalia-control-bar,
+  // make the control-bar reach the bottom (bottom: 0) of amalia-player.
+  // When a time-bar is present, it sits below the control-bar in normal flow.
+  amalia-control-bar {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  &:has(amalia-time-bar) amalia-control-bar,
+  &:has(amalia-timebar) amalia-control-bar {
+    position: relative;
+    bottom: auto;
+  }
+
   .preview-thumbnail {
     position: absolute;
     z-index: 3;

@@ -12,7 +12,6 @@ import {MediaElement} from './media/media-element';
 import {EventEmitter} from 'events';
 import {ConfigurationManager} from './config/configuration-manager';
 import {PlayerEventType} from './constant/event-type';
-import AmaliaEventConstants from '../player/photo/business/AmaliaEventConstants';
 
 describe('Test Media player element', () => {
     let injector: TestBed;
@@ -350,7 +349,7 @@ describe('Test Media player element', () => {
         expect(cancelAnimationFrameSpy).toHaveBeenCalled();
         expect(observeSpy).toHaveBeenCalledWith(host);
 
-        mpe.getPicturePlayer().getDom().dispatchEvent(new CustomEvent(AmaliaEventConstants.zoom, {
+        mpe.getPicturePlayer().getDom().dispatchEvent(new CustomEvent(PlayerEventType.PICTURE_ZOOM, {
             detail: { imageData: { zoomLevel: 135 } }
         }));
         expect(emitSpy).toHaveBeenCalledWith(PlayerEventType.PICTURE_ZOOM_CHANGE, 135);

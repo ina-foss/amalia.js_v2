@@ -4,21 +4,11 @@ import {
     AmaliaPlayerImageSource, AmaliaPlayerSettings, AmaliaPlayerToolbarSettings
 } from "../business/AmaliaPlayerSettings";
 import CropperWrapper from "../business/CropperWrapper";
-import AmaliaEventConstants from "../business/AmaliaEventConstants";
-import DownloadButton from "./buttons/DownloadButton";
-import FitScreenButton from "./buttons/FitScreenButton";
+import { PlayerEventType } from "../../../core/constant/event-type";
 import IncrementInfo from "./widgets/IncrementInfo";
-import FullscreenButton from "./buttons/FullscreenButton";
-import FlipHButton from "./buttons/FlipHButton";
-import FlipVButton from "./buttons/FlipVButton";
-import RotateButton from "./buttons/RotateButton";
 import AmaliaPlayer from "./AmaliaPlayer";
-import MagnifyButton from "./buttons/MagnifyButton";
 import Utils from "../business/Utils";
-import CloseButton from "./buttons/CloseButton";
-import SwitchModeButton from "./buttons/SwitchModeButton";
 import MagnifierHtmlElement from "./MagnifierHtmlElement";
-import FullsizeButton from "./buttons/FullsizeButton";
 
 export default class PlayerHtmlElement extends BaseHtmlElement {
 
@@ -57,17 +47,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private _displayState: string;
     private _width: number;
     private _height: number;
-
-    private _btnFullScreen: FullscreenButton;
-    private _btnFlipH: FlipHButton;
-    private _btnFlipV: FlipVButton;
-    private _btnRotate: RotateButton;
-    private _btnMagnify: MagnifyButton;
-    private _btnSwitchMode: SwitchModeButton;
-    private _btnClose: CloseButton;
-    private _btnDownload: DownloadButton;
-    private _btnFitScreen: FitScreenButton;
-    private _btnFullSize: FullsizeButton;
 
     // Set to true when the user manually adjusts zoom; prevents fitToCanvas() from
     // overriding the user-set level when PLAYER_RESIZED fires via ResizeObserver.
@@ -210,22 +189,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this._topBar = document.createElement('div');
         this._topBar.className = 'ajs-photo-top-box';
 
-        const topLeft = document.createElement('div');
-        topLeft.className = 'ajs-photo-top-left';
-        this._btnSwitchMode = new SwitchModeButton(this._toolbarSettings.switch_mode)
-            .addEventListener('click', () => {
-                this.triggerEvent(AmaliaEventConstants.switchDisplayState);
-            });
-        topLeft.appendChild(this._btnSwitchMode.getDom());
-        this._topBar.appendChild(topLeft);
-
-        const topRight = document.createElement('div');
-        topRight.className = 'ajs-photo-top-right';
-        this._btnClose = new CloseButton(this._toolbarSettings.close)
-            .addEventListener('click', this.eventClose.bind(this));
-        topRight.appendChild(this._btnClose.getDom());
-        this._topBar.appendChild(topRight);
-
         this._titleBox = document.createElement('div');
         this._titleBox.className = 'ajs-photo-top-middle';
         this._topBar.appendChild(this._titleBox);
@@ -248,15 +211,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private createLeftAreaToolBar(): HTMLElement {
         const left = document.createElement('div');
         left.className = 'ajs-photo-toolbar-left';
-
-        this._btnDownload = new DownloadButton(this._toolbarSettings.download, this.eventDownload.bind(this));
-        left.appendChild(this._btnDownload.getDom());
-        this._btnFitScreen = new FitScreenButton(this._toolbarSettings.fitToScreen, this.eventFitToScreen.bind(this));
-        left.appendChild(this._btnFitScreen.getDom());
-        this._btnFullSize = new FullsizeButton(this._toolbarSettings.fullsize, this.eventFullSize.bind(this));
-        left.appendChild(this._btnFullSize.getDom());
-        this._btnMagnify = new MagnifyButton(this._toolbarSettings.magnify, this.eventMagnify.bind(this));
-        left.appendChild(this._btnMagnify.getDom());
         return left;
     }
 
@@ -274,16 +228,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private createRightAreaToolbar(): HTMLElement {
         const right = document.createElement('div');
         right.className = 'ajs-photo-toolbar-right';
-
-        this._btnFullScreen = new FullscreenButton(this._toolbarSettings.fullscreen, this.eventFullscreen.bind(this));
-        right.appendChild(this._btnFullScreen.getDom());
-        this._btnFlipV = new FlipVButton(this._toolbarSettings.flipv, this.eventFlipV.bind(this));
-        right.appendChild(this._btnFlipV.getDom());
-        this._btnFlipH = new FlipHButton(this._toolbarSettings.fliph, this.eventFlipH.bind(this));
-        right.appendChild(this._btnFlipH.getDom());
-        this._btnRotate = new RotateButton(this._toolbarSettings.rotate, this.eventRotate.bind(this));
-        right.appendChild(this._btnRotate.getDom());
-
         return right;
     }
 
@@ -370,7 +314,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         }
         this._manualZoom = false;
         this._cropperWrapper.fitToCanvas();
-        this.triggerEvent(AmaliaEventConstants.fitToScreen, {
+        this.triggerEvent(PlayerEventType.PICTURE_FIT_TO_SCREEN, {
             imageData: this._cropperWrapper.getImageData()
         });
         this.showControls();
@@ -381,14 +325,14 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             return;
         }
         this._cropperWrapper.fitToOrignalSize();
-        this.triggerEvent(AmaliaEventConstants.fitToScreen, {
+        this.triggerEvent(PlayerEventType.PICTURE_FULL_SIZE, {
             imageData: this._cropperWrapper.getImageData()
         });
         this.showControls();
     }
 
     private eventDownload() {
-        this.triggerEvent(AmaliaEventConstants.download, {
+        this.triggerEvent(PlayerEventType.PICTURE_DOWNLOAD, {
             imageData: this._cropperWrapper?.getImageData()
         });
         this.showControls();
@@ -410,11 +354,10 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this._isFullscreen = false;
             document.exitFullscreen().then(() => {
                 this._isInFullscreen = false;
-                this._btnFullScreen?.toggleIcon();
                 if (this._width > 0) { this.dom.style.width = this._width + 'px'; }
                 if (this._height > 0) { this.dom.style.height = this._height + 'px'; }
                 this.recreateCropper();
-                this.triggerEvent(AmaliaEventConstants.fullscreen);
+                this.triggerEvent(PlayerEventType.PICTURE_FULLSCREEN);
             }).catch(() => {
                 this._isInFullscreen = false;
             });
@@ -424,11 +367,10 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             this.dom.style.width = '';
             this.dom.style.height = '';
             this.dom.requestFullscreen().then(() => {
-                this._btnFullScreen?.toggleIcon();
                 setTimeout(() => {
                     this.recreateCropper();
                 }, 300);
-                this.triggerEvent(AmaliaEventConstants.fullscreen);
+                this.triggerEvent(PlayerEventType.PICTURE_FULLSCREEN);
                 this.showControls();
             }).catch(() => {
                 this._isInFullscreen = false;
@@ -440,30 +382,19 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
 
     private eventMagnify() {
         this._magnify = !this._magnify;
-        this._btnMagnify?.toggleIcon();
         if (this._magnify) {
             this.enableMagnify();
         } else {
             this.disableMagnify();
         }
-        this.triggerEvent(AmaliaEventConstants.magnify, {
+        this.triggerEvent(PlayerEventType.PICTURE_MAGNIFY, {
             magnify: this._magnify
         });
     }
 
     private enableMagnify() {
         this.removeHideEvents();
-        this._btnDownload?.disable();
-        this._btnFitScreen?.disable();
-        this._btnFullSize?.disable();
-        this._btnFlipV?.disable();
-        this._btnFlipH?.disable();
-        this._btnRotate?.disable();
-        this._btnFullScreen?.disable();
         this._zoomInfo?.disable();
-        if (this._btnMagnify) {
-            this._btnMagnify.getDom().style.zIndex = '9';
-        }
         if (!this._cropperWrapper) {
             return;
         }
@@ -501,17 +432,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this.removeClass('ajs-photo-magnify');
         this._magnifier?.removeFromDom();
         this.addHideEvents();
-        this._btnDownload?.enable();
-        this._btnFitScreen?.enable();
-        this._btnFullSize?.enable();
-        this._btnFlipV?.enable();
-        this._btnFlipH?.enable();
-        this._btnRotate?.enable();
-        this._btnFullScreen?.enable();
         this._zoomInfo?.enable();
-        if (this._btnMagnify) {
-            this._btnMagnify.getDom().style.zIndex = 'unset';
-        }
         this.showControls();
         document.removeEventListener('keyup', this._escapeMagnifyRef);
     }
@@ -540,7 +461,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             return;
         }
         this._cropperWrapper.rotate(90);
-        this.triggerEvent(AmaliaEventConstants.rotate, {
+        this.triggerEvent(PlayerEventType.PICTURE_ROTATE, {
             imageData: this._cropperWrapper.getImageData()
         });
         this.showControls();
@@ -551,7 +472,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             return;
         }
         this._cropperWrapper.flipHorizontally();
-        this.triggerEvent(AmaliaEventConstants.flipHorizontally, {
+        this.triggerEvent(PlayerEventType.PICTURE_FLIP_HORIZONTALLY, {
             imageData: this._cropperWrapper.getImageData()
         });
         this.showControls();
@@ -562,14 +483,14 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             return;
         }
         this._cropperWrapper.flipVertically();
-        this.triggerEvent(AmaliaEventConstants.flipVertically, {
+        this.triggerEvent(PlayerEventType.PICTURE_FLIP_VERTICALLY, {
             imageData: this._cropperWrapper.getImageData()
         });
         this.showControls();
     }
 
     private eventClose() {
-        this.triggerEvent(AmaliaEventConstants.close);
+        this.triggerEvent(PlayerEventType.PICTURE_CLOSE);
         this.showControls();
     }
 
@@ -699,7 +620,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private applyExtraSmallDisplayState(fourImg: string[] | null): void {
-        this._btnClose?.hide();
         this.setTitleVisibility('hidden');
         this.setToolbarDisplay('none');
         if (fourImg) {
@@ -711,31 +631,15 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     }
 
     private applySmallDisplayState(): void {
-        this._btnClose?.show();
-        this._btnDownload?.hide();
-        this._btnFitScreen?.hide();
-        this._btnFullSize?.hide();
         this._zoomInfo?.hide();
-        this._btnMagnify?.hide();
-        this._btnRotate?.hide();
-        this._btnFlipH?.hide();
-        this._btnFlipV?.hide();
         this.setTitleVisibility('hidden');
         this.setToolbarDisplay('block');
         this._image.style.display = 'block';
-        this.triggerEvent(AmaliaEventConstants.ready);
+        this.triggerEvent(PlayerEventType.PICTURE_READY);
     }
 
     private applyMediumToLargeDisplayState(): void {
-        this._btnClose?.show();
-        this._btnDownload?.show();
-        this._btnFitScreen?.show();
-        this._btnFullSize?.show();
         this._zoomInfo?.show();
-        this._btnMagnify?.show();
-        this._btnRotate?.show();
-        this._btnFlipH?.show();
-        this._btnFlipV?.show();
         this.setTitleVisibility('visible');
         this.createCropperInstance();
     }
@@ -783,14 +687,14 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             if (this._magnify) {
                 this.enableMagnify();
             }
-            this.triggerEvent(AmaliaEventConstants.ready);
+            this.triggerEvent(PlayerEventType.PICTURE_READY);
             this.showControls();
         };
         this._cropperZoomRef = (e: CustomEvent) => {
             this._zoomInfo?.setResultValue(e.detail.zoomLevel);
             const imageData = this._cropperWrapper?.getImageData();
             this._magnifier?.updateImageData(imageData);
-            this.triggerEvent(AmaliaEventConstants.zoom, { imageData });
+            this.triggerEvent(PlayerEventType.PICTURE_ZOOM, { imageData });
             this.showControls();
         };
         this._cropperMoveRef = () => {
@@ -924,16 +828,6 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this.dom.removeEventListener('contextmenu', this._preventContextMenuRef);
         this.dom.querySelector<HTMLElement>('.cropper-container')?.removeEventListener('contextmenu', this._preventContextMenuRef);
         this._zoomInfo?.removeFromDom();
-        this._btnFullScreen?.removeFromDom();
-        this._btnFlipH?.removeFromDom();
-        this._btnFlipV?.removeFromDom();
-        this._btnRotate?.removeFromDom();
-        this._btnMagnify?.removeFromDom();
-        this._btnSwitchMode?.removeFromDom();
-        this._btnClose?.removeFromDom();
-        this._btnDownload?.removeFromDom();
-        this._btnFitScreen?.removeFromDom();
-        this._btnFullSize?.removeFromDom();
         super.removeFromDom();
     }
 }

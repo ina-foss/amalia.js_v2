@@ -1,12 +1,11 @@
 import BaseHtmlElement from "../BaseHtmlElement";
-import BaseButton from "../buttons/BaseButton";
 import Utils from "../../business/Utils";
 
 export default class IncrementInfo extends BaseHtmlElement {
 
-    private readonly _btnMinus: BaseButton;
-    private readonly _btnPlus: BaseButton;
-    private readonly _resultSpan: BaseButton;
+    private readonly _btnMinus: HTMLButtonElement;
+    private readonly _btnPlus: HTMLButtonElement;
+    private readonly _resultSpan: HTMLElement;
     private readonly _increment: number;
     private readonly _steps: number[];
     private readonly _max: number;
@@ -45,17 +44,21 @@ export default class IncrementInfo extends BaseHtmlElement {
             }
         });
 
-        this._btnMinus = new BaseButton(settings.minus, this.decrement.bind(this))
-            .addClass('ajs-photo-minus');
+        this._btnMinus = document.createElement('button');
+        this._btnMinus.className = settings.minus.className + ' ajs-photo-minus';
+        this._btnMinus.addEventListener('click', this.decrement.bind(this));
 
-        this._btnPlus = new BaseButton(settings.plus, this.increment.bind(this))
-            .addClass('ajs-photo-plus');
+        this._btnPlus = document.createElement('button');
+        this._btnPlus.className = settings.plus.className + ' ajs-photo-plus';
+        this._btnPlus.addEventListener('click', this.increment.bind(this));
 
-        this._resultSpan = new BaseButton(settings.result, this.showRealSize.bind(this));
+        this._resultSpan = document.createElement('span');
+        this._resultSpan.className = settings.result.className;
+        this._resultSpan.addEventListener('click', this.showRealSize.bind(this));
 
-        this.dom.appendChild(this._btnMinus.getDom());
-        this.dom.appendChild(this._resultSpan.getDom());
-        this.dom.appendChild(this._btnPlus.getDom());
+        this.dom.appendChild(this._btnMinus);
+        this.dom.appendChild(this._resultSpan);
+        this.dom.appendChild(this._btnPlus);
     }
 
     public increment() {
@@ -125,12 +128,12 @@ export default class IncrementInfo extends BaseHtmlElement {
 
     public setResultValue(value: number) {
         const normalizedValue: number = this.normalizeValue(value);
-        this._resultSpan.setTextContent(normalizedValue.toString(), '.ajs-photo-result');
+        this._resultSpan.textContent = normalizedValue.toString();
         return normalizedValue;
     }
 
     private getCurrentValue(): number {
-        return this.normalizeValue(parseInt(this._resultSpan.getTextContent('.ajs-photo-result'), 10));
+        return this.normalizeValue(parseInt(this._resultSpan.textContent || '100', 10));
     }
 
     private normalizeValue(value: number): number {
@@ -148,21 +151,18 @@ export default class IncrementInfo extends BaseHtmlElement {
     }
 
     public enable() {
-        this._btnMinus.enable();
-        this._btnPlus.enable();
-        this._resultSpan.enable();
+        this._btnMinus.disabled = false;
+        this._btnPlus.disabled = false;
+        this._resultSpan.style.pointerEvents = 'auto';
     }
 
     public disable() {
-        this._btnMinus.disable();
-        this._btnPlus.disable();
-        this._resultSpan.disable();
+        this._btnMinus.disabled = true;
+        this._btnPlus.disabled = true;
+        this._resultSpan.style.pointerEvents = 'none';
     }
 
     public removeFromDom() {
-        this._btnPlus.removeFromDom();
-        this._btnMinus.removeFromDom();
-        this._resultSpan.removeFromDom();
         super.removeFromDom();
     }
 }
