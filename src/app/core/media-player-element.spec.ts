@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {MediaPlayerElement} from './media-player-element';
 import {DefaultLogger} from './logger/default-logger';
+import {LoggerLevel} from './logger/logger-level';
 import {DefaultConfigConverter} from './config/converter/default-config-converter';
 import {DefaultConfigLoader} from './config/loader/default-config-loader';
 import {PlayerState} from './constant/player-state';
@@ -391,5 +392,6 @@ describe('Test Media player element', () => {
         mpe.unsubscribeListeners();
     });
 });
+
 
 

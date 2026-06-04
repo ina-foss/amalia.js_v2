@@ -1113,9 +1113,9 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
                 zoom: jasmine.createSpy('zoom'),
                 unZoom: jasmine.createSpy('unZoom')
             };
+            const toggleFullScreenSpy = spyOn<any>(component, 'toggleFullScreen').and.callThrough();
             (component as any).mediaPlayerElement.getPicturePlayer = () => picturePlayer;
             component.magnifyEnabled = false;
-
             component.controlClicked('rotate');
             component.controlClicked('fliph');
             component.controlClicked('flipv');
@@ -1125,17 +1125,17 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             component.controlClicked('zoomIn');
             component.controlClicked('zoomOut');
             component.controlClicked('magnify');
-
             expect(picturePlayer.rotate).toHaveBeenCalled();
             expect(picturePlayer.flipH).toHaveBeenCalled();
             expect(picturePlayer.flipV).toHaveBeenCalled();
             expect(picturePlayer.showRealSize).toHaveBeenCalled();
-            expect(picturePlayer.toggleFullscreen).toHaveBeenCalled();
+            expect(toggleFullScreenSpy).toHaveBeenCalled();
+            expect(picturePlayer.toggleFullscreen).not.toHaveBeenCalled();
             expect(picturePlayer.fitToScreen).toHaveBeenCalled();
             expect(picturePlayer.zoom).toHaveBeenCalled();
             expect(picturePlayer.unZoom).toHaveBeenCalled();
             expect(picturePlayer.magnify).toHaveBeenCalled();
-            expect(component.magnifyEnabled).toBeTrue();
+            expect(component.magnifyEnabled).toBeFalse();
         });
 
         it('picture controls should no-op (except magnify) when magnify is enabled', () => {
@@ -1150,9 +1150,9 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
                 zoom: jasmine.createSpy('zoom'),
                 unZoom: jasmine.createSpy('unZoom')
             };
+            const toggleFullScreenSpy = spyOn<any>(component, 'toggleFullScreen').and.callThrough();
             (component as any).mediaPlayerElement.getPicturePlayer = () => picturePlayer;
             component.magnifyEnabled = true;
-
             component.controlClicked('rotate');
             component.controlClicked('fliph');
             component.controlClicked('flipv');
@@ -1161,19 +1161,18 @@ describe('ControlBarPluginComponent – applyShortcut & controlClicked', () => {
             component.controlClicked('fitToScreen');
             component.controlClicked('zoomIn');
             component.controlClicked('zoomOut');
-
             expect(picturePlayer.rotate).not.toHaveBeenCalled();
             expect(picturePlayer.flipH).not.toHaveBeenCalled();
             expect(picturePlayer.flipV).not.toHaveBeenCalled();
             expect(picturePlayer.showRealSize).not.toHaveBeenCalled();
             expect(picturePlayer.toggleFullscreen).not.toHaveBeenCalled();
+            expect(toggleFullScreenSpy).not.toHaveBeenCalled();
             expect(picturePlayer.fitToScreen).not.toHaveBeenCalled();
             expect(picturePlayer.zoom).not.toHaveBeenCalled();
             expect(picturePlayer.unZoom).not.toHaveBeenCalled();
-
             component.controlClicked('magnify');
             expect(picturePlayer.magnify).toHaveBeenCalled();
-            expect(component.magnifyEnabled).toBeFalse();
+            expect(component.magnifyEnabled).toBeTrue();
         });
 
         it('handlePictureZoomChange should update zoom level and trigger change detection', () => {
@@ -1916,6 +1915,7 @@ describe('ControlBarPluginComponent (coverage boost)', () => {
         expect(openSpy).toHaveBeenCalled();
     });
 });
+
 
 
 

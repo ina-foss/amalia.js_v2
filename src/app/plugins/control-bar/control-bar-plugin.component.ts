@@ -749,7 +749,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
         if (control === 'magnify') {
             picturePlayer?.magnify();
-            this.magnifyEnabled = !this.magnifyEnabled;
             return true;
         }
 

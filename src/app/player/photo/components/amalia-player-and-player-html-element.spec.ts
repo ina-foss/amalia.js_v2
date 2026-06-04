@@ -320,7 +320,7 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         expect((comp as any).shouldUseAnonymousCrossOrigin('blob:https://example.test/id')).toBeFalse();
         expect((comp as any).shouldUseAnonymousCrossOrigin('file:///tmp/a.jpg')).toBeFalse();
         expect((comp as any).shouldUseAnonymousCrossOrigin('https://example.org/a.jpg')).toBeTrue();
-        expect((comp as any).shouldUseAnonymousCrossOrigin('http://localhost:9876/a.jpg')).toBeFalse();
+        expect((comp as any).shouldUseAnonymousCrossOrigin('http://localhost:9876/a.jpg')).toBe(new URL('http://localhost:9876/a.jpg').origin !== window.location.origin);
         expect((comp as any).shouldUseAnonymousCrossOrigin('http://[invalid')).toBeFalse();
 
         (comp as any).setImageSource('https://example.org/b.jpg');
@@ -593,10 +593,9 @@ describe('PlayerHtmlElement (full toolbar branches)', () => {
         jasmine.clock().uninstall();
     });
 
-    it('should trigger switch mode from topbar button click', () => {
-        const btn = (comp as any)._btnSwitchMode;
-        btn.getDom().dispatchEvent(new Event('click'));
-        expect(playerEventSpy).toHaveBeenCalled();
+    it('should not create legacy switch mode button in topbar anymore', () => {
+        expect((comp as any)._btnSwitchMode).toBeUndefined();
+        expect(comp.getDom().querySelector('.ajs-photo-top-box')).toBeTruthy();
     });
 
     it('should no-op when hide events are already added', () => {

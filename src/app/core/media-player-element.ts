@@ -232,6 +232,9 @@ export class MediaPlayerElement {
             this._lastPictureZoomLevel = e.detail?.imageData?.zoomLevel ?? 100;
             this._eventEmitter.emit(PlayerEventType.PICTURE_ZOOM_CHANGE, this._lastPictureZoomLevel);
         });
+        this.picturePlayer.addEventListener(PlayerEventType.PICTURE_MAGNIFY, (e: CustomEvent) => {
+            this._eventEmitter.emit(PlayerEventType.PICTURE_MAGNIFY, e);
+        });
         this.picturePlayer.addEventListener(PlayerEventType.PICTURE_SWITCH_DISPLAY_STATE, () => {
             this.schedulePicturePlayerLayoutRefresh(true);
         });

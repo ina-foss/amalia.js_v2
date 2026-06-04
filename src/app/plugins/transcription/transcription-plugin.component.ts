@@ -62,6 +62,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private searchedWordIndex = 0;
     public displaySynchro = false;
     private lastSelectedNode = null;
+    private lastSegmentTcIn: number | null = null;
+    private lastSegmentTcOut: number | null = null;
+    private _inGap: boolean = false;
     private prevSearchValue = '';
     public tcFormatPipe = new TcFormatPipe();
     logger: DefaultLogger;
@@ -194,6 +197,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.currentTime = tcIn > 0 ? this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcIn : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         if (Number.isFinite(this.currentTime) && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
+            if (this.lastSegmentTcIn !== null && this.lastSegmentTcOut !== null
+                && this.currentTime >= this.lastSegmentTcIn - karaokeTcDelta
+                && this.currentTime < this.lastSegmentTcOut) {
+                return;
+            }
             if (this.pluginConfiguration.data.mode === 1) {
                 this.disableRemoveAllSelectedNodes();
             } else {
@@ -343,6 +351,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
             if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
+                this._inGap = false;
+                this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute('data-tcin'));
+                this.lastSegmentTcOut = parseFloat(segmentFilteredNodes[0].getAttribute('data-tcout'));
                 segmentFilteredNodes.forEach(segmentNode => {
                     segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
@@ -360,10 +371,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                     this.selectWords(karaokeTcDelta);
                 }
-            }
-            if (this.lastSelectedNode !== segmentFilteredNodes[0]) {
-                this.lastSelectedNode = segmentFilteredNodes;
-                this.scroll();
+                if (this.lastSelectedNode !== segmentFilteredNodes[0]) {
+                    this.lastSelectedNode = segmentFilteredNodes;
+                    this.scroll();
+                }
+            } else if (!this._inGap) {
+                this._inGap = true;
+                this.lastSegmentTcIn = null;
+                this.lastSegmentTcOut = null;
+                this.lastSelectedNode = null;
             }
         }
     }
@@ -437,6 +453,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * In charge to load metadata
      */
     private parseTranscription() {
+        this.lastSegmentTcIn = null;
+        this.lastSegmentTcOut = null;
+        this._inGap = false;
         if ((!this.transcriptions) || (this.transcriptions && this.transcriptions.length === 0)) {
             const handleMetadataIds = this.pluginConfiguration.metadataIds;
             const metadataManager = this.mediaPlayerElement.metadataManager;

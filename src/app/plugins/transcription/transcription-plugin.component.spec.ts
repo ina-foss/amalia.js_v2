@@ -519,3 +519,4 @@ describe('TranscriptionPluginComponent', () => {
         expect(component.automaticallyScrolled).toBeFalse();
     }));
 });
+
