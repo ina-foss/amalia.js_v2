@@ -172,7 +172,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     /**
      * get video html element
      */
-    @ViewChild('video', { static: true })
+    @ViewChild('video', { static: false })
     public mediaPlayer: ElementRef<HTMLVideoElement>;
 
     /**
