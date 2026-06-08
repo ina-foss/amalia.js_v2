@@ -297,6 +297,39 @@ describe('TranscriptionPluginComponent', () => {
         expect(words[1].classList.contains('activated')).toBeTrue();
     });
 
+    it('should apply word styles once per time update', () => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(2.5);
+        component.pluginConfiguration.data.mode = 2;
+        component.pluginConfiguration.data.withSubLocalisations = true;
+        component.pluginConfiguration.data.karaokeTcDelta = 0.25;
+        (component as any).lastSegmentTcIn = 0;
+        (component as any).lastSegmentTcOut = 4;
+
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <div class="segment selected" data-tcin="0" data-tcout="4">
+                <div class="subsegment">
+                    <div class="text">
+                        <span class="w" data-tcin="0" data-tcout="1">Un</span>
+                        <span class="w" data-tcin="1" data-tcout="2">deux</span>
+                        <span class="w" data-tcin="2" data-tcout="3">trois</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        component.transcriptionElement = new ElementRef(container);
+        const applyStyles = spyOn<any>(component, 'handleSelectedWordsStyle').and.callThrough();
+
+        component._handleOnTimeChangeForTesting();
+
+        expect(applyStyles).toHaveBeenCalledTimes(1);
+        expect((applyStyles.calls.mostRecent().args[0] as HTMLElement[]).length).toBe(3);
+        expect(container.querySelectorAll('.w')[2].classList.contains('selected')).toBeTrue();
+    });
+
     it('should refresh selected segment before sync scroll', () => {
         const obj = document.createElement('video');
         component.mediaPlayerElement.setMediaPlayer(obj);

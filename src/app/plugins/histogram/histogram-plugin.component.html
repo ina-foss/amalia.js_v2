@@ -1,6 +1,12 @@
 <div class="histogram-container"
-     [ngClass]="{'xs': displayState==='xs', 's': displayState==='s', 'sm': displayState==='sm', 'm': displayState==='m', 'l': displayState==='l'}"
-
+     [ngClass]="{
+       'xs': displayState === 'xs',
+       's': displayState === 's',
+       'sm': displayState === 'sm',
+       'm': displayState === 'm',
+       'l': displayState === 'l'
+     }"
+     tabindex="0"
      (mouseenter)="onHistogramMouseEnter()"
      (mouseleave)="onHistogramMouseLeave()">
     <div #minimapContainer class="minimap-container">

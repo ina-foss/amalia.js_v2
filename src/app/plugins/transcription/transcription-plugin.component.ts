@@ -195,13 +195,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         const tcIn = this.pluginConfiguration?.data?.tcIn;
         this.currentTime = tcIn > 0 ? this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcIn : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        console.debug(`[MOT_A_MOT_DEBUG] handleOnTimeChange currentTime=${this.currentTime} withSubLocalisations=${this.pluginConfiguration?.data?.withSubLocalisations} mode=${this.pluginConfiguration?.data?.mode} hasTranscriptionElement=${!!this.transcriptionElement}`);
         if (Number.isFinite(this.currentTime) && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             if (this.lastSegmentTcIn !== null && this.lastSegmentTcOut !== null
                 && this.currentTime >= this.lastSegmentTcIn - karaokeTcDelta
                 && this.currentTime < this.lastSegmentTcOut) {
-                console.debug(`[MOT_A_MOT_DEBUG] handleOnTimeChange meme segment (${this.lastSegmentTcIn}-${this.lastSegmentTcOut}) -> mise a jour mot a mot uniquement`);
                 if (this.pluginConfiguration.data.mode !== 1 && this.pluginConfiguration.data.withSubLocalisations) {
                     this.disableSelectedWords();
                     this.selectWords(karaokeTcDelta);
@@ -215,8 +213,6 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.disableRemoveSelectedSegment();
             }
             this.selectSegment(karaokeTcDelta);
-        } else {
-            console.debug(`[MOT_A_MOT_DEBUG] handleOnTimeChange ignore : currentTime invalide ou transcriptionElement absent`);
         }
     }
 
@@ -292,25 +288,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private selectWords(karaokeTcDelta: number) {
         const node = this.transcriptionElement.nativeElement.querySelector('.segment.selected');
         const elementNodes = node ? Array.from(node.querySelectorAll<HTMLElement>('.w')) : [];
-        console.debug(`[MOT_A_MOT_DEBUG] selectWords segmentSelected=${!!node} nbWords=${elementNodes.length}`);
-        if (elementNodes) {
-            const filteredNodes = this.handleModeTranscription(elementNodes, karaokeTcDelta);
-            console.debug(`[MOT_A_MOT_DEBUG] selectWords nbFilteredNodes=${filteredNodes?.length ?? 0} currentTime=${this.currentTime}`);
-            if (filteredNodes && filteredNodes.length > 0) {
-                filteredNodes.forEach(n => {
-                    n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
-                    // add active to parent segment
-                    if (this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
-                        n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                    }
-                    this.handleSelectedWordsStyle(filteredNodes, karaokeTcDelta);
-                    if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
-                        && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
-                        n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                    }
-                });
-            }
+        const filteredNodes = this.handleModeTranscription(elementNodes, karaokeTcDelta);
+        if (filteredNodes.length > 0) {
+            this.handleSelectedWordsStyle(filteredNodes, karaokeTcDelta);
         }
     }
 
@@ -356,12 +336,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     private selectSegment(karaokeTcDelta: number) {
         const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
-        console.debug(`[MOT_A_MOT_DEBUG] selectSegment nbSegments=${segmentElementNodes.length} currentTime=${this.currentTime}`);
         if (segmentElementNodes) {
             const segmentFilteredNodes = segmentElementNodes
                 .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
-            console.debug(`[MOT_A_MOT_DEBUG] selectSegment nbSegmentFiltered=${segmentFilteredNodes.length} withSubLocalisations=${this.pluginConfiguration?.data?.withSubLocalisations}`);
             if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
                 this._inGap = false;
                 this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute('data-tcin'));
