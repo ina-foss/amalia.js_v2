@@ -196,6 +196,28 @@ describe('StoryboardPluginComponent', () => {
         expect(t1.classList.contains('active')).toBeTrue();
     });
 
+    it('handleSeeking should use the candidate time and cancel a pending throttled update', () => {
+        const { component, storyboard, mediaPlayer } = createComponent();
+        const cancel = jasmine.createSpy('cancel');
+        component.throttleTimeChange = { cancel };
+        component.listOfThumbnail = [0, 20, 40, 60, 80];
+        component.listOfThumbnailFilter = [20, 40];
+        component.displaySynchro = true;
+
+        const thumbnail = document.createElement('div');
+        thumbnail.className = 'thumbnail';
+        thumbnail.setAttribute('data-tc', '40');
+        storyboard.appendChild(thumbnail);
+
+        component.handleSeeking(45);
+
+        expect(cancel).toHaveBeenCalled();
+        expect(mediaPlayer.getCurrentTime).not.toHaveBeenCalled();
+        expect(component.currentTime).toBe(45);
+        expect(component.selectedTc).toBe(45);
+        expect(thumbnail.classList.contains('active')).toBeTrue();
+    });
+
     it('updateScrollForTimeCode should set parent scrollTop when index is found', () => {
         const { component, storyboard } = createComponent();
         component.listOfThumbnail = [0, 10, 20, 30];

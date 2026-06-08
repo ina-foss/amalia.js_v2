@@ -265,6 +265,38 @@ describe('TranscriptionPluginComponent', () => {
         expect(container.querySelector('.segment.selected')).toBeTruthy();
     });
 
+    it('should update the selected word while staying in the same segment', () => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(1.5);
+        component.pluginConfiguration.data.mode = 2;
+        component.pluginConfiguration.data.withSubLocalisations = true;
+        component.pluginConfiguration.data.karaokeTcDelta = 0.25;
+        (component as any).lastSegmentTcIn = 0;
+        (component as any).lastSegmentTcOut = 3;
+
+        const container = document.createElement('div');
+        container.innerHTML = `
+            <div class="segment selected" data-tcin="0" data-tcout="3">
+                <div class="subsegment">
+                    <div class="text">
+                        <span class="w activated selected" data-tcin="0" data-tcout="1">Bonjour</span>
+                        <span class="w" data-tcin="1" data-tcout="2">tout</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        component.transcriptionElement = new ElementRef(container);
+
+        component._handleOnTimeChangeForTesting();
+
+        const words = container.querySelectorAll('.w');
+        expect(words[0].classList.contains('selected')).toBeFalse();
+        expect(words[1].classList.contains('selected')).toBeTrue();
+        expect(words[1].classList.contains('activated')).toBeTrue();
+    });
+
     it('should refresh selected segment before sync scroll', () => {
         const obj = document.createElement('video');
         component.mediaPlayerElement.setMediaPlayer(obj);
@@ -508,6 +540,12 @@ describe('TranscriptionPluginComponent', () => {
     });
 
     it('scrollToSelectedSegment should reset auto flag after timeout', fakeAsync(() => {
+        const obj = document.createElement('video');
+        component.mediaPlayerElement.setMediaPlayer(obj);
+        new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+        spyOn(component.mediaPlayerElement.getMediaPlayer(), 'getCurrentTime').and.returnValue(0);
+        component.pluginConfiguration.data.mode = 2;
+
         const container = document.createElement('div');
         container.innerHTML = `<div class="segment selected" data-tcin="0" data-tcout="2"></div>`;
         component.transcriptionElement = new ElementRef(container);
