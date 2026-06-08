@@ -396,7 +396,19 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         if (!htmlElement) {
             return;
         }
-        if (this.aspectRatio && this.aspectRatio !== '') {
+        if (this.playerConfig?.player?.media === 'AUDIO') {
+            const isFullscreen = document.fullscreenElement != null;
+            const maxHeight = this.getMaxHeight(isFullscreen, htmlElement);
+            this.resetContainerSizeBeforeFullScreen();
+            htmlElement.style.width = '100%';
+            htmlElement.style.maxWidth = 'none';
+            htmlElement.style.height = this.pinned || this.pinnedControlbar
+                ? `${Math.max(0, maxHeight)}px`
+                : '100%';
+            htmlElement.style.left = '0px';
+            htmlElement.style.top = '0px';
+            htmlElement.style['object-fit'] = 'fill';
+        } else if (this.aspectRatio && this.aspectRatio !== '') {
             this.ratio = this.aspectRatio.replace(':', '-');
             const isFullscreen = document.fullscreenElement != null;
 

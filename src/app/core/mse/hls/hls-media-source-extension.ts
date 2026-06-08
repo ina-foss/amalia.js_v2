@@ -185,6 +185,7 @@ export class HLSMediaSourceExtension implements MediaSourceExtension {
 
     private handleAudioChannelChange(event) {
         this.logger.debug('handleAudioChannelChange', event);
+        this.logger.info(`[AUDIO_TRACK_DEBUG] handleAudioChannelChange appliqué sur cette instance HLS -> audioChannel=${event}`);
         this.hlsPlayer.config.fragLoadPolicy.default['audioChannel'] = event;
     }
 

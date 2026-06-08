@@ -49,6 +49,16 @@
     z-index: $amalia-default-z-index;
     margin: 0 auto 0;
 
+    &.audio-player {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      height: 100%;
+      left: 0;
+      top: 0;
+      aspect-ratio: auto;
+    }
+
     &.pinned {
       video.poster-icon {
         width: 100% !important;

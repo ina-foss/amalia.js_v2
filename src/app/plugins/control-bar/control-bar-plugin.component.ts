@@ -1673,6 +1673,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
             this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
+            this.logger.info(`[AUDIO_TRACK_DEBUG] initTracks listOfTracks=${JSON.stringify(this.listOfTracks)} selectedTrack=${this.selectedTrack}`);
         }
     }
 
@@ -1715,6 +1716,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param trackId track id
      */
     changeAudioTrack(trackId: any) {
+        this.logger.info(`[AUDIO_TRACK_DEBUG] changeAudioTrack -> trackId=${trackId}`);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.AUDIO_CHANNEL_CHANGE, trackId);
         this.selectedTrack = trackId;
         this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;

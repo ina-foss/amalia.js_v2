@@ -205,7 +205,13 @@ export class MediaElement {
      */
     setVolume(volumePercent: number, volumeSide?: string) {
         this.setVolumeSideValues(volumePercent, volumeSide);
-        this.mediaElement.volume = Math.max(this.volumeLeft, this.volumeRight) / 100;
+        // Une fois le graphe Web Audio actif, le volume est entièrement piloté par les
+        // GainNode (panLeft/panRight) dans setVolumeSideValues : ne pas aussi modifier
+        // le volume natif de l'élément, sous peine de double atténuation
+        // (ex: 0.8 natif x 0.8 gain = 0.64, soit un son perçu bien plus faible).
+        if (!this.audioContext) {
+            this.mediaElement.volume = Math.max(this.volumeLeft, this.volumeRight) / 100;
+        }
         this.logger.info(`setVolume side ${volumeSide} - volume: ${volumePercent} - volume global: ${this.mediaElement.volume}`);
     }
 
@@ -600,6 +606,12 @@ export class MediaElement {
             this.audioContext = new AudioContext();
             this.mediaElement.crossOrigin = 'anonymous';
             this.setupAudioNodes(data);
+            // Le volume bascule désormais entièrement sur les GainNode : on les aligne sur
+            // le volume courant et on neutralise le volume natif (sinon double atténuation
+            // dans setVolume, et le passage au graphe Web Audio changerait le niveau perçu).
+            this.panLeft.gain.value = this.volumeLeft / 100;
+            this.panRight.gain.value = this.volumeRight / 100;
+            this.mediaElement.volume = 1;
         }
     }
 

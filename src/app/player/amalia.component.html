@@ -10,7 +10,8 @@
     (focus)="displayControlBar(true);resetTimer();playerHover= true;"
     (blur)="displayControlBar(false);playerHover= false"
     (mousemove)="resetTimer();displayControlBar(true);focus();playerHover= true;" (load)="startTimer()"
-    (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{ratio}}" (onresize)="handleWindowResize()"
+    (contextmenu)="onContextMenu($event)" class="media-player aspect-ratio-{{ratio}}"
+    [class.audio-player]="playerConfig?.player?.media === 'AUDIO'" (onresize)="handleWindowResize()"
     [ngClass]="{'pinned' : pinned,
      'pinnedControlbar' : pinnedControlbar,
      'amalia-player-bg-color1' : posterBackgound['amalia-player-bg-color1'],

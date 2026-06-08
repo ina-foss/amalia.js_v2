@@ -212,6 +212,18 @@ describe('AmaliaComponent', () => {
         component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.FULLSCREEN_STATE_CHANGE);
         expect(mockToggleFullscreenspyOn).toHaveBeenCalled();
     });
+    it('should add the audio-player class only for audio media', () => {
+        fixture.detectChanges();
+        component.playerConfig = { player: { media: 'AUDIO' } } as any;
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.shadowRoot.querySelector('.media-player').classList).toContain('audio-player');
+
+        component.playerConfig = { player: { media: 'VIDEO' } } as any;
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.shadowRoot.querySelector('.media-player').classList).not.toContain('audio-player');
+    });
     afterEach(() => {
         fixture.destroy();
     });
@@ -511,7 +523,7 @@ describe('AmaliaComponent - targeted new code coverage', () => {
         expect(mediaPlayerElementMock.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.DOCUMENT_CLICK, { any: 'event' } as any);
     });
 
-    it('updatePlayerSizeWithAspectRatio should apply pinned sizing for audio mode', () => {
+    it('updatePlayerSizeWithAspectRatio should adapt audio height to pinned controls', () => {
         component.playerConfig = { player: { media: 'AUDIO' } } as any;
         component.aspectRatio = '16:9';
         component.pinned = true;
@@ -525,10 +537,22 @@ describe('AmaliaComponent - targeted new code coverage', () => {
 
         component.updatePlayerSizeWithAspectRatio();
 
-        expect(mediaContainer.style.width).toBe('355px');
+        expect(mediaContainer.style.width).toBe('100%');
+        expect(mediaContainer.style.maxWidth).toBe('none');
         expect(mediaContainer.style.height).toBe('200px');
-        expect(mediaContainer.style.left).toBe('72.5px');
+        expect(mediaContainer.style.left).toBe('0px');
         expect(mediaContainer.style.top).toBe('0px');
+
+        component.pinned = false;
+        component.pinnedControlbar = true;
+        component.updatePlayerSizeWithAspectRatio();
+
+        expect(mediaContainer.style.height).toBe('250px');
+
+        component.pinnedControlbar = false;
+        component.updatePlayerSizeWithAspectRatio();
+
+        expect(mediaContainer.style.height).toBe('100%');
     });
 
     it('handleFullScreenChange should use mediaContainer for audio mode', () => {

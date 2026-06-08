@@ -195,11 +195,17 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleOnTimeChange() {
         const tcIn = this.pluginConfiguration?.data?.tcIn;
         this.currentTime = tcIn > 0 ? this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcIn : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        console.debug(`[MOT_A_MOT_DEBUG] handleOnTimeChange currentTime=${this.currentTime} withSubLocalisations=${this.pluginConfiguration?.data?.withSubLocalisations} mode=${this.pluginConfiguration?.data?.mode} hasTranscriptionElement=${!!this.transcriptionElement}`);
         if (Number.isFinite(this.currentTime) && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             if (this.lastSegmentTcIn !== null && this.lastSegmentTcOut !== null
                 && this.currentTime >= this.lastSegmentTcIn - karaokeTcDelta
                 && this.currentTime < this.lastSegmentTcOut) {
+                console.debug(`[MOT_A_MOT_DEBUG] handleOnTimeChange meme segment (${this.lastSegmentTcIn}-${this.lastSegmentTcOut}) -> mise a jour mot a mot uniquement`);
+                if (this.pluginConfiguration.data.mode !== 1 && this.pluginConfiguration.data.withSubLocalisations) {
+                    this.disableSelectedWords();
+                    this.selectWords(karaokeTcDelta);
+                }
                 return;
             }
             if (this.pluginConfiguration.data.mode === 1) {
@@ -209,6 +215,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.disableRemoveSelectedSegment();
             }
             this.selectSegment(karaokeTcDelta);
+        } else {
+            console.debug(`[MOT_A_MOT_DEBUG] handleOnTimeChange ignore : currentTime invalide ou transcriptionElement absent`);
         }
     }
 
@@ -284,8 +292,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private selectWords(karaokeTcDelta: number) {
         const node = this.transcriptionElement.nativeElement.querySelector('.segment.selected');
         const elementNodes = node ? Array.from(node.querySelectorAll<HTMLElement>('.w')) : [];
+        console.debug(`[MOT_A_MOT_DEBUG] selectWords segmentSelected=${!!node} nbWords=${elementNodes.length}`);
         if (elementNodes) {
             const filteredNodes = this.handleModeTranscription(elementNodes, karaokeTcDelta);
+            console.debug(`[MOT_A_MOT_DEBUG] selectWords nbFilteredNodes=${filteredNodes?.length ?? 0} currentTime=${this.currentTime}`);
             if (filteredNodes && filteredNodes.length > 0) {
                 filteredNodes.forEach(n => {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
@@ -346,10 +356,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     private selectSegment(karaokeTcDelta: number) {
         const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+        console.debug(`[MOT_A_MOT_DEBUG] selectSegment nbSegments=${segmentElementNodes.length} currentTime=${this.currentTime}`);
         if (segmentElementNodes) {
             const segmentFilteredNodes = segmentElementNodes
                 .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
                     && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+            console.debug(`[MOT_A_MOT_DEBUG] selectSegment nbSegmentFiltered=${segmentFilteredNodes.length} withSubLocalisations=${this.pluginConfiguration?.data?.withSubLocalisations}`);
             if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
                 this._inGap = false;
                 this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute('data-tcin'));
@@ -559,13 +571,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
 
     public scrollToSelectedSegment() {
+        // Recalcule toujours la selection a partir du currentTime reel avant de chercher le noeud :
+        // un .segment.selected peut deja exister mais correspondre a une ancienne position (ex. seek
+        // declenche depuis le storyboard pas encore traite par handleOnTimeChange), ce qui ferait
+        // scroller vers le mauvais segment tout en masquant le bouton de synchronisation.
+        this.handleOnTimeChange();
         let scrollNode: HTMLElement = this.transcriptionElement.nativeElement
             .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
-        if (!scrollNode) {
-            this.handleOnTimeChange();
-            scrollNode = this.transcriptionElement.nativeElement
-                .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
-        }
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);

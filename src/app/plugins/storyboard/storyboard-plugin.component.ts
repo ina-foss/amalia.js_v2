@@ -124,6 +124,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.sizeThumbnail = this.getWindowWidth();
             this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.throttleTimeChange);
             this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeeked);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
         }
         this.handleSeeked();
     }
@@ -202,8 +203,15 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Handle seek
      */
 
-    public handleSeeked() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+    public handleSeeked(time?: number) {
+        // Annule un appel "trailing" du throttle TIME_CHANGE en attente : evite qu'un
+        // appel differe (jusqu'a 500ms) base sur une position intermediaire d'un seek
+        // precedent n'ecrase l'etat frais calcule ici, ce qui desynchronise le storyboard
+        // de la zone de visionnage apres plusieurs clics rapides sur la barre de progression.
+        this.throttleTimeChange?.cancel?.();
+        // time fourni (ex. depuis SEEKING pendant le glisse du slider) : on suit la position
+        // candidate du curseur plutot que la position reelle du media (qui ne bouge qu'au relachement).
+        this.currentTime = Number.isFinite(time) ? time : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
 
         if (this.isHandleSeekNeeded()) {
             let lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
@@ -233,6 +241,15 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             }
         }
     }
+
+    /**
+     * Suit en direct le deplacement du curseur de la barre de progression : le slider emet un
+     * SEEKING en continu pendant le glisse (le media, lui, ne bouge qu'au relachement), donc on
+     * met a jour l'imagette active sur la position candidate plutot que d'attendre le SEEKED final.
+     */
+    public handleSeeking = (time: number): void => {
+        this.handleSeeked(time);
+    };
 
     /**
      * Return start index
