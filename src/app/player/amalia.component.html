@@ -15,7 +15,7 @@
      'pinnedControlbar' : pinnedControlbar,
      'amalia-player-bg-color1' : posterBackgound['amalia-player-bg-color1'],
      'amalia-primary-color' : posterBackgound['amalia-primary-color'],
-     'amalia-secondary-color': posterBackgound['amalia-secondary-color']}" tabindex="0"
+     'amalia-secondary-color': posterBackgound[' amalia-secondary-color']}" tabindex="0"
     (click)="controlClicked($event)" (keydown.enter)="controlClicked($event)">
     <video #video *ngIf="playerConfig?.player?.media != 'PICTURE'" [hidden]="state != PlayerState.INITIALIZED"
         class="player" preload="metadata" [poster]="videoPoster"

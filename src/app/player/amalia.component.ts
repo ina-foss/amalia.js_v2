@@ -361,12 +361,15 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
 
     public handleWindowResize() {
-        if (this.mediaContainer) {
-            const mediaContainer = this.mediaContainer.nativeElement;
-            if (mediaContainer && mediaContainer.offsetWidth > 0) {
-                this.mediaPlayerElement.setMediaPlayerWidth(mediaContainer.offsetWidth);
-                this.logger.info(`Player resized !`);
-            }
+        const mediaContainer = this.mediaContainer?.nativeElement;
+        if (!mediaContainer) return;
+        const shadowRoot = mediaContainer.getRootNode();
+        const hostWidth = shadowRoot instanceof ShadowRoot
+            ? (shadowRoot.host as HTMLElement).offsetWidth
+            : mediaContainer.offsetWidth;
+        const width = hostWidth > 0 ? hostWidth : mediaContainer.offsetWidth;
+        if (width > 0) {
+            this.mediaPlayerElement.setMediaPlayerWidth(width);
         }
     }
 
@@ -389,7 +392,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
     @HostListener('window:resize')
     updatePlayerSizeWithAspectRatio() {
-        const htmlElement: HTMLElement = this.mediaPlayer?.nativeElement ?? this.photoHost?.nativeElement;
+        const htmlElement = this.getPlayerLayoutElement();
         if (!htmlElement) {
             return;
         }
@@ -442,7 +445,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param htmlElement conteneur parent de la video
      */
     private getMaxHeight = (isFullscreen: boolean, htmlElement: HTMLElement) => {
-        const maxParentHeight = !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.height : htmlElement.parentElement.offsetHeight;
+        const layoutContainer = this.getPlayerLayoutContainer(htmlElement);
+        const maxParentHeight = !isFullscreen && this.containerSizeBeforeFullScreen
+            ? this.containerSizeBeforeFullScreen.height
+            : layoutContainer.offsetHeight;
         const maxHeightWhenNotPinned = this.pinnedControlbar ? maxParentHeight - 50 : maxParentHeight;
         return this.pinned ? maxParentHeight - 100 : maxHeightWhenNotPinned;
     }
@@ -454,7 +460,26 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     private getMaxWidth = (isFullscreen: boolean, htmlElement: HTMLElement) => {
         // Quand nous sortons du mode plein écran, maxWidth est la largeur du parent(mediaContainer) de la balise video(mediaPlayer) avant sa mise en plein écran
         // sinon, maxWidth est la largeur du parent de la balise video
-        return !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.width : htmlElement.parentElement.offsetWidth;
+        const layoutContainer = this.getPlayerLayoutContainer(htmlElement);
+        return !isFullscreen && this.containerSizeBeforeFullScreen ? this.containerSizeBeforeFullScreen.width : layoutContainer.offsetWidth;
+    }
+
+    private getPlayerLayoutElement(): HTMLElement | null {
+        if (this.playerConfig?.player?.media === 'PICTURE') {
+            return this.photoHost?.nativeElement ?? null;
+        }
+        if (this.playerConfig?.player?.media === 'AUDIO') {
+            return this.mediaContainer?.nativeElement ?? null;
+        }
+        return this.mediaPlayer?.nativeElement ?? null;
+    }
+
+    private getPlayerLayoutContainer(htmlElement: HTMLElement): HTMLElement {
+        const rootNode = htmlElement.getRootNode();
+        const hostElement = rootNode instanceof ShadowRoot ? rootNode.host : null;
+        return htmlElement.parentElement
+            ?? (hostElement instanceof HTMLElement ? hostElement : null)
+            ?? htmlElement;
     }
 
     /**
@@ -665,7 +690,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                     if (typeof (blob) !== 'undefined') {
                         this.thumbnailBlobVideo = blob;
                     }
-                });
+                }).catch((err) => this.logger.warn('Thumbnail load failed', err));
             }
         }
     }
@@ -740,8 +765,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
 
         // In picture mode the video element is hidden, so offsetParent returns null.
         // Fall back to mediaContainer which is the equivalent starting point.
-        const isPictureMode = this.playerConfig?.player?.media === 'PICTURE';
-        const element = (isPictureMode
+        const useContainerAsFullscreenRoot = this.playerConfig?.player?.media === 'PICTURE'
+            || this.playerConfig?.player?.media === 'AUDIO';
+        const element = (useContainerAsFullscreenRoot
             ? this.mediaContainer.nativeElement
             : this.mediaPlayer.nativeElement.offsetParent) as HTMLElement;
         if (element) {
@@ -895,7 +921,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             const dif = 250 - Number(time);
             const r = Math.max(250, dif);
             setTimeout(() => this.loopImages(tc), r);
-        });
+        }).catch((err) => this.logger.warn('loopImages failed', err));
     }
 
 

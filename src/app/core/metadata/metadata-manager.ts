@@ -89,7 +89,7 @@ export class MetadataManager {
     public async loadDataSourceForPlugin(plugin: string): Promise<any> {
         return await new Promise<any>((resolve, reject) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
-            console.log('[AMALIA] loadDataSourceForPlugin:', plugin, 'dataSources count:', dataSources?.length || 0);
+            this.logger.debug(`[AMALIA] loadDataSourceForPlugin: ${plugin} dataSources count: ${dataSources?.length || 0}`);
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
                 this.toLoadData = 0;
                 dataSources.forEach(dataSource => {

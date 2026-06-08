@@ -139,8 +139,16 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
             this.init();
         }
         //The TIME_BAR and CONTROL_BAR plugins need this
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.INIT, this.init);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.INIT, this.refreshAndInit);
     }
+
+    private refreshAndInit = (): void => {
+        const fresh = this.playerService.get(this.playerId);
+        if (fresh && fresh !== this.mediaPlayerElement) {
+            this.mediaPlayerElement = fresh;
+        }
+        this.init();
+    };
 
     addListener(element: any, playerEventType: PlayerEventType, func: any) {
         Utils.addListener(this, element, playerEventType, func);

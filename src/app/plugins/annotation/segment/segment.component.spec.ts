@@ -11,6 +11,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TcFormatPipe } from 'src/app/core/utils/tc-format.pipe';
 import { Subject } from 'rxjs';
+import { FormatUtils } from '../../../core/utils/format-utils';
+import { ShortcutEvent } from '../../../core/config/model/shortcuts-event';
 
 const createMockFormControl = (initialValue: string = '') => {
     const valueChanges = new Subject<string>();
@@ -832,5 +834,240 @@ describe('SegmentComponent', () => {
 
             expect(emitSpy).toHaveBeenCalledWith({ type: 'validate', payload: component.segment });
         }));
+    });
+
+    describe('Additional branch coverage', () => {
+        it('should validate every timecode boundary and report format errors', () => {
+            const snackBarSpy = spyOn(component, 'displaySnackBar');
+            component.segment.tcOffset = 5;
+            component.segment.data.tcMax = 30;
+            component.tcInFormatted = '00:00:10:00';
+            component.tcOutFormatted = '00:00:20:00';
+
+            expect(component.tcValidators('tcIn', '00:00:10:00')).toBe('00:00:10:00');
+            expect(component.tcValidators('tcIn', '00:00:25:00', true).error).toBeTrue();
+            expect(component.tcValidators('tcIn', '00:00:02:00', true).error).toBeTrue();
+            component.tcOutFormatted = '00:00:40:00';
+            expect(component.tcValidators('tcIn', '00:00:35:00', true).error).toBeTrue();
+
+            component.tcInFormatted = '00:00:10:00';
+            expect(component.tcValidators('tcOut', '00:00:05:00', true).error).toBeTrue();
+            expect(component.tcValidators('tcOut', '00:00:35:00', true).error).toBeTrue();
+            component.segment.tcOffset = 15;
+            expect(component.tcValidators('tcOut', '00:00:12:00', true).error).toBeTrue();
+
+            component.segment.tcOffset = 5;
+            expect(component.tcValidators('tc', '00:00:20:00')).toBe('00:00:20:00');
+            expect(component.tcValidators('tc', '00:00:26:00', true).error).toBeTrue();
+            expect(component.tcValidators('tc', 'invalid', true).formatError).toBeTrue();
+            expect(snackBarSpy).toHaveBeenCalled();
+        });
+
+        it('should handle missing controls and unbounded tcMax', () => {
+            component.segment.data.tcMax = 0;
+            component.segmentForm = {
+                form: {
+                    controls: {},
+                    valid: false
+                }
+            } as unknown as NgForm;
+
+            expect(() => component.doCheckTcIn()).not.toThrow();
+            expect(() => component.doCheckTcOut()).not.toThrow();
+            expect(() => component.doCheckTc()).not.toThrow();
+            expect(() => component.resetTcInFormControlErrors()).not.toThrow();
+            expect(() => component.resetTcOutFormControlErrors()).not.toThrow();
+            expect(component.tcValidators('tc', 'invalid').formatError).toBeTrue();
+        });
+
+        it('should cover all post-validation update paths', () => {
+            const conversionSpy = spyOn(FormatUtils, 'convertFormattedTcToSeconds');
+            const setTcSpy = spyOn(component, 'setTc');
+            const resetInSpy = spyOn(component, 'resetTcInFormControlErrors');
+            const resetOutSpy = spyOn(component, 'resetTcOutFormControlErrors');
+
+            conversionSpy.and.returnValue(-1);
+            component.afterTcInValidation('00:00:01:00');
+            component.afterTcOutValidation('00:00:01:00');
+            component.afterTcValidation('00:00:01:00');
+            expect(setTcSpy).not.toHaveBeenCalled();
+
+            conversionSpy.and.returnValue(12);
+            component.afterTcInValidation({ value: '00:00:12:00', error: true });
+            expect(component.segment.tcIn).toBe(12);
+            expect(resetOutSpy).toHaveBeenCalled();
+
+            component.afterTcOutValidation({ value: '00:00:12:00', error: true });
+            expect(component.segment.tcOut).toBe(12);
+            expect(resetInSpy).toHaveBeenCalled();
+
+            component.setTcInvoked = false;
+            component.segment.tcIn = 4;
+            component.afterTcValidation('00:00:12:00');
+            expect(component.segment.tcOut).toBe(16);
+
+            component.setTcInvoked = true;
+            component.afterTcValidation({ formatError: true });
+            expect(component.setTcInvoked).toBeFalse();
+        });
+
+        it('should validate category, keyword, title and description subscriptions', fakeAsync(() => {
+            const categoriesChanges = new Subject<string>();
+            const keywordsChanges = new Subject<string>();
+            const titleChanges = new Subject<string>();
+            const descriptionChanges = new Subject<string>();
+            const categoriesControl = {
+                valueChanges: categoriesChanges.asObservable(),
+                setErrors: jasmine.createSpy('categoriesSetErrors')
+            };
+            const keywordsControl = {
+                valueChanges: keywordsChanges.asObservable(),
+                setErrors: jasmine.createSpy('keywordsSetErrors')
+            };
+            const titleControl = {
+                valueChanges: titleChanges.asObservable(),
+                setErrors: jasmine.createSpy('titleSetErrors')
+            };
+            const descriptionControl = {
+                valueChanges: descriptionChanges.asObservable(),
+                setErrors: jasmine.createSpy('descriptionSetErrors')
+            };
+            component.segmentForm = {
+                form: {
+                    controls: {
+                        categories: categoriesControl,
+                        keywords: keywordsControl,
+                        title: titleControl,
+                        description: descriptionControl
+                    }
+                }
+            } as unknown as NgForm;
+
+            (component as any).activateCategoriesEdition();
+            (component as any).activateKeywordsEdition();
+            (component as any).activateTitleEdition();
+            (component as any).activateDescriptionEdition();
+
+            component.categories.set(Array.from({ length: 11 }, (_, index) => `cat-${index}`));
+            component.keywords.set(Array.from({ length: 11 }, (_, index) => `keyword-${index}`));
+            categoriesChanges.next('');
+            keywordsChanges.next('');
+            tick(100);
+            expect(categoriesControl.setErrors).toHaveBeenCalledWith({ invalid: true });
+            expect(keywordsControl.setErrors).toHaveBeenCalledWith({ invalid: true });
+
+            component.categories.set(['cat']);
+            component.keywords.set(['keyword']);
+            categoriesChanges.next('');
+            keywordsChanges.next('');
+            tick(100);
+            expect(categoriesControl.setErrors).toHaveBeenCalledWith(null);
+            expect(keywordsControl.setErrors).toHaveBeenCalledWith(null);
+
+            titleChanges.next('x'.repeat(251));
+            titleChanges.next('valid');
+            descriptionChanges.next('x'.repeat(1001));
+            descriptionChanges.next('valid');
+            expect(titleControl.setErrors).toHaveBeenCalledWith({ Error: true });
+            expect(titleControl.setErrors).toHaveBeenCalledWith(null);
+            expect(descriptionControl.setErrors).toHaveBeenCalledWith({ Error: true });
+            expect(descriptionControl.setErrors).toHaveBeenCalledWith(null);
+        }));
+
+        it('should compute responsive timecode wrapping in both layouts', () => {
+            const tcIn = document.createElement('input');
+            const tcOut = document.createElement('input');
+            const tc = document.createElement('input');
+            const container = document.createElement('div');
+            component.tcInInputRef = new ElementRef(tcIn);
+            component.tcOutInputRef = new ElementRef(tcOut);
+            component.tcInputRef = new ElementRef(tc);
+            component.segmentTcRef = new ElementRef(container);
+
+            Object.defineProperty(tcIn, 'scrollWidth', { configurable: true, value: 200 });
+            Object.defineProperty(tcIn, 'clientWidth', { configurable: true, value: 100 });
+            component.updateTcsDisplay();
+            expect(component.editableSegmentTcWrap).toBeTrue();
+
+            Object.defineProperty(tcIn, 'scrollWidth', { configurable: true, value: 50 });
+            Object.defineProperty(tcIn, 'clientWidth', { configurable: true, value: 100 });
+            Object.defineProperty(container, 'offsetWidth', { configurable: true, value: 1000 });
+            spyOn(component, 'calculateTextWidth').and.returnValue(10);
+            component.updateTcsDisplay();
+            expect(component.editableSegmentTcWrap).toBeFalse();
+
+            Object.defineProperty(container, 'offsetWidth', { configurable: true, value: 20 });
+            component.updateTcsDisplay();
+            expect(component.editableSegmentTcWrap).toBeTrue();
+        });
+
+        it('should truncate overflowing category chips and keep fitting chips visible', () => {
+            const host = document.createElement('div');
+            const group = document.createElement('div');
+            group.className = component.readonlyCategoriesClassName;
+            const first = document.createElement('p-chip');
+            const second = document.createElement('p-chip');
+            const summary = document.createElement('p-chip');
+            summary.id = component.hiddenCategoriesSummaryChipId;
+            group.append(first, second, summary);
+            host.appendChild(group);
+            Object.defineProperty(host, 'offsetWidth', { configurable: true, value: 120 });
+            Object.defineProperty(first, 'offsetWidth', { configurable: true, value: 80 });
+            Object.defineProperty(second, 'offsetWidth', { configurable: true, value: 80 });
+            Object.defineProperty(summary, 'offsetWidth', { configurable: true, value: 20 });
+
+            const hidden = (component as any).updateDisplay(
+                new ElementRef(host),
+                component.readonlyCategoriesClassName,
+                component.hiddenCategoriesSummaryChipId
+            );
+
+            expect(hidden).toBe(2);
+            expect(first.style.display).toBe('none');
+            expect(second.style.display).toBe('none');
+            expect(summary.style.display).toBe('inline-block');
+        });
+
+        it('should route only annotation shortcuts and cover modifier guards', () => {
+            const validateSpy = spyOn(component, 'validateNewSegment');
+            const cancelSpy = spyOn(component, 'cancelNewSegmentCreation');
+            const baseShortcut = {
+                key: 'enter',
+                ctrl: false,
+                shift: false,
+                alt: false,
+                meta: false
+            };
+            const event = (shortcut: Partial<typeof baseShortcut>, targets = ['ANNOTATIONS']): ShortcutEvent => ({
+                shortcut: { ...baseShortcut, ...shortcut },
+                targets: targets as ShortcutEvent['targets']
+            });
+
+            component.segment.data.selected = false;
+            component.handleShortcuts(event({}));
+            component.segment.data.selected = true;
+            component.handleShortcuts(event({}, ['CONTROL_BAR']));
+            component.handleShortcuts(event({ key: 'x' }));
+            component.handleShortcuts(event({ ctrl: true }));
+            component.handleShortcuts(event({ key: 's', ctrl: false }));
+            component.handleShortcuts(event({ shift: true }));
+            component.handleShortcuts(event({ alt: true }));
+            component.handleShortcuts(event({ meta: true }));
+            expect(validateSpy).not.toHaveBeenCalled();
+
+            component.handleShortcuts(event({}));
+            component.handleShortcuts(event({ key: 's', ctrl: true }));
+            expect(validateSpy).toHaveBeenCalledTimes(2);
+
+            component.segment.data.isTitleEditing = true;
+            component.handleShortcuts(event({ key: 'escape', ctrl: true }));
+            component.handleShortcuts(event({ key: 'escape', shift: true }));
+            component.handleShortcuts(event({ key: 'escape', alt: true }));
+            component.handleShortcuts(event({ key: 'escape', meta: true }));
+            expect(cancelSpy).not.toHaveBeenCalled();
+
+            component.handleShortcuts(event({ key: 'escape' }));
+            expect(cancelSpy).toHaveBeenCalled();
+        });
     });
 });

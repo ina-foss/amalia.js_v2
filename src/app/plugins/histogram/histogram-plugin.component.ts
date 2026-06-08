@@ -4,6 +4,7 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
+    HostBinding,
     OnInit,
     ViewChild,
     ViewEncapsulation
@@ -66,10 +67,18 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @ViewChild('minimapHitArea')
     public minimapHitArea!: ElementRef<HTMLElement>;
 
+    @HostBinding('style.--amalia-histogram-bottom-inset')
+    public histogramBottomInset = '0px';
+
     public pinned = false;
     public pinnedControlbar = false;
+    public displayState: string = 'l';
     private resizeDebounce: any = null;
+    private pendingTimeouts = new Set<ReturnType<typeof setTimeout>>();
+    private destroyed = false;
     private waveformResizeObserver: ResizeObserver | null = null;
+    private controlBarResizeObserver: ResizeObserver | null = null;
+    private observedControlBar: HTMLElement | null = null;
     private timelineScrollUnsubscribes: Array<() => void> = [];
     private minimapViewportDragCleanup: (() => void) | null = null;
     private lastAppliedWaveformHeight = 0;
@@ -83,7 +92,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     public override logger: DefaultLogger;
 
-    constructor(playerService: MediaPlayerService, private cd: ChangeDetectorRef) {
+    constructor(
+        playerService: MediaPlayerService,
+        private cd: ChangeDetectorRef,
+        private hostElement: ElementRef<HTMLElement>
+    ) {
         super(playerService);
         this.pluginName = HistogramPluginComponent.PLUGIN_NAME;
     }
@@ -102,6 +115,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     ngAfterViewInit(): void {
+        this.scheduleTimeout(() => {
+            this.attachControlBarResizeObserver();
+            this.syncBottomInsetIfNeeded();
+        });
         const config = this.mediaPlayerElement?.getConfiguration();
         if (config && config.loadMetadataOnDemand) {
             this.handleMetadataLoaded();
@@ -121,6 +138,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.START_SEEKING, this.handleStartSeeking);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.CONTROL_BAR_TOGGLED, this.handleControlBarToggled);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handlePlayerResized);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
+        this.displayState = this.mediaPlayerElement.getDisplayState() ?? 'l';
         // If metadata are already loaded by the time this plugin is created
         // (typical lazy-load via `loadDataSourceForPlugin('histogram')` resolved
         // before insertion), render immediately. Otherwise we rely on the
@@ -300,6 +322,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 minimapPlugin.miniWavesurfer.getCurrentTime = overriddenGetCurrentTime;
                 minimapPlugin.miniWavesurfer.seekTo = overriddenSeekTo;
             }
+            const currentTime = this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime() ?? 0;
+            if (!isNaN(currentTime)) {
+                this.renderVisualProgress(currentTime);
+            }
         });
         this.lastAppliedWaveformHeight = waveformHeight;
         this.attachWaveformResizeObserver();
@@ -360,9 +386,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             this.timelineContainer.nativeElement.scrollLeft = scrollLeft;
         };
         this.timelineScrollUnsubscribes.push(this.wavesurfer.on('scroll', (_visibleStartTime, _visibleEndTime, scrollLeft) => sync(scrollLeft)));
-        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('redraw', () => setTimeout(() => sync(), 0)));
-        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('zoom', () => setTimeout(() => sync(), 0)));
-        setTimeout(() => sync(), 0);
+        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('redraw', () => this.scheduleTimeout(sync)));
+        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('zoom', () => this.scheduleTimeout(sync)));
+        this.scheduleTimeout(sync);
     }
 
     private detachTimelineScrollSync(): void {
@@ -382,23 +408,29 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     private scheduleWaveformSizeSync(): void {
-        clearTimeout(this.resizeDebounce);
-        this.resizeDebounce = setTimeout(() => this.syncWaveformSize(), HistogramPluginComponent.RERENDER_DEBOUNCE_MS);
+        this.cancelTimeout(this.resizeDebounce);
+        this.resizeDebounce = this.scheduleTimeout(
+            () => this.syncWaveformSize(),
+            HistogramPluginComponent.RERENDER_DEBOUNCE_MS
+        );
     }
 
     private syncWaveformSize(): void {
         if (!this.wavesurfer) {
             return;
         }
+        this.waveformResizeObserver?.disconnect();
         const splitChannels = this.getConfiguredSplitChannels();
         const waveformHeight = this.getWaveformChannelHeight(splitChannels);
         if (waveformHeight === this.lastAppliedWaveformHeight) {
+            this.attachWaveformResizeObserver();
             return;
         }
         this.lastAppliedWaveformHeight = waveformHeight;
         this.wavesurfer.setOptions({height: waveformHeight, fillParent: true});
         const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.renderVisualProgress(currentTime);
+        this.scheduleTimeout(() => this.attachWaveformResizeObserver());
     }
 
     private lastRenderedTime = -1;
@@ -614,8 +646,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         }
 
         this.duration = newDuration;
-        clearTimeout(this.resizeDebounce);
-        this.resizeDebounce = setTimeout(() => {
+        this.cancelTimeout(this.resizeDebounce);
+        this.resizeDebounce = this.scheduleTimeout(() => {
             if (this.wavesurfer) {
                 this.wavesurfer.setOptions({duration: this.duration});
             } else if (this.peaks) {
@@ -635,16 +667,97 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.renderVisualProgress(time);
     };
 
+    private handleControlBarToggled = (): void => {
+        this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
+    };
+
+    private handlePlayerResized = (): void => {
+        this.displayState = this.mediaPlayerElement.getDisplayState() ?? 'l';
+        this.scheduleWaveformSizeSync();
+        this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
+    };
+
+    private handlePinnedControlbarChange = (enabled: boolean): void => {
+        this.pinnedControlbar = !!enabled;
+        this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
+        this.scheduleTimeout(() => this.syncBottomInsetIfNeeded(), 150);
+    };
+
+    private handlePinnedSliderChange = (enabled: boolean): void => {
+        this.pinned = !!enabled;
+        this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
+    };
+
     public onHistogramMouseEnter(): void {
-        setTimeout(() => this.syncBottomInsetIfNeeded(), 0);
+        this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
     }
 
     public onHistogramMouseLeave(): void {
-        setTimeout(() => this.syncBottomInsetIfNeeded(), 0);
+        this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
+    }
+
+    private scheduleTimeout(callback: () => void, delay = 0): ReturnType<typeof setTimeout> {
+        const timeout = setTimeout(() => {
+            this.pendingTimeouts.delete(timeout);
+            if (!this.destroyed) {
+                callback();
+            }
+        }, delay);
+        this.pendingTimeouts.add(timeout);
+        return timeout;
+    }
+
+    private cancelTimeout(timeout: ReturnType<typeof setTimeout> | null): void {
+        if (timeout === null) {
+            return;
+        }
+        clearTimeout(timeout);
+        this.pendingTimeouts.delete(timeout);
     }
 
     private syncBottomInsetIfNeeded(): void {
-        // Subclasses or future implementations can override this.
+        const controlBarElement = this.getControlBarElement();
+        const nextBottomInset = (controlBarElement && this.pinnedControlbar)
+            ? `${Math.max(0, Math.ceil(controlBarElement.getBoundingClientRect().height || 0))}px`
+            : '0px';
+        if (this.histogramBottomInset === nextBottomInset) {
+            return;
+        }
+        this.histogramBottomInset = nextBottomInset;
+        this.scheduleWaveformSizeSync();
+    }
+
+    private attachControlBarResizeObserver(): void {
+        const controlBarElement = this.getControlBarElement();
+        if (!controlBarElement || typeof ResizeObserver !== 'function' || this.observedControlBar === controlBarElement) {
+            return;
+        }
+        this.controlBarResizeObserver?.disconnect();
+        this.controlBarResizeObserver = new ResizeObserver(() => this.syncBottomInsetIfNeeded());
+        this.controlBarResizeObserver.observe(controlBarElement);
+        this.observedControlBar = controlBarElement;
+    }
+
+    private getControlBarElement(): HTMLElement | null {
+        let node: Node = this.hostElement.nativeElement;
+        while (node) {
+            const root = node.getRootNode();
+            if (root instanceof ShadowRoot) {
+                const found = root.querySelector('amalia-control-bar');
+                if (found) return found as HTMLElement;
+                // Remonter au host du shadow root pour chercher dans le DOM parent
+                const host = root.host;
+                const parent = host?.parentElement;
+                if (parent) {
+                    const foundInParent = parent.querySelector('amalia-control-bar');
+                    if (foundInParent) return foundInParent as HTMLElement;
+                }
+                node = host;
+            } else {
+                return (root as Document | DocumentFragment).querySelector?.('amalia-control-bar') as HTMLElement | null ?? null;
+            }
+        }
+        return null;
     }
 
     public onResize(): void {
@@ -652,7 +765,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     override ngOnDestroy(): void {
-        clearTimeout(this.resizeDebounce);
+        this.destroyed = true;
+        this.pendingTimeouts.forEach(timeout => clearTimeout(timeout));
+        this.pendingTimeouts.clear();
+        this.resizeDebounce = null;
+        this.controlBarResizeObserver?.disconnect();
+        this.controlBarResizeObserver = null;
+        this.observedControlBar = null;
         this.destroyWavesurfer();
         super.ngOnDestroy();
     }

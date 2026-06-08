@@ -1,6 +1,6 @@
 <div class="histogram-container"
-     [ngClass]="{'pinned': pinned, 'pinnedControlbar': pinnedControlbar}"
-     tabindex="0"
+     [ngClass]="{'xs': displayState==='xs', 's': displayState==='s', 'sm': displayState==='sm', 'm': displayState==='m', 'l': displayState==='l'}"
+
      (mouseenter)="onHistogramMouseEnter()"
      (mouseleave)="onHistogramMouseLeave()">
     <div #minimapContainer class="minimap-container">

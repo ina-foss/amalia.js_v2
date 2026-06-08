@@ -20,6 +20,7 @@ import { DefaultMetadataConverter } from '../../core/metadata/converter/default-
 import { ElementRef } from '@angular/core';
 import { FormatUtils } from 'src/app/core/utils/format-utils';
 import { Utils } from 'src/app/core/utils/utils';
+import { LABEL } from '../../core/constant/labels';
 
 describe('TimeBar plugin test', () => {
     let injector: TestBed;
@@ -122,6 +123,74 @@ describe('TimeBar plugin test', () => {
             150,
             200
         );
+    });
+
+    it('applies offsets, first timecode and inside hour configuration', () => {
+        const playerService = new MediaPlayerService();
+        const plugin = new TimeBarPluginComponent(playerService);
+        const mediaPlayer = {
+            getCurrentTime: () => 5,
+            getDuration: () => 100
+        };
+        const mediaPlayerElement = {
+            eventEmitter: new EventEmitter(),
+            getConfiguration: () => ({ tcOffset: 10, player: { framerate: 30 } }),
+            getDisplayState: () => 's',
+            getMediaPlayer: () => mediaPlayer,
+            getPluginConfiguration: () => null
+        } as unknown as MediaPlayerElement;
+
+        plugin.playerId = 'PLAYER';
+        plugin.pluginInstance = 'PLAYER';
+        plugin.mediaPlayerElement = mediaPlayerElement;
+        plugin.logger = new DefaultLogger();
+        plugin.pluginConfiguration = {
+            name: 'TIME_BAR',
+            data: { timeFormat: 'hours', theme: 'inside', first_tc: 2 }
+        };
+
+        plugin.init();
+
+        expect(plugin.displayFormat).toBe('hours');
+        expect(plugin.labelTcIn).toBe(LABEL.START_HOUR);
+        expect(plugin.labelTcOut).toBe(LABEL.END_HOUR);
+        expect(Number(plugin.fps)).toBe(30);
+
+        plugin.showTimeBar();
+        expect(plugin.active).toBeFalse();
+
+        plugin.handleOnTimeChange();
+        expect(plugin.timeTimeBar).toBe(17);
+
+        plugin.handleOnDurationChange();
+        expect(plugin.startTc).toBe(12);
+        expect(plugin.timeTimeBar).toBe(17);
+        expect(plugin.durationTimeBar).toBe(112);
+
+        plugin.handleOnSeeking(3);
+        expect(plugin.timeTimeBar).toBe(15);
+    });
+
+    it('falls back to the default time format', () => {
+        const plugin = new TimeBarPluginComponent(new MediaPlayerService());
+        plugin.mediaPlayerElement = {
+            eventEmitter: new EventEmitter(),
+            getConfiguration: () => ({ tcOffset: 0, player: {} }),
+            getDisplayState: () => 'm',
+            getPluginConfiguration: () => null
+        } as unknown as MediaPlayerElement;
+        plugin.logger = new DefaultLogger();
+        plugin.pluginConfiguration = {
+            name: 'TIME_BAR',
+            data: { timeFormat: null, theme: 'outside' }
+        };
+
+        plugin.init();
+
+        expect(plugin.displayFormat).toBe('f');
+        expect(plugin.labelTcIn).toBe(LABEL.START_TC);
+        expect(plugin.labelTcOut).toBe(LABEL.END_TC);
+        expect(Number(plugin.fps)).toBe(25);
     });
 
 });

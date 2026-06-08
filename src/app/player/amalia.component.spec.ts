@@ -417,6 +417,7 @@ describe('AmaliaComponent - targeted new code coverage', () => {
             setPicturePlayer: jasmine.createSpy('setPicturePlayer'),
             setMediaPlayer: jasmine.createSpy('setMediaPlayer'),
             setMediaPlayerWidth: jasmine.createSpy('setMediaPlayerWidth'),
+            toggleFullscreen: jasmine.createSpy('toggleFullscreen'),
             getThumbnailUrl: jasmine.createSpy('getThumbnailUrl').and.returnValue('/thumb.jpg'),
             getMediaPlayer: jasmine.createSpy('getMediaPlayer').and.returnValue({
                 framerate: 25,
@@ -508,6 +509,39 @@ describe('AmaliaComponent - targeted new code coverage', () => {
         expect(component.aspectRatio).toBe('4:3');
         expect(resizeSpy).toHaveBeenCalled();
         expect(mediaPlayerElementMock.eventEmitter.emit).toHaveBeenCalledWith(PlayerEventType.DOCUMENT_CLICK, { any: 'event' } as any);
+    });
+
+    it('updatePlayerSizeWithAspectRatio should apply pinned sizing for audio mode', () => {
+        component.playerConfig = { player: { media: 'AUDIO' } } as any;
+        component.aspectRatio = '16:9';
+        component.pinned = true;
+
+        const host = document.createElement('div');
+        const mediaContainer = document.createElement('div');
+        host.appendChild(mediaContainer);
+        Object.defineProperty(host, 'offsetWidth', { configurable: true, value: 500 });
+        Object.defineProperty(host, 'offsetHeight', { configurable: true, value: 300 });
+        component.mediaContainer = { nativeElement: mediaContainer } as any;
+
+        component.updatePlayerSizeWithAspectRatio();
+
+        expect(mediaContainer.style.width).toBe('355px');
+        expect(mediaContainer.style.height).toBe('200px');
+        expect(mediaContainer.style.left).toBe('72.5px');
+        expect(mediaContainer.style.top).toBe('0px');
+    });
+
+    it('handleFullScreenChange should use mediaContainer for audio mode', () => {
+        component.playerConfig = { player: { media: 'AUDIO' } } as any;
+        (component as any).mediaPlayerElement = mediaPlayerElementMock;
+        const mediaContainer = document.createElement('div');
+        Object.defineProperty(mediaContainer, 'offsetWidth', { configurable: true, value: 400 });
+        Object.defineProperty(mediaContainer, 'offsetHeight', { configurable: true, value: 300 });
+        component.mediaContainer = { nativeElement: mediaContainer } as any;
+
+        (component as any).handleFullScreenChange();
+
+        expect((component as any).mediaPlayerElement.toggleFullscreen).toHaveBeenCalledWith(mediaContainer);
     });
 
     it('emitKeyDownEvent should append additional keys to listKeys', () => {

@@ -33,6 +33,10 @@ export class ConfigurationManager {
                     this.configData = config;
                     if (!config.pluginsConfiguration) {
                         this.configData.pluginsConfiguration = new Map<string, PluginConfigData<any>>();
+                    } else if (!(config.pluginsConfiguration instanceof Map)) {
+                        this.configData.pluginsConfiguration = new Map<string, PluginConfigData<any>>(
+                            Object.entries(config.pluginsConfiguration)
+                        );
                     }
                     this.logger.info('Config loaded', config);
                     resolve(true);
@@ -57,7 +61,14 @@ export class ConfigurationManager {
      * @param config plugin configuration
      */
     addPluginConfiguration(name: string, config: PluginConfigData<any>) {
-        this.configData.pluginsConfiguration.set(name, config);
+        if (this.configData.pluginsConfiguration instanceof Map) {
+            this.configData.pluginsConfiguration.set(name, config);
+        } else {
+            this.configData.pluginsConfiguration = new Map<string, PluginConfigData<any>>(
+                Object.entries(this.configData.pluginsConfiguration ?? {})
+            );
+            this.configData.pluginsConfiguration.set(name, config);
+        }
     }
 
     /**
@@ -66,8 +77,12 @@ export class ConfigurationManager {
      * @throws AmaliaException if plugin don't contain config
      */
     getPluginConfiguration(name: string): PluginConfigData<any> {
-        if (this.configData.pluginsConfiguration.hasOwnProperty(name)) {
-            return this.configData.pluginsConfiguration[name];
+        const pluginsConfiguration = this.configData.pluginsConfiguration;
+        if (pluginsConfiguration instanceof Map && pluginsConfiguration.has(name)) {
+            return pluginsConfiguration.get(name);
+        }
+        if (pluginsConfiguration && Object.prototype.hasOwnProperty.call(pluginsConfiguration, name)) {
+            return pluginsConfiguration[name];
         } else {
             throw new AmaliaException(`Error to get configuration for plugin ${name}.`);
         }

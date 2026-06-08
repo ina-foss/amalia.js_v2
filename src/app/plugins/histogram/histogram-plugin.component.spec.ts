@@ -234,6 +234,31 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         expect(ee.listenerCount(PlayerEventType.TIME_CHANGE)).toBeLessThan(before);
     });
 
+    it('should reserve the control bar height as histogram bottom inset', () => {
+        const controlBar = document.createElement('div');
+        spyOn(controlBar, 'getBoundingClientRect').and.returnValue({height: 63} as DOMRect);
+        spyOn<any>(component, 'getControlBarElement').and.returnValue(controlBar);
+        component.pinnedControlbar = true;
+
+        (component as any).syncBottomInsetIfNeeded();
+
+        expect(component.histogramBottomInset).toBe('63px');
+    });
+
+    it('should refresh histogram inset when the control bar toggles', fakeAsync(() => {
+        const syncSpy = spyOn<any>(component, 'syncBottomInsetIfNeeded');
+        spyOn(component.playerService, 'get').and.returnValue(mediaPlayerElement);
+
+        component.ngOnInit();
+        mediaPlayerElement.eventEmitter.emit(PlayerEventType.CONTROL_BAR_TOGGLED, {
+            pinnedControlbar: true,
+            pinnedTimeBar: false
+        });
+        tick();
+
+        expect(syncSpy).toHaveBeenCalled();
+    }));
+
     it('should sync wavesurfer time on TIME_CHANGE', () => {
         registerPeaksMetadata(mediaPlayerElement, [1], [-1]);
         fakeMedia.getCurrentTime.and.returnValue(42);

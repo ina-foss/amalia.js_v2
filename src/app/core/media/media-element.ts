@@ -524,7 +524,6 @@ export class MediaElement {
      */
 
     private handleTimeupdate() {
-        this.logger.debug('handleTimeupdate');
         this.eventEmitter.emit(PlayerEventType.TIME_CHANGE);
     }
 

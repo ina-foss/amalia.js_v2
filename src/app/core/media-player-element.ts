@@ -421,7 +421,6 @@ export class MediaPlayerElement {
      */
     public setMediaPlayerWidth(width) {
         this.width = width;
-        this.logger.info('Player width : ' + this.width);
         if (this.picturePlayer && width > 0) {
             const hostHeight = this.getPictureHostSize(this._picturePlayerHost)?.height ?? null;
             this.picturePlayer.setDisplayState(this.getDisplayState(), width, hostHeight);

@@ -4,12 +4,13 @@ import {LoggerInterface} from '../../logger/logger-interface';
 import {AmaliaException} from '../../exception/amalia-exception';
 import {Loader} from '../../loader/loader';
 import {Converter} from '../../converter/converter';
+import {firstValueFrom} from 'rxjs';
 
 /**
  * In charge to load amalia config from specified url
  */
 export class HttpConfigLoader implements Loader<ConfigData> {
-    private converter: Converter<ConfigData>;
+    private readonly converter: Converter<ConfigData>;
     private readonly httpClient: HttpClient;
     private readonly logger: LoggerInterface;
 
@@ -27,21 +28,14 @@ export class HttpConfigLoader implements Loader<ConfigData> {
      * @param url configuration url
      */
     load(url: any): Promise<ConfigData> {
-        return new Promise<ConfigData>((resolve, reject) => {
-            this.httpClient.get(url)
-                    .toPromise()
-                    .then(
-                            res => {
-                                this.logger.info('Config loaded', res);
-                                resolve(this.converter.convert(res));
-                            },
-                            error => {
-                                this.logger.info('Config loaded', error);
-                                reject('ERROR_LOAD_HTTP');
-                            })
-                    .catch(() => {
-                        reject('ERROR_LOAD_HTTP');
-                    });
-        });
+        return firstValueFrom(this.httpClient.get(url))
+            .then(res => {
+                this.logger.info('Config loaded', res);
+                return this.converter.convert(res);
+            })
+            .catch(error => {
+                this.logger.info('Config load error', error);
+                throw new Error('ERROR_LOAD_HTTP');
+            });
     }
 }

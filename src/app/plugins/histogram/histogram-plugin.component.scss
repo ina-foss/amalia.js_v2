@@ -23,13 +23,7 @@
     outline: none;
     overflow: hidden;
 
-    &.pinned {
-      height: $amalia-plugin-histogram-pinned;
-    }
 
-    &.pinnedControlbar {
-      height: $amalia-plugin-histogram-pinned-control-bar;
-    }
 
     .wavesurfer-container {
       width: 100%;
@@ -56,7 +50,7 @@
     }
 
     .minimap-container {
-      height: var(--amalia-plugin-histogram-minimap-height, 30px);
+      height: var(--amalia-plugin-histogram-minimap-height, 10%);
       min-height: 0;
       overflow: hidden;
       background-color: var(--amalia-plugin-histogram-zoom-bg, #b2dae7);
