@@ -125,7 +125,10 @@ describe('Test Media element', () => {
         expect(video.volume).toBe(1);
 
         mediaElement.setVolume(25, 'l');
-        expect(video.volume).toBe(0.5);
+        expect(leftGain.gain.setValueAtTime).toHaveBeenCalledWith(0.25, 4);
+        expect(mediaElement.getVolume('l')).toBe(25);
+        expect(mediaElement.getVolume('r')).toBe(50);
+        expect(video.volume).toBe(1);
     });
 
     it('handles invalid time, reverse frames and forced play state', () => {
