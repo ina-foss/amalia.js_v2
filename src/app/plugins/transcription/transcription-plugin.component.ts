@@ -73,6 +73,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public resourceType: 'stock' | 'flux';
     automaticallyScrolled: boolean = false;
+    private autoSyncTimer: ReturnType<typeof setTimeout> | null = null;
+    private isAutoScrolling = false;
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -109,7 +111,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.parseTranscription();
         }
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeekedEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeekingEvent);
     }
 
     /**
@@ -192,9 +195,23 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * - update current time
      */
 
-    private handleOnTimeChange() {
+    private handleSeekedEvent = (): void => {
+        this.displaySynchro = false;
+        if (this.autoSyncTimer !== null) {
+            clearTimeout(this.autoSyncTimer);
+            this.autoSyncTimer = null;
+        }
+        this.handleOnTimeChange();
+    };
+
+    private handleSeekingEvent = (time: number): void => {
+        this.handleOnTimeChange(time);
+    };
+
+    private handleOnTimeChange(seekingTime?: number) {
         const tcIn = this.pluginConfiguration?.data?.tcIn;
-        this.currentTime = tcIn > 0 ? this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcIn : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const rawTime = seekingTime !== undefined ? seekingTime : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.currentTime = tcIn > 0 ? rawTime + tcIn : rawTime;
         if (Number.isFinite(this.currentTime) && this.transcriptionElement) {
             const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
             if (this.lastSegmentTcIn !== null && this.lastSegmentTcOut !== null
@@ -406,11 +423,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             // scroll to node if he's not visible
             if (this.autoScroll) {
                 if (!(visible) && this.displaySynchro === false) {
+                    this.isAutoScrolling = true;
                     this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
-                    this.automaticallyScrolled = true;
-                    setTimeout(() => {
-                        this.automaticallyScrolled = false;
-                    }, 100);
+                    setTimeout(() => { this.isAutoScrolling = false; }, 50);
                 }
             }
         }
@@ -420,6 +435,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * handle scroll event
      */
     public handleScroll(ignoreNextScroll?: boolean) {
+        if (this.isAutoScrolling) {
+            this.isAutoScrolling = false;
+            return;
+        }
         this.ignoreNextScroll = ignoreNextScroll;
         this.updateSynchro();
     }
@@ -431,6 +450,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     protected handleMetadataLoaded() {
         if (this.metaDataLoaded()) {
             this.parseTranscription();
+            // Force initial word sync after Angular re-renders the template (e.g. detached mode, paused video)
+            setTimeout(() => this.handleOnTimeChange(), 50);
         }
     }
 
@@ -549,6 +570,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
 
     public scrollToSelectedSegment() {
+        if (this.autoSyncTimer !== null) {
+            clearTimeout(this.autoSyncTimer);
+            this.autoSyncTimer = null;
+        }
         // Recalcule toujours la selection a partir du currentTime reel avant de chercher le noeud :
         // un .segment.selected peut deja exister mais correspondre a une ancienne position (ex. seek
         // declenche depuis le storyboard pas encore traite par handleOnTimeChange), ce qui ferait
@@ -559,9 +584,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
+            this.isAutoScrolling = true;
             this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
             this.automaticallyScrolled = true;
             setTimeout(() => {
+                this.isAutoScrolling = false;
                 this.automaticallyScrolled = false;
             }, 100);
         }
@@ -645,14 +672,16 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (!(top && bottom)) {
                 visible = false;
             }
-            // display  button synchro if active node is not visible
-            if (visible === false) {
-                this.displaySynchro = true;
-            } else {
-                this.displaySynchro = false;
-            }
-            if (!this.automaticallyScrolled) {
-                this.displaySynchro = true;
+            this.displaySynchro = (visible === false);
+            if (this.displaySynchro && this.autoScroll) {
+                if (this.autoSyncTimer !== null) { clearTimeout(this.autoSyncTimer); }
+                this.autoSyncTimer = setTimeout(() => {
+                    this.autoSyncTimer = null;
+                    this.scrollToSelectedSegment();
+                }, 3000);
+            } else if (!this.displaySynchro && this.autoSyncTimer !== null) {
+                clearTimeout(this.autoSyncTimer);
+                this.autoSyncTimer = null;
             }
         }
     }
@@ -750,7 +779,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.intervalStep,
             this.timeout,
             this.setDataLoading.bind(this)));
-        Utils.displaySnackBar(this.messagesComponent, "Les transcriptions sont issues d’un traitement par IA et peuvent contenir des erreurs.", 'info');
+        Utils.displaySnackBar(this.messagesComponent, "Les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.", 'info');
+    }
+
+    ngOnDestroy(): void {
+        if (this.autoSyncTimer !== null) {
+            clearTimeout(this.autoSyncTimer);
+        }
+        super.ngOnDestroy();
     }
 
 }

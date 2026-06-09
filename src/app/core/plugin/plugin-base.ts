@@ -140,6 +140,11 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
         }
         //The TIME_BAR and CONTROL_BAR plugins need this
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.INIT, this.refreshAndInit);
+        // Fallback for plugins connecting while isMetadataLoaded=false (e.g. detached mode player re-init):
+        // INIT won't fire again, but METADATA_LOADED will once the player finishes loading.
+        if (!this.mediaPlayerElement.isMetadataLoaded) {
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.refreshAndInit);
+        }
     }
 
     private refreshAndInit = (): void => {
@@ -148,6 +153,7 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
             this.mediaPlayerElement = fresh;
         }
         this.init();
+        this.handleMetadataLoaded();
     };
 
     addListener(element: any, playerEventType: PlayerEventType, func: any) {

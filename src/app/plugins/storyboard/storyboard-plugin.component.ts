@@ -98,6 +98,8 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public selectedIntervalitem = 0;
     public usedSelectedtc = 0;
     public stopScroll = false;
+    private autoSyncTimer: ReturnType<typeof setTimeout> | null = null;
+    private isAutoScrolling = false;
 
 
     constructor(playerService: MediaPlayerService) {
@@ -123,8 +125,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             }
             this.sizeThumbnail = this.getWindowWidth();
             this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.throttleTimeChange);
-            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeeked);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeekedEvent);
             this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
         }
         this.handleSeeked();
     }
@@ -251,6 +254,25 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.handleSeeked(time);
     };
 
+    protected override handleMetadataLoaded(): void {
+        if (this.pluginConfiguration?.data?.baseUrl !== '' && this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0) {
+            this.initStoryboard();
+            setTimeout(() => {
+                this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+                this.handleSeeked();
+            }, 100);
+        }
+    }
+
+    private handleSeekedEvent = (): void => {
+        this.displaySynchro = false;
+        if (this.autoSyncTimer !== null) {
+            clearTimeout(this.autoSyncTimer);
+            this.autoSyncTimer = null;
+        }
+        this.handleSeeked();
+    };
+
     /**
      * Return start index
      */getNearSeekTc(tc: number) {
@@ -284,7 +306,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             const start = isForward ? index : Math.max(index - offset, 0);
             const scrollTop = (start / this.itemPerLine) * this.heightThumbnail;
             const element = this.storyboardElement.nativeElement.parentElement;
+            this.isAutoScrolling = true;
             element.scrollTop = scrollTop;
+            setTimeout(() => { this.isAutoScrolling = false; }, 100);
             Object.assign(element, {
                 transform: `translateY(${scrollTop}px)`
             });
@@ -369,6 +393,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
 
     public updateSynchro() {
+        if (this.isAutoScrolling) { return; }
         let visible = true;
         const activeNode = this.activeThumbnail;
         if (activeNode) {
@@ -380,8 +405,17 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             if (!(top && bottom)) {
                 visible = false;
             }
-            // display button synchro if active node is not visible
             this.displaySynchro = !visible;
+            if (this.displaySynchro) {
+                if (this.autoSyncTimer !== null) { clearTimeout(this.autoSyncTimer); }
+                this.autoSyncTimer = setTimeout(() => {
+                    this.autoSyncTimer = null;
+                    this.scrollToActiveThumbnail(this.currentTime);
+                }, 3000);
+            } else if (this.autoSyncTimer !== null) {
+                clearTimeout(this.autoSyncTimer);
+                this.autoSyncTimer = null;
+            }
         } else {
             this.displaySynchro = false;
         }
@@ -496,9 +530,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public scrollToActiveThumbnail(tc: number, withSeek: boolean = false) {
         this.displaySynchro = false;
+        this.isAutoScrolling = true;
         this.handleScroll();
         const scrollTop = parseFloat(this.storyboardElement.nativeElement.parentElement.dataset.scrollTop);
         this.storyboardElement.nativeElement.parentElement.scrollTo({behavior: 'smooth', top: scrollTop});
+        setTimeout(() => {
+            this.isAutoScrolling = false;
+        }, 600);
         if (withSeek) {
             setTimeout(() => {
                 this.seekToTc(this.currentTime);
@@ -526,5 +564,12 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         } else {
             event.target.src = '/assets/images/placeholder.png';
         }
+    }
+
+    ngOnDestroy(): void {
+        if (this.autoSyncTimer !== null) {
+            clearTimeout(this.autoSyncTimer);
+        }
+        super.ngOnDestroy();
     }
 }

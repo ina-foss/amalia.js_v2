@@ -333,8 +333,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.elements = this.pluginConfiguration.data;
         // init playbackrates
         this.initPlaybackrates();
-        // init volume
-        this.mediaPlayerElement.getMediaPlayer()?.setVolume(50);
+        // init volume — use defaultVolume from config to preserve volume across DOM moves
+        const defaultVolume = (this.mediaPlayerElement.getConfiguration?.() as any)?.player?.defaultVolume ?? 50;
+        this.mediaPlayerElement.getMediaPlayer()?.setVolume(defaultVolume);
         // init shortcuts
         this.initShortcuts(this.pluginConfiguration.data);
         // Enable thumbnail
