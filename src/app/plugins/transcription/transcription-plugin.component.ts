@@ -667,40 +667,47 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * @private
      */
     private handleMatchedTextStyle() {
+        if (!this.transcriptionElement || !this.transcriptionElement.nativeElement) {
+            return;
+        }
         const listOfNamedEntitiesNodes = new Set<HTMLElement>();
-        if (this.transcriptionElement && this.transcriptionElement.nativeElement) {
-            const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+        const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
 
-            this.transcriptions.forEach(tr => {
-                const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(this.predicateIsNodeTcInTcOutMatching(tr));
-                tr.annotations.forEach(a => {
-                    const matchedTexts = Array.isArray(a.matchedText) ? a.matchedText : [a.matchedText];
-                    matchedTexts.forEach(matchedText => {
-                        if (matchedText.includes(' ')) {
-                            //Matched texte est composé exemple: Emmanuel Macron
-                            const matchedTextArray = matchedText.split(' ');
-                            segmentElementNodesForCurrentTranscription.forEach(segmentElementNode => {
-                                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-                                wordElementNodes.forEach((node, nodeIndex) => {
-                                    TranscriptionPluginComponent.matchComposedSearchKey(node, matchedTextArray, wordElementNodes, nodeIndex, listOfNamedEntitiesNodes);
-                                });
-                            });
-                        } else {
-                            segmentElementNodesForCurrentTranscription.forEach((segmentElementNode) => {
-                                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-                                wordElementNodes.forEach((node) => {
-                                    if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedText)) {
-                                        listOfNamedEntitiesNodes.add(node as HTMLElement);
+        this.transcriptions.forEach(tr => {
+            const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(this.predicateIsNodeTcInTcOutMatching(tr));
+            tr.annotations.forEach(a => {
+                const matchedTexts = Array.isArray(a.matchedText) ? a.matchedText : [a.matchedText];
+                matchedTexts.forEach(matchedText => this.collectNamedEntityNodes(matchedText, segmentElementNodesForCurrentTranscription, listOfNamedEntitiesNodes));
+            });
+        });
 
-                                    }
-                                });
-                            });
-                        }
-                    });
+        listOfNamedEntitiesNodes.forEach(e => {
+            e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
+        });
+    }
+
+    /**
+     * Collecte les noeuds de mots correspondant à un texte d'annotation (named entity).
+     * @private
+     */
+    private collectNamedEntityNodes(matchedText: string, segmentElementNodes: HTMLElement[], listOfNamedEntitiesNodes: Set<HTMLElement>) {
+        if (matchedText.includes(' ')) {
+            //Matched texte est composé exemple: Emmanuel Macron
+            const matchedTextArray = matchedText.split(' ');
+            segmentElementNodes.forEach(segmentElementNode => {
+                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                wordElementNodes.forEach((node, nodeIndex) => {
+                    TranscriptionPluginComponent.matchComposedSearchKey(node, matchedTextArray, wordElementNodes, nodeIndex, listOfNamedEntitiesNodes);
                 });
             });
-            listOfNamedEntitiesNodes.forEach(e => {
-                e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
+        } else {
+            segmentElementNodes.forEach(segmentElementNode => {
+                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                wordElementNodes.forEach(node => {
+                    if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedText)) {
+                        listOfNamedEntitiesNodes.add(node as HTMLElement);
+                    }
+                });
             });
         }
     }
