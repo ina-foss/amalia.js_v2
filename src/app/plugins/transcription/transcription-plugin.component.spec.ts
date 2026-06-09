@@ -572,6 +572,53 @@ describe('TranscriptionPluginComponent', () => {
         expect(marked.length).toBe(2);
     });
 
+    it('should apply css class when matchedText is an array of strings', () => {
+        const container = document.createElement('div');
+        container.innerHTML = `
+          <div class="segment" data-tcin="0" data-tcout="2">
+            <div class="subsegment"><div class="text">
+              <span class="w">Emmanuel</span>
+              <span class="w">Macron</span>
+              <span class="w">Paris</span>
+            </div></div>
+          </div>`;
+        component.transcriptionElement = new ElementRef(container);
+        component.transcriptions = [{
+            tcIn: 0,
+            tcOut: 2,
+            text: 'Emmanuel Macron Paris',
+            annotations: [{ matchedText: ['Emmanuel Macron', 'Paris'] }]
+        } as any];
+
+        (component as any).handleMatchedTextStyle();
+
+        const marked = container.querySelectorAll('.named-entity');
+        // 2 mots pour le texte composé + 1 mot simple
+        expect(marked.length).toBe(3);
+    });
+
+    it('should match single-word entity when matchedText is an array with one entry', () => {
+        const container = document.createElement('div');
+        container.innerHTML = `
+          <div class="segment" data-tcin="0" data-tcout="2">
+            <div class="subsegment"><div class="text">
+              <span class="w">Paris</span>
+            </div></div>
+          </div>`;
+        component.transcriptionElement = new ElementRef(container);
+        component.transcriptions = [{
+            tcIn: 0,
+            tcOut: 2,
+            text: 'Paris',
+            annotations: [{ matchedText: ['Paris'] }]
+        } as any];
+
+        (component as any).handleMatchedTextStyle();
+
+        const marked = container.querySelectorAll('.named-entity');
+        expect(marked.length).toBe(1);
+    });
+
     it('scrollToSelectedSegment should reset auto flag after timeout', fakeAsync(() => {
         const obj = document.createElement('video');
         component.mediaPlayerElement.setMediaPlayer(obj);

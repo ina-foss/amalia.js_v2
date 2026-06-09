@@ -674,26 +674,29 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.transcriptions.forEach(tr => {
                 const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(this.predicateIsNodeTcInTcOutMatching(tr));
                 tr.annotations.forEach(a => {
-                    if (a.matchedText.includes(' ')) {
-                        //Matched texte est composé exemple: Emmanuel Macron
-                        const matchedTextArray = a.matchedText.split(' ');
-                        segmentElementNodesForCurrentTranscription.forEach(segmentElementNode => {
-                            const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-                            wordElementNodes.forEach((node, nodeIndex) => {
-                                TranscriptionPluginComponent.matchComposedSearchKey(node, matchedTextArray, wordElementNodes, nodeIndex, listOfNamedEntitiesNodes);
+                    const matchedTexts = Array.isArray(a.matchedText) ? a.matchedText : [a.matchedText];
+                    matchedTexts.forEach(matchedText => {
+                        if (matchedText.includes(' ')) {
+                            //Matched texte est composé exemple: Emmanuel Macron
+                            const matchedTextArray = matchedText.split(' ');
+                            segmentElementNodesForCurrentTranscription.forEach(segmentElementNode => {
+                                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                                wordElementNodes.forEach((node, nodeIndex) => {
+                                    TranscriptionPluginComponent.matchComposedSearchKey(node, matchedTextArray, wordElementNodes, nodeIndex, listOfNamedEntitiesNodes);
+                                });
                             });
-                        });
-                    } else {
-                        segmentElementNodesForCurrentTranscription.forEach((segmentElementNode) => {
-                            const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-                            wordElementNodes.forEach((node) => {
-                                if (node.textContent && TextUtils.hasSearchText(node.textContent, a.matchedText)) {
-                                    listOfNamedEntitiesNodes.add(node as HTMLElement);
+                        } else {
+                            segmentElementNodesForCurrentTranscription.forEach((segmentElementNode) => {
+                                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+                                wordElementNodes.forEach((node) => {
+                                    if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedText)) {
+                                        listOfNamedEntitiesNodes.add(node as HTMLElement);
 
-                                }
+                                    }
+                                });
                             });
-                        });
-                    }
+                        }
+                    });
                 });
             });
             listOfNamedEntitiesNodes.forEach(e => {
