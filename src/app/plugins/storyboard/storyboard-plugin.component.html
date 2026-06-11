@@ -39,7 +39,8 @@
         </ul>
     </div>
 </div>
-<div class="storyboard" (scroll)="handleScroll()" (mousemove)="resetAutoSyncTimer()" (click)="resetAutoSyncTimer()">
+<div class="storyboard" tabindex="0" (scroll)="handleScroll()" (mousemove)="resetAutoSyncTimer()"
+    (click)="resetAutoSyncTimer()" (keydown)="resetAutoSyncTimer()">
     <div class="vs-scroll" #scrollElement></div>
     <div class="vs-container" #storyboardElement>
         <div (click)="seekToTc(tc)" class="thumbnail {{size}} {{sizeThumbnail}}"

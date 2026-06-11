@@ -54,8 +54,8 @@
         </div>
     </div>
 
-    <div class="transcription" #transcriptionElement (scroll)="handleScroll(true)"
-        (mousemove)="resetAutoSyncTimer()" (click)="resetAutoSyncTimer()">
+    <div class="transcription" #transcriptionElement tabindex="0" (scroll)="handleScroll(true)"
+        (mousemove)="resetAutoSyncTimer()" (click)="resetAutoSyncTimer()" (keydown)="resetAutoSyncTimer()">
         <div class="segment" *ngFor="let t of transcriptions" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
             <div class="copybutton tooltip" (click)="copy(t)">
                 <span class="tooltiptext">Copier la transcription</span>
