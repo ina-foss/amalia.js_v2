@@ -31,4 +31,18 @@ export class TextUtils {
         if (!word) return word; // Vérifie si le mot n'est pas vide
         return word.charAt(0).toUpperCase() + word.slice(1);
     }
+
+    /**
+     * Nettoie un texte de transcription avant copie : supprime les espaces multiples
+     * ainsi que les espaces autour des apostrophes et des tirets de mots composés
+     * (ex: "d 'un", "d' un" => "d'un", "France -Ukraine" => "France-Ukraine").
+     */
+    public static formatCopiedText(text: string): string {
+        if (!text) return text;
+        return text
+            .replace(/(\w)\s*'\s*(\w)/g, "$1'$2")
+            .replace(/(\w)\s*-\s*(\w)/g, '$1-$2')
+            .replace(/[ \t]{2,}/g, ' ')
+            .trim();
+    }
 }

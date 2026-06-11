@@ -19,7 +19,7 @@
     width: 100%;
     z-index: 1;
     display: grid;
-    grid-template-rows: var(--amalia-plugin-histogram-minimap-height, 30px) minmax(0, 1fr) 20px;
+    grid-template-rows: 1fr 2fr;
     outline: none;
     overflow: hidden;
 
@@ -40,15 +40,7 @@
       }
     }
 
-    .timeline-container {
-      height: 20px;
-      min-height: 0;
-      overflow: hidden;
-      background-color: var(--amalia-plugin-histogram-bg, #80C2D8);
-    }
-
     .minimap-container {
-      height: var(--amalia-plugin-histogram-minimap-height, 30px);
       min-height: 0;
       overflow: hidden;
       background-color: var(--amalia-plugin-histogram-zoom-bg, #b2dae7);

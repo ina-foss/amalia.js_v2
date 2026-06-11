@@ -16,7 +16,6 @@ import {MediaPlayerService} from '../../service/media-player-service';
 import {DefaultLogger} from '../../core/logger/default-logger';
 import WaveSurfer from 'wavesurfer.js';
 import Minimap from 'wavesurfer.js/dist/plugins/minimap.js';
-import Timeline from 'wavesurfer.js/dist/plugins/timeline.js';
 import Zoom from 'wavesurfer.js/dist/plugins/zoom.js';
 
 /**
@@ -60,8 +59,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     @ViewChild('wavesurferContainer')
     public wavesurferContainer!: ElementRef<HTMLElement>;
-    @ViewChild('timelineContainer')
-    public timelineContainer!: ElementRef<HTMLElement>;
     @ViewChild('minimapContainer')
     public minimapContainer!: ElementRef<HTMLElement>;
     @ViewChild('minimapHitArea')
@@ -79,9 +76,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     private waveformResizeObserver: ResizeObserver | null = null;
     private controlBarResizeObserver: ResizeObserver | null = null;
     private observedControlBar: HTMLElement | null = null;
-    private timelineScrollUnsubscribes: Array<() => void> = [];
     private minimapViewportDragCleanup: (() => void) | null = null;
     private lastAppliedWaveformHeight = 0;
+    private lastAppliedMinimapHeight = 0;
+    private minimapPlugin: any | null = null;
 
     /** Wavesurfer instance, created once peaks are loaded. */
     private wavesurfer: WaveSurfer | null = null;
@@ -238,7 +236,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * Create the wavesurfer instance (destroying any previous one).
      */
     private createOrUpdateWavesurfer(): void {
-        if (!this.wavesurferContainer || !this.timelineContainer || !this.minimapContainer || !this.minimapHitArea || !this.peaks) {
+        if (!this.wavesurferContainer || !this.minimapContainer || !this.minimapHitArea || !this.peaks) {
             return;
         }
         this.destroyWavesurfer();
@@ -251,13 +249,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const minimapProgressColor = data.minimapProgressColor ?? progressColor;
         const minimapOverlayColor = data.minimapOverlayColor ?? HistogramPluginComponent.DEFAULT_MINIMAP_OVERLAY_COLOR;
         const cursorColor = data.cursorColor ?? HistogramPluginComponent.DEFAULT_CURSOR_COLOR;
-        const minimapHeight = data.minimapHeight ?? HistogramPluginComponent.DEFAULT_MINIMAP_HEIGHT;
         const minPxPerSec = data.minPxPerSec ?? (withSpectrogram
                 ? HistogramPluginComponent.DEFAULT_MIN_PX_PER_SEC_SPECTROGRAM
                 : HistogramPluginComponent.DEFAULT_MIN_PX_PER_SEC);
         const splitChannels = withSpectrogram ? false : [{waveColor, progressColor}, {waveColor, progressColor}];
         const waveformHeight = this.getWaveformChannelHeight(splitChannels);
-        const minimapChannelHeight = this.getChannelHeight(minimapHeight, splitChannels);
+        const minimapChannelHeight = this.getChannelHeight(this.getMinimapTotalHeight(), splitChannels);
 
         const minimapPlugin = Minimap.create({
             container: this.minimapContainer.nativeElement,
@@ -277,11 +274,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         });
         minimapPlugin.on('click', (progress: number) => this.navigateMinimapToProgress(progress));
         this.attachMinimapViewportDrag();
+        this.minimapPlugin = minimapPlugin;
+        this.lastAppliedMinimapHeight = minimapChannelHeight;
 
-        const plugins: any[] = [
-            Timeline.create({ container: this.timelineContainer.nativeElement }),
-            minimapPlugin
-        ];
+        const plugins: any[] = [minimapPlugin];
         if (!withSpectrogram) {
             plugins.push(Zoom.create({exponentialZooming: true, maxZoom: 400}));
         }
@@ -329,7 +325,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         });
         this.lastAppliedWaveformHeight = waveformHeight;
         this.attachWaveformResizeObserver();
-        this.attachTimelineScrollSync();
     }
 
     private destroyWavesurfer(): void {
@@ -340,10 +335,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.queuedTime = null;
         this.waveformResizeObserver?.disconnect();
         this.waveformResizeObserver = null;
-        this.detachTimelineScrollSync();
         this.minimapViewportDragCleanup?.();
         this.minimapViewportDragCleanup = null;
+        this.minimapPlugin = null;
         this.lastAppliedWaveformHeight = 0;
+        this.lastAppliedMinimapHeight = 0;
         if (this.wavesurfer) {
             try {
                 this.wavesurfer.destroy();
@@ -363,6 +359,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         return this.getChannelHeight(this.wavesurferContainer?.nativeElement?.clientHeight ?? 0, splitChannels);
     }
 
+    private getMinimapTotalHeight(): number {
+        return Math.floor((this.minimapContainer?.nativeElement?.clientHeight ?? 0) || HistogramPluginComponent.DEFAULT_MINIMAP_HEIGHT);
+    }
+
     private getConfiguredSplitChannels(): false | Array<unknown> {
         return this.pluginConfiguration.data.withSpectrogram ? false : [{}, {}];
     }
@@ -374,36 +374,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.waveformResizeObserver?.disconnect();
         this.waveformResizeObserver = new ResizeObserver(() => this.scheduleWaveformSizeSync());
         this.waveformResizeObserver.observe(this.wavesurferContainer.nativeElement);
-    }
-
-    private attachTimelineScrollSync(): void {
-        if (!this.wavesurfer || !this.timelineContainer) {
-            return;
-        }
-        this.detachTimelineScrollSync();
-        const sync = (scrollLeft = this.wavesurfer?.getScroll() ?? 0) => {
-            this.syncTimelineWidth();
-            this.timelineContainer.nativeElement.scrollLeft = scrollLeft;
-        };
-        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('scroll', (_visibleStartTime, _visibleEndTime, scrollLeft) => sync(scrollLeft)));
-        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('redraw', () => this.scheduleTimeout(sync)));
-        this.timelineScrollUnsubscribes.push(this.wavesurfer.on('zoom', () => this.scheduleTimeout(sync)));
-        this.scheduleTimeout(sync);
-    }
-
-    private detachTimelineScrollSync(): void {
-        this.timelineScrollUnsubscribes.forEach(unsubscribe => unsubscribe());
-        this.timelineScrollUnsubscribes = [];
-    }
-
-    private syncTimelineWidth(): void {
-        if (!this.wavesurfer || !this.timelineContainer) {
-            return;
-        }
-        const timeline = this.timelineContainer.nativeElement.querySelector('[part="timeline"]') as HTMLElement | null;
-        const scrollWidth = this.wavesurfer.getWrapper()?.scrollWidth ?? 0;
-        if (timeline && scrollWidth > 0) {
-            timeline.style.width = `${scrollWidth}px`;
+        if (this.minimapContainer) {
+            this.waveformResizeObserver.observe(this.minimapContainer.nativeElement);
         }
     }
 
@@ -422,14 +394,22 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.waveformResizeObserver?.disconnect();
         const splitChannels = this.getConfiguredSplitChannels();
         const waveformHeight = this.getWaveformChannelHeight(splitChannels);
-        if (waveformHeight === this.lastAppliedWaveformHeight) {
-            this.attachWaveformResizeObserver();
-            return;
+        const minimapHeight = this.getChannelHeight(this.getMinimapTotalHeight(), splitChannels);
+        let changed = false;
+        if (waveformHeight !== this.lastAppliedWaveformHeight) {
+            this.lastAppliedWaveformHeight = waveformHeight;
+            this.wavesurfer.setOptions({height: waveformHeight, fillParent: true});
+            changed = true;
         }
-        this.lastAppliedWaveformHeight = waveformHeight;
-        this.wavesurfer.setOptions({height: waveformHeight, fillParent: true});
-        const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.renderVisualProgress(currentTime);
+        if (minimapHeight !== this.lastAppliedMinimapHeight) {
+            this.lastAppliedMinimapHeight = minimapHeight;
+            this.minimapPlugin?.miniWavesurfer?.setOptions({height: minimapHeight, fillParent: true});
+            changed = true;
+        }
+        if (changed) {
+            const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+            this.renderVisualProgress(currentTime);
+        }
         this.scheduleTimeout(() => this.attachWaveformResizeObserver());
     }
 
@@ -566,9 +546,6 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const maxScroll = metrics.totalWidth - metrics.visibleWidth;
         const targetScroll = Math.max(0, Math.min(this.clampProgress(progress) * metrics.totalWidth - metrics.visibleWidth / 2, maxScroll));
         this.wavesurfer.setScroll(targetScroll);
-        if (this.timelineContainer) {
-            this.timelineContainer.nativeElement.scrollLeft = targetScroll;
-        }
     }
 
     private navigateMinimapToProgress(progress: number): void {

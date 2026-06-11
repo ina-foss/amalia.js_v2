@@ -20,6 +20,16 @@ describe('test text utils', () => {
         expect(TextUtils.hasSearchText('l \'anticyclones', searchText)).toEqual(true);
         expect(TextUtils.hasSearchText('l \'anticiclone', searchText)).toEqual(false);
     });
+
+    it('Test formatCopiedText: removes double spaces and spaces around apostrophes/hyphens', () => {
+        const input = 'Le  premier  invité  d \'un  oeil  sur  le  monde  est  à  la  fois  député,  président  du  groupe  d \'amitié  France -Ukraine.';
+        const expected = "Le premier invité d'un oeil sur le monde est à la fois député, président du groupe d'amitié France-Ukraine.";
+        expect(TextUtils.formatCopiedText(input)).toEqual(expected);
+        expect(TextUtils.formatCopiedText("d' assaut")).toEqual("d'assaut");
+        expect(TextUtils.formatCopiedText('  hello  world  ')).toEqual('hello world');
+        expect(TextUtils.formatCopiedText('')).toEqual('');
+        expect(TextUtils.formatCopiedText(null)).toBeNull();
+    });
 });
 
 

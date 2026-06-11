@@ -55,18 +55,46 @@ describe('TranscriptionPluginComponent automatic synchronization', () => {
         expect(updateSpy).not.toHaveBeenCalled();
     });
 
-    it('recenters an out-of-view selection after three seconds', () => {
+    it('recenters an out-of-view selection after the auto-sync delay', () => {
         const component = createComponent();
         setOutOfViewSelection(component);
         const scrollSpy = spyOn(component, 'scrollToSelectedSegment');
         jasmine.clock().install();
 
         component.updateSynchro();
-        jasmine.clock().tick(2999);
+        jasmine.clock().tick(TranscriptionPluginComponent.AUTO_SYNC_DELAY - 1);
         expect(scrollSpy).not.toHaveBeenCalled();
         jasmine.clock().tick(1);
 
         expect(scrollSpy).toHaveBeenCalled();
+    });
+
+    it('postpones auto-sync while the user is interacting', () => {
+        const component = createComponent();
+        setOutOfViewSelection(component);
+        const scrollSpy = spyOn(component, 'scrollToSelectedSegment');
+        jasmine.clock().install();
+
+        component.updateSynchro();
+        jasmine.clock().tick(TranscriptionPluginComponent.AUTO_SYNC_DELAY - 1);
+        component.resetAutoSyncTimer();
+        jasmine.clock().tick(1);
+        expect(scrollSpy).not.toHaveBeenCalled();
+        jasmine.clock().tick(TranscriptionPluginComponent.AUTO_SYNC_DELAY - 1);
+
+        expect(scrollSpy).toHaveBeenCalled();
+    });
+
+    it('does not start auto-sync when synchronization is inactive', () => {
+        const component = createComponent();
+        const scrollSpy = spyOn(component, 'scrollToSelectedSegment');
+        component.displaySynchro = false;
+        jasmine.clock().install();
+
+        component.resetAutoSyncTimer();
+        jasmine.clock().tick(TranscriptionPluginComponent.AUTO_SYNC_DELAY);
+
+        expect(scrollSpy).not.toHaveBeenCalled();
     });
 
     it('cancels a pending recenter when the component is destroyed', () => {
@@ -77,7 +105,7 @@ describe('TranscriptionPluginComponent automatic synchronization', () => {
 
         component.updateSynchro();
         component.ngOnDestroy();
-        jasmine.clock().tick(3000);
+        jasmine.clock().tick(TranscriptionPluginComponent.AUTO_SYNC_DELAY);
 
         expect(scrollSpy).not.toHaveBeenCalled();
     });

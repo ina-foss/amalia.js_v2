@@ -37,7 +37,7 @@ describe('StoryboardPluginComponent automatic synchronization', () => {
         jasmine.clock().uninstall();
     });
 
-    it('recenters an out-of-view active thumbnail after three seconds', () => {
+    it('recenters an out-of-view active thumbnail after the auto-sync delay', () => {
         const { component, storyboard } = createComponent();
         setOutOfView(component, storyboard);
         component.currentTime = 42;
@@ -45,11 +45,40 @@ describe('StoryboardPluginComponent automatic synchronization', () => {
         jasmine.clock().install();
 
         component.updateSynchro();
-        jasmine.clock().tick(2999);
+        jasmine.clock().tick(StoryboardPluginComponent.AUTO_SYNC_DELAY - 1);
         expect(scrollSpy).not.toHaveBeenCalled();
         jasmine.clock().tick(1);
 
         expect(scrollSpy).toHaveBeenCalledOnceWith(42);
+    });
+
+    it('postpones auto-sync while the user is interacting', () => {
+        const { component, storyboard } = createComponent();
+        setOutOfView(component, storyboard);
+        component.currentTime = 42;
+        const scrollSpy = spyOn(component, 'scrollToActiveThumbnail');
+        jasmine.clock().install();
+
+        component.updateSynchro();
+        jasmine.clock().tick(StoryboardPluginComponent.AUTO_SYNC_DELAY - 1);
+        component.resetAutoSyncTimer();
+        jasmine.clock().tick(1);
+        expect(scrollSpy).not.toHaveBeenCalled();
+        jasmine.clock().tick(StoryboardPluginComponent.AUTO_SYNC_DELAY - 1);
+
+        expect(scrollSpy).toHaveBeenCalledOnceWith(42);
+    });
+
+    it('does not start auto-sync when synchronization is inactive', () => {
+        const { component } = createComponent();
+        const scrollSpy = spyOn(component, 'scrollToActiveThumbnail');
+        component.displaySynchro = false;
+        jasmine.clock().install();
+
+        component.resetAutoSyncTimer();
+        jasmine.clock().tick(StoryboardPluginComponent.AUTO_SYNC_DELAY);
+
+        expect(scrollSpy).not.toHaveBeenCalled();
     });
 
     it('cancels a pending recenter when the component is destroyed', () => {
@@ -60,7 +89,7 @@ describe('StoryboardPluginComponent automatic synchronization', () => {
 
         component.updateSynchro();
         component.ngOnDestroy();
-        jasmine.clock().tick(3000);
+        jasmine.clock().tick(StoryboardPluginComponent.AUTO_SYNC_DELAY);
 
         expect(scrollSpy).not.toHaveBeenCalled();
     });

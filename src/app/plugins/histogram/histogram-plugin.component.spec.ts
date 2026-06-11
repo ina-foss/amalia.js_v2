@@ -129,7 +129,6 @@ describe('HistogramPluginComponent (wavesurfer + MetadataManager)', () => {
         fakeWavesurfer = buildFakeWaveSurfer();
         createSpy = spyOn(WaveSurfer, 'create').and.returnValue(fakeWavesurfer as unknown as WaveSurfer);
         component.wavesurferContainer = {nativeElement: document.createElement('div')} as any;
-        component.timelineContainer = {nativeElement: document.createElement('div')} as any;
         component.minimapContainer = {nativeElement: document.createElement('div')} as any;
         component.minimapHitArea = {nativeElement: document.createElement('div')} as any;
     });

@@ -160,6 +160,10 @@ export enum PlayerEventType {
      */
     METADATA_LOADED = 'ina.player.METADATA_LOADED',
     /**
+     * Invoked when a user segment (extrait utilisateur) has been created or updated
+     */
+    USER_SEGMENT_CHANGED = 'ina.player.USER_SEGMENT_CHANGED',
+    /**
      * Invoked when bind metadata
      */
     BIND_METADATA = 'ina.player.BIND_METADATA',

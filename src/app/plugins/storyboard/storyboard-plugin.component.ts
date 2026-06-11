@@ -15,6 +15,7 @@ import {MediaPlayerService} from '../../service/media-player-service';
 export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> implements OnInit {
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 500;
     public static PLUGIN_NAME = 'STORYBOARD';
+    public static AUTO_SYNC_DELAY = 8000;
     public second = 'seconde';
     public minute = 'minute';
     public images = 'images';
@@ -407,17 +408,33 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             }
             this.displaySynchro = !visible;
             if (this.displaySynchro) {
-                if (this.autoSyncTimer !== null) { clearTimeout(this.autoSyncTimer); }
-                this.autoSyncTimer = setTimeout(() => {
-                    this.autoSyncTimer = null;
-                    this.scrollToActiveThumbnail(this.currentTime);
-                }, 3000);
+                this.startAutoSyncTimer();
             } else if (this.autoSyncTimer !== null) {
                 clearTimeout(this.autoSyncTimer);
                 this.autoSyncTimer = null;
             }
         } else {
             this.displaySynchro = false;
+        }
+    }
+
+    /**
+     * (Re)start the timer that automatically scrolls back to the active thumbnail
+     */
+    private startAutoSyncTimer() {
+        if (this.autoSyncTimer !== null) { clearTimeout(this.autoSyncTimer); }
+        this.autoSyncTimer = setTimeout(() => {
+            this.autoSyncTimer = null;
+            this.scrollToActiveThumbnail(this.currentTime);
+        }, StoryboardPluginComponent.AUTO_SYNC_DELAY);
+    }
+
+    /**
+     * Postpone the automatic resync while the user is actively browsing the storyboard
+     */
+    public resetAutoSyncTimer() {
+        if (this.displaySynchro && this.autoSyncTimer !== null) {
+            this.startAutoSyncTimer();
         }
     }
 

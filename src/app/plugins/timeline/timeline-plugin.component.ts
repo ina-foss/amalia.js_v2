@@ -254,6 +254,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.handleOnDurationChange();
         }
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.USER_SEGMENT_CHANGED, this.handleMetadataLoaded);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
     }
@@ -293,6 +294,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.handleMetadataProperties(listOfMetadata, metadataManager);
 
         if (!handleMetadataIds) {
+            mainMetadataIds.length = 0;
             listOfMetadata.forEach((metadata) => {
                 mainMetadataIds.push(metadata.id);
             });

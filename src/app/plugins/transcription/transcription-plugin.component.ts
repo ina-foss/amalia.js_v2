@@ -29,6 +29,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public static PLUGIN_NAME = 'TRANSCRIPTION';
     public static KARAOKE_TC_DELTA = 0.250;
+    public static AUTO_SYNC_DELAY = 8000;
     public static SELECTOR_SEGMENT = 'segment';
     public static SELECTOR_SUBSEGMENT = 'subsegment';
     public static SELECTOR_WORD = 'w';
@@ -127,7 +128,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset;
         const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
         const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
-        const copiedText = '[' + tcIn + '][' + tcOut + ']\n\n' + localisation.text;
+        const copiedText = '[' + tcIn + '][' + tcOut + ']\n\n' + TextUtils.formatCopiedText(localisation.text);
         window.navigator.clipboard.writeText(copiedText).then(
             () => {
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, localisation);
@@ -139,7 +140,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const copiedText = this.transcriptions.map((localisation) => {
             const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
             const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
-            return '[' + tcIn + '][' + tcOut + ']\n' + localisation.text;
+            return '[' + tcIn + '][' + tcOut + ']\n' + TextUtils.formatCopiedText(localisation.text);
         }).join('\n\n');
         window.navigator.clipboard.writeText(copiedText).then(
             () => {
@@ -674,15 +675,31 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             this.displaySynchro = (visible === false);
             if (this.displaySynchro && this.autoScroll) {
-                if (this.autoSyncTimer !== null) { clearTimeout(this.autoSyncTimer); }
-                this.autoSyncTimer = setTimeout(() => {
-                    this.autoSyncTimer = null;
-                    this.scrollToSelectedSegment();
-                }, 3000);
+                this.startAutoSyncTimer();
             } else if (!this.displaySynchro && this.autoSyncTimer !== null) {
                 clearTimeout(this.autoSyncTimer);
                 this.autoSyncTimer = null;
             }
+        }
+    }
+
+    /**
+     * (Re)start the timer that automatically scrolls back to the active segment
+     */
+    private startAutoSyncTimer() {
+        if (this.autoSyncTimer !== null) { clearTimeout(this.autoSyncTimer); }
+        this.autoSyncTimer = setTimeout(() => {
+            this.autoSyncTimer = null;
+            this.scrollToSelectedSegment();
+        }, TranscriptionPluginComponent.AUTO_SYNC_DELAY);
+    }
+
+    /**
+     * Postpone the automatic resync while the user is actively browsing the transcription
+     */
+    public resetAutoSyncTimer() {
+        if (this.displaySynchro && this.autoSyncTimer !== null) {
+            this.startAutoSyncTimer();
         }
     }
 
