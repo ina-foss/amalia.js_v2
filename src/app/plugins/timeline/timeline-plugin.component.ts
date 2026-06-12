@@ -38,7 +38,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public title: string;
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
-    public listOfBlocks: Array<TimeLineBlock>;
+    public listOfBlocks: Array<TimeLineBlock> = [];
     public listOfBlocksIndexes: Array<number> = [];
     public configIsOpen = false;
     public currentTime = 0;
@@ -263,6 +263,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to parse metadata
      */
     parseTimelineMetadata() {
+        const previousFilterState = this.captureFilterState();
         this.listOfBlocks = [];
         this.listOfBlocksIndexes = [];
         const listOfMetadata: Array<Metadata> = [];
@@ -291,7 +292,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 });
             }
         }
-        const previousFilterState = this.captureFilterState();
         this.handleMetadataProperties(listOfMetadata, metadataManager);
         this.restoreFilterState(previousFilterState);
 
@@ -347,64 +347,73 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
         return listOfLocalisations;
     }
-    /**
-     * Capture the current filter state (selected nodes, checked state and per-block display state)
-     * so it can be restored after a metadata refresh (e.g. on USER_SEGMENT_CHANGED).
-     */
-    private captureFilterState(): { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] } {
-        const displayStateById = new Map<string, boolean>();
+    private persistedDisplayStateById: Map<string, boolean> = new Map<string, boolean>();
+    private persistedBlockOrder: string[] = [];
+
+    private getStableMetadataKey(id: string): string {
+        return id.replace(/^([A-Z_]+-)\d+/, '$1');
+    }
+
+    private captureFilterState(): { hasState: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] } {
         this.listOfBlocks.forEach((block) => {
-            displayStateById.set(block.id, block.displayState);
+            const stableKey = this.getStableMetadataKey(block.id);
+            this.persistedDisplayStateById.set(stableKey, block.displayState);
+            if (!this.persistedBlockOrder.includes(stableKey)) {
+                this.persistedBlockOrder.push(stableKey);
+            }
         });
-        const selectedKeys = new Set<string>(this.selectedNodes().map((node) => node.key));
-        const blockOrder = this.listOfBlocks.map((block) => block.id);
         return {
             hasState: this.nodes.length > 0,
-            selectedKeys,
-            allNodesChecked: this.allNodesChecked,
-            displayStateById,
-            blockOrder
+            displayStateById: new Map(this.persistedDisplayStateById),
+            blockOrder: [...this.persistedBlockOrder]
         };
     }
 
-    /**
-     * Restore a previously captured filter state after handleMetadataProperties has rebuilt
-     * nodes/listOfBlocks, preserving the user's filter selections across metadata refreshes.
-     */
-    private restoreFilterState(previousState: { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] }) {
+    private restoreFilterState(previousState: { hasState: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] }) {
         if (!previousState.hasState) {
             return;
         }
 
         this.listOfBlocks.forEach((block) => {
-            if (previousState.displayStateById.has(block.id)) {
-                block.displayState = previousState.displayStateById.get(block.id);
+            const stableKey = this.getStableMetadataKey(block.id);
+            if (previousState.displayStateById.has(stableKey)) {
+                block.displayState = previousState.displayStateById.get(stableKey);
             }
         });
 
-        // Restore the user's custom block order (drag & drop), keeping any new blocks at the end.
-        const blocksById = new Map<string, TimeLineBlock>();
-        this.listOfBlocks.forEach((block) => blocksById.set(block.id, block));
+        const blocksByStableKey = new Map<string, TimeLineBlock[]>();
+        this.listOfBlocks.forEach((block) => {
+            const stableKey = this.getStableMetadataKey(block.id);
+            if (!blocksByStableKey.has(stableKey)) {
+                blocksByStableKey.set(stableKey, []);
+            }
+            blocksByStableKey.get(stableKey).push(block);
+        });
         const orderedBlocks: TimeLineBlock[] = [];
-        previousState.blockOrder.forEach((id) => {
-            if (blocksById.has(id)) {
-                orderedBlocks.push(blocksById.get(id));
-                blocksById.delete(id);
+        previousState.blockOrder.forEach((stableKey) => {
+            if (blocksByStableKey.has(stableKey)) {
+                orderedBlocks.push(...blocksByStableKey.get(stableKey));
+                blocksByStableKey.delete(stableKey);
             }
         });
-        orderedBlocks.push(...blocksById.values());
+        blocksByStableKey.forEach((blocks) => orderedBlocks.push(...blocks));
         this.listOfBlocks = orderedBlocks;
         this.listOfBlocksIndexes = orderedBlocks.map((_, index) => index);
         this.mapOfBlocksIndexes = new Map<TimeLineBlock, number>();
         orderedBlocks.forEach((block, index) => this.mapOfBlocksIndexes.set(block, index));
 
-        if (!previousState.allNodesChecked) {
-            const allNodes = this.getAllNodes(this.nodes);
-            this.selectedNodes.set(allNodes.filter((node) => previousState.selectedKeys.has(node.key)));
-            const nbNodes = allNodes.length;
-            const nbSelectedNodes = this.selectedNodes().length;
-            this.allNodesChecked = nbSelectedNodes === nbNodes;
-        }
+        const allNodes = this.getAllNodes(this.nodes);
+        const displayedIds = new Set(this.listOfBlocks.filter((block) => block.displayState).map((block) => block.id));
+        const selected = allNodes.filter((node) => !node.children && displayedIds.has(node.key));
+        const selectedLeafKeys = new Set(selected.map((node) => node.key));
+        this.nodes.forEach((parentNode) => {
+            if (parentNode.children?.length && parentNode.children.every((child: any) => selectedLeafKeys.has(child.key))) {
+                selected.push(parentNode);
+            }
+        });
+        this.selectedNodes.set(selected);
+        this.updateTreeComponent();
+        this.cdr.detectChanges();
     }
 
     // Handle metadata properties

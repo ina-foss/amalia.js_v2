@@ -68,7 +68,7 @@ describe('TimelinePluginComponent', () => {
         expect(component.title).toBeUndefined();
         expect(component.mainBlockColor).toBeUndefined();
         expect(component.mainLocalisations).toBeUndefined();
-        expect(component.listOfBlocks).toBeUndefined();
+        expect(component.listOfBlocks).toEqual([]);
         expect(component.configIsOpen).toBeFalse();
         expect(component.currentTime).toBe(0);
         expect(component.duration).toBe(0);
