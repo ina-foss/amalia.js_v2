@@ -351,17 +351,19 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * Capture the current filter state (selected nodes, checked state and per-block display state)
      * so it can be restored after a metadata refresh (e.g. on USER_SEGMENT_CHANGED).
      */
-    private captureFilterState(): { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean> } {
+    private captureFilterState(): { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] } {
         const displayStateById = new Map<string, boolean>();
         this.listOfBlocks.forEach((block) => {
             displayStateById.set(block.id, block.displayState);
         });
         const selectedKeys = new Set<string>(this.selectedNodes().map((node) => node.key));
+        const blockOrder = this.listOfBlocks.map((block) => block.id);
         return {
             hasState: this.nodes.length > 0,
             selectedKeys,
             allNodesChecked: this.allNodesChecked,
-            displayStateById
+            displayStateById,
+            blockOrder
         };
     }
 
@@ -369,7 +371,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * Restore a previously captured filter state after handleMetadataProperties has rebuilt
      * nodes/listOfBlocks, preserving the user's filter selections across metadata refreshes.
      */
-    private restoreFilterState(previousState: { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean> }) {
+    private restoreFilterState(previousState: { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] }) {
         if (!previousState.hasState) {
             return;
         }
@@ -379,6 +381,22 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 block.displayState = previousState.displayStateById.get(block.id);
             }
         });
+
+        // Restore the user's custom block order (drag & drop), keeping any new blocks at the end.
+        const blocksById = new Map<string, TimeLineBlock>();
+        this.listOfBlocks.forEach((block) => blocksById.set(block.id, block));
+        const orderedBlocks: TimeLineBlock[] = [];
+        previousState.blockOrder.forEach((id) => {
+            if (blocksById.has(id)) {
+                orderedBlocks.push(blocksById.get(id));
+                blocksById.delete(id);
+            }
+        });
+        orderedBlocks.push(...blocksById.values());
+        this.listOfBlocks = orderedBlocks;
+        this.listOfBlocksIndexes = orderedBlocks.map((_, index) => index);
+        this.mapOfBlocksIndexes = new Map<TimeLineBlock, number>();
+        orderedBlocks.forEach((block, index) => this.mapOfBlocksIndexes.set(block, index));
 
         if (!previousState.allNodesChecked) {
             const allNodes = this.getAllNodes(this.nodes);
