@@ -267,6 +267,85 @@ describe('CropperWrapper', () => {
         expect(data.flip).toBe(1);
         expect(data.zoomLevel).toBe(140);
     });
+
+    it('enableCropMode should set drag mode to crop and display crop box', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._cropper.setDragMode = jasmine.createSpy('setDragMode');
+        (wrapper as any)._cropper.crop = jasmine.createSpy('crop');
+
+        wrapper.enableCropMode();
+
+        expect((wrapper as any)._cropper.setDragMode).toHaveBeenCalledWith('crop');
+        expect((wrapper as any)._cropper.crop).toHaveBeenCalled();
+    });
+
+    it('enableCropMode should return early when not ready', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._isReady = false;
+        (wrapper as any)._cropper.setDragMode = jasmine.createSpy('setDragMode');
+        (wrapper as any)._cropper.crop = jasmine.createSpy('crop');
+
+        wrapper.enableCropMode();
+
+        expect((wrapper as any)._cropper.setDragMode).not.toHaveBeenCalled();
+        expect((wrapper as any)._cropper.crop).not.toHaveBeenCalled();
+    });
+
+    it('disableCropMode should set drag mode to move and clear crop box', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._cropper.setDragMode = jasmine.createSpy('setDragMode');
+        (wrapper as any)._cropper.clear = jasmine.createSpy('clear');
+
+        wrapper.disableCropMode();
+
+        expect((wrapper as any)._cropper.setDragMode).toHaveBeenCalledWith('move');
+        expect((wrapper as any)._cropper.clear).toHaveBeenCalled();
+    });
+
+    it('disableCropMode should return early when not ready', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._isReady = false;
+        (wrapper as any)._cropper.setDragMode = jasmine.createSpy('setDragMode');
+        (wrapper as any)._cropper.clear = jasmine.createSpy('clear');
+
+        wrapper.disableCropMode();
+
+        expect((wrapper as any)._cropper.setDragMode).not.toHaveBeenCalled();
+        expect((wrapper as any)._cropper.clear).not.toHaveBeenCalled();
+    });
+
+    it('getCroppedCanvas should return cropped canvas when ready', () => {
+        const wrapper = createWrapper();
+        const mockCanvas = document.createElement('canvas');
+        (wrapper as any)._cropper.getCroppedCanvas = jasmine.createSpy('getCroppedCanvas').and.returnValue(mockCanvas);
+
+        const result = wrapper.getCroppedCanvas();
+
+        expect((wrapper as any)._cropper.getCroppedCanvas).toHaveBeenCalled();
+        expect(result).toBe(mockCanvas);
+    });
+
+    it('getCroppedCanvas should return null when not ready', () => {
+        const wrapper = createWrapper();
+        (wrapper as any)._isReady = false;
+        (wrapper as any)._cropper.getCroppedCanvas = jasmine.createSpy('getCroppedCanvas');
+
+        const result = wrapper.getCroppedCanvas();
+
+        expect((wrapper as any)._cropper.getCroppedCanvas).not.toHaveBeenCalled();
+        expect(result).toBeNull();
+    });
+
+    it('getCroppedCanvas should pass options to cropper', () => {
+        const wrapper = createWrapper();
+        const mockCanvas = document.createElement('canvas');
+        const options = { width: 100, height: 100 };
+        (wrapper as any)._cropper.getCroppedCanvas = jasmine.createSpy('getCroppedCanvas').and.returnValue(mockCanvas);
+
+        wrapper.getCroppedCanvas(options);
+
+        expect((wrapper as any)._cropper.getCroppedCanvas).toHaveBeenCalledWith(options);
+    });
 });
 
 

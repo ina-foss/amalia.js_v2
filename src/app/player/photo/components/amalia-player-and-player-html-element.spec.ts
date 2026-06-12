@@ -98,6 +98,51 @@ describe('AmaliaPlayer', () => {
         expect(cropper.clearAnnotations).toHaveBeenCalled();
     });
 
+    it('should delegate annotation mode actions to cropper component', () => {
+        const player = new AmaliaPlayer('#photo-host', { imagesSrc: [], showGallery: false } as any);
+        const cropper = {
+            enableAnnotationMode: jasmine.createSpy('enableAnnotationMode'),
+            disableAnnotationMode: jasmine.createSpy('disableAnnotationMode'),
+            setAnnotationColor: jasmine.createSpy('setAnnotationColor'),
+            setAnnotationLineWidth: jasmine.createSpy('setAnnotationLineWidth'),
+            setAnnotationFontSize: jasmine.createSpy('setAnnotationFontSize'),
+            getDisplayState: () => 's'
+        };
+        (player as any)._cropperComponent = cropper;
+
+        player.enableAnnotationMode();
+        player.disableAnnotationMode();
+        player.setAnnotationColor('#ff0000');
+        player.setAnnotationLineWidth(5);
+        player.setAnnotationFontSize(24);
+
+        expect(cropper.enableAnnotationMode).toHaveBeenCalled();
+        expect(cropper.disableAnnotationMode).toHaveBeenCalled();
+        expect(cropper.setAnnotationColor).toHaveBeenCalledWith('#ff0000');
+        expect(cropper.setAnnotationLineWidth).toHaveBeenCalledWith(5);
+        expect(cropper.setAnnotationFontSize).toHaveBeenCalledWith(24);
+    });
+
+    it('should delegate crop mode actions to cropper component', () => {
+        const player = new AmaliaPlayer('#photo-host', { imagesSrc: [], showGallery: false } as any);
+        const cropper = {
+            enableCropMode: jasmine.createSpy('enableCropMode'),
+            disableCropMode: jasmine.createSpy('disableCropMode'),
+            takeSnapshot: jasmine.createSpy('takeSnapshot').and.returnValue('data:image/png;base64,test'),
+            getDisplayState: () => 's'
+        };
+        (player as any)._cropperComponent = cropper;
+
+        player.enableCropMode();
+        player.disableCropMode();
+        const snapshot = player.takeSnapshot();
+
+        expect(cropper.enableCropMode).toHaveBeenCalled();
+        expect(cropper.disableCropMode).toHaveBeenCalled();
+        expect(cropper.takeSnapshot).toHaveBeenCalled();
+        expect(snapshot).toBe('data:image/png;base64,test');
+    });
+
     it('setDisplayState should update dimensions and notify cropper', () => {
         const player = new AmaliaPlayer('#photo-host', { imagesSrc: [], showGallery: false } as any);
         const host = (player as any).dom as HTMLElement;
