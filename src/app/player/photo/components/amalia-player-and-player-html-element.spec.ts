@@ -3,6 +3,7 @@ import AmaliaPlayer from './AmaliaPlayer';
 import PlayerHtmlElement from './PlayerHtmlElement';
 import MagnifierHtmlElement from './MagnifierHtmlElement';
 import IncrementInfo from './widgets/IncrementInfo';
+import {PlayerEventType} from '../../../core/constant/event-type';
 
 function createButtonStub() {
     const dom = document.createElement('div');
@@ -498,11 +499,16 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         comp.enableAnnotationMode();
         expect((comp as any)._isAnnotationMode).toBeTrue();
         expect(cropperWrapper.disableCropMode).toHaveBeenCalled();
-        expect(playerEventSpy).toHaveBeenCalledWith('picture-annotation-mode', { enabled: true });
+        expect(playerEventSpy).toHaveBeenCalled();
+        const event1 = playerEventSpy.calls.mostRecent().args[0] as CustomEvent;
+        expect(event1.type).toBe(PlayerEventType.PICTURE_ANNOTATION_MODE);
+        expect(event1.detail.enabled).toBeTrue();
 
         comp.disableAnnotationMode();
         expect((comp as any)._isAnnotationMode).toBeFalse();
-        expect(playerEventSpy).toHaveBeenCalledWith('picture-annotation-mode', { enabled: false });
+        const event2 = playerEventSpy.calls.mostRecent().args[0] as CustomEvent;
+        expect(event2.type).toBe(PlayerEventType.PICTURE_ANNOTATION_MODE);
+        expect(event2.detail.enabled).toBeFalse();
     });
 
     it('should handle annotation settings', () => {
@@ -565,26 +571,27 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         expect((comp as any)._isAnnotationMode).toBeFalse();
         expect(annotationCanvas.disableMode).toHaveBeenCalled();
         expect(cropperWrapper.enableCropMode).toHaveBeenCalled();
-        expect(playerEventSpy).toHaveBeenCalledWith('picture-crop-mode', { enabled: true });
+        expect(playerEventSpy).toHaveBeenCalled();
+        const event1 = playerEventSpy.calls.mostRecent().args[0] as CustomEvent;
+        expect(event1.type).toBe(PlayerEventType.PICTURE_CROP_MODE);
+        expect(event1.detail.enabled).toBeTrue();
 
         comp.disableCropMode();
         expect(cropperWrapper.disableCropMode).toHaveBeenCalled();
-        expect(playerEventSpy).toHaveBeenCalledWith('picture-crop-mode', { enabled: false });
+        const event2 = playerEventSpy.calls.mostRecent().args[0] as CustomEvent;
+        expect(event2.type).toBe(PlayerEventType.PICTURE_CROP_MODE);
+        expect(event2.detail.enabled).toBeFalse();
     });
 
     it('should take snapshot with annotations', () => {
+        const mockCanvas = document.createElement('canvas');
+        mockCanvas.width = 100;
+        mockCanvas.height = 100;
         const cropperWrapper = {
-            getCroppedCanvas: jasmine.createSpy('getCroppedCanvas').and.returnValue({
-                width: 100,
-                height: 100,
-                toDataURL: () => 'data:image/png;base64,test'
-            })
+            getCroppedCanvas: jasmine.createSpy('getCroppedCanvas').and.returnValue(mockCanvas)
         };
         const annotationCanvas = {
-            getCanvas: jasmine.createSpy('getCanvas').and.returnValue({
-                width: 100,
-                height: 100
-            })
+            getCanvas: jasmine.createSpy('getCanvas').and.returnValue(mockCanvas)
         };
         (comp as any)._cropperWrapper = cropperWrapper;
         (comp as any)._annotationCanvas = annotationCanvas;
@@ -592,8 +599,11 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         const snapshot = comp.takeSnapshot();
 
         expect(cropperWrapper.getCroppedCanvas).toHaveBeenCalled();
-        expect(snapshot).toBe('data:image/png;base64,test');
-        expect(playerEventSpy).toHaveBeenCalledWith('picture-snapshot', { snapshotData: 'data:image/png;base64,test' });
+        expect(snapshot).toContain('data:image/png;base64');
+        expect(playerEventSpy).toHaveBeenCalled();
+        const event = playerEventSpy.calls.mostRecent().args[0] as CustomEvent;
+        expect(event.type).toBe(PlayerEventType.PICTURE_SNAPSHOT);
+        expect(event.detail.snapshotData).toContain('data:image/png;base64');
     });
 
     it('should center the cropper', () => {
