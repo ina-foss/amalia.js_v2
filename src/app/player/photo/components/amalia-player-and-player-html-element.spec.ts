@@ -75,6 +75,28 @@ describe('AmaliaPlayer', () => {
         expect(cropper.fitToScreen).toHaveBeenCalled();
     });
 
+    it('should delegate annotation actions to cropper component', () => {
+        const player = new AmaliaPlayer('#photo-host', { imagesSrc: [], showGallery: false } as any);
+        const cropper = {
+            enableDrawMode: jasmine.createSpy('enableDrawMode'),
+            enableTextMode: jasmine.createSpy('enableTextMode'),
+            enableEraseMode: jasmine.createSpy('enableEraseMode'),
+            clearAnnotations: jasmine.createSpy('clearAnnotations'),
+            getDisplayState: () => 's'
+        };
+        (player as any)._cropperComponent = cropper;
+
+        player.enableDrawMode();
+        player.enableTextMode();
+        player.enableEraseMode();
+        player.clearAnnotations();
+
+        expect(cropper.enableDrawMode).toHaveBeenCalled();
+        expect(cropper.enableTextMode).toHaveBeenCalled();
+        expect(cropper.enableEraseMode).toHaveBeenCalled();
+        expect(cropper.clearAnnotations).toHaveBeenCalled();
+    });
+
     it('setDisplayState should update dimensions and notify cropper', () => {
         const player = new AmaliaPlayer('#photo-host', { imagesSrc: [], showGallery: false } as any);
         const host = (player as any).dom as HTMLElement;
@@ -465,6 +487,126 @@ describe('PlayerHtmlElement (targeted behaviors)', () => {
         expect(fhSpy).toHaveBeenCalled();
         expect(fsSpy).toHaveBeenCalled();
         expect(destroySpy).toHaveBeenCalled();
+    });
+
+    it('should handle annotation mode enable/disable', () => {
+        const cropperWrapper = {
+            disableCropMode: jasmine.createSpy('disableCropMode')
+        };
+        (comp as any)._cropperWrapper = cropperWrapper;
+
+        comp.enableAnnotationMode();
+        expect((comp as any)._isAnnotationMode).toBeTrue();
+        expect(cropperWrapper.disableCropMode).toHaveBeenCalled();
+        expect(playerEventSpy).toHaveBeenCalledWith('picture-annotation-mode', { enabled: true });
+
+        comp.disableAnnotationMode();
+        expect((comp as any)._isAnnotationMode).toBeFalse();
+        expect(playerEventSpy).toHaveBeenCalledWith('picture-annotation-mode', { enabled: false });
+    });
+
+    it('should handle annotation settings', () => {
+        const annotationCanvas = {
+            setColor: jasmine.createSpy('setColor'),
+            setLineWidth: jasmine.createSpy('setLineWidth'),
+            setFontSize: jasmine.createSpy('setFontSize')
+        };
+        (comp as any)._annotationCanvas = annotationCanvas;
+
+        comp.setAnnotationColor('#ff0000');
+        comp.setAnnotationLineWidth(5);
+        comp.setAnnotationFontSize(24);
+
+        expect(annotationCanvas.setColor).toHaveBeenCalledWith('#ff0000');
+        expect(annotationCanvas.setLineWidth).toHaveBeenCalledWith(5);
+        expect(annotationCanvas.setFontSize).toHaveBeenCalledWith(24);
+    });
+
+    it('should handle annotation draw/text/erase modes', () => {
+        const annotationCanvas = {
+            enableDrawMode: jasmine.createSpy('enableDrawMode'),
+            enableTextMode: jasmine.createSpy('enableTextMode'),
+            enableEraseMode: jasmine.createSpy('enableEraseMode')
+        };
+        (comp as any)._annotationCanvas = annotationCanvas;
+
+        comp.enableDrawMode();
+        comp.enableTextMode();
+        comp.enableEraseMode();
+
+        expect(annotationCanvas.enableDrawMode).toHaveBeenCalled();
+        expect(annotationCanvas.enableTextMode).toHaveBeenCalled();
+        expect(annotationCanvas.enableEraseMode).toHaveBeenCalled();
+    });
+
+    it('should clear annotations', () => {
+        const annotationCanvas = {
+            clear: jasmine.createSpy('clear')
+        };
+        (comp as any)._annotationCanvas = annotationCanvas;
+
+        comp.clearAnnotations();
+
+        expect(annotationCanvas.clear).toHaveBeenCalled();
+    });
+
+    it('should handle crop mode enable/disable with annotation persistence', () => {
+        const cropperWrapper = {
+            enableCropMode: jasmine.createSpy('enableCropMode'),
+            disableCropMode: jasmine.createSpy('disableCropMode')
+        };
+        const annotationCanvas = {
+            disableMode: jasmine.createSpy('disableMode')
+        };
+        (comp as any)._cropperWrapper = cropperWrapper;
+        (comp as any)._annotationCanvas = annotationCanvas;
+
+        comp.enableCropMode();
+        expect((comp as any)._isAnnotationMode).toBeFalse();
+        expect(annotationCanvas.disableMode).toHaveBeenCalled();
+        expect(cropperWrapper.enableCropMode).toHaveBeenCalled();
+        expect(playerEventSpy).toHaveBeenCalledWith('picture-crop-mode', { enabled: true });
+
+        comp.disableCropMode();
+        expect(cropperWrapper.disableCropMode).toHaveBeenCalled();
+        expect(playerEventSpy).toHaveBeenCalledWith('picture-crop-mode', { enabled: false });
+    });
+
+    it('should take snapshot with annotations', () => {
+        const cropperWrapper = {
+            getCroppedCanvas: jasmine.createSpy('getCroppedCanvas').and.returnValue({
+                width: 100,
+                height: 100,
+                toDataURL: () => 'data:image/png;base64,test'
+            })
+        };
+        const annotationCanvas = {
+            getCanvas: jasmine.createSpy('getCanvas').and.returnValue({
+                width: 100,
+                height: 100
+            })
+        };
+        (comp as any)._cropperWrapper = cropperWrapper;
+        (comp as any)._annotationCanvas = annotationCanvas;
+
+        const snapshot = comp.takeSnapshot();
+
+        expect(cropperWrapper.getCroppedCanvas).toHaveBeenCalled();
+        expect(snapshot).toBe('data:image/png;base64,test');
+        expect(playerEventSpy).toHaveBeenCalledWith('picture-snapshot', { snapshotData: 'data:image/png;base64,test' });
+    });
+
+    it('should center the cropper', () => {
+        const cropperWrapper = {
+            center: jasmine.createSpy('center')
+        };
+        (comp as any)._cropperWrapper = cropperWrapper;
+        const showControlsSpy = spyOn<any>(comp, 'showControls').and.callFake(() => undefined);
+
+        comp.center();
+
+        expect(cropperWrapper.center).toHaveBeenCalled();
+        expect(showControlsSpy).toHaveBeenCalled();
     });
 
 });
