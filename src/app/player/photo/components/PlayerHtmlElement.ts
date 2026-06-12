@@ -9,6 +9,7 @@ import IncrementInfo from "./widgets/IncrementInfo";
 import AmaliaPlayer from "./AmaliaPlayer";
 import Utils from "../business/Utils";
 import MagnifierHtmlElement from "./MagnifierHtmlElement";
+import AnnotationCanvas from "../business/AnnotationCanvas";
 
 export default class PlayerHtmlElement extends BaseHtmlElement {
 
@@ -56,6 +57,8 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
     private _magnifier: MagnifierHtmlElement;
 
     private readonly _toolbarSettings: AmaliaPlayerToolbarSettings;
+    private _annotationCanvas: AnnotationCanvas;
+    private _isAnnotationMode: boolean = false;
 
     constructor(setting: AmaliaPlayerSettings, playerInstance: AmaliaPlayer) {
         super();
@@ -689,6 +692,11 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
             }
             this.triggerEvent(PlayerEventType.PICTURE_READY);
             this.showControls();
+            
+            // Initialize annotation canvas if needed
+            if (this._isAnnotationMode && !this._annotationCanvas) {
+                this.initAnnotationCanvas();
+            }
         };
         this._cropperZoomRef = (e: CustomEvent) => {
             this._zoomInfo?.setResultValue(e.detail.zoomLevel);
@@ -802,6 +810,14 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         this.eventMagnify();
     }
 
+    public center() {
+        if (!this._cropperWrapper) {
+            return;
+        }
+        this._cropperWrapper.center();
+        this.showControls();
+    }
+
     public fitToScreen() {
         this.eventFitToScreen();
     }
@@ -810,6 +826,145 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         if (this._cropperWrapper) {
             this._cropperWrapper.destroy();
         }
+        if (this._annotationCanvas) {
+            this._annotationCanvas.destroy();
+            this._annotationCanvas = null;
+        }
+    }
+
+    private initAnnotationCanvas(): void {
+        const cropperContainer = this.dom.querySelector<HTMLElement>('.cropper-container');
+        if (!cropperContainer) {
+            return;
+        }
+        this._annotationCanvas = new AnnotationCanvas(cropperContainer);
+    }
+
+    public enableAnnotationMode(): void {
+        this._isAnnotationMode = true;
+        // Make sure the cropper is not in crop-drag mode so it doesn't fight the overlay.
+        this._cropperWrapper?.disableCropMode();
+        this.dom.classList.remove('crop-mode-active');
+        if (this._cropperWrapper && !this._annotationCanvas) {
+            this.initAnnotationCanvas();
+        }
+        if (this._annotationCanvas) {
+            this._annotationCanvas.enableDrawMode();
+        }
+        this.triggerEvent(PlayerEventType.PICTURE_ANNOTATION_MODE, { enabled: true });
+    }
+
+    public disableAnnotationMode(): void {
+        this._isAnnotationMode = false;
+        if (this._annotationCanvas) {
+            this._annotationCanvas.disableMode();
+        }
+        this.triggerEvent(PlayerEventType.PICTURE_ANNOTATION_MODE, { enabled: false });
+    }
+
+    public setAnnotationColor(color: string): void {
+        if (this._annotationCanvas) {
+            this._annotationCanvas.setColor(color);
+        }
+    }
+
+    public setAnnotationLineWidth(width: number): void {
+        if (this._annotationCanvas) {
+            this._annotationCanvas.setLineWidth(width);
+        }
+    }
+
+    public setAnnotationFontSize(size: number): void {
+        if (this._annotationCanvas) {
+            this._annotationCanvas.setFontSize(size);
+        }
+    }
+
+    public enableDrawMode(): void {
+        if (this._annotationCanvas) {
+            this._annotationCanvas.enableDrawMode();
+        }
+    }
+
+    public enableTextMode(): void {
+        if (this._annotationCanvas) {
+            this._annotationCanvas.enableTextMode();
+        }
+    }
+
+    public enableEraseMode(): void {
+        if (this._annotationCanvas) {
+            this._annotationCanvas.enableEraseMode();
+        }
+    }
+
+    public clearAnnotations(): void {
+        if (this._annotationCanvas) {
+            this._annotationCanvas.clear();
+        }
+    }
+
+    public getAnnotationSnapshot(): string {
+        if (this._annotationCanvas) {
+            return this._annotationCanvas.getSnapshot();
+        }
+        return null;
+    }
+
+    public enableCropMode(): void {
+        if (!this._cropperWrapper) {
+            return;
+        }
+        // Disable annotation mode but keep the canvas so annotations persist.
+        if (this._annotationCanvas) {
+            this._isAnnotationMode = false;
+            this._annotationCanvas.disableMode();
+        }
+        this._cropperWrapper.enableCropMode();
+        this.dom.classList.add('crop-mode-active');
+        this.triggerEvent(PlayerEventType.PICTURE_CROP_MODE, { enabled: true });
+    }
+
+    public disableCropMode(): void {
+        if (!this._cropperWrapper) {
+            return;
+        }
+        this._cropperWrapper.disableCropMode();
+        this.dom.classList.remove('crop-mode-active');
+        this.triggerEvent(PlayerEventType.PICTURE_CROP_MODE, { enabled: false });
+    }
+
+    public takeSnapshot(): string {
+        if (!this._cropperWrapper) {
+            return null;
+        }
+
+        // Get the cropped canvas from CropperJS
+        const croppedCanvas = this._cropperWrapper.getCroppedCanvas();
+        if (!croppedCanvas) {
+            return null;
+        }
+
+        // Create a combined canvas with annotations
+        const combinedCanvas = document.createElement('canvas');
+        combinedCanvas.width = croppedCanvas.width;
+        combinedCanvas.height = croppedCanvas.height;
+        const ctx = combinedCanvas.getContext('2d');
+
+        // Draw the cropped image
+        ctx.drawImage(croppedCanvas, 0, 0);
+
+        // Draw annotations if present (canvas is a synchronous image source)
+        if (this._annotationCanvas) {
+            const annotationCanvas = this._annotationCanvas.getCanvas();
+            if (annotationCanvas) {
+                ctx.drawImage(annotationCanvas, 0, 0, combinedCanvas.width, combinedCanvas.height);
+            }
+        }
+
+        const snapshotData = combinedCanvas.toDataURL('image/png');
+        this.triggerEvent(PlayerEventType.PICTURE_SNAPSHOT, { snapshotData });
+        return snapshotData;
     }
 
     public removeFromDom() {

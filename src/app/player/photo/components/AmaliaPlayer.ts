@@ -88,8 +88,60 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         this._cropperComponent.magnify();
     }
 
+    public center() {
+        this._cropperComponent.center();
+    }
+
     public fitToScreen() {
         this._cropperComponent.fitToScreen();
+    }
+
+    public enableAnnotationMode() {
+        this._cropperComponent.enableAnnotationMode();
+    }
+
+    public disableAnnotationMode() {
+        this._cropperComponent.disableAnnotationMode();
+    }
+
+    public setAnnotationColor(color: string) {
+        this._cropperComponent.setAnnotationColor(color);
+    }
+
+    public setAnnotationLineWidth(width: number) {
+        this._cropperComponent.setAnnotationLineWidth(width);
+    }
+
+    public setAnnotationFontSize(size: number) {
+        this._cropperComponent.setAnnotationFontSize(size);
+    }
+
+    public enableDrawMode() {
+        this._cropperComponent.enableDrawMode();
+    }
+
+    public enableTextMode() {
+        this._cropperComponent.enableTextMode();
+    }
+
+    public enableEraseMode() {
+        this._cropperComponent.enableEraseMode();
+    }
+
+    public clearAnnotations() {
+        this._cropperComponent.clearAnnotations();
+    }
+
+    public enableCropMode() {
+        this._cropperComponent.enableCropMode();
+    }
+
+    public disableCropMode() {
+        this._cropperComponent.disableCropMode();
+    }
+
+    public takeSnapshot(): string {
+        return this._cropperComponent.takeSnapshot();
     }
 
     public setDisplayState(displayState: string, width: number = null, height: number = null) {

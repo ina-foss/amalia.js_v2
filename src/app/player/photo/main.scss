@@ -220,19 +220,60 @@
       }
 
       // Viewer mode: hide crop-box UI artifacts (rectangle/overlay/handles).
-      .cropper-modal,
-      .cropper-view-box,
-      .cropper-dashed,
-      .cropper-center,
-      .cropper-line,
-      .cropper-point,
-      .cropper-face {
-        opacity: 0 !important;
+      // Only while NOT in crop mode: in crop mode the borders must be visible.
+      &:not(.crop-mode-active) {
+        .cropper-modal,
+        .cropper-view-box,
+        .cropper-dashed,
+        .cropper-center,
+        .cropper-line,
+        .cropper-point,
+        .cropper-face {
+          opacity: 0 !important;
+        }
+
+        .cropper-view-box {
+          outline: none !important;
+          box-shadow: none !important;
+        }
       }
 
-      .cropper-view-box {
-        outline: none !important;
-        box-shadow: none !important;
+      // Crop mode: make the crop box clearly visible.
+      &.crop-mode-active {
+        .cropper-modal {
+          opacity: 0.5 !important;
+        }
+
+        .cropper-view-box {
+          opacity: 1 !important;
+          outline: 2px solid var(--amalia-primary-color, #39f) !important;
+          outline-color: rgba(57, 153, 255, 0.85);
+        }
+
+        .cropper-dashed {
+          opacity: 1 !important;
+          border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .cropper-line {
+          opacity: 0.2 !important;
+          background-color: var(--amalia-primary-color, #39f);
+        }
+
+        .cropper-point {
+          opacity: 1 !important;
+          width: 8px;
+          height: 8px;
+          background-color: var(--amalia-primary-color, #39f);
+        }
+
+        .cropper-face {
+          opacity: 0.1 !important;
+        }
+
+        .cropper-center {
+          opacity: 0.75 !important;
+        }
       }
 
       .ajs-photo-reduced-view {

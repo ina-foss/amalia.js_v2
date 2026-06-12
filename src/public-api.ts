@@ -29,3 +29,8 @@ export { LoggerLevel } from './app/core/logger/logger-level';
 
 // Metadata
 export { MetadataManager } from './app/core/metadata/metadata-manager';
+
+// Photo Player
+export { default as AmaliaPhotoPlayer } from './app/player/photo/components/AmaliaPlayer';
+export { default as AnnotationCanvas } from './app/player/photo/business/AnnotationCanvas';
+export type { AnnotationSettings, TextAnnotation } from './app/player/photo/business/AnnotationCanvas';

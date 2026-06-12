@@ -453,6 +453,140 @@
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen-off'"></use>
                         </svg>
                     </div>
+                    <!-- Picture Player: Center -->
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'center'"
+                        class="control center" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                    </div>
+                    <!-- Picture Player: Crop -->
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'crop'"
+                        class="control crop" [class.magnify-locked]="magnifyEnabled" [class.active]="cropModeEnabled" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                    </div>
+                    <!-- Picture Player: Draw -->
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'draw'"
+                        class="control draw" [class.magnify-locked]="magnifyEnabled" [class.active]="drawModeEnabled" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                        <div class="annotation-toolbar" *ngIf="drawModeEnabled" (click)="$event.stopPropagation()">
+                            <div class="annotation-hint">Clic droit pour dessiner</div>
+                            <div class="annotation-colors">
+                                <span *ngFor="let col of annotationColors" class="annotation-color-swatch"
+                                    [class.selected]="annotationColor === col" [style.background-color]="col"
+                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"></span>
+                            </div>
+                            <div class="annotation-sizes">
+                                <span *ngFor="let size of annotationSizes" class="annotation-size-option"
+                                    [class.selected]="annotationLineWidth === size.lineWidth"
+                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)">
+                                    <span class="annotation-size-dot" [style.width.px]="size.lineWidth * 2" [style.height.px]="size.lineWidth * 2"></span>
+                                    {{size.label}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Picture Player: Text -->
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'text'"
+                        class="control text" [class.magnify-locked]="magnifyEnabled" [class.active]="textModeEnabled" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                        <div class="annotation-toolbar" *ngIf="textModeEnabled" (click)="$event.stopPropagation()">
+                            <div class="annotation-hint">Clic droit pour écrire</div>
+                            <div class="annotation-colors">
+                                <span *ngFor="let col of annotationColors" class="annotation-color-swatch"
+                                    [class.selected]="annotationColor === col" [style.background-color]="col"
+                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"></span>
+                            </div>
+                            <div class="annotation-sizes">
+                                <span *ngFor="let size of annotationSizes" class="annotation-size-option"
+                                    [class.selected]="annotationLineWidth === size.lineWidth"
+                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)">
+                                    <span class="annotation-size-text">A</span>
+                                    {{size.label}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Picture Player: Erase -->
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'erase'"
+                        class="control erase" [class.magnify-locked]="magnifyEnabled" [class.active]="eraseModeEnabled" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                        <div class="annotation-toolbar" *ngIf="eraseModeEnabled" (click)="$event.stopPropagation()">
+                            <div class="annotation-hint">Clic droit pour effacer</div>
+                            <div class="annotation-sizes">
+                                <span *ngFor="let size of annotationSizes" class="annotation-size-option"
+                                    [class.selected]="annotationLineWidth === size.lineWidth"
+                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)">
+                                    <span class="annotation-size-dot" [style.width.px]="size.lineWidth * 2" [style.height.px]="size.lineWidth * 2"></span>
+                                    {{size.label}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Picture Player: Reset -->
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'reset'"
+                        class="control reset" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                    </div>
+                    <!-- Picture Player: Snapshot -->
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
+                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
+                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
+                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'snapshot'"
+                        class="control snapshot" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
+                        [ngStyle]="{'order':c.order ? c.order:'0'}">
+                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
+                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                        </svg>
+                    </div>
                     <!--Other controls-->
                     <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
                          ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')

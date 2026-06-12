@@ -4,6 +4,7 @@ import {
     Component,
     ElementRef,
     EventEmitter,
+    HostListener,
     Input,
     NgZone,
     Output,
@@ -278,6 +279,34 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Picture player magnify state
      */
     public magnifyEnabled = false;
+    /**
+     * Picture player crop mode state
+     */
+    public cropModeEnabled = false;
+    /**
+     * Picture player annotation mode state ('draw' | 'text' | 'erase' | null)
+     */
+    public annotationMode: 'draw' | 'text' | 'erase' | null = null;
+    /**
+     * Available annotation colors
+     */
+    public readonly annotationColors: string[] = ['#ff0000', '#ff9800', '#ffeb3b', '#4caf50', '#2196f3', '#ffffff', '#000000'];
+    /**
+     * Available annotation stroke sizes (label + line width + font size)
+     */
+    public readonly annotationSizes: { label: string; lineWidth: number; fontSize: number }[] = [
+        { label: 'Fine', lineWidth: 2, fontSize: 16 },
+        { label: 'Moyenne', lineWidth: 5, fontSize: 24 },
+        { label: 'Large', lineWidth: 10, fontSize: 40 }
+    ];
+    /**
+     * Currently selected annotation color
+     */
+    public annotationColor: string = '#ff0000';
+    /**
+     * Currently selected annotation stroke width
+     */
+    public annotationLineWidth: number = 5;
     /**
      * Picture player current zoom level (%)
      */
@@ -763,6 +792,24 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             zoomIn: () => picturePlayer?.zoom(),
             zoomOut: () => picturePlayer?.unZoom(),
             pinControls: () => this.pinControls(),
+            center: () => picturePlayer?.center(),
+            crop: () => this.toggleCropMode(picturePlayer),
+            draw: () => this.toggleAnnotationMode(picturePlayer, 'draw'),
+            text: () => this.toggleAnnotationMode(picturePlayer, 'text'),
+            erase: () => this.toggleAnnotationMode(picturePlayer, 'erase'),
+            reset: () => {
+                picturePlayer?.clearAnnotations();
+                if (this.annotationModeEnabled) {
+                    picturePlayer?.disableAnnotationMode();
+                    this.setAnnotationMode(null);
+                }
+            },
+            snapshot: () => {
+                const snapshot = picturePlayer?.takeSnapshot();
+                if (snapshot) {
+                    this.downloadSnapshot(snapshot);
+                }
+            },
         };
 
         const action = pictureActions[control];
@@ -773,6 +820,116 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             action();
         }
         return true;
+    }
+
+    public get drawModeEnabled(): boolean {
+        return this.annotationMode === 'draw';
+    }
+
+    public get textModeEnabled(): boolean {
+        return this.annotationMode === 'text';
+    }
+
+    public get eraseModeEnabled(): boolean {
+        return this.annotationMode === 'erase';
+    }
+
+    public get annotationModeEnabled(): boolean {
+        return this.annotationMode !== null;
+    }
+
+    @HostListener('document:keydown.escape')
+    public onEscapeKey(): void {
+        const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
+        if (this.cropModeEnabled) {
+            picturePlayer?.disableCropMode();
+            this.setCropModeEnabled(false);
+        }
+        if (this.annotationModeEnabled) {
+            picturePlayer?.disableAnnotationMode();
+            this.setAnnotationMode(null);
+        }
+    }
+
+    private toggleCropMode(picturePlayer: any): void {
+        if (this.cropModeEnabled) {
+            picturePlayer?.disableCropMode();
+            this.setCropModeEnabled(false);
+        } else {
+            // Crop and annotation are mutually exclusive.
+            if (this.annotationModeEnabled) {
+                picturePlayer?.disableAnnotationMode();
+                this.setAnnotationMode(null);
+            }
+            picturePlayer?.enableCropMode();
+            this.setCropModeEnabled(true);
+        }
+    }
+
+    private setCropModeEnabled(enabled: boolean): void {
+        this.cropModeEnabled = enabled;
+        this.cdr.markForCheck();
+    }
+
+    private toggleAnnotationMode(picturePlayer: any, mode: 'draw' | 'text' | 'erase'): void {
+        if (this.annotationMode === mode) {
+            picturePlayer?.disableAnnotationMode();
+            this.setAnnotationMode(null);
+            return;
+        }
+        // Crop and annotation are mutually exclusive.
+        if (this.cropModeEnabled) {
+            picturePlayer?.disableCropMode();
+            this.setCropModeEnabled(false);
+        }
+        picturePlayer?.enableAnnotationMode();
+        if (mode === 'draw') {
+            picturePlayer?.enableDrawMode();
+        } else if (mode === 'text') {
+            picturePlayer?.enableTextMode();
+        } else {
+            picturePlayer?.enableEraseMode();
+        }
+        this.applyAnnotationSettings(picturePlayer);
+        this.setAnnotationMode(mode);
+    }
+
+    private setAnnotationMode(mode: 'draw' | 'text' | 'erase' | null): void {
+        this.annotationMode = mode;
+        this.cdr.markForCheck();
+    }
+
+    private applyAnnotationSettings(picturePlayer: any): void {
+        picturePlayer?.setAnnotationColor(this.annotationColor);
+        picturePlayer?.setAnnotationLineWidth(this.annotationLineWidth);
+        const size = this.annotationSizes.find(s => s.lineWidth === this.annotationLineWidth);
+        if (size) {
+            picturePlayer?.setAnnotationFontSize(size.fontSize);
+        }
+    }
+
+    public selectAnnotationColor(color: string): void {
+        this.annotationColor = color;
+        const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
+        picturePlayer?.setAnnotationColor(color);
+        this.cdr.markForCheck();
+    }
+
+    public selectAnnotationSize(size: { label: string; lineWidth: number; fontSize: number }): void {
+        this.annotationLineWidth = size.lineWidth;
+        const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
+        picturePlayer?.setAnnotationLineWidth(size.lineWidth);
+        picturePlayer?.setAnnotationFontSize(size.fontSize);
+        this.cdr.markForCheck();
+    }
+
+    private downloadSnapshot(dataUrl: string): void {
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = `snapshot-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     private handleTimelineControl(control: string, mediaPlayer: any, paused: boolean): boolean {

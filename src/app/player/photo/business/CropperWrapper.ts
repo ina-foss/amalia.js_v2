@@ -215,4 +215,29 @@ export default class CropperWrapper {
             zoomLevel
         };
     }
+
+    public enableCropMode(): void {
+        if (!this._isReady) {
+            return;
+        }
+        // Allow drawing/redrawing a crop box by dragging...
+        this._cropper.setDragMode('crop');
+        // ...and immediately display a default, movable/resizable crop box (classic behaviour).
+        this._cropper.crop();
+    }
+
+    public disableCropMode(): void {
+        if (!this._isReady) {
+            return;
+        }
+        this._cropper.setDragMode('move');
+        this._cropper.clear();
+    }
+
+    public getCroppedCanvas(options?: Cropper.GetCroppedCanvasOptions): HTMLCanvasElement {
+        if (!this._isReady) {
+            return null;
+        }
+        return this._cropper.getCroppedCanvas(options);
+    }
 }

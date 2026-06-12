@@ -148,6 +148,18 @@ export enum PlayerEventType {
      */
     PICTURE_SELECT = 'ina.amalia.photo.event.select',
     /**
+     * Invoked when picture player annotation mode is toggled
+     */
+    PICTURE_ANNOTATION_MODE = 'ina.amalia.photo.event.annotationMode',
+    /**
+     * Invoked when picture player crop mode is toggled
+     */
+    PICTURE_CROP_MODE = 'ina.amalia.photo.event.cropMode',
+    /**
+     * Invoked when picture player snapshot is taken
+     */
+    PICTURE_SNAPSHOT = 'ina.amalia.photo.event.snapshot',
+    /**
      * Invoked when selected metadata has changed
      */
     SELECTED_METADATA_CHANGE = 'ina.player.SELECTED_METADATA_CHANGE',
