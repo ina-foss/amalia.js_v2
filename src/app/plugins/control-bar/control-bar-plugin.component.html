@@ -491,17 +491,19 @@
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
-                        <div class="annotation-toolbar" *ngIf="drawModeEnabled" (click)="$event.stopPropagation()">
+                        <div class="annotation-toolbar" *ngIf="drawModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
                             <div class="annotation-hint">Clic droit pour dessiner</div>
                             <div class="annotation-colors">
                                 <span *ngFor="let col of annotationColors" class="annotation-color-swatch"
                                     [class.selected]="annotationColor === col" [style.background-color]="col"
-                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"></span>
+                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"
+                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationColor(col)" role="button" tabindex="0"></span>
                             </div>
                             <div class="annotation-sizes">
                                 <span *ngFor="let size of annotationSizes" class="annotation-size-option"
                                     [class.selected]="annotationLineWidth === size.lineWidth"
-                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)">
+                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)"
+                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationSize(size)" role="button" tabindex="0">
                                     <span class="annotation-size-dot" [style.width.px]="size.lineWidth * 2" [style.height.px]="size.lineWidth * 2"></span>
                                     {{size.label}}
                                 </span>
@@ -520,17 +522,19 @@
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
-                        <div class="annotation-toolbar" *ngIf="textModeEnabled" (click)="$event.stopPropagation()">
+                        <div class="annotation-toolbar" *ngIf="textModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
                             <div class="annotation-hint">Clic droit pour écrire</div>
                             <div class="annotation-colors">
                                 <span *ngFor="let col of annotationColors" class="annotation-color-swatch"
                                     [class.selected]="annotationColor === col" [style.background-color]="col"
-                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"></span>
+                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"
+                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationColor(col)" role="button" tabindex="0"></span>
                             </div>
                             <div class="annotation-sizes">
                                 <span *ngFor="let size of annotationSizes" class="annotation-size-option"
                                     [class.selected]="annotationLineWidth === size.lineWidth"
-                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)">
+                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)"
+                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationSize(size)" role="button" tabindex="0">
                                     <span class="annotation-size-text">A</span>
                                     {{size.label}}
                                 </span>
@@ -549,12 +553,13 @@
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
-                        <div class="annotation-toolbar" *ngIf="eraseModeEnabled" (click)="$event.stopPropagation()">
+                        <div class="annotation-toolbar" *ngIf="eraseModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
                             <div class="annotation-hint">Clic droit pour effacer</div>
                             <div class="annotation-sizes">
                                 <span *ngFor="let size of annotationSizes" class="annotation-size-option"
                                     [class.selected]="annotationLineWidth === size.lineWidth"
-                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)">
+                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)"
+                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationSize(size)" role="button" tabindex="0">
                                     <span class="annotation-size-dot" [style.width.px]="size.lineWidth * 2" [style.height.px]="size.lineWidth * 2"></span>
                                     {{size.label}}
                                 </span>
