@@ -104,6 +104,60 @@ describe('TimelinePluginComponent', () => {
         component.toggleAllNodes();
         expect(component.selectedNodes().length).toBe(0);
     });
+
+    it('should preserve the timeline filter when metadata is rebuilt with new ids', () => {
+        const oldFacesId = 'FACES_RECOGNITION-1710000000';
+        const oldScheduleId = 'DAY_SCHEDULE-1710000000';
+        const newFacesId = 'FACES_RECOGNITION-1720000000';
+        const newScheduleId = 'DAY_SCHEDULE-1720000000';
+
+        component.pluginConfiguration = {
+            name: '',
+            metadataIds: [],
+            data: {
+                mainMetadataIds: []
+            }
+        } as any;
+        component.listOfBlocks = [
+            { id: oldFacesId, displayState: false, data: [] },
+            { id: oldScheduleId, displayState: true, data: [] }
+        ] as any;
+        component.nodes = [
+            { key: DataType.FACES_RECOGNITION, children: [{ key: oldFacesId }] },
+            { key: DataType.DAY_SCHEDULE, children: [{ key: oldScheduleId }] }
+        ] as TreeNode[];
+        component.selectedNodes.set([
+            component.nodes[1],
+            component.nodes[1].children[0]
+        ]);
+        component.allNodesChecked = false;
+
+        (component as any).mediaPlayerElement = { metadataManager: {} };
+        spyOn(component, 'handleMetadataProperties').and.callFake(() => {
+            component.listOfBlocks = [
+                { id: newFacesId, displayState: true, data: [] },
+                { id: newScheduleId, displayState: true, data: [] }
+            ] as any;
+            component.nodes = [
+                { key: DataType.FACES_RECOGNITION, children: [{ key: newFacesId }] },
+                { key: DataType.DAY_SCHEDULE, children: [{ key: newScheduleId }] }
+            ] as TreeNode[];
+            component.selectedNodes.set(component.getAllNodes(component.nodes));
+            component.allNodesChecked = true;
+        });
+        spyOn(component, 'createMainMetadataIds').and.returnValue([]);
+
+        component.parseTimelineMetadata();
+
+        expect(component.listOfBlocks.map((block) => block.displayState)).toEqual([false, true]);
+        expect(component.selectedNodes().map((node) => node.key)).toEqual([
+            newScheduleId,
+            DataType.DAY_SCHEDULE
+        ]);
+        expect(component.allNodesChecked).toBeFalse();
+        expect(component.indeterminate).toBeTrue();
+    });
+
     it('should toggle all blocks state', () => {
         const mainElement = document.createElement('div');
         const stateControl = document.createElement('div');
