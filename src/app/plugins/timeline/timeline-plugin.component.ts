@@ -291,7 +291,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 });
             }
         }
+        const previousFilterState = this.captureFilterState();
         this.handleMetadataProperties(listOfMetadata, metadataManager);
+        this.restoreFilterState(previousFilterState);
 
         if (!handleMetadataIds) {
             mainMetadataIds.length = 0;
@@ -345,6 +347,48 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
         return listOfLocalisations;
     }
+    /**
+     * Capture the current filter state (selected nodes, checked state and per-block display state)
+     * so it can be restored after a metadata refresh (e.g. on USER_SEGMENT_CHANGED).
+     */
+    private captureFilterState(): { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean> } {
+        const displayStateById = new Map<string, boolean>();
+        this.listOfBlocks.forEach((block) => {
+            displayStateById.set(block.id, block.displayState);
+        });
+        const selectedKeys = new Set<string>(this.selectedNodes().map((node) => node.key));
+        return {
+            hasState: this.nodes.length > 0,
+            selectedKeys,
+            allNodesChecked: this.allNodesChecked,
+            displayStateById
+        };
+    }
+
+    /**
+     * Restore a previously captured filter state after handleMetadataProperties has rebuilt
+     * nodes/listOfBlocks, preserving the user's filter selections across metadata refreshes.
+     */
+    private restoreFilterState(previousState: { hasState: boolean; selectedKeys: Set<string>; allNodesChecked: boolean; displayStateById: Map<string, boolean> }) {
+        if (!previousState.hasState) {
+            return;
+        }
+
+        this.listOfBlocks.forEach((block) => {
+            if (previousState.displayStateById.has(block.id)) {
+                block.displayState = previousState.displayStateById.get(block.id);
+            }
+        });
+
+        if (!previousState.allNodesChecked) {
+            const allNodes = this.getAllNodes(this.nodes);
+            this.selectedNodes.set(allNodes.filter((node) => previousState.selectedKeys.has(node.key)));
+            const nbNodes = allNodes.length;
+            const nbSelectedNodes = this.selectedNodes().length;
+            this.allNodesChecked = nbSelectedNodes === nbNodes;
+        }
+    }
+
     // Handle metadata properties
     handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: any) {
         this.nodes = [];
