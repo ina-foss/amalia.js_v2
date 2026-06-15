@@ -279,7 +279,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
             } else {
                 segmentToBeAdded.data.media = 'AUDIO';
-                segmentToBeAdded.thumb = 'assets/amalia/images/newAudioBackGround.png';
+                segmentToBeAdded.thumb = '/assets/amalia/images/newAudioBackGround.png';
             }
 
             segmentToBeAdded.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcOffset) * 1000;
@@ -341,7 +341,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 localisation.tcOffset = tcOffset;
                 localisation.data.tcMax = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
                 if (this.mediaPlayerElement.getMediaPlayer()?.mse?.mediaType === 'AUDIO') {
-                    localisation.thumb = 'assets/amalia/images/newAudioBackGround.png';
+                    localisation.thumb = '/assets/amalia/images/newAudioBackGround.png';
                 }
             })
         }

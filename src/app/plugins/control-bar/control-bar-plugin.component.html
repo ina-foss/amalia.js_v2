@@ -43,11 +43,11 @@
                         *ngSwitchCase="'playPause'" class="play-pause control" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
                         </svg>
                         <svg *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()"
                             class="amalia-svg-pause-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#pause'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pause'"></use>
                         </svg>
                     </div>
                     <!--FullScreen Button -->
@@ -58,10 +58,10 @@
                         *ngSwitchCase="'toggleFullScreen'" class="toggleFullScreen control" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
                         </svg>
                         <svg *ngIf="fullScreenMode === true" class="amalia-svg-compress-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#compress'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#compress'"></use>
                         </svg>
                     </div>
                     <!--Aspect Ratio-->
@@ -78,14 +78,14 @@
                                 <li class="header-list">{{c.label}}</li>
                                 <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setVideoAspectRatio('16:9')">
                                     <svg class="amalia-svg-checked-size icon">
-                                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
+                                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
                                         </use>
                                     </svg>
                                     4:3 <span *ngIf="defaultRatio =='4:3'">(original)</span>
                                 </li>
                                 <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')">
                                     <svg class="amalia-svg-checked-size icon">
-                                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
+                                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
                                         </use>
                                     </svg>
                                     16:9 <span *ngIf="defaultRatio =='16:9'">(original)</span>
@@ -112,7 +112,7 @@
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <a target="_blank" (click)="buildUrlWithTc(ctl,c);hideAll()" #ctl>
                             <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                             </svg>
                         </a>
                     </div>
@@ -124,7 +124,7 @@
                         class="control images-forward" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="nextPlaybackRateImages(c.data.speed)">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Backward Images-->
@@ -135,7 +135,7 @@
                         class="control images-backward" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="previousPlaybackRateImages(c.data.speed)">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Callback-->
@@ -146,7 +146,7 @@
                         class="control callback" [attr.aria-label]="c.label" tooltip="{{c.label}}" placement="top"
                         autoPlacement="true" [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Volume-->
@@ -158,11 +158,11 @@
                         (mouseenter)="volumeMouseEnter(c.data)" #volumeButton>
                         <svg tooltip="{{c.label}}" *ngIf="volumeLeft > 0 || volumeRight > 0"
                             class="amalia-svg-volume-on-size icon" (click)="handleMuteUnmuteVolume()" #volumeMute>
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                         </svg>
                         <svg *ngIf="volumeLeft == 0 && volumeRight == 0" class="amalia-svg-volume-off-size icon"
                             (click)="handleMuteUnmuteVolume()" #volumeUnmute>
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                         </svg>
                         <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
                             (mouseleave)="enableVolumeSlider=false;openPisteAudio =false">
@@ -173,12 +173,12 @@
                                         <div (click)="handleMuteUnmuteVolume('l')" class="channel-volume-icon">
                                             <svg *ngIf="volumeLeft > 0" class="amalia-svg-volume-on-size icon">
                                                 <use
-                                                    [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
                                                 </use>
                                             </svg>
                                             <svg *ngIf="volumeLeft== 0" class="amalia-svg-volume-off-size icon">
                                                 <use
-                                                    [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'">
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'">
                                                 </use>
                                             </svg>
                                         </div>
@@ -200,12 +200,12 @@
                                         <div (click)="handleMuteUnmuteVolume('r')" class="channel-volume-icon">
                                             <svg *ngIf="volumeRight > 0" class="amalia-svg-volume-on-size icon">
                                                 <use
-                                                    [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
                                                 </use>
                                             </svg>
                                             <svg *ngIf="volumeRight== 0" class="amalia-svg-volume-off-size icon">
                                                 <use
-                                                    [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'">
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'">
                                                 </use>
                                             </svg>
                                         </div>
@@ -222,13 +222,13 @@
                                         <svg *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume"
                                             class="amalia-svg-padlock-open-size icon">
                                             <use
-                                                [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#padlock-open'">
+                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#padlock-open'">
                                             </use>
                                         </svg>
                                         <svg *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
                                             class="amalia-svg-padlock-close-size icon">
                                             <use
-                                                [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#padlock-close'">
+                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#padlock-close'">
                                             </use>
                                         </svg>
                                     </div>
@@ -237,7 +237,7 @@
                                         [ngClass]="{'on':openPisteAudio}" (mouseleave)="activated = true">
                                         <svg class="amalia-svg-volume-on-size icon" style="height: 20px">
                                             <use
-                                                [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#piste-audio'">
+                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#piste-audio'">
                                             </use>
                                         </svg>
                                         <span class="piste-audio-title">Piste audio</span>
@@ -245,7 +245,7 @@
                                         <div class="piste-info-mid">
                                             <svg class="amalia-svg-right-size icon">
                                                 <use
-                                                    [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'">
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'">
                                                 </use>
                                             </svg>
                                         </div>
@@ -256,7 +256,7 @@
                                 <div class="title" (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();">
                                     <div class="piste-info-mid">
                                         <svg class="amalia-svg-right-size icon">
-                                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'">
+                                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'">
                                             </use>
                                         </svg>
                                     </div>
@@ -266,7 +266,7 @@
                                     <li *ngFor="let track of listOfTracks" (click)="changeAudioTrack(track.track)"
                                         [ngClass]="{'selected':selectedTrack==track.track}">
                                         <svg class="amalia-svg-checked-size icon">
-                                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
+                                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
                                             </use>
                                         </svg>
                                         <span>{{track.label}}</span>
@@ -283,7 +283,7 @@
                         class="control subtitle" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}"
                         (mouseenter)="hideAll();enableListPositionsSubtitle=true;">
                         <svg class="amalia-svg-subtitle-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"></use>
                         </svg>
                         <div class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}"
                             (mouseleave)="enableListPositionsSubtitle=false">
@@ -293,7 +293,7 @@
                                     [ngClass]="{'selected': subtitlePosition === pos.key}"
                                     (click)="updateSubtitlePosition(pos.key)">
                                     <svg class="amalia-svg-checked-size icon">
-                                        <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
+                                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
                                         </use>
                                     </svg>
                                     {{pos.label}}
@@ -310,7 +310,7 @@
                         (click)="hideAll('menu');$event.stopPropagation();enableMenu = !enableMenu;"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-dots-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#dots'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#dots'"></use>
                         </svg>
                     </div>
                     <!-- pinControls-->
@@ -321,7 +321,7 @@
                         (click)="controlClicked(c.control)" *ngSwitchCase="'pinControls'"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- displaySlider-->
@@ -332,7 +332,7 @@
                         (click)="controlClicked(c.control)" *ngSwitchCase="'displaySlider'"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Magnify Button (toggle icon) -->
@@ -345,10 +345,10 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="!magnifyEnabled" class="amalia-svg-magnify-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
                         </svg>
                         <svg *ngIf="magnifyEnabled" class="amalia-svg-magnify-off-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Zoom Info (minus / percentage / plus) -->
@@ -361,14 +361,14 @@
                         <span tooltip="{{c.data?.minus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomOut')"
                             (keydown.enter)="controlClicked('zoomOut')" role="button" tabindex="0">
                             <svg class="amalia-svg-minus-size icon">
-                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#minus'"></use>
+                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#minus'"></use>
                             </svg>
                         </span>
                         <span tooltip="{{c.data?.result?.tooltip}}" class="zoom-result">{{ pictureZoomLevel }}%</span>
                         <span tooltip="{{c.data?.plus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomIn')"
                             (keydown.enter)="controlClicked('zoomIn')" role="button" tabindex="0">
                             <svg class="amalia-svg-plus-size icon">
-                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#plus'"></use>
+                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#plus'"></use>
                             </svg>
                         </span>
                     </div>
@@ -382,7 +382,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Fullsize (100%) -->
@@ -395,7 +395,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Rotate -->
@@ -408,7 +408,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Flip Horizontal -->
@@ -421,7 +421,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Flip Vertical -->
@@ -434,7 +434,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Fullscreen -->
@@ -447,10 +447,10 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="!fullScreenMode" class="amalia-svg-fullscreen-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
                         </svg>
                         <svg *ngIf="fullScreenMode" class="amalia-svg-fullscreen-off-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen-off'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen-off'"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Center -->
@@ -463,7 +463,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Crop -->
@@ -476,7 +476,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Draw -->
@@ -489,7 +489,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <div class="annotation-toolbar" *ngIf="drawModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
                             <div class="annotation-hint">Clic droit pour dessiner</div>
@@ -520,7 +520,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <div class="annotation-toolbar" *ngIf="textModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
                             <div class="annotation-hint">Clic droit pour écrire</div>
@@ -551,7 +551,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <div class="annotation-toolbar" *ngIf="eraseModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
                             <div class="annotation-hint">Clic droit pour effacer</div>
@@ -576,7 +576,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Snapshot -->
@@ -589,7 +589,7 @@
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Other controls-->
@@ -600,7 +600,7 @@
                         (click)="controlClicked(c.control)" *ngSwitchDefault
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                 </ng-container>
@@ -616,7 +616,7 @@
                     <li (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
                         class="toggleFullScreen control" [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -627,21 +627,21 @@
                         <div class="ratio">{{aspectRatio}}</div>
                         <span>{{c.label}}</span>
                         <svg class="amalia-svg-right-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
                         </svg>
                         <span class="text-right">{{aspectRatio}}</span>
                         <ul class="list-options" [ngClass]="{'on':enableListRatio}">
                             <li [ngClass]="{'selected': aspectRatio =='4:3'}"
                                 (click)="setVideoAspectRatio('4:3');hideAll()">
                                 <svg class="amalia-svg-checked-size icon">
-                                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                                 </svg>
                                 <span>4:3</span> <span *ngIf="defaultRatio =='4:3'">(original)</span>
                             </li>
                             <li [ngClass]="{'selected': aspectRatio =='16:9'}"
                                 (click)="setVideoAspectRatio('16:9');hideAll()">
                                 <svg class="amalia-svg-checked-size icon">
-                                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                                 </svg>
                                 <span>16:9</span> <span *ngIf="defaultRatio =='16:9'">(original)</span>
                             </li>
@@ -651,7 +651,7 @@
                     <li *ngSwitchCase="'download'" class="control download" [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <a target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
                             <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                             </svg>
                             <span>{{c.label}}</span>
                         </a>
@@ -660,7 +660,7 @@
                     <li *ngSwitchCase="'callback'" class="control callback" [ngStyle]="{'order':c.order ? c.order:'0'}"
                         (click)="handleCallback(c)">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -669,11 +669,11 @@
                         (click)="enableListPositionsSubtitle= !enableListPositionsSubtitle;$event.stopPropagation();"
                         [ngClass]="{'on':enableListPositionsSubtitle}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}} </span>
                         <svg class="amalia-svg-right-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
                         </svg>
                         <span class="text-right">{{selectedLabel}}</span>
                         <ul class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}">
@@ -681,7 +681,7 @@
                                 [ngClass]="{'selected': subtitlePosition === pos.key}"
                                 (click)="updateSubtitlePosition(pos.key)">
                                 <svg class="amalia-svg-checked-size icon">
-                                    <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                                 </svg>
                                 {{pos.label}}
                             </li>
@@ -692,10 +692,10 @@
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="!magnifyEnabled" class="amalia-svg-magnify-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
                         </svg>
                         <svg *ngIf="magnifyEnabled" class="amalia-svg-magnify-off-size icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -704,7 +704,7 @@
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -713,7 +713,7 @@
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -722,7 +722,7 @@
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -731,7 +731,7 @@
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -740,7 +740,7 @@
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -749,7 +749,7 @@
                         (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -757,7 +757,7 @@
                     <li class="control" (click)="controlClicked(c.control)" *ngSwitchDefault
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                         <span>{{c.label}}</span>
                     </li>
@@ -796,10 +796,10 @@
         <!-- play pause mode-->
         <div (click)="controlClicked('playPause')" class="play-pause control">
             <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-blue-play-size icon">
-                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
+                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
             </svg>
             <svg *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-blue-pause-size icon">
-                <use [attr.xlink:href]="'assets/svgs/symbol/svg/sprite.symbol.svg#blue-pause'"></use>
+                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-pause'"></use>
             </svg>
         </div>
     </div>
