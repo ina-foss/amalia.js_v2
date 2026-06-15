@@ -53,7 +53,7 @@
                             <img *ngIf="segment.data.media !=='audio' && segment.data.media !=='AUDIO' && segment.thumb !== '/assets/amalia/images/newAudioBackGround.png'"
                                 class="thumbnail" alt='thumbnail' [src]="segment.thumb" />
                         </div>
-                        <p-button icon="pi pi-camera" (click)="updateThumbnail()" tooltip="Sélectionner une imagette"
+                        <p-button icon="pi pi-camera" (click)="updateThumbnail()" (keydown.enter)="updateThumbnail()" tooltip="Sélectionner une imagette"
                             rounded="true" outlined="true" size="small" severity="secondary"
                             [ngClass]="{'readonly-segment-no-camera-icon' : segment.data.media ==='audio' || segment.data.media ==='AUDIO' || segment.thumb === '/assets/amalia/images/newAudioBackGround.png'}" />
                     </div>
