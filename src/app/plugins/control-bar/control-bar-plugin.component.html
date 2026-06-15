@@ -2,7 +2,7 @@
     <!-- Menu of controls displayed on "s" grid-->
     <div class="time-label {{displayState}}"
         [ngClass]="{'activated' : (activated || pinnedSlider),'pinned' :(pinnedSlider && enablePlaybackSlider) || (enablePlaybackSlider && activated)}">
-        <div class="time-display" *ngIf="time > 0 && duration > 0" (click)="switchDisplayCurrentTime();hideAll()">
+        <div class="time-display" *ngIf="time > 0 && duration > 0" (click)="switchDisplayCurrentTime();hideAll()" (keydown.enter)="switchDisplayCurrentTime();hideAll()" role="button" tabindex="0">
             <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
             <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>
         </div>
@@ -21,8 +21,8 @@
                 (mousemove)="progressBarMouseMove($event)">
                 <div class="time-extract-container" *ngIf="extractTcIn!=null || extractTcOut!=null" [ngClass]="{'on':onProgressBar}" >
                     <span class="time-extract-duration" *ngIf="extractTcIn!=null && extractTcOut!=null"  [style]="{left:'calc('+(extractTcIn/duration)*100+'% + 2px)', width:((extractTcOut-extractTcIn)/duration)*100+'%'}"></span>
-                    <span class="time-extract tc-in" *ngIf="extractTcIn!=null" [style]="{left:'calc('+(extractTcIn/duration)*100+'% - 2px)'}" (click)="seekTo(extractTcIn)"></span>
-                    <span class="time-extract tc-out" *ngIf="extractTcOut!=null" [style]="{left:'calc('+(extractTcOut/duration)*100+'% - 4px)'}" (click)="seekTo(extractTcOut)"></span>
+                    <span class="time-extract tc-in" *ngIf="extractTcIn!=null" [style]="{left:'calc('+(extractTcIn/duration)*100+'% - 2px)'}" (click)="seekTo(extractTcIn)" (keydown.enter)="seekTo(extractTcIn)" role="button" tabindex="0"></span>
+                    <span class="time-extract tc-out" *ngIf="extractTcOut!=null" [style]="{left:'calc('+(extractTcOut/duration)*100+'% - 4px)'}" (click)="seekTo(extractTcOut)" (keydown.enter)="seekTo(extractTcOut)" role="button" tabindex="0"></span>
                 </div>
                 <div class="ui-slider">
                     <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
@@ -36,10 +36,8 @@
                 <!-- ngSwitch by controls-->
                 <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
                     <!-- play pause mode-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" (click)="controlClicked(c.control);hideAll()"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" (click)="controlClicked(c.control);hideAll()"
+                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
                         *ngSwitchCase="'playPause'" class="play-pause control" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
@@ -51,10 +49,8 @@
                         </svg>
                     </div>
                     <!--FullScreen Button -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" (click)="controlClicked(c.control)"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" (click)="controlClicked(c.control)"
+                        (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
                         *ngSwitchCase="'toggleFullScreen'" class="toggleFullScreen control" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
@@ -65,25 +61,23 @@
                         </svg>
                     </div>
                     <!--Aspect Ratio-->
-                    <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                        ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                        ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                        ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'aspectRatio'"
+                    <div [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'aspectRatio'"
                         class="aspect-ratio control text" [attr.aria-label]="c.label" (click)="changeAspectRatio()"
+                        (keydown.enter)="changeAspectRatio()" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}" (mouseenter)="aspectRatioMouseEnter()">
                         <div class="value">{{aspectRatio}}</div>
                         <div class="list-options" [ngClass]="{'on':enableListRatio}"
                             (mouseleave)="enableListRatio=false">
                             <ul>
                                 <li class="header-list">{{c.label}}</li>
-                                <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setVideoAspectRatio('16:9')">
+                                <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setVideoAspectRatio('16:9')" (keydown.enter)="setVideoAspectRatio('16:9')" role="button" tabindex="0">
                                     <svg class="amalia-svg-checked-size icon">
                                         <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
                                         </use>
                                     </svg>
                                     4:3 <span *ngIf="defaultRatio =='4:3'">(original)</span>
                                 </li>
-                                <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')">
+                                <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')" (keydown.enter)="setVideoAspectRatio('4:3')" role="button" tabindex="0">
                                     <svg class="amalia-svg-checked-size icon">
                                         <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
                                         </use>
@@ -95,73 +89,55 @@
 
                     </div>
                     <!--Playback Rate-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')) && currentPlaybackRate !== 1}"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority) && currentPlaybackRate !== 1}"
                         *ngSwitchCase="'playbackRate'" class="playback-rate control text" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         {{currentPlaybackRate}}x
                     </div>
                     <!--Download-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="false" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'download'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="false" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'download'"
                         class="control download" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <a target="_blank" (click)="buildUrlWithTc(ctl,c);hideAll()" #ctl>
+                        <a target="_blank" (click)="buildUrlWithTc(ctl,c);hideAll()" (keydown.enter)="buildUrlWithTc(ctl,c);hideAll()" role="button" tabindex="0" #ctl>
                             <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                                 <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                             </svg>
                         </a>
                     </div>
                     <!--Forward Images-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'images-forward'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'images-forward'"
                         class="control images-forward" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="nextPlaybackRateImages(c.data.speed)">
+                        [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="nextPlaybackRateImages(c.data.speed)" (keydown.enter)="nextPlaybackRateImages(c.data.speed)" role="button" tabindex="0">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Backward Images-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'images-backward'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'images-backward'"
                         class="control images-backward" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="previousPlaybackRateImages(c.data.speed)">
+                        [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="previousPlaybackRateImages(c.data.speed)" (keydown.enter)="previousPlaybackRateImages(c.data.speed)" role="button" tabindex="0">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Callback-->
-                    <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'callback'"
+                    <div [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'callback'"
                         class="control callback" [attr.aria-label]="c.label" tooltip="{{c.label}}" placement="top"
-                        autoPlacement="true" [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)">
+                        autoPlacement="true" [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)" (keydown.enter)="handleCallback(c)" role="button" tabindex="0">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!--Volume-->
-                    <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                            ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                            ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                            ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'volume'"
+                    <div [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'volume'"
                         class="volume control" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}"
                         (mouseenter)="volumeMouseEnter(c.data)" #volumeButton>
                         <svg tooltip="{{c.label}}" *ngIf="volumeLeft > 0 || volumeRight > 0"
-                            class="amalia-svg-volume-on-size icon" (click)="handleMuteUnmuteVolume()" #volumeMute>
+                            class="amalia-svg-volume-on-size icon" (click)="handleMuteUnmuteVolume()" (keydown.enter)="handleMuteUnmuteVolume()" role="button" tabindex="0" #volumeMute>
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
                         </svg>
                         <svg *ngIf="volumeLeft == 0 && volumeRight == 0" class="amalia-svg-volume-off-size icon"
-                            (click)="handleMuteUnmuteVolume()" #volumeUnmute>
+                            (click)="handleMuteUnmuteVolume()" (keydown.enter)="handleMuteUnmuteVolume()" role="button" tabindex="0" #volumeUnmute>
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
                         </svg>
                         <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
@@ -170,7 +146,7 @@
                                 <div class="header-list">Volume (m)</div>
                                 <div class="channel-volume-control">
                                     <div class="channel-volume-control-left">
-                                        <div (click)="handleMuteUnmuteVolume('l')" class="channel-volume-icon">
+                                        <div (click)="handleMuteUnmuteVolume('l')" (keydown.enter)="handleMuteUnmuteVolume('l')" role="button" tabindex="0" class="channel-volume-icon">
                                             <svg *ngIf="volumeLeft > 0" class="amalia-svg-volume-on-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
@@ -197,7 +173,7 @@
                                         </div>
                                     </div>
                                     <div class="channel-volume-control-right">
-                                        <div (click)="handleMuteUnmuteVolume('r')" class="channel-volume-icon">
+                                        <div (click)="handleMuteUnmuteVolume('r')" (keydown.enter)="handleMuteUnmuteVolume('r')" role="button" tabindex="0" class="channel-volume-icon">
                                             <svg *ngIf="volumeRight > 0" class="amalia-svg-volume-on-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
@@ -218,7 +194,7 @@
                                         </div>
                                         <div class="channel-volume-info"><span class="text-volume">D</span></div>
                                     </div>
-                                    <div (click)="changeSameVolumeState()" class="channel-volume-info-mid">
+                                    <div (click)="changeSameVolumeState()" (keydown.enter)="changeSameVolumeState()" role="button" tabindex="0" class="channel-volume-info-mid">
                                         <svg *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume"
                                             class="amalia-svg-padlock-open-size icon">
                                             <use
@@ -234,6 +210,7 @@
                                     </div>
                                     <div class="channel-track" *ngIf="listOfTracks"
                                         (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();"
+                                        (keydown.enter)="openPisteAudio = !openPisteAudio;$event.stopPropagation();" role="button" tabindex="0"
                                         [ngClass]="{'on':openPisteAudio}" (mouseleave)="activated = true">
                                         <svg class="amalia-svg-volume-on-size icon" style="height: 20px">
                                             <use
@@ -253,7 +230,7 @@
                                 </div>
                             </div>
                             <div class="list-tracks" *ngIf="openPisteAudio==true" [ngClass]="{'on':openPisteAudio}">
-                                <div class="title" (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();">
+                                <div class="title" (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();" (keydown.enter)="openPisteAudio = !openPisteAudio;$event.stopPropagation();" role="button" tabindex="0">
                                     <div class="piste-info-mid">
                                         <svg class="amalia-svg-right-size icon">
                                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'">
@@ -264,6 +241,7 @@
                                 </div>
                                 <ul>
                                     <li *ngFor="let track of listOfTracks" (click)="changeAudioTrack(track.track)"
+                                        (keydown.enter)="changeAudioTrack(track.track)" role="button" tabindex="0"
                                         [ngClass]="{'selected':selectedTrack==track.track}">
                                         <svg class="amalia-svg-checked-size icon">
                                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
@@ -276,10 +254,7 @@
                         </div>
                     </div>
                     <!-- Button subtitles -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                        ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                        ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                        ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'subtitles'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'subtitles'"
                         class="control subtitle" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}"
                         (mouseenter)="hideAll();enableListPositionsSubtitle=true;">
                         <svg class="amalia-svg-subtitle-size icon">
@@ -291,7 +266,8 @@
                                 <li class="header-list">{{c.label}}</li>
                                 <li *ngFor="let pos of listOfSubtitles" class="position"
                                     [ngClass]="{'selected': subtitlePosition === pos.key}"
-                                    (click)="updateSubtitlePosition(pos.key)">
+                                    (click)="updateSubtitlePosition(pos.key)"
+                                    (keydown.enter)="updateSubtitlePosition(pos.key)" role="button" tabindex="0">
                                     <svg class="amalia-svg-checked-size icon">
                                         <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
                                         </use>
@@ -302,44 +278,33 @@
                         </div>
                     </div>
                     <!--Menu Button-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':(c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')) && controls.length > 0}" *ngSwitchCase="'menu'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':(shouldShowControl(c.priority)) && controls.length > 0}" *ngSwitchCase="'menu'"
                         class="control menu" [attr.aria-label]="c.label"
                         (click)="hideAll('menu');$event.stopPropagation();enableMenu = !enableMenu;"
+                        (keydown.enter)="hideAll('menu');$event.stopPropagation();enableMenu = !enableMenu;" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-dots-size icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#dots'"></use>
                         </svg>
                     </div>
                     <!-- pinControls-->
-                    <div #pinControls tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                    ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                    ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                    ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control)" *ngSwitchCase="'pinControls'"
+                    <div #pinControls tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" class="control" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0" *ngSwitchCase="'pinControls'"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- displaySlider-->
-                    <div #displaySlider tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                    ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                    ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                    ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control)" *ngSwitchCase="'displaySlider'"
+                    <div #displaySlider tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" class="control" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0" *ngSwitchCase="'displaySlider'"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
                     </div>
                     <!-- Picture Player: Magnify Button (toggle icon) -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'magnify'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'magnify'"
                         class="control magnify" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -352,10 +317,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Zoom Info (minus / percentage / plus) -->
-                    <div [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'zoomInfo'"
+                    <div [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'zoomInfo'"
                         class="control zoom-info" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <span tooltip="{{c.data?.minus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomOut')"
@@ -373,10 +335,7 @@
                         </span>
                     </div>
                     <!-- Picture Player: Fit to Screen -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fitToScreen'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fitToScreen'"
                         class="control fitToScreen" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -386,10 +345,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Fullsize (100%) -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fullsize'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fullsize'"
                         class="control fullsize" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -399,10 +355,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Rotate -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'rotate'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'rotate'"
                         class="control rotate" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -412,10 +365,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Flip Horizontal -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fliph'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fliph'"
                         class="control fliph" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -425,10 +375,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Flip Vertical -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'flipv'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'flipv'"
                         class="control flipv" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -438,10 +385,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Fullscreen -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'fullscreen'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fullscreen'"
                         class="control fullscreen" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -454,10 +398,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Center -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'center'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'center'"
                         class="control center" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -467,10 +408,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Crop -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'crop'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'crop'"
                         class="control crop" [class.magnify-locked]="magnifyEnabled" [class.active]="cropModeEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -480,10 +418,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Draw -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'draw'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'draw'"
                         class="control draw" [class.magnify-locked]="magnifyEnabled" [class.active]="drawModeEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -511,10 +446,7 @@
                         </div>
                     </div>
                     <!-- Picture Player: Text -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'text'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'text'"
                         class="control text" [class.magnify-locked]="magnifyEnabled" [class.active]="textModeEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -542,10 +474,7 @@
                         </div>
                     </div>
                     <!-- Picture Player: Erase -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'erase'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'erase'"
                         class="control erase" [class.magnify-locked]="magnifyEnabled" [class.active]="eraseModeEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -567,10 +496,7 @@
                         </div>
                     </div>
                     <!-- Picture Player: Reset -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'reset'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'reset'"
                         class="control reset" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -580,10 +506,7 @@
                         </svg>
                     </div>
                     <!-- Picture Player: Snapshot -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" *ngSwitchCase="'snapshot'"
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'snapshot'"
                         class="control snapshot" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
                         (click)="controlClicked(c.control);hideAll()"
                         (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
@@ -593,11 +516,8 @@
                         </svg>
                     </div>
                     <!--Other controls-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':c.priority==1 ||((c.priority === 2 || c.priority === 3 || c.priority === 4 || c.priority === 5) && displayState ==='l')
-                         ||((c.priority === 2 || c.priority === 3 || c.priority === 4) && displayState ==='m')
-                         ||((c.priority === 2 || c.priority === 3) && displayState ==='sm')
-                         ||(c.priority === 2 && displayState ==='s')}" class="control" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control)" *ngSwitchDefault
+                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" class="control" [attr.aria-label]="c.label"
+                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0" *ngSwitchDefault
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -613,7 +533,7 @@
             <ul>
                 <ng-container *ngFor="let c of controls; " [ngSwitch]="c.control">
                     <!--FullScreen Button -->
-                    <li (click)="controlClicked(c.control)" *ngSwitchCase="'toggleFullScreen'"
+                    <li (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0" *ngSwitchCase="'toggleFullScreen'"
                         class="toggleFullScreen control" [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -623,6 +543,7 @@
                     <!--Aspect Ratio-->
                     <li *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text"
                         (click)="enableListRatio = !enableListRatio;$event.stopPropagation();"
+                        (keydown.enter)="enableListRatio = !enableListRatio;$event.stopPropagation();" role="button" tabindex="0"
                         [ngStyle]="{'order':c.order ? c.order:'0'}" [ngClass]="{'on':enableListRatio}">
                         <div class="ratio">{{aspectRatio}}</div>
                         <span>{{c.label}}</span>
@@ -632,14 +553,16 @@
                         <span class="text-right">{{aspectRatio}}</span>
                         <ul class="list-options" [ngClass]="{'on':enableListRatio}">
                             <li [ngClass]="{'selected': aspectRatio =='4:3'}"
-                                (click)="setVideoAspectRatio('4:3');hideAll()">
+                                (click)="setVideoAspectRatio('4:3');hideAll()"
+                                (keydown.enter)="setVideoAspectRatio('4:3');hideAll()" role="button" tabindex="0">
                                 <svg class="amalia-svg-checked-size icon">
                                     <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                                 </svg>
                                 <span>4:3</span> <span *ngIf="defaultRatio =='4:3'">(original)</span>
                             </li>
                             <li [ngClass]="{'selected': aspectRatio =='16:9'}"
-                                (click)="setVideoAspectRatio('16:9');hideAll()">
+                                (click)="setVideoAspectRatio('16:9');hideAll()"
+                                (keydown.enter)="setVideoAspectRatio('16:9');hideAll()" role="button" tabindex="0">
                                 <svg class="amalia-svg-checked-size icon">
                                     <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                                 </svg>
@@ -649,7 +572,7 @@
                     </li>
                     <!--Download-->
                     <li *ngSwitchCase="'download'" class="control download" [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <a target="_blank" (click)="buildUrlWithTc(ctl,c)" #ctl>
+                        <a target="_blank" (click)="buildUrlWithTc(ctl,c)" (keydown.enter)="buildUrlWithTc(ctl,c)" role="button" tabindex="0" #ctl>
                             <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                                 <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                             </svg>
@@ -658,7 +581,7 @@
                     </li>
                     <!--Callback-->
                     <li *ngSwitchCase="'callback'" class="control callback" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                        (click)="handleCallback(c)">
+                        (click)="handleCallback(c)" (keydown.enter)="handleCallback(c)" role="button" tabindex="0">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
                         </svg>
@@ -667,6 +590,7 @@
                     <!-- Button subtitles -->
                     <li *ngSwitchCase="'subtitles'" class="control subtitle" [ngStyle]="{'order':c.order ? c.order:'0'}"
                         (click)="enableListPositionsSubtitle= !enableListPositionsSubtitle;$event.stopPropagation();"
+                        (keydown.enter)="enableListPositionsSubtitle= !enableListPositionsSubtitle;$event.stopPropagation();" role="button" tabindex="0"
                         [ngClass]="{'on':enableListPositionsSubtitle}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -679,7 +603,8 @@
                         <ul class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}">
                             <li *ngFor="let pos of listOfSubtitles" class="position"
                                 [ngClass]="{'selected': subtitlePosition === pos.key}"
-                                (click)="updateSubtitlePosition(pos.key)">
+                                (click)="updateSubtitlePosition(pos.key)"
+                                (keydown.enter)="updateSubtitlePosition(pos.key)" role="button" tabindex="0">
                                 <svg class="amalia-svg-checked-size icon">
                                     <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
                                 </svg>
@@ -754,7 +679,7 @@
                         <span>{{c.label}}</span>
                     </li>
                     <!--Other controls-->
-                    <li class="control" (click)="controlClicked(c.control)" *ngSwitchDefault
+                    <li class="control" (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0" *ngSwitchDefault
                         [ngStyle]="{'order':c.order ? c.order:'0'}">
                         <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
                             <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
@@ -774,7 +699,7 @@
                         <li class="playbackrate-value"
                             *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
                             [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
-                            (click)="changePlaybackrate(pr, true)" attr.data="{{pr}}">{{pr}}x
+                            (click)="changePlaybackrate(pr, true)" (keydown.enter)="changePlaybackrate(pr, true)" role="button" tabindex="0" attr.data="{{pr}}">{{pr}}x
                         </li>
                     </ul>
                 </div>
@@ -784,7 +709,7 @@
                         <li class="playbackrate-value"
                             *ngFor="let pr of sliderListOfPlaybackRateStep;index as i; first as isFirst; last as isLast;"
                             [ngClass]="{'first':isFirst,'last':isLast,'active':pr == currentPlaybackRateSlider}"
-                            (click)="changePlaybackrate(pr, true)" attr.data="{{pr}}">{{pr}}x
+                            (click)="changePlaybackrate(pr, true)" (keydown.enter)="changePlaybackrate(pr, true)" role="button" tabindex="0" attr.data="{{pr}}">{{pr}}x
                         </li>
                     </ul>
                 </div>
@@ -794,7 +719,7 @@
     </div>
     <div class="controls-reduced-container {{displayState}}" [ngClass]="{'activated' : activated}">
         <!-- play pause mode-->
-        <div (click)="controlClicked('playPause')" class="play-pause control">
+        <div (click)="controlClicked('playPause')" (keydown.enter)="controlClicked('playPause')" role="button" tabindex="0" class="play-pause control">
             <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-blue-play-size icon">
                 <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
             </svg>

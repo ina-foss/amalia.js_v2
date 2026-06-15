@@ -1018,6 +1018,30 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         return null;
     }
 
+    /**
+     * Check if control should be shown based on priority and display state
+     * @param priority control priority
+     * @returns true if control should be shown
+     */
+    public shouldShowControl(priority: number): boolean {
+        if (priority === 1) {
+            return true;
+        }
+        if (this.displayState === 'l') {
+            return priority >= 2 && priority <= 5;
+        }
+        if (this.displayState === 'm') {
+            return priority >= 2 && priority <= 4;
+        }
+        if (this.displayState === 'sm') {
+            return priority >= 2 && priority <= 3;
+        }
+        if (this.displayState === 's') {
+            return priority === 2;
+        }
+        return false;
+    }
+
     public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
         if (this.elements) {
             this.elements = _.orderBy(this.elements, ['order']);
