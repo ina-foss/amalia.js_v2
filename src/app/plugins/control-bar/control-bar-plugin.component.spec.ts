@@ -645,8 +645,8 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', () => {
         const ngZoneStub = {run: (fn: any) => fn()} as unknown as NgZone;
         // Instanciation
         component = new ControlBarPluginComponent(
-                {} as any,           // MediaPlayerService (non utilisé ici)
-                {} as any,           // ThumbnailService (non utilisé ici)
+                {} as any,           // MediaPlayerService (non utilisÃ© ici)
+                {} as any,           // ThumbnailService (non utilisÃ© ici)
                 rendererStub as Renderer2,
                 cdrStub,
                 ngZoneStub
@@ -1198,7 +1198,7 @@ describe('ControlBarPluginComponent â€“ applyShortcut & controlClicked', () => {
             expect(setDisplayState).toHaveBeenCalledTimes(1);
         });
 
-        it('par défaut: log.warn("Control not implemented", control)', () => {
+        it('par dÃ©faut: log.warn("Control not implemented", control)', () => {
             component.controlClicked('not-implemented');
             expect((component as any).logger.warn)
                     .toHaveBeenCalledWith('Control not implemented', 'not-implemented');
