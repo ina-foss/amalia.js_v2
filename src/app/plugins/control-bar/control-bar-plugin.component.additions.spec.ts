@@ -95,8 +95,8 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
             };
             spyOn<any>(component, 'toggleFullScreen').and.stub();
             spyOn<any>(component, 'pinControls').and.stub();
-            spyOn<any>(component, 'toggleCropMode').and.callThrough();
-            spyOn<any>(component, 'toggleAnnotationMode').and.callThrough();
+            spyOn<any>(component, 'toggleCropMode').and.stub();
+            spyOn<any>(component, 'toggleAnnotationMode').and.stub();
             spyOn<any>(component, 'setAnnotationMode').and.callThrough();
             spyOn<any>(component, 'downloadSnapshot').and.stub();
         });
@@ -280,7 +280,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
                 offsetWidth: 100,
                 querySelectorAll: jasmine.createSpy('querySelectorAll').and.returnValue(mockValues)
             });
-            const event = { dx: 0, target: { style: { paddingLeft: '' }, setAttribute: jasmine.createSpy('setAttribute'), stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation') } };
+            const event = { dx: 0, stopImmediatePropagation: jasmine.createSpy('stopImmediatePropagation'), target: { style: { paddingLeft: '' }, setAttribute: jasmine.createSpy('setAttribute') } };
             component['handleThumbPosition'](mockValues, event, { x: 50 }, 50);
             expect(event.target.style.paddingLeft).toBeDefined();
         });
