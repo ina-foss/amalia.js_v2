@@ -39,6 +39,7 @@ interface SurferPeaks {
  */
 @Component({
     selector: 'amalia-histogram',
+    standalone: false,
     templateUrl: './histogram-plugin.component.html',
     styleUrls: ['./histogram-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

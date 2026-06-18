@@ -8,6 +8,7 @@ import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
     selector: 'amalia-storyboard',
+    standalone: false,
     templateUrl: './storyboard-plugin.component.html',
     styleUrls: ['./storyboard-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

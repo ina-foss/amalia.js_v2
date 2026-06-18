@@ -1,15 +1,21 @@
 import { Component, Input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MessagesModule } from 'primeng/messages';
-import { Message } from 'primeng/api';
 import { InaMessage, MessageSeverity } from './ina-messages.model';
+
+interface Message {
+  severity: string;
+  summary?: string;
+  detail?: string;
+  closable?: boolean;
+  sticky?: boolean;
+  key?: string;
+  icon?: string;
+}
 
 @Component({
   selector: 'ina-messages',
+  standalone: false,
   templateUrl: './ina-messages.component.html',
-  styleUrls: ['./ina-messages.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MessagesModule]
+  styleUrls: ['./ina-messages.component.scss']
 })
 export class InaMessagesComponent {
   @Input() key: string = 'ina-messages';

@@ -29,6 +29,7 @@ import { ToastComponent } from "../../core/toast/toast.component";
 
 @Component({
     selector: 'amalia-timeline',
+    standalone: false,
     templateUrl: './timeline-plugin.component.html',
     styleUrls: ['./timeline-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

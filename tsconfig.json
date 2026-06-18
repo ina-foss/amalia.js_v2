@@ -9,7 +9,7 @@
         "declaration": false,
         "downlevelIteration": true,
         "experimentalDecorators": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "importHelpers": true,
         "target": "es2022",
         "module": "esnext",
@@ -28,7 +28,6 @@
         ]
     },
     "angularCompilerOptions": {
-        "fullTemplateTypeCheck": true,
         "strictInjectionParameters": true
     }
 }

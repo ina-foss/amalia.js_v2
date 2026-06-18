@@ -1,4 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
+import {CommonModule} from '@angular/common';
 import {CUSTOM_ELEMENTS_SCHEMA, Injector, NgModule} from '@angular/core';
 import {AmaliaComponent} from './player/amalia.component';
 import {createCustomElement} from '@angular/elements';
@@ -22,8 +23,7 @@ import {AnnotationPluginComponent} from './plugins/annotation/annotation-plugin.
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {FloatLabelModule} from 'primeng/floatlabel';
-import {InputTextareaModule} from 'primeng/inputtextarea';
-import {ChipsModule} from 'primeng/chips';
+import {TextareaModule} from 'primeng/textarea';
 import {SegmentComponent} from './plugins/annotation/segment/segment.component';
 import {AvatarModule} from 'primeng/avatar';
 import {CardModule} from 'primeng/card';
@@ -36,22 +36,23 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {AutoCompleteModule} from "primeng/autocomplete";
-import {ToastComponent} from "./core/toast/toast.component";
 import {TreeModule} from 'primeng/tree';
 import {CheckboxModule} from "primeng/checkbox";
 import { ToolbarModule } from 'primeng/toolbar';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AccordionModule } from 'primeng/accordion';
 import { DragDropModule } from 'primeng/dragdrop';
-import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { PreventCtrlScrollDirective } from './core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
 import { MinusIcon } from 'primeng/icons/minus';
 import { CheckIcon } from 'primeng/icons/check';
 import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
+import { ToastComponent } from "./core/toast/toast.component";
 
 @NgModule({
     imports: [
         BrowserModule,
+        CommonModule,
         BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
@@ -59,8 +60,7 @@ import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.compone
         ButtonModule,
         InputTextModule,
         FloatLabelModule,
-        InputTextareaModule,
-        ChipsModule,
+        TextareaModule,
         ChipModule,
         CardModule,
         AvatarModule,
@@ -70,17 +70,15 @@ import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.compone
         ProgressBarModule,
         ProgressSpinnerModule,
         AutoCompleteModule,
-        ToastComponent,
         TreeModule,
         CheckboxModule,
         ToolbarModule,
-        InputSwitchModule,
+        ToggleSwitchModule,
         AccordionModule,
         DragDropModule,
-        MessagesModule,
+        MessageModule,
         MinusIcon,
-        CheckIcon,
-        InaMessagesComponent
+        CheckIcon
     ],
     declarations: [
         AmaliaComponent,
@@ -97,6 +95,8 @@ import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.compone
         AnnotationPluginComponent,
         SegmentComponent,
         PreventCtrlScrollDirective,
+        ToastComponent,
+        InaMessagesComponent
     ],
     providers: [
         MediaPlayerService,

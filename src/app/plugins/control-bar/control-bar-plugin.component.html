@@ -1,732 +1,1727 @@
-<div #controlBarContainer class="controlbar" (mouseover)="handlePlayerMouseHover();changeTooltipEmplacement()">
+<div #controlBarContainer class="controlbar" (mouseover)="handlePlayerMouseHover(); changeTooltipEmplacement()">
     <!-- Menu of controls displayed on "s" grid-->
-    <div class="time-label {{displayState}}"
-        [ngClass]="{'activated' : (activated || pinnedSlider),'pinned' :(pinnedSlider && enablePlaybackSlider) || (enablePlaybackSlider && activated)}">
-        <button type="button" class="time-display" *ngIf="time > 0 && duration > 0" (click)="switchDisplayCurrentTime();hideAll()" (keydown.enter)="switchDisplayCurrentTime();hideAll()">
-            <span class="time-current"><span *ngIf="inverse">- </span>{{time|tcFormat:'f'}}</span>
-            <span class="time-duration"> / {{duration|tcFormat:'f'}} </span>
-        </button>
+    <div
+        class="time-label {{ displayState }}"
+        [ngClass]="{
+            activated: activated || pinnedSlider,
+            pinned: (pinnedSlider && enablePlaybackSlider) || (enablePlaybackSlider && activated),
+        }"
+    >
+        @if (time > 0 && duration > 0) {
+            <button
+                type="button"
+                class="time-display"
+                (click)="switchDisplayCurrentTime(); hideAll()"
+                (keydown.enter)="switchDisplayCurrentTime(); hideAll()"
+            >
+                <span class="time-current">
+                    @if (inverse) {
+                        <span>- </span>
+                    }
+                    {{ time | tcFormat: "f" }}</span
+                >
+                <span class="time-duration"> / {{ duration | tcFormat: "f" }} </span>
+            </button>
+        }
     </div>
-    <div #thumbnailContainer [hidden]="thumbnailHidden" class="thumbnail-container {{displayState}}"
-        [ngClass]="{'pinned' :pinned}" *ngIf="enableThumbnail" [ngStyle]="{'left':thumbnailPosition + 'px'}">
-        <img #thumbnail class="thumbnail" alt="thumbnail" src="" />
-        <div class="tc-thumbnail">{{tcThumbnail+tcOffset|tcFormat:'f'}}</div>
-    </div>
-    <div class="controls-container {{displayState}}" [ngClass]="{'activated' : activated ,'pinned' :pinnedSlider}">
-        <div class="control-bar" (mouseover)="handlePlayerMouseHover()" (mouseleave)="enableVolumeSlider=false"
-            *ngIf="elements">
-
-            <div *ngIf="hasComponentWithoutZone('progressBar')" class="control progress-bar"
-                (mouseenter)="progressBarMouseEnter($event)" (mouseleave)="progressBarMouseLeave()"
-                (mousemove)="progressBarMouseMove($event)">
-                <div class="time-extract-container" *ngIf="extractTcIn!=null || extractTcOut!=null" [ngClass]="{'on':onProgressBar}" >
-                    <span class="time-extract-duration" *ngIf="extractTcIn!=null && extractTcOut!=null"  [style]="{left:'calc('+(extractTcIn/duration)*100+'% + 2px)', width:((extractTcOut-extractTcIn)/duration)*100+'%'}"></span>
-                    <button type="button" aria-label="Aller au début de l'extrait" class="time-extract tc-in" *ngIf="extractTcIn!=null" [style]="{left:'calc('+(extractTcIn/duration)*100+'% - 2px)'}" (click)="seekTo(extractTcIn)" (keydown.enter)="seekTo(extractTcIn)"></button>
-                    <button type="button" aria-label="Aller à la fin de l'extrait" class="time-extract tc-out" *ngIf="extractTcOut!=null" [style]="{left:'calc('+(extractTcOut/duration)*100+'% - 4px)'}" (click)="seekTo(extractTcOut)" (keydown.enter)="seekTo(extractTcOut)"></button>
-                </div>
-                <div class="ui-slider">
-                    <div [style]="{width:(currentTime/duration)*100+'%'}" class="ui-slider-progress"></div>
-                    <input type="range" step='0.01' class="slider" min="0" [value]="progressBarValue" #progressBar
-                        (mousedown)="handleProgressBarMouseDown()" (mousemove)="handleProgressBarMouseMove($event)"
-                        (mouseup)="handleProgressBarMouseUp($event)" (mouseleave)="onProgressBar=false" (mouseenter)="onProgressBar=true">
-                </div>
-            </div>
-            <div *ngFor="let colId of [1,2,3]; index as i; last as isLast;" [ngClass]="{'last':isLast,'mid':i===1} "
-                class="column">
-                <!-- ngSwitch by controls-->
-                <ng-container *ngFor="let c of getControlsByZone(colId); " [ngSwitch]="c.control">
-                    <!-- play pause mode-->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        *ngSwitchCase="'playPause'" class="play-pause control" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-play-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#play'"></use>
-                        </svg>
-                        <svg *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()"
-                            class="amalia-svg-pause-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pause'"></use>
-                        </svg>
-                    </button>
-                    <!--FullScreen Button -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" (click)="controlClicked(c.control)"
-                        (keydown.enter)="controlClicked(c.control)"
-                        *ngSwitchCase="'toggleFullScreen'" class="toggleFullScreen control" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg *ngIf="fullScreenMode === false" class="amalia-svg-fullscreen-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
-                        </svg>
-                        <svg *ngIf="fullScreenMode === true" class="amalia-svg-compress-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#compress'"></use>
-                        </svg>
-                    </button>
-                    <!--Aspect Ratio-->
-                    <div [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'aspectRatio'"
-                        class="aspect-ratio control text" [attr.aria-label]="c.label" (click)="changeAspectRatio()"
-                        (keydown.enter)="changeAspectRatio()" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}" (mouseenter)="aspectRatioMouseEnter()">
-                        <div class="value">{{aspectRatio}}</div>
-                        <div class="list-options" [ngClass]="{'on':enableListRatio}"
-                            (mouseleave)="enableListRatio=false">
-                            <ul>
-                                <li class="header-list">{{c.label}}</li>
-                                <li [ngClass]="{'selected': aspectRatio =='4:3'}" (click)="setVideoAspectRatio('16:9')" (keydown.enter)="setVideoAspectRatio('16:9')" role="button" tabindex="0">
-                                    <svg class="amalia-svg-checked-size icon">
-                                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
-                                        </use>
-                                    </svg>
-                                    4:3 <span *ngIf="defaultRatio =='4:3'">(original)</span>
-                                </li>
-                                <li [ngClass]="{'selected': aspectRatio =='16:9'}" (click)="setVideoAspectRatio('4:3')" (keydown.enter)="setVideoAspectRatio('4:3')" role="button" tabindex="0">
-                                    <svg class="amalia-svg-checked-size icon">
-                                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
-                                        </use>
-                                    </svg>
-                                    16:9 <span *ngIf="defaultRatio =='16:9'">(original)</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                    </div>
-                    <!--Playback Rate-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority) && currentPlaybackRate !== 1}"
-                        *ngSwitchCase="'playbackRate'" class="playback-rate control text" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        {{currentPlaybackRate}}x
-                    </div>
-                    <!--Download-->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="false" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'download'"
-                        class="control download" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <a target="_blank" (click)="buildUrlWithTc(ctl,c);hideAll()" (keydown.enter)="buildUrlWithTc(ctl,c);hideAll()" role="button" tabindex="0" #ctl>
-                            <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                            </svg>
-                        </a>
-                    </div>
-                    <!--Forward Images-->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'images-forward'"
-                        class="control images-forward" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="nextPlaybackRateImages(c.data.speed)" (keydown.enter)="nextPlaybackRateImages(c.data.speed)">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!--Backward Images-->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'images-backward'"
-                        class="control images-backward" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="previousPlaybackRateImages(c.data.speed)" (keydown.enter)="previousPlaybackRateImages(c.data.speed)">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!--Callback-->
-                    <button type="button" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'callback'"
-                        class="control callback" [attr.aria-label]="c.label" tooltip="{{c.label}}" placement="top"
-                        autoPlacement="true" [ngStyle]="{'order':c.order ? c.order:'0'}" (click)="handleCallback(c)" (keydown.enter)="handleCallback(c)">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!--Volume-->
-                    <div [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'volume'"
-                        class="volume control" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                        (mouseenter)="volumeMouseEnter(c.data)" #volumeButton>
-                        <svg tooltip="{{c.label}}" *ngIf="volumeLeft > 0 || volumeRight > 0"
-                            class="amalia-svg-volume-on-size icon" (click)="handleMuteUnmuteVolume()" (keydown.enter)="handleMuteUnmuteVolume()" role="button" tabindex="0" #volumeMute>
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"></use>
-                        </svg>
-                        <svg *ngIf="volumeLeft == 0 && volumeRight == 0" class="amalia-svg-volume-off-size icon"
-                            (click)="handleMuteUnmuteVolume()" (keydown.enter)="handleMuteUnmuteVolume()" role="button" tabindex="0" #volumeUnmute>
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"></use>
-                        </svg>
-                        <div class="volume-control" [ngClass]="{'on':enableVolumeSlider}"
-                            (mouseleave)="enableVolumeSlider=false;openPisteAudio =false">
-                            <div class="channel-volume-sliders " [hidden]="openPisteAudio">
-                                <div class="header-list">Volume (m)</div>
-                                <div class="channel-volume-control">
-                                    <div class="channel-volume-control-left">
-                                        <button type="button" (click)="handleMuteUnmuteVolume('l')" (keydown.enter)="handleMuteUnmuteVolume('l')" class="channel-volume-icon">
-                                            <svg *ngIf="volumeLeft > 0" class="amalia-svg-volume-on-size icon">
-                                                <use
-                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
-                                                </use>
-                                            </svg>
-                                            <svg *ngIf="volumeLeft== 0" class="amalia-svg-volume-off-size icon">
-                                                <use
-                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'">
-                                                </use>
-                                            </svg>
-                                        </button>
-                                        <div class="left-volume-slider ui-slider">
-                                            <div [style]="{width:volumeLeft+'%'}" class="ui-slider-progress"></div>
-                                            <input #leftVolumeSlider (input)="changeVolume(leftVolumeSlider.value,'l')"
-                                                [(ngModel)]="volumeLeft" class="slider" max="100" min="0" type="range"
-                                                value="50">
-                                        </div>
-                                        <div class="channel-volume-info"><span class="text-volume">G</span></div>
-                                    </div>
-                                    <div class="channel-volume-control-mid-container">
-                                        <div [style]="{left:volumeLeft+'%'}"
-                                            *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
-                                            class="channel-volume-control-mid on">
-                                        </div>
-                                    </div>
-                                    <div class="channel-volume-control-right">
-                                        <button type="button" (click)="handleMuteUnmuteVolume('r')" (keydown.enter)="handleMuteUnmuteVolume('r')" class="channel-volume-icon">
-                                            <svg *ngIf="volumeRight > 0" class="amalia-svg-volume-on-size icon">
-                                                <use
-                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'">
-                                                </use>
-                                            </svg>
-                                            <svg *ngIf="volumeRight== 0" class="amalia-svg-volume-off-size icon">
-                                                <use
-                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'">
-                                                </use>
-                                            </svg>
-                                        </button>
-                                        <div class="right-volume-slider ui-slider ">
-                                            <div [style]="{width:volumeRight+'%'}" class="ui-slider-progress"></div>
-                                            <input #rightVolumeSlider
-                                                (input)="changeVolume(rightVolumeSlider.value,'r')"
-                                                [(ngModel)]="volumeRight" class="slider" max="100" min="0" type="range"
-                                                value="50">
-                                        </div>
-                                        <div class="channel-volume-info"><span class="text-volume">D</span></div>
-                                    </div>
-                                    <button type="button" (click)="changeSameVolumeState()" (keydown.enter)="changeSameVolumeState()" class="channel-volume-info-mid">
-                                        <svg *ngIf="!mediaPlayerElement?.getMediaPlayer().withMergeVolume"
-                                            class="amalia-svg-padlock-open-size icon">
-                                            <use
-                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#padlock-open'">
-                                            </use>
-                                        </svg>
-                                        <svg *ngIf="mediaPlayerElement?.getMediaPlayer().withMergeVolume"
-                                            class="amalia-svg-padlock-close-size icon">
-                                            <use
-                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#padlock-close'">
-                                            </use>
-                                        </svg>
-                                    </button>
-                                    <button type="button" class="channel-track" *ngIf="listOfTracks"
-                                        (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();"
-                                        (keydown.enter)="openPisteAudio = !openPisteAudio;$event.stopPropagation();"
-                                        [ngClass]="{'on':openPisteAudio}" (mouseleave)="activated = true">
-                                        <svg class="amalia-svg-volume-on-size icon" style="height: 20px">
-                                            <use
-                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#piste-audio'">
-                                            </use>
-                                        </svg>
-                                        <span class="piste-audio-title">Piste audio</span>
-                                        <span class="text-right">{{selectedTrackLabel}}</span>
-                                        <div class="piste-info-mid">
-                                            <svg class="amalia-svg-right-size icon">
-                                                <use
-                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'">
-                                                </use>
-                                            </svg>
-                                        </div>
-                                    </button>
-                                </div>
+    @if (enableThumbnail) {
+        <div
+            #thumbnailContainer
+            [hidden]="thumbnailHidden"
+            class="thumbnail-container {{ displayState }}"
+            [ngClass]="{ pinned: pinned }"
+            [ngStyle]="{ left: thumbnailPosition + 'px' }"
+        >
+            <img #thumbnail class="thumbnail" alt="thumbnail" src="" />
+            <div class="tc-thumbnail">{{ tcThumbnail + tcOffset | tcFormat: "f" }}</div>
+        </div>
+    }
+    <div class="controls-container {{ displayState }}" [ngClass]="{ activated: activated, pinned: pinnedSlider }">
+        @if (elements) {
+            <div class="control-bar" (mouseover)="handlePlayerMouseHover()" (mouseleave)="enableVolumeSlider = false">
+                @if (hasComponentWithoutZone("progressBar")) {
+                    <div
+                        class="control progress-bar"
+                        (mouseenter)="progressBarMouseEnter($event)"
+                        (mouseleave)="progressBarMouseLeave()"
+                        (mousemove)="progressBarMouseMove($event)"
+                    >
+                        @if (extractTcIn != null || extractTcOut != null) {
+                            <div class="time-extract-container" [ngClass]="{ on: onProgressBar }">
+                                @if (extractTcIn != null && extractTcOut != null) {
+                                    <span
+                                        class="time-extract-duration"
+                                        [style]="{
+                                            left: 'calc(' + (extractTcIn / duration) * 100 + '% + 2px)',
+                                            width: ((extractTcOut - extractTcIn) / duration) * 100 + '%',
+                                        }"
+                                    ></span>
+                                }
+                                @if (extractTcIn != null) {
+                                    <button
+                                        type="button"
+                                        aria-label="Aller au début de l'extrait"
+                                        class="time-extract tc-in"
+                                        [style]="{ left: 'calc(' + (extractTcIn / duration) * 100 + '% - 2px)' }"
+                                        (click)="seekTo(extractTcIn)"
+                                        (keydown.enter)="seekTo(extractTcIn)"
+                                    ></button>
+                                }
+                                @if (extractTcOut != null) {
+                                    <button
+                                        type="button"
+                                        aria-label="Aller à la fin de l'extrait"
+                                        class="time-extract tc-out"
+                                        [style]="{ left: 'calc(' + (extractTcOut / duration) * 100 + '% - 4px)' }"
+                                        (click)="seekTo(extractTcOut)"
+                                        (keydown.enter)="seekTo(extractTcOut)"
+                                    ></button>
+                                }
                             </div>
-                            <div class="list-tracks" *ngIf="openPisteAudio==true" [ngClass]="{'on':openPisteAudio}">
-                                <button type="button" class="title" (click)="openPisteAudio = !openPisteAudio;$event.stopPropagation();" (keydown.enter)="openPisteAudio = !openPisteAudio;$event.stopPropagation();">
-                                    <div class="piste-info-mid">
-                                        <svg class="amalia-svg-right-size icon">
-                                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'">
-                                            </use>
-                                        </svg>
+                        }
+                        <div class="ui-slider">
+                            <div
+                                [style]="{ width: (currentTime / duration) * 100 + '%' }"
+                                class="ui-slider-progress"
+                            ></div>
+                            <input
+                                type="range"
+                                step="0.01"
+                                class="slider"
+                                min="0"
+                                [value]="progressBarValue"
+                                #progressBar
+                                (mousedown)="handleProgressBarMouseDown()"
+                                (mousemove)="handleProgressBarMouseMove($event)"
+                                (mouseup)="handleProgressBarMouseUp($event)"
+                                (mouseleave)="onProgressBar = false"
+                                (mouseenter)="onProgressBar = true"
+                            />
+                        </div>
+                    </div>
+                }
+                @for (colId of [1, 2, 3]; track colId; let i = $index; let isLast = $last) {
+                    <div [ngClass]="{ last: isLast, mid: i === 1 }" class="column">
+                        <!-- ngSwitch by controls-->
+                        @for (c of getControlsByZone(colId); track $index) {
+                            @switch (c.control) {
+                                <!-- play pause mode-->
+                                @case ("playPause") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        class="play-pause control"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (mediaPlayerElement.getMediaPlayer()?.isPaused()) {
+                                            <svg class="amalia-svg-play-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#play'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (!mediaPlayerElement.getMediaPlayer()?.isPaused()) {
+                                            <svg class="amalia-svg-pause-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pause'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!--FullScreen Button -->
+                                @case ("toggleFullScreen") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        (click)="controlClicked(c.control)"
+                                        (keydown.enter)="controlClicked(c.control)"
+                                        class="toggleFullScreen control"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (fullScreenMode === false) {
+                                            <svg class="amalia-svg-fullscreen-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (fullScreenMode === true) {
+                                            <svg class="amalia-svg-compress-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#compress'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!--Aspect Ratio-->
+                                @case ("aspectRatio") {
+                                    <div
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="aspect-ratio control text"
+                                        [attr.aria-label]="c.label"
+                                        (click)="changeAspectRatio()"
+                                        (keydown.enter)="changeAspectRatio()"
+                                        role="button"
+                                        tabindex="0"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                        (mouseenter)="aspectRatioMouseEnter()"
+                                    >
+                                        <div class="value">{{ aspectRatio }}</div>
+                                        <div
+                                            class="list-options"
+                                            [ngClass]="{ on: enableListRatio }"
+                                            (mouseleave)="enableListRatio = false"
+                                        >
+                                            <ul>
+                                                <li class="header-list">{{ c.label }}</li>
+                                                <li
+                                                    [ngClass]="{ selected: aspectRatio == '4:3' }"
+                                                    (click)="setVideoAspectRatio('16:9')"
+                                                    (keydown.enter)="setVideoAspectRatio('16:9')"
+                                                    role="button"
+                                                    tabindex="0"
+                                                >
+                                                    <svg class="amalia-svg-checked-size icon">
+                                                        <use
+                                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"
+                                                        ></use>
+                                                    </svg>
+                                                    4:3
+                                                    @if (defaultRatio == "4:3") {
+                                                        <span>(original)</span>
+                                                    }
+                                                </li>
+                                                <li
+                                                    [ngClass]="{ selected: aspectRatio == '16:9' }"
+                                                    (click)="setVideoAspectRatio('4:3')"
+                                                    (keydown.enter)="setVideoAspectRatio('4:3')"
+                                                    role="button"
+                                                    tabindex="0"
+                                                >
+                                                    <svg class="amalia-svg-checked-size icon">
+                                                        <use
+                                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"
+                                                        ></use>
+                                                    </svg>
+                                                    16:9
+                                                    @if (defaultRatio == "16:9") {
+                                                        <span>(original)</span>
+                                                    }
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <span class="piste-audio-title">Piste audio</span>
-                                </button>
-                                <ul>
-                                    <li *ngFor="let track of listOfTracks" (click)="changeAudioTrack(track.track)"
-                                        (keydown.enter)="changeAudioTrack(track.track)" role="button" tabindex="0"
-                                        [ngClass]="{'selected':selectedTrack==track.track}">
-                                        <svg class="amalia-svg-checked-size icon">
-                                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
-                                            </use>
+                                }
+                                <!--Playback Rate-->
+                                @case ("playbackRate") {
+                                    <div
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) && currentPlaybackRate !== 1 }"
+                                        class="playback-rate control text"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        {{ currentPlaybackRate }}x
+                                    </div>
+                                }
+                                <!--Download-->
+                                @case ("download") {
+                                    <div
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="false"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control download"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        <a
+                                            target="_blank"
+                                            (click)="buildUrlWithTc(ctl, c); hideAll()"
+                                            (keydown.enter)="buildUrlWithTc(ctl, c); hideAll()"
+                                            role="button"
+                                            tabindex="0"
+                                            #ctl
+                                        >
+                                            @if (c.icon) {
+                                                <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                    <use
+                                                        [attr.xlink:href]="
+                                                            '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                        "
+                                                    ></use>
+                                                </svg>
+                                            }
+                                        </a>
+                                    </div>
+                                }
+                                <!--Forward Images-->
+                                @case ("images-forward") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control images-forward"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                        (click)="nextPlaybackRateImages(c.data.speed)"
+                                        (keydown.enter)="nextPlaybackRateImages(c.data.speed)"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!--Backward Images-->
+                                @case ("images-backward") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control images-backward"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                        (click)="previousPlaybackRateImages(c.data.speed)"
+                                        (keydown.enter)="previousPlaybackRateImages(c.data.speed)"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!--Callback-->
+                                @case ("callback") {
+                                    <button
+                                        type="button"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control callback"
+                                        [attr.aria-label]="c.label"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                        (click)="handleCallback(c)"
+                                        (keydown.enter)="handleCallback(c)"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!--Volume-->
+                                @case ("volume") {
+                                    <div
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="volume control"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                        (mouseenter)="volumeMouseEnter(c.data)"
+                                        #volumeButton
+                                    >
+                                        @if (volumeLeft > 0 || volumeRight > 0) {
+                                            <svg
+                                                tooltip="{{ c.label }}"
+                                                class="amalia-svg-volume-on-size icon"
+                                                (click)="handleMuteUnmuteVolume()"
+                                                (keydown.enter)="handleMuteUnmuteVolume()"
+                                                role="button"
+                                                tabindex="0"
+                                                #volumeMute
+                                            >
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (volumeLeft == 0 && volumeRight == 0) {
+                                            <svg
+                                                class="amalia-svg-volume-off-size icon"
+                                                (click)="handleMuteUnmuteVolume()"
+                                                (keydown.enter)="handleMuteUnmuteVolume()"
+                                                role="button"
+                                                tabindex="0"
+                                                #volumeUnmute
+                                            >
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                        <div
+                                            class="volume-control"
+                                            [ngClass]="{ on: enableVolumeSlider }"
+                                            (mouseleave)="enableVolumeSlider = false; openPisteAudio = false"
+                                        >
+                                            <div class="channel-volume-sliders" [hidden]="openPisteAudio">
+                                                <div class="header-list">Volume (m)</div>
+                                                <div class="channel-volume-control">
+                                                    <div class="channel-volume-control-left">
+                                                        <button
+                                                            type="button"
+                                                            (click)="handleMuteUnmuteVolume('l')"
+                                                            (keydown.enter)="handleMuteUnmuteVolume('l')"
+                                                            class="channel-volume-icon"
+                                                        >
+                                                            @if (volumeLeft > 0) {
+                                                                <svg class="amalia-svg-volume-on-size icon">
+                                                                    <use
+                                                                        [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"
+                                                                    ></use>
+                                                                </svg>
+                                                            }
+                                                            @if (volumeLeft == 0) {
+                                                                <svg class="amalia-svg-volume-off-size icon">
+                                                                    <use
+                                                                        [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"
+                                                                    ></use>
+                                                                </svg>
+                                                            }
+                                                        </button>
+                                                        <div class="left-volume-slider ui-slider">
+                                                            <div
+                                                                [style]="{ width: volumeLeft + '%' }"
+                                                                class="ui-slider-progress"
+                                                            ></div>
+                                                            <input
+                                                                #leftVolumeSlider
+                                                                (input)="changeVolume(leftVolumeSlider.value, 'l')"
+                                                                [(ngModel)]="volumeLeft"
+                                                                class="slider"
+                                                                max="100"
+                                                                min="0"
+                                                                type="range"
+                                                                value="50"
+                                                            />
+                                                        </div>
+                                                        <div class="channel-volume-info">
+                                                            <span class="text-volume">G</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="channel-volume-control-mid-container">
+                                                        @if (mediaPlayerElement?.getMediaPlayer()?.withMergeVolume) {
+                                                            <div
+                                                                [style]="{ left: volumeLeft + '%' }"
+                                                                class="channel-volume-control-mid on"
+                                                            ></div>
+                                                        }
+                                                    </div>
+                                                    <div class="channel-volume-control-right">
+                                                        <button
+                                                            type="button"
+                                                            (click)="handleMuteUnmuteVolume('r')"
+                                                            (keydown.enter)="handleMuteUnmuteVolume('r')"
+                                                            class="channel-volume-icon"
+                                                        >
+                                                            @if (volumeRight > 0) {
+                                                                <svg class="amalia-svg-volume-on-size icon">
+                                                                    <use
+                                                                        [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"
+                                                                    ></use>
+                                                                </svg>
+                                                            }
+                                                            @if (volumeRight == 0) {
+                                                                <svg class="amalia-svg-volume-off-size icon">
+                                                                    <use
+                                                                        [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"
+                                                                    ></use>
+                                                                </svg>
+                                                            }
+                                                        </button>
+                                                        <div class="right-volume-slider ui-slider">
+                                                            <div
+                                                                [style]="{ width: volumeRight + '%' }"
+                                                                class="ui-slider-progress"
+                                                            ></div>
+                                                            <input
+                                                                #rightVolumeSlider
+                                                                (input)="changeVolume(rightVolumeSlider.value, 'r')"
+                                                                [(ngModel)]="volumeRight"
+                                                                class="slider"
+                                                                max="100"
+                                                                min="0"
+                                                                type="range"
+                                                                value="50"
+                                                            />
+                                                        </div>
+                                                        <div class="channel-volume-info">
+                                                            <span class="text-volume">D</span>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        (click)="changeSameVolumeState()"
+                                                        (keydown.enter)="changeSameVolumeState()"
+                                                        class="channel-volume-info-mid"
+                                                    >
+                                                        @if (!mediaPlayerElement?.getMediaPlayer()?.withMergeVolume) {
+                                                            <svg class="amalia-svg-padlock-open-size icon">
+                                                                <use
+                                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#padlock-open'"
+                                                                ></use>
+                                                            </svg>
+                                                        }
+                                                        @if (mediaPlayerElement?.getMediaPlayer()?.withMergeVolume) {
+                                                            <svg class="amalia-svg-padlock-close-size icon">
+                                                                <use
+                                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#padlock-close'"
+                                                                ></use>
+                                                            </svg>
+                                                        }
+                                                    </button>
+                                                    @if (listOfTracks) {
+                                                        <button
+                                                            type="button"
+                                                            class="channel-track"
+                                                            (click)="
+                                                                openPisteAudio = !openPisteAudio;
+                                                                $event.stopPropagation()
+                                                            "
+                                                            (keydown.enter)="
+                                                                openPisteAudio = !openPisteAudio;
+                                                                $event.stopPropagation()
+                                                            "
+                                                            [ngClass]="{ on: openPisteAudio }"
+                                                            (mouseleave)="activated = true"
+                                                        >
+                                                            <svg
+                                                                class="amalia-svg-volume-on-size icon"
+                                                                style="height: 20px"
+                                                            >
+                                                                <use
+                                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#piste-audio'"
+                                                                ></use>
+                                                            </svg>
+                                                            <span class="piste-audio-title">Piste audio</span>
+                                                            <span class="text-right">{{ selectedTrackLabel }}</span>
+                                                            <div class="piste-info-mid">
+                                                                <svg class="amalia-svg-right-size icon">
+                                                                    <use
+                                                                        [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"
+                                                                    ></use>
+                                                                </svg>
+                                                            </div>
+                                                        </button>
+                                                    }
+                                                </div>
+                                            </div>
+                                            @if (openPisteAudio == true) {
+                                                <div class="list-tracks" [ngClass]="{ on: openPisteAudio }">
+                                                    <button
+                                                        type="button"
+                                                        class="title"
+                                                        (click)="
+                                                            openPisteAudio = !openPisteAudio; $event.stopPropagation()
+                                                        "
+                                                        (keydown.enter)="
+                                                            openPisteAudio = !openPisteAudio; $event.stopPropagation()
+                                                        "
+                                                    >
+                                                        <div class="piste-info-mid">
+                                                            <svg class="amalia-svg-right-size icon">
+                                                                <use
+                                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"
+                                                                ></use>
+                                                            </svg>
+                                                        </div>
+                                                        <span class="piste-audio-title">Piste audio</span>
+                                                    </button>
+                                                    <ul>
+                                                        @for (audioTrack of listOfTracks; track audioTrack.track) {
+                                                            <li
+                                                                (click)="changeAudioTrack(audioTrack.track)"
+                                                                (keydown.enter)="changeAudioTrack(audioTrack.track)"
+                                                                role="button"
+                                                                tabindex="0"
+                                                                [ngClass]="{ selected: selectedTrack == audioTrack.track }"
+                                                            >
+                                                                <svg class="amalia-svg-checked-size icon">
+                                                                    <use
+                                                                        [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"
+                                                                    ></use>
+                                                                </svg>
+                                                                <span>{{ audioTrack.label }}</span>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                <!-- Button subtitles -->
+                                @case ("subtitles") {
+                                    <div
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control subtitle"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                        (mouseenter)="hideAll(); enableListPositionsSubtitle = true"
+                                    >
+                                        <svg class="amalia-svg-subtitle-size icon">
+                                            <use
+                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"
+                                            ></use>
                                         </svg>
-                                        <span>{{track.label}}</span>
+                                        <div
+                                            class="list-options"
+                                            [ngClass]="{ on: enableListPositionsSubtitle }"
+                                            (mouseleave)="enableListPositionsSubtitle = false"
+                                        >
+                                            <ul>
+                                                <li class="header-list">{{ c.label }}</li>
+                                                @for (pos of listOfSubtitles; track pos) {
+                                                    <li
+                                                        class="position"
+                                                        [ngClass]="{ selected: subtitlePosition === pos.key }"
+                                                        (click)="updateSubtitlePosition(pos.key)"
+                                                        (keydown.enter)="updateSubtitlePosition(pos.key)"
+                                                        role="button"
+                                                        tabindex="0"
+                                                    >
+                                                        <svg class="amalia-svg-checked-size icon">
+                                                            <use
+                                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"
+                                                            ></use>
+                                                        </svg>
+                                                        {{ pos.label }}
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                }
+                                <!--Menu Button-->
+                                @case ("menu") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) && controls.length > 0 }"
+                                        class="control menu"
+                                        [attr.aria-label]="c.label"
+                                        (click)="hideAll('menu'); $event.stopPropagation(); enableMenu = !enableMenu"
+                                        (keydown.enter)="
+                                            hideAll('menu'); $event.stopPropagation(); enableMenu = !enableMenu
+                                        "
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        <svg class="amalia-svg-dots-size icon">
+                                            <use
+                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#dots'"
+                                            ></use>
+                                        </svg>
+                                    </button>
+                                }
+                                <!-- pinControls-->
+                                @case ("pinControls") {
+                                    <button
+                                        type="button"
+                                        #pinControls
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control)"
+                                        (keydown.enter)="controlClicked(c.control)"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- displaySlider-->
+                                @case ("displaySlider") {
+                                    <button
+                                        type="button"
+                                        #displaySlider
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control)"
+                                        (keydown.enter)="controlClicked(c.control)"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Magnify Button (toggle icon) -->
+                                @case ("magnify") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control magnify"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (!magnifyEnabled) {
+                                            <svg class="amalia-svg-magnify-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (magnifyEnabled) {
+                                            <svg class="amalia-svg-magnify-off-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Zoom Info (minus / percentage / plus) -->
+                                @case ("zoomInfo") {
+                                    <div
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control zoom-info"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        <button
+                                            type="button"
+                                            tooltip="{{ c.data?.minus?.tooltip }}"
+                                            class="zoom-btn"
+                                            (click)="controlClicked('zoomOut')"
+                                            (keydown.enter)="controlClicked('zoomOut')"
+                                        >
+                                            <svg class="amalia-svg-minus-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#minus'"
+                                                ></use>
+                                            </svg>
+                                        </button>
+                                        <span tooltip="{{ c.data?.result?.tooltip }}" class="zoom-result"
+                                            >{{ pictureZoomLevel }}%</span
+                                        >
+                                        <button
+                                            type="button"
+                                            tooltip="{{ c.data?.plus?.tooltip }}"
+                                            class="zoom-btn"
+                                            (click)="controlClicked('zoomIn')"
+                                            (keydown.enter)="controlClicked('zoomIn')"
+                                        >
+                                            <svg class="amalia-svg-plus-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#plus'"
+                                                ></use>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                }
+                                <!-- Picture Player: Fit to Screen -->
+                                @case ("fitToScreen") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control fitToScreen"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Fullsize (100%) -->
+                                @case ("fullsize") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control fullsize"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Rotate -->
+                                @case ("rotate") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control rotate"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Flip Horizontal -->
+                                @case ("fliph") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control fliph"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Flip Vertical -->
+                                @case ("flipv") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control flipv"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Fullscreen -->
+                                @case ("fullscreen") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control fullscreen"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (!fullScreenMode) {
+                                            <svg class="amalia-svg-fullscreen-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (fullScreenMode) {
+                                            <svg class="amalia-svg-fullscreen-off-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen-off'"
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Center -->
+                                @case ("center") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control center"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Crop -->
+                                @case ("crop") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control crop"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.active]="cropModeEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Draw -->
+                                @case ("draw") {
+                                    <div
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control draw"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.active]="drawModeEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        role="button"
+                                        tabindex="0"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (drawModeEnabled) {
+                                            <div
+                                                class="annotation-toolbar"
+                                                (click)="$event.stopPropagation()"
+                                                (keydown.escape)="$event.stopPropagation()"
+                                            >
+                                                <div class="annotation-hint">Clic droit pour dessiner</div>
+                                                <div class="annotation-colors">
+                                                    @for (col of annotationColors; track col) {
+                                                        <span
+                                                            class="annotation-color-swatch"
+                                                            [class.selected]="annotationColor === col"
+                                                            [style.background-color]="col"
+                                                            (click)="
+                                                                $event.stopPropagation(); selectAnnotationColor(col)
+                                                            "
+                                                            (keydown.enter)="
+                                                                $event.stopPropagation(); selectAnnotationColor(col)
+                                                            "
+                                                            role="button"
+                                                            tabindex="0"
+                                                        ></span>
+                                                    }
+                                                </div>
+                                                <div class="annotation-sizes">
+                                                    @for (size of annotationSizes; track size) {
+                                                        <span
+                                                            class="annotation-size-option"
+                                                            [class.selected]="annotationLineWidth === size.lineWidth"
+                                                            (click)="
+                                                                $event.stopPropagation(); selectAnnotationSize(size)
+                                                            "
+                                                            (keydown.enter)="
+                                                                $event.stopPropagation(); selectAnnotationSize(size)
+                                                            "
+                                                            role="button"
+                                                            tabindex="0"
+                                                        >
+                                                            <span
+                                                                class="annotation-size-dot"
+                                                                [style.width.px]="size.lineWidth * 2"
+                                                                [style.height.px]="size.lineWidth * 2"
+                                                            ></span>
+                                                            {{ size.label }}
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                <!-- Picture Player: Text -->
+                                @case ("text") {
+                                    <div
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control text"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.active]="textModeEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        role="button"
+                                        tabindex="0"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (textModeEnabled) {
+                                            <div
+                                                class="annotation-toolbar"
+                                                (click)="$event.stopPropagation()"
+                                                (keydown.escape)="$event.stopPropagation()"
+                                            >
+                                                <div class="annotation-hint">Clic droit pour écrire</div>
+                                                <div class="annotation-colors">
+                                                    @for (col of annotationColors; track col) {
+                                                        <span
+                                                            class="annotation-color-swatch"
+                                                            [class.selected]="annotationColor === col"
+                                                            [style.background-color]="col"
+                                                            (click)="
+                                                                $event.stopPropagation(); selectAnnotationColor(col)
+                                                            "
+                                                            (keydown.enter)="
+                                                                $event.stopPropagation(); selectAnnotationColor(col)
+                                                            "
+                                                            role="button"
+                                                            tabindex="0"
+                                                        ></span>
+                                                    }
+                                                </div>
+                                                <div class="annotation-sizes">
+                                                    @for (size of annotationSizes; track size) {
+                                                        <span
+                                                            class="annotation-size-option"
+                                                            [class.selected]="annotationLineWidth === size.lineWidth"
+                                                            (click)="
+                                                                $event.stopPropagation(); selectAnnotationSize(size)
+                                                            "
+                                                            (keydown.enter)="
+                                                                $event.stopPropagation(); selectAnnotationSize(size)
+                                                            "
+                                                            role="button"
+                                                            tabindex="0"
+                                                        >
+                                                            <span class="annotation-size-text">A</span>
+                                                            {{ size.label }}
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                <!-- Picture Player: Erase -->
+                                @case ("erase") {
+                                    <div
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control erase"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.active]="eraseModeEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        role="button"
+                                        tabindex="0"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                        @if (eraseModeEnabled) {
+                                            <div
+                                                class="annotation-toolbar"
+                                                (click)="$event.stopPropagation()"
+                                                (keydown.escape)="$event.stopPropagation()"
+                                            >
+                                                <div class="annotation-hint">Clic droit pour effacer</div>
+                                                <div class="annotation-sizes">
+                                                    @for (size of annotationSizes; track size) {
+                                                        <span
+                                                            class="annotation-size-option"
+                                                            [class.selected]="annotationLineWidth === size.lineWidth"
+                                                            (click)="
+                                                                $event.stopPropagation(); selectAnnotationSize(size)
+                                                            "
+                                                            (keydown.enter)="
+                                                                $event.stopPropagation(); selectAnnotationSize(size)
+                                                            "
+                                                            role="button"
+                                                            tabindex="0"
+                                                        >
+                                                            <span
+                                                                class="annotation-size-dot"
+                                                                [style.width.px]="size.lineWidth * 2"
+                                                                [style.height.px]="size.lineWidth * 2"
+                                                            ></span>
+                                                            {{ size.label }}
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                <!-- Picture Player: Reset -->
+                                @case ("reset") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control reset"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!-- Picture Player: Snapshot -->
+                                @case ("snapshot") {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control snapshot"
+                                        [class.magnify-locked]="magnifyEnabled"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control); hideAll()"
+                                        (keydown.enter)="controlClicked(c.control); hideAll()"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                                <!--Other controls-->
+                                @default {
+                                    <button
+                                        type="button"
+                                        tooltip="{{ c.label }}"
+                                        placement="top"
+                                        [autoPlacement]="true"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) }"
+                                        class="control"
+                                        [attr.aria-label]="c.label"
+                                        (click)="controlClicked(c.control)"
+                                        (keydown.enter)="controlClicked(c.control)"
+                                        [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                    >
+                                        @if (c.icon) {
+                                            <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                                <use
+                                                    [attr.xlink:href]="
+                                                        '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                    "
+                                                ></use>
+                                            </svg>
+                                        }
+                                    </button>
+                                }
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
+        <!-- Menu of controls displayed on "m" grid-->
+        <div
+            #controlsMenu
+            class="controls-menu {{ displayState }}"
+            [ngClass]="{ on: enableMenu, pinned: pinnedSlider && enablePlaybackSlider }"
+            (mouseenter)="activated = true"
+        >
+            <ul>
+                @for (c of controls; track $index) {
+                    @switch (c.control) {
+                        <!--FullScreen Button -->
+                        @case ("toggleFullScreen") {
+                            <li
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                class="toggleFullScreen control"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                        <!--Aspect Ratio-->
+                        @case ("aspectRatio") {
+                            <li
+                                class="aspect-ratio control text"
+                                (click)="enableListRatio = !enableListRatio; $event.stopPropagation()"
+                                (keydown.enter)="enableListRatio = !enableListRatio; $event.stopPropagation()"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                [ngClass]="{ on: enableListRatio }"
+                            >
+                                <div class="ratio">{{ aspectRatio }}</div>
+                                <span>{{ c.label }}</span>
+                                <svg class="amalia-svg-right-size icon">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
+                                </svg>
+                                <span class="text-right">{{ aspectRatio }}</span>
+                                <ul class="list-options" [ngClass]="{ on: enableListRatio }">
+                                    <li
+                                        [ngClass]="{ selected: aspectRatio == '4:3' }"
+                                        (click)="setVideoAspectRatio('4:3'); hideAll()"
+                                        (keydown.enter)="setVideoAspectRatio('4:3'); hideAll()"
+                                        role="button"
+                                        tabindex="0"
+                                    >
+                                        <svg class="amalia-svg-checked-size icon">
+                                            <use
+                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"
+                                            ></use>
+                                        </svg>
+                                        <span>4:3</span>
+                                        @if (defaultRatio == "4:3") {
+                                            <span>(original)</span>
+                                        }
+                                    </li>
+                                    <li
+                                        [ngClass]="{ selected: aspectRatio == '16:9' }"
+                                        (click)="setVideoAspectRatio('16:9'); hideAll()"
+                                        (keydown.enter)="setVideoAspectRatio('16:9'); hideAll()"
+                                        role="button"
+                                        tabindex="0"
+                                    >
+                                        <svg class="amalia-svg-checked-size icon">
+                                            <use
+                                                [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"
+                                            ></use>
+                                        </svg>
+                                        <span>16:9</span>
+                                        @if (defaultRatio == "16:9") {
+                                            <span>(original)</span>
+                                        }
                                     </li>
                                 </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Button subtitles -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'subtitles'"
-                        class="control subtitle" [attr.aria-label]="c.label" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                        (mouseenter)="hideAll();enableListPositionsSubtitle=true;">
-                        <svg class="amalia-svg-subtitle-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#subtitle'"></use>
-                        </svg>
-                        <div class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}"
-                            (mouseleave)="enableListPositionsSubtitle=false">
-                            <ul>
-                                <li class="header-list">{{c.label}}</li>
-                                <li *ngFor="let pos of listOfSubtitles" class="position"
-                                    [ngClass]="{'selected': subtitlePosition === pos.key}"
-                                    (click)="updateSubtitlePosition(pos.key)"
-                                    (keydown.enter)="updateSubtitlePosition(pos.key)" role="button" tabindex="0">
-                                    <svg class="amalia-svg-checked-size icon">
-                                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'">
-                                        </use>
+                            </li>
+                        }
+                        <!--Download-->
+                        @case ("download") {
+                            <li class="control download" [ngStyle]="{ order: c.order ? c.order : '0' }">
+                                <a
+                                    target="_blank"
+                                    (click)="buildUrlWithTc(ctl, c)"
+                                    (keydown.enter)="buildUrlWithTc(ctl, c)"
+                                    role="button"
+                                    tabindex="0"
+                                    #ctl
+                                >
+                                    @if (c.icon) {
+                                        <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                            <use
+                                                [attr.xlink:href]="
+                                                    '/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon
+                                                "
+                                            ></use>
+                                        </svg>
+                                    }
+                                    <span>{{ c.label }}</span>
+                                </a>
+                            </li>
+                        }
+                        <!--Callback-->
+                        @case ("callback") {
+                            <li
+                                class="control callback"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                (click)="handleCallback(c)"
+                                (keydown.enter)="handleCallback(c)"
+                                role="button"
+                                tabindex="0"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
                                     </svg>
-                                    {{pos.label}}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!--Menu Button-->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show':(shouldShowControl(c.priority)) && controls.length > 0}" *ngSwitchCase="'menu'"
-                        class="control menu" [attr.aria-label]="c.label"
-                        (click)="hideAll('menu');$event.stopPropagation();enableMenu = !enableMenu;"
-                        (keydown.enter)="hideAll('menu');$event.stopPropagation();enableMenu = !enableMenu;"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-dots-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#dots'"></use>
-                        </svg>
-                    </button>
-                    <!-- pinControls-->
-                    <button type="button" #pinControls tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" class="control" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" *ngSwitchCase="'pinControls'"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- displaySlider-->
-                    <button type="button" #displaySlider tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" class="control" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" *ngSwitchCase="'displaySlider'"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Magnify Button (toggle icon) -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'magnify'"
-                        class="control magnify" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg *ngIf="!magnifyEnabled" class="amalia-svg-magnify-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
-                        </svg>
-                        <svg *ngIf="magnifyEnabled" class="amalia-svg-magnify-off-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Zoom Info (minus / percentage / plus) -->
-                    <div [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'zoomInfo'"
-                        class="control zoom-info" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <button type="button" tooltip="{{c.data?.minus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomOut')"
-                            (keydown.enter)="controlClicked('zoomOut')">
-                            <svg class="amalia-svg-minus-size icon">
-                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#minus'"></use>
-                            </svg>
-                        </button>
-                        <span tooltip="{{c.data?.result?.tooltip}}" class="zoom-result">{{ pictureZoomLevel }}%</span>
-                        <button type="button" tooltip="{{c.data?.plus?.tooltip}}" class="zoom-btn" (click)="controlClicked('zoomIn')"
-                            (keydown.enter)="controlClicked('zoomIn')">
-                            <svg class="amalia-svg-plus-size icon">
-                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#plus'"></use>
-                            </svg>
-                        </button>
-                    </div>
-                    <!-- Picture Player: Fit to Screen -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fitToScreen'"
-                        class="control fitToScreen" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Fullsize (100%) -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fullsize'"
-                        class="control fullsize" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Rotate -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'rotate'"
-                        class="control rotate" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Flip Horizontal -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fliph'"
-                        class="control fliph" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Flip Vertical -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'flipv'"
-                        class="control flipv" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Fullscreen -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'fullscreen'"
-                        class="control fullscreen" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg *ngIf="!fullScreenMode" class="amalia-svg-fullscreen-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"></use>
-                        </svg>
-                        <svg *ngIf="fullScreenMode" class="amalia-svg-fullscreen-off-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen-off'"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Center -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'center'"
-                        class="control center" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Crop -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'crop'"
-                        class="control crop" [class.magnify-locked]="magnifyEnabled" [class.active]="cropModeEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Draw -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'draw'"
-                        class="control draw" [class.magnify-locked]="magnifyEnabled" [class.active]="drawModeEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <div class="annotation-toolbar" *ngIf="drawModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
-                            <div class="annotation-hint">Clic droit pour dessiner</div>
-                            <div class="annotation-colors">
-                                <span *ngFor="let col of annotationColors" class="annotation-color-swatch"
-                                    [class.selected]="annotationColor === col" [style.background-color]="col"
-                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"
-                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationColor(col)" role="button" tabindex="0"></span>
-                            </div>
-                            <div class="annotation-sizes">
-                                <span *ngFor="let size of annotationSizes" class="annotation-size-option"
-                                    [class.selected]="annotationLineWidth === size.lineWidth"
-                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)"
-                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationSize(size)" role="button" tabindex="0">
-                                    <span class="annotation-size-dot" [style.width.px]="size.lineWidth * 2" [style.height.px]="size.lineWidth * 2"></span>
-                                    {{size.label}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Picture Player: Text -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'text'"
-                        class="control text" [class.magnify-locked]="magnifyEnabled" [class.active]="textModeEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <div class="annotation-toolbar" *ngIf="textModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
-                            <div class="annotation-hint">Clic droit pour écrire</div>
-                            <div class="annotation-colors">
-                                <span *ngFor="let col of annotationColors" class="annotation-color-swatch"
-                                    [class.selected]="annotationColor === col" [style.background-color]="col"
-                                    (click)="$event.stopPropagation(); selectAnnotationColor(col)"
-                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationColor(col)" role="button" tabindex="0"></span>
-                            </div>
-                            <div class="annotation-sizes">
-                                <span *ngFor="let size of annotationSizes" class="annotation-size-option"
-                                    [class.selected]="annotationLineWidth === size.lineWidth"
-                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)"
-                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationSize(size)" role="button" tabindex="0">
-                                    <span class="annotation-size-text">A</span>
-                                    {{size.label}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Picture Player: Erase -->
-                    <div tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'erase'"
-                        class="control erase" [class.magnify-locked]="magnifyEnabled" [class.active]="eraseModeEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <div class="annotation-toolbar" *ngIf="eraseModeEnabled" (click)="$event.stopPropagation()" (keydown.escape)="$event.stopPropagation()">
-                            <div class="annotation-hint">Clic droit pour effacer</div>
-                            <div class="annotation-sizes">
-                                <span *ngFor="let size of annotationSizes" class="annotation-size-option"
-                                    [class.selected]="annotationLineWidth === size.lineWidth"
-                                    (click)="$event.stopPropagation(); selectAnnotationSize(size)"
-                                    (keydown.enter)="$event.stopPropagation(); selectAnnotationSize(size)" role="button" tabindex="0">
-                                    <span class="annotation-size-dot" [style.width.px]="size.lineWidth * 2" [style.height.px]="size.lineWidth * 2"></span>
-                                    {{size.label}}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Picture Player: Reset -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'reset'"
-                        class="control reset" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!-- Picture Player: Snapshot -->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" *ngSwitchCase="'snapshot'"
-                        class="control snapshot" [class.magnify-locked]="magnifyEnabled" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control);hideAll()"
-                        (keydown.enter)="controlClicked(c.control);hideAll()"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                    <!--Other controls-->
-                    <button type="button" tooltip="{{c.label}}" placement="top" autoPlacement="true" [ngClass]="{'show': shouldShowControl(c.priority)}" class="control" [attr.aria-label]="c.label"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" *ngSwitchDefault
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                    </button>
-                </ng-container>
-            </div>
-        </div>
-        <!-- Menu of controls displayed on "m" grid-->
-        <div #controlsMenu class="controls-menu {{displayState}}"
-            [ngClass]="{'on' : enableMenu,'pinned' :pinnedSlider && enablePlaybackSlider}"
-            (mouseenter)="activated = true">
-            <ul>
-                <ng-container *ngFor="let c of controls; " [ngSwitch]="c.control">
-                    <!--FullScreen Button -->
-                    <li (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0" *ngSwitchCase="'toggleFullScreen'"
-                        class="toggleFullScreen control" [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!--Aspect Ratio-->
-                    <li *ngSwitchCase="'aspectRatio'" class="aspect-ratio control text"
-                        (click)="enableListRatio = !enableListRatio;$event.stopPropagation();"
-                        (keydown.enter)="enableListRatio = !enableListRatio;$event.stopPropagation();" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}" [ngClass]="{'on':enableListRatio}">
-                        <div class="ratio">{{aspectRatio}}</div>
-                        <span>{{c.label}}</span>
-                        <svg class="amalia-svg-right-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
-                        </svg>
-                        <span class="text-right">{{aspectRatio}}</span>
-                        <ul class="list-options" [ngClass]="{'on':enableListRatio}">
-                            <li [ngClass]="{'selected': aspectRatio =='4:3'}"
-                                (click)="setVideoAspectRatio('4:3');hideAll()"
-                                (keydown.enter)="setVideoAspectRatio('4:3');hideAll()" role="button" tabindex="0">
-                                <svg class="amalia-svg-checked-size icon">
-                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
-                                </svg>
-                                <span>4:3</span> <span *ngIf="defaultRatio =='4:3'">(original)</span>
+                                }
+                                <span>{{ c.label }}</span>
                             </li>
-                            <li [ngClass]="{'selected': aspectRatio =='16:9'}"
-                                (click)="setVideoAspectRatio('16:9');hideAll()"
-                                (keydown.enter)="setVideoAspectRatio('16:9');hideAll()" role="button" tabindex="0">
-                                <svg class="amalia-svg-checked-size icon">
-                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
+                        }
+                        <!-- Button subtitles -->
+                        @case ("subtitles") {
+                            <li
+                                class="control subtitle"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                                (click)="
+                                    enableListPositionsSubtitle = !enableListPositionsSubtitle; $event.stopPropagation()
+                                "
+                                (keydown.enter)="
+                                    enableListPositionsSubtitle = !enableListPositionsSubtitle; $event.stopPropagation()
+                                "
+                                role="button"
+                                tabindex="0"
+                                [ngClass]="{ on: enableListPositionsSubtitle }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }} </span>
+                                <svg class="amalia-svg-right-size icon">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
                                 </svg>
-                                <span>16:9</span> <span *ngIf="defaultRatio =='16:9'">(original)</span>
+                                <span class="text-right">{{ selectedLabel }}</span>
+                                <ul class="list-options" [ngClass]="{ on: enableListPositionsSubtitle }">
+                                    @for (pos of listOfSubtitles; track pos) {
+                                        <li
+                                            class="position"
+                                            [ngClass]="{ selected: subtitlePosition === pos.key }"
+                                            (click)="updateSubtitlePosition(pos.key)"
+                                            (keydown.enter)="updateSubtitlePosition(pos.key)"
+                                            role="button"
+                                            tabindex="0"
+                                        >
+                                            <svg class="amalia-svg-checked-size icon">
+                                                <use
+                                                    [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"
+                                                ></use>
+                                            </svg>
+                                            {{ pos.label }}
+                                        </li>
+                                    }
+                                </ul>
                             </li>
-                        </ul>
-                    </li>
-                    <!--Download-->
-                    <li *ngSwitchCase="'download'" class="control download" [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <a target="_blank" (click)="buildUrlWithTc(ctl,c)" (keydown.enter)="buildUrlWithTc(ctl,c)" role="button" tabindex="0" #ctl>
-                            <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                            </svg>
-                            <span>{{c.label}}</span>
-                        </a>
-                    </li>
-                    <!--Callback-->
-                    <li *ngSwitchCase="'callback'" class="control callback" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                        (click)="handleCallback(c)" (keydown.enter)="handleCallback(c)" role="button" tabindex="0">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!-- Button subtitles -->
-                    <li *ngSwitchCase="'subtitles'" class="control subtitle" [ngStyle]="{'order':c.order ? c.order:'0'}"
-                        (click)="enableListPositionsSubtitle= !enableListPositionsSubtitle;$event.stopPropagation();"
-                        (keydown.enter)="enableListPositionsSubtitle= !enableListPositionsSubtitle;$event.stopPropagation();" role="button" tabindex="0"
-                        [ngClass]="{'on':enableListPositionsSubtitle}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}} </span>
-                        <svg class="amalia-svg-right-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
-                        </svg>
-                        <span class="text-right">{{selectedLabel}}</span>
-                        <ul class="list-options" [ngClass]="{'on':enableListPositionsSubtitle}">
-                            <li *ngFor="let pos of listOfSubtitles" class="position"
-                                [ngClass]="{'selected': subtitlePosition === pos.key}"
-                                (click)="updateSubtitlePosition(pos.key)"
-                                (keydown.enter)="updateSubtitlePosition(pos.key)" role="button" tabindex="0">
-                                <svg class="amalia-svg-checked-size icon">
-                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#checked'"></use>
-                                </svg>
-                                {{pos.label}}
+                        }
+                        <!-- Picture Player: Magnify -->
+                        @case ("magnify") {
+                            <li
+                                class="control magnify"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (!magnifyEnabled) {
+                                    <svg class="amalia-svg-magnify-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"
+                                        ></use>
+                                    </svg>
+                                }
+                                @if (magnifyEnabled) {
+                                    <svg class="amalia-svg-magnify-off-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
                             </li>
-                        </ul>
-                    </li>
-                    <!-- Picture Player: Magnify -->
-                    <li *ngSwitchCase="'magnify'" class="control magnify"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg *ngIf="!magnifyEnabled" class="amalia-svg-magnify-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"></use>
-                        </svg>
-                        <svg *ngIf="magnifyEnabled" class="amalia-svg-magnify-off-size icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!-- Picture Player: Fit to Screen -->
-                    <li *ngSwitchCase="'fitToScreen'" class="control fitToScreen" [class.magnify-locked]="magnifyEnabled"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!-- Picture Player: Fullsize -->
-                    <li *ngSwitchCase="'fullsize'" class="control fullsize" [class.magnify-locked]="magnifyEnabled"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!-- Picture Player: Rotate -->
-                    <li *ngSwitchCase="'rotate'" class="control rotate" [class.magnify-locked]="magnifyEnabled"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!-- Picture Player: Flip Horizontal -->
-                    <li *ngSwitchCase="'fliph'" class="control fliph" [class.magnify-locked]="magnifyEnabled"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!-- Picture Player: Flip Vertical -->
-                    <li *ngSwitchCase="'flipv'" class="control flipv" [class.magnify-locked]="magnifyEnabled"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!-- Picture Player: Fullscreen -->
-                    <li *ngSwitchCase="'fullscreen'" class="control fullscreen" [class.magnify-locked]="magnifyEnabled"
-                        (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0"
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                    <!--Other controls-->
-                    <li class="control" (click)="controlClicked(c.control)" (keydown.enter)="controlClicked(c.control)" role="button" tabindex="0" *ngSwitchDefault
-                        [ngStyle]="{'order':c.order ? c.order:'0'}">
-                        <svg class="amalia-svg-{{c.icon}}-size icon" *ngIf="c.icon">
-                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#'+c.icon"></use>
-                        </svg>
-                        <span>{{c.label}}</span>
-                    </li>
-                </ng-container>
+                        }
+                        <!-- Picture Player: Fit to Screen -->
+                        @case ("fitToScreen") {
+                            <li
+                                class="control fitToScreen"
+                                [class.magnify-locked]="magnifyEnabled"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                        <!-- Picture Player: Fullsize -->
+                        @case ("fullsize") {
+                            <li
+                                class="control fullsize"
+                                [class.magnify-locked]="magnifyEnabled"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                        <!-- Picture Player: Rotate -->
+                        @case ("rotate") {
+                            <li
+                                class="control rotate"
+                                [class.magnify-locked]="magnifyEnabled"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                        <!-- Picture Player: Flip Horizontal -->
+                        @case ("fliph") {
+                            <li
+                                class="control fliph"
+                                [class.magnify-locked]="magnifyEnabled"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                        <!-- Picture Player: Flip Vertical -->
+                        @case ("flipv") {
+                            <li
+                                class="control flipv"
+                                [class.magnify-locked]="magnifyEnabled"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                        <!-- Picture Player: Fullscreen -->
+                        @case ("fullscreen") {
+                            <li
+                                class="control fullscreen"
+                                [class.magnify-locked]="magnifyEnabled"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                        <!--Other controls-->
+                        @default {
+                            <li
+                                class="control"
+                                (click)="controlClicked(c.control)"
+                                (keydown.enter)="controlClicked(c.control)"
+                                role="button"
+                                tabindex="0"
+                                [ngStyle]="{ order: c.order ? c.order : '0' }"
+                            >
+                                @if (c.icon) {
+                                    <svg class="amalia-svg-{{ c.icon }}-size icon">
+                                        <use
+                                            [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + c.icon"
+                                        ></use>
+                                    </svg>
+                                }
+                                <span>{{ c.label }}</span>
+                            </li>
+                        }
+                    }
+                }
             </ul>
         </div>
         <!-- Slider -->
-        <div class="playback-rate-slider {{displayState}}"
-            [ngClass]="{'activated' : (enablePlaybackSlider && ( activated || pinnedSlider ))}">
+        <div
+            class="playback-rate-slider {{ displayState }}"
+            [ngClass]="{ activated: enablePlaybackSlider && (activated || pinnedSlider) }"
+        >
             <div class="slider">
-                <div [ngClass]="{'selected' : (selectedSlider === 'slider2')}"
-                    *ngIf="elements && hasComponentWithoutZone('playbackRateCustomSteps')" (oninit)="initDragThumb()">
-                    <ul class="playback-rate-values">
-                        <li class="playbackrate-value"
-                            *ngFor="let pr of sliderListOfPlaybackRateCustomSteps;index as i; first as isFirst; last as isLast;"
-                            [ngClass]="{'first':isFirst,'last':isLast,'active':pr ==currentPlaybackRate}"
-                            (click)="changePlaybackrate(pr, true)" (keydown.enter)="changePlaybackrate(pr, true)" role="button" tabindex="0" attr.data="{{pr}}">{{pr}}x
-                        </li>
-                    </ul>
-                </div>
-                <div class="playbackratestep" [ngClass]="{'selected' : (selectedSlider === 'slider1')}"
-                    *ngIf="elements && hasComponentWithoutZone('playbackRateSteps')" (oninit)="initDragThumb()">
-                    <ul class="playback-rate-values">
-                        <li class="playbackrate-value"
-                            *ngFor="let pr of sliderListOfPlaybackRateStep;index as i; first as isFirst; last as isLast;"
-                            [ngClass]="{'first':isFirst,'last':isLast,'active':pr == currentPlaybackRateSlider}"
-                            (click)="changePlaybackrate(pr, true)" (keydown.enter)="changePlaybackrate(pr, true)" role="button" tabindex="0" attr.data="{{pr}}">{{pr}}x
-                        </li>
-                    </ul>
-                </div>
+                @if (elements && hasComponentWithoutZone("playbackRateCustomSteps")) {
+                    <div [ngClass]="{ selected: selectedSlider === 'slider2' }" (oninit)="initDragThumb()">
+                        <ul class="playback-rate-values">
+                            @for (
+                                pr of sliderListOfPlaybackRateCustomSteps;
+                                track pr;
+                                let i = $index;
+                                let isFirst = $first;
+                                let isLast = $last
+                            ) {
+                                <li
+                                    class="playbackrate-value"
+                                    [ngClass]="{ first: isFirst, last: isLast, active: pr == currentPlaybackRate }"
+                                    (click)="changePlaybackrate(pr, true)"
+                                    (keydown.enter)="changePlaybackrate(pr, true)"
+                                    role="button"
+                                    tabindex="0"
+                                    attr.data="{{ pr }}"
+                                >
+                                    {{ pr }}x
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+                @if (elements && hasComponentWithoutZone("playbackRateSteps")) {
+                    <div
+                        class="playbackratestep"
+                        [ngClass]="{ selected: selectedSlider === 'slider1' }"
+                        (oninit)="initDragThumb()"
+                    >
+                        <ul class="playback-rate-values">
+                            @for (
+                                pr of sliderListOfPlaybackRateStep;
+                                track pr;
+                                let i = $index;
+                                let isFirst = $first;
+                                let isLast = $last
+                            ) {
+                                <li
+                                    class="playbackrate-value"
+                                    [ngClass]="{
+                                        first: isFirst,
+                                        last: isLast,
+                                        active: pr == currentPlaybackRateSlider,
+                                    }"
+                                    (click)="changePlaybackrate(pr, true)"
+                                    (keydown.enter)="changePlaybackrate(pr, true)"
+                                    role="button"
+                                    tabindex="0"
+                                    attr.data="{{ pr }}"
+                                >
+                                    {{ pr }}x
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
                 <div #dragThumb class="thumb"></div>
             </div>
         </div>
     </div>
-    <div class="controls-reduced-container {{displayState}}" [ngClass]="{'activated' : activated}">
+    <div class="controls-reduced-container {{ displayState }}" [ngClass]="{ activated: activated }">
         <!-- play pause mode-->
-        <button type="button" (click)="controlClicked('playPause')" (keydown.enter)="controlClicked('playPause')" aria-label="Pause / Lire" class="play-pause control">
-            <svg *ngIf="mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-blue-play-size icon">
-                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
-            </svg>
-            <svg *ngIf="!mediaPlayerElement.getMediaPlayer()?.isPaused()" class="amalia-svg-blue-pause-size icon">
-                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-pause'"></use>
-            </svg>
+        <button
+            type="button"
+            (click)="controlClicked('playPause')"
+            (keydown.enter)="controlClicked('playPause')"
+            aria-label="Pause / Lire"
+            class="play-pause control"
+        >
+            @if (mediaPlayerElement.getMediaPlayer()?.isPaused()) {
+                <svg class="amalia-svg-blue-play-size icon">
+                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
+                </svg>
+            }
+            @if (!mediaPlayerElement.getMediaPlayer()?.isPaused()) {
+                <svg class="amalia-svg-blue-pause-size icon">
+                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-pause'"></use>
+                </svg>
+            }
         </button>
     </div>
 </div>
-

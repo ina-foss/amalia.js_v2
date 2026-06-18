@@ -23,6 +23,7 @@ import { matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent } from 'src/a
 
 @Component({
     selector: 'amalia-control-bar',
+    standalone: false,
     templateUrl: './control-bar-plugin.component.html',
     styleUrls: ['./control-bar-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom
@@ -165,7 +166,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * List of Controls
      */
-    public controls = [];
+    public controls: Array<ControlBarConfig> = [];
     public indexPlaybackRate = 3;
     /**
      * In sliding
@@ -199,7 +200,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * List of control for Zone 1
      */
-    public elements;
+    public elements: Array<ControlBarConfig> = [];
     /**
      * State of controlBar
      */
@@ -207,7 +208,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * display state (s/m/l)
      */
-    public displayState: string;
+    public displayState: string = 'l';
     /**
      * FullScreenMode state
      */
@@ -359,14 +360,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     init() {
         super.init();
-        this.elements = this.pluginConfiguration.data;
+        this.elements = this.pluginConfiguration?.data || [];
         // init playbackrates
         this.initPlaybackrates();
         // init volume — use defaultVolume from config to preserve volume across DOM moves
         const defaultVolume = (this.mediaPlayerElement.getConfiguration?.() as any)?.player?.defaultVolume ?? 50;
         this.mediaPlayerElement.getMediaPlayer()?.setVolume(defaultVolume);
         // init shortcuts
-        this.initShortcuts(this.pluginConfiguration.data);
+        this.initShortcuts(this.pluginConfiguration?.data || []);
         // Enable thumbnail
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
@@ -381,12 +382,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.setThumbnail(url, 0);
         }
         // fixed controlBar
-        const fixedControlBar = this.pluginConfiguration.fixed;
+        const fixedControlBar = this.pluginConfiguration?.fixed;
         if (fixedControlBar) {
             this.fixControlBar();
         }
         // pinned controls
-        const pinnedControlBarWithControls = this.pluginConfiguration.pinnedControls;
+        const pinnedControlBarWithControls = this.pluginConfiguration?.pinnedControls;
         if (pinnedControlBarWithControls) {
             this.pinControls();
         }
@@ -999,10 +1000,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     /**
-     * Return true if the component is in ths configuration without zone
+     * Return true if the component is in the configuration without a zone
      * @param componentName compoent name
      */
     public hasComponentWithoutZone(componentName: string): boolean {
+        if (!this.pluginConfiguration || !this.pluginConfiguration.data) {
+            return false;
+        }
         const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: componentName });
         return (control !== undefined && control !== null);
     }
@@ -1047,7 +1051,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.elements = _.orderBy(this.elements, ['order']);
             return _.filter<ControlBarConfig>(this.elements, { priority, zone });
         }
-        return null;
+        return [];
     }
 
     /**
@@ -1143,7 +1147,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         controlsP3 ??= [];
         controlsP2 ??= [];
 
-        if (this.displayState === 'm') {
+        if (this.displayState === 'l') {
+            this.controls = controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2);
+        } else if (this.displayState === 'm') {
             this.controls = controlsP5;
         } else if (this.displayState === 'sm') {
             this.controls = controlsP5.concat(controlsP4);
@@ -1850,6 +1856,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     initTracks() {
+        if (!this.pluginConfiguration || !this.pluginConfiguration.data) {
+            return;
+        }
         const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: 'volume' });
         if (control && control.data && control.data.tracks) {
             this.listOfTracks = control.data.tracks;

@@ -21,6 +21,7 @@ export class TcFormatPipe implements PipeTransform {
 
 @Component({
     selector: 'amalia-transcription',
+    standalone: false,
     templateUrl: './transcription-plugin.component.html',
     styleUrls: ['./transcription-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

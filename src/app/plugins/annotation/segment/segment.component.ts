@@ -26,6 +26,7 @@ import { AnnotationsService } from 'src/app/service/annotations.service';
 
 @Component({
     selector: 'amalia-segment',
+    standalone: false,
     templateUrl: './segment.component.html',
     styleUrl: './segment.component.scss',
 })

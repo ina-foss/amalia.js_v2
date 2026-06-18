@@ -10,6 +10,7 @@ import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
     selector: 'amalia-subtitles',
+    standalone: false,
     templateUrl: './subtitles-plugin.component.html',
     styleUrls: ['./subtitles-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

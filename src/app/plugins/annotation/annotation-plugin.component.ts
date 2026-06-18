@@ -35,6 +35,7 @@ export interface ExportColumnsHeader {
 
 @Component({
     selector: 'amalia-annotation',
+    standalone: false,
     templateUrl: './annotation-plugin.component.html',
     styleUrls: ['./annotation-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

@@ -1,1 +1,3 @@
-<div *ngIf="subTitle" class="{{posSubtitle}} {{displayState}}">{{subTitle}}</div>
+@if (subTitle) {
+    <div class="{{ posSubtitle }} {{ displayState }}">{{ subTitle }}</div>
+}

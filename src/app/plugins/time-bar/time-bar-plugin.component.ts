@@ -11,6 +11,7 @@ import { FormatUtils } from 'src/app/core/utils/format-utils';
 
 @Component({
     selector: 'amalia-time-bar',
+    standalone: false,
     templateUrl: './time-bar-plugin.component.html',
     styleUrls: ['./time-bar-plugin.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

@@ -40,6 +40,7 @@ import { ShortcutEvent } from '../core/config/model/shortcuts-event';
 
 @Component({
     selector: 'amalia-player',
+    standalone: false,
     templateUrl: './amalia.component.html',
     styleUrls: ['./amalia.component.scss'],
     encapsulation: ViewEncapsulation.ShadowDom

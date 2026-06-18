@@ -1,7 +1,7 @@
 import { MediaPlayerElement } from '../media-player-element';
 import { PluginConfigData } from '../config/model/plugin-config-data';
 import { DefaultLogger } from '../logger/default-logger';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { PlayerEventType } from '../constant/event-type';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { AmaliaException } from '../exception/amalia-exception';
@@ -120,6 +120,15 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     @Input({ required: true })
     protected pluginName: string;
     logger: DefaultLogger;
+    /**
+     * Angular zone, used to re-enter the zone when player events (emitted from a non-Angular
+     * EventEmitter, often outside the zone) update component state, so change detection runs.
+     */
+    private readonly _pluginZone: NgZone = inject(NgZone);
+    /**
+     * Change detector used to mark the (custom element) view dirty after event-driven updates.
+     */
+    private readonly _pluginCdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
     /**
      * Plugin base constructor
@@ -157,7 +166,30 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     };
 
     addListener(element: any, playerEventType: PlayerEventType, func: any) {
-        Utils.addListener(this, element, playerEventType, func);
+        Utils.addListener(this, element, playerEventType, this.wrapInZone(func));
+    }
+
+    /**
+     * Wraps a player-event handler so it always runs inside the Angular zone and marks the view
+     * for check afterwards. Player events are emitted from a plain Node EventEmitter whose `emit`
+     * may originate outside Angular's zone (the host page drives the player via the custom-element
+     * API), in which case mutations done by the handler would not trigger change detection. The
+     * wrapper's `name` is preserved so the listener de-duplication/removal logic in `Utils` (which
+     * matches on the bound function name) keeps working.
+     */
+    private wrapInZone(func: any): any {
+        const zone = this._pluginZone;
+        const cdr = this._pluginCdr;
+        const wrapped = function (...args: any[]) {
+            // `this` is bound to the plugin instance by Utils.addListener.
+            return zone.run(() => {
+                const result = func.apply(this, args);
+                cdr.markForCheck();
+                return result;
+            });
+        };
+        Object.defineProperty(wrapped, 'name', { value: func.name, configurable: true });
+        return wrapped;
     }
     removeListener(element: any, playerEventType: PlayerEventType, func: any) {
         Utils.unsubscribeTargetedElementEventListener(this, element, playerEventType, func);

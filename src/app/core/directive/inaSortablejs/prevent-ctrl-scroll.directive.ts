@@ -1,7 +1,8 @@
 import { Directive, HostListener } from '@angular/core';
 
 @Directive({
-    selector: '[appPreventCtrlScroll]'
+    selector: '[appPreventCtrlScroll]',
+    standalone: false
 })
 export class PreventCtrlScrollDirective {
 

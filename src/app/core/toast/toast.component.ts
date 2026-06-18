@@ -1,17 +1,9 @@
 import {ChangeDetectorRef, Component, Input} from '@angular/core';
-import {ProgressBarModule} from "primeng/progressbar";
-import {ToastModule, ToastPositionType} from "primeng/toast";
 import {MessageService} from "primeng/api";
-import {NgIf} from "@angular/common";
 
 @Component({
     selector: 'amalia-toast',
-    standalone: true,
-    imports: [
-        ProgressBarModule,
-        ToastModule,
-        NgIf
-    ],
+    standalone: false,
     templateUrl: './toast.component.html',
     styleUrl: './toast.component.scss'
 })
@@ -23,7 +15,7 @@ export class ToastComponent {
     @Input()
     key: string;
     @Input()
-    position: ToastPositionType;
+    position: string;
 
     public addMessage(msg: any) {
         this.messageService.add(msg);
