@@ -46,7 +46,7 @@
         </div>
         <div class="pad">
             <div class="timeline" #mainTimeline>
-                @for (loc of mainLocalisations; track loc) {
+                @for (loc of mainLocalisations; track $index) {
                     @switch (loc.tcIn != null && loc.tcOut != null) {
                         @default {
                             <div
@@ -115,7 +115,7 @@
         (onClose)="refreshTimeCursor($event)"
         (onOpen)="refreshTimeCursor($event)"
     >
-        @for (block of listOfBlocks; track block; let idx = $index) {
+        @for (block of listOfBlocks; track $index; let idx = $index) {
             <p-accordionTab
                 [ngClass]="{ 'hidden-timeline': block.displayState === false }"
                 iconPos="start"
@@ -146,7 +146,7 @@
                 </ng-template>
                 <ng-template pTemplate="content">
                     <div class="timeline">
-                        @for (loc of block.data; track loc) {
+                        @for (loc of block.data; track $index) {
                             @switch (loc.tcIn != null && loc.tcOut != null) {
                                 @default {
                                     <div
@@ -157,10 +157,10 @@
                                         (keyDown)="handleMouseEnterOnTc($event, loc)"
                                         (keyUp)="handleMouseEnterOnTc($event, loc)"
                                         [ngStyle]="{
-                                            'background-color': block.data.color
-                                                ? block.data.color
+                                            'background-color': loc.color
+                                                ? loc.color
                                                 : block.defaultColor,
-                                            left: ((loc.tc - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%',
+                                            left: focusTcOut > focusTcIn ? ((loc.tc - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
                                         }"
                                         [attr.data-tc]="loc.tc"
                                         [attr.data-type]="loc.type"
@@ -179,14 +179,15 @@
                                         (mouseenter)="handleMouseEnterOnTc($event, loc)"
                                         (mouseleave)="handleMouseLeaveOnTc($event)"
                                         [ngStyle]="{
-                                            'background-color': block.data.color
-                                                ? block.data.color
+                                            'background-color': loc.color
+                                                ? loc.color
                                                 : block.defaultColor,
-                                            left: ((loc.tcIn - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%',
-                                            width:
-                                                loc.tcOut - loc.tcIn === 0
+                                            left: focusTcOut > focusTcIn ? ((loc.tcIn - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
+                                            width: focusTcOut > focusTcIn
+                                                ? (loc.tcOut - loc.tcIn === 0
                                                     ? '1px'
-                                                    : ((loc.tcOut - loc.tcIn) * 100) / (focusTcOut - focusTcIn) + '%',
+                                                    : ((loc.tcOut - loc.tcIn) * 100) / (focusTcOut - focusTcIn) + '%')
+                                                : '0%',
                                         }"
                                     ></div>
                                 }
@@ -218,10 +219,10 @@
                         (blur)="isSelectSegmentsFocused = false"
                     >
                         @if (!indeterminate && allNodesChecked) {
-                            <CheckIcon [styleClass]="'p-checkbox-icon'" />
+                            <svg data-p-icon="check" class="p-checkbox-icon"></svg>
                         }
                         @if (indeterminate) {
-                            <MinusIcon [styleClass]="'p-checkbox-icon'" />
+                            <svg data-p-icon="minus" class="p-checkbox-icon"></svg>
                         }
                     </div>
                 </div>

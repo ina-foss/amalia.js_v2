@@ -372,6 +372,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     private restoreFilterState(previousState: { hasState: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] }) {
         if (!previousState.hasState) {
+            // Open all blocks by default when there's no previous state
+            this.listOfBlocksIndexes = this.listOfBlocks.map((_, index) => index);
             return;
         }
 
@@ -851,7 +853,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param event event
      * @param localisation localisation
      */
-    public handleMouseEnterOnTc(event: MouseEvent, localisation: TimelineLocalisation) {
+    public handleMouseEnterOnTc(event: Event, localisation: TimelineLocalisation) {
         const defaultMouseMargin = 20;
         const selectedBlockElement = this.selectedBlockElement.nativeElement;
         const currentTarget = event.target as HTMLElement;

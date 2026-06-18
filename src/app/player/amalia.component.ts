@@ -796,10 +796,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                 this.mediaPlayerElement.toggleFullscreen(element);
             }
         }
-        // Ne pas appeler ici this.updatePlayerSizeWithAspectRatio(),
-        // car l'appli n'aurait pas eu le temps de passer en mode plein écran.
-        // Dès que l'appli passe en mode plein écran, this.updatePlayerSizeWithAspectRatio() est
-        // systématiquement appelée car l'évènement window:resize est déclenché.
+        // Call updatePlayerSizeWithAspectRatio() directly since window:resize may not be triggered
+        // when entering/exiting fullscreen in all browsers
+        setTimeout(() => this.updatePlayerSizeWithAspectRatio(), 0);
     }
 
     /**
