@@ -777,7 +777,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
             const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
             const listBlockTimeline: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.timeline');
-            const listBlockTimelineLeftPosition = listBlockTimeline ? listBlockTimeline.offsetLeft : mainTimelineLeftPosition;
+            const listBlocksContainerRect = this.listOfBlocksContainer.nativeElement.getBoundingClientRect();
+            const listBlockTimelineRect = listBlockTimeline?.getBoundingClientRect();
+            const listBlockTimelineLeftPosition = listBlockTimelineRect
+                ? listBlockTimelineRect.left - listBlocksContainerRect.left
+                : mainTimelineLeftPosition;
             mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
             mainBlock.style.width = `2px`;
             listBlock.style.left = `${listBlockTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn)}px`;

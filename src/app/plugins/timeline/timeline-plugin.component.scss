@@ -140,7 +140,38 @@
 
     }
 
-    .p-checkbox .p-checkbox-box.p-highlight {
+    .p-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      flex: 0 0 auto;
+
+      .p-checkbox-input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        opacity: 0;
+        z-index: 1;
+        cursor: pointer;
+      }
+
+      .p-checkbox-box {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .p-checkbox.p-checkbox-checked .p-checkbox-box,
+    .p-checkbox:has(.p-checkbox-icon[data-p-icon="minus"]) .p-checkbox-box {
       border-color: $amalia-plugin-timeline-primary-color;
       background: $amalia-plugin-timeline-primary-color;
     }
@@ -158,25 +189,76 @@
         display: none;
       }
 
-      .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-tree-toggler,
-      .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-treenode-icon,
-      .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-tree-toggler:hover,
-      .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight .p-treenode-icon:hover {
+      .p-tree .p-tree-root .p-tree-node .p-tree-node-content.p-tree-node-selected .p-tree-node-toggle-icon,
+      .p-tree .p-tree-root .p-tree-node .p-tree-node-content.p-tree-node-selected .p-tree-node-icon,
+      .p-tree .p-tree-root .p-tree-node .p-tree-node-content.p-tree-node-selected .p-tree-node-toggle-icon:hover,
+      .p-tree .p-tree-root .p-tree-node .p-tree-node-content.p-tree-node-selected .p-tree-node-icon:hover {
         color: $amalia-plugin-timeline-primary-color;
       }
 
-      .p-tree .p-tree-container .p-treenode .p-treenode-content {
+      .p-tree .p-tree-root .p-tree-node .p-tree-node-content {
         border-radius: 6px;
         background: #F9FAFB;
+        display: flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        gap: 0.5rem;
       }
 
-      .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
+      .p-tree .p-tree-root .p-tree-node .p-tree-node-content.p-tree-node-selected {
         color: $amalia-plugin-timeline-primary-color;
       }
 
-      .p-treenode-leaf {
-        .p-treenode-content {
+      .p-tree-node-leaf {
+        .p-tree-node-content {
           background: var(--INA-Blanc, #FFF) !important;
+        }
+
+        .p-tree-node-toggle-button {
+          display: none;
+        }
+      }
+
+      .p-tree-root-children,
+      .p-tree-node-children,
+      .p-tree-node {
+        list-style: none !important;
+
+        &::marker {
+          content: none;
+          display: none;
+        }
+      }
+
+      .p-tree-root-children {
+        padding-inline-start: 12px;
+      }
+
+      .p-tree-node-children {
+        padding-inline-start: 1rem;
+      }
+
+      .p-tree-node-toggle-button {
+        width: auto;
+        height: auto;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+
+        &:hover,
+        &:enabled:hover,
+        &:focus,
+        &:focus-visible {
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
+          outline: none !important;
+        }
+
+        .p-tree-node-toggle-icon {
+          color: var(--amalia-plugin-timeline-primary-color, #0B7698);
         }
       }
 
@@ -261,11 +343,7 @@
           padding: 0 !important;
         }
 
-        .p-tree-wrapper {
-          height: 100%;
-        }
-
-        .p-tree-container {
+        .p-tree-root {
           height: 100%;
           overflow-y: auto;
           /* Activer le défilement vertical */
@@ -274,26 +352,26 @@
         }
 
         /* Personnaliser la barre de défilement */
-        .p-tree-container::-webkit-scrollbar {
+        .p-tree-root::-webkit-scrollbar {
           width: 10px;
           /* Largeur de la barre de défilement */
         }
 
-        .p-tree-container::-webkit-scrollbar-track {
+        .p-tree-root::-webkit-scrollbar-track {
           background: #f1f1f1;
           /* Couleur de la piste */
           border: 1px solid $amalia-plugin-storyboard-box-border-color;
           padding: 2px 0;
         }
 
-        .p-tree-container::-webkit-scrollbar-thumb {
+        .p-tree-root::-webkit-scrollbar-thumb {
           border-radius: 5px;
           /* Arrondir les coins */
           box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
           background-color: $amalia-primary-color;
         }
 
-        .p-tree-container::-webkit-scrollbar-thumb:hover {
+        .p-tree-root::-webkit-scrollbar-thumb:hover {
           background: $amalia-primary-color;
           /* Couleur de la poignée au survol */
         }
@@ -303,28 +381,48 @@
           padding: 8px 0 0 12px;
         }
 
-        ul {
+        .p-iconfield {
+          position: relative;
+          display: block;
+          width: 90%;
+          margin: 8px 0 0 12px;
 
-          li {
-            font-family: $amalia-font-family !important;
+          .p-tree-filter-input {
+            width: 100%;
+            padding-inline-start: 2.25rem;
+          }
+
+          .p-inputicon {
+            position: absolute;
+            top: 50%;
+            inset-inline-start: 0.75rem;
+            transform: translateY(-50%);
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
             color: $amalia-plugin-timeline-header-font-color;
-            font-size: 14px;
-            letter-spacing: 0;
-            line-height: 100%;
-            font-weight: 700;
-            font-style: normal;
-            position: relative;
-            padding: 0;
-            margin: 5px 0;
+            pointer-events: none;
+          }
+        }
 
+        .p-tree-node {
+          font-family: $amalia-font-family !important;
+          color: $amalia-plugin-timeline-header-font-color;
+          font-size: 14px;
+          letter-spacing: 0;
+          line-height: 100%;
+          font-weight: 700;
+          font-style: normal;
+          position: relative;
+          padding: 0;
+          margin: 5px 0;
 
-            .color {
-              height: 15px;
-              width: 15px;
-              display: inline-block;
-              margin-right: 5px;
-              border-radius: 10px;
-            }
+          .color {
+            height: 15px;
+            width: 15px;
+            display: inline-block;
+            margin-right: 5px;
+            border-radius: 10px;
           }
         }
       }
@@ -497,9 +595,25 @@
       div {
         padding: 0;
       }
+
     }
 
-    .p-accordion-header:hover {
+    .p-accordionheader {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+
+      .pi-chevron-down,
+      .pi-chevron-right {
+        color: var(--amalia-plugin-timeline-primary-color, #0B7698);
+        padding: 0 10px 0 2px !important;
+        margin: 0 !important;
+        font-size: 10px !important;
+      }
+
+    }
+
+    .p-accordionheader:hover {
       cursor: move;
 
       .block-header-buttons {
@@ -519,17 +633,17 @@
       }
     }
 
-    .p-accordion-toggle-icon {
-      color: $amalia-plugin-timeline-primary-color;
+    .p-accordionheader-toggle-icon {
+      color: var(--amalia-plugin-timeline-primary-color, #0B7698);
       padding: 0 10px 0 2px !important;
       margin: 0 !important;
     }
 
-    .p-accordion .p-accordion-header .p-accordion-toggle-icon {
+    .p-accordion .p-accordionheader .p-accordionheader-toggle-icon {
       transform: rotate(0deg) !important;
     }
 
-    .p-accordion .p-accordion-header.p-highlight .p-accordion-toggle-icon {
+    .p-accordion .p-accordionheader.p-highlight .p-accordionheader-toggle-icon {
       transform: rotate(0deg) !important;
     }
 
@@ -586,6 +700,12 @@
     margin-top: 4px;
     margin-bottom: 0;
 
+    .p-accordionheader-toggle-icon {
+      color: var(--amalia-plugin-timeline-primary-color, #0B7698);
+      padding: 0 10px 0 2px !important;
+      margin: 0 !important;
+    }
+
     .tc-cursor {
       position: absolute;
       z-index: 999;
@@ -615,6 +735,11 @@
     flex-direction: column;
     justify-content: flex-end;
 
+    .p-accordionheader-toggle-icon {
+      color: var(--amalia-plugin-timeline-primary-color, #0B7698);
+      padding: 0 10px 0 2px !important;
+      margin: 0 !important;
+    }
 
     .tc-cursor {
       position: absolute;
@@ -728,12 +853,17 @@
     }
   }
 
-  .p-accordion .p-accordion-content {
+  .p-accordion .p-accordioncontent {
     padding: 0 15px !important;
     background: var(--accordion-header-active-background, #F9FAFB);
+    display: block;
   }
 
-  .p-accordion .p-accordion-header .p-accordion-toggle-icon {
+  .p-accordionpanel:not(.p-accordionpanel-active) .p-accordioncontent {
+    display: none !important;
+  }
+
+  .p-accordion .p-accordionheader .p-accordionheader-toggle-icon {
     order: -1;
 
     .p-icon {
@@ -742,15 +872,7 @@
     }
   }
 
-  .p-accordion .p-accordion-header .p-accordion-header-link {
-    width: 100%;
-    flex-direction: row !important;
-    justify-content: flex-start !important;
-    padding: 0;
-    background: var(--accordion-header-active-background, #F9FAFB);
-  }
-
-  .p-accordion-tab {
+  .p-accordionpanel {
     display: flex;
     flex-direction: column;
     gap: 4px;

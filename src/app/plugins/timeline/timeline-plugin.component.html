@@ -3,24 +3,15 @@
     <p-toolbar>
         <div class="p-toolbar-group-start">
             @if (tvDaysEnabled) {
-                <p-button
-                    icon="pi pi-download"
-                    (onClick)="exportTvDays()"
-                    label="Exporter les données"
-                    class="p-button-download"
-                ></p-button>
+            <p-button icon="pi pi-download" (onClick)="exportTvDays()" label="Exporter les données"
+                class="p-button-download"></p-button>
             }
         </div>
         <div class="p-toolbar-group-end">
             <div class="flex items-center gap-2 toolbar-end-buttons">
                 <p-button icon="pi pi-search-minus" (onClick)="unZoom()" [text]="true" [rounded]="true"></p-button>
-                <p-button
-                    id="timeline-toolbar-filter-button"
-                    icon="pi pi-filter"
-                    (onClick)="toggleConfig()"
-                    [text]="true"
-                    [rounded]="true"
-                ></p-button>
+                <p-button id="timeline-toolbar-filter-button" icon="pi pi-filter" (onClick)="toggleConfig()"
+                    [text]="true" [rounded]="true"></p-button>
             </div>
         </div>
     </p-toolbar>
@@ -34,168 +25,125 @@
         <div class="focus handle-border" #focusContainer>
             <div class="time-code">
                 @if (focusTcOut) {
-                    <span class="start">{{ focusTcIn | tcFormat: timeFormat : fps }}</span>
+                <span class="start">{{ focusTcIn | tcFormat: timeFormat : fps }}</span>
                 }
                 @if (focusTcIn) {
-                    <span class="middle">-</span>
+                <span class="middle">-</span>
                 }
                 @if (focusTcOut) {
-                    <span class="end">{{ focusTcOut | tcFormat: timeFormat : fps }}</span>
+                <span class="end">{{ focusTcOut | tcFormat: timeFormat : fps }}</span>
                 }
             </div>
         </div>
         <div class="pad">
             <div class="timeline" #mainTimeline>
                 @for (loc of mainLocalisations; track $index) {
-                    @switch (loc.tcIn != null && loc.tcOut != null) {
-                        @default {
-                            <div
-                                class="cue-point"
-                                [attr.data-color]="loc.color"
-                                [ngStyle]="{
+                @switch (loc.tcIn != null && loc.tcOut != null) {
+                @default {
+                <div class="cue-point" [attr.data-color]="loc.color" [ngStyle]="{
                                     left: (loc.tc * 100) / duration + '%',
                                     'background-color': loc.color ? loc.color : mainBlockColor,
-                                }"
-                                [attr.data-tc]="loc.tc"
-                                (click)="callSeek(loc.tc)"
-                            ></div>
-                        }
-                        @case (true) {
-                            <div
-                                class="segment"
-                                [attr.data-tc]="loc.tcIn"
-                                (click)="callSeek(loc.tcIn)"
-                                [attr.data-color]="loc.color"
-                                [ngStyle]="{
+                                }" [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
+                }
+                @case (true) {
+                <div class="segment" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                    [attr.data-color]="loc.color" [ngStyle]="{
                                     left: (loc.tcIn * 100) / duration + '%',
                                     width: ((loc.tcOut - loc.tcIn) * 100) / duration + '%',
                                     'background-color': loc.color ? loc.color : mainBlockColor,
-                                }"
-                            ></div>
-                        }
-                    }
+                                }"></div>
+                }
+                }
                 }
             </div>
         </div>
     </div>
 </div>
-<div
-    class="list-blocks"
-    #listOfBlocksContainer
-    [sortablejs]="listOfBlocks"
-    [sortablejsOptions]="sortableOptions"
-    appPreventCtrlScroll
->
+<div class="list-blocks" #listOfBlocksContainer [sortablejs]="listOfBlocks" [sortablejsOptions]="sortableOptions"
+    appPreventCtrlScroll>
     <div class="pad">
         <div class="tc-cursor"></div>
     </div>
     <div class="tooltip" #selectedBlockElement>
         @if (selectedBlock?.thumb) {
-            <p>{{ selectedBlock.thumb }}</p>
+        <p>{{ selectedBlock.thumb }}</p>
         }
         @if (selectedBlock?.tc != null) {
-            <p class="tc">Tc:{{ selectedBlock.tc }}</p>
+        <p class="tc">Tc:{{ selectedBlock.tc }}</p>
         }
         @if (selectedBlock?.tcIn != null && selectedBlock?.tcOut != null) {
-            <p class="tc">
-                <span class="start">{{ selectedBlock.tcIn | tcFormat: timeFormat : fps }}</span>
-                <span class="middle">-</span>
-                <span class="end">{{ selectedBlock.tcOut | tcFormat: timeFormat : fps }}</span>
-            </p>
+        <p class="tc">
+            <span class="start">{{ selectedBlock.tcIn | tcFormat: timeFormat : fps }}</span>
+            <span class="middle">-</span>
+            <span class="end">{{ selectedBlock.tcOut | tcFormat: timeFormat : fps }}</span>
+        </p>
         }
         @if (selectedBlock?.label) {
-            <p class="label">{{ selectedBlock.label }}</p>
+        <p class="label">{{ selectedBlock.label }}</p>
         }
     </div>
-    <p-accordion
-        #listOfBlocksAccordion
-        [multiple]="true"
-        [(activeIndex)]="listOfBlocksIndexes"
-        (activeIndexChange)="refreshTimeCursor($event)"
-        (onClose)="refreshTimeCursor($event)"
-        (onOpen)="refreshTimeCursor($event)"
-    >
+    <p-accordion #listOfBlocksAccordion [multiple]="true" [(value)]="listOfBlocksIndexes"
+        (valueChange)="refreshTimeCursor($event)" (onClose)="refreshTimeCursor($event)"
+        (onOpen)="refreshTimeCursor($event)">
         @for (block of listOfBlocks; track $index; let idx = $index) {
-            <p-accordionTab
-                [ngClass]="{ 'hidden-timeline': block.displayState === false }"
-                iconPos="start"
-                class="grabbable"
-                pDraggable="listOfBlocks"
-                pDroppable="listOfBlocks"
-                (onDragStart)="onDragStart(idx)"
-                (onDrop)="onDrop(idx)"
-            >
-                <ng-template pTemplate="header">
-                    @if (block.label != "") {
-                        <div class="block-header">
-                            <div class="timeline-block-label ellipsis">
-                                <i [class]="block.icon"></i>{{ block.label }}
-                            </div>
-                            <div class="block-header-buttons">
-                                <p-button
-                                    icon="pi pi-times"
-                                    (click)="removeBlock(block)"
-                                    (keyPress)="removeBlock(block)"
-                                    (keyDown)="removeBlock(block)"
-                                    (keyUp)="removeBlock(block)"
-                                    [text]="true"
-                                ></p-button>
-                            </div>
-                        </div>
+        <p-accordion-panel [ngClass]="{ 'hidden-timeline': block.displayState === false }" [value]="idx"
+            class="grabbable" pDraggable="listOfBlocks" pDroppable="listOfBlocks" (onDragStart)="onDragStart(idx)"
+            (onDrop)="onDrop(idx)">
+            <p-accordion-header>
+                <ng-template #toggleicon let-active="active">
+                    @if (active) {
+                    <i class="pi pi-chevron-down"></i>
+                    } @else {
+                    <i class="pi pi-chevron-right"></i>
                     }
                 </ng-template>
-                <ng-template pTemplate="content">
-                    <div class="timeline">
-                        @for (loc of block.data; track $index) {
-                            @switch (loc.tcIn != null && loc.tcOut != null) {
-                                @default {
-                                    <div
-                                        class="cue-point"
-                                        (mouseenter)="handleMouseEnterOnTc($event, loc)"
-                                        (mouseleave)="handleMouseLeaveOnTc($event)"
-                                        (keyPress)="handleMouseEnterOnTc($event, loc)"
-                                        (keyDown)="handleMouseEnterOnTc($event, loc)"
-                                        (keyUp)="handleMouseEnterOnTc($event, loc)"
-                                        [ngStyle]="{
-                                            'background-color': loc.color
-                                                ? loc.color
-                                                : block.defaultColor,
-                                            left: focusTcOut > focusTcIn ? ((loc.tc - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
-                                        }"
-                                        [attr.data-tc]="loc.tc"
-                                        [attr.data-type]="loc.type"
-                                        (click)="callSeek(loc.tc)"
-                                    ></div>
-                                }
-                                @case (true) {
-                                    <div
-                                        class="segment"
-                                        [attr.data-tc]="loc.tcIn"
-                                        [attr.data-type]="loc.type"
-                                        (click)="callSeek(loc.tcIn)"
-                                        (keyPress)="handleMouseEnterOnTc($event, loc)"
-                                        (keyDown)="handleMouseEnterOnTc($event, loc)"
-                                        (keyUp)="handleMouseEnterOnTc($event, loc)"
-                                        (mouseenter)="handleMouseEnterOnTc($event, loc)"
-                                        (mouseleave)="handleMouseLeaveOnTc($event)"
-                                        [ngStyle]="{
-                                            'background-color': loc.color
-                                                ? loc.color
-                                                : block.defaultColor,
-                                            left: focusTcOut > focusTcIn ? ((loc.tcIn - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
-                                            width: focusTcOut > focusTcIn
-                                                ? (loc.tcOut - loc.tcIn === 0
-                                                    ? '1px'
-                                                    : ((loc.tcOut - loc.tcIn) * 100) / (focusTcOut - focusTcIn) + '%')
-                                                : '0%',
-                                        }"
-                                    ></div>
-                                }
-                            }
-                        }
+                @if (block.label != "") {
+                <div class="block-header">
+                    <div class="timeline-block-label ellipsis">
+                        <i [class]="block.icon"></i>{{ block.label }}
                     </div>
-                </ng-template>
-            </p-accordionTab>
+                    <div class="block-header-buttons">
+                        <p-button icon="pi pi-times" (click)="removeBlock(block)" (keyPress)="removeBlock(block)"
+                            (keyDown)="removeBlock(block)" (keyUp)="removeBlock(block)" [text]="true"></p-button>
+                    </div>
+                </div>
+                }
+            </p-accordion-header>
+            <p-accordion-content>
+                <div class="timeline">
+                    @for (loc of block.data; track $index) {
+                    @if (loc.tcIn != null && loc.tcOut != null) {
+                    <div class="segment" [attr.data-tc]="loc.tcIn" [attr.data-type]="loc.type"
+                        (click)="callSeek(loc.tcIn)" (keyPress)="handleMouseEnterOnTc($event, loc)"
+                        (keyDown)="handleMouseEnterOnTc($event, loc)" (keyUp)="handleMouseEnterOnTc($event, loc)"
+                        (mouseenter)="handleMouseEnterOnTc($event, loc)" (mouseleave)="handleMouseLeaveOnTc($event)"
+                        [ngStyle]="{
+                                        'background-color': loc.color
+                                            ? loc.color
+                                            : block.defaultColor,
+                                        left: focusTcOut > focusTcIn ? ((loc.tcIn - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
+                                        width: focusTcOut > focusTcIn
+                                            ? (loc.tcOut - loc.tcIn === 0
+                                                ? '1px'
+                                                : ((loc.tcOut - loc.tcIn) * 100) / (focusTcOut - focusTcIn) + '%')
+                                            : '0%',
+                                    }"></div>
+                    } @else {
+                    <div class="cue-point" (mouseenter)="handleMouseEnterOnTc($event, loc)"
+                        (mouseleave)="handleMouseLeaveOnTc($event)" (keyPress)="handleMouseEnterOnTc($event, loc)"
+                        (keyDown)="handleMouseEnterOnTc($event, loc)" (keyUp)="handleMouseEnterOnTc($event, loc)"
+                        [ngStyle]="{
+                                        'background-color': loc.color
+                                            ? loc.color
+                                            : block.defaultColor,
+                                        left: focusTcOut > focusTcIn ? ((loc.tc - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
+                                    }" [attr.data-tc]="loc.tc" [attr.data-type]="loc.type" (click)="callSeek(loc.tc)">
+                    </div>
+                    }
+                    }
+                </div>
+            </p-accordion-content>
+        </p-accordion-panel>
         }
     </p-accordion>
 </div>
@@ -203,112 +151,55 @@
     <div class="content" id="menu-content">
         <div class="header">
             <div class="select-segments">
-                <div class="p-checkbox p-component" aria-hidden="true" inputId="select-segments" id="select-segments">
-                    <div
-                        class="p-checkbox-box"
-                        [ngClass]="{
-                            'p-highlight': allNodesChecked || indeterminate,
-                            'p-indeterminate': indeterminate,
-                            'p-checkbox-focused': isSelectSegmentsFocused,
-                        }"
-                        (click)="toggleAllNodes()"
-                        (keyPress)="toggleAllNodes()"
-                        (keyDown)="toggleAllNodes()"
-                        (keyUp)="toggleAllNodes()"
-                        (focus)="isSelectSegmentsFocused = true"
-                        (blur)="isSelectSegmentsFocused = false"
-                    >
-                        @if (!indeterminate && allNodesChecked) {
-                            <svg data-p-icon="check" class="p-checkbox-icon"></svg>
-                        }
-                        @if (indeterminate) {
-                            <svg data-p-icon="minus" class="p-checkbox-icon"></svg>
-                        }
-                    </div>
-                </div>
-                <label
-                    for="select-segments"
-                    [ngClass]="{
+                <p-checkbox inputId="select-segments" [binary]="true" [ngModel]="allNodesChecked"
+                    [indeterminate]="indeterminate" (onChange)="toggleAllNodes()"
+                    (onFocus)="isSelectSegmentsFocused = true" (onBlur)="isSelectSegmentsFocused = false" />
+                <label for="select-segments" [ngClass]="{
                         'p-checkbox-label-active': allNodesChecked || indeterminate,
                         'p-checkbox-label-focus': isSelectSegmentsFocused,
-                    }"
-                    class="p-checkbox-label ng-star-inserted p-checkbox-label-active"
-                    (click)="toggleAllNodes()"
-                    (keyPress)="toggleAllNodes()"
-                    (keyDown)="toggleAllNodes()"
-                    (keyUp)="toggleAllNodes()"
-                >
-                    Sélectionner des segments</label
-                >
+                    }" class="p-checkbox-label p-checkbox-label-active">
+                    Sélectionner des segments</label>
             </div>
 
             @if (filterHidden) {
-                <p-button
-                    icon="pi pi-search"
-                    [rounded]="true"
-                    (click)="toggleFilter()"
-                    (keyPress)="toggleFilter()"
-                    (keyDown)="toggleFilter()"
-                    (keyUp)="toggleFilter()"
-                    class="btn-show-filter"
-                />
+            <p-button icon="pi pi-search" [rounded]="true" (click)="toggleFilter()" (keyPress)="toggleFilter()"
+                (keyDown)="toggleFilter()" (keyUp)="toggleFilter()" class="btn-show-filter" />
             }
             @if (!filterHidden) {
-                <p-button
-                    icon="pi pi-times"
-                    [rounded]="true"
-                    [text]="true"
-                    severity="secondary"
-                    (click)="toggleFilter()"
-                    (keyPress)="toggleFilter()"
-                    (keyDown)="toggleFilter()"
-                    (keyUp)="toggleFilter()"
-                    class="btn-hide-filter"
-                />
+            <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary" (click)="toggleFilter()"
+                (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
+                class="btn-hide-filter" />
             }
         </div>
         <div class="main" [ngClass]="{ 'filter-hidden': filterHidden }">
             @if (filterHidden) {
-                <p-tree
-                    [value]="nodes"
-                    selectionMode="checkbox"
-                    [(selection)]="selectedNodes"
-                    (selectionChange)="updateTreeComponent()"
-                >
-                    <ng-template let-node pTemplate="default">
-                        @if (node.data && node.data.color) {
-                            <span class="color" [ngStyle]="{ 'background-color': node.data.color }"></span>
-                        }
-                        {{ node.label }}
-                    </ng-template>
-                </p-tree>
+            <p-tree [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes"
+                (selectionChange)="updateTreeComponent()">
+                <ng-template let-node pTemplate="default">
+                    @if (node.data && node.data.color) {
+                    <span class="color" [ngStyle]="{ 'background-color': node.data.color }"></span>
+                    }
+                    {{ node.label }}
+                </ng-template>
+            </p-tree>
             }
             @if (!filterHidden) {
-                <p-tree
-                    [value]="nodes"
-                    selectionMode="checkbox"
-                    [filter]="true"
-                    filterPlaceholder="Rechercher..."
-                    filterMode="strict"
-                    [(selection)]="selectedNodes"
-                    (selectionChange)="updateTreeComponent()"
-                >
-                    <ng-template let-node pTemplate="default">
-                        @if (node.data && node.data.color) {
-                            <span class="color" [ngStyle]="{ 'background-color': node.data.color }"></span>
-                        }
-                        {{ node.label }}
-                    </ng-template>
-                </p-tree>
+            <p-tree [value]="nodes" selectionMode="checkbox" [filter]="true" filterPlaceholder="Rechercher..."
+                filterMode="strict" [(selection)]="selectedNodes" (selectionChange)="updateTreeComponent()">
+                <ng-template let-node pTemplate="default">
+                    @if (node.data && node.data.color) {
+                    <span class="color" [ngStyle]="{ 'background-color': node.data.color }"></span>
+                    }
+                    {{ node.label }}
+                </ng-template>
+            </p-tree>
             }
         </div>
         <div class="footer">
-            <p-button class="no-highlight" (click)="handleDisplayBlocks(false)" (keyPress)="handleDisplayBlocks(false)"
-                >Annuler</p-button
-            >
-            <p-button class="highlight" (click)="handleDisplayBlocks(true)" (keyPress)="handleDisplayBlocks(true)"
-                >Valider</p-button
-            >
+            <p-button class="no-highlight" (click)="handleDisplayBlocks(false)"
+                (keyPress)="handleDisplayBlocks(false)">Annuler</p-button>
+            <p-button class="highlight" (click)="handleDisplayBlocks(true)"
+                (keyPress)="handleDisplayBlocks(true)">Valider</p-button>
         </div>
     </div>
 </div>
