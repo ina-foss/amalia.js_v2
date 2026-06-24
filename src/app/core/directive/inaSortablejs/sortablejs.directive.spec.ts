@@ -7,6 +7,7 @@ import { SortablejsService } from "./sortablejs.service";
 
 describe("SortablejsDirective", () => {
     @Component({
+        standalone: false,
         template: `
             <div [sortablejs]="items">
                 @for (item of items; track item) {

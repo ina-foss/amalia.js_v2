@@ -1,7 +1,7 @@
 import { MediaPlayerElement } from '../media-player-element';
 import { PluginConfigData } from '../config/model/plugin-config-data';
 import { DefaultLogger } from '../logger/default-logger';
-import { ChangeDetectorRef, Component, inject, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, NgZone, OnDestroy, OnInit, ProviderToken } from '@angular/core';
 import { PlayerEventType } from '../constant/event-type';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { AmaliaException } from '../exception/amalia-exception';
@@ -124,11 +124,23 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
      * Angular zone, used to re-enter the zone when player events (emitted from a non-Angular
      * EventEmitter, often outside the zone) update component state, so change detection runs.
      */
-    private readonly _pluginZone: NgZone = inject(NgZone);
+    private readonly _pluginZone: NgZone | null = PluginBase.tryInject(NgZone);
     /**
      * Change detector used to mark the (custom element) view dirty after event-driven updates.
      */
-    private readonly _pluginCdr: ChangeDetectorRef = inject(ChangeDetectorRef);
+    private readonly _pluginCdr: ChangeDetectorRef | null = PluginBase.tryInject(ChangeDetectorRef);
+
+    /**
+     * Resolve a dependency from the current injection context, returning null when there is no
+     * active injector (e.g. when the plugin is instantiated directly with `new` in unit tests).
+     */
+    private static tryInject<T>(token: ProviderToken<T>): T | null {
+        try {
+            return inject(token, { optional: true });
+        } catch {
+            return null;
+        }
+    }
 
     /**
      * Plugin base constructor
@@ -182,11 +194,12 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
         const cdr = this._pluginCdr;
         const wrapped = function (...args: any[]) {
             // `this` is bound to the plugin instance by Utils.addListener.
-            return zone.run(() => {
+            const run = () => {
                 const result = func.apply(this, args);
-                cdr.markForCheck();
+                cdr?.markForCheck();
                 return result;
-            });
+            };
+            return zone ? zone.run(run) : run();
         };
         Object.defineProperty(wrapped, 'name', { value: func.name, configurable: true });
         return wrapped;

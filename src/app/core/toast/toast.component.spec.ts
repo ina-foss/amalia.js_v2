@@ -1,4 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 
 import {ToastComponent} from './toast.component';
 import {MessageService} from "primeng/api";
@@ -9,8 +10,9 @@ describe('ToastComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ToastComponent],
-            providers: [MessageService]
+            declarations: [ToastComponent],
+            providers: [MessageService],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         })
                 .compileComponents();
 

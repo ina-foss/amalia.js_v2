@@ -1624,7 +1624,7 @@ describe('ControlBarPluginComponent (coverage boost)', () => {
 
         component.elements = null as any;
         expect(component.getControlsByZone(1)).toBeNull();
-        expect(component.getControlsByPriority(1, 1)).toBeNull();
+        expect(component.getControlsByPriority(1, 1)).toEqual([]);
     });
 
     it('changes volume in merge and non-merge modes', () => {
