@@ -19,7 +19,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { MediaPlayerElement } from 'src/app/core/media-player-element';
 import { TcFormatPipe } from 'src/app/core/utils/tc-format.pipe';
 import { ToolbarModule } from 'primeng/toolbar';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AccordionModule } from 'primeng/accordion';
 import { DragDropModule } from 'primeng/dragdrop';
 import { PreventCtrlScrollDirective } from 'src/app/core/directive/inaSortablejs/prevent-ctrl-scroll.directive';
@@ -30,8 +30,7 @@ import { CheckIcon } from 'primeng/icons/check';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TimelineLocalisation } from 'src/app/core/metadata/model/timeline-localisation';
-import { MessagesModule } from 'primeng/messages';
-import { ToastComponent } from "../../core/toast/toast.component";
+import { MessageModule } from 'primeng/message';
 import { PlayerEventType } from 'src/app/core/constant/event-type';
 import { MessageService } from 'primeng/api';
 import { Utils } from 'src/app/core/utils/utils';
@@ -46,7 +45,7 @@ describe('TimelinePluginComponent', () => {
             declarations: [TimelinePluginComponent, SortablejsDirective],
             providers: [MediaPlayerService, TcFormatPipe, MessageService],
             imports: [CheckboxModule, TreeModule, MinusIcon, CheckIcon, FormsModule, ButtonModule,
-                MessagesModule, ToastComponent, NoopAnimationsModule],
+                MessageModule, NoopAnimationsModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -3924,8 +3923,8 @@ describe('TimelinePluginComponent 2', () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
             providers: [MediaPlayerService, MessageService],
-            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
-                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, ToastComponent],
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, ToggleSwitchModule, AccordionModule, DragDropModule,
+                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessageModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -4097,7 +4096,7 @@ describe('TimelinePluginComponent 2', () => {
             flush();
             fixture.changeDetectorRef.detectChanges();
             const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
-            const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordion-header');
+            const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordionheader');
             target.dispatchEvent(mouseEnterEvent);
             const removeButton: HTMLElement = target.querySelector('p-button');
             removeButton.click();
@@ -4195,7 +4194,7 @@ describe('TimelinePluginComponent 2', () => {
             flush();
             fixture.changeDetectorRef.detectChanges();
             const mouseEnterEvent = new MouseEvent('mouseenter', { clientX: 200, clientY: 200 });
-            const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordion-header');
+            const target = component.listOfBlocksContainer.nativeElement.querySelector('.p-accordionheader');
             target.dispatchEvent(mouseEnterEvent);
             const removeButton: HTMLElement = target.querySelector('p-button');
             component.toggleConfig();
@@ -4600,7 +4599,7 @@ describe('TimelinePluginComponent 3 ', () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
             providers: [MediaPlayerService, MessageService],
-            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, ToggleSwitchModule, AccordionModule, DragDropModule,
                 MinusIcon, CheckIcon, FormsModule, ButtonModule
             ],
             schemas: [
@@ -4673,12 +4672,14 @@ describe('TimelinePluginComponent 3 ', () => {
         const timeline = document.createElement('div');
         timeline.classList.add('timeline');
         Object.defineProperty(timeline, 'offsetLeft', { value: 50 });
+        timeline.getBoundingClientRect = () => ({ left: 50 } as DOMRect);
 
         const accordion = document.createElement('div');
         accordion.classList.add('p-accordion');
         accordion.getBoundingClientRect = () => ({ height: 200 } as DOMRect);
 
         const container = document.createElement('div');
+        container.getBoundingClientRect = () => ({ left: 0 } as DOMRect);
         container.appendChild(mainBlock);
         container.appendChild(listBlock);
         container.appendChild(timeline);
@@ -4798,8 +4799,8 @@ describe('TimelinePluginComponent For Stock', () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
             providers: [MediaPlayerService, MessageService],
-            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
-                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, ToastComponent],
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, ToggleSwitchModule, AccordionModule, DragDropModule,
+                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessageModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]
@@ -4906,8 +4907,8 @@ describe('getNodeLabelAndIcon', () => {
         await TestBed.configureTestingModule({
             declarations: [TimelinePluginComponent, SortablejsDirective, TcFormatPipe, PreventCtrlScrollDirective],
             providers: [MediaPlayerService, MessageService],
-            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, InputSwitchModule, AccordionModule, DragDropModule,
-                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessagesModule, ToastComponent],
+            imports: [BrowserAnimationsModule, CheckboxModule, TreeModule, HttpClientTestingModule, ToolbarModule, ToggleSwitchModule, AccordionModule, DragDropModule,
+                MinusIcon, CheckIcon, FormsModule, ButtonModule, MessageModule],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
             ]

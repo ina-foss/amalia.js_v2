@@ -4,11 +4,11 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { ThumbnailService } from '../../service/thumbnail-service';
 import { FileService } from '../../service/file.service';
-import { ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ElementRef } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { ToastComponent } from "../../core/toast/toast.component";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastComponent } from "../../core/toast/toast.component";
 import { MediaPlayerElement } from "../../core/media-player-element";
 import { DefaultConfigLoader } from "../../core/config/loader/default-config-loader";
 import { DefaultConfigConverter } from "../../core/config/converter/default-config-converter";
@@ -25,7 +25,7 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { TcFormatPipe } from 'src/app/core/utils/tc-format.pipe';
 import { ChipModule } from 'primeng/chip';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -34,7 +34,6 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'ng2-tooltip-directive-major-angular-updates';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { ChipsModule } from 'primeng/chips';
 import { PlayerEventType } from '../../core/constant/event-type';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnnotationLocalisation } from 'src/app/core/metadata/model/annotation-localisation';
@@ -439,7 +438,8 @@ describe('AnnotationPluginComponent', () => {
                 AnnotationsService,
                 { provide: ElementRef, useValue: new ElementRef(null) }
             ],
-            imports: [ButtonModule, ToastComponent, ConfirmDialogModule]
+            imports: [ButtonModule, ConfirmDialogModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
     });
 
@@ -710,7 +710,7 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [AnnotationPluginComponent, SegmentComponent, TcFormatPipe],
+            declarations: [AnnotationPluginComponent, SegmentComponent, TcFormatPipe, ToastComponent],
             providers: [
                 ConfirmationService,
                 MediaPlayerService,
@@ -721,12 +721,11 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                 AnnotationsService,
                 { provide: ElementRef, useValue: new ElementRef(null) }
             ],
-            imports: [HttpClientTestingModule, ButtonModule, ToastComponent, FormsModule, TooltipModule,
+            imports: [HttpClientTestingModule, ButtonModule, FormsModule, TooltipModule,
                 ButtonModule,
                 InputTextModule,
                 FloatLabelModule,
-                InputTextareaModule,
-                ChipsModule,
+                TextareaModule,
                 ChipModule,
                 CardModule,
                 AvatarModule,
@@ -735,7 +734,8 @@ describe('AnnotationPluginComponent - Méthodes spécifiques', () => {
                 ConfirmDialogModule,
                 ProgressBarModule,
                 ProgressSpinnerModule,
-                AutoCompleteModule]
+                AutoCompleteModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
     });
 
@@ -1247,7 +1247,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
     };
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [AnnotationPluginComponent, SegmentComponent, TcFormatPipe],
+            declarations: [AnnotationPluginComponent, SegmentComponent, TcFormatPipe, ToastComponent],
             providers: [
                 ConfirmationService,
                 MediaPlayerService,
@@ -1258,12 +1258,11 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                 AnnotationsService,
                 { provide: ElementRef, useValue: new ElementRef(null) }
             ],
-            imports: [HttpClientTestingModule, ButtonModule, ToastComponent, FormsModule, TooltipModule,
+            imports: [HttpClientTestingModule, ButtonModule, FormsModule, TooltipModule,
                 ButtonModule,
                 InputTextModule,
                 FloatLabelModule,
-                InputTextareaModule,
-                ChipsModule,
+                TextareaModule,
                 ChipModule,
                 CardModule,
                 AvatarModule,
@@ -1273,7 +1272,8 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                 ProgressBarModule,
                 ProgressSpinnerModule,
                 AutoCompleteModule,
-                BrowserAnimationsModule]
+                BrowserAnimationsModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
         fixture = TestBed.createComponent(AnnotationPluginComponent);

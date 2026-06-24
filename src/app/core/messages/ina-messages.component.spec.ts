@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { InaMessagesComponent } from './ina-messages.component';
-import { MessagesModule } from 'primeng/messages';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { InaMessage } from './ina-messages.model';
 
@@ -10,11 +10,9 @@ describe('InaMessagesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        InaMessagesComponent,
-        MessagesModule,
-        NoopAnimationsModule
-      ]
+      declarations: [InaMessagesComponent],
+      imports: [NoopAnimationsModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
     fixture = TestBed.createComponent(InaMessagesComponent);
     component = fixture.componentInstance;
@@ -109,7 +107,7 @@ describe('InaMessagesComponent', () => {
     expect(message.detail).toBe(inaMessage.detail);
     expect(message.closable).toBe(inaMessage.closable);
     expect(message.sticky).toBe(inaMessage.sticky);
-    expect(message.life).toBeUndefined();
+    expect((message as { life?: number }).life).toBeUndefined();
   });
 
   // #setMessages quand appelé avec plusieurs messages, alors remplace tous les messages existants

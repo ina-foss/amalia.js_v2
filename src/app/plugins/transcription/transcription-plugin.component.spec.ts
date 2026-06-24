@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { TranscriptionPluginComponent } from './transcription-plugin.component';
 import { MediaPlayerService } from '../../service/media-player-service';
-import { ElementRef } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from '@angular/core';
 import { MediaPlayerElement } from "../../core/media-player-element";
 import { DefaultLogger } from "../../core/logger/default-logger";
 import { HttpClient } from "@angular/common/http";
@@ -14,8 +14,7 @@ import { DefaultMetadataConverter } from "../../core/metadata/converter/default-
 import { MetadataManager } from "../../core/metadata/metadata-manager";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MediaElement } from "../../core/media/media-element";
-import { ToastComponent } from "../../core/toast/toast.component";
-import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { PlayerEventType } from '../../core/constant/event-type';
@@ -123,8 +122,9 @@ describe('TranscriptionPluginComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TranscriptionPluginComponent],
-            imports: [HttpClientTestingModule, BrowserAnimationsModule, MessagesModule, ToastComponent],
-            providers: [MediaPlayerService, MessageService]
+            imports: [HttpClientTestingModule, BrowserAnimationsModule, MessageModule],
+            providers: [MediaPlayerService, MessageService],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
     });
 
