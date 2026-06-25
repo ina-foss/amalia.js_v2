@@ -4,7 +4,10 @@
             class="start {{ displayState }}"
             [ngClass]="{ active: active }"
             (click)="copyToClipBoard(startTc, $event)"
+            (keydown.enter)="copyToClipBoard(startTc, $event)"
             (doubleClick)="copyAllToClipBoard(startTc, $event)"
+            role="button"
+            tabindex="0"
         >
             <span>{{ labelTcIn }} : </span>{{ startTc | tcFormat: displayFormat : fps }}
         </div>
@@ -12,7 +15,10 @@
             class="currentTime {{ displayState }}"
             [ngClass]="{ active: active }"
             (click)="copyToClipBoard(timeTimeBar, $event)"
+            (keydown.enter)="copyToClipBoard(timeTimeBar, $event)"
             (doubleClick)="copyAllToClipBoard(timeTimeBar, $event)"
+            role="button"
+            tabindex="0"
         >
             {{ timeTimeBar | tcFormat: displayFormat : fps }}
         </div>
@@ -20,7 +26,10 @@
             class="end {{ displayState }}"
             [ngClass]="{ active: active }"
             (click)="copyToClipBoard(durationTimeBar, $event)"
+            (keydown.enter)="copyToClipBoard(durationTimeBar, $event)"
             (doubleClick)="copyAllToClipBoard(durationTimeBar, $event)"
+            role="button"
+            tabindex="0"
         >
             <span>{{ labelTcOut }} : </span>{{ durationTimeBar | tcFormat: displayFormat : fps }}
         </div>

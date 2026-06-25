@@ -6,6 +6,7 @@
                 label="Ajouter un segment"
                 icon="pi pi-plus"
                 (click)="initializeNewSegment()"
+                (keydown)="$event.stopPropagation()"
                 size="small"
                 [disabled]="dataLoading"
             ></p-button>
@@ -14,6 +15,7 @@
                     class="no-highlight"
                     label="Début"
                     (click)="setTcIn()"
+                    (keydown)="$event.stopPropagation()"
                     icon="pi pi-clock"
                     size="small"
                 ></p-button>
@@ -21,6 +23,7 @@
                     class="no-highlight"
                     label="Fin"
                     (click)="setTcOut()"
+                    (keydown)="$event.stopPropagation()"
                     icon="pi pi-clock"
                     size="small"
                 ></p-button>
@@ -33,6 +36,7 @@
                     icon="pi pi-download"
                     size="small"
                     (click)="toggleExportMenu()"
+                    (keydown)="$event.stopPropagation()"
                 >
                 </p-button>
                 @if (enabledExportButtons) {
@@ -40,6 +44,9 @@
                         <div
                             class="export-menu-item"
                             (click)="downloadSegmentJsonFormat(); toggleExportMenu()"
+                            (keydown.enter)="downloadSegmentJsonFormat(); toggleExportMenu()"
+                            role="button"
+                            tabindex="0"
                             style="cursor: pointer"
                         >
                             Exporter au format JSON
@@ -47,6 +54,9 @@
                         <div
                             class="export-menu-item"
                             (click)="downloadSegments(); toggleExportMenu()"
+                            (keydown.enter)="downloadSegments(); toggleExportMenu()"
+                            role="button"
+                            tabindex="0"
                             style="cursor: pointer"
                         >
                             Exporter au format Excel
@@ -79,11 +89,18 @@
                         <p-button
                             [label]="message.rejectLabel"
                             (click)="cd.reject()"
+                            (keydown)="$event.stopPropagation()"
                             class="p-button-outlined no-highlight"
                             size="small"
                         >
                         </p-button>
-                        <p-button [label]="message.acceptLabel" (click)="cd.accept()" class="highlight" size="small">
+                        <p-button
+                            [label]="message.acceptLabel"
+                            (click)="cd.accept()"
+                            (keydown)="$event.stopPropagation()"
+                            class="highlight"
+                            size="small"
+                        >
                         </p-button>
                     </div>
                 </div>
@@ -106,6 +123,9 @@
                         [tcDisplayFormat]="'f'"
                         [fps]="fps"
                         (click)="selectSegment(segment)"
+                        (keydown.enter)="selectSegment(segment)"
+                        role="button"
+                        tabindex="0"
                         [availableCategories]="availableCategories"
                         [availableKeywords]="availableKeywords"
                         [mediaPlayerElement]="mediaPlayerElement"

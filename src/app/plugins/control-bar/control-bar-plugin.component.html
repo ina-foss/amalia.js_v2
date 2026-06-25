@@ -38,7 +38,13 @@
     }
     <div class="controls-container {{ displayState }}" [ngClass]="{ activated: activated, pinned: pinnedSlider }">
         @if (elements) {
-            <div class="control-bar" (mouseover)="handlePlayerMouseHover()" (mouseleave)="enableVolumeSlider = false">
+            <div
+                class="control-bar"
+                (mouseover)="handlePlayerMouseHover()"
+                (focus)="handlePlayerMouseHover()"
+                (mouseleave)="enableVolumeSlider = false"
+                tabindex="-1"
+            >
                 @if (hasComponentWithoutZone("progressBar")) {
                     <div
                         class="control progress-bar"

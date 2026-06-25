@@ -43,10 +43,12 @@
                 <div class="cue-point" [attr.data-color]="loc.color" [ngStyle]="{
                                     left: (loc.tc * 100) / duration + '%',
                                     'background-color': loc.color ? loc.color : mainBlockColor,
-                                }" [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"></div>
+                                }" [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"
+                    (keydown.enter)="callSeek(loc.tc)" role="button" tabindex="0"></div>
                 }
                 @case (true) {
                 <div class="segment" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
+                    (keydown.enter)="callSeek(loc.tcIn)" role="button" tabindex="0"
                     [attr.data-color]="loc.color" [ngStyle]="{
                                     left: (loc.tcIn * 100) / duration + '%',
                                     width: ((loc.tcOut - loc.tcIn) * 100) / duration + '%',

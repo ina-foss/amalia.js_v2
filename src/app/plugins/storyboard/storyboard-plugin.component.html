@@ -6,17 +6,23 @@
             tooltip="{{ msgMedium }}"
             [ngClass]="{ selected: size == 'medium' }"
             (click)="handleThumbnailSizeChange('medium')"
+            (keydown.enter)="handleThumbnailSizeChange('medium')"
+            role="button"
+            tabindex="0"
         ></div>
         <div
             class="size large"
             tooltip="{{ msgLarge }}"
             [ngClass]="{ selected: size == 'large' }"
             (click)="handleThumbnailSizeChange('large')"
+            (keydown.enter)="handleThumbnailSizeChange('large')"
+            role="button"
+            tabindex="0"
         ></div>
         <div class="last"></div>
     </div>
     <div class="col-9 interval" (mouseleave)="openIntervalList = false">
-        <p class="label" (click)="toggleList()">
+        <p class="label" (click)="toggleList()" (keydown.enter)="toggleList()" role="button" tabindex="0">
             <span>Intervalle: </span>
             @if ((selectedInterval[1] < 60 && selectedInterval[0] == "tc") || selectedInterval[0] == "frame") {
                 <span class="selected">{{ selectedInterval[1] }}&nbsp;</span>
@@ -54,6 +60,9 @@
                     class="tc"
                     [ngClass]="{ selected: selectedInterval[0] == 'tc' && selectedInterval[1] == tci }"
                     (click)="selectedThumbnailSize('tc', tci)"
+                    (keydown.enter)="selectedThumbnailSize('tc', tci)"
+                    role="button"
+                    tabindex="0"
                 >
                     @if (tci < 60) {
                         <span
@@ -79,6 +88,9 @@
                     class="frame"
                     [ngClass]="{ selected: selectedInterval[0] == 'frame' && selectedInterval[1] == fci }"
                     (click)="selectedThumbnailSize('frame', fci)"
+                    (keydown.enter)="selectedThumbnailSize('frame', fci)"
+                    role="button"
+                    tabindex="0"
                 >
                     {{ fci }} {{ images }}
                 </li>
@@ -99,7 +111,10 @@
         @for (tc of listOfThumbnailFilter; track tc; let isLast = $last; let isFirst = $first) {
             <div
                 (click)="seekToTc(tc)"
+                (keydown.enter)="seekToTc(tc)"
                 class="thumbnail {{ size }} {{ sizeThumbnail }}"
+                role="button"
+                tabindex="0"
                 [ngClass]="{ first: isFirst, last: isLast }"
                 [attr.data-tc]="tc"
             >
@@ -125,6 +140,9 @@
     tooltip="{{ pluginConfiguration.data.labelSynchro }}"
     [ngClass]="{ active: displaySynchro }"
     (click)="scrollToActiveThumbnail(selectedTc, true)"
+    (keydown.enter)="scrollToActiveThumbnail(selectedTc, true)"
+    role="button"
+    tabindex="0"
 >
     <svg class="amalia-svg-auto-scroll-size icon">
         <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#new_refresh'"></use>

@@ -9,6 +9,9 @@
                         class="segment-title ellipsis"
                         [tooltip]="isEllipsed ? segment.label : ''"
                         (click)="startTitleEdit()"
+                        (keydown.enter)="startTitleEdit()"
+                        role="button"
+                        tabindex="0"
                     >
                         {{ segment.label === "" || segment.label === undefined ? SEGMENT_SANS_TITRE : segment.label }}
                     </div>
@@ -37,7 +40,13 @@
                                 <i
                                     class="pi pi-check"
                                     (click)="confirmTitleEdit()"
+                                    (keydown.enter)="
+                                        segment.label && segment.label.length > 250 ? null : confirmTitleEdit()
+                                    "
                                     (mousedown)="onTitleActionMouseDown()"
+                                    role="button"
+                                    [attr.tabindex]="segment.label && segment.label.length > 250 ? -1 : 0"
+                                    [attr.aria-disabled]="segment.label && segment.label.length > 250"
                                     [style.pointer-events]="
                                         segment.label && segment.label.length > 250 ? 'none' : 'auto'
                                     "
@@ -47,7 +56,10 @@
                                 <i
                                     class="pi pi-times-circle"
                                     (click)="cancelTitleEdit()"
+                                    (keydown.enter)="cancelTitleEdit()"
                                     (mousedown)="onTitleActionMouseDown()"
+                                    role="button"
+                                    tabindex="0"
                                     tooltip="Annuler"
                                 ></i>
                             </div>
@@ -62,6 +74,9 @@
                         id="btnclone"
                         class="pi pi-clone"
                         (click)="cloneSegment()"
+                        (keydown.enter)="cloneSegment()"
+                        role="button"
+                        tabindex="0"
                         severity="secondary"
                         tooltip="Dupliquer un segment"
                     ></i>
@@ -69,6 +84,9 @@
                         id="btnremove"
                         class="pi pi-trash"
                         (click)="removeSegment()"
+                        (keydown.enter)="removeSegment()"
+                        role="button"
+                        tabindex="0"
                         severity="danger"
                         tooltip="Supprimer"
                     ></i>
@@ -77,6 +95,7 @@
                             id="btnclone"
                             icon="pi pi-fw pi-file"
                             (click)="openNotilusMaterial()"
+                            (keydown)="$event.stopPropagation()"
                             [rounded]="true"
                             severity="secondary"
                             styleClass="notilus-filled-circle"
@@ -102,7 +121,13 @@
                             ) {
                                 <div class="thumbnail readonly-segment-audioThumbnail"></div>
                             }
-                            <svg class="amalia-svg-blue-play-size icon" (click)="playMedia()">
+                            <svg
+                                class="amalia-svg-blue-play-size icon"
+                                (click)="playMedia()"
+                                (keydown.enter)="playMedia()"
+                                role="button"
+                                tabindex="0"
+                            >
                                 <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
                             </svg>
                             @if (
@@ -134,7 +159,13 @@
                         <div class="readonly-segment-tc">
                             <div class="readonly-segment-tc-item">
                                 @if (segment.data.isTcInEditing === false) {
-                                    <span (click)="startTcInEdit()" class="tc-label">
+                                    <span
+                                        (click)="startTcInEdit()"
+                                        (keydown.enter)="startTcInEdit()"
+                                        class="tc-label"
+                                        role="button"
+                                        tabindex="0"
+                                    >
                                         Début :
                                         <span class="tc-value">{{ segment.tcIn | tcFormat: tcDisplayFormat }}</span>
                                     </span>
@@ -158,7 +189,13 @@
                             </div>
                             <div class="readonly-segment-tc-item">
                                 @if (segment.data.isTcOutEditing === false) {
-                                    <span (click)="startTcOutEdit()" class="tc-label">
+                                    <span
+                                        (click)="startTcOutEdit()"
+                                        (keydown.enter)="startTcOutEdit()"
+                                        class="tc-label"
+                                        role="button"
+                                        tabindex="0"
+                                    >
                                         Fin :
                                         <span class="tc-value">{{ segment.tcOut | tcFormat: tcDisplayFormat }}</span>
                                     </span>
@@ -182,7 +219,13 @@
                             </div>
                             <div class="readonly-segment-tc-item">
                                 @if (segment.data.isTcEditing === false) {
-                                    <span (click)="startTcEdit()" class="tc-label">
+                                    <span
+                                        (click)="startTcEdit()"
+                                        (keydown.enter)="startTcEdit()"
+                                        class="tc-label"
+                                        role="button"
+                                        tabindex="0"
+                                    >
                                         Durée :
                                         <span class="tc-value">{{ segment.tc | tcFormat: tcDisplayFormat }}</span>
                                     </span>
@@ -315,6 +358,9 @@
                             <div
                                 class="readonly-segment-description-empty"
                                 (click)="startDescriptionEdit()"
+                                (keydown.enter)="startDescriptionEdit()"
+                                role="button"
+                                tabindex="0"
                                 style="cursor: pointer"
                             >
                                 Description: aucune
@@ -332,6 +378,9 @@
                         <p
                             #descp
                             (click)="startDescriptionEdit()"
+                            (keydown.enter)="startDescriptionEdit()"
+                            role="button"
+                            tabindex="0"
                             [style.display]="!isDescriptionTruncated || !isDescriptionCollapsed ? 'block' : 'none'"
                             style="cursor: pointer"
                         >
@@ -341,6 +390,9 @@
                                     #affichermoins
                                     class="readonly-segment-description-afficher-moins"
                                     (click)="toggleDescription($event); $event.stopPropagation()"
+                                    (keydown.enter)="toggleDescription($event); $event.stopPropagation()"
+                                    role="button"
+                                    tabindex="0"
                                     >Afficher -</span
                                 >
                             }
@@ -348,6 +400,9 @@
                         <p
                             #descp2
                             (click)="startDescriptionEdit()"
+                            (keydown.enter)="startDescriptionEdit()"
+                            role="button"
+                            tabindex="0"
                             [style.display]="isDescriptionTruncated && isDescriptionCollapsed ? 'block' : 'none'"
                             style="cursor: pointer"
                         >
@@ -357,6 +412,9 @@
                                     #afficherplus
                                     class="readonly-segment-description-afficher-plus"
                                     (click)="toggleDescription($event); $event.stopPropagation()"
+                                    (keydown.enter)="toggleDescription($event); $event.stopPropagation()"
+                                    role="button"
+                                    tabindex="0"
                                     >Afficher +</span
                                 >
                             }
@@ -387,7 +445,17 @@
                                 <i
                                     class="pi pi-check"
                                     (click)="confirmDescriptionEdit()"
+                                    (keydown.enter)="
+                                        segment.description && segment.description.length > 1000
+                                            ? null
+                                            : confirmDescriptionEdit()
+                                    "
                                     (mousedown)="onDescriptionActionMouseDown()"
+                                    role="button"
+                                    [attr.tabindex]="
+                                        segment.description && segment.description.length > 1000 ? -1 : 0
+                                    "
+                                    [attr.aria-disabled]="segment.description && segment.description.length > 1000"
                                     [style.pointer-events]="
                                         segment.description && segment.description.length > 1000 ? 'none' : 'auto'
                                     "
@@ -399,7 +467,10 @@
                                 <i
                                     class="pi pi-times-circle"
                                     (click)="cancelDescriptionEdit()"
+                                    (keydown.enter)="cancelDescriptionEdit()"
                                     (mousedown)="onDescriptionActionMouseDown()"
+                                    role="button"
+                                    tabindex="0"
                                     tooltip="Annuler"
                                 ></i>
                             </div>
