@@ -885,7 +885,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!target) {
             return;
         }
-        if (target.closest('.p-autocomplete-token-icon')) {
+        if (target.closest('.p-autocomplete-token-icon, .p-autocomplete-chip-icon, .p-chip-remove-icon')) {
             this.ignoreNextCategoriesBlur = true;
         }
     }
@@ -906,7 +906,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!target) {
             return;
         }
-        if (target.closest('.p-autocomplete-token-icon')) {
+        if (target.closest('.p-autocomplete-token-icon, .p-autocomplete-chip-icon, .p-chip-remove-icon')) {
             this.ignoreNextKeywordsBlur = true;
         }
     }
@@ -1318,7 +1318,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             if (chip.id === summaryChipId) {
                 chip.style.display = 'none';
             } else {
-                chip.style.display = 'inline-block';
+                chip.style.display = 'inline-flex';
             }
         });
 
@@ -1343,10 +1343,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                         chip.style.display = 'none';
                         hiddenChipsCount++;
                     } else {
-                        chip.style.display = 'inline-block';
+                        chip.style.display = 'inline-flex';
                     }
                 } else {
-                    chip.style.display = 'inline-block';
+                    chip.style.display = 'inline-flex';
                 }
             });
         }

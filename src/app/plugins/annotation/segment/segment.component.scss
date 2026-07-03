@@ -4,10 +4,12 @@
 
 :host ::ng-deep {
 
-  .segment-selected {
-    .p-card {
-      border: 2.5px solid $colors-primitive-primary-color;
-    }
+  // En v21, p-card porte les classes `p-card` ET `segment-selected` sur le MÊME
+  // élément host (en v18 `.p-card` était un div interne). Le sélecteur descendant
+  // `.segment-selected .p-card` ne matchait donc plus -> on ajoute le compound.
+  .segment-selected .p-card,
+  .segment-selected.p-card {
+    border: 2.5px solid $colors-primitive-primary-color;
   }
 
   .pi:hover {
@@ -72,10 +74,15 @@
     }
 
     p-card {
-      width: 100%
+      width: 100%;
+      min-width: 0;
     }
 
+    // min-width:0 : en v21 .p-card a min-width:auto -> un titre très long (nowrap
+    // + ellipsis) empêcherait la carte de rétrécir et la ferait déborder. v18
+    // avait min-width:0. On le rétablit sur la carte et son header (flex items).
     .p-card {
+      min-width: 0;
       border-radius: 8px;
       /* overlay/container/shadow */
       box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30);
@@ -83,6 +90,7 @@
     }
 
     .p-card-header {
+      min-width: 0;
       display: flex;
       justify-content: space-between;
     }
@@ -279,8 +287,25 @@
     }
 
     .p-divider.p-divider-horizontal {
+      // PrimeNG 21 n'injecte plus la ligne du divider dans le shadow DOM, et son
+      // padding horizontal (0 16px) rétrécit/centre le trait via ::before.
+      // On redessine la ligne en border-top sur le host : pleine largeur du
+      // conteneur (comme en v18), insensible au padding car la bordure est sur
+      // la border-box de l'élément.
+      display: block;
+      width: 100%;
       margin: 0;
-      height: 1px;
+      padding: 0;
+      height: 0;
+      border-top: 1px solid #e2e8f0;
+
+      &::before {
+        display: none;
+      }
+
+      .p-divider-content {
+        display: none;
+      }
     }
 
     .p-card-body {
@@ -411,6 +436,9 @@
         display: flex;
         flex-direction: column;
         width: calc(100% - 165px);
+        // sans min-width:0, le calc ci-dessus ignore le gap (12px) du flex row
+        // et le contenu déborde de 12px à droite -> le divider dépassait l'icône suppression
+        min-width: 0;
 
         .readonly-segment-tc {
           display: flex;
@@ -461,15 +489,30 @@
           align-items: center;
 
           .p-autocomplete {
+            // display:block pour que la box-shadow (bordure brillante) englobe
+            // tous les chips en UN seul rectangle (sinon, en display:inline v21,
+            // elle se fragmente ligne par ligne).
+            display: block;
             box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5);
             border-radius: 8px !important;
 
-            .p-inputtext {
+            // .p-autocomplete-input = nouvelle classe v21 de l'input (avait une
+            // bordure native 2px inset car le reset PrimeNG n'atteint pas le shadow DOM)
+            .p-inputtext,
+            .p-autocomplete-input {
               border: none !important;
+              outline: none !important;
+              box-shadow: none !important;
+              background: transparent !important;
             }
           }
 
-          .p-autocomplete-token {
+          .p-autocomplete-token,
+          .p-autocomplete-chip-item,
+          .p-autocomplete-chip {
+            list-style: none !important;
+            display: inline-flex;
+            align-items: center;
             border-radius: 16px !important;
             max-width: 300px;
             overflow: hidden;
@@ -477,12 +520,21 @@
             text-overflow: ellipsis;
           }
 
-          .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token {
+          .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip-item,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip {
             padding: 6px 8px 6px 5px !important;
           }
 
-          .p-autocomplete .p-autocomplete-multiple-container {
+          .p-autocomplete .p-autocomplete-multiple-container,
+          .p-autocomplete .p-autocomplete-input-multiple {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            list-style: none !important;
             padding: 0 12px !important;
+            margin: 0 !important;
           }
 
           .readonly-segment-categories-readonly {
@@ -514,18 +566,22 @@
           }
 
           p-chip {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             padding: 0 !important;
           }
 
           .p-chip {
+            display: inline-flex;
+            align-items: center;
             background: $colors-primitive-primary-color;
             color: #fff;
             padding: 6px 8px 6px 5px !important;
             max-height: 26px;
           }
 
-          .p-chip-text {
+          .p-chip-text,
+          .p-chip-label {
             max-width: 300px;
             overflow: hidden;
             white-space: nowrap;
@@ -550,7 +606,12 @@
           padding: $amalia-spacings-border-radius-sm 0;
           align-items: center;
 
-          .p-autocomplete-token {
+          .p-autocomplete-token,
+          .p-autocomplete-chip-item,
+          .p-autocomplete-chip {
+            list-style: none !important;
+            display: inline-flex;
+            align-items: center;
             border-radius: 16px !important;
             max-width: 300px;
             overflow: hidden;
@@ -559,20 +620,39 @@
           }
 
           .p-autocomplete {
+            // display:block pour que la box-shadow (bordure brillante) englobe
+            // tous les chips en UN seul rectangle (sinon, en display:inline v21,
+            // elle se fragmente ligne par ligne).
+            display: block;
             box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5);
             border-radius: 8px !important;
 
-            .p-inputtext {
+            // .p-autocomplete-input = nouvelle classe v21 de l'input (avait une
+            // bordure native 2px inset car le reset PrimeNG n'atteint pas le shadow DOM)
+            .p-inputtext,
+            .p-autocomplete-input {
               border: none !important;
+              outline: none !important;
+              box-shadow: none !important;
+              background: transparent !important;
             }
           }
 
-          .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token {
+          .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip-item,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip {
             padding: 6px 8px 6px 5px !important;
           }
 
-          .p-autocomplete .p-autocomplete-multiple-container {
+          .p-autocomplete .p-autocomplete-multiple-container,
+          .p-autocomplete .p-autocomplete-input-multiple {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            list-style: none !important;
             padding: 0 12px !important;
+            margin: 0 !important;
           }
 
           .readonly-segment-keywords-readonly {
@@ -604,17 +684,21 @@
           }
 
           p-chip {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             padding: 0 !important;
           }
 
           .p-chip {
+            display: inline-flex;
+            align-items: center;
             background: var(--chip-background, #EDEDED);
             padding: 6px 8px 6px 5px !important;
             max-height: 26px;
           }
 
-          .p-chip-text {
+          .p-chip-text,
+          .p-chip-label {
             color: var(--global-textColor, #595959);
             font-family: Lato;
             font-size: 14px;

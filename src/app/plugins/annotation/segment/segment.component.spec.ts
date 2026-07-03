@@ -1025,7 +1025,7 @@ describe('SegmentComponent', () => {
             expect(hidden).toBe(2);
             expect(first.style.display).toBe('none');
             expect(second.style.display).toBe('none');
-            expect(summary.style.display).toBe('inline-block');
+            expect(summary.style.display).toBe('inline-flex');
         });
 
         it('should route only annotation shortcuts and cover modifier guards', () => {

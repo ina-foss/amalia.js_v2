@@ -73,13 +73,13 @@
     }
     <amalia-toast #toast position="bottom-center" key="br" />
     <div class="card flex justify-content-center">
-        <p-confirmDialog #cd [key]="technical_id">
+        <p-confirmDialog #cd [key]="technical_id" appendTo="self">
             <ng-template pTemplate="headless" let-message>
                 <div class="flex flex-column align-items-left p-2 surface-overlay border-round">
                     <div class="flex flex-row lg:align-content-around">
                         <span class="font-bold text-2xl block">{{ message.header }}</span>
                         <div class="flex justify-content-end w-full">
-                            <button type="button" class="p-dialog-titlebar-icon p-link" (click)="cd.reject()">
+                            <button type="button" class="p-dialog-titlebar-icon p-link" (click)="cd.onReject()">
                                 <i class="pi pi-times"></i>
                             </button>
                         </div>
@@ -88,7 +88,7 @@
                     <div class="flex flex-row justify-content-end gap-2 mt-4">
                         <p-button
                             [label]="message.rejectLabel"
-                            (click)="cd.reject()"
+                            (click)="cd.onReject()"
                             (keydown)="$event.stopPropagation()"
                             class="p-button-outlined no-highlight"
                             size="small"
@@ -96,7 +96,7 @@
                         </p-button>
                         <p-button
                             [label]="message.acceptLabel"
-                            (click)="cd.accept()"
+                            (click)="cd.onAccept()"
                             (keydown)="$event.stopPropagation()"
                             class="highlight"
                             size="small"

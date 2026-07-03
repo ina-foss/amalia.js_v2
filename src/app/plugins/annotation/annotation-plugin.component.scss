@@ -83,6 +83,17 @@
       border-radius: $amalia-spacings-border-radius-md !important;
       padding: 12px 20px;
     }
+
+    // La croix de fermeture est un <button> natif ; le reset PrimeNG (.p-link)
+    // n'atteint pas le shadow DOM -> on retire le cadre/bordure natifs du bouton.
+    .p-dialog-titlebar-icon {
+      border: none;
+      background: transparent;
+      outline: none;
+      padding: 0;
+      cursor: pointer;
+      border-radius: 50%;
+    }
   }
 
   .no-highlight {
