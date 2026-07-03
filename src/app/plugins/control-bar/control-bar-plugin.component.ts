@@ -392,6 +392,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.pinControls();
         }
 
+        // Resync slider position with the real media state (handles DOM reattachment on player deploy/detach)
+        const player = this.mediaPlayerElement.getMediaPlayer();
+        this.duration = player?.getDuration();
+        this.currentTime = player?.getCurrentTime();
+        if (!isNaN(this.currentTime) && !isNaN(this.duration) && this.duration > 0) {
+            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(6));
+        }
+
         // Init Events
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);

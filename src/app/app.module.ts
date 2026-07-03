@@ -48,6 +48,8 @@ import { MinusIcon } from 'primeng/icons/minus';
 import { CheckIcon } from 'primeng/icons/check';
 import { InaMessagesComponent } from 'src/app/core/messages/ina-messages.component';
 import { ToastComponent } from "./core/toast/toast.component";
+import { providePrimeNG } from 'primeng/config';
+import { AmaliaPreset } from './core/styles/amalia-primeng-preset';
 
 @NgModule({
     imports: [
@@ -103,7 +105,15 @@ import { ToastComponent } from "./core/toast/toast.component";
         ThumbnailService,
         FileService,
         MessageService,
-        ConfirmationService
+        ConfirmationService,
+        providePrimeNG({
+            theme: {
+                preset: AmaliaPreset,
+                options: {
+                    darkModeSelector: false
+                }
+            }
+        })
     ],
 
     bootstrap: [],

@@ -25,7 +25,11 @@ describe('ControlBarPluginComponent volume initialization', () => {
         component.mediaPlayerElement = {
             eventEmitter: {},
             getConfiguration: () => configuration,
-            getMediaPlayer: () => ({ setVolume }),
+            getMediaPlayer: () => ({
+                setVolume,
+                getDuration: () => 0,
+                getCurrentTime: () => 0
+            }),
             getPluginConfiguration: () => null
         } as any;
         component.pluginConfiguration = {
