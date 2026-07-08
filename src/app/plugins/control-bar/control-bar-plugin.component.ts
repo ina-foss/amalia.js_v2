@@ -571,7 +571,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, this.time);
             // Keep the thumbnail preview following the cursor while actively dragging, not just on hover.
-            if (this.enableThumbnail) {
+            if (this.enableThumbnail && this.progressBarElement?.nativeElement && this.thumbnailElement?.nativeElement) {
                 const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
                 const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
                 const tc = parseFloat(this.currentTime.toFixed(6));

@@ -1070,4 +1070,99 @@ describe('SegmentComponent', () => {
             expect(cancelSpy).toHaveBeenCalled();
         });
     });
+
+    describe('setIsEllipsed', () => {
+        it('measures the title once the readonly element is ready', () => {
+            const div = document.createElement('div');
+            Object.defineProperty(div, 'scrollWidth', { value: 300, configurable: true });
+            Object.defineProperty(div, 'clientWidth', { value: 100, configurable: true });
+            component.titlediv = new ElementRef(div);
+
+            component.setIsEllipsed();
+
+            expect(component.isEllipsed).toBeTrue();
+        });
+
+        it('does nothing when the readonly title element never becomes ready', () => {
+            component.titlediv = undefined as any;
+            expect(() => component.setIsEllipsed()).not.toThrow();
+            expect(component.isEllipsed).toBeFalsy();
+        });
+    });
+
+    describe('setIsDescriptionTruncated', () => {
+        it('measures the description once the readonly element is ready', () => {
+            spyOn(window, 'getComputedStyle').and.returnValue({ lineHeight: '20' } as CSSStyleDeclaration);
+            const p = document.createElement('p');
+            Object.defineProperty(p, 'scrollHeight', { value: 90, configurable: true });
+            Object.defineProperty(p, 'clientHeight', { value: 30, configurable: true });
+            component.descp = new ElementRef(p);
+            const positionSpy = spyOn<any>(component, 'positionToggleSpan');
+
+            component.setIsDescriptionTruncated();
+
+            expect(component.isDescriptionTruncated).toBeTrue();
+            expect(positionSpy).toHaveBeenCalled();
+        });
+    });
+
+    describe('onWindowResizeScheduleUpdates', () => {
+        it('batches several synchronous resize events into a single rAF-scheduled update', fakeAsync(() => {
+            const categoriesSpy = spyOn(component, 'updateCategoriesAndKeywordsDisplay');
+            const tcsSpy = spyOn(component, 'updateTcsDisplay');
+
+            (component as any).onWindowResizeScheduleUpdates();
+            (component as any).onWindowResizeScheduleUpdates();
+            (component as any).onWindowResizeScheduleUpdates();
+            expect(categoriesSpy).not.toHaveBeenCalled();
+
+            tick(20); // let the scheduled requestAnimationFrame callback run
+            expect(categoriesSpy).toHaveBeenCalledTimes(1);
+            expect(tcsSpy).toHaveBeenCalledTimes(1);
+
+            // A new burst after the frame ran schedules a fresh update.
+            (component as any).onWindowResizeScheduleUpdates();
+            tick(20);
+            expect(categoriesSpy).toHaveBeenCalledTimes(2);
+        }));
+    });
+
+    describe('getVisibleText', () => {
+        // lineHeight/font/margins are pinned via getComputedStyle so maxHeight (3 lines * 20px =
+        // 60px) is deterministic across environments/fonts; only the real (browser-rendered) text
+        // wrapping within `width` decides whether a given text overflows it.
+        const stubComputedStyle = () => spyOn(window, 'getComputedStyle').and.returnValue({
+            lineHeight: '20px',
+            font: '16px sans-serif',
+            marginTop: '0px',
+            marginBottom: '0px'
+        } as CSSStyleDeclaration);
+
+        it('returns the full text unchanged when it fits within maxHeight', () => {
+            stubComputedStyle();
+            const el = document.createElement('p');
+            Object.defineProperty(el, 'clientWidth', { value: 300, configurable: true });
+            document.body.appendChild(el);
+            component.segment.description = 'hi';
+
+            const result = component.getVisibleText(el);
+
+            expect(result).toBe('hi...');
+            document.body.removeChild(el);
+        });
+
+        it('truncates long text and always ends with an ellipsis', () => {
+            stubComputedStyle();
+            const el = document.createElement('p');
+            Object.defineProperty(el, 'clientWidth', { value: 100, configurable: true });
+            document.body.appendChild(el);
+            component.segment.description = 'word '.repeat(500);
+
+            const result = component.getVisibleText(el);
+
+            expect(result.endsWith('...')).toBeTrue();
+            expect(result.length).toBeLessThan(component.segment.description.length);
+            document.body.removeChild(el);
+        });
+    });
 });

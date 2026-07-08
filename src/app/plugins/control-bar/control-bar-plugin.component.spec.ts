@@ -1735,6 +1735,81 @@ describe('ControlBarPluginComponent (coverage boost)', () => {
         expect(setAttrSpy.calls.count()).toBe(1);
     }));
 
+    it('ignores a stale thumbnail response that resolves after a newer request was made', fakeAsync(() => {
+        const img = document.createElement('img');
+        component.thumbnailElement = new ElementRef(img);
+        const setAttrSpy = spyOn(img, 'setAttribute').and.callThrough();
+
+        let resolveFirst: (blob: string) => void;
+        let resolveSecond: (blob: string) => void;
+        thumbnailService.getThumbnail.and.callFake(() => new Promise<string>(resolve => {
+            if (!resolveFirst) {
+                resolveFirst = resolve;
+            } else {
+                resolveSecond = resolve;
+            }
+        }));
+
+        component.setThumbnail('u1', 1);
+        component.setThumbnail('u2', 2);
+
+        // The newer (second) request resolves first, the stale (first) one resolves after.
+        resolveSecond!('blob:new');
+        flush();
+        resolveFirst!('blob:stale');
+        flush();
+
+        expect(setAttrSpy).toHaveBeenCalledOnceWith('src', 'blob:new');
+    }));
+
+    it('follows the cursor with the thumbnail preview while dragging the progress bar', () => {
+        const progress = document.createElement('div');
+        Object.defineProperty(progress, 'offsetWidth', {value: 200});
+        const thumb = document.createElement('img');
+        Object.defineProperty(thumb, 'offsetWidth', {value: 50});
+        component.progressBarElement = new ElementRef(progress);
+        component.thumbnailElement = new ElementRef(thumb);
+        component.enableThumbnail = true;
+        component.throttleFunc = jasmine.createSpy('throttle');
+        spyOn(component, 'getMouseValue').and.returnValue(50);
+        component.inSliding = true;
+        component.duration = 200;
+        component.inverse = false;
+
+        component.handleProgressBarMouseMove({offsetX: 120} as any);
+
+        expect(component.tcThumbnail).toBe(100);
+        expect(component.thumbnailPosition).toBeGreaterThanOrEqual(0);
+        expect(component.throttleFunc).toHaveBeenCalled();
+    });
+
+    it('does not touch the thumbnail preview while dragging when the view refs are missing', () => {
+        component.enableThumbnail = true;
+        component.progressBarElement = undefined as any;
+        component.thumbnailElement = undefined as any;
+        component.throttleFunc = jasmine.createSpy('throttle');
+        spyOn(component, 'getMouseValue').and.returnValue(50);
+        component.inSliding = true;
+        component.duration = 200;
+
+        expect(() => component.handleProgressBarMouseMove({offsetX: 120} as any)).not.toThrow();
+        expect(component.throttleFunc).not.toHaveBeenCalled();
+    });
+
+    it('keeps enableThumbnail sticky across a re-init with a transiently missing thumbnail config', fakeAsync(() => {
+        let thumbnailConfig: any = {baseUrl: 'x', enableThumbnail: true};
+        component.mediaPlayerElement.getConfiguration = () => ({thumbnail: thumbnailConfig, player: {framerate: 25}}) as any;
+
+        component.init();
+        flush();
+        expect(component.enableThumbnail).toBeTrue();
+
+        thumbnailConfig = undefined;
+        component.init();
+        flush();
+        expect(component.enableThumbnail).toBeTrue();
+    }));
+
     it('covers playback helpers and image playback branches', fakeAsync(() => {
         spyOn(component, 'selectActivePlaybackrate');
         component.currentPlaybackRate = 2;
