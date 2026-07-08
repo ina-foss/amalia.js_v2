@@ -397,6 +397,16 @@ describe('SegmentComponent', () => {
 
             expect(component.categories().length).toBe(1);
         }));
+
+        it('should apply a selection from the p-autoComplete dropdown (ngModelChange) via the categories signal', () => {
+            component.categories.set(['Cat1']);
+            component.availableCategories = [];
+
+            component.onCategoriesModelChange(['Cat1', 'Cat2']);
+
+            expect(component.categories()).toEqual(['Cat1', 'Cat2']);
+            expect(component.availableCategories).toContain('Cat2');
+        });
     });
 
     describe('Keywords Editing', () => {
@@ -495,6 +505,16 @@ describe('SegmentComponent', () => {
             expect(confirmSpy).toHaveBeenCalled();
             expect(updateDisplaySpy).toHaveBeenCalled();
         }));
+
+        it('should apply a selection from the p-autoComplete dropdown (ngModelChange) via the keywords signal', () => {
+            component.keywords.set(['Key1']);
+            component.availableKeywords = [];
+
+            component.onKeywordsModelChange(['Key1', 'Key2']);
+
+            expect(component.keywords()).toEqual(['Key1', 'Key2']);
+            expect(component.availableKeywords).toContain('Key2');
+        });
     });
 
     describe('Description Editing', () => {

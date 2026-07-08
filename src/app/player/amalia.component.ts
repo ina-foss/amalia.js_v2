@@ -730,6 +730,12 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.logger.state(debug === null ? this.mediaPlayerElement.getConfiguration().debug : true);
         this.logger.logLevel(debug === null ? this.mediaPlayerElement.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug));
         this.updatePlayerSizeWithAspectRatio();
+        // Mirrors the detectChanges() call in ngOnInit for inLoading=true: this.mediaPlayerElement
+        // .init()'s promise chain can resolve outside of a change-detection-triggering event, so
+        // without this the spinner stays visually stuck (inLoading is already false in the model,
+        // the view just never re-renders) until an unrelated event (e.g. a mousemove) happens to
+        // run a CD cycle.
+        this.cdr.detectChanges();
     }
 
     /**
@@ -741,6 +747,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.inLoading = false;
         this.inError = true;
         this.logger.error(`Error to initialize player.`);
+        // See onInitConfig(): same risk of the spinner staying stuck without a CD cycle here.
+        this.cdr.detectChanges();
     }
 
     /***

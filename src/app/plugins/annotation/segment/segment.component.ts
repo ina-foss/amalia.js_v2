@@ -1284,6 +1284,20 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
+    // categories/keywords are signals, not plain properties: [(ngModel)] two-way binding would
+    // overwrite the signal itself with a raw array on change (breaking every later categories()/
+    // keywords() call in this component). Read via categories()/keywords() in the template and
+    // write explicitly through .set() here instead.
+    public onCategoriesModelChange(selected: string[]): void {
+        this.categories.set(selected);
+        this.addToAvailableCategories(selected);
+    }
+
+    public onKeywordsModelChange(selected: string[]): void {
+        this.keywords.set(selected);
+        this.addToAvailableKeywords(selected);
+    }
+
     displayRemaining(items: string[], minus: number) {
         let result = '';
         if (items.length > minus) {
