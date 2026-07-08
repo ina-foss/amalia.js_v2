@@ -478,6 +478,42 @@
           }
         }
 
+        // PrimeNG's own base structural/visual CSS for its overlay-based components (autocomplete
+        // dropdown, etc.) is injected dynamically into document.head at runtime and never reaches
+        // components rendered inside a Shadow DOM. The overlay's own JS-computed inline
+        // positioning (position/top/left) still works (set directly on the element), but without
+        // this rule the dropdown panel has no background/border/spacing and renders as unstyled
+        // text overlapping the rest of the segment card.
+        .p-autocomplete-overlay {
+          background: white;
+          border: 1px solid $amalia-plugin-segmentation-hover-bg-color;
+          border-radius: 8px;
+          box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+
+          .p-autocomplete-list-container {
+            max-height: 200px;
+            overflow-y: auto;
+          }
+
+          .p-autocomplete-list {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 4px 0 !important;
+          }
+
+          .p-autocomplete-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: Lato;
+            font-size: 14px;
+
+            &:hover,
+            &.p-autocomplete-option-focus {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+        }
+
         .readonly-segment-categories {
           position: relative;
           width: 100%;

@@ -2,6 +2,15 @@
 
 
 :host ::ng-deep {
+  // PrimeNG centers the toast by combining an inline `left: 50%` (set by its own JS, which does
+  // reach us) with this `transform: translateX(-50%)` rule from its dynamically-injected base
+  // CSS (which does NOT reach components rendered inside a Shadow DOM). Without it the toast's
+  // left edge sits at the horizontal midpoint instead of the toast itself being centered.
+  .p-toast-bottom-center {
+    transform: translateX(-50%);
+  }
+
+
   .p-progressbar {
     height: 4px !important;
     max-height: 4px !important;

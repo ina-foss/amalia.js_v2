@@ -1,7 +1,11 @@
 @if (inLoading) {
     <div
         class="p-progress-spinner"
-        [ngClass]="{ 'p-progress-spinner-pinned': pinned, 'p-progress-spinner-pinnedControlbar': pinnedControlbar }"
+        [ngClass]="{
+            'p-progress-spinner-pinned': pinned,
+            'p-progress-spinner-pinnedControlbar': pinnedControlbar,
+            'p-progress-spinner-audio': playerConfig?.player?.media === 'AUDIO',
+        }"
         aria-label="loading"
         aria-busy="true"
     >

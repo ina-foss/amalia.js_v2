@@ -2,3 +2,18 @@
 @import "primeicons/primeicons.css";
 @import "src/assets/themes/aura-light-blue/theme.css";
 @import "primeflex/primeflex.min.css";
+
+// PrimeNG's own base component styles are injected dynamically into document.head at runtime;
+// that CSS never reaches components rendered inside a Shadow DOM. Without this rule, PrimeNG's
+// visually-hidden a11y helper text (e.g. "No selected item" on p-autocomplete) renders as plain
+// visible text inside our shadow roots instead of staying screen-reader-only.
+.p-hidden-accessible {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}

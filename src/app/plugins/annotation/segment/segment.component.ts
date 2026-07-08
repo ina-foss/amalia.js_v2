@@ -10,7 +10,7 @@ import {
     ViewChild
 } from '@angular/core';
 import { AnnotationAction, AnnotationLocalisation } from "../../../core/metadata/model/annotation-localisation";
-import { debounceTime, interval, of, Subscription, takeUntil, takeWhile, timer } from "rxjs";
+import { debounceTime, of, Subscription } from "rxjs";
 import { FormatUtils } from "../../../core/utils/format-utils";
 import { DEFAULT } from "../../../core/constant/default";
 import { MessageService } from "primeng/api";
@@ -1087,36 +1087,40 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         return !!(this.descp && this.descp.nativeElement);
     }
 
+    // Waits (via rAF, one check per real paint frame instead of a 2ms timer) for the readonly
+    // title/description element to appear before measuring it — with many segments on screen,
+    // a per-segment 2ms RxJS interval was hundreds of timers competing for the main thread.
+    private waitForReady(isReady: () => boolean, onReady: () => void, deadline = Date.now() + 2000): void {
+        if (isReady()) {
+            onReady();
+            return;
+        }
+        if (Date.now() >= deadline) {
+            return;
+        }
+        requestAnimationFrame(() => this.waitForReady(isReady, onReady, deadline));
+    }
+
     public setIsEllipsed() {
-        interval(2).pipe(// Vérifier toutes les 2 millisecondes
-            switchMap(() => of(this.readOnlyTitleReady())),
-            takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
-            takeUntil(timer(2000))
-        ).subscribe({
-            next: () => {
-                if (this.readOnlyTitleReady()) {
-                    this.isEllipsed = this.titlediv.nativeElement.scrollWidth > this.titlediv.nativeElement.clientWidth;
-                }
+        this.waitForReady(
+            () => this.readOnlyTitleReady(),
+            () => {
+                this.isEllipsed = this.titlediv.nativeElement.scrollWidth > this.titlediv.nativeElement.clientWidth;
             }
-        });
+        );
     }
 
     public setIsDescriptionTruncated() {
-        interval(2).pipe(// Vérifier toutes les 2 millisecondes
-            switchMap(() => of(this.readOnlyDescriptionReady())),
-            takeWhile(conditionMet => !conditionMet, true), // Continuer tant que la condition n'est pas vérifiée
-            takeUntil(timer(2000))
-        ).subscribe({
-            next: () => {
-                if (this.readOnlyDescriptionReady()) {
-                    this.descp.nativeElement.getBoundingClientRect();
-                    const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
-                    const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
-                    this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 3);
-                    this.positionToggleSpan();
-                }
+        this.waitForReady(
+            () => this.readOnlyDescriptionReady(),
+            () => {
+                this.descp.nativeElement.getBoundingClientRect();
+                const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
+                const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
+                this.isDescriptionTruncated = this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || (nbLines > 3);
+                this.positionToggleSpan();
             }
-        });
+        );
     }
 
     private positionToggleSpan() {
@@ -1192,16 +1196,28 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         const marginBottom = parseFloat(tempStyle.marginBottom) || 0;
         const totalMargin = marginTop + marginBottom;
 
-        let visibleText = '';
-        for (let i = 0; i < fullText.length; i++) {
-            temp.textContent = fullText.substring(0, i + 1);
-            // Soustraire les marges pour obtenir la hauteur réelle du contenu
-            const contentHeight = temp.offsetHeight - totalMargin;
-            if (contentHeight > maxHeight) {
-                visibleText = fullText.substring(0, i);
-                break;
+        // Binary search for the longest prefix that fits maxHeight, instead of growing the
+        // string one character at a time — each check forces a synchronous reflow (offsetHeight),
+        // so a linear scan cost O(length) reflows per segment; this costs O(log length).
+        const heightAt = (k: number) => {
+            temp.textContent = fullText.substring(0, k);
+            return temp.offsetHeight - totalMargin;
+        };
+        let visibleText: string;
+        if (heightAt(fullText.length) <= maxHeight) {
+            visibleText = fullText;
+        } else {
+            let lo = 0;
+            let hi = fullText.length;
+            while (lo < hi) {
+                const mid = Math.ceil((lo + hi) / 2);
+                if (heightAt(mid) > maxHeight) {
+                    hi = mid - 1;
+                } else {
+                    lo = mid;
+                }
             }
-            visibleText = fullText.substring(0, i + 1);
+            visibleText = fullText.substring(0, lo);
         }
 
         document.body.removeChild(temp);
@@ -1276,14 +1292,34 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         return result;
     }
 
+    // Every segment on screen used to carry its own `window:resize` HostListener directly on
+    // updateCategoriesAndKeywordsDisplay/updateTcsDisplay. On resize, all N segments ran their
+    // (reflow-heavy) DOM measurements synchronously back to back in the same tick — and with
+    // many segments this pending work compounded with whatever ran right after (e.g. adding a
+    // new segment), producing growing long tasks. A single rAF-batched, re-entrancy-guarded
+    // handler still triggers the same per-segment work, but off the resize event's own tick and
+    // coalesced if resize fires again before the frame runs.
+    private resizeUpdateScheduled = false;
+
     @HostListener("window:resize", [])
+    public onWindowResizeScheduleUpdates(): void {
+        if (this.resizeUpdateScheduled) {
+            return;
+        }
+        this.resizeUpdateScheduled = true;
+        requestAnimationFrame(() => {
+            this.resizeUpdateScheduled = false;
+            this.updateCategoriesAndKeywordsDisplay();
+            this.updateTcsDisplay();
+        });
+    }
+
     public updateCategoriesAndKeywordsDisplay() {
         if (this.readOnlyCategoriesDiv && this.readOnlyKeywordsDiv) {
             this.hiddenCategoriesCount = this.updateDisplay(this.readOnlyCategoriesDiv, this.readonlyCategoriesClassName, this.hiddenCategoriesSummaryChipId);
             this.hiddenKeywordsCount = this.updateDisplay(this.readOnlyKeywordsDiv, this.readOnlyKeywordsClassName, this.hiddenKeywordsSummaryChipId);
         }
     }
-    @HostListener("window:resize", [])
     updateTcsDisplay() {
         if (this.tcInInputRef && this.tcOutInputRef && this.tcInputRef && this.segmentTcRef) {
             const tcInInputRef = this.tcInInputRef.nativeElement;

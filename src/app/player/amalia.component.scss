@@ -178,8 +178,14 @@
     width: 100%;
     height: 100%;
     display: block;
-    background: url("../../assets/amalia/images/newAudioBackGround.png") center/100px no-repeat, $amalia-primary-color;
+    background: $amalia-primary-color;
     z-index: $amalia-loading-plugin-histogram-z-index;
+  }
+
+  // The waveform watermark only makes sense while loading an AUDIO-only player (no video
+  // frame to show); video/picture players get the plain color background above instead.
+  .p-progress-spinner-audio {
+    background: url("../../assets/amalia/images/newAudioBackGround.png") center/100px no-repeat, $amalia-primary-color;
   }
 
   .p-progress-spinner-pinned {

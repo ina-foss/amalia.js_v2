@@ -243,6 +243,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private readonly thumbnailService: ThumbnailService;
     public tcThumbnail = 0;
     public enableThumbnail = false;
+    private thumbnailConfigInitialized = false;
     public thumbnailHidden = true;
     public thumbnailPosition = 0;
     @ViewChild('thumbnail')
@@ -369,8 +370,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // init shortcuts
         this.initShortcuts(this.pluginConfiguration?.data || []);
         // Enable thumbnail
+        // init() can be re-run (INIT/METADATA_LOADED re-init, grid re-attach) with a
+        // mediaPlayerElement whose configuration is momentarily incomplete. Once resolved once,
+        // don't let a transient missing thumbnail config silently disable an already-working
+        // hover preview — only re-evaluate when a thumbnail config is actually present.
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
-        this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
+        if (thumbnailConfig || !this.thumbnailConfigInitialized) {
+            this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
+            this.thumbnailConfigInitialized = true;
+        }
 
         const configuration = this.mediaPlayerElement.getConfiguration();
         this.extractTcIn = configuration.extractTcIn !== undefined ? configuration.extractTcIn : null;
@@ -562,6 +570,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.time = this.duration - this.currentTime;
             }
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, this.time);
+            // Keep the thumbnail preview following the cursor while actively dragging, not just on hover.
+            if (this.enableThumbnail) {
+                const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
+                const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
+                const tc = parseFloat(this.currentTime.toFixed(6));
+                if (isFinite(tc)) {
+                    this.tcThumbnail = tc;
+                    this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
+                }
+                this.throttleFunc(event);
+            }
         }
     }
 
@@ -1276,7 +1295,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public handleProgressBarMouseDown() {
         this.inSliding = true;
-        this.thumbnailHidden = true;
+        if (this.enableThumbnail) {
+            this.thumbnailHidden = false;
+        }
     }
 
     /**
@@ -1315,8 +1336,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
 
+    private thumbnailRequestToken = 0;
+
+    // Fast dragging fires many overlapping thumbnail fetches; without this guard, whichever
+    // network response resolves last wins the <img> src, even if it's not the last one requested
+    // (out-of-order resolution), leaving a stale or dropped preview image.
     public setThumbnail(url, currentTime) {
+        const requestToken = ++this.thumbnailRequestToken;
         this.thumbnailService.getThumbnail(url, currentTime).then((blob) => {
+            if (requestToken !== this.thumbnailRequestToken) {
+                return;
+            }
             if (typeof (blob) !== 'undefined') {
                 this.thumbnailElement?.nativeElement?.setAttribute('src', blob);
             }
