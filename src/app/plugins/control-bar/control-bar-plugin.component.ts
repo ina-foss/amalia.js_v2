@@ -396,8 +396,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         // pinned controls
         const pinnedControlBarWithControls = this.pluginConfiguration?.pinnedControls;
-        if (pinnedControlBarWithControls) {
-            this.pinControls();
+        if (pinnedControlBarWithControls && !this.pinnedSlider) {
+            this.applyPinnedControlsState(true);
         }
 
         // Resync slider position with the real media state (handles DOM reattachment on player deploy/detach)
@@ -1529,8 +1529,21 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Toggle Pinned class playback slider
      */
     private pinControls() {
-        this.pinnedSlider = !this.pinnedSlider;
-        this.enablePinnedSlider = !this.enablePinnedSlider;
+        this.applyPinnedControlsState(!this.pinnedSlider);
+    }
+
+    /**
+     * Sets the pinned state directly (idempotent) rather than toggling it — used both by the
+     * user-driven pinControls() toggle above and by the pluginConfiguration.pinnedControls
+     * default-on init below. init() can run more than once for the same plugin instance (DOM
+     * reattachment on fullscreen/detach, config reload, etc. — see the volume/audio-track reinit
+     * fix for the same class of bug), and pinnedControls being applied via the pinControls()
+     * toggle on every init() would flip pinnedSlider back to false on an even number of
+     * re-inits, silently un-pinning a controlbar the config says should always stay pinned.
+     */
+    private applyPinnedControlsState(pinnedSlider: boolean) {
+        this.pinnedSlider = pinnedSlider;
+        this.enablePinnedSlider = pinnedSlider;
         if (this.enablePlaybackSlider && this.pinnedSlider) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
         } else {

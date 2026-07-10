@@ -56,6 +56,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     public static DEFAULT_WAVEFORM_HEIGHT = 128;
     private static readonly DURATION_CHANGE_EPSILON_SECONDS = 0.1;
     private static readonly RERENDER_DEBOUNCE_MS = 200;
+    /** Matches the Zoom plugin's own `maxZoom` below so dragging a minimap handle can't zoom
+     *  in further than the wheel-zoom gesture already allows. */
+    private static readonly MAX_ZOOM_PX_PER_SEC = 400;
+    /** Grab radius (px) around each minimap-overlay edge that starts a resize instead of a pan;
+     *  matches the 16px-wide CSS grip handle drawn by the consumer app (px-front) so the visual
+     *  affordance and the actual hit zone line up. */
+    private static readonly VIEWPORT_HANDLE_HIT_PX = 8;
     private static readonly ERROR_MSG_WAVE_FORMS = 'Les formes d\'ondes n\'ont pas pu être chargées';
 
     @ViewChild('wavesurferContainer')
@@ -274,8 +281,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             dragToSeek: false
         });
         minimapPlugin.on('click', (progress: number) => this.navigateMinimapToProgress(progress));
-        this.attachMinimapViewportDrag();
         this.minimapPlugin = minimapPlugin;
+        this.attachMinimapViewportDrag();
         this.lastAppliedMinimapHeight = minimapChannelHeight;
 
         const plugins: any[] = [minimapPlugin];
@@ -323,9 +330,33 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             if (!isNaN(currentTime)) {
                 this.renderVisualProgress(currentTime);
             }
+            // Minimap.create() runs synchronously as part of this WaveSurfer.create() call,
+            // i.e. before Angular/the browser have necessarily finished laying out
+            // minimapContainer at its FINAL width (especially inside a ShadowDom-encapsulated
+            // component). When that happens, the minimap's internal miniWavesurfer measures
+            // too early and its rendered waveform stays visually truncated at the narrower
+            // width it saw at creation time, even though the container itself later reaches
+            // its correct full width — the ResizeObserver-driven sync in syncWaveformSize()
+            // above only reacts to a HEIGHT change, never width. Force a re-fit once layout
+            // has had a chance to settle (double rAF + short delay covers both a same-frame
+            // reflow and a slightly later one from surrounding grid/flex layout).
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                this.forceMinimapRefit(minimapPlugin);
+                this.scheduleTimeout(() => this.forceMinimapRefit(minimapPlugin), 300);
+            }));
         });
         this.lastAppliedWaveformHeight = waveformHeight;
         this.attachWaveformResizeObserver();
+    }
+
+    /** `zoom` is part of the public wavesurfer.js API but the minimap plugin's own type
+     *  declarations mark `miniWavesurfer` private, so callers only have it as `any` — guard
+     *  against a stub/mock lacking the method (e.g. in tests). */
+    private forceMinimapRefit(minimapPlugin: any): void {
+        const miniWavesurfer = minimapPlugin?.miniWavesurfer;
+        if (miniWavesurfer && typeof miniWavesurfer.zoom === 'function') {
+            miniWavesurfer.zoom(0);
+        }
     }
 
     private destroyWavesurfer(): void {
@@ -407,6 +438,14 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             this.minimapPlugin?.miniWavesurfer?.setOptions({height: minimapHeight, fillParent: true});
             changed = true;
         }
+        // The minimap's own wavesurfer instance only re-renders on setOptions() above when its
+        // HEIGHT changes; it never reacts to a container WIDTH change on its own, so if
+        // minimapContainer settles to its final layout width after Minimap.create() already
+        // measured/rendered at an earlier (narrower) width, the minimap stays visually truncated
+        // (waveform stops partway, rest of the strip blank) even though the container itself is
+        // full width. zoom(0) is the public wavesurfer.js API to force a re-render against the
+        // current container width (fillParent stays true, so 0 means "auto-fit").
+        this.minimapPlugin?.miniWavesurfer?.zoom(0);
         if (changed) {
             const currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
             this.renderVisualProgress(currentTime);
@@ -453,15 +492,38 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         if (!hitArea) {
             return;
         }
+        // The minimap-overlay (the tinted box showing the current zoom window) natively has
+        // pointer-events:none from wavesurfer.js — it's meant to be purely visual, real
+        // interaction goes through hitArea below it. But that means its own edges can never
+        // get their own hover cursor: hitArea and the overlay are SIBLINGS (not ancestor/
+        // descendant) in the DOM, so raising only the overlay's z-index to sit above hitArea
+        // just makes it swallow the pointerdown instead of the click reaching hitArea's
+        // listeners. The fix is to attach the SAME listeners to both elements — whichever one
+        // is actually topmost/hit at a given point gets the event, and both run identical
+        // logic, so it doesn't matter which one wins the browser's hit-test.
+        const overlay = (this.minimapPlugin as any)?.overlay as HTMLElement | undefined;
 
         this.minimapViewportDragCleanup?.();
         hitArea.style.cursor = 'pointer';
         hitArea.style.touchAction = 'none';
+        if (overlay) {
+            overlay.style.pointerEvents = 'auto';
+            overlay.style.touchAction = 'none';
+            overlay.style.zIndex = '21';
+        }
+
+        type DragMode = 'pan' | 'resize-start' | 'resize-end' | null;
 
         let activePointerId: number | null = null;
-        let draggingViewport = false;
+        let dragMode: DragMode = null;
         let hasMoved = false;
         let startX = 0;
+        // Snapshot of the visible-window edges (in seconds) and the minimap's own pixel width
+        // at the moment the drag starts, so the fixed edge of a resize never drifts across
+        // successive pointermove events (each move recomputes from this anchor, not incrementally).
+        let resizeAnchorSeconds = 0;
+        let resizeDraggedEdgeStartSeconds = 0;
+        let resizeHitAreaWidthPx = 0;
 
         const stopEvent = (event: Event) => {
             event.preventDefault();
@@ -471,30 +533,105 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const rect = hitArea.getBoundingClientRect();
             return this.clampProgress((event.clientX - rect.left) / Math.max(1, rect.width));
         };
+        // Derives the visible window's edges (in screen X and in seconds) straight from
+        // wavesurfer's own JS state (getScroll()/getWidth()), always relative to hitArea's rect
+        // (it spans the full track regardless of which element — hitArea or the overlay —
+        // actually received the pointer event), so both listeners agree on the same geometry.
+        const getViewportEdges = (): { leftSeconds: number; rightSeconds: number; leftX: number; rightX: number } | null => {
+            if (!this.wavesurfer || !this.duration) {
+                return null;
+            }
+            const metrics = this.getWaveformViewportMetrics();
+            if (!metrics) {
+                return null;
+            }
+            const pxPerSec = metrics.totalWidth / this.duration;
+            const scroll = this.wavesurfer.getScroll();
+            const leftSeconds = scroll / pxPerSec;
+            const rightSeconds = (scroll + metrics.visibleWidth) / pxPerSec;
+            const hitRect = hitArea.getBoundingClientRect();
+            const leftX = hitRect.left + (leftSeconds / this.duration) * hitRect.width;
+            const rightX = hitRect.left + (rightSeconds / this.duration) * hitRect.width;
+            return { leftSeconds, rightSeconds, leftX, rightX };
+        };
+        const setCursor = (event: Event, cursor: string) => {
+            (event.currentTarget as HTMLElement).style.cursor = cursor;
+        };
         const onPointerDown = (event: PointerEvent) => {
             if (!this.wavesurfer) {
                 return;
             }
             stopEvent(event);
             activePointerId = event.pointerId;
-            draggingViewport = this.canScrollWaveform();
             hasMoved = false;
             startX = event.clientX;
-            hitArea.style.cursor = draggingViewport ? 'grabbing' : 'pointer';
-            hitArea.setPointerCapture?.(event.pointerId);
-            if (draggingViewport) {
+
+            const edges = getViewportEdges();
+            if (edges) {
+                const distToStart = Math.abs(event.clientX - edges.leftX);
+                const distToEnd = Math.abs(event.clientX - edges.rightX);
+                // At high zoom the visible window can be narrower than the combined hit zones
+                // of both handles (e.g. two 8px zones over a 4px-wide window) — resolve the
+                // ambiguity by picking whichever edge the pointer is actually closer to, rather
+                // than always favouring the start handle.
+                let resizeEdge: 'resize-start' | 'resize-end' | null = null;
+                if (distToStart <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX && distToStart <= distToEnd) {
+                    resizeEdge = 'resize-start';
+                } else if (distToEnd <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX) {
+                    resizeEdge = 'resize-end';
+                }
+                if (resizeEdge) {
+                    // The edge NOT being dragged stays fixed (the anchor); the other one needs
+                    // its own starting position captured too, so pointermove can compute its new
+                    // position as `draggedEdgeStart + deltaSeconds` — reusing the anchor's value
+                    // for that base was the bug: it collapsed the resize onto the wrong edge
+                    // whenever the anchor wasn't at/near 0.
+                    resizeAnchorSeconds = resizeEdge === 'resize-start' ? edges.rightSeconds : edges.leftSeconds;
+                    resizeDraggedEdgeStartSeconds = resizeEdge === 'resize-start' ? edges.leftSeconds : edges.rightSeconds;
+                    resizeHitAreaWidthPx = hitArea.getBoundingClientRect().width;
+                    dragMode = resizeEdge;
+                    setCursor(event, 'ew-resize');
+                    (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
+                    return;
+                }
+            }
+
+            dragMode = this.canScrollWaveform() ? 'pan' : null;
+            setCursor(event, dragMode === 'pan' ? 'grabbing' : 'pointer');
+            (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
+            if (dragMode === 'pan') {
                 this.panWaveformViewportToProgress(getProgressFromPointer(event));
             }
         };
+        // Hover-only preview: while nothing is being dragged, show an ew-resize cursor as soon
+        // as the pointer gets near either edge, so the user gets the resize affordance BEFORE
+        // committing to a drag.
+        const updateHoverCursor = (event: PointerEvent): void => {
+            const edges = getViewportEdges();
+            if (!edges) {
+                return;
+            }
+            const distToStart = Math.abs(event.clientX - edges.leftX);
+            const distToEnd = Math.abs(event.clientX - edges.rightX);
+            const nearEdge = Math.min(distToStart, distToEnd) <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX;
+            setCursor(event, nearEdge ? 'ew-resize' : (this.canScrollWaveform() ? 'grab' : 'pointer'));
+        };
         const onPointerMove = (event: PointerEvent) => {
             if (activePointerId !== event.pointerId || !this.wavesurfer) {
+                if (activePointerId === null) {
+                    updateHoverCursor(event);
+                }
                 return;
             }
             stopEvent(event);
             const deltaX = event.clientX - startX;
             hasMoved = hasMoved || Math.abs(deltaX) > 4;
-            if (draggingViewport) {
+            if (dragMode === 'pan') {
                 this.panWaveformViewportToProgress(getProgressFromPointer(event));
+            } else if (dragMode === 'resize-start' || dragMode === 'resize-end') {
+                this.resizeWaveformViewport(
+                    dragMode, event.clientX, startX, resizeHitAreaWidthPx, resizeAnchorSeconds, resizeDraggedEdgeStartSeconds
+                );
             }
         };
         const onPointerUp = (event: PointerEvent) => {
@@ -502,14 +639,14 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 return;
             }
             stopEvent(event);
-            if (!draggingViewport && !hasMoved) {
+            if (!dragMode && !hasMoved) {
                 this.seekMediaPlayerToProgress(getProgressFromPointer(event));
             }
             activePointerId = null;
-            draggingViewport = false;
+            dragMode = null;
             hasMoved = false;
-            hitArea.style.cursor = 'pointer';
-            hitArea.releasePointerCapture?.(event.pointerId);
+            setCursor(event, 'pointer');
+            (event.currentTarget as Element).releasePointerCapture?.(event.pointerId);
         };
         const onClick = (event: MouseEvent) => {
             // WaveSurfer's minimap click seeks its own hidden instance first.
@@ -517,17 +654,22 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             stopEvent(event);
         };
 
-        hitArea.addEventListener('pointerdown', onPointerDown, true);
-        hitArea.addEventListener('pointermove', onPointerMove, true);
-        hitArea.addEventListener('pointerup', onPointerUp, true);
-        hitArea.addEventListener('pointercancel', onPointerUp, true);
-        hitArea.addEventListener('click', onClick, true);
+        const interactiveElements = [hitArea, ...(overlay ? [overlay] : [])];
+        for (const el of interactiveElements) {
+            el.addEventListener('pointerdown', onPointerDown, true);
+            el.addEventListener('pointermove', onPointerMove, true);
+            el.addEventListener('pointerup', onPointerUp, true);
+            el.addEventListener('pointercancel', onPointerUp, true);
+            el.addEventListener('click', onClick, true);
+        }
         this.minimapViewportDragCleanup = () => {
-            hitArea.removeEventListener('pointerdown', onPointerDown, true);
-            hitArea.removeEventListener('pointermove', onPointerMove, true);
-            hitArea.removeEventListener('pointerup', onPointerUp, true);
-            hitArea.removeEventListener('pointercancel', onPointerUp, true);
-            hitArea.removeEventListener('click', onClick, true);
+            for (const el of interactiveElements) {
+                el.removeEventListener('pointerdown', onPointerDown, true);
+                el.removeEventListener('pointermove', onPointerMove, true);
+                el.removeEventListener('pointerup', onPointerUp, true);
+                el.removeEventListener('pointercancel', onPointerUp, true);
+                el.removeEventListener('click', onClick, true);
+            }
         };
     }
 
@@ -547,6 +689,57 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const maxScroll = metrics.totalWidth - metrics.visibleWidth;
         const targetScroll = Math.max(0, Math.min(this.clampProgress(progress) * metrics.totalWidth - metrics.visibleWidth / 2, maxScroll));
         this.wavesurfer.setScroll(targetScroll);
+    }
+
+    /**
+     * Called on each pointermove while dragging one edge of the minimap-overlay handle.
+     * Grows/shrinks the main waveform's visible time window by re-zooming. The edge NOT being
+     * dragged stays anchored at the same point in time (`anchorSeconds`); the dragged edge's
+     * new position is `draggedEdgeStartSeconds + deltaSeconds` — both captured once at
+     * pointerdown so repeated moves recompute from fixed absolutes and never drift.
+     */
+    private resizeWaveformViewport(
+        mode: 'resize-start' | 'resize-end',
+        clientX: number,
+        startX: number,
+        hitAreaWidthPx: number,
+        anchorSeconds: number,
+        draggedEdgeStartSeconds: number
+    ): void {
+        if (!this.wavesurfer || !this.duration || !hitAreaWidthPx) {
+            return;
+        }
+        const metrics = this.getWaveformViewportMetrics();
+        if (!metrics) {
+            return;
+        }
+        // The minimap hit area spans the full track duration edge-to-edge, so a pixel delta
+        // there converts to a time delta at a fixed duration/width ratio (unlike the main
+        // waveform, whose pixel-per-second ratio changes as we zoom).
+        const deltaSeconds = ((clientX - startX) / hitAreaWidthPx) * this.duration;
+        const minVisibleDuration = metrics.visibleWidth / HistogramPluginComponent.MAX_ZOOM_PX_PER_SEC;
+        const draggedEdgeSeconds = draggedEdgeStartSeconds + deltaSeconds;
+
+        let leftSeconds: number;
+        let rightSeconds: number;
+        if (mode === 'resize-end') {
+            leftSeconds = anchorSeconds;
+            rightSeconds = Math.min(this.duration, Math.max(anchorSeconds + minVisibleDuration, draggedEdgeSeconds));
+        } else {
+            rightSeconds = anchorSeconds;
+            leftSeconds = Math.max(0, Math.min(anchorSeconds - minVisibleDuration, draggedEdgeSeconds));
+        }
+        const visibleDuration = rightSeconds - leftSeconds;
+        if (!(visibleDuration > 0)) {
+            return;
+        }
+
+        const newPxPerSec = Math.min(
+            HistogramPluginComponent.MAX_ZOOM_PX_PER_SEC,
+            metrics.visibleWidth / visibleDuration
+        );
+        this.wavesurfer.zoom(newPxPerSec);
+        this.wavesurfer.setScroll(leftSeconds * newPxPerSec);
     }
 
     private navigateMinimapToProgress(progress: number): void {

@@ -176,7 +176,7 @@ describe('AmaliaComponent', () => {
         tick(100);
         expect(component.pinnedControlbar).toBeFalse();
         expect(emitMock).toHaveBeenCalledWith(PlayerEventType.CONTROL_BAR_TOGGLED, {
-            pinnedControlbar: false,
+            pinnedControlBar: false,
             pinned: true
         });
         flush();

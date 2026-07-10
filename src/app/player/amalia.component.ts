@@ -605,7 +605,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.pinnedControlbar = false;
         this.updatePlayerSizeWithAspectRatio();
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.CONTROL_BAR_TOGGLED, {
-            pinnedControlbar: this.pinnedControlbar,
+            pinnedControlBar: this.pinnedControlbar,
             pinned: this.pinned
         });
     }
@@ -731,11 +731,15 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.logger.logLevel(debug === null ? this.mediaPlayerElement.getConfiguration().logLevel : LoggerLevel.valToString(LoggerLevel.Debug));
         this.updatePlayerSizeWithAspectRatio();
         // Mirrors the detectChanges() call in ngOnInit for inLoading=true: this.mediaPlayerElement
-        // .init()'s promise chain can resolve outside of a change-detection-triggering event, so
-        // without this the spinner stays visually stuck (inLoading is already false in the model,
-        // the view just never re-renders) until an unrelated event (e.g. a mousemove) happens to
-        // run a CD cycle.
-        this.cdr.detectChanges();
+        // .init()'s promise chain can resolve without a change-detection-triggering event
+        // following it, so without this the spinner stays visually stuck (inLoading is already
+        // false in the model, the view just never re-renders) until an unrelated event (e.g. a
+        // mousemove) happens to run a CD cycle. Deferred one microtask so any other pending
+        // update already queued in this same resolution chain (e.g. a sibling plugin reacting to
+        // the same INIT event) settles first -- calling detectChanges() synchronously here can
+        // otherwise race a not-yet-checked ancestor/sibling and throw
+        // ExpressionChangedAfterItHasBeenCheckedError in dev mode.
+        queueMicrotask(() => this.cdr.detectChanges());
     }
 
     /**
@@ -747,8 +751,9 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.inLoading = false;
         this.inError = true;
         this.logger.error(`Error to initialize player.`);
-        // See onInitConfig(): same risk of the spinner staying stuck without a CD cycle here.
-        this.cdr.detectChanges();
+        // See onInitConfig(): same risk of the spinner staying stuck without a CD cycle here,
+        // deferred one microtask for the same reason.
+        queueMicrotask(() => this.cdr.detectChanges());
     }
 
     /***
