@@ -330,20 +330,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             if (!isNaN(currentTime)) {
                 this.renderVisualProgress(currentTime);
             }
-            // Minimap.create() runs synchronously as part of this WaveSurfer.create() call,
-            // i.e. before Angular/the browser have necessarily finished laying out
-            // minimapContainer at its FINAL width (especially inside a ShadowDom-encapsulated
-            // component). When that happens, the minimap's internal miniWavesurfer measures
-            // too early and its rendered waveform stays visually truncated at the narrower
-            // width it saw at creation time, even though the container itself later reaches
-            // its correct full width — the ResizeObserver-driven sync in syncWaveformSize()
-            // above only reacts to a HEIGHT change, never width. Force a re-fit once layout
-            // has had a chance to settle (double rAF + short delay covers both a same-frame
-            // reflow and a slightly later one from surrounding grid/flex layout).
-            requestAnimationFrame(() => requestAnimationFrame(() => {
-                this.forceMinimapRefit(minimapPlugin);
-                this.scheduleTimeout(() => this.forceMinimapRefit(minimapPlugin), 300);
-            }));
+            this.scheduleMinimapRefitAfterLayout(minimapPlugin);
         });
         this.lastAppliedWaveformHeight = waveformHeight;
         this.attachWaveformResizeObserver();
@@ -357,6 +344,26 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         if (miniWavesurfer && typeof miniWavesurfer.zoom === 'function') {
             miniWavesurfer.zoom(0);
         }
+    }
+
+    /** Minimap.create() runs synchronously as part of the WaveSurfer.create() call, i.e.
+     *  before Angular/the browser have necessarily finished laying out minimapContainer at its
+     *  FINAL width (especially inside a ShadowDom-encapsulated component). When that happens,
+     *  the minimap's internal miniWavesurfer measures too early and its rendered waveform stays
+     *  visually truncated at the narrower width it saw at creation time, even though the
+     *  container itself later reaches its correct full width — the ResizeObserver-driven sync
+     *  in syncWaveformSize() only reacts to a HEIGHT change, never width. Force a re-fit once
+     *  layout has had a chance to settle (double rAF + short delay covers both a same-frame
+     *  reflow and a slightly later one from surrounding grid/flex layout). */
+    private scheduleMinimapRefitAfterLayout(minimapPlugin: any): void {
+        requestAnimationFrame(() => this.refitMinimapOnNextFrame(minimapPlugin));
+    }
+
+    private refitMinimapOnNextFrame(minimapPlugin: any): void {
+        requestAnimationFrame(() => {
+            this.forceMinimapRefit(minimapPlugin);
+            this.scheduleTimeout(() => this.forceMinimapRefit(minimapPlugin), 300);
+        });
     }
 
     private destroyWavesurfer(): void {
@@ -557,6 +564,43 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const setCursor = (event: Event, cursor: string) => {
             (event.currentTarget as HTMLElement).style.cursor = cursor;
         };
+        // At high zoom the visible window can be narrower than the combined hit zones of both
+        // handles (e.g. two 8px zones over a 4px-wide window) — resolve the ambiguity by
+        // picking whichever edge the pointer is actually closer to, rather than always
+        // favouring the start handle.
+        const detectResizeEdge = (
+            event: PointerEvent, edges: { leftX: number; rightX: number }
+        ): 'resize-start' | 'resize-end' | null => {
+            const distToStart = Math.abs(event.clientX - edges.leftX);
+            const distToEnd = Math.abs(event.clientX - edges.rightX);
+            if (distToStart <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX && distToStart <= distToEnd) {
+                return 'resize-start';
+            }
+            return distToEnd <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX ? 'resize-end' : null;
+        };
+        const beginResizeDrag = (
+            event: PointerEvent, resizeEdge: 'resize-start' | 'resize-end', edges: { leftSeconds: number; rightSeconds: number }
+        ): void => {
+            // The edge NOT being dragged stays fixed (the anchor); the other one needs its own
+            // starting position captured too, so pointermove can compute its new position as
+            // `draggedEdgeStart + deltaSeconds` — reusing the anchor's value for that base was
+            // the bug: it collapsed the resize onto the wrong edge whenever the anchor wasn't
+            // at/near 0.
+            resizeAnchorSeconds = resizeEdge === 'resize-start' ? edges.rightSeconds : edges.leftSeconds;
+            resizeDraggedEdgeStartSeconds = resizeEdge === 'resize-start' ? edges.leftSeconds : edges.rightSeconds;
+            resizeHitAreaWidthPx = hitArea.getBoundingClientRect().width;
+            dragMode = resizeEdge;
+            setCursor(event, 'ew-resize');
+            (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
+        };
+        const beginPanOrSeek = (event: PointerEvent): void => {
+            dragMode = this.canScrollWaveform() ? 'pan' : null;
+            setCursor(event, dragMode === 'pan' ? 'grabbing' : 'pointer');
+            (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
+            if (dragMode === 'pan') {
+                this.panWaveformViewportToProgress(getProgressFromPointer(event));
+            }
+        };
         const onPointerDown = (event: PointerEvent) => {
             if (!this.wavesurfer) {
                 return;
@@ -567,41 +611,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             startX = event.clientX;
 
             const edges = getViewportEdges();
-            if (edges) {
-                const distToStart = Math.abs(event.clientX - edges.leftX);
-                const distToEnd = Math.abs(event.clientX - edges.rightX);
-                // At high zoom the visible window can be narrower than the combined hit zones
-                // of both handles (e.g. two 8px zones over a 4px-wide window) — resolve the
-                // ambiguity by picking whichever edge the pointer is actually closer to, rather
-                // than always favouring the start handle.
-                let resizeEdge: 'resize-start' | 'resize-end' | null = null;
-                if (distToStart <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX && distToStart <= distToEnd) {
-                    resizeEdge = 'resize-start';
-                } else if (distToEnd <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX) {
-                    resizeEdge = 'resize-end';
-                }
-                if (resizeEdge) {
-                    // The edge NOT being dragged stays fixed (the anchor); the other one needs
-                    // its own starting position captured too, so pointermove can compute its new
-                    // position as `draggedEdgeStart + deltaSeconds` — reusing the anchor's value
-                    // for that base was the bug: it collapsed the resize onto the wrong edge
-                    // whenever the anchor wasn't at/near 0.
-                    resizeAnchorSeconds = resizeEdge === 'resize-start' ? edges.rightSeconds : edges.leftSeconds;
-                    resizeDraggedEdgeStartSeconds = resizeEdge === 'resize-start' ? edges.leftSeconds : edges.rightSeconds;
-                    resizeHitAreaWidthPx = hitArea.getBoundingClientRect().width;
-                    dragMode = resizeEdge;
-                    setCursor(event, 'ew-resize');
-                    (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
-                    return;
-                }
+            const resizeEdge = edges ? detectResizeEdge(event, edges) : null;
+            if (edges && resizeEdge) {
+                beginResizeDrag(event, resizeEdge, edges);
+                return;
             }
-
-            dragMode = this.canScrollWaveform() ? 'pan' : null;
-            setCursor(event, dragMode === 'pan' ? 'grabbing' : 'pointer');
-            (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
-            if (dragMode === 'pan') {
-                this.panWaveformViewportToProgress(getProgressFromPointer(event));
-            }
+            beginPanOrSeek(event);
         };
         // Hover-only preview: while nothing is being dragged, show an ew-resize cursor as soon
         // as the pointer gets near either edge, so the user gets the resize affordance BEFORE
