@@ -885,7 +885,14 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!target) {
             return;
         }
-        if (target.closest('.p-autocomplete-token-icon, .p-autocomplete-chip-icon, .p-chip-remove-icon')) {
+        // mousedown on a suggestion fires (and bubbles here) before the input's blur event does.
+        // Without this guard, blur closes the edit mode first -- removing the dropdown from the
+        // DOM -- so the click that would have selected the suggestion never reaches it and the
+        // typed category is silently lost. Same fix already applied below for the chip-remove
+        // icons; broadened here to cover the suggestion list itself.
+        if (target.closest(
+            '.p-autocomplete-token-icon, .p-autocomplete-chip-icon, .p-chip-remove-icon, .p-autocomplete-option, .p-autocomplete-overlay, .p-autocomplete-list'
+        )) {
             this.ignoreNextCategoriesBlur = true;
         }
     }
@@ -906,7 +913,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!target) {
             return;
         }
-        if (target.closest('.p-autocomplete-token-icon, .p-autocomplete-chip-icon, .p-chip-remove-icon')) {
+        // See onCategoriesMouseDown(): same blur-before-click race for suggestion clicks.
+        if (target.closest(
+            '.p-autocomplete-token-icon, .p-autocomplete-chip-icon, .p-chip-remove-icon, .p-autocomplete-option, .p-autocomplete-overlay, .p-autocomplete-list'
+        )) {
             this.ignoreNextKeywordsBlur = true;
         }
     }
