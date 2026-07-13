@@ -1235,6 +1235,17 @@
           color: white;
           position: relative;
           background-color: $amalia-ctrl-bar-bg-color;
+          // Same fix as .control-bar .column .control above, and for the same reason: some
+          // sprite icons (e.g. #refresh) bake their own hover-highlight circle into the SVG via
+          // fill:var(--hover, #EAEAEA). These <li class="control"> overflow-menu items are a
+          // separate DOM subtree from the main bar's buttons (sibling of .control-bar, not a
+          // descendant of it), so that other rule's ancestor-scoped selector never reaches them
+          // — the icon rendered as a permanently-visible pale circle here regardless of hover.
+          --hover: transparent;
+
+          &:hover {
+            --hover: rgba(255, 255, 255, 0.45);
+          }
 
           .text-right {
             float: right;
