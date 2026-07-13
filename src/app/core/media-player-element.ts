@@ -317,6 +317,15 @@ export class MediaPlayerElement {
         return true;
     }
 
+    /** Delays (ms, relative to the previous attempt) for the layout-refresh retries below.
+     *  A single 200ms fallback was sometimes not enough for the host container to settle to
+     *  its final size on a slow network/machine (image still downloading, surrounding grid
+     *  layout still reflowing) — when that single attempt also measured too early, nothing
+     *  else corrected the control bar's layout for the rest of the session, so the user had
+     *  to reload the page. Several staggered attempts give the layout more chances to
+     *  self-correct without a reload. */
+    private static readonly PICTURE_LAYOUT_RETRY_DELAYS_MS = [200, 600, 1500];
+
     private schedulePicturePlayerLayoutRefresh(emitResize: boolean): void {
         if (!this.picturePlayer || !this._picturePlayerHost) {
             return;
@@ -326,11 +335,20 @@ export class MediaPlayerElement {
         });
         if (this._picturePlayerLayoutTimeout) {
             clearTimeout(this._picturePlayerLayoutTimeout);
-        }
-        this._picturePlayerLayoutTimeout = setTimeout(() => {
             this._picturePlayerLayoutTimeout = null;
-            this.applyPicturePlayerLayoutFromHost(emitResize);
-        }, 200);
+        }
+        const runRetry = (remainingDelays: number[]): void => {
+            if (remainingDelays.length === 0) {
+                return;
+            }
+            const [delay, ...rest] = remainingDelays;
+            this._picturePlayerLayoutTimeout = setTimeout(() => {
+                this._picturePlayerLayoutTimeout = null;
+                this.applyPicturePlayerLayoutFromHost(emitResize);
+                runRetry(rest);
+            }, delay);
+        };
+        runRetry(MediaPlayerElement.PICTURE_LAYOUT_RETRY_DELAYS_MS);
     }
 
     private generatePictureHostId(): string {
