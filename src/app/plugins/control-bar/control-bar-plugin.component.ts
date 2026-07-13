@@ -1691,6 +1691,27 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
+    /**
+     * .controls-menu used a fixed `right: 10px` (relative to its positioning parent,
+     * .controls-container), which only lines the menu up with the "..." button when that
+     * button happens to sit right at the container's own right edge. Once other controls
+     * before it get hidden differently per display state/layout, the button can end up well
+     * short of that edge, leaving the menu visibly offset from the button that opens it.
+     * Align the menu's right edge with the actual trigger button's right edge instead, measured
+     * fresh against their shared positioning parent every time the menu opens.
+     */
+    public alignMenuToTrigger(trigger: EventTarget | null): void {
+        const menuEl = this.controlsMenu?.nativeElement;
+        const container = menuEl?.parentElement;
+        if (!menuEl || !container || !(trigger instanceof HTMLElement)) {
+            return;
+        }
+        const containerRect = container.getBoundingClientRect();
+        const triggerRect = trigger.getBoundingClientRect();
+        const rightOffset = Math.max(0, containerRect.right - triggerRect.right);
+        menuEl.style.right = `${rightOffset}px`;
+    }
+
     aspectRatioMouseEnter() {
         this.hideAll('ratio');
         this.enableListRatio = true;

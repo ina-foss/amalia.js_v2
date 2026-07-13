@@ -645,9 +645,17 @@
                                         [ngClass]="{ show: shouldShowControl(c.priority) && controls.length > 0 }"
                                         class="control menu"
                                         [attr.aria-label]="c.label"
-                                        (click)="hideAll('menu'); $event.stopPropagation(); enableMenu = !enableMenu"
+                                        (click)="
+                                            hideAll('menu');
+                                            $event.stopPropagation();
+                                            enableMenu = !enableMenu;
+                                            alignMenuToTrigger($event.currentTarget)
+                                        "
                                         (keydown.enter)="
-                                            hideAll('menu'); $event.stopPropagation(); enableMenu = !enableMenu
+                                            hideAll('menu');
+                                            $event.stopPropagation();
+                                            enableMenu = !enableMenu;
+                                            alignMenuToTrigger($event.currentTarget)
                                         "
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                     >
