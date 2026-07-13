@@ -180,6 +180,17 @@
       padding: 0;
       margin: 0 5px 0 5px;
       height: 100%;
+      // Some sprite icons (e.g. #refresh, used by "Reset") bake their own hover-highlight
+      // circle into the SVG itself via fill:var(--hover, #EAEAEA) — meant to stay invisible
+      // at rest and only light up on hover. Without this var ever being set here, every button
+      // using that pattern fell back to the SVG's own default (#EAEAEA), rendering as a
+      // permanently-visible pale circle that obscures the icon glyph drawn on top of it,
+      // whether or not the button is actually hovered.
+      --hover: transparent;
+
+      &:hover {
+        --hover: rgba(255, 255, 255, 0.15);
+      }
 
       &.show {
         display: flex;
