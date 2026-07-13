@@ -59,9 +59,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     /** Matches the Zoom plugin's own `maxZoom` below so dragging a minimap handle can't zoom
      *  in further than the wheel-zoom gesture already allows. */
     private static readonly MAX_ZOOM_PX_PER_SEC = 400;
-    /** Grab radius (px) around each minimap-overlay edge that starts a resize instead of a pan;
-     *  matches the 16px-wide CSS grip handle drawn by the consumer app (px-front) so the visual
-     *  affordance and the actual hit zone line up. */
+    /** Grab radius (px) around each minimap-overlay edge that starts a resize instead of a pan.
+     *  Kept deliberately larger than the 10px-wide CSS grip handle drawn by the consumer app
+     *  (px-front) so the hit zone stays easy to grab even though the visual affordance is small. */
     private static readonly VIEWPORT_HANDLE_HIT_PX = 8;
     private static readonly ERROR_MSG_WAVE_FORMS = 'Les formes d\'ondes n\'ont pas pu être chargées';
 
