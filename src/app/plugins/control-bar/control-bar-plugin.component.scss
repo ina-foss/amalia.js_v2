@@ -1207,12 +1207,14 @@
       display: none;
       position: absolute;
       z-index: $amalia-volume-bar-z-index;
-      bottom: 73px;
+      // .controls-menu is a CHILD of .controls-container (its positioning parent), so bottom:100%
+      // always sits the menu flush above the container regardless of the container's actual
+      // rendered height — that height varies by media type/display state (e.g. 50px for this
+      // video bar), so the previous hardcoded bottom:73px (110px pinned) assumed a taller bar
+      // than this one actually is, leaving the menu floating with a visible gap above the bar
+      // instead of sitting right on top of it.
+      bottom: 100%;
       right: 10px;
-
-      &.pinned {
-        bottom: 110px;
-      }
 
       &.on {
         display: block;
