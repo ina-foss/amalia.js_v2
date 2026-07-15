@@ -115,9 +115,8 @@
                                 @case ("playPause") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -145,9 +144,8 @@
                                 @case ("toggleFullScreen") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         (click)="controlClicked(c.control)"
                                         (keydown.enter)="controlClicked(c.control)"
@@ -233,9 +231,8 @@
                                 <!--Playback Rate-->
                                 @case ("playbackRate") {
                                     <div
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) && currentPlaybackRate !== 1 }"
                                         class="playback-rate control text"
                                         [attr.aria-label]="c.label"
@@ -247,9 +244,8 @@
                                 <!--Download-->
                                 @case ("download") {
                                     <div
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="false"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control download"
                                         [attr.aria-label]="c.label"
@@ -279,9 +275,8 @@
                                 @case ("images-forward") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control images-forward"
                                         [attr.aria-label]="c.label"
@@ -304,9 +299,8 @@
                                 @case ("images-backward") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control images-backward"
                                         [attr.aria-label]="c.label"
@@ -332,9 +326,8 @@
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control callback"
                                         [attr.aria-label]="c.label"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                         (click)="handleCallback(c)"
                                         (keydown.enter)="handleCallback(c)"
@@ -362,7 +355,8 @@
                                     >
                                         @if (volumeLeft > 0 || volumeRight > 0) {
                                             <svg
-                                                tooltip="{{ c.label }}"
+                                                pTooltip="{{ c.label }}"
+                                                tooltipPosition="top"
                                                 class="amalia-svg-volume-on-size icon"
                                                 (click)="handleMuteUnmuteVolume()"
                                                 (keydown.enter)="handleMuteUnmuteVolume()"
@@ -593,9 +587,8 @@
                                 <!-- Button subtitles -->
                                 @case ("subtitles") {
                                     <div
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control subtitle"
                                         [attr.aria-label]="c.label"
@@ -639,9 +632,8 @@
                                 @case ("menu") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) && controls.length > 0 }"
                                         class="control menu"
                                         [attr.aria-label]="c.label"
@@ -671,9 +663,8 @@
                                     <button
                                         type="button"
                                         #pinControls
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control"
                                         [attr.aria-label]="c.label"
@@ -697,9 +688,8 @@
                                     <button
                                         type="button"
                                         #displaySlider
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control"
                                         [attr.aria-label]="c.label"
@@ -722,9 +712,8 @@
                                 @case ("magnify") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control magnify"
                                         [attr.aria-label]="c.label"
@@ -759,7 +748,8 @@
                                     >
                                         <button
                                             type="button"
-                                            tooltip="{{ c.data?.minus?.tooltip }}"
+                                            pTooltip="{{ c.data?.minus?.tooltip }}"
+                                            tooltipPosition="top"
                                             class="zoom-btn"
                                             (click)="controlClicked('zoomOut')"
                                             (keydown.enter)="controlClicked('zoomOut')"
@@ -770,12 +760,13 @@
                                                 ></use>
                                             </svg>
                                         </button>
-                                        <span tooltip="{{ c.data?.result?.tooltip }}" class="zoom-result"
+                                        <span pTooltip="{{ c.data?.result?.tooltip }}" tooltipPosition="top" class="zoom-result"
                                             >{{ pictureZoomLevel }}%</span
                                         >
                                         <button
                                             type="button"
-                                            tooltip="{{ c.data?.plus?.tooltip }}"
+                                            pTooltip="{{ c.data?.plus?.tooltip }}"
+                                            tooltipPosition="top"
                                             class="zoom-btn"
                                             (click)="controlClicked('zoomIn')"
                                             (keydown.enter)="controlClicked('zoomIn')"
@@ -792,9 +783,8 @@
                                 @case ("fitToScreen") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fitToScreen"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -818,9 +808,8 @@
                                 @case ("fullsize") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fullsize"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -844,9 +833,8 @@
                                 @case ("rotate") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control rotate"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -870,9 +858,8 @@
                                 @case ("fliph") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fliph"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -896,9 +883,8 @@
                                 @case ("flipv") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control flipv"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -922,9 +908,8 @@
                                 @case ("fullscreen") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fullscreen"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -953,9 +938,8 @@
                                 @case ("center") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control center"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -979,9 +963,8 @@
                                 @case ("crop") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control crop"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -1005,9 +988,8 @@
                                 <!-- Picture Player: Draw -->
                                 @case ("draw") {
                                     <div
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control draw"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -1082,9 +1064,8 @@
                                 <!-- Picture Player: Text -->
                                 @case ("text") {
                                     <div
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control text"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -1155,9 +1136,8 @@
                                 <!-- Picture Player: Erase -->
                                 @case ("erase") {
                                     <div
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control erase"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -1216,9 +1196,8 @@
                                 @case ("reset") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control reset"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -1242,9 +1221,8 @@
                                 @case ("snapshot") {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control snapshot"
                                         [class.magnify-locked]="magnifyEnabled"
@@ -1268,9 +1246,8 @@
                                 @default {
                                     <button
                                         type="button"
-                                        tooltip="{{ c.label }}"
-                                        placement="top"
-                                        [autoPlacement]="true"
+                                        pTooltip="{{ c.label }}"
+                                        tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control"
                                         [attr.aria-label]="c.label"

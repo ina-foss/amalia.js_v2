@@ -86,13 +86,14 @@
       border-radius: 8px;
       /* overlay/container/shadow */
       box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30);
-      padding: $amalia-spacings-border-radius-sm $amalia-spacings-border-radius-md;
+      padding: 8px $amalia-spacings-border-radius-md;
     }
 
     .p-card-header {
       min-width: 0;
       display: flex;
       justify-content: space-between;
+      padding: 4px 0;
     }
 
     .segment-title {
@@ -520,7 +521,7 @@
           display: flex;
           flex-direction: row;
           flex-wrap: nowrap;
-          gap: $amalia-spacings-space-space-sm;
+          gap: $amalia-spacings-space-space-xs;
           padding: $amalia-spacings-border-radius-sm 0;
           align-items: center;
 
@@ -559,7 +560,7 @@
           .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token,
           .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip-item,
           .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip {
-            padding: 6px 8px 6px 5px !important;
+            padding: 4px 6px 4px 5px !important;
           }
 
           .p-autocomplete .p-autocomplete-multiple-container,
@@ -567,9 +568,9 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             list-style: none !important;
-            padding: 0 12px !important;
+            padding: 0 8px !important;
             margin: 0 !important;
           }
 
@@ -580,7 +581,7 @@
             display: flex;
             flex-direction: row;
             flex-wrap: nowrap;
-            gap: $amalia-spacings-space-space-sm;
+            gap: $amalia-spacings-space-space-xs;
             align-items: center;
 
             &:hover {
@@ -630,6 +631,16 @@
             font-weight: 400;
             line-height: normal;
           }
+
+          .p-chip-remove-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+              display: block;
+            }
+          }
         }
 
         .readonly-segment-keywords {
@@ -638,7 +649,7 @@
           display: flex;
           flex-direction: row;
           flex-wrap: nowrap;
-          gap: $amalia-spacings-space-space-sm;
+          gap: $amalia-spacings-space-space-xs;
           padding: $amalia-spacings-border-radius-sm 0;
           align-items: center;
 
@@ -677,7 +688,7 @@
           .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token,
           .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip-item,
           .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip {
-            padding: 6px 8px 6px 5px !important;
+            padding: 4px 6px 4px 5px !important;
           }
 
           .p-autocomplete .p-autocomplete-multiple-container,
@@ -685,9 +696,9 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             list-style: none !important;
-            padding: 0 12px !important;
+            padding: 0 8px !important;
             margin: 0 !important;
           }
 
@@ -698,7 +709,7 @@
             display: flex;
             flex-direction: row;
             flex-wrap: nowrap;
-            gap: $amalia-spacings-space-space-sm;
+            gap: $amalia-spacings-space-space-xs;
             align-items: center;
 
             &:hover {
@@ -740,11 +751,21 @@
             font-size: 14px;
             font-style: normal;
             font-weight: 400;
-            line-height: 150%;
+            line-height: normal;
             max-width: 300px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+          }
+
+          .p-chip-remove-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+              display: block;
+            }
           }
         }
       }

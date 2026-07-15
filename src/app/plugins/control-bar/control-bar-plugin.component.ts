@@ -361,7 +361,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     init() {
         super.init();
-        this.ensureGlobalTooltipStyles();
         this.elements = this.pluginConfiguration?.data || [];
         // init playbackrates
         this.initPlaybackrates();
@@ -1129,57 +1128,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
-    private static readonly TOOLTIP_GLOBAL_STYLE_ID = 'amalia-tooltip-global-style';
-    private static readonly TOOLTIP_BG_COLOR = 'rgba(34, 34, 34, 0.95)';
-
     /**
-     * ng2-tooltip-directive appends its <tooltip> element to document.body — OUTSIDE this
-     * component's shadow root (ViewEncapsulation.ShadowDom). A SCSS rule scoped to this
-     * component can therefore never reach it: Angular's shadow-DOM style scoping only applies
-     * to elements actually inside the shadow tree, not to anything appended to <body>. The
-     * library ships its own reasonable default look, but it doesn't match the app's dark
-     * control-bar theme, and it was never actually themed here. Inject a real global stylesheet
-     * (outside any shadow root) once, so both the app theme and (via changeTooltipEmplacement)
-     * fullscreen mode render identically instead of silently falling back to the library
-     * default in the common (non-fullscreen) case.
+     * PrimeNG's Tooltip appends its overlay (.p-tooltip) to document.body — outside the
+     * fullscreened subtree when the player is in fullscreen (the Fullscreen API only renders
+     * descendants of the fullscreened element), so it would stay invisible. Move it into the
+     * control bar container (part of the fullscreened subtree) so it remains visible.
      */
-    private ensureGlobalTooltipStyles(): void {
-        if (document.getElementById(ControlBarPluginComponent.TOOLTIP_GLOBAL_STYLE_ID)) {
-            return;
-        }
-        const style = document.createElement('style');
-        style.id = ControlBarPluginComponent.TOOLTIP_GLOBAL_STYLE_ID;
-        const bg = ControlBarPluginComponent.TOOLTIP_BG_COLOR;
-        style.textContent = `
-            tooltip.tooltip {
-                font-family: "Lato", sans-serif !important;
-                font-size: 12px !important;
-                font-weight: 500 !important;
-                letter-spacing: 0.01em !important;
-                line-height: 1.4 !important;
-                background-color: ${bg} !important;
-                color: #ffffff !important;
-                padding: 6px 10px !important;
-                border-radius: 4px !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
-            }
-            tooltip.tooltip.tooltip-top:after { border-top-color: ${bg} !important; }
-            tooltip.tooltip.tooltip-bottom:after { border-bottom-color: ${bg} !important; }
-            tooltip.tooltip.tooltip-left:after { border-left-color: ${bg} !important; }
-            tooltip.tooltip.tooltip-right:after { border-right-color: ${bg} !important; }
-        `;
-        document.head.appendChild(style);
-    }
-
-    /**
-     * Tooltip tag is append after footer (ng2-directive-tooltip)
-     * in fullscreen only the player is target , this function move the tooltip target from body to containerControlbar
-     */
-
     public changeTooltipEmplacement() {
         if (this.fullScreenMode === true) {
             setTimeout(() => {
-                const tooltip = document.body.getElementsByTagName('tooltip')[0];
+                const tooltip = document.body.querySelector('.p-tooltip');
                 if (tooltip) {
                     document.body.removeChild(tooltip);
                     this.controlBarContainer.nativeElement.appendChild(tooltip);

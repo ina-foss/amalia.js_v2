@@ -51,7 +51,7 @@
                                         segment.label && segment.label.length > 250 ? 'none' : 'auto'
                                     "
                                     [style.opacity]="segment.label && segment.label.length > 250 ? '0.5' : '1'"
-                                    tooltip="Valider"
+                                    pTooltip="Valider"
                                 ></i>
                                 <i
                                     class="pi pi-times-circle"
@@ -60,7 +60,7 @@
                                     (mousedown)="onTitleActionMouseDown()"
                                     role="button"
                                     tabindex="0"
-                                    tooltip="Annuler"
+                                    pTooltip="Annuler"
                                 ></i>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                         role="button"
                         tabindex="0"
                         severity="secondary"
-                        tooltip="Dupliquer un segment"
+                        pTooltip="Dupliquer un segment"
                     ></i>
                     <i
                         id="btnremove"
@@ -88,7 +88,7 @@
                         role="button"
                         tabindex="0"
                         severity="danger"
-                        tooltip="Supprimer"
+                        pTooltip="Supprimer"
                     ></i>
                     @if (segment.data.idDocument) {
                         <p-button
@@ -99,7 +99,7 @@
                             [rounded]="true"
                             severity="secondary"
                             styleClass="notilus-filled-circle"
-                            tooltip="Ouvrir dans Notilus"
+                            pTooltip="Ouvrir dans Notilus"
                         />
                     }
                 </div>
@@ -142,7 +142,7 @@
                             icon="pi pi-camera"
                             (click)="updateThumbnail()"
                             (keydown.enter)="updateThumbnail()"
-                            tooltip="Sélectionner une imagette"
+                            pTooltip="Sélectionner une imagette"
                             rounded="true"
                             outlined="true"
                             size="small"
@@ -464,7 +464,7 @@
                                     [style.opacity]="
                                         segment.description && segment.description.length > 1000 ? '0.5' : '1'
                                     "
-                                    tooltip="Valider"
+                                    pTooltip="Valider"
                                 ></i>
                                 <i
                                     class="pi pi-times-circle"
@@ -473,7 +473,7 @@
                                     (mousedown)="onDescriptionActionMouseDown()"
                                     role="button"
                                     tabindex="0"
-                                    tooltip="Annuler"
+                                    pTooltip="Annuler"
                                 ></i>
                             </div>
                         </div>

@@ -3,7 +3,7 @@
         <div class="first"></div>
         <div
             class="size medium"
-            tooltip="{{ msgMedium }}"
+            pTooltip="{{ msgMedium }}"
             [ngClass]="{ selected: size == 'medium' }"
             (click)="handleThumbnailSizeChange('medium')"
             (keydown.enter)="handleThumbnailSizeChange('medium')"
@@ -12,7 +12,7 @@
         ></div>
         <div
             class="size large"
-            tooltip="{{ msgLarge }}"
+            pTooltip="{{ msgLarge }}"
             [ngClass]="{ selected: size == 'large' }"
             (click)="handleThumbnailSizeChange('large')"
             (keydown.enter)="handleThumbnailSizeChange('large')"
@@ -137,7 +137,7 @@
 </div>
 <div
     class="auto-scroll"
-    tooltip="{{ pluginConfiguration.data.labelSynchro }}"
+    pTooltip="{{ pluginConfiguration.data.labelSynchro }}"
     [ngClass]="{ active: displaySynchro }"
     (click)="scrollToActiveThumbnail(selectedTc, true)"
     (keydown.enter)="scrollToActiveThumbnail(selectedTc, true)"

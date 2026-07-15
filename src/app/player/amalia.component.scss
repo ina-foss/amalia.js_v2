@@ -237,13 +237,10 @@
   }
 }
 
-// The <tooltip> element (ng2-tooltip-directive) is appended to document.body by the library
-// itself, OUTSIDE this component's shadow root (ViewEncapsulation.ShadowDom above) — a rule
-// here can never reach it (shadow-DOM style scoping only covers elements actually inside the
-// shadow tree). Theming now lives in a real global stylesheet injected at runtime by
-// ControlBarPluginComponent.ensureGlobalTooltipStyles(), which works regardless of where the
-// tooltip element currently lives (document.body in normal mode, or moved into this shadow
-// root by changeTooltipEmplacement() in fullscreen).
+// Tooltips use PrimeNG's [pTooltip] directive (.p-tooltip overlay). PrimeNG appends its overlay
+// to document.body by default, OUTSIDE this component's shadow root (ViewEncapsulation.ShadowDom
+// above) — a rule here can never reach it. Theming for .p-tooltip lives in the consumer app's
+// global theme (px-front's amalia-dark-overrides.css), not in this component.
 
 
 

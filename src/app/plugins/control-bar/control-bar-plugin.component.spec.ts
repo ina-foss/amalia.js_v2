@@ -1658,14 +1658,15 @@ describe('ControlBarPluginComponent (coverage boost)', () => {
     });
 
     it('moves tooltip and toggles aspect/default ratio', fakeAsync(() => {
-        const tooltip = document.createElement('tooltip');
+        const tooltip = document.createElement('div');
+        tooltip.classList.add('p-tooltip');
         document.body.appendChild(tooltip);
         const host = document.createElement('div');
         component.controlBarContainer = new ElementRef(host);
         component.fullScreenMode = true;
         component.changeTooltipEmplacement();
         tick(151);
-        expect(host.querySelector('tooltip')).toBeTruthy();
+        expect(host.querySelector('.p-tooltip')).toBeTruthy();
 
         component.aspectRatio = '4:3';
         component.changeAspectRatio();
