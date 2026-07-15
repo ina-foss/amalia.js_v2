@@ -7,7 +7,7 @@
                     <div
                         #titlediv
                         class="segment-title ellipsis"
-                        [tooltip]="isEllipsed ? segment.label : ''"
+                        [pTooltip]="isEllipsed ? segment.label : ''"
                         (click)="startTitleEdit()"
                         (keydown.enter)="startTitleEdit()"
                         role="button"
@@ -256,13 +256,13 @@
                                         @for (category of categories(); track category) {
                                             <p-chip
                                                 [label]="category"
-                                                [tooltip]="textLatoWidthHigherThan(category, 300) ? category : ''"
+                                                [pTooltip]="textLatoWidthHigherThan(category, 300) ? category : ''"
                                             />
                                         }
                                         <p-chip
                                             id="hiddenCategoriesSummaryChip"
                                             [label]="'+' + hiddenCategoriesCount"
-                                            [tooltip]="displayRemaining(categories(), hiddenCategoriesCount)"
+                                            [pTooltip]="displayRemaining(categories(), hiddenCategoriesCount)"
                                         />
                                     }
                                     @if (categories().length === 0) {
@@ -307,13 +307,13 @@
                                         @for (keyword of keywords(); track keyword) {
                                             <p-chip
                                                 [label]="keyword"
-                                                [tooltip]="textLatoWidthHigherThan(keyword, 300) ? keyword : ''"
+                                                [pTooltip]="textLatoWidthHigherThan(keyword, 300) ? keyword : ''"
                                             />
                                         }
                                         <p-chip
                                             id="hiddenKeywordsSummaryChip"
                                             [label]="'+' + hiddenKeywordsCount"
-                                            [tooltip]="displayRemaining(keywords(), hiddenKeywordsCount)"
+                                            [pTooltip]="displayRemaining(keywords(), hiddenKeywordsCount)"
                                         />
                                     }
                                     @if (keywords().length === 0) {
