@@ -368,6 +368,53 @@ describe('Test Media player element', () => {
         (window as any).ResizeObserver = originalResizeObserver;
     });
 
+    it('setPicturePlayer should drop a stale media player so init() emits INIT for pictures', () => {
+        const mpe = new MediaPlayerElement() as any;
+        mpe.configurationManager = {
+            getCoreConfig: () => ({
+                player: { media: 'PICTURE' },
+                displaySizes: { xsmall: 340, small: 550, medium: 700, large: 900 }
+            })
+        };
+        spyOn<any>(mpe, 'applyPicturePlayerLayoutFromHost').and.returnValue(false);
+        const unsubscribeSpy = jasmine.createSpy('unsubscribeListeners');
+        // Recycled instance scenario: same player-id re-registered while the host swaps
+        // video → picture; the previous media wrapper must not survive.
+        mpe.mediaPlayer = { unsubscribeListeners: unsubscribeSpy };
+        const host = document.createElement('div');
+
+        mpe.setPicturePlayer(host, {
+            imagesSrc: [{ name: 'img-1', path: '/img.jpg', thumbPath: '/img.jpg' }],
+            showGallery: false,
+            noToolbar: true,
+            noTopbar: true
+        } as any);
+
+        expect(unsubscribeSpy).toHaveBeenCalled();
+        expect(mpe.getMediaPlayer()).toBeNull();
+        expect(mpe.getPicturePlayer()).toBeTruthy();
+        mpe.unsubscribeListeners();
+    });
+
+    it('setMediaPlayer should drop a stale picture player and its listeners', () => {
+        const mpe = new MediaPlayerElement() as any;
+        // Recycled instance scenario in the opposite direction (picture → video/audio).
+        const removeSpy = spyOn(window, 'removeEventListener').and.callThrough();
+        const disconnectSpy = jasmine.createSpy('disconnect');
+        mpe.picturePlayer = {};
+        mpe._picturePlayerResizeHandler = () => undefined;
+        mpe._picturePlayerHostResizeObserver = { disconnect: disconnectSpy };
+        mpe._picturePlayerHost = document.createElement('div');
+
+        mpe.setMediaPlayer(document.createElement('video'));
+
+        expect(mpe.getPicturePlayer()).toBeNull();
+        expect(mpe._picturePlayerHost).toBeNull();
+        expect(removeSpy).toHaveBeenCalled();
+        expect(disconnectSpy).toHaveBeenCalled();
+        expect(mpe.getMediaPlayer()).toBeTruthy();
+    });
+
     it('setPicturePlayer should fallback to default display state when host layout is unavailable', () => {
         const mpe = new MediaPlayerElement() as any;
         mpe.configurationManager = {

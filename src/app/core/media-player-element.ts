@@ -176,7 +176,16 @@ export class MediaPlayerElement {
      * Set media element
      */
     public setMediaPlayer(mediaPlayer: HTMLVideoElement): void {
-        this.mediaPlayer && this.mediaPlayer.unsubscribeListeners();
+        // A recycled MediaPlayerElement (same player-id re-registered while the host swaps
+        // media, e.g. picture → video navigation) still holds the previous picture player;
+        // drop it so getDisplayState()/setMediaPlayerWidth stop treating this instance as
+        // picture mode. unsubscribeListeners() also detaches its window/host observers.
+        if (this.picturePlayer) {
+            this.unsubscribeListeners();
+            this.picturePlayer = null;
+        } else {
+            this.mediaPlayer && this.mediaPlayer.unsubscribeListeners();
+        }
         this.mediaPlayer = new MediaElement(mediaPlayer, this._eventEmitter);
         this.logger.debug('set media player', mediaPlayer);
     }
@@ -205,6 +214,15 @@ export class MediaPlayerElement {
         // AmaliaPlayer expects a CSS selector — guarantee the host is uniquely addressable.
         if (!host.id) {
             host.id = this.generatePictureHostId();
+        }
+        // A recycled MediaPlayerElement (same player-id re-registered while the host swaps
+        // media, e.g. video → picture navigation) still holds the previous <video> wrapper.
+        // init() checks `mediaPlayer` before `picturePlayer`, so a stale one would shadow
+        // the picture branch and the INIT event the control bar waits for would never be
+        // emitted — leaving the control bar empty.
+        if (this.mediaPlayer) {
+            this.mediaPlayer.unsubscribeListeners();
+            this.mediaPlayer = null;
         }
         // Clean up listeners from any previous picture player instance
         if (this._picturePlayerResizeHandler) {
