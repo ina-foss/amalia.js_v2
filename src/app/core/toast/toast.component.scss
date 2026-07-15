@@ -10,8 +10,56 @@
     transform: translateX(-50%);
   }
 
+  // Same Shadow DOM problem for the rest of the structural CSS that PrimeNG 21 injects into
+  // document.head (@primeuix/styles/toast + progressbar): width of the toast, box of the
+  // message and the whole geometry of the progress bar (the "timer") must be redeclared here.
+  .p-toast {
+    width: 25rem;
+    max-width: calc(100vw - 40px);
+    white-space: pre-line;
+    word-break: break-word;
+  }
+
+  .p-toast-message {
+    margin: 0 0 1rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .p-toast-message-enter-active {
+    animation: p-animate-toast-enter 300ms ease-out;
+  }
+
+  .p-toast-message-leave-active {
+    animation: p-animate-toast-leave 250ms ease-in;
+  }
+
+  @keyframes p-animate-toast-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes p-animate-toast-leave {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+      margin-bottom: 0;
+      transform: translateY(-100%) scale(0.6);
+    }
+  }
 
   .p-progressbar {
+    display: block;
+    position: relative;
+    overflow: hidden;
     height: 4px !important;
     max-height: 4px !important;
   }
@@ -20,7 +68,14 @@
     background-color: white !important;
   }
 
-  .p-progressbar-value-animate {
+  // PrimeNG 21 removed .p-progressbar-value-animate: the animated fill is .p-progressbar-value
+  .p-progressbar-determinate .p-progressbar-value {
+    position: absolute;
+    inset-inline-start: 0;
+    height: 100%;
+    width: 0%;
+    overflow: hidden;
+    transition: width 1s ease-in-out;
     background-color: currentColor;
   }
 
