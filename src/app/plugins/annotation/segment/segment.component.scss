@@ -445,6 +445,16 @@
           float: right;
           width: 33px !important;
           height: 33px !important;
+
+          &:hover {
+            background: color-mix(in srgb, var(--INA-Blanc, #FFF) 90%, transparent);
+
+            // neutralise le .pi:hover global (opacity .5) qui délaverait
+            // l'icône caméra sur ce fond clair
+            .pi {
+              opacity: 1;
+            }
+          }
         }
       }
 
