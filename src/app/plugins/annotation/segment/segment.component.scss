@@ -425,6 +425,21 @@
         }
 
         .p-button {
+          // Le CSS structurel de base de PrimeNG 21 (position:relative, inline-flex,
+          // border-radius du rounded, fond transparent de l'outlined...) est injecté
+          // dans document.head et n'atteint pas le Shadow DOM. Sans position:relative,
+          // le bouton caméra (float) était peint SOUS la vignette (position:absolute)
+          // et disparaissait pour la vidéo. On redéclare ici le minimum vital.
+          position: relative;
+          z-index: 1;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          background: transparent;
+          border: 1px solid #64748b;
+          border-radius: 50%;
+          cursor: pointer;
           margin-top: 24px;
           margin-right: 17px;
           float: right;
