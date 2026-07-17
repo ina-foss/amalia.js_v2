@@ -96,6 +96,12 @@
     }
   }
 
+  // le cursor:pointer du .p-button de base PrimeNG n'atteint pas le shadow DOM
+  .no-highlight .p-button,
+  .highlight .p-button {
+    cursor: pointer;
+  }
+
   .no-highlight {
     .p-button {
       border-radius: 4px;
