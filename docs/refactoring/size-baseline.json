@@ -1,0 +1,82 @@
+{
+  "date": "2026-07-22",
+  "total": 15419274,
+  "totalGzip": 3506637,
+  "files": [
+    {
+      "file": "amalia-2.1.26.min.js",
+      "bytes": 6218159,
+      "gzip": 1251815
+    },
+    {
+      "file": "main.js",
+      "bytes": 6176427,
+      "gzip": 1236433
+    },
+    {
+      "file": "styles.css",
+      "bytes": 740152,
+      "gzip": 75000
+    },
+    {
+      "file": "assets/themes/aura-light-blue/fonts/Inter-italic.var.woff2",
+      "bytes": 443547,
+      "gzip": 194168
+    },
+    {
+      "file": "Inter-italic.var.woff2",
+      "bytes": 443547,
+      "gzip": 194168
+    },
+    {
+      "file": "assets/themes/aura-light-blue/fonts/Inter-roman.var.woff2",
+      "bytes": 410665,
+      "gzip": 179587
+    },
+    {
+      "file": "Inter-roman.var.woff2",
+      "bytes": 410665,
+      "gzip": 179587
+    },
+    {
+      "file": "assets/themes/aura-light-blue/theme.css",
+      "bytes": 244043,
+      "gzip": 22533
+    },
+    {
+      "file": "primeicons.eot",
+      "bytes": 85156,
+      "gzip": 40847
+    },
+    {
+      "file": "primeicons.woff",
+      "bytes": 85056,
+      "gzip": 40785
+    },
+    {
+      "file": "primeicons.ttf",
+      "bytes": 84980,
+      "gzip": 40767
+    },
+    {
+      "file": "primeicons.woff2",
+      "bytes": 35148,
+      "gzip": 35170
+    },
+    {
+      "file": "polyfills.js",
+      "bytes": 34858,
+      "gzip": 12530
+    },
+    {
+      "file": "scripts.js",
+      "bytes": 5713,
+      "gzip": 2558
+    },
+    {
+      "file": "runtime.js",
+      "bytes": 1158,
+      "gzip": 689
+    }
+  ]
+}
