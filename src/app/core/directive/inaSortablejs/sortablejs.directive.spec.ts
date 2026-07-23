@@ -7,7 +7,6 @@ import { SortablejsService } from "./sortablejs.service";
 
 describe("SortablejsDirective", () => {
     @Component({
-        standalone: false,
         template: `
             <div [sortablejs]="items">
                 @for (item of items; track item) {
@@ -15,6 +14,7 @@ describe("SortablejsDirective", () => {
                 }
             </div>
         `,
+        imports: [SortablejsDirective],
     })
     class TestComponent1 {
         items = [1, 2, 3, 4, 5];
@@ -22,7 +22,7 @@ describe("SortablejsDirective", () => {
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
-            declarations: [TestComponent1, SortablejsDirective],
+            imports: [TestComponent1, SortablejsDirective],
         }).compileComponents();
     }));
 

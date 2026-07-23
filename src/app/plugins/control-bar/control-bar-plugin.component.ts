@@ -1,4 +1,4 @@
-import { PluginBase } from '../../core/plugin/plugin-base';
+import { PluginBase } from "../../core/plugin/plugin-base";
 import {
     ChangeDetectorRef,
     Component,
@@ -10,32 +10,35 @@ import {
     Output,
     Renderer2,
     ViewChild,
-    ViewEncapsulation
-} from '@angular/core';
-import throttle from 'lodash/throttle';
-import debounce from 'lodash/debounce';
-import orderBy from 'lodash/orderBy';
-import filter from 'lodash/filter';
-import find from 'lodash/find';
-import type { DebouncedFunc } from 'lodash';
-import { PlayerEventType } from '../../core/constant/event-type';
-import { ControlBarConfig } from '../../core/config/model/control-bar-config';
-import { PluginConfigData } from '../../core/config/model/plugin-config-data';
-import { MediaPlayerService } from '../../service/media-player-service';
-import { ThumbnailService } from '../../service/thumbnail-service';
-import interact from 'interactjs';
-import { matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
+    ViewEncapsulation,
+} from "@angular/core";
+import throttle from "lodash/throttle";
+import debounce from "lodash/debounce";
+import orderBy from "lodash/orderBy";
+import filter from "lodash/filter";
+import find from "lodash/find";
+import type { DebouncedFunc } from "lodash";
+import { PlayerEventType } from "../../core/constant/event-type";
+import { ControlBarConfig } from "../../core/config/model/control-bar-config";
+import { PluginConfigData } from "../../core/config/model/plugin-config-data";
+import { MediaPlayerService } from "../../service/media-player-service";
+import { ThumbnailService } from "../../service/thumbnail-service";
+import interact from "interactjs";
+import { matchesShortcut, Shortcut, ShortcutControl, ShortcutEvent } from "src/app/core/config/model/shortcuts-event";
+import { NgClass, NgStyle } from "@angular/common";
+import { Tooltip } from "primeng/tooltip";
+import { FormsModule } from "@angular/forms";
+import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
 
 @Component({
-    selector: 'amalia-control-bar',
-    standalone: false,
-    templateUrl: './control-bar-plugin.component.html',
-    styleUrls: ['./control-bar-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom
+    selector: "amalia-control-bar",
+    templateUrl: "./control-bar-plugin.component.html",
+    styleUrls: ["./control-bar-plugin.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    imports: [NgClass, NgStyle, Tooltip, FormsModule, TcFormatPipe],
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> {
-
-    public static PLUGIN_NAME = 'CONTROL_BAR';
+    public static PLUGIN_NAME = "CONTROL_BAR";
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
     /**
      * Min playback rate
@@ -59,13 +62,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * list playback rate step (2/6/8)
      */
     @Input()
-    public sliderListOfPlaybackRateStep: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateStep: Array<number> = [
+        -10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10,
+    ];
 
     /**
      * List of playback rate
      */
     @Input()
-    public sliderListOfPlaybackRateCustomSteps: Array<number> = [-10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10];
+    public sliderListOfPlaybackRateCustomSteps: Array<number> = [
+        -10, -8, -6, -4, -2, -1, -0.5, -0.25, 0, 0.25, 0.5, 1, 2, 4, 6, 8, 10,
+    ];
     /**
      * list of backward playback step
      */
@@ -91,7 +98,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public extractTcOut?: number = null;
     public onProgressBar = false;
     // handle slider drag
-    @ViewChild('dragThumb')
+    @ViewChild("dragThumb")
     public dragElement: ElementRef;
     public sliderPosition = 0;
     public moving = false;
@@ -142,7 +149,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Selected aspectRatio
      */
-    public aspectRatio: '16:9' | '4:3' = '4:3';
+    public aspectRatio: "16:9" | "4:3" = "4:3";
     /**
      * Default aspect ratio
      */
@@ -180,7 +187,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * keypressed
      */
-    public keypressed = '';
+    public keypressed = "";
     /**
      * Volume slider state
      */
@@ -193,11 +200,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * position of subtitles
      */
-    public subtitlePosition = 'none';
+    public subtitlePosition = "none";
     /**
      * default label subtitle
      */
-    public selectedLabel = 'Aucun (original)';
+    public selectedLabel = "Aucun (original)";
     /**
      * List positions subtitle state
      */
@@ -243,7 +250,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * display state (s/m/l)
      */
-    public displayState: string = 'l';
+    public displayState: string = "l";
     /**
      * FullScreenMode state
      */
@@ -251,7 +258,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * slider displayed
      */
-    public selectedSlider = 'slider1';
+    public selectedSlider = "slider1";
     /**
      * show menu slider
      */
@@ -263,14 +270,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * list position subtitles
      */
-    public listOfSubtitles = [{ label: 'Bas', key: 'down' }, {
-        label: 'Haut',
-        key: 'up'
-    }, { label: this.selectedLabel, key: this.subtitlePosition }];
+    public listOfSubtitles = [
+        { label: "Bas", key: "down" },
+        {
+            label: "Haut",
+            key: "up",
+        },
+        { label: this.selectedLabel, key: this.subtitlePosition },
+    ];
     /**
      * progressBar element
      */
-    @ViewChild('progressBar')
+    @ViewChild("progressBar")
     public progressBarElement: ElementRef<HTMLElement>;
     /**
      * Handle thumbnail
@@ -281,34 +292,34 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private thumbnailConfigInitialized = false;
     public thumbnailHidden = true;
     public thumbnailPosition = 0;
-    @ViewChild('thumbnail')
+    @ViewChild("thumbnail")
     public thumbnailElement: ElementRef<HTMLElement>;
-    @ViewChild('thumbnailContainer')
+    @ViewChild("thumbnailContainer")
     public thumbnailContainer: ElementRef<HTMLElement>;
-    @ViewChild('controlBarContainer')
+    @ViewChild("controlBarContainer")
     public controlBarContainer: ElementRef<HTMLElement>;
-    @ViewChild('volumeButton')
+    @ViewChild("volumeButton")
     public volumeButton: ElementRef<HTMLElement>;
     /**
      * list of shortcuts
      */
     public listOfShortcuts: Array<ShortcutControl> = [];
     // Menu of controls
-    @ViewChild('controlsMenu')
+    @ViewChild("controlsMenu")
     public controlsMenu: ElementRef<HTMLElement>;
     public throttleFunc;
     // slider volume
-    @ViewChild('leftVolumeSlider')
+    @ViewChild("leftVolumeSlider")
     public leftVolumeSlider: ElementRef;
-    @ViewChild('rightVolumeSlider')
+    @ViewChild("rightVolumeSlider")
     public rightVolumeSlider: ElementRef;
     public playbackrateByImages = false;
-    public listOfTracks: Array<{ label: string, track: string }> = [];
+    public listOfTracks: Array<{ label: string; track: string }> = [];
     public selectedTrack = null;
-    public selectedTrackLabel = '';
-    @ViewChild('displaySlider')
+    public selectedTrackLabel = "";
+    @ViewChild("displaySlider")
     displaySliderElement: ElementRef;
-    @ViewChild('pinControls')
+    @ViewChild("pinControls")
     pinControlsElement: ElementRef;
     aspectRatioMouseEnterTimeOut: any;
     volumeMouseEnterTimeOut: any;
@@ -323,23 +334,31 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * Picture player annotation mode state ('draw' | 'text' | 'erase' | null)
      */
-    public annotationMode: 'draw' | 'text' | 'erase' | null = null;
+    public annotationMode: "draw" | "text" | "erase" | null = null;
     /**
      * Available annotation colors
      */
-    public readonly annotationColors: string[] = ['#ff0000', '#ff9800', '#ffeb3b', '#4caf50', '#2196f3', '#ffffff', '#000000'];
+    public readonly annotationColors: string[] = [
+        "#ff0000",
+        "#ff9800",
+        "#ffeb3b",
+        "#4caf50",
+        "#2196f3",
+        "#ffffff",
+        "#000000",
+    ];
     /**
      * Available annotation stroke sizes (label + line width + font size)
      */
     public readonly annotationSizes: { label: string; lineWidth: number; fontSize: number }[] = [
-        { label: 'Fine', lineWidth: 2, fontSize: 16 },
-        { label: 'Moyenne', lineWidth: 5, fontSize: 24 },
-        { label: 'Large', lineWidth: 10, fontSize: 40 }
+        { label: "Fine", lineWidth: 2, fontSize: 16 },
+        { label: "Moyenne", lineWidth: 5, fontSize: 24 },
+        { label: "Large", lineWidth: 10, fontSize: 40 },
     ];
     /**
      * Currently selected annotation color
      */
-    public annotationColor: string = '#ff0000';
+    public annotationColor: string = "#ff0000";
     /**
      * Currently selected annotation stroke width
      */
@@ -351,33 +370,42 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private pendingFrameJump = 0;
     private readonly debouncedSeek: DebouncedFunc<() => void>;
 
-    constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2, private readonly cdr: ChangeDetectorRef, private readonly ngZone: NgZone) {
+    constructor(
+        playerService: MediaPlayerService,
+        thumbnailService: ThumbnailService,
+        private readonly renderer: Renderer2,
+        private readonly cdr: ChangeDetectorRef,
+        private readonly ngZone: NgZone,
+    ) {
         super(playerService);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
         this.thumbnailService = thumbnailService;
         this.throttleFunc = throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
-        this.debouncedSeek = debounce(() => this.executeFrameJump(), ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
+        this.debouncedSeek = debounce(
+            () => this.executeFrameJump(),
+            ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME,
+        );
     }
 
     listenToDisplaySliderDisplayChanges() {
         const sliderDisplayStyle = getComputedStyle(this.displaySliderElement.nativeElement).display;
-        const displaySliderOff = !this.displaySliderElement || sliderDisplayStyle === 'none';
-        const svgPinControls = this.pinControlsElement.nativeElement.querySelector('svg');
+        const displaySliderOff = !this.displaySliderElement || sliderDisplayStyle === "none";
+        const svgPinControls = this.pinControlsElement.nativeElement.querySelector("svg");
         if (displaySliderOff) {
-            svgPinControls && this.renderer.removeClass(svgPinControls, 'amalia-svg-pin-size');
+            svgPinControls && this.renderer.removeClass(svgPinControls, "amalia-svg-pin-size");
         } else {
-            svgPinControls && this.renderer.addClass(svgPinControls, 'amalia-svg-pin-size');
+            svgPinControls && this.renderer.addClass(svgPinControls, "amalia-svg-pin-size");
         }
     }
 
     listenToPinControlsDisplayChanges() {
         const pinControlsDisplayStyle = getComputedStyle(this.pinControlsElement.nativeElement).display;
-        const pinControlsOff = !this.pinControlsElement || pinControlsDisplayStyle === 'none';
-        const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector('svg');
+        const pinControlsOff = !this.pinControlsElement || pinControlsDisplayStyle === "none";
+        const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector("svg");
         if (pinControlsOff) {
-            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, 'amalia-svg-slider-size');
+            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, "amalia-svg-slider-size");
         } else {
-            svgDisplaySlider && this.renderer.addClass(svgDisplaySlider, 'amalia-svg-slider-size');
+            svgDisplaySlider && this.renderer.addClass(svgDisplaySlider, "amalia-svg-slider-size");
         }
     }
 
@@ -386,11 +414,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.listenToDisplaySliderDisplayChanges();
             this.listenToPinControlsDisplayChanges();
         } else if (!this.displaySliderElement && this.pinControlsElement) {
-            const svgPinControls = this.pinControlsElement.nativeElement.querySelector('svg');
-            svgPinControls && this.renderer.removeClass(svgPinControls, 'amalia-svg-pin-size');
+            const svgPinControls = this.pinControlsElement.nativeElement.querySelector("svg");
+            svgPinControls && this.renderer.removeClass(svgPinControls, "amalia-svg-pin-size");
         } else if (!this.pinControlsElement && this.displaySliderElement) {
-            const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector('svg');
-            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, 'amalia-svg-slider-size');
+            const svgDisplaySlider = this.displaySliderElement.nativeElement.querySelector("svg");
+            svgDisplaySlider && this.renderer.removeClass(svgDisplaySlider, "amalia-svg-slider-size");
         }
     }
 
@@ -411,7 +439,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         // hover preview — only re-evaluate when a thumbnail config is actually present.
         const thumbnailConfig = this.mediaPlayerElement.getConfiguration().thumbnail;
         if (thumbnailConfig || !this.thumbnailConfigInitialized) {
-            this.enableThumbnail = (thumbnailConfig && thumbnailConfig.baseUrl !== '' && thumbnailConfig.enableThumbnail) || false;
+            this.enableThumbnail =
+                (thumbnailConfig && thumbnailConfig.baseUrl !== "" && thumbnailConfig.enableThumbnail) || false;
             this.thumbnailConfigInitialized = true;
         }
 
@@ -444,19 +473,59 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
         // Init Events
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYBACK_RATE_CHANGE, this.handlePlaybackRateChange);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.DURATION_CHANGE,
+            this.handleOnDurationChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYBACK_RATE_CHANGE,
+            this.handlePlaybackRateChange,
+        );
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ASPECT_RATIO_CHANGE, this.handleAspectRatioChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.handlePlayerMouseenter);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_LEAVE, this.handlePlayerMouseleave);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.ASPECT_RATIO_CHANGE,
+            this.handleAspectRatioChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_MOUSE_ENTER,
+            this.handlePlayerMouseenter,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_MOUSE_LEAVE,
+            this.handlePlayerMouseleave,
+        );
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PICTURE_ZOOM_CHANGE, this.handlePictureZoomChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PICTURE_MAGNIFY, this.handlePictureMagnifyChange);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PICTURE_ZOOM_CHANGE,
+            this.handlePictureZoomChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PICTURE_MAGNIFY,
+            this.handlePictureMagnifyChange,
+        );
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DOCUMENT_CLICK, this.hideControlsMenuOnClickDocument);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_SIMULATE_SLIDER, this.handlePlaybackRateChangeByImages);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_STOP_SIMULATE_PLAY, this.handlePlaybackRateChangeByImagesStop);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.DOCUMENT_CLICK,
+            this.hideControlsMenuOnClickDocument,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_SIMULATE_SLIDER,
+            this.handlePlaybackRateChangeByImages,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_STOP_SIMULATE_PLAY,
+            this.handlePlaybackRateChangeByImagesStop,
+        );
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
@@ -514,7 +583,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handlePlaybackRateChange(playbackRate: number) {
-        this.logger.info('Handle playback rate change', playbackRate);
+        this.logger.info("Handle playback rate change", playbackRate);
         if (this.mediaPlayerElement.getMediaPlayer()?.isPaused() && playbackRate !== 1) {
             this.mediaPlayerElement.getMediaPlayer()?.play();
         }
@@ -525,7 +594,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.currentPlaybackRate >= 1 || this.currentPlaybackRate <= -1) {
             this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
         } else {
-            this.currentPlaybackRateSlider = (this.currentPlaybackRate);
+            this.currentPlaybackRateSlider = this.currentPlaybackRate;
         }
     }
 
@@ -585,7 +654,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public handleShortcuts(event: ShortcutEvent) {
-        if (event.targets.find(target => target.toLowerCase() === this.pluginName.toLowerCase())) {
+        if (event.targets.find((target) => target.toLowerCase() === this.pluginName.toLowerCase())) {
             this.applyShortcut(event);
         }
     }
@@ -598,7 +667,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.inSliding) {
             const value = this.getMouseValue(event);
             this.progressBarValue = value;
-            this.currentTime = value * this.duration / 100;
+            this.currentTime = (value * this.duration) / 100;
             if (this.inverse === false) {
                 this.time = this.currentTime;
             } else {
@@ -606,13 +675,20 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, this.time);
             // Keep the thumbnail preview following the cursor while actively dragging, not just on hover.
-            if (this.enableThumbnail && this.progressBarElement?.nativeElement && this.thumbnailElement?.nativeElement) {
+            if (
+                this.enableThumbnail &&
+                this.progressBarElement?.nativeElement &&
+                this.thumbnailElement?.nativeElement
+            ) {
                 const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
                 const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
                 const tc = parseFloat(this.currentTime.toFixed(6));
                 if (isFinite(tc)) {
                     this.tcThumbnail = tc;
-                    this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
+                    this.thumbnailPosition = Math.min(
+                        Math.max(0, event.offsetX - thumbnailSize / 2),
+                        containerWidth - thumbnailSize,
+                    );
                 }
                 this.throttleFunc(event);
             }
@@ -626,7 +702,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.callback.emit(control);
     }
 
-
     public hideControlsMenuOnClickDocument() {
         // click outside the player
         if (this.enableMenu) {
@@ -639,18 +714,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     getDefaultConfig(): PluginConfigData<Array<ControlBarConfig>> {
         const listOfControls = new Array<ControlBarConfig>();
-        listOfControls.push({ label: 'Barre de progression', control: 'progressBar', priority: 1 });
-        listOfControls.push({ label: 'Play / Pause', control: 'playPause', zone: 2, priority: 1 });
+        listOfControls.push({ label: "Barre de progression", control: "progressBar", priority: 1 });
+        listOfControls.push({ label: "Play / Pause", control: "playPause", zone: 2, priority: 1 });
         listOfControls.push({
-            label: 'Fullscreen',
-            control: 'toggleFullScreen',
-            icon: 'fullscreen',
+            label: "Fullscreen",
+            control: "toggleFullScreen",
+            icon: "fullscreen",
             zone: 3,
-            priority: 1
+            priority: 1,
         });
         return {
             name: ControlBarPluginComponent.PLUGIN_NAME,
-            data: listOfControls
+            data: listOfControls,
         };
     }
 
@@ -660,28 +735,32 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public initShortcuts(data: Array<ControlBarConfig>) {
         this.listOfShortcuts = [];
         for (const i in data) {
-            if (typeof data[i] === 'object') {
+            if (typeof data[i] === "object") {
                 const controlConfig = data[i];
-                if (typeof controlConfig.key !== 'undefined' && typeof controlConfig.control !== 'undefined') {
+                if (typeof controlConfig.key !== "undefined" && typeof controlConfig.control !== "undefined") {
                     let key = controlConfig.key
-                        .replace('Control', '')
-                        .replace('Shift', '')
-                        .replace('Alt', '')
-                        .replace('Meta', '')
-                        .replaceAll('+', '')
-                        .replaceAll(' ', '')
+                        .replace("Control", "")
+                        .replace("Shift", "")
+                        .replace("Alt", "")
+                        .replace("Meta", "")
+                        .replaceAll("+", "")
+                        .replaceAll(" ", "")
                         .toLowerCase();
                     const shortCut: Shortcut = {
                         key,
-                        ctrl: controlConfig.key.includes('Control') || controlConfig.key.includes('Ctrl') || controlConfig.key.includes('control') || controlConfig.key.includes('ctrl'),
-                        shift: controlConfig.key.includes('Shift') || controlConfig.key.includes('shift'),
-                        alt: controlConfig.key.includes('Alt') || controlConfig.key.includes('alt'),
-                        meta: controlConfig.key.includes('Meta') || controlConfig.key.includes('meta')
+                        ctrl:
+                            controlConfig.key.includes("Control") ||
+                            controlConfig.key.includes("Ctrl") ||
+                            controlConfig.key.includes("control") ||
+                            controlConfig.key.includes("ctrl"),
+                        shift: controlConfig.key.includes("Shift") || controlConfig.key.includes("shift"),
+                        alt: controlConfig.key.includes("Alt") || controlConfig.key.includes("alt"),
+                        meta: controlConfig.key.includes("Meta") || controlConfig.key.includes("meta"),
                     };
 
                     const shortcutControl: ShortcutControl = {
                         shortcut: shortCut,
-                        control: controlConfig.control
+                        control: controlConfig.control,
                     };
                     this.listOfShortcuts.push(shortcutControl);
                 }
@@ -697,7 +776,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         for (const shortcutControl of this.listOfShortcuts) {
             if (shortcutFound === false && matchesShortcut(shortcutControl, shortcutToBeApplied.shortcut)) {
                 this.keypressed = shortcutControl.shortcut.key;
-                if (shortcutControl.control === 'volume') {
+                if (shortcutControl.control === "volume") {
                     this.handleMuteUnmuteVolume();
                 } else {
                     this.controlClicked(shortcutControl.control);
@@ -706,15 +785,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }
         }
         const volumeUpShortcut: ShortcutControl = {
-            shortcut: { key: 'arrowup', ctrl: false, shift: false, alt: false, meta: false },
-            control: 'volume'
+            shortcut: { key: "arrowup", ctrl: false, shift: false, alt: false, meta: false },
+            control: "volume",
         };
         const volumeDownShortcut: ShortcutControl = {
-            shortcut: { key: 'arrowdown', ctrl: false, shift: false, alt: false, meta: false },
-            control: 'volume'
+            shortcut: { key: "arrowdown", ctrl: false, shift: false, alt: false, meta: false },
+            control: "volume",
         };
         if (matchesShortcut(volumeUpShortcut, shortcutToBeApplied.shortcut)) {
-            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
+            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent("mouseenter"));
             this.volumeRight = Math.min(this.volumeRight + 5, 100);
             this.volumeLeft = Math.min(this.volumeLeft + 5, 100);
             if (this.volumeMouseEnterTimeOut) {
@@ -725,7 +804,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             }, 1500);
         }
         if (matchesShortcut(volumeDownShortcut, shortcutToBeApplied.shortcut)) {
-            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
+            this.volumeButton.nativeElement.dispatchEvent(new MouseEvent("mouseenter"));
             this.volumeRight = Math.max(this.volumeRight - 5, 0);
             this.volumeLeft = Math.max(this.volumeLeft - 5, 0);
             if (this.volumeMouseEnterTimeOut) {
@@ -774,12 +853,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param control control name
      */
     public controlClicked(control: string) {
-        this.logger.debug('Click to control', control);
+        this.logger.debug("Click to control", control);
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
 
         if (!mediaPlayer && !picturePlayer) {
-            this.logger.warn('Control not implemented', control);
+            this.logger.warn("Control not implemented", control);
             return;
         }
         this.closeMenuIfOpen();
@@ -789,7 +868,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
 
         if (!mediaPlayer) {
-            this.logger.warn('Control not implemented', control);
+            this.logger.warn("Control not implemented", control);
             return;
         }
 
@@ -805,14 +884,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             viewRatio: () => mediaPlayer.playPause(),
             screenshot: () => mediaPlayer.captureImage(100),
             backward: () => this.prevPlaybackRate(),
-            'slow-backward': () => this.prevSlowPlaybackRate(),
-            'backward-start': () => {
+            "slow-backward": () => this.prevSlowPlaybackRate(),
+            "backward-start": () => {
                 this.changePlaybackRate(1);
                 mediaPlayer.seekToBegin();
             },
             forward: () => this.nextPlaybackRate(),
-            'slow-forward': () => this.nextSlowPlaybackRate(),
-            'forward-end': () => {
+            "slow-forward": () => this.nextSlowPlaybackRate(),
+            "forward-end": () => {
                 this.changePlaybackRate(1);
                 mediaPlayer.seekToEnd();
             },
@@ -821,7 +900,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             toggleFullScreen: () => this.toggleFullScreen(),
             aspectRatio: () => this.changeAspectRatio(),
             subtitles: () => this.updateSubtitlePosition(),
-            download: () => this.downloadUrl(control)
+            download: () => this.downloadUrl(control),
         };
 
         const action = actions[control];
@@ -829,7 +908,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             action();
             return;
         }
-        this.logger.warn('Control not implemented', control);
+        this.logger.warn("Control not implemented", control);
     }
 
     private closeMenuIfOpen(): void {
@@ -840,7 +919,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     private handlePictureControl(control: string): boolean {
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
-        if (control === 'magnify') {
+        if (control === "magnify") {
             picturePlayer?.magnify();
             return true;
         }
@@ -857,9 +936,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             pinControls: () => this.pinControls(),
             center: () => picturePlayer?.center(),
             crop: () => this.toggleCropMode(picturePlayer),
-            draw: () => this.toggleAnnotationMode(picturePlayer, 'draw'),
-            text: () => this.toggleAnnotationMode(picturePlayer, 'text'),
-            erase: () => this.toggleAnnotationMode(picturePlayer, 'erase'),
+            draw: () => this.toggleAnnotationMode(picturePlayer, "draw"),
+            text: () => this.toggleAnnotationMode(picturePlayer, "text"),
+            erase: () => this.toggleAnnotationMode(picturePlayer, "erase"),
             reset: () => {
                 picturePlayer?.clearAnnotations();
                 if (this.annotationModeEnabled) {
@@ -886,22 +965,22 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     public get drawModeEnabled(): boolean {
-        return this.annotationMode === 'draw';
+        return this.annotationMode === "draw";
     }
 
     public get textModeEnabled(): boolean {
-        return this.annotationMode === 'text';
+        return this.annotationMode === "text";
     }
 
     public get eraseModeEnabled(): boolean {
-        return this.annotationMode === 'erase';
+        return this.annotationMode === "erase";
     }
 
     public get annotationModeEnabled(): boolean {
         return this.annotationMode !== null;
     }
 
-    @HostListener('document:keydown.escape')
+    @HostListener("document:keydown.escape")
     public onEscapeKey(): void {
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
         if (this.cropModeEnabled) {
@@ -934,7 +1013,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.cdr.markForCheck();
     }
 
-    private toggleAnnotationMode(picturePlayer: any, mode: 'draw' | 'text' | 'erase'): void {
+    private toggleAnnotationMode(picturePlayer: any, mode: "draw" | "text" | "erase"): void {
         if (this.annotationMode === mode) {
             picturePlayer?.disableAnnotationMode();
             this.setAnnotationMode(null);
@@ -946,9 +1025,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.setCropModeEnabled(false);
         }
         picturePlayer?.enableAnnotationMode();
-        if (mode === 'draw') {
+        if (mode === "draw") {
             picturePlayer?.enableDrawMode();
-        } else if (mode === 'text') {
+        } else if (mode === "text") {
             picturePlayer?.enableTextMode();
         } else {
             picturePlayer?.enableEraseMode();
@@ -957,7 +1036,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.setAnnotationMode(mode);
     }
 
-    private setAnnotationMode(mode: 'draw' | 'text' | 'erase' | null): void {
+    private setAnnotationMode(mode: "draw" | "text" | "erase" | null): void {
         this.annotationMode = mode;
         this.cdr.markForCheck();
     }
@@ -965,7 +1044,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private applyAnnotationSettings(picturePlayer: any): void {
         picturePlayer?.setAnnotationColor(this.annotationColor);
         picturePlayer?.setAnnotationLineWidth(this.annotationLineWidth);
-        const size = this.annotationSizes.find(s => s.lineWidth === this.annotationLineWidth);
+        const size = this.annotationSizes.find((s) => s.lineWidth === this.annotationLineWidth);
         if (size) {
             picturePlayer?.setAnnotationFontSize(size.fontSize);
         }
@@ -987,7 +1066,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     private downloadSnapshot(dataUrl: string): void {
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = dataUrl;
         link.download = `snapshot-${Date.now()}.png`;
         document.body.appendChild(link);
@@ -996,43 +1075,43 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     private handleTimelineControl(control: string, mediaPlayer: any, paused: boolean): boolean {
-        if (control === 'backward-5seconds') {
+        if (control === "backward-5seconds") {
             this.pendingFrameJump -= 5 * mediaPlayer.framerate;
             this.debouncedSeek();
             return true;
         }
-        if (control === 'forward-5seconds') {
+        if (control === "forward-5seconds") {
             this.pendingFrameJump += 5 * mediaPlayer.framerate;
             this.debouncedSeek();
             return true;
         }
 
         const frameMoves: Record<string, number> = {
-            'backward-second': -mediaPlayer.framerate,
-            'backward-10seconds': -10 * mediaPlayer.framerate,
-            'forward-second': mediaPlayer.framerate,
-            'forward-10seconds': 10 * mediaPlayer.framerate
+            "backward-second": -mediaPlayer.framerate,
+            "backward-10seconds": -10 * mediaPlayer.framerate,
+            "forward-second": mediaPlayer.framerate,
+            "forward-10seconds": 10 * mediaPlayer.framerate,
         };
         if (frameMoves[control] !== undefined) {
             this.jumpFrames(mediaPlayer, frameMoves[control], paused);
             return true;
         }
 
-        if (control === 'backward-frame') {
+        if (control === "backward-frame") {
             mediaPlayer.pauseOnly();
             mediaPlayer.movePrevFrame(1);
             return true;
         }
-        if (control === 'forward-frame') {
+        if (control === "forward-frame") {
             mediaPlayer.pauseOnly();
             mediaPlayer.moveNextFrame(1);
             return true;
         }
-        if (control === 'backward-1h') {
+        if (control === "backward-1h") {
             this.shiftTimeByHour(mediaPlayer, -1);
             return true;
         }
-        if (control === 'forward-1h') {
+        if (control === "forward-1h") {
             this.shiftTimeByHour(mediaPlayer, 1);
             return true;
         }
@@ -1055,9 +1134,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         let currentTime = mediaPlayer.reverseMode
             ? mediaPlayer.getDuration() - mediaPlayer.getCurrentTime()
             : mediaPlayer.getCurrentTime();
-        currentTime = mediaPlayer.reverseMode
-            ? currentTime - (direction * 3600)
-            : currentTime + (direction * 3600);
+        currentTime = mediaPlayer.reverseMode ? currentTime - direction * 3600 : currentTime + direction * 3600;
         mediaPlayer.setCurrentTime(currentTime);
     }
 
@@ -1070,7 +1147,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             return false;
         }
         const control = find<ControlBarConfig>(this.pluginConfiguration.data, { control: componentName });
-        return (control !== undefined && control !== null);
+        return control !== undefined && control !== null;
     }
 
     /**
@@ -1093,16 +1170,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (priority === 1) {
             return true;
         }
-        if (this.displayState === 'l') {
+        if (this.displayState === "l") {
             return priority >= 2 && priority <= 5;
         }
-        if (this.displayState === 'm') {
+        if (this.displayState === "m") {
             return priority >= 2 && priority <= 4;
         }
-        if (this.displayState === 'sm') {
+        if (this.displayState === "sm") {
             return priority >= 2 && priority <= 3;
         }
-        if (this.displayState === 's') {
+        if (this.displayState === "s") {
             return priority === 2;
         }
         return false;
@@ -1110,7 +1187,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
         if (this.elements) {
-            this.elements = orderBy(this.elements, ['order']);
+            this.elements = orderBy(this.elements, ["order"]);
             return filter<ControlBarConfig>(this.elements, { priority, zone });
         }
         return [];
@@ -1123,7 +1200,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public changeVolume(value: string | number, volumeSide?: string) {
         if (this.mediaPlayerElement?.getMediaPlayer()?.withMergeVolume) {
-            if (volumeSide === 'l') {
+            if (volumeSide === "l") {
                 this.volumeRight = this.volumeLeft;
             } else {
                 this.volumeLeft = this.volumeRight;
@@ -1140,15 +1217,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public moveSliderCursor(value: any) {
-        this.logger.info('moveSliderCursor ', value);
+        this.logger.info("moveSliderCursor ", value);
         this.progressBarValue = value;
-        this.currentTime = value * this.duration / 100;
+        this.currentTime = (value * this.duration) / 100;
         const oldPlaybackrate = this.currentPlaybackRate;
         if (this.currentPlaybackRate === 1) {
             this.playbackrateByImages = false;
         }
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        if (!mediaPlayer) { return; }
+        if (!mediaPlayer) {
+            return;
+        }
         if (mediaPlayer.reverseMode === true) {
             this.currentTime = this.duration - this.currentTime;
             mediaPlayer.setCurrentTime(this.currentTime);
@@ -1172,7 +1251,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeTooltipEmplacement() {
         if (this.fullScreenMode === true) {
             setTimeout(() => {
-                const tooltip = document.body.querySelector('.p-tooltip');
+                const tooltip = document.body.querySelector(".p-tooltip");
                 if (tooltip) {
                     document.body.removeChild(tooltip);
                     this.controlBarContainer.nativeElement.appendChild(tooltip);
@@ -1210,15 +1289,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         controlsP3 ??= [];
         controlsP2 ??= [];
 
-        if (this.displayState === 'l') {
+        if (this.displayState === "l") {
             this.controls = controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2);
-        } else if (this.displayState === 'm') {
+        } else if (this.displayState === "m") {
             this.controls = controlsP5;
-        } else if (this.displayState === 'sm') {
+        } else if (this.displayState === "sm") {
             this.controls = controlsP5.concat(controlsP4);
-        } else if (this.displayState === 's') {
+        } else if (this.displayState === "s") {
             this.controls = controlsP5.concat(controlsP4).concat(controlsP3);
-        } else if (this.displayState === 'xs') {
+        } else if (this.displayState === "xs") {
             this.controls = controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2);
         }
         //remove controls not in menu
@@ -1245,7 +1324,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change aspect ratio
      */
     public changeAspectRatio() {
-        this.mediaPlayerElement.aspectRatio = (this.aspectRatio === '4:3') ? '16:9' : '4:3';
+        this.mediaPlayerElement.aspectRatio = this.aspectRatio === "4:3" ? "16:9" : "4:3";
     }
 
     /**
@@ -1263,7 +1342,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public onChangePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
         if (this.currentPlaybackRate < 1 && this.currentPlaybackRate > -1) {
-            this.currentPlaybackRateSlider = (this.currentPlaybackRate);
+            this.currentPlaybackRateSlider = this.currentPlaybackRate;
         } else {
             this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
         }
@@ -1271,7 +1350,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer()?.play();
         }
         const mp = this.mediaPlayerElement.getMediaPlayer();
-        if (mp) { mp.playbackRate = this.currentPlaybackRate; }
+        if (mp) {
+            mp.playbackRate = this.currentPlaybackRate;
+        }
     }
 
     /**
@@ -1279,7 +1360,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public changeSameVolumeState() {
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        if (!mediaPlayer) { return; }
+        if (!mediaPlayer) {
+            return;
+        }
         mediaPlayer.withMergeVolume = !mediaPlayer.withMergeVolume;
         if (mediaPlayer.withMergeVolume) {
             const v = Math.max(this.volumeRight, this.volumeLeft);
@@ -1317,10 +1400,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
             const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
             const value = this.getMouseValue(event);
-            const tc = parseFloat((value * this.duration / 100).toFixed(6));
+            const tc = parseFloat(((value * this.duration) / 100).toFixed(6));
             if (isFinite(tc)) {
                 this.tcThumbnail = tc;
-                this.thumbnailPosition = Math.min(Math.max(0, event.offsetX - thumbnailSize / 2), containerWidth - thumbnailSize);
+                this.thumbnailPosition = Math.min(
+                    Math.max(0, event.offsetX - thumbnailSize / 2),
+                    containerWidth - thumbnailSize,
+                );
             }
             this.throttleFunc(event);
         }
@@ -1363,14 +1449,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public updateThumbnail(event: MouseEvent) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-        const tc = parseFloat((event.offsetX * this.duration / containerWidth).toFixed(6));
+        const tc = parseFloat(((event.offsetX * this.duration) / containerWidth).toFixed(6));
         const currentTime = parseFloat(tc.toFixed(6));
         const url = this.mediaPlayerElement.getThumbnailUrl(currentTime, true);
         if (isFinite(tc)) {
             this.setThumbnail(url, currentTime);
         }
     }
-
 
     private thumbnailRequestToken = 0;
 
@@ -1383,8 +1468,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             if (requestToken !== this.thumbnailRequestToken) {
                 return;
             }
-            if (typeof (blob) !== 'undefined') {
-                this.thumbnailElement?.nativeElement?.setAttribute('src', blob);
+            if (typeof blob !== "undefined") {
+                this.thumbnailElement?.nativeElement?.setAttribute("src", blob);
             }
         });
     }
@@ -1426,7 +1511,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
         } else {
             this.currentPlaybackRate = this.getPlaybackStepValue(this.forwardPlaybackRateStep, true);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+            this.mediaPlayerElement.eventEmitter.emit(
+                PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE,
+                this.currentPlaybackRate,
+            );
         }
         setTimeout(() => this.selectActivePlaybackrate(), 10);
     }
@@ -1448,11 +1536,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 const tc = mediaPlayer?.getCurrentTime();
                 mediaPlayer?.mse.switchToMainSrc().then(() => {
                     this.mediaPlayerElement.getMediaPlayer()?.setReverseMode(false);
-                    this.mediaPlayerElement.getMediaPlayer()?.setCurrentTime((Math.max(0, tc)));
-                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+                    this.mediaPlayerElement.getMediaPlayer()?.setCurrentTime(Math.max(0, tc));
+                    this.mediaPlayerElement.eventEmitter.emit(
+                        PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE,
+                        this.currentPlaybackRate,
+                    );
                 });
             } else {
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, this.currentPlaybackRate);
+                this.mediaPlayerElement.eventEmitter.emit(
+                    PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE,
+                    this.currentPlaybackRate,
+                );
             }
         }
     }
@@ -1487,7 +1581,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         playbackRate = playbackRateStep[indexOfCurrentPlaybackRate];
         if (!ignoreSetPlaybackrate) {
             const mp = this.mediaPlayerElement.getMediaPlayer();
-            if (mp) { mp.playbackRate = playbackRate; }
+            if (mp) {
+                mp.playbackRate = playbackRate;
+            }
         }
         return playbackRate;
     }
@@ -1498,10 +1594,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private changePlaybackRate(value: number) {
         this.currentPlaybackRate = value;
         const mp = this.mediaPlayerElement.getMediaPlayer();
-        if (mp) { mp.playbackRate = this.currentPlaybackRate; }
+        if (mp) {
+            mp.playbackRate = this.currentPlaybackRate;
+        }
         setTimeout(() => this.selectActivePlaybackrate(), 10);
     }
-
 
     public handlePlayerMouseHover() {
         this.activated = true;
@@ -1513,7 +1610,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public updateSubtitlePosition(subtitlePosition?: string) {
-        if (typeof (subtitlePosition) === 'undefined') {
+        if (typeof subtitlePosition === "undefined") {
             this.updateSubtitleInfos();
         } else {
             for (const subtitle of this.listOfSubtitles) {
@@ -1551,7 +1648,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enablePlaybackSlider && this.pinnedSlider) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
         } else {
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+            this.mediaPlayerElement.eventEmitter.emit(
+                PlayerEventType.PINNED_CONTROLBAR_CHANGE,
+                this.enablePinnedSlider,
+            );
         }
         this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
         setTimeout(() => this.initDragThumb(), 10);
@@ -1583,7 +1683,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.enablePlaybackSlider && this.pinnedSlider) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
         } else {
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.enablePinnedSlider);
+            this.mediaPlayerElement.eventEmitter.emit(
+                PlayerEventType.PINNED_CONTROLBAR_CHANGE,
+                this.enablePinnedSlider,
+            );
         }
         this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
     }
@@ -1609,10 +1712,15 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public buildUrlWithTc(element: HTMLElement, control: ControlBarConfig) {
         const baseUrl = control.data.href;
-        const tcParam = control.data?.tcParam || 'tc';
+        const tcParam = control.data?.tcParam || "tc";
         const currentTime = (this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime() ?? 0).toFixed(2);
-        if (baseUrl !== '') {
-            element.setAttribute('href', baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${currentTime}` : `${baseUrl}&${tcParam}=${this.currentTime}`);
+        if (baseUrl !== "") {
+            element.setAttribute(
+                "href",
+                baseUrl.search("\\?") === -1
+                    ? `${baseUrl}?${tcParam}=${currentTime}`
+                    : `${baseUrl}&${tcParam}=${this.currentTime}`,
+            );
         }
     }
 
@@ -1623,7 +1731,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const currentTime = (this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime() ?? 0).toFixed(2);
         const data = this.elements;
         for (const i in data) {
-            if (typeof data[i] === 'object') {
+            if (typeof data[i] === "object") {
                 const c = data[i];
                 this.openDownloadUrl(c, control, currentTime);
             }
@@ -1631,11 +1739,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     private openDownloadUrl(c, control, currentTime) {
-        if (typeof c.key !== 'undefined') {
+        if (typeof c.key !== "undefined") {
             if (c.control === control && c.key === this.keypressed) {
                 let baseUrl = c.data.href;
-                const tcParam = c.data?.tcParam || 'tc';
-                baseUrl = baseUrl.search('\\?') === -1 ? baseUrl + '?' + tcParam + '=' + currentTime : baseUrl + '&' + tcParam + '=' + currentTime;
+                const tcParam = c.data?.tcParam || "tc";
+                baseUrl =
+                    baseUrl.search("\\?") === -1
+                        ? baseUrl + "?" + tcParam + "=" + currentTime
+                        : baseUrl + "&" + tcParam + "=" + currentTime;
                 window.location.href = baseUrl;
             }
         }
@@ -1646,10 +1757,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public changeSlider() {
-        if (this.selectedSlider === 'slider1') {
-            this.selectedSlider = 'slider2';
+        if (this.selectedSlider === "slider1") {
+            this.selectedSlider = "slider2";
         } else {
-            this.selectedSlider = 'slider1';
+            this.selectedSlider = "slider1";
         }
         setTimeout(() => this.initDragThumb(), 10);
     }
@@ -1668,9 +1779,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
-
     public hideAll(control?) {
-        if (this.enableMenu && control !== 'menu') {
+        if (this.enableMenu && control !== "menu") {
             this.enableMenu = !this.enableMenu;
         }
         if (this.enableVolumeSlider) {
@@ -1706,7 +1816,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     aspectRatioMouseEnter() {
-        this.hideAll('ratio');
+        this.hideAll("ratio");
         this.enableListRatio = true;
         if (this.aspectRatioMouseEnterTimeOut) {
             clearTimeout(this.aspectRatioMouseEnterTimeOut);
@@ -1717,7 +1827,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     volumeMouseEnter(data: any) {
-        this.hideAll('volume');
+        this.hideAll("volume");
         this.enableVolumeSlider = true;
         this.openVolume(data);
         if (this.volumeMouseEnterTimeOut) {
@@ -1728,7 +1838,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.openPisteAudio = false;
         }, 4000);
     }
-
 
     /**
      * Mute sound
@@ -1744,14 +1853,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public unmute() {
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        if (!mediaPlayer) { return; }
-        this.volumeRight = mediaPlayer.getVolume('r');
-        this.volumeLeft = mediaPlayer.getVolume('l');
+        if (!mediaPlayer) {
+            return;
+        }
+        this.volumeRight = mediaPlayer.getVolume("r");
+        this.volumeLeft = mediaPlayer.getVolume("l");
         if (this.volumeLeft < 50 || this.volumeRight < 50) {
-            mediaPlayer.setVolume(50, 'r');
-            mediaPlayer.setVolume(50, 'l');
-            this.volumeRight = mediaPlayer.getVolume('r');
-            this.volumeLeft = mediaPlayer.getVolume('l');
+            mediaPlayer.setVolume(50, "r");
+            mediaPlayer.setVolume(50, "l");
+            this.volumeRight = mediaPlayer.getVolume("r");
+            this.volumeLeft = mediaPlayer.getVolume("l");
         }
         return mediaPlayer.unmute();
     }
@@ -1775,82 +1886,83 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.maxCursor = this.posPlaybackrates.length;
     }
 
-
     public initDragThumb() {
         // init drag slider
-        const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
+        const selected: HTMLElement = this.controlBarContainer.nativeElement.querySelector<HTMLElement>(
+            ".selected > .playback-rate-values > .playbackrate-value.active",
+        );
         const step = Math.ceil(selected.offsetWidth);
-        const values = this.controlBarContainer.nativeElement
-            .querySelectorAll<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value');
-        let left = (step / 2);
-        values.forEach(value => {
-            value.setAttribute('data-x', left.toString());
+        const values = this.controlBarContainer.nativeElement.querySelectorAll<HTMLElement>(
+            ".selected > .playback-rate-values > .playbackrate-value",
+        );
+        let left = step / 2;
+        values.forEach((value) => {
+            value.setAttribute("data-x", left.toString());
             left += step;
         });
-        let position = { x: Number(selected.getAttribute('data-x')) };
+        let position = { x: Number(selected.getAttribute("data-x")) };
         const container = this.dragElement.nativeElement;
         const self = this;
-        const valuesContainer = this.controlBarContainer.nativeElement
-            .querySelector<HTMLElement>('.selected > .playback-rate-values');
+        const valuesContainer = this.controlBarContainer.nativeElement.querySelector<HTMLElement>(
+            ".selected > .playback-rate-values",
+        );
         const maxWidth = valuesContainer.offsetWidth;
-        container.style.paddingLeft = position.x + 'px';
-        container.setAttribute('data-x', position.x);
+        container.style.paddingLeft = position.x + "px";
+        container.setAttribute("data-x", position.x);
         interact(container).styleCursor(false);
         interact(container).draggable({
-            origin: 'self',
+            origin: "self",
             inertia: true,
             modifiers: [
                 interact.modifiers.restrict({
-                    restriction: 'self'
-                })
+                    restriction: "self",
+                }),
             ],
             listeners: {
-
                 move(event) {
-                    if (self.selectedSlider === 'slider2') {
+                    if (self.selectedSlider === "slider2") {
                         setTimeout(() => self.handleMoveDragThumb(event, position, step, maxWidth), 50);
                         event.stopImmediatePropagation();
                     } else {
                         event.preventDefault();
-                        position = { x: Number(container.getAttribute('data-x')) };
+                        position = { x: Number(container.getAttribute("data-x")) };
                         position.x += event.dx;
                         if (position.x < step / 2) {
-                            event.target.style.paddingLeft = '0px';
-                            event.target.setAttribute('data-x', 0);
-                        } else if (position.x > (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
-                            event.target.style.paddingLeft = Number(maxWidth - 10) + 'px';
-                            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+                            event.target.style.paddingLeft = "0px";
+                            event.target.setAttribute("data-x", 0);
+                        } else if (position.x > Number(maxWidth - step / 2) || position.x > maxWidth) {
+                            event.target.style.paddingLeft = Number(maxWidth - 10) + "px";
+                            event.target.setAttribute("data-x", Number(maxWidth - 10).toString());
                         } else if (position.x > 0) {
                             self.handleThumbPosition(values, event, position, step);
                         }
                     }
                 },
                 end(event) {
-                    if (self.selectedSlider === 'slider2') {
+                    if (self.selectedSlider === "slider2") {
                         setTimeout(() => self.handleStopMoveDragThumb(values, position.x), 10);
                         event.stopImmediatePropagation();
                     }
-                }
-            }
+                },
+            },
         });
     }
 
     // Handle thumb position slider
     private handleThumbPosition(values, event, position, step) {
-        values.forEach(value => {
-            const v = Number(value.getAttribute('data-x'));
-            const p = Number(value.getAttribute('data'));
+        values.forEach((value) => {
+            const v = Number(value.getAttribute("data-x"));
+            const p = Number(value.getAttribute("data"));
             if (value.nextElementSibling) {
-                const nextP = Number(value.nextElementSibling.getAttribute('data-x'));
-                const nextValue = Number(value.nextElementSibling.getAttribute('data'));
+                const nextP = Number(value.nextElementSibling.getAttribute("data-x"));
+                const nextValue = Number(value.nextElementSibling.getAttribute("data"));
                 const difference = nextValue - p;
                 if (position.x >= v && position.x < nextP) {
                     const percentage = Math.round(((position.x - v) * 100) / step);
-                    const pr = (p + ((percentage * difference) / 100));
+                    const pr = p + (percentage * difference) / 100;
                     const playbackrate = pr.toFixed(1);
-                    event.target.style.paddingLeft = position.x + 'px';
-                    event.target.setAttribute('data-x', position.x);
+                    event.target.style.paddingLeft = position.x + "px";
+                    event.target.setAttribute("data-x", position.x);
                     if (Number(playbackrate) !== 0) {
                         event.stopImmediatePropagation();
                         this.changePlaybackrate(playbackrate);
@@ -1864,10 +1976,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Handle stop move drag thumb
      */
     public handleStopMoveDragThumb(values, position) {
-        values.forEach(value => {
-            const v = Number(value.getAttribute('data-x'));
+        values.forEach((value) => {
+            const v = Number(value.getAttribute("data-x"));
             if (position === v) {
-                const pr = value.getAttribute('data');
+                const pr = value.getAttribute("data");
                 if (Number(pr) !== 0) {
                     this.changePlaybackrate(pr);
                 }
@@ -1881,25 +1993,24 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleMoveDragThumb(event, position, step, maxWidth) {
         event.speed = 20;
         const oldPosition = position.x;
-        const pos = (position.x + event.dx);
+        const pos = position.x + event.dx;
         if (pos > oldPosition) {
             position.x += step;
         } else {
             position.x -= step;
         }
         if (position.x === step / 2) {
-            event.target.style.paddingLeft = '0px';
-            event.target.setAttribute('data-x', 0);
-        } else if (position.x === (Number(maxWidth - (step / 2))) || position.x > maxWidth) {
-            event.target.style.paddingLeft = Number(maxWidth - 10) + 'px';
-            event.target.setAttribute('data-x', Number(maxWidth - 10).toString());
+            event.target.style.paddingLeft = "0px";
+            event.target.setAttribute("data-x", 0);
+        } else if (position.x === Number(maxWidth - step / 2) || position.x > maxWidth) {
+            event.target.style.paddingLeft = Number(maxWidth - 10) + "px";
+            event.target.setAttribute("data-x", Number(maxWidth - 10).toString());
         } else if (position.x > 0) {
-            event.target.style.paddingLeft = position.x + 'px';
-            event.target.setAttribute('data-x', position.x);
+            event.target.style.paddingLeft = position.x + "px";
+            event.target.setAttribute("data-x", position.x);
             event.stopImmediatePropagation();
         }
     }
-
 
     public togglePlaybackrate(value) {
         let pr;
@@ -1915,7 +2026,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             this.mediaPlayerElement.getMediaPlayer()?.pause();
         }
     }
-
 
     public changePlaybackrate(pr, click?) {
         if (pr !== 0) {
@@ -1939,12 +2049,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     public selectActivePlaybackrate() {
         const container = this.dragElement.nativeElement;
-        const selected: HTMLElement = this.controlBarContainer.nativeElement
-            .querySelector<HTMLElement>('.selected > .playback-rate-values > .playbackrate-value.active');
+        const selected: HTMLElement = this.controlBarContainer.nativeElement.querySelector<HTMLElement>(
+            ".selected > .playback-rate-values > .playbackrate-value.active",
+        );
         if (selected) {
-            const position = Number(selected.getAttribute('data-x'));
-            container.style.paddingLeft = position + 'px';
-            container.setAttribute('data-x', position);
+            const position = Number(selected.getAttribute("data-x"));
+            container.style.paddingLeft = position + "px";
+            container.setAttribute("data-x", position);
         }
     }
 
@@ -1956,7 +2067,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.volumeButton.nativeElement.click();
         if (this.volumeLeft > 0 || this.volumeRight > 0) {
             this.mute();
-
         }
         if (this.volumeLeft === 0 && this.volumeRight === 0) {
             this.unmute();
@@ -1967,12 +2077,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (!this.pluginConfiguration || !this.pluginConfiguration.data) {
             return;
         }
-        const control = find<ControlBarConfig>(this.pluginConfiguration.data, { control: 'volume' });
+        const control = find<ControlBarConfig>(this.pluginConfiguration.data, { control: "volume" });
         if (control && control.data && control.data.tracks) {
             this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;
-            this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
-            this.logger.info(`[AUDIO_TRACK_DEBUG] initTracks listOfTracks=${JSON.stringify(this.listOfTracks)} selectedTrack=${this.selectedTrack}`);
+            this.selectedTrackLabel = this.listOfTracks.find((x) => x.track === this.selectedTrack).label;
+            this.logger.info(
+                `[AUDIO_TRACK_DEBUG] initTracks listOfTracks=${JSON.stringify(this.listOfTracks)} selectedTrack=${this.selectedTrack}`,
+            );
         }
     }
 
@@ -1987,24 +2099,26 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * In charge to handle click volume
      */
-    handleMuteUnmuteVolume(side = '') {
+    handleMuteUnmuteVolume(side = "") {
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
-        if (!mediaPlayer) { return; }
+        if (!mediaPlayer) {
+            return;
+        }
         const vol = mediaPlayer.getVolume();
-        if (side === '') {
+        if (side === "") {
             if (vol === 0) {
                 this.unmute();
             } else {
                 this.mute();
             }
         } else {
-            if (side === 'r') {
-                const oldVolumeRight = mediaPlayer.getVolume('r');
-                this.volumeRight = (oldVolumeRight === 0) ? 50 : 0;
+            if (side === "r") {
+                const oldVolumeRight = mediaPlayer.getVolume("r");
+                this.volumeRight = oldVolumeRight === 0 ? 50 : 0;
                 this.changeVolume(this.volumeRight, side);
-            } else if (side === 'l') {
-                const oldVolumeLeft = mediaPlayer.getVolume('l');
-                this.volumeLeft = (oldVolumeLeft === 0) ? 50 : 0;
+            } else if (side === "l") {
+                const oldVolumeLeft = mediaPlayer.getVolume("l");
+                this.volumeLeft = oldVolumeLeft === 0 ? 50 : 0;
                 this.changeVolume(this.volumeLeft, side);
             }
         }
@@ -2018,6 +2132,6 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         this.logger.info(`[AUDIO_TRACK_DEBUG] changeAudioTrack -> trackId=${trackId}`);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.AUDIO_CHANNEL_CHANGE, trackId);
         this.selectedTrack = trackId;
-        this.selectedTrackLabel = this.listOfTracks.find(x => x.track === this.selectedTrack).label;
+        this.selectedTrackLabel = this.listOfTracks.find((x) => x.track === this.selectedTrack).label;
     }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from "@angular/core";
 import { PluginBase } from "../../core/plugin/plugin-base";
 import { PluginConfigData } from "../../core/config/model/plugin-config-data";
 import { AnnotationConfig } from "../../core/config/model/annotation-config";
@@ -8,25 +8,29 @@ import { AnnotationLocalisation } from "../../core/metadata/model/annotation-loc
 import { PlayerEventType } from "../../core/constant/event-type";
 import { Utils } from "../../core/utils/utils";
 import sortBy from "lodash/sortBy";
-import { ConfirmationService } from "primeng/api";
+import { ConfirmationService, PrimeTemplate } from "primeng/api";
 import { FileService } from "../../service/file.service";
 import { FormatUtils } from "../../core/utils/format-utils";
 import { ToastComponent } from "../../core/toast/toast.component";
 import { SegmentComponent } from "./segment/segment.component";
-import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
-import { AnnotationsService } from 'src/app/service/annotations.service';
+import { ShortcutEvent } from "src/app/core/config/model/shortcuts-event";
+import { AnnotationsService } from "src/app/service/annotations.service";
+import { Bind } from "primeng/bind";
+import { Button } from "primeng/button";
+import { ConfirmDialog } from "primeng/confirmdialog";
+import { ProgressSpinner } from "primeng/progressspinner";
 
 export interface ExportColumnsHeader {
-    "Lien": string;
+    Lien: string;
     "ID du materiel": string;
     "ID du segment": string;
-    "Titre": string;
+    Titre: string;
     "TC Debut": string;
     "TC Fin": string;
-    "Duree": string;
-    "Mots_cles": string;
-    "Categories": string;
-    "Description": string;
+    Duree: string;
+    Mots_cles: string;
+    Categories: string;
+    Description: string;
     "Lien de l\'imagette": string;
     "Id Document": string;
     "Type Document": string;
@@ -34,31 +38,31 @@ export interface ExportColumnsHeader {
 }
 
 @Component({
-    selector: 'amalia-annotation',
-    standalone: false,
-    templateUrl: './annotation-plugin.component.html',
-    styleUrls: ['./annotation-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom
+    selector: "amalia-annotation",
+    templateUrl: "./annotation-plugin.component.html",
+    styleUrls: ["./annotation-plugin.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    imports: [Bind, Button, ToastComponent, ConfirmDialog, PrimeTemplate, ProgressSpinner, SegmentComponent],
 })
 export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnDestroy {
-    public static PLUGIN_NAME = 'ANNOTATIONS';
-    public static KARAOKE_TC_DELTA = 0.250;
+    public static PLUGIN_NAME = "ANNOTATIONS";
+    public static KARAOKE_TC_DELTA = 0.25;
 
     public segmentsInfo: AnnotationLocalisation = {
         data: {},
         tc: 0,
         tcIn: 0,
         tcOut: 0,
-        subLocalisations: []
+        subLocalisations: [],
     };
-    public tcDisplayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's';
+    public tcDisplayFormat: "h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds" = "s";
     public override fps = DEFAULT.FPS;
     public autoScroll = true;
     public segmentBeforeEdition: AnnotationLocalisation;
     public currentTime: number;
-    @ViewChild('annotationElement', { static: false })
+    @ViewChild("annotationElement", { static: false })
     public annotationElement: ElementRef<HTMLElement>;
-    @ViewChild('toast')
+    @ViewChild("toast")
     public toast: ToastComponent;
 
     availableCategories: string[] = [];
@@ -70,7 +74,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     sortAnnotations() {
         if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
-            this.segmentsInfo.subLocalisations = sortBy(this.segmentsInfo.subLocalisations, ['tcIn']);
+            this.segmentsInfo.subLocalisations = sortBy(this.segmentsInfo.subLocalisations, ["tcIn"]);
             this.cdr.detectChanges();
         }
     }
@@ -92,32 +96,38 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
      * Apply shortcut if exists on keydown
      */
     public handleShortcuts(event: ShortcutEvent) {
-        if (event.targets.find(target => target.toLowerCase() === this.pluginName.toLowerCase())) {
+        if (event.targets.find((target) => target.toLowerCase() === this.pluginName.toLowerCase())) {
             this.applyShortcut(event);
         }
     }
     applyShortcut(event: ShortcutEvent) {
-        if (event.shortcut.key === 'i'
-            && event.shortcut.ctrl !== true
-            && event.shortcut.shift !== true
-            && event.shortcut.alt !== true
-            && event.shortcut.meta !== true) {
+        if (
+            event.shortcut.key === "i" &&
+            event.shortcut.ctrl !== true &&
+            event.shortcut.shift !== true &&
+            event.shortcut.alt !== true &&
+            event.shortcut.meta !== true
+        ) {
             this.initializeNewSegment();
             return;
         }
-        if (event.shortcut.key === 'o'
-            && event.shortcut.ctrl !== true
-            && event.shortcut.shift !== true
-            && event.shortcut.alt !== true
-            && event.shortcut.meta !== true) {
+        if (
+            event.shortcut.key === "o" &&
+            event.shortcut.ctrl !== true &&
+            event.shortcut.shift !== true &&
+            event.shortcut.alt !== true &&
+            event.shortcut.meta !== true
+        ) {
             this.setTcOut();
             return;
         }
-        if (event.shortcut.key === 'd'
-            && event.shortcut.ctrl === true
-            && event.shortcut.shift !== true
-            && event.shortcut.alt !== true
-            && event.shortcut.meta !== true) {
+        if (
+            event.shortcut.key === "d" &&
+            event.shortcut.ctrl === true &&
+            event.shortcut.shift !== true &&
+            event.shortcut.alt !== true &&
+            event.shortcut.meta !== true
+        ) {
             this.downloadSegmentJsonFormat();
             return;
         }
@@ -157,7 +167,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (this.pluginConfiguration.data.link) {
             this.link = this.pluginConfiguration.data.link;
         }
-    }
+    };
 
     /**
      * In charge to load metadata
@@ -173,27 +183,32 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             this.segmentsInfo.subLocalisations = [];
             for (const metadataId of handleMetadataIds) {
                 this.logger.info(`get metadata for ${metadataId}`);
-                const annotationLocalisations = metadataManager
-                    .getAnnotationLocalisations(metadataId);
+                const annotationLocalisations = metadataManager.getAnnotationLocalisations(metadataId);
                 if (annotationLocalisations && annotationLocalisations.length > 0) {
-                    this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(annotationLocalisations.map(al => {
-                        al.data.hierarchy_technical_id = this.technical_id;
-                        al.data.media = al.media;
-                        al.data.isTitleEditing = false;
-                        al.data.isTcInEditing = false;
-                        al.data.isTcOutEditing = false;
-                        al.data.isTcEditing = false;
-                        al.data.isCategoriesEditing = false;
-                        al.data.isKeywordsEditing = false;
-                        al.data.isDescriptionEditing = false;
-                        return al;
-                    }));
-                    this.subscriptionToEventsEmitters.push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
-                        this.setSegmentsTcOffsetAndTcMax.bind(this),
-                        this.logWaitForTcOffsetComplete.bind(this),
-                        this.intervalStep,
-                        this.timeout,
-                        this.setDataLoading.bind(this)));
+                    this.segmentsInfo.subLocalisations = this.segmentsInfo.subLocalisations.concat(
+                        annotationLocalisations.map((al) => {
+                            al.data.hierarchy_technical_id = this.technical_id;
+                            al.data.media = al.media;
+                            al.data.isTitleEditing = false;
+                            al.data.isTcInEditing = false;
+                            al.data.isTcOutEditing = false;
+                            al.data.isTcEditing = false;
+                            al.data.isCategoriesEditing = false;
+                            al.data.isKeywordsEditing = false;
+                            al.data.isDescriptionEditing = false;
+                            return al;
+                        }),
+                    );
+                    this.subscriptionToEventsEmitters.push(
+                        Utils.waitFor(
+                            this.mediaPlayerElementReady.bind(this),
+                            this.setSegmentsTcOffsetAndTcMax.bind(this),
+                            this.logWaitForTcOffsetComplete.bind(this),
+                            this.intervalStep,
+                            this.timeout,
+                            this.setDataLoading.bind(this),
+                        ),
+                    );
                 }
                 // Add sort by tcin
                 this.sortAnnotations();
@@ -214,7 +229,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             name: AnnotationPluginComponent.PLUGIN_NAME,
             data: {
                 title: AnnotationPluginComponent.PLUGIN_NAME,
-                timeFormat: 'f',
+                timeFormat: "f",
                 fps: DEFAULT.FPS,
                 autoScroll: true,
                 parseLevel: 1,
@@ -222,16 +237,20 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 karaokeTcDelta: AnnotationPluginComponent.KARAOKE_TC_DELTA,
                 progressBar: false,
                 mode: 2,
-                label: 'Rechercher dans les annotations',
-                key: 'Enter',
-                labelSynchro: 'Synchronisation des annotations'
-            }
+                label: "Rechercher dans les annotations",
+                key: "Enter",
+                labelSynchro: "Synchronisation des annotations",
+            },
         };
     }
 
-    constructor(private readonly confirmationService: ConfirmationService, playerService: MediaPlayerService,
-        private readonly fileService: FileService, private readonly cdr: ChangeDetectorRef,
-        private readonly annotationsService: AnnotationsService) {
+    constructor(
+        private readonly confirmationService: ConfirmationService,
+        playerService: MediaPlayerService,
+        private readonly fileService: FileService,
+        private readonly cdr: ChangeDetectorRef,
+        private readonly annotationsService: AnnotationsService,
+    ) {
         super(playerService);
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
         this.technical_id = crypto.randomUUID();
@@ -239,14 +258,17 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public initializeNewSegment() {
-        this.subscriptionToEventsEmitters.push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
-            undefined,
-            this.initSegmentData.bind(this),
-            this.intervalStep,
-            this.timeout,
-            this.setDataLoading.bind(this)));
+        this.subscriptionToEventsEmitters.push(
+            Utils.waitFor(
+                this.mediaPlayerElementReady.bind(this),
+                undefined,
+                this.initSegmentData.bind(this),
+                this.intervalStep,
+                this.timeout,
+                this.setDataLoading.bind(this),
+            ),
+        );
     }
-
 
     public async initSegmentData() {
         if (this.mediaPlayerElementReady()) {
@@ -256,7 +278,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             tcIn = tcIn + tcOffset;
             const maxDuration = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
             const segmentToBeAdded: AnnotationLocalisation = {
-                label: '',
+                label: "",
                 data: {
                     selected: true,
                     tcMax: maxDuration,
@@ -271,33 +293,43 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     isDescriptionEditing: false,
                 },
                 tc: 0,
-                tcIn: tcIn, tcOut: tcIn, tclevel: 1, tcOffset
+                tcIn: tcIn,
+                tcOut: tcIn,
+                tclevel: 1,
+                tcOffset,
             };
 
             //Thumbnail
-            if (this.mediaPlayerElement.getMediaPlayer()?.mse?.mediaType === 'VIDEO') {
-                segmentToBeAdded.data.media = 'VIDEO';
+            if (this.mediaPlayerElement.getMediaPlayer()?.mse?.mediaType === "VIDEO") {
+                segmentToBeAdded.data.media = "VIDEO";
                 segmentToBeAdded.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
             } else {
-                segmentToBeAdded.data.media = 'AUDIO';
-                segmentToBeAdded.thumb = '/assets/amalia/images/newAudioBackGround.png';
+                segmentToBeAdded.data.media = "AUDIO";
+                segmentToBeAdded.thumb = "/assets/amalia/images/newAudioBackGround.png";
             }
 
-            segmentToBeAdded.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcOffset) * 1000;
+            segmentToBeAdded.data.tcThumbnail =
+                (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + tcOffset) * 1000;
 
             const event: any = {
-                type: 'init',
-                payload: segmentToBeAdded
+                type: "init",
+                payload: segmentToBeAdded,
             };
             this.cdr.detectChanges();
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, event);
-            this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
-                undefined, {
-                fn: this.addSegmentToSegmentsInfo.bind(this),
-                param: event
-            }, this.intervalStep,
-                10000,
-                this.setDataLoading.bind(this)));
+            this.subscriptionToEventsEmitters.push(
+                Utils.waitFor(
+                    () => event.status != undefined,
+                    undefined,
+                    {
+                        fn: this.addSegmentToSegmentsInfo.bind(this),
+                        param: event,
+                    },
+                    this.intervalStep,
+                    10000,
+                    this.setDataLoading.bind(this),
+                ),
+            );
             this.manageEventResponseStatus(event, true);
         } else {
             this.logWaitForTcOffsetComplete();
@@ -305,7 +337,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     private addSegmentToSegmentsInfo(event) {
-        if (event.status === 'success') {
+        if (event.status === "success") {
             const segment = event.payload;
             if (this.segmentsInfo.subLocalisations.length === 0) {
                 this.segmentsInfo.subLocalisations.push(event.payload);
@@ -328,23 +360,22 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     private removeSegmentFromSegmentsInfo(event) {
-        if (event.status === 'success') {
+        if (event.status === "success") {
             const indexOfSegment = this.segmentsInfo.subLocalisations.indexOf(event.payload);
             this.segmentsInfo.subLocalisations.splice(indexOfSegment, 1);
         }
-
     }
 
     public setSegmentsTcOffsetAndTcMax() {
         if (this.mediaPlayerElementReady()) {
             const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset || 0;
-            this.segmentsInfo.subLocalisations.forEach(localisation => {
+            this.segmentsInfo.subLocalisations.forEach((localisation) => {
                 localisation.tcOffset = tcOffset;
                 localisation.data.tcMax = this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset;
-                if (this.mediaPlayerElement.getMediaPlayer()?.mse?.mediaType === 'AUDIO') {
-                    localisation.thumb = '/assets/amalia/images/newAudioBackGround.png';
+                if (this.mediaPlayerElement.getMediaPlayer()?.mse?.mediaType === "AUDIO") {
+                    localisation.thumb = "/assets/amalia/images/newAudioBackGround.png";
                 }
-            })
+            });
         }
     }
 
@@ -354,17 +385,17 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             this.unselectAllSegments();
             segment.data.selected = true;
             if (segment.label !== undefined && segment.label.includes(SegmentComponent.SEGMENT_SANS_TITRE)) {
-                segment.label = '';
+                segment.label = "";
             }
         }
     }
 
     public unselectAllSegments() {
-        this.segmentsInfo?.subLocalisations?.forEach(segment => segment.data.selected = false);
+        this.segmentsInfo?.subLocalisations?.forEach((segment) => (segment.data.selected = false));
     }
 
     public saveSegment(event) {
-        if (event.status === 'success') {
+        if (event.status === "success") {
             event.payload.segment.data.selected = true;
         }
     }
@@ -381,12 +412,13 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public removeSegment(segment) {
-        console.group('removeSegment' + ' ' + Date.now());
+        console.group("removeSegment" + " " + Date.now());
 
-        const msg = (segment.label === undefined || segment.label === '') ? SegmentComponent.SEGMENT_SANS_TITRE : segment.label;
+        const msg =
+            segment.label === undefined || segment.label === "" ? SegmentComponent.SEGMENT_SANS_TITRE : segment.label;
         this.confirmationService.confirm({
             message: `Etes-vous sûr de vouloir supprimer le segment ['${msg}']`,
-            header: 'Confirmation',
+            header: "Confirmation",
             // note : pas d'icône ici — le template pTemplate="headless" du p-confirmDialog
             // ne rend pas message.icon (la propriété était sans effet).
             rejectButtonStyleClass: "p-button-text",
@@ -394,146 +426,175 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             acceptLabel: "Supprimer",
             key: this.technical_id,
             accept: () => {
-                console.group('removeSegment accept' + ' ' + Date.now());
+                console.group("removeSegment accept" + " " + Date.now());
                 this.unselectAllSegments();
                 const event: any = {
-                    type: 'remove',
-                    payload: segment
+                    type: "remove",
+                    payload: segment,
                 };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_REMOVE, event);
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
-                    undefined, {
-                    fn: this.removeSegmentFromSegmentsInfo.bind(this),
-                    param: event
-                }, this.intervalStep,
-                    10000,
-                    this.setDataLoading.bind(this)));
+                this.subscriptionToEventsEmitters.push(
+                    Utils.waitFor(
+                        () => event.status != undefined,
+                        undefined,
+                        {
+                            fn: this.removeSegmentFromSegmentsInfo.bind(this),
+                            param: event,
+                        },
+                        this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this),
+                    ),
+                );
                 this.manageEventResponseStatus(event);
                 console.groupEnd();
             },
             reject: () => {
                 //we do nothing
-            }
+            },
         });
         console.groupEnd();
     }
 
-    displayEventResponseStatus(params: { event: any, noSuccessSnackBar?: boolean }) {
+    displayEventResponseStatus(params: { event: any; noSuccessSnackBar?: boolean }) {
         const { event, noSuccessSnackBar = false } = params;
         if (event.status) {
-            (noSuccessSnackBar === false) && this.displaySnackBar(event.responseMessage, event.status);
-            if (event.status === 'success') {
+            noSuccessSnackBar === false && this.displaySnackBar(event.responseMessage, event.status);
+            if (event.status === "success") {
                 this.syncOtherAnnotationsComponents();
                 this.cdr.detectChanges();
             }
         } else {
-            this.displaySnackBar(event.type + ' delai d\'attente dépassé', event.status);
+            this.displaySnackBar(event.type + " delai d'attente dépassé", event.status);
         }
     }
 
     manageEventResponseStatus(event, noSuccessSnackBar: boolean = false) {
-        this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
-            undefined,
-            {
-                fn: this.displayEventResponseStatus.bind(this),
-                param: { event, noSuccessSnackBar }
-            }, this.intervalStep,
-            10000,
-            this.setDataLoading.bind(this)));
+        this.subscriptionToEventsEmitters.push(
+            Utils.waitFor(
+                () => event.status != undefined,
+                undefined,
+                {
+                    fn: this.displayEventResponseStatus.bind(this),
+                    param: { event, noSuccessSnackBar },
+                },
+                this.intervalStep,
+                10000,
+                this.setDataLoading.bind(this),
+            ),
+        );
     }
 
     manageSegment(event) {
         switch (event.type) {
-            case 'validate':
+            case "validate":
                 event.payload = { segment: event.payload, updatedSegment: this.segmentBeforeEdition };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
                 //après émission de l'évènement, nous attendons que son status soit renseigné avant d'appeler saveSegment
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
-                    undefined, {
-                    fn: this.saveSegment.bind(this),
-                    param: event
-                }, this.intervalStep,
-                    10000,
-                    this.setDataLoading.bind(this)));
+                this.subscriptionToEventsEmitters.push(
+                    Utils.waitFor(
+                        () => event.status != undefined,
+                        undefined,
+                        {
+                            fn: this.saveSegment.bind(this),
+                            param: event,
+                        },
+                        this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this),
+                    ),
+                );
                 //On gère ici l'affichage d'un message en réponse au status de l'évènement
                 this.manageEventResponseStatus(event, true);
                 return;
-            case 'edit':
+            case "edit":
                 this.editSegment(event.payload);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_EDITING, event);
                 return;
-            case 'cancel':
+            case "cancel":
                 this.cancelNewSegmentEdition(event.payload);
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_CANCEL_EDITING, event);
                 return;
-            case 'clone': {
-                const _event: any = {
-                    type: event.type,
-                    payload: this.cloneSegment(event.payload)
-                };
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, _event);
-                //Nous attendons un retour après l'émission de l'évènement. Quand on a un success, on ajoute le segment cloné
-                const param = { index: 0, sourceSegment: event.payload, event: _event };
-                param.index = this.segmentsInfo.subLocalisations.indexOf(event.payload) + 1;
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => _event.status === 'success',
-                    undefined, {
-                    fn: this.addSegmentAtIndex.bind(this),
-                    param
-                }, this.intervalStep,
-                    10000,
-                    this.setDataLoading.bind(this)));
-                this.manageEventResponseStatus(_event);
-            }
+            case "clone":
+                {
+                    const _event: any = {
+                        type: event.type,
+                        payload: this.cloneSegment(event.payload),
+                    };
+                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, _event);
+                    //Nous attendons un retour après l'émission de l'évènement. Quand on a un success, on ajoute le segment cloné
+                    const param = { index: 0, sourceSegment: event.payload, event: _event };
+                    param.index = this.segmentsInfo.subLocalisations.indexOf(event.payload) + 1;
+                    this.subscriptionToEventsEmitters.push(
+                        Utils.waitFor(
+                            () => _event.status === "success",
+                            undefined,
+                            {
+                                fn: this.addSegmentAtIndex.bind(this),
+                                param,
+                            },
+                            this.intervalStep,
+                            10000,
+                            this.setDataLoading.bind(this),
+                        ),
+                    );
+                    this.manageEventResponseStatus(_event);
+                }
                 return;
-            case 'remove':
+            case "remove":
                 this.removeSegment(event.payload);
                 return;
-            case 'updatethumbnail': {
+            case "updatethumbnail": {
                 const updatedSegment = structuredClone(event.payload);
-                updatedSegment.data.tcThumbnail = (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset) * 1000;
+                updatedSegment.data.tcThumbnail =
+                    (this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset) * 1000;
                 updatedSegment.thumb = this.mediaPlayerElement.getMediaPlayer().captureImage(1);
                 const segment = event.payload;
                 event.payload = { updatedSegment, segment };
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => event.status != undefined,
-                    undefined, {
-                    fn: this.updatethumbnail.bind(this),
-                    param: event
-                }, this.intervalStep,
-                    10000,
-                    this.setDataLoading.bind(this)));
+                this.subscriptionToEventsEmitters.push(
+                    Utils.waitFor(
+                        () => event.status != undefined,
+                        undefined,
+                        {
+                            fn: this.updatethumbnail.bind(this),
+                            param: event,
+                        },
+                        this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this),
+                    ),
+                );
                 this.manageEventResponseStatus(event, true);
                 return;
             }
-            case 'playMedia':
-                {
-                    const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
-                    const tcIn = event.payload.tcIn - event.payload.tcOffset;
-                    const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-                    this.mediaPlayerElement.getMediaPlayer().setCurrentTime(reverseMode ? duration - tcIn : tcIn);
-                    this.mediaPlayerElement.getMediaPlayer().play();
-                    return;
-                }
-            case 'muteShortCuts':
-                {
-                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_MUTE);
-                    return;
-                }
-            case 'unmuteShortCuts':
-                {
-                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_UNMUTE);
-                    return;
-                }
-            case 'openNotilusMaterial':
-                {
-                    this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.OPEN_NOTILUS_MATERIAL, event);
-                    return;
-                }
+            case "playMedia": {
+                const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
+                const tcIn = event.payload.tcIn - event.payload.tcOffset;
+                const duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+                this.mediaPlayerElement.getMediaPlayer().setCurrentTime(reverseMode ? duration - tcIn : tcIn);
+                this.mediaPlayerElement.getMediaPlayer().play();
+                return;
+            }
+            case "muteShortCuts": {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_MUTE);
+                return;
+            }
+            case "unmuteShortCuts": {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_UNMUTE);
+                return;
+            }
+            case "openNotilusMaterial": {
+                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.OPEN_NOTILUS_MATERIAL, event);
+                return;
+            }
         }
     }
 
     syncOtherAnnotationsComponents() {
-        const otherAnnotations: AnnotationPluginComponent[] = Array.from(this.annotationsService.getAnnotations()).filter(annotation => annotation !== this);
+        const otherAnnotations: AnnotationPluginComponent[] = Array.from(
+            this.annotationsService.getAnnotations(),
+        ).filter((annotation) => annotation !== this);
         for (const annotation of otherAnnotations) {
             annotation.setDataLoading(true);
         }
@@ -550,19 +611,23 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     annotation.setDataLoading(false);
                     annotation.cdr.detectChanges();
                 }
-            });
+            },
+        );
     }
 
     private cloneSegment(sourceSegment: AnnotationLocalisation): AnnotationLocalisation {
         const newSegmentCopy = structuredClone(sourceSegment);
         newSegmentCopy.data.selected = true;
-        newSegmentCopy.label = (sourceSegment.label === '' || sourceSegment.label === undefined) ? `Copie de ${SegmentComponent.SEGMENT_SANS_TITRE}` : 'Copie de ' + sourceSegment.label;
+        newSegmentCopy.label =
+            sourceSegment.label === "" || sourceSegment.label === undefined
+                ? `Copie de ${SegmentComponent.SEGMENT_SANS_TITRE}`
+                : "Copie de " + sourceSegment.label;
         newSegmentCopy.id = undefined;
         return newSegmentCopy;
     }
 
     private addSegmentAtIndex(param: { index: number; sourceSegment: AnnotationLocalisation; event: any }) {
-        if (param.event.status === 'success') {
+        if (param.event.status === "success") {
             this.segmentsInfo.subLocalisations.splice(param.index, 0, param.event.payload);
             param.sourceSegment.data.selected = false;
             this.cdr.detectChanges();
@@ -581,7 +646,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public setTcInFn(event: any) {
-        if (event.status === 'success') {
+        if (event.status === "success") {
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tcIn = event.payload.updatedSegment.tcIn;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
@@ -589,7 +654,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     public setTcIn() {
-        const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
+        const selectedSegment = this.segmentsInfo.subLocalisations.find((seg) => seg.data.selected);
         if (selectedSegment) {
             const updatedSegment = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
@@ -602,82 +667,93 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 updatedSegment.tcIn = mediaTc;
                 this.setTc(updatedSegment);
                 const event: any = {
-                    type: 'setTcIn',
-                    payload: { updatedSegment, segment: selectedSegment }
+                    type: "setTcIn",
+                    payload: { updatedSegment, segment: selectedSegment },
                 };
 
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined),
-                    undefined,
-                    {
-                        fn: this.setTcInFn.bind(this),
-                        param: event
-                    }, this.intervalStep,
-                    10000,
-                    this.setDataLoading.bind(this)));
+                this.subscriptionToEventsEmitters.push(
+                    Utils.waitFor(
+                        () => event.status != undefined,
+                        undefined,
+                        {
+                            fn: this.setTcInFn.bind(this),
+                            param: event,
+                        },
+                        this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this),
+                    ),
+                );
                 this.manageEventResponseStatus(event, true);
-
             } else {
-                this.displaySnackBar('le TC Début doit être compris entre le TC Début et le TC OUT de l\'intégral');
+                this.displaySnackBar("le TC Début doit être compris entre le TC Début et le TC OUT de l'intégral");
             }
         }
     }
 
     public setTcOutFn(event: any) {
-        if (event.status === 'success') {
+        if (event.status === "success") {
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
         }
     }
 
     public setTcOut() {
-        const selectedSegment = this.segmentsInfo.subLocalisations.find(seg => seg.data.selected);
+        const selectedSegment = this.segmentsInfo.subLocalisations.find((seg) => seg.data.selected);
         const maxTcOut = this.mediaPlayerElement.getMediaPlayer().getDuration() + this.tcOffset;
         if (selectedSegment) {
             const updatedSegment = structuredClone(selectedSegment);
             const mediaTc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime() + this.tcOffset;
             if (mediaTc < selectedSegment.tcIn || mediaTc > maxTcOut) {
-                this.displaySnackBar('Le TC Fin doit être supérieur au TC Début et compris entre le TC Début et le TC Fin du fichier intégral');
+                this.displaySnackBar(
+                    "Le TC Fin doit être supérieur au TC Début et compris entre le TC Début et le TC Fin du fichier intégral",
+                );
             } else {
                 //set tcOut
                 updatedSegment.tcOut = mediaTc;
                 //set tc
                 this.setTc(updatedSegment);
                 const event: any = {
-                    type: 'setTcOut',
-                    payload: { updatedSegment, segment: selectedSegment }
+                    type: "setTcOut",
+                    payload: { updatedSegment, segment: selectedSegment },
                 };
 
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_UPDATE, event);
-                this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (event.status != undefined),
-                    undefined, {
-                    fn: this.setTcOutFn.bind(this),
-                    param: event
-                }, this.intervalStep,
-                    10000,
-                    this.setDataLoading.bind(this)));
+                this.subscriptionToEventsEmitters.push(
+                    Utils.waitFor(
+                        () => event.status != undefined,
+                        undefined,
+                        {
+                            fn: this.setTcOutFn.bind(this),
+                            param: event,
+                        },
+                        this.intervalStep,
+                        10000,
+                        this.setDataLoading.bind(this),
+                    ),
+                );
                 this.manageEventResponseStatus(event, true);
             }
         }
-
     }
 
     private getFileName = (extension?) => {
-        const assetIdParts = this.assetId.split(':');
-        let currentDateTime = new Date().toISOString().replaceAll(':', '');
-        currentDateTime = currentDateTime.replaceAll('Z', '');
-        currentDateTime = currentDateTime.replaceAll('.', 'Z');
-        currentDateTime = currentDateTime.replaceAll('-', '');
-        if (this.assetId.search('stock') != -1) {
-            return `${assetIdParts[1]}_${currentDateTime}${extension ?? ''}`;
+        const assetIdParts = this.assetId.split(":");
+        let currentDateTime = new Date().toISOString().replaceAll(":", "");
+        currentDateTime = currentDateTime.replaceAll("Z", "");
+        currentDateTime = currentDateTime.replaceAll(".", "Z");
+        currentDateTime = currentDateTime.replaceAll("-", "");
+        if (this.assetId.search("stock") != -1) {
+            return `${assetIdParts[1]}_${currentDateTime}${extension ?? ""}`;
         } else {
-            return `${assetIdParts[2]}_${assetIdParts[3]}_${currentDateTime}${extension ?? ''}`;
+            return `${assetIdParts[2]}_${assetIdParts[3]}_${currentDateTime}${extension ?? ""}`;
         }
-    }
+    };
 
     public downloadSegmentJsonFormat() {
         const textFileContent = JSON.stringify(this.getJsonDataFromAnnotations());
-        let fileName = this.getFileName('.json');
+        let fileName = this.getFileName(".json");
         this.fileService.downloadFile(textFileContent, fileName);
     }
 
@@ -688,79 +764,91 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     }
 
     getJsonDataFromAnnotations = (): ExportColumnsHeader[] => {
-        return this.segmentsInfo.subLocalisations.map(localisation => {
+        return this.segmentsInfo.subLocalisations.map((localisation) => {
             let tcThumbnail = localisation.data.tcThumbnail - localisation.tcOffset * 1000;
             tcThumbnail = parseFloat((tcThumbnail / 1000).toFixed(9));
             const row: any = {
-                "Lien": this.link,
+                Lien: this.link,
                 "ID du materiel": this.assetId,
                 "ID du segment": localisation.id,
-                "Titre": localisation.label,
+                Titre: localisation.label,
                 "TC Debut": FormatUtils.formatTime(localisation.tcIn, this.tcDisplayFormat, this.fps),
                 "TC Fin": FormatUtils.formatTime(localisation.tcOut, this.tcDisplayFormat, this.fps),
-                "Duree": FormatUtils.formatTime(localisation.tc, this.tcDisplayFormat, this.fps),
-                "Mots_cles": localisation.property?.filter(value => value.key === 'keyword').map(value => value.value).join('; '),
-                "Categories": localisation.property?.filter(value => value.key === 'category').map(value => value.value).join('; '),
-                "Description": localisation.description,
+                Duree: FormatUtils.formatTime(localisation.tc, this.tcDisplayFormat, this.fps),
+                Mots_cles: localisation.property
+                    ?.filter((value) => value.key === "keyword")
+                    .map((value) => value.value)
+                    .join("; "),
+                Categories: localisation.property
+                    ?.filter((value) => value.key === "category")
+                    .map((value) => value.value)
+                    .join("; "),
+                Description: localisation.description,
                 "Lien de l\'imagette": this.mediaPlayerElement?.getThumbnailUrl(tcThumbnail, true),
                 "Id Document": localisation.data.idDocument,
                 "Type Document": localisation.data.typeDocument,
                 "Titre de l'instance": localisation.data.instanceTitle,
             };
             return row;
-        }
-        );
-    }
+        });
+    };
 
     public saveSegments() {
-        this.segmentsInfo.data.itemBusinessIdentifier = '';
-        this.segmentsInfo.data.creationUser = '';
-        this.segmentsInfo.data.lastModificationUser = '';
+        this.segmentsInfo.data.itemBusinessIdentifier = "";
+        this.segmentsInfo.data.creationUser = "";
+        this.segmentsInfo.data.lastModificationUser = "";
     }
 
-    public displaySnackBar(msgContent, severity?: 'error' | 'success' | 'warn' | 'info' | 'contrast' | 'secondary', life?: number) {
-        const _severity = severity ? severity : 'error';
+    public displaySnackBar(
+        msgContent,
+        severity?: "error" | "success" | "warn" | "info" | "contrast" | "secondary",
+        life?: number,
+    ) {
+        const _severity = severity ? severity : "error";
 
         this.toast.addMessage({
             severity: _severity,
             summary: undefined,
             detail: msgContent,
-            key: 'br',
+            key: "br",
             life: life ?? 5000,
-            data: { progress: 0 }
+            data: { progress: 0 },
         });
     }
 
     public updatethumbnail(event: any) {
-        if (event.status === 'success') {
+        if (event.status === "success") {
             this.unselectAllSegments();
             event.payload.segment.data.selected = true;
             event.payload.segment.data.tcThumbnail = event.payload.updatedSegment.data.tcThumbnail;
             event.payload.segment.thumb = event.payload.updatedSegment.thumb;
         }
-
     }
 
     private scrollToNode() {
-        const scrollNode: HTMLElement = this.annotationElement.nativeElement
-            .querySelector('.segment-selected');
+        const scrollNode: HTMLElement = this.annotationElement.nativeElement.querySelector(".segment-selected");
         if (scrollNode) {
             scrollNode.scrollIntoView({ behavior: "smooth", block: "center" });
             this.cdr.detectChanges();
         }
-        const pluginTitle = document.querySelector('.plugin-title');
+        const pluginTitle = document.querySelector(".plugin-title");
         if (pluginTitle) {
             pluginTitle.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     }
 
     private scroll() {
-        this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (this.annotationElement.nativeElement
-            .querySelector('.segment-selected') !== null && this.annotationElement.nativeElement
-                .querySelector('.segment-selected') != undefined),
-            undefined,
-            this.scrollToNode.bind(this),
-            this.intervalStep, 100));
+        this.subscriptionToEventsEmitters.push(
+            Utils.waitFor(
+                () =>
+                    this.annotationElement.nativeElement.querySelector(".segment-selected") !== null &&
+                    this.annotationElement.nativeElement.querySelector(".segment-selected") != undefined,
+                undefined,
+                this.scrollToNode.bind(this),
+                this.intervalStep,
+                100,
+            ),
+        );
     }
 
     override ngOnDestroy(): void {

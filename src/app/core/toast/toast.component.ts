@@ -1,16 +1,20 @@
-import {ChangeDetectorRef, Component, Input} from '@angular/core';
-import {MessageService} from "primeng/api";
+import { ChangeDetectorRef, Component, Input } from "@angular/core";
+import { MessageService, PrimeTemplate } from "primeng/api";
+import { Bind } from "primeng/bind";
+import { Toast } from "primeng/toast";
+import { ProgressBar } from "primeng/progressbar";
 
 @Component({
-    selector: 'amalia-toast',
-    standalone: false,
-    templateUrl: './toast.component.html',
-    styleUrl: './toast.component.scss'
+    selector: "amalia-toast",
+    templateUrl: "./toast.component.html",
+    styleUrl: "./toast.component.scss",
+    imports: [Bind, Toast, PrimeTemplate, ProgressBar],
 })
 export class ToastComponent {
-
-    constructor(private cdr: ChangeDetectorRef, private messageService: MessageService) {
-    }
+    constructor(
+        private cdr: ChangeDetectorRef,
+        private messageService: MessageService,
+    ) {}
 
     @Input()
     key: string;
@@ -27,7 +31,7 @@ export class ToastComponent {
     }
 
     updateProgress(msg: any) {
-        msg.data = {progress: 0};
+        msg.data = { progress: 0 };
         const life = msg.life ? msg.life : 5000;
         if (life >= 3500) {
             setTimeout(() => {
@@ -42,7 +46,6 @@ export class ToastComponent {
                     clearInterval(interval);
                 }
             }, period);
-
         } else {
             msg.data.progress = 50;
             this.cdr.markForCheck();
@@ -55,5 +58,4 @@ export class ToastComponent {
             this.onConfirm();
         }, life);
     }
-
 }

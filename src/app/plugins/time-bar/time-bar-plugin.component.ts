@@ -1,20 +1,22 @@
-import { PluginBase } from '../../core/plugin/plugin-base';
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { PlayerEventType } from '../../core/constant/event-type';
-import { TimeBarConfig } from '../../core/config/model/time-bar-config';
-import { PluginConfigData } from '../../core/config/model/plugin-config-data';
-import { DEFAULT } from '../../core/constant/default';
-import { LABEL } from '../../core/constant/labels';
-import { MediaPlayerService } from '../../service/media-player-service';
-import { Utils } from 'src/app/core/utils/utils';
-import { FormatUtils } from 'src/app/core/utils/format-utils';
+import { PluginBase } from "../../core/plugin/plugin-base";
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
+import { PlayerEventType } from "../../core/constant/event-type";
+import { TimeBarConfig } from "../../core/config/model/time-bar-config";
+import { PluginConfigData } from "../../core/config/model/plugin-config-data";
+import { DEFAULT } from "../../core/constant/default";
+import { LABEL } from "../../core/constant/labels";
+import { MediaPlayerService } from "../../service/media-player-service";
+import { Utils } from "src/app/core/utils/utils";
+import { FormatUtils } from "src/app/core/utils/format-utils";
+import { NgClass } from "@angular/common";
+import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
 
 @Component({
-    selector: 'amalia-time-bar',
-    standalone: false,
-    templateUrl: './time-bar-plugin.component.html',
-    styleUrls: ['./time-bar-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom
+    selector: "amalia-time-bar",
+    templateUrl: "./time-bar-plugin.component.html",
+    styleUrls: ["./time-bar-plugin.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    imports: [NgClass, TcFormatPipe],
 })
 export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements OnInit {
     @ViewChild("tooltip")
@@ -23,7 +25,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     @ViewChild("tooltip2")
     tooltip2: ElementRef<HTMLDivElement>;
 
-    public static PLUGIN_NAME = 'TIME_BAR';
+    public static PLUGIN_NAME = "TIME_BAR";
     /**
      * Return  current time
      */
@@ -41,7 +43,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * Display format specifier h|m|s|f|ms|mms
      */
-    public displayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 'f';
+    public displayFormat: "h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds" = "f";
     /**
      * Media fps
      */
@@ -67,7 +69,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * theme
      */
-    public theme: 'inside' | 'outside';
+    public theme: "inside" | "outside";
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -78,14 +80,13 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
         super.ngOnInit();
     }
 
-
     override init() {
         super.init();
         this.handleDisplayState();
         this.theme = this.pluginConfiguration.data.theme;
         this.timeFormat = this.pluginConfiguration.data.timeFormat;
-        this.displayFormat = (this.timeFormat) ? this.timeFormat : this.getDefaultConfig().data.timeFormat;
-        if (this.pluginConfiguration.data.timeFormat === 'hours') {
+        this.displayFormat = this.timeFormat ? this.timeFormat : this.getDefaultConfig().data.timeFormat;
+        if (this.pluginConfiguration.data.timeFormat === "hours") {
             this.labelTcIn = LABEL.START_HOUR;
             this.labelTcOut = LABEL.END_HOUR;
         } else {
@@ -93,10 +94,22 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
             this.labelTcOut = LABEL.END_TC;
         }
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        if (this.theme === 'inside') {
-            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_LEAVE, this.hideTimeBar);
-            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_MOUSE_ENTER, this.showTimeBar);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.DURATION_CHANGE,
+            this.handleOnDurationChange,
+        );
+        if (this.theme === "inside") {
+            this.addListener(
+                this.mediaPlayerElement.eventEmitter,
+                PlayerEventType.PLAYER_MOUSE_LEAVE,
+                this.hideTimeBar,
+            );
+            this.addListener(
+                this.mediaPlayerElement.eventEmitter,
+                PlayerEventType.PLAYER_MOUSE_ENTER,
+                this.showTimeBar,
+            );
         }
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleDisplayState);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleOnSeeking);
@@ -115,7 +128,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     }
 
     public showTimeBar() {
-        if (this.displayState !== 's' && this.displayState !== 'xs') {
+        if (this.displayState !== "s" && this.displayState !== "xs") {
             this.active = true;
         } else {
             this.active = false;
@@ -126,7 +139,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
      * Return default config
      */
     getDefaultConfig(): PluginConfigData<TimeBarConfig> {
-        return { name: TimeBarPluginComponent.PLUGIN_NAME, data: { timeFormat: 'f', theme: 'outside' } };
+        return { name: TimeBarPluginComponent.PLUGIN_NAME, data: { timeFormat: "f", theme: "outside" } };
     }
 
     /**
@@ -136,8 +149,12 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
 
     public handleOnTimeChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
-        this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
+        this.timeTimeBar = tcOffset
+            ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime()
+            : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc
+            ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc
+            : this.timeTimeBar;
     }
 
     /**
@@ -146,28 +163,39 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
 
     public handleOnDurationChange() {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
-        this.startTc = (tcOffset) ? tcOffset : 0;
-        this.startTc = this.pluginConfiguration?.data?.first_tc ? this.startTc + this.pluginConfiguration?.data?.first_tc : this.startTc;
-        this.timeTimeBar = (tcOffset) ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime() : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
-        this.durationTimeBar = (tcOffset) ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset : this.mediaPlayerElement.getMediaPlayer().getDuration();
-        this.durationTimeBar = this.pluginConfiguration?.data?.first_tc ? this.durationTimeBar + this.pluginConfiguration?.data?.first_tc : this.durationTimeBar;
+        this.startTc = tcOffset ? tcOffset : 0;
+        this.startTc = this.pluginConfiguration?.data?.first_tc
+            ? this.startTc + this.pluginConfiguration?.data?.first_tc
+            : this.startTc;
+        this.timeTimeBar = tcOffset
+            ? tcOffset + this.mediaPlayerElement.getMediaPlayer().getCurrentTime()
+            : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc
+            ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc
+            : this.timeTimeBar;
+        this.durationTimeBar = tcOffset
+            ? this.mediaPlayerElement.getMediaPlayer().getDuration() + tcOffset
+            : this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.durationTimeBar = this.pluginConfiguration?.data?.first_tc
+            ? this.durationTimeBar + this.pluginConfiguration?.data?.first_tc
+            : this.durationTimeBar;
     }
 
     public handleOnSeeking(time: number) {
         const tcOffset = this.mediaPlayerElement.getConfiguration().tcOffset;
-        this.timeTimeBar = (tcOffset) ? tcOffset + time : time;
-        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc : this.timeTimeBar;
-
+        this.timeTimeBar = tcOffset ? tcOffset + time : time;
+        this.timeTimeBar = this.pluginConfiguration?.data?.first_tc
+            ? this.timeTimeBar + this.pluginConfiguration?.data?.first_tc
+            : this.timeTimeBar;
     }
 
     copyToClipBoard(tc: number, event: Event) {
-        const text = FormatUtils.formatTime(tc, 'f', this.fps);
+        const text = FormatUtils.formatTime(tc, "f", this.fps);
         const mouseEvent = event as MouseEvent;
         Utils.copyToClipBoard(text, this.tooltip?.nativeElement, mouseEvent.clientX, mouseEvent.clientY);
     }
     copyAllToClipBoard(tc: number, event: Event) {
-        const text = FormatUtils.formatTime(tc, 'f', this.fps);
+        const text = FormatUtils.formatTime(tc, "f", this.fps);
         const mouseEvent = event as MouseEvent;
         Utils.copyToClipBoard(text, this.tooltip2?.nativeElement, mouseEvent.clientX, mouseEvent.clientY);
     }

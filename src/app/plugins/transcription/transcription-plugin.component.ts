@@ -1,56 +1,63 @@
-import { PluginBase } from '../../core/plugin/plugin-base';
-import { AfterViewInit, Component, ElementRef, PipeTransform, ViewChild, ViewEncapsulation } from '@angular/core';
-import { PlayerEventType } from '../../core/constant/event-type';
-import { PluginConfigData } from '../../core/config/model/plugin-config-data';
-import { TranscriptionConfig } from '../../core/config/model/transcription-config';
-import { Utils } from '../../core/utils/utils';
-import { TranscriptionLocalisation } from '../../core/metadata/model/transcription-localisation';
-import { DEFAULT } from '../../core/constant/default';
-import { TextUtils } from '../../core/utils/text-utils';
-import { MediaPlayerService } from '../../service/media-player-service';
-import sortBy from 'lodash/sortBy';
-import { FormatUtils } from '../../core/utils/format-utils';
+import { PluginBase } from "../../core/plugin/plugin-base";
+import { AfterViewInit, Component, ElementRef, PipeTransform, ViewChild, ViewEncapsulation } from "@angular/core";
+import { PlayerEventType } from "../../core/constant/event-type";
+import { PluginConfigData } from "../../core/config/model/plugin-config-data";
+import { TranscriptionConfig } from "../../core/config/model/transcription-config";
+import { Utils } from "../../core/utils/utils";
+import { TranscriptionLocalisation } from "../../core/metadata/model/transcription-localisation";
+import { DEFAULT } from "../../core/constant/default";
+import { TextUtils } from "../../core/utils/text-utils";
+import { MediaPlayerService } from "../../service/media-player-service";
+import sortBy from "lodash/sortBy";
+import { FormatUtils } from "../../core/utils/format-utils";
 import { DefaultLogger } from "../../core/logger/default-logger";
-import { ToastComponent } from 'src/app/core/toast/toast.component';
+import { ToastComponent } from "src/app/core/toast/toast.component";
+import { NgClass } from "@angular/common";
+import { Tooltip } from "primeng/tooltip";
+import { TcFormatPipe as TcFormatPipe_1 } from "../../core/utils/tc-format.pipe";
+import { SanitizeHtmlPipe } from "../../core/utils/sanitize-html.pipe";
 
 export class TcFormatPipe implements PipeTransform {
-    transform(tc: number, format: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = null, defaultFps: number = 25) {
+    transform(
+        tc: number,
+        format: "h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds" = null,
+        defaultFps: number = 25,
+    ) {
         return FormatUtils.formatTime(tc, format, defaultFps);
     }
 }
 
 @Component({
-    selector: 'amalia-transcription',
-    standalone: false,
-    templateUrl: './transcription-plugin.component.html',
-    styleUrls: ['./transcription-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom
+    selector: "amalia-transcription",
+    templateUrl: "./transcription-plugin.component.html",
+    styleUrls: ["./transcription-plugin.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    imports: [NgClass, Tooltip, ToastComponent, TcFormatPipe_1, SanitizeHtmlPipe],
 })
 export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements AfterViewInit {
-
-    public static PLUGIN_NAME = 'TRANSCRIPTION';
-    public static KARAOKE_TC_DELTA = 0.250;
+    public static PLUGIN_NAME = "TRANSCRIPTION";
+    public static KARAOKE_TC_DELTA = 0.25;
     public static AUTO_SYNC_DELAY = 8000;
-    public static SELECTOR_SEGMENT = 'segment';
-    public static SELECTOR_SUBSEGMENT = 'subsegment';
-    public static SELECTOR_WORD = 'w';
-    public static SEARCH_SELECTOR = 'selected-text';
-    public static SEARCH_FOUNDED = 'founded-text';
-    public static SELECTOR_SELECTED = 'selected';
-    public static SELECTOR_ACTIVATED = 'activated';
-    public static SELECTOR_PROGRESS_BAR = '.progress-bar';
-    public static BACKSPACE_KEY = 'Backspace';
-    public static SELECTOR_NAMED_ENTITY = 'named-entity';
-    public tcDisplayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's';
+    public static SELECTOR_SEGMENT = "segment";
+    public static SELECTOR_SUBSEGMENT = "subsegment";
+    public static SELECTOR_WORD = "w";
+    public static SEARCH_SELECTOR = "selected-text";
+    public static SEARCH_FOUNDED = "founded-text";
+    public static SELECTOR_SELECTED = "selected";
+    public static SELECTOR_ACTIVATED = "activated";
+    public static SELECTOR_PROGRESS_BAR = ".progress-bar";
+    public static BACKSPACE_KEY = "Backspace";
+    public static SELECTOR_NAMED_ENTITY = "named-entity";
+    public tcDisplayFormat: "h" | "m" | "s" | "minutes" | "f" | "ms" | "mms" | "hours" | "seconds" = "s";
     public override fps = DEFAULT.FPS;
     public autoScroll = false;
     public active = false;
     public ignoreNextScroll = false;
-    @ViewChild('transcriptionElement', { static: false })
+    @ViewChild("transcriptionElement", { static: false })
     public transcriptionElement: ElementRef<HTMLElement>;
-    @ViewChild('header', { static: false })
+    @ViewChild("header", { static: false })
     public headerElement: ElementRef<HTMLElement>;
-    @ViewChild('searchText')
+    @ViewChild("searchText")
     public searchText: ElementRef;
     public searching = false;
     public typing = false;
@@ -67,13 +74,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private lastSegmentTcIn: number | null = null;
     private lastSegmentTcOut: number | null = null;
     private _inGap: boolean = false;
-    private prevSearchValue = '';
+    private prevSearchValue = "";
     public tcFormatPipe = new TcFormatPipe();
     override logger: DefaultLogger;
 
-    @ViewChild('messages') messagesComponent!: ToastComponent;
+    @ViewChild("messages") messagesComponent!: ToastComponent;
 
-    public resourceType: 'stock' | 'flux';
+    public resourceType: "stock" | "flux";
     automaticallyScrolled: boolean = false;
     private autoSyncTimer: ReturnType<typeof setTimeout> | null = null;
     private isAutoScrolling = false;
@@ -90,12 +97,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        if (this.mediaPlayerElement && this.mediaPlayerElement.getConfiguration() && this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
+        if (
+            this.mediaPlayerElement &&
+            this.mediaPlayerElement.getConfiguration() &&
+            this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand
+        ) {
             this.init();
             this.handleMetadataLoaded();
         }
     }
-
 
     override init() {
         super.init();
@@ -106,13 +116,21 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             if (this.pluginConfiguration.data.autoScroll) {
                 this.autoScroll = true;
-                this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+                this.addListener(
+                    this.mediaPlayerElement.eventEmitter,
+                    PlayerEventType.TIME_CHANGE,
+                    this.handleOnTimeChange,
+                );
             }
         }
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTranscription();
         }
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.METADATA_LOADED,
+            this.handleMetadataLoaded,
+        );
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeekedEvent);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeekingEvent);
     }
@@ -129,25 +147,23 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset;
         const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
         const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
-        const copiedText = '[' + tcIn + '][' + tcOut + ']\n\n' + TextUtils.formatCopiedText(localisation.text);
-        window.navigator.clipboard.writeText(copiedText).then(
-            () => {
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, localisation);
-            }
-        );
+        const copiedText = "[" + tcIn + "][" + tcOut + "]\n\n" + TextUtils.formatCopiedText(localisation.text);
+        window.navigator.clipboard.writeText(copiedText).then(() => {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, localisation);
+        });
     }
     copyAll() {
         const tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset;
-        const copiedText = this.transcriptions.map((localisation) => {
-            const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
-            const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
-            return '[' + tcIn + '][' + tcOut + ']\n' + TextUtils.formatCopiedText(localisation.text);
-        }).join('\n\n');
-        window.navigator.clipboard.writeText(copiedText).then(
-            () => {
-                this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, copiedText);
-            }
-        );
+        const copiedText = this.transcriptions
+            .map((localisation) => {
+                const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
+                const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
+                return "[" + tcIn + "][" + tcOut + "]\n" + TextUtils.formatCopiedText(localisation.text);
+            })
+            .join("\n\n");
+        window.navigator.clipboard.writeText(copiedText).then(() => {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_COPY_BOARD, copiedText);
+        });
     }
 
     /**
@@ -157,7 +173,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         return {
             name: TranscriptionPluginComponent.PLUGIN_NAME,
             data: {
-                timeFormat: 's',
+                timeFormat: "s",
                 fps: DEFAULT.FPS,
                 autoScroll: true,
                 parseLevel: 1,
@@ -165,10 +181,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 karaokeTcDelta: TranscriptionPluginComponent.KARAOKE_TC_DELTA,
                 progressBar: false,
                 mode: 2,
-                label: 'Rechercher dans la transcription',
-                key: 'Enter',
-                labelSynchro: 'Synchronisation de la transcription'
-            }
+                label: "Rechercher dans la transcription",
+                key: "Enter",
+                labelSynchro: "Synchronisation de la transcription",
+            },
         };
     }
 
@@ -178,16 +194,20 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     public seekToWord(e: MouseEvent): void {
         const element = e.target as HTMLElement;
-        const tcIn = Number.parseFloat(element.getAttribute('data-tcin'));
+        const tcIn = Number.parseFloat(element.getAttribute("data-tcin"));
         if (tcIn) {
             let seekTc;
-            if (this.pluginConfiguration.data.resourceType === 'stock' && this.pluginConfiguration?.data?.tcIn > 0) {
-                seekTc = this.pluginConfiguration.data.tcDelta ? tcIn - this.pluginConfiguration.data.tcDelta - this.pluginConfiguration.data.tcIn : tcIn - this.pluginConfiguration.data.tcIn;
+            if (this.pluginConfiguration.data.resourceType === "stock" && this.pluginConfiguration?.data?.tcIn > 0) {
+                seekTc = this.pluginConfiguration.data.tcDelta
+                    ? tcIn - this.pluginConfiguration.data.tcDelta - this.pluginConfiguration.data.tcIn
+                    : tcIn - this.pluginConfiguration.data.tcIn;
             } else {
                 seekTc = this.pluginConfiguration.data.tcDelta ? tcIn - this.pluginConfiguration.data.tcDelta : tcIn;
             }
             const reverseMode = this.mediaPlayerElement.getMediaPlayer().reverseMode;
-            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(reverseMode ? this.mediaPlayerElement.getMediaPlayer().getDuration() - seekTc : seekTc);
+            this.mediaPlayerElement
+                .getMediaPlayer()
+                .setCurrentTime(reverseMode ? this.mediaPlayerElement.getMediaPlayer().getDuration() - seekTc : seekTc);
             this.scroll();
         }
     }
@@ -212,13 +232,18 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     private handleOnTimeChange(seekingTime?: number) {
         const tcIn = this.pluginConfiguration?.data?.tcIn;
-        const rawTime = seekingTime !== undefined ? seekingTime : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        const rawTime =
+            seekingTime !== undefined ? seekingTime : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.currentTime = tcIn > 0 ? rawTime + tcIn : rawTime;
         if (Number.isFinite(this.currentTime) && this.transcriptionElement) {
-            const karaokeTcDelta = this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
-            if (this.lastSegmentTcIn !== null && this.lastSegmentTcOut !== null
-                && this.currentTime >= this.lastSegmentTcIn - karaokeTcDelta
-                && this.currentTime < this.lastSegmentTcOut) {
+            const karaokeTcDelta =
+                this.pluginConfiguration.data?.karaokeTcDelta || TranscriptionPluginComponent.KARAOKE_TC_DELTA;
+            if (
+                this.lastSegmentTcIn !== null &&
+                this.lastSegmentTcOut !== null &&
+                this.currentTime >= this.lastSegmentTcIn - karaokeTcDelta &&
+                this.currentTime < this.lastSegmentTcOut
+            ) {
                 if (this.pluginConfiguration.data.mode !== 1 && this.pluginConfiguration.data.withSubLocalisations) {
                     this.disableSelectedWords();
                     this.selectWords(karaokeTcDelta);
@@ -250,7 +275,11 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         }
         if (this.searching === true) {
             this.searching = false;
-            Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
+            Array.from(
+                this.transcriptionElement.nativeElement.querySelectorAll(
+                    `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
+                ),
+            ).forEach((node) => {
                 node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
             });
         }
@@ -260,10 +289,13 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      *  disabled selected words on rewinding
      */
     private disableSelectedWords() {
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            });
+        Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll(
+                `.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`,
+            ),
+        ).forEach((node) => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+        });
     }
 
     /**
@@ -271,15 +303,21 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private disableRemoveSelectedSegment() {
         // remove selected segment
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            });
+        Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll(
+                `.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`,
+            ),
+        ).forEach((node) => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+        });
         // Remove activated world
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`))
-            .forEach(node => {
-                node.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
-            });
+        Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll(
+                `.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_ACTIVATED}`,
+            ),
+        ).forEach((node) => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
+        });
     }
 
     /**
@@ -287,17 +325,23 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private disableRemoveAllSelectedNodes() {
         // remove selected word
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
-                if (!node.parentElement.parentElement.classList.contains(TranscriptionPluginComponent.SELECTOR_SELECTED)) {
-                    node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                }
-            });
-        // remove selected segment
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`))
-            .forEach(node => {
+        Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll(
+                `.${TranscriptionPluginComponent.SELECTOR_WORD}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`,
+            ),
+        ).forEach((node) => {
+            if (!node.parentElement.parentElement.classList.contains(TranscriptionPluginComponent.SELECTOR_SELECTED)) {
                 node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-            });
+            }
+        });
+        // remove selected segment
+        Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll(
+                `.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`,
+            ),
+        ).forEach((node) => {
+            node.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+        });
     }
 
     /**
@@ -305,8 +349,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * @param karaokeTcDelta time code delta
      */
     private selectWords(karaokeTcDelta: number) {
-        const node = this.transcriptionElement.nativeElement.querySelector('.segment.selected');
-        const elementNodes = node ? Array.from(node.querySelectorAll<HTMLElement>('.w')) : [];
+        const node = this.transcriptionElement.nativeElement.querySelector(".segment.selected");
+        const elementNodes = node ? Array.from(node.querySelectorAll<HTMLElement>(".w")) : [];
         const filteredNodes = this.handleModeTranscription(elementNodes, karaokeTcDelta);
         if (filteredNodes.length > 0) {
             this.handleSelectedWordsStyle(filteredNodes, karaokeTcDelta);
@@ -319,12 +363,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private handleModeTranscription(elementNodes, karaokeTcDelta) {
         let filteredNodes;
         if (this.pluginConfiguration.data.mode === 1) {
-            filteredNodes = elementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime <= parseFloat(node.getAttribute('data-tcout')));
+            filteredNodes = elementNodes.filter(
+                (node) =>
+                    this.currentTime >= parseFloat(node.getAttribute("data-tcin")) - karaokeTcDelta &&
+                    this.currentTime <= parseFloat(node.getAttribute("data-tcout")),
+            );
         } else {
-            filteredNodes = elementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta);
+            filteredNodes = elementNodes.filter(
+                (node) => this.currentTime >= parseFloat(node.getAttribute("data-tcin")) - karaokeTcDelta,
+            );
         }
         return filteredNodes;
     }
@@ -334,15 +381,20 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private handleSelectedWordsStyle(filteredNodes, karaokeTcDelta) {
         if (filteredNodes && filteredNodes.length > 0) {
-            filteredNodes.forEach(n => {
+            filteredNodes.forEach((n) => {
                 n.classList.add(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
                 // add active to parent segment
-                if (this.currentTime >= parseFloat(n.parentElement.parentElement.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute('data-tcout'))) {
+                if (
+                    this.currentTime >=
+                        parseFloat(n.parentElement.parentElement.getAttribute("data-tcin")) - karaokeTcDelta &&
+                    this.currentTime < parseFloat(n.parentElement.parentElement.getAttribute("data-tcout"))
+                ) {
                     n.parentElement.parentElement.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 }
-                if (this.currentTime >= parseFloat(n.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(n.getAttribute('data-tcout'))) {
+                if (
+                    this.currentTime >= parseFloat(n.getAttribute("data-tcin")) - karaokeTcDelta &&
+                    this.currentTime < parseFloat(n.getAttribute("data-tcout"))
+                ) {
                     n.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 }
             });
@@ -354,25 +406,29 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
 
     private selectSegment(karaokeTcDelta: number) {
-        const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+        const segmentElementNodes = Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>(".segment"),
+        );
         if (segmentElementNodes) {
-            const segmentFilteredNodes = segmentElementNodes
-                .filter(node => this.currentTime >= parseFloat(node.getAttribute('data-tcin')) - karaokeTcDelta
-                    && this.currentTime < parseFloat(node.getAttribute('data-tcout')));
+            const segmentFilteredNodes = segmentElementNodes.filter(
+                (node) =>
+                    this.currentTime >= parseFloat(node.getAttribute("data-tcin")) - karaokeTcDelta &&
+                    this.currentTime < parseFloat(node.getAttribute("data-tcout")),
+            );
             if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
                 this._inGap = false;
-                this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute('data-tcin'));
-                this.lastSegmentTcOut = parseFloat(segmentFilteredNodes[0].getAttribute('data-tcout'));
-                segmentFilteredNodes.forEach(segmentNode => {
+                this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcin"));
+                this.lastSegmentTcOut = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcout"));
+                segmentFilteredNodes.forEach((segmentNode) => {
                     segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
-                segmentElementNodes.forEach(n => {
-                    if (n.classList.value !== 'segment selected') {
-                        n.querySelector('.subsegment').classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                        const subSegmentElement = n.querySelector<HTMLElement>('.subsegment');
-                        const textElement = subSegmentElement.querySelector<HTMLElement>('.text');
-                        const wElementNodes = Array.from(textElement.querySelectorAll<HTMLElement>('.w'));
-                        wElementNodes.forEach(word => {
+                segmentElementNodes.forEach((n) => {
+                    if (n.classList.value !== "segment selected") {
+                        n.querySelector(".subsegment").classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+                        const subSegmentElement = n.querySelector<HTMLElement>(".subsegment");
+                        const textElement = subSegmentElement.querySelector<HTMLElement>(".text");
+                        const wElementNodes = Array.from(textElement.querySelectorAll<HTMLElement>(".w"));
+                        wElementNodes.forEach((word) => {
                             word.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
                         });
                     }
@@ -397,8 +453,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * In charge transcription to scroll position is equal to segment position minus transcription block padding and segment height
      */
     private scroll() {
-        const scrollNode: HTMLElement = this.transcriptionElement.nativeElement
-            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+        const scrollNode: HTMLElement = this.transcriptionElement.nativeElement.querySelector(
+            `.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`,
+        );
         if (scrollNode && this.displaySynchro === false) {
             this.scrollToNode(scrollNode);
             this.displaySynchro = false;
@@ -424,10 +481,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             // scroll to node if he's not visible
             if (this.autoScroll) {
-                if (!(visible) && this.displaySynchro === false) {
+                if (!visible && this.displaySynchro === false) {
                     this.isAutoScrolling = true;
                     this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
-                    setTimeout(() => { this.isAutoScrolling = false; }, 50);
+                    setTimeout(() => {
+                        this.isAutoScrolling = false;
+                    }, 50);
                 }
             }
         }
@@ -469,7 +528,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.lastSegmentTcIn = null;
         this.lastSegmentTcOut = null;
         this._inGap = false;
-        if ((!this.transcriptions) || (this.transcriptions && this.transcriptions.length === 0)) {
+        if (!this.transcriptions || (this.transcriptions && this.transcriptions.length === 0)) {
             const handleMetadataIds = this.pluginConfiguration.metadataIds;
             const metadataManager = this.mediaPlayerElement.metadataManager;
             this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`);
@@ -478,15 +537,18 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.transcriptions = new Array<TranscriptionLocalisation>();
                 handleMetadataIds.forEach((metadataId) => {
                     this.logger.info(`get metadata for ${metadataId}`);
-                    const transcriptionLocalisations = metadataManager
-                        .getTranscriptionLocalisations(metadataId, this.pluginConfiguration.data.parseLevel, this.pluginConfiguration.data.withSubLocalisations);
+                    const transcriptionLocalisations = metadataManager.getTranscriptionLocalisations(
+                        metadataId,
+                        this.pluginConfiguration.data.parseLevel,
+                        this.pluginConfiguration.data.withSubLocalisations,
+                    );
                     if (transcriptionLocalisations && transcriptionLocalisations.length > 0) {
                         this.transcriptions = this.transcriptions.concat(transcriptionLocalisations);
                     }
                 });
                 // Add sort by tcin
                 if (this.transcriptions) {
-                    this.transcriptions = sortBy(this.transcriptions, ['tcIn']);
+                    this.transcriptions = sortBy(this.transcriptions, ["tcIn"]);
                     const tcIn = this.pluginConfiguration?.data?.tcIn;
                     const duration = this.pluginConfiguration?.data?.duration;
                     if (tcIn > 0 || duration > 0) {
@@ -499,9 +561,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                                 transcriptionsToBeRemoved.push(transcription);
                             }
                         });
-                        this.transcriptions = this.transcriptions.filter(transcription => !transcriptionsToBeRemoved.includes(transcription));
+                        this.transcriptions = this.transcriptions.filter(
+                            (transcription) => !transcriptionsToBeRemoved.includes(transcription),
+                        );
                     }
-
                 }
             }
         }
@@ -513,15 +576,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public searchWord(searchText: string) {
         this.listOfSearchedNodes = new Array<HTMLElement>();
-        if (searchText !== '' && searchText !== this.pluginConfiguration.data.label) {
+        if (searchText !== "" && searchText !== this.pluginConfiguration.data.label) {
             this.searching = true;
-            Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
+            Array.from(
+                this.transcriptionElement.nativeElement.querySelectorAll(
+                    `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
+                ),
+            ).forEach((node) => {
                 node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
                 if (TextUtils.hasSearchText(node.textContent, searchText)) {
                     this.listOfSearchedNodes.push(node as HTMLElement);
                     // add active class to first element
                     this.index = this.searchedWordIndex + 1;
-                    this.listOfSearchedNodes.forEach(n => {
+                    this.listOfSearchedNodes.forEach((n) => {
                         n.classList.add(TranscriptionPluginComponent.SEARCH_FOUNDED);
                     });
                     this.listOfSearchedNodes[0].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
@@ -543,23 +610,28 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public scrollToSearchedWord(direction: string) {
         if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
             if (this.listOfSearchedNodes[this.searchedWordIndex]) {
-                this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
+                this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(
+                    TranscriptionPluginComponent.SEARCH_SELECTOR,
+                );
             }
-            if (direction === 'up') {
+            if (direction === "up") {
                 this.searchedWordIndex = this.searchedWordIndex - 1;
             } else {
                 this.searchedWordIndex = this.searchedWordIndex + 1;
             }
-            if (this.searchedWordIndex > this.listOfSearchedNodes.length - 1 && direction === 'down') {
+            if (this.searchedWordIndex > this.listOfSearchedNodes.length - 1 && direction === "down") {
                 this.searchedWordIndex = 0;
-            } else if (this.searchedWordIndex < 0 && direction === 'up') {
+            } else if (this.searchedWordIndex < 0 && direction === "up") {
                 this.searchedWordIndex = this.listOfSearchedNodes.length - 1;
             }
             this.index = this.searchedWordIndex + 1;
             this.ignoreNextScroll = true;
             this.autoScroll = false;
-            this.listOfSearchedNodes[this.searchedWordIndex].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
-            const scrollNode: HTMLElement = this.listOfSearchedNodes[this.searchedWordIndex].parentElement.parentElement;
+            this.listOfSearchedNodes[this.searchedWordIndex].classList.add(
+                TranscriptionPluginComponent.SEARCH_SELECTOR,
+            );
+            const scrollNode: HTMLElement =
+                this.listOfSearchedNodes[this.searchedWordIndex].parentElement.parentElement;
             if (scrollNode) {
                 const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
                 this.transcriptionElement.nativeElement.scrollTop = scrollPos;
@@ -581,8 +653,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         // declenche depuis le storyboard pas encore traite par handleOnTimeChange), ce qui ferait
         // scroller vers le mauvais segment tout en masquant le bouton de synchronisation.
         this.handleOnTimeChange();
-        let scrollNode: HTMLElement = this.transcriptionElement.nativeElement
-            .querySelector(`.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`);
+        let scrollNode: HTMLElement = this.transcriptionElement.nativeElement.querySelector(
+            `.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`,
+        );
         if (scrollNode) {
             const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
             const minScroll = Math.round(this.transcriptionElement.nativeElement.offsetHeight / 3);
@@ -607,14 +680,20 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.searchedWordIndex = 0;
         this.listOfSearchedNodes = null;
         this.searching = false;
-        Array.from(this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)).forEach(node => {
+        Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`),
+        ).forEach((node) => {
             node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
             node.classList.remove(TranscriptionPluginComponent.SEARCH_FOUNDED);
         });
     }
 
     private isHandleShortCutNeeded(event): boolean {
-        return event.key === this.pluginConfiguration.data.key && this.searching === false && this.searchText.nativeElement.value !== ''
+        return (
+            event.key === this.pluginConfiguration.data.key &&
+            this.searching === false &&
+            this.searchText.nativeElement.value !== ""
+        );
     }
 
     private isScrollToNextWordNeeded(): boolean {
@@ -642,19 +721,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 }
             }
         }
-        if (event.key === TranscriptionPluginComponent.BACKSPACE_KEY && this.searchText.nativeElement.value !== '') {
+        if (event.key === TranscriptionPluginComponent.BACKSPACE_KEY && this.searchText.nativeElement.value !== "") {
             this.clearSearchList();
             this.typing = false;
         }
     }
 
     private computeDirection = () => {
-        let direction = 'down';
+        let direction = "down";
         if (this.searchedWordIndex === this.listOfSearchedNodes.length) {
-            direction = 'up';
+            direction = "up";
         }
         return direction;
-    }
+    };
 
     /**
      * if scrolling and active segment is not visible add synchro button
@@ -662,19 +741,29 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public updateSynchro() {
         let visible;
-        const selector = '.' + TranscriptionPluginComponent.SELECTOR_SEGMENT + ' > .' + TranscriptionPluginComponent.SELECTOR_SUBSEGMENT
-            + ' > ' + '.text > .' + TranscriptionPluginComponent.SELECTOR_WORD + '.' + TranscriptionPluginComponent.SELECTOR_SELECTED;
+        const selector =
+            "." +
+            TranscriptionPluginComponent.SELECTOR_SEGMENT +
+            " > ." +
+            TranscriptionPluginComponent.SELECTOR_SUBSEGMENT +
+            " > " +
+            ".text > ." +
+            TranscriptionPluginComponent.SELECTOR_WORD +
+            "." +
+            TranscriptionPluginComponent.SELECTOR_SELECTED;
         const activeNode: HTMLElement = this.transcriptionElement.nativeElement.querySelector(selector);
         if (activeNode) {
             const positionA = this.transcriptionElement.nativeElement.getBoundingClientRect();
             const positionB = activeNode.getBoundingClientRect();
             // check if active element is visible
-            const top = (positionB.top) >= positionA.top;
-            const bottom = (positionB.top - activeNode.clientHeight) < (this.transcriptionElement.nativeElement.clientHeight + positionA.top);
+            const top = positionB.top >= positionA.top;
+            const bottom =
+                positionB.top - activeNode.clientHeight <
+                this.transcriptionElement.nativeElement.clientHeight + positionA.top;
             if (!(top && bottom)) {
                 visible = false;
             }
-            this.displaySynchro = (visible === false);
+            this.displaySynchro = visible === false;
             if (this.displaySynchro && this.autoScroll) {
                 this.startAutoSyncTimer();
             } else if (!this.displaySynchro && this.autoSyncTimer !== null) {
@@ -688,7 +777,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * (Re)start the timer that automatically scrolls back to the active segment
      */
     private startAutoSyncTimer() {
-        if (this.autoSyncTimer !== null) { clearTimeout(this.autoSyncTimer); }
+        if (this.autoSyncTimer !== null) {
+            clearTimeout(this.autoSyncTimer);
+        }
         this.autoSyncTimer = setTimeout(() => {
             this.autoSyncTimer = null;
             this.scrollToSelectedSegment();
@@ -705,8 +796,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     private predicateIsNodeTcInTcOutMatching(transcription) {
-        return segment => Math.round(transcription.tcIn) === Math.round(parseFloat(segment.getAttribute('data-tcin')))
-            && Math.round(transcription.tcOut) === Math.round(parseFloat(segment.getAttribute('data-tcout')));
+        return (segment) =>
+            Math.round(transcription.tcIn) === Math.round(parseFloat(segment.getAttribute("data-tcin"))) &&
+            Math.round(transcription.tcOut) === Math.round(parseFloat(segment.getAttribute("data-tcout")));
     }
 
     /**
@@ -718,17 +810,27 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             return;
         }
         const listOfNamedEntitiesNodes = new Set<HTMLElement>();
-        const segmentElementNodes = Array.from(this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>('.segment'));
+        const segmentElementNodes = Array.from(
+            this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>(".segment"),
+        );
 
-        this.transcriptions.forEach(tr => {
-            const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(this.predicateIsNodeTcInTcOutMatching(tr));
-            tr.annotations.forEach(a => {
+        this.transcriptions.forEach((tr) => {
+            const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(
+                this.predicateIsNodeTcInTcOutMatching(tr),
+            );
+            tr.annotations.forEach((a) => {
                 const matchedTexts = Array.isArray(a.matchedText) ? a.matchedText : [a.matchedText];
-                matchedTexts.forEach(matchedText => this.collectNamedEntityNodes(matchedText, segmentElementNodesForCurrentTranscription, listOfNamedEntitiesNodes));
+                matchedTexts.forEach((matchedText) =>
+                    this.collectNamedEntityNodes(
+                        matchedText,
+                        segmentElementNodesForCurrentTranscription,
+                        listOfNamedEntitiesNodes,
+                    ),
+                );
             });
         });
 
-        listOfNamedEntitiesNodes.forEach(e => {
+        listOfNamedEntitiesNodes.forEach((e) => {
             e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
         });
     }
@@ -737,20 +839,34 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * Collecte les noeuds de mots correspondant à un texte d'annotation (named entity).
      * @private
      */
-    private collectNamedEntityNodes(matchedText: string, segmentElementNodes: HTMLElement[], listOfNamedEntitiesNodes: Set<HTMLElement>) {
-        if (matchedText.includes(' ')) {
+    private collectNamedEntityNodes(
+        matchedText: string,
+        segmentElementNodes: HTMLElement[],
+        listOfNamedEntitiesNodes: Set<HTMLElement>,
+    ) {
+        if (matchedText.includes(" ")) {
             //Matched texte est composé exemple: Emmanuel Macron
-            const matchedTextArray = matchedText.split(' ');
-            segmentElementNodes.forEach(segmentElementNode => {
-                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
+            const matchedTextArray = matchedText.split(" ");
+            segmentElementNodes.forEach((segmentElementNode) => {
+                const wordElementNodes = segmentElementNode.querySelectorAll(
+                    `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
+                );
                 wordElementNodes.forEach((node, nodeIndex) => {
-                    TranscriptionPluginComponent.matchComposedSearchKey(node, matchedTextArray, wordElementNodes, nodeIndex, listOfNamedEntitiesNodes);
+                    TranscriptionPluginComponent.matchComposedSearchKey(
+                        node,
+                        matchedTextArray,
+                        wordElementNodes,
+                        nodeIndex,
+                        listOfNamedEntitiesNodes,
+                    );
                 });
             });
         } else {
-            segmentElementNodes.forEach(segmentElementNode => {
-                const wordElementNodes = segmentElementNode.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`);
-                wordElementNodes.forEach(node => {
+            segmentElementNodes.forEach((segmentElementNode) => {
+                const wordElementNodes = segmentElementNode.querySelectorAll(
+                    `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
+                );
+                wordElementNodes.forEach((node) => {
                     if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedText)) {
                         listOfNamedEntitiesNodes.add(node as HTMLElement);
                     }
@@ -759,28 +875,52 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         }
     }
 
-    private static matchComposedSearchKey = (node: Element, matchedTextArray: string[], wordElementNodes: NodeListOf<Element>, nodeIndex: number, listOfNamedEntitiesNodes: Set<HTMLElement>) => {
+    private static matchComposedSearchKey = (
+        node: Element,
+        matchedTextArray: string[],
+        wordElementNodes: NodeListOf<Element>,
+        nodeIndex: number,
+        listOfNamedEntitiesNodes: Set<HTMLElement>,
+    ) => {
         if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedTextArray[0])) {
             let allMatched = true;
             let arrayOfMatchingWords = [];
             arrayOfMatchingWords.push(node);
             matchedTextArray.forEach((value, pos) => {
-                const __ret = TranscriptionPluginComponent.matchRemainingWords(pos, wordElementNodes, nodeIndex, allMatched, value, arrayOfMatchingWords);
+                const __ret = TranscriptionPluginComponent.matchRemainingWords(
+                    pos,
+                    wordElementNodes,
+                    nodeIndex,
+                    allMatched,
+                    value,
+                    arrayOfMatchingWords,
+                );
                 allMatched = __ret.allMatched;
                 arrayOfMatchingWords = __ret.arrayOfMatchingWords;
             });
             if (allMatched) {
-                arrayOfMatchingWords.forEach(wordNode => {
+                arrayOfMatchingWords.forEach((wordNode) => {
                     listOfNamedEntitiesNodes.add(wordNode);
-                })
+                });
             }
-
         }
-    }
-    private static matchRemainingWords = (pos: number, wordElementNodes: NodeListOf<Element>, nodeIndex: number, allMatched: boolean, value: string, arrayOfMatchingWords: any[]) => {
+    };
+    private static matchRemainingWords = (
+        pos: number,
+        wordElementNodes: NodeListOf<Element>,
+        nodeIndex: number,
+        allMatched: boolean,
+        value: string,
+        arrayOfMatchingWords: any[],
+    ) => {
         if (pos > 0) {
             const nextNode = wordElementNodes[nodeIndex + pos];
-            if (allMatched && nextNode && nextNode.textContent && TextUtils.hasSearchText(nextNode.textContent, value)) {
+            if (
+                allMatched &&
+                nextNode &&
+                nextNode.textContent &&
+                TextUtils.hasSearchText(nextNode.textContent, value)
+            ) {
                 arrayOfMatchingWords.push(nextNode);
             } else {
                 allMatched = false;
@@ -788,16 +928,28 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
         }
         return { allMatched, arrayOfMatchingWords };
-    }
+    };
 
     ngAfterViewInit(): void {
-        this.subscriptionToEventsEmitters.push(Utils.waitFor(() => (this.transcriptionElement && this.transcriptionElement.nativeElement && this.transcriptions && this.transcriptions.length > 0),
-            undefined,
-            this.handleMatchedTextStyle.bind(this),
-            this.intervalStep,
-            this.timeout,
-            this.setDataLoading.bind(this)));
-        Utils.displaySnackBar(this.messagesComponent, "Les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.", 'info');
+        this.subscriptionToEventsEmitters.push(
+            Utils.waitFor(
+                () =>
+                    this.transcriptionElement &&
+                    this.transcriptionElement.nativeElement &&
+                    this.transcriptions &&
+                    this.transcriptions.length > 0,
+                undefined,
+                this.handleMatchedTextStyle.bind(this),
+                this.intervalStep,
+                this.timeout,
+                this.setDataLoading.bind(this),
+            ),
+        );
+        Utils.displaySnackBar(
+            this.messagesComponent,
+            "Les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.",
+            "info",
+        );
     }
 
     override ngOnDestroy(): void {
@@ -806,5 +958,4 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         }
         super.ngOnDestroy();
     }
-
 }

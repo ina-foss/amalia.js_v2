@@ -1,4 +1,4 @@
-import { PluginBase } from '../../core/plugin/plugin-base';
+import { PluginBase } from "../../core/plugin/plugin-base";
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -10,32 +10,66 @@ import {
     signal,
     ViewChild,
     ViewEncapsulation,
-    WritableSignal
-} from '@angular/core';
-import { PluginConfigData } from '../../core/config/model/plugin-config-data';
-import { MediaPlayerService } from '../../service/media-player-service';
-import { TimelineConfig } from '../../core/config/model/timeline-config';
-import interact from 'interactjs';
-import { Options } from 'sortablejs';
-import { PlayerEventType } from '../../core/constant/event-type';
-import { DataType } from '../../core/constant/data-type';
-import { Utils } from '../../core/utils/utils';
-import { TimeLineBlock, TimelineLocalisation } from '../../core/metadata/model/timeline-localisation';
-import find from 'lodash/find';
-import { Metadata } from '@ina/amalia-model';
-import { TreeNode } from 'primeng/api';
-import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
+    WritableSignal,
+} from "@angular/core";
+import { PluginConfigData } from "../../core/config/model/plugin-config-data";
+import { MediaPlayerService } from "../../service/media-player-service";
+import { TimelineConfig } from "../../core/config/model/timeline-config";
+import interact from "interactjs";
+import { Options } from "sortablejs";
+import { PlayerEventType } from "../../core/constant/event-type";
+import { DataType } from "../../core/constant/data-type";
+import { Utils } from "../../core/utils/utils";
+import { TimeLineBlock, TimelineLocalisation } from "../../core/metadata/model/timeline-localisation";
+import find from "lodash/find";
+import { Metadata } from "@ina/amalia-model";
+import { TreeNode, PrimeTemplate } from "primeng/api";
+import { MetadataManager } from "src/app/core/metadata/metadata-manager";
 import { ToastComponent } from "../../core/toast/toast.component";
+import { Bind } from "primeng/bind";
+import { Toolbar } from "primeng/toolbar";
+import { Button } from "primeng/button";
+import { NgStyle, NgClass } from "@angular/common";
+import { PreventCtrlScrollDirective } from "../../core/directive/inaSortablejs/prevent-ctrl-scroll.directive";
+import { SortablejsDirective } from "../../core/directive/inaSortablejs/sortablejs.directive";
+import { Accordion, AccordionPanel, AccordionHeader, AccordionContent } from "primeng/accordion";
+import { Draggable, Droppable } from "primeng/dragdrop";
+import { Ripple } from "primeng/ripple";
+import { Checkbox } from "primeng/checkbox";
+import { FormsModule } from "@angular/forms";
+import { Tree } from "primeng/tree";
+import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
 
 @Component({
-    selector: 'amalia-timeline',
-    standalone: false,
-    templateUrl: './timeline-plugin.component.html',
-    styleUrls: ['./timeline-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom
+    selector: "amalia-timeline",
+    templateUrl: "./timeline-plugin.component.html",
+    styleUrls: ["./timeline-plugin.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    imports: [
+        Bind,
+        Toolbar,
+        Button,
+        NgStyle,
+        PreventCtrlScrollDirective,
+        SortablejsDirective,
+        Accordion,
+        AccordionPanel,
+        Draggable,
+        Droppable,
+        NgClass,
+        Ripple,
+        AccordionHeader,
+        AccordionContent,
+        Checkbox,
+        FormsModule,
+        Tree,
+        PrimeTemplate,
+        ToastComponent,
+        TcFormatPipe,
+    ],
 })
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit, AfterViewInit {
-    public static PLUGIN_NAME = 'TIMELINE';
+    public static PLUGIN_NAME = "TIMELINE";
     public title: string;
     public mainBlockColor: string;
     public mainLocalisations: Array<TimelineLocalisation>;
@@ -49,45 +83,114 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public focusTcOut = 0;
     public tcIn = 0;
     public durationFromConfig = 0;
-    public resourceType: 'stock' | 'flux';
+    public resourceType: "stock" | "flux";
     public selectionPosition = {
         x: 0,
         y: 0,
         startX: 0,
-        startY: 0
+        startY: 0,
     };
     public isDrawingRectangle = false;
     @Input()
     public colors: Array<string> = [
-        '#609af8', '#4cd07d', '#eec137', '#ff6259', '#f06bac', '#8183f4', '#41c5b7', '#fa8e42', '#818ea1',
-        '#b975f9', '#35c4dc', '#3b82f6', '#22c55e', '#eab308', '#ff3d32', '#ec4899', '#6366f1', '#14b8a6',
-        '#f97316', '#64748b', '#a855f7', '#06b6d4', '#326fd1', '#1da750', '#c79807', '#d9342b', '#c93d82',
-        '#5457cd', '#119c8d', '#d46213', '#556376', '#8f48d2', '#059bb4', '#295bac', '#188a42', '#a47d06',
-        '#b32b23', '#a5326b', '#4547a9', '#0e8174', '#ae510f', '#465161', '#763cad', '#047f94', '#85b2f9',
-        '#76db9b', '#f2d066', '#ff8780', '#f38ec0', '#9ea0f6', '#6dd3c8', '#fba86f', '#9fa9b7', '#c996fa',
-        '#65d2e4', '#204887', '#136c34', '#816204', '#8c221c', '#822854', '#363885', '#0b655b', '#893f0c',
-        '#37404c', '#5c2f88', '#036475', '#183462', '#0e4f26', '#5e4803', '#661814', '#5e1d3d', '#282960',
-        '#084a42', '#642e09', '#282e38', '#432263', '#024955',];
-    @ViewChild('focusContainer', { static: true })
+        "#609af8",
+        "#4cd07d",
+        "#eec137",
+        "#ff6259",
+        "#f06bac",
+        "#8183f4",
+        "#41c5b7",
+        "#fa8e42",
+        "#818ea1",
+        "#b975f9",
+        "#35c4dc",
+        "#3b82f6",
+        "#22c55e",
+        "#eab308",
+        "#ff3d32",
+        "#ec4899",
+        "#6366f1",
+        "#14b8a6",
+        "#f97316",
+        "#64748b",
+        "#a855f7",
+        "#06b6d4",
+        "#326fd1",
+        "#1da750",
+        "#c79807",
+        "#d9342b",
+        "#c93d82",
+        "#5457cd",
+        "#119c8d",
+        "#d46213",
+        "#556376",
+        "#8f48d2",
+        "#059bb4",
+        "#295bac",
+        "#188a42",
+        "#a47d06",
+        "#b32b23",
+        "#a5326b",
+        "#4547a9",
+        "#0e8174",
+        "#ae510f",
+        "#465161",
+        "#763cad",
+        "#047f94",
+        "#85b2f9",
+        "#76db9b",
+        "#f2d066",
+        "#ff8780",
+        "#f38ec0",
+        "#9ea0f6",
+        "#6dd3c8",
+        "#fba86f",
+        "#9fa9b7",
+        "#c996fa",
+        "#65d2e4",
+        "#204887",
+        "#136c34",
+        "#816204",
+        "#8c221c",
+        "#822854",
+        "#363885",
+        "#0b655b",
+        "#893f0c",
+        "#37404c",
+        "#5c2f88",
+        "#036475",
+        "#183462",
+        "#0e4f26",
+        "#5e4803",
+        "#661814",
+        "#5e1d3d",
+        "#282960",
+        "#084a42",
+        "#642e09",
+        "#282e38",
+        "#432263",
+        "#024955",
+    ];
+    @ViewChild("focusContainer", { static: true })
     public focusContainer: ElementRef<HTMLElement>;
-    @ViewChild('mainTimeline', { static: true })
+    @ViewChild("mainTimeline", { static: true })
     public mainTimeline: ElementRef<HTMLDivElement>;
-    @ViewChild('mainBlockContainer', { static: true })
+    @ViewChild("mainBlockContainer", { static: true })
     public mainBlockContainer: ElementRef<HTMLElement>;
-    @ViewChild('listOfBlocksContainer', { static: true })
+    @ViewChild("listOfBlocksContainer", { static: true })
     public listOfBlocksContainer: ElementRef<HTMLElement>;
-    @ViewChild('listOfBlocksAccordion', { static: true })
+    @ViewChild("listOfBlocksAccordion", { static: true })
     public listOfBlocksAccordion: ElementRef<HTMLElement>;
-    @ViewChild('selectedBlockElement', { static: true })
+    @ViewChild("selectedBlockElement", { static: true })
     public selectedBlockElement: any = null;
-    @ViewChild('selectionContainer', { static: true })
+    @ViewChild("selectionContainer", { static: true })
     public selectionContainer: ElementRef<HTMLElement>;
-    @ViewChild('menuContainer', { static: true })
+    @ViewChild("menuContainer", { static: true })
     public menuContainer: ElementRef<HTMLElement>;
     public selectedBlock: TimelineLocalisation = null;
     public sortableOptions: Options = {
-        handle: '.drag',
-        filter: '.filtered',
+        handle: ".drag",
+        filter: ".filtered",
     };
 
     /**
@@ -95,18 +198,24 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     private blocksIsOpen = false;
     private lastSelectedColorIdx = -1;
-    managedDataTypes = [DataType.SEGMENTATION, DataType.AUDIO_SEGMENTATION, DataType.FACES_RECOGNITION, DataType.DAY_SCHEDULE, DataType.DOCUMENTS_LIES, DataType.EXTRAITS_UTILISATEUR];
+    managedDataTypes = [
+        DataType.SEGMENTATION,
+        DataType.AUDIO_SEGMENTATION,
+        DataType.FACES_RECOGNITION,
+        DataType.DAY_SCHEDULE,
+        DataType.DOCUMENTS_LIES,
+        DataType.EXTRAITS_UTILISATEUR,
+    ];
 
     nodes: TreeNode[] = [];
     selectedNodes: WritableSignal<TreeNode[]> = signal<TreeNode[]>([]);
     selectedNodesMap = computed(() => {
         let result = new Map<string, TreeNode>();
-        this.selectedNodes().forEach(selectedNode => {
+        this.selectedNodes().forEach((selectedNode) => {
             result.set(selectedNode.key, selectedNode);
         });
         return result;
-    }
-    );
+    });
     selectedNodesBeforeChange: TreeNode[] = [];
     allNodesChecked: boolean = false;
     isSelectSegmentsFocused: boolean = false;
@@ -116,24 +225,33 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     indeterminate: boolean = false;
     mapOfBlocksIndexes: Map<TimeLineBlock, number> = new Map<TimeLineBlock, number>();
 
-    @ViewChild('messages') messagesComponent!: ToastComponent;
+    @ViewChild("messages") messagesComponent!: ToastComponent;
     tvDaysEnabled: boolean = false;
 
-
-    constructor(playerService: MediaPlayerService, private cdr: ChangeDetectorRef) {
+    constructor(
+        playerService: MediaPlayerService,
+        private cdr: ChangeDetectorRef,
+    ) {
         super(playerService);
         this.pluginName = TimelinePluginComponent.PLUGIN_NAME;
     }
 
     ngAfterViewInit(): void {
-        this.subscriptionToEventsEmitters
-            .push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
+        this.subscriptionToEventsEmitters.push(
+            Utils.waitFor(
+                this.mediaPlayerElementReady.bind(this),
                 undefined,
                 this.initAfterMediaPlayerElementIsReady.bind(this),
                 this.intervalStep,
                 this.timeout,
-                this.setDataLoading.bind(this)));
-        Utils.displaySnackBar(this.messagesComponent, "Des segments sont issus de traitements IA et peuvent contenir des erreurs.", 'info');
+                this.setDataLoading.bind(this),
+            ),
+        );
+        Utils.displaySnackBar(
+            this.messagesComponent,
+            "Des segments sont issus de traitements IA et peuvent contenir des erreurs.",
+            "info",
+        );
     }
 
     override ngOnInit(): void {
@@ -147,13 +265,16 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         } catch (e) {
             this.logger.debug("An error occured when initializing the pluging " + this.pluginName, e);
         }
-        this.subscriptionToEventsEmitters
-            .push(Utils.waitFor(this.mediaPlayerElementReady.bind(this),
+        this.subscriptionToEventsEmitters.push(
+            Utils.waitFor(
+                this.mediaPlayerElementReady.bind(this),
                 undefined,
                 this.initAfterMediaPlayerElementIsReady.bind(this),
                 this.intervalStep,
                 this.timeout,
-                this.setDataLoading.bind(this)));
+                this.setDataLoading.bind(this),
+            ),
+        );
     }
 
     initAfterMediaPlayerElementIsReady() {
@@ -169,63 +290,69 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     closeMenu(event: any) {
         if (this.configIsOpen === true) {
-            if (!Utils.isInComposedPath('menu-content', event) && !Utils.isInComposedPath('timeline-toolbar-filter-button', event)) {
+            if (
+                !Utils.isInComposedPath("menu-content", event) &&
+                !Utils.isInComposedPath("timeline-toolbar-filter-button", event)
+            ) {
                 this.handleDisplayBlocks(false);
             }
         }
     }
 
-    getNewNodeFromMetadataElement = (metadata: { type: string; }) => {
+    getNewNodeFromMetadataElement = (metadata: { type: string }) => {
         let { level1Label, icon } = this.getNodeLabelAndIcon(metadata);
 
-        let level1Node: TreeNode = (icon === '') ? {
-            key: metadata.type,
-            label: level1Label,
-            children: [],
-            checked: true,
-            expanded: true
-        } : {
-            key: metadata.type,
-            label: level1Label,
-            children: [],
-            data: { spriteIcon: icon },
-            checked: true,
-            expanded: true
-        };
+        let level1Node: TreeNode =
+            icon === ""
+                ? {
+                      key: metadata.type,
+                      label: level1Label,
+                      children: [],
+                      checked: true,
+                      expanded: true,
+                  }
+                : {
+                      key: metadata.type,
+                      label: level1Label,
+                      children: [],
+                      data: { spriteIcon: icon },
+                      checked: true,
+                      expanded: true,
+                  };
         return level1Node;
-    }
+    };
 
-    getNodeLabelAndIcon(metadata: { type: string; }) {
-        let level1Label: string = '';
+    getNodeLabelAndIcon(metadata: { type: string }) {
+        let level1Label: string = "";
         // `icon` = id d'un symbole du sprite SVG (src/assets/svgs/symbol/svg/sprite.symbol.svg)
         let icon: string = undefined;
-        const segmentationRegExp = new RegExp(DataType.SEGMENTATION, 'g');
-        const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, 'g');
-        const dayScheduleRegExp = new RegExp(DataType.DAY_SCHEDULE, 'g');
-        const documentLieRegExp = new RegExp(DataType.DOCUMENTS_LIES, 'g');
-        const extraitsUtilisateurRegExp = new RegExp(DataType.EXTRAITS_UTILISATEUR, 'g');
+        const segmentationRegExp = new RegExp(DataType.SEGMENTATION, "g");
+        const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, "g");
+        const dayScheduleRegExp = new RegExp(DataType.DAY_SCHEDULE, "g");
+        const documentLieRegExp = new RegExp(DataType.DOCUMENTS_LIES, "g");
+        const extraitsUtilisateurRegExp = new RegExp(DataType.EXTRAITS_UTILISATEUR, "g");
 
         if (segmentationRegExp.test(metadata.type)) {
-            level1Label = metadata.type.replace(new RegExp(DataType.SEGMENTATION, 'g'), 'Segmentation sonore');
-            icon = 'pi-volume-down';
+            level1Label = metadata.type.replace(new RegExp(DataType.SEGMENTATION, "g"), "Segmentation sonore");
+            icon = "pi-volume-down";
         }
         if (facesRecognitionRegExp.test(metadata.type)) {
-            level1Label = metadata.type.replace(new RegExp(DataType.FACES_RECOGNITION, 'g'), 'Reconnaissance faciale');
-            icon = 'pi-eye';
+            level1Label = metadata.type.replace(new RegExp(DataType.FACES_RECOGNITION, "g"), "Reconnaissance faciale");
+            icon = "pi-eye";
         }
         if (dayScheduleRegExp.test(metadata.type)) {
-            level1Label = metadata.type.replace(new RegExp(DataType.DAY_SCHEDULE, 'g'), 'Partie journée de programme');
-            icon = 'pi-calendar';
+            level1Label = metadata.type.replace(new RegExp(DataType.DAY_SCHEDULE, "g"), "Partie journée de programme");
+            icon = "pi-calendar";
         }
         if (documentLieRegExp.test(metadata.type)) {
-            level1Label = metadata.type.replace(new RegExp(DataType.DOCUMENTS_LIES, 'g'), 'Documents liés segmentés');
-            icon = 'pi-file';
+            level1Label = metadata.type.replace(new RegExp(DataType.DOCUMENTS_LIES, "g"), "Documents liés segmentés");
+            icon = "pi-file";
         }
         if (extraitsUtilisateurRegExp.test(metadata.type)) {
-            level1Label = metadata.type.replace(new RegExp(DataType.EXTRAITS_UTILISATEUR, 'g'), 'Extraits utilisateur');
-            icon = 'pi-tags';
+            level1Label = metadata.type.replace(new RegExp(DataType.EXTRAITS_UTILISATEUR, "g"), "Extraits utilisateur");
+            icon = "pi-tags";
         }
-        if (level1Label.endsWith('-')) {
+        if (level1Label.endsWith("-")) {
             level1Label = level1Label.substring(0, level1Label.length - 1);
         }
         return { level1Label, icon };
@@ -235,10 +362,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * Return color color
      */
     private getAvailableColor() {
-        this.lastSelectedColorIdx = this.lastSelectedColorIdx + 1 > this.colors.length - 1 ? 0 : this.lastSelectedColorIdx + 1;
+        this.lastSelectedColorIdx =
+            this.lastSelectedColorIdx + 1 > this.colors.length - 1 ? 0 : this.lastSelectedColorIdx + 1;
         return this.colors[this.lastSelectedColorIdx];
     }
-
 
     override init() {
         super.init();
@@ -250,15 +377,31 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         }
         this.initFocusResizable(this.focusContainer.nativeElement);
-        this.addListener(this.listOfBlocksContainer.nativeElement, PlayerEventType.HTML_ELEMENT_MOUSE_MOVE, this.handleMouseMoveToDrawRect);
+        this.addListener(
+            this.listOfBlocksContainer.nativeElement,
+            PlayerEventType.HTML_ELEMENT_MOUSE_MOVE,
+            this.handleMouseMoveToDrawRect,
+        );
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTimelineMetadata();
             this.handleOnDurationChange();
         }
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.USER_SEGMENT_CHANGED, this.handleMetadataLoaded);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.METADATA_LOADED,
+            this.handleMetadataLoaded,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.USER_SEGMENT_CHANGED,
+            this.handleMetadataLoaded,
+        );
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.DURATION_CHANGE,
+            this.handleOnDurationChange,
+        );
     }
 
     /**
@@ -306,16 +449,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.mainLocalisations = this.createMainMetadataIds(mainMetadataIds, metadataManager);
     }
 
-
     patchExtraitUtilisateur(metadata: { label?: string; localisation?: any[]; sublocalisations?: any }[]) {
         const patchLabel = (item: { label?: string; localisation?: any[]; sublocalisations?: any }) => {
-            item.label ||= 'Extrait sans titre';
+            item.label ||= "Extrait sans titre";
             item.localisation?.forEach(patchLabel);
         };
         metadata.forEach(patchLabel);
     }
 
-    checkTcForStock(l: { tcIn: number; tcOut: number; }, tcOut: number) {
+    checkTcForStock(l: { tcIn: number; tcOut: number }, tcOut: number) {
         if (this.tcIn <= l.tcOut && l.tcOut <= tcOut) {
             return true;
         }
@@ -328,8 +470,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return false;
     }
 
-    adjustTcsForFlux(listOfLocalisations: { tcIn: number; tcOut: number; }[]) {
-        if (this.resourceType === 'stock') {
+    adjustTcsForFlux(listOfLocalisations: { tcIn: number; tcOut: number }[]) {
+        if (this.resourceType === "stock") {
             return;
         }
         for (const l of listOfLocalisations) {
@@ -339,13 +481,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             if (!isNaN(l.tcOut)) {
                 l.tcOut += this.tcOffset;
             }
-        };
+        }
     }
 
-    adjustForStock(listOfLocalisations: { tcIn: number; tcOut: number; }[]) {
-        if (this.resourceType === 'stock' && (!isNaN(this.tcIn) || this.durationFromConfig > 0)) {
+    adjustForStock(listOfLocalisations: { tcIn: number; tcOut: number }[]) {
+        if (this.resourceType === "stock" && (!isNaN(this.tcIn) || this.durationFromConfig > 0)) {
             const tcOut = this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration;
-            return listOfLocalisations.filter((l: { tcIn: number; tcOut: number; }) => this.checkTcForStock(l, tcOut));
+            return listOfLocalisations.filter((l: { tcIn: number; tcOut: number }) => this.checkTcForStock(l, tcOut));
         }
         return listOfLocalisations;
     }
@@ -353,7 +495,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     private persistedBlockOrder: string[] = [];
 
     private getStableMetadataKey(id: string): string {
-        return id.replace(/^([A-Z_]+-)\d+/, '$1');
+        return id.replace(/^([A-Z_]+-)\d+/, "$1");
     }
 
     private captureFilterState(): { hasState: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] } {
@@ -367,11 +509,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return {
             hasState: this.nodes.length > 0,
             displayStateById: new Map(this.persistedDisplayStateById),
-            blockOrder: [...this.persistedBlockOrder]
+            blockOrder: [...this.persistedBlockOrder],
         };
     }
 
-    private restoreFilterState(previousState: { hasState: boolean; displayStateById: Map<string, boolean>; blockOrder: string[] }) {
+    private restoreFilterState(previousState: {
+        hasState: boolean;
+        displayStateById: Map<string, boolean>;
+        blockOrder: string[];
+    }) {
         if (!previousState.hasState) {
             // Open all blocks by default when there's no previous state
             this.listOfBlocksIndexes = this.listOfBlocks.map((_, index) => index);
@@ -411,7 +557,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const selected = allNodes.filter((node) => !node.children && displayedIds.has(node.key));
         const selectedLeafKeys = new Set(selected.map((node) => node.key));
         this.nodes.forEach((parentNode) => {
-            if (parentNode.children?.length && parentNode.children.every((child: any) => selectedLeafKeys.has(child.key))) {
+            if (
+                parentNode.children?.length &&
+                parentNode.children.every((child: any) => selectedLeafKeys.has(child.key))
+            ) {
                 selected.push(parentNode);
             }
         });
@@ -421,7 +570,38 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     // Handle metadata properties
-    handleMetadataProperties(listOfMetadata: any[] | Map<string, { localisation: { sublocalisations: { localisation: { data: { text: string[]; attribute: { value: string; name: string; score: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; }; type: string; tcin: string; tcout: string; tclevel: number; }[]; type: string; label: string; algorithm: string; processor: string; processed: number; version: number; id: string; }>, metadataManager: any) {
+    handleMetadataProperties(
+        listOfMetadata:
+            | any[]
+            | Map<
+                  string,
+                  {
+                      localisation: {
+                          sublocalisations: {
+                              localisation: {
+                                  data: { text: string[]; attribute: { value: string; name: string; score: number }[] };
+                                  type: string;
+                                  tcin: string;
+                                  tcout: string;
+                                  tclevel: number;
+                              }[];
+                          };
+                          type: string;
+                          tcin: string;
+                          tcout: string;
+                          tclevel: number;
+                      }[];
+                      type: string;
+                      label: string;
+                      algorithm: string;
+                      processor: string;
+                      processed: number;
+                      version: number;
+                      id: string;
+                  }
+              >,
+        metadataManager: any,
+    ) {
         this.nodes = [];
         this.listOfBlocks = [];
         this.listOfBlocksIndexes = [];
@@ -436,21 +616,21 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 listOfLocalisations = this.adjustForStock(listOfLocalisations);
                 this.adjustTcsForFlux(listOfLocalisations);
             } catch (e) {
-                this.logger.warn('Error to parse metadata', e);
+                this.logger.warn("Error to parse metadata", e);
             }
             if (!listOfLocalisations || listOfLocalisations.length === 0) {
                 continue;
             }
-            const color = (metadata?.viewControl?.color) ?? this.getAvailableColor();
+            const color = metadata?.viewControl?.color ?? this.getAvailableColor();
             let block: TimeLineBlock = {
                 id: metadata.id,
-                label: (metadata?.label) ?? metadata.id,
+                label: metadata?.label ?? metadata.id,
                 expendable: this.pluginConfiguration.data.expendable,
                 defaultColor: color,
                 displayState: true,
                 data: listOfLocalisations,
-                icon: this.getNodeLabelAndIcon(metadata).icon
-            }
+                icon: this.getNodeLabelAndIcon(metadata).icon,
+            };
             this.listOfBlocks.push(block);
 
             this.listOfBlocksIndexes.push(this.listOfBlocks.length - 1);
@@ -460,7 +640,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             for (const node of this.nodes.filter((n: TreeNode) => n.key === metadata.type)) {
                 node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
                 level1NodeAlreadyAdded = true;
-            };
+            }
             if (!level1NodeAlreadyAdded) {
                 let level1Node = this.getNewNodeFromMetadataElement(metadata);
                 level1Node.children.push(this.getNewChildNodeFromMetadataElement(metadata, color));
@@ -474,12 +654,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     getNewChildNodeFromMetadataElement = (metadata: any, color: string) => {
         return {
             key: metadata.id,
-            label: (metadata?.label) ?? metadata.id,
+            label: metadata?.label ?? metadata.id,
             data: { color, spriteIcon: this.getNodeLabelAndIcon(metadata).icon },
             checked: true,
-            expanded: true
+            expanded: true,
         };
-    }
+    };
     filterHidden: boolean = false;
 
     /**
@@ -498,13 +678,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return {
             name: TimelinePluginComponent.PLUGIN_NAME,
             data: {
-                title: 'Timeline globale',
+                title: "Timeline globale",
                 mainBlockColor: null,
-                timeFormat: 's',
+                timeFormat: "s",
                 expendable: true,
                 mainMetadataIds: [],
-                resizeable: true
-            }
+                resizeable: true,
+            },
         };
     }
 
@@ -518,63 +698,63 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             // resize from all edges and corners
             edges: { left: true, right: true, bottom: false, top: false },
             listeners: {
-                move: this.moveElement
+                move: this.moveElement,
             },
             modifiers: [
                 // keep the edges inside the parent
                 interact.modifiers.restrictEdges({
-                    outer: 'parent'
+                    outer: "parent",
                 }),
                 // minimum size
                 interact.modifiers.restrictSize({
-                    min: { width: 33, height: null }
-                })
+                    min: { width: 33, height: null },
+                }),
             ],
-            inertia: true
+            inertia: true,
         });
         container.draggable({
             listeners: {
-                move: this.dragElement
+                move: this.dragElement,
             },
             // keep the element within the area of it's parent
             modifiers: [
                 interact.modifiers.restrictRect({
-                    restriction: 'parent'
-                })
+                    restriction: "parent",
+                }),
             ],
         });
-        container.on('dragend resizeend', this.handleZoomRangeChange.bind(this));
+        container.on("dragend resizeend", this.handleZoomRangeChange.bind(this));
     }
 
     dragElement(event) {
         const target = event.target;
         // keep the dragged position in the data-x/data-y attributes
-        const x = (parseFloat(target.getAttribute('data-x')) || 0) + parseFloat(event.dx);
-        const y = (parseFloat(target.getAttribute('data-y')) || 0);
+        const x = (parseFloat(target.getAttribute("data-x")) || 0) + parseFloat(event.dx);
+        const y = parseFloat(target.getAttribute("data-y")) || 0;
         const parentWidth = target.parentElement.clientWidth;
         // update the element's style
-        const leftPos = Math.min(x * 100 / parentWidth, 100);
+        const leftPos = Math.min((x * 100) / parentWidth, 100);
         // translate the element
-        target.style.left = leftPos + '%';
+        target.style.left = leftPos + "%";
         // update the position attributes
-        target.setAttribute('data-x', x.toFixed(2));
-        target.setAttribute('data-y', y.toFixed(2));
+        target.setAttribute("data-x", x.toFixed(2));
+        target.setAttribute("data-y", y.toFixed(2));
     }
 
     moveElement(event) {
         const target = event.target;
-        let x = (parseFloat(target.getAttribute('data-x')) || 0);
+        let x = parseFloat(target.getAttribute("data-x")) || 0;
         // translate when resizing from top or left edges
         x += event.deltaRect.left;
-        const y = (parseFloat(target.getAttribute('data-y')) || 0);
+        const y = parseFloat(target.getAttribute("data-y")) || 0;
         const parentElement = target.parentElement;
         const parentWidth = parentElement.clientWidth;
-        const leftPos = Math.min(x * 100 / parentWidth, 100);
+        const leftPos = Math.min((x * 100) / parentWidth, 100);
         // update the element's style
-        target.style.width = Math.min(100, event.rect.width * 100 / parentWidth) + '%';
-        target.style.left = +leftPos + '%';
-        target.setAttribute('data-x', x.toFixed(2));
-        target.setAttribute('data-y', y.toFixed(2));
+        target.style.width = Math.min(100, (event.rect.width * 100) / parentWidth) + "%";
+        target.style.left = +leftPos + "%";
+        target.setAttribute("data-x", x.toFixed(2));
+        target.setAttribute("data-y", y.toFixed(2));
     }
 
     /**
@@ -582,10 +762,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param mainElement parent element
      */
     public toggleState(mainElement: HTMLElement) {
-        if (mainElement.classList.contains('small')) {
-            mainElement.classList.remove('small');
+        if (mainElement.classList.contains("small")) {
+            mainElement.classList.remove("small");
         } else {
-            mainElement.classList.add('small');
+            mainElement.classList.add("small");
         }
     }
 
@@ -597,16 +777,16 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public toggleAllBlocksState(mainElement: HTMLElement, stateControl: HTMLDivElement) {
         this.blocksIsOpen = !this.blocksIsOpen;
         if (this.blocksIsOpen) {
-            stateControl.classList.add('close');
+            stateControl.classList.add("close");
         } else {
-            stateControl.classList.remove('close');
+            stateControl.classList.remove("close");
         }
-        const elementNodes = mainElement.querySelectorAll('.timeline-block');
+        const elementNodes = mainElement.querySelectorAll(".timeline-block");
         elementNodes.forEach((node) => {
             if (this.blocksIsOpen) {
-                node.classList.add('small');
+                node.classList.add("small");
             } else {
-                node.classList.remove('small');
+                node.classList.remove("small");
             }
         });
     }
@@ -634,9 +814,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             }
         } else {
             this.selectedNodes.set([]);
-            this.selectedNodesBeforeChange.forEach(selectedNodeBeforeChange => {
+            this.selectedNodesBeforeChange.forEach((selectedNodeBeforeChange) => {
                 this.selectedNodes().push(selectedNodeBeforeChange);
-            })
+            });
         }
         this.toggleConfig();
     }
@@ -646,27 +826,25 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param block block to hide
      */
     removeBlock(block: any) {
-        this.listOfBlocks.find(b => b.id === block.id).displayState = false;
+        this.listOfBlocks.find((b) => b.id === block.id).displayState = false;
         const allNodes = this.getAllNodes(this.nodes);
-        const nodeToRemove = allNodes.find(n => n.key === block.id);
-        this.selectedNodes.set(this.selectedNodes().filter(node => node.key !== nodeToRemove.key));
+        const nodeToRemove = allNodes.find((n) => n.key === block.id);
+        this.selectedNodes.set(this.selectedNodes().filter((node) => node.key !== nodeToRemove.key));
         let parentNode = nodeToRemove.parent;
         do {
             parentNode.checked = false;
             let allChildsUnchecked: boolean = true;
             parentNode.children.forEach((child: any) => {
-                if (this.listOfBlocks.find(b => b.id === child.key).displayState === true) {
+                if (this.listOfBlocks.find((b) => b.id === child.key).displayState === true) {
                     allChildsUnchecked = false;
                 }
             });
             parentNode.partialSelected = !allChildsUnchecked;
-            this.selectedNodes.set(this.selectedNodes().filter(node => node.key !== parentNode.key));
+            this.selectedNodes.set(this.selectedNodes().filter((node) => node.key !== parentNode.key));
             parentNode = parentNode.parent;
         } while (parentNode);
         this.updateTreeComponent();
     }
-
-
 
     /**
      * Invoked time change event for :
@@ -690,7 +868,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.refreshTimeCursor();
     }
 
-
     /**
      * In charge to change focus container
      */
@@ -699,8 +876,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const focusWidth = this.focusContainer.nativeElement.offsetWidth;
         const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
         const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
-        this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration / mainContainerWidth), 0);
-        this.focusTcOut = this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration / mainContainerWidth), this.duration);
+        this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration) / mainContainerWidth, 0);
+        this.focusTcOut =
+            this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration) / mainContainerWidth, this.duration);
         this.updateTimeCodePosition();
         this.refreshTimeCursor();
     }
@@ -709,7 +887,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const focusContainer: HTMLElement = this.focusContainer.nativeElement;
         const focusContainerClientRect = focusContainer ? focusContainer.getBoundingClientRect() : null;
 
-        const timeCodeContainer: HTMLElement = this.focusContainer.nativeElement.querySelector(".time-code");;
+        const timeCodeContainer: HTMLElement = this.focusContainer.nativeElement.querySelector(".time-code");
         let timeCodeContainerClientRect = timeCodeContainer ? timeCodeContainer.getBoundingClientRect() : null;
 
         const startElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".start");
@@ -721,29 +899,51 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const endElement: HTMLSpanElement = this.focusContainer.nativeElement.querySelector(".end");
         const endElementClientRect = endElement ? endElement.getBoundingClientRect() : null;
 
-        if (focusContainerClientRect && startElementClientRect && endElementClientRect && middleElementClientRect && timeCodeContainerClientRect) {
+        if (
+            focusContainerClientRect &&
+            startElementClientRect &&
+            endElementClientRect &&
+            middleElementClientRect &&
+            timeCodeContainerClientRect
+        ) {
             if (endElementClientRect.left <= startElementClientRect.right + 7) {
-                this.displayDashInTimeCode(middleElement, startElementClientRect, timeCodeContainer, endElementClientRect, startElement, endElement, focusContainerClientRect);
+                this.displayDashInTimeCode(
+                    middleElement,
+                    startElementClientRect,
+                    timeCodeContainer,
+                    endElementClientRect,
+                    startElement,
+                    endElement,
+                    focusContainerClientRect,
+                );
             } else {
-                middleElement.style.display = 'none';
-                timeCodeContainer.style.minWidth = '0';
-                timeCodeContainer.style.transform = 'translateX(0)';
+                middleElement.style.display = "none";
+                timeCodeContainer.style.minWidth = "0";
+                timeCodeContainer.style.transform = "translateX(0)";
                 setTimeout(() => {
-                    if (endElementClientRect.left > (startElementClientRect.right + 6 + 12 + 12)) {
-                        startElement.style.left = '12px';
-                        endElement.style.right = '12px';
+                    if (endElementClientRect.left > startElementClientRect.right + 6 + 12 + 12) {
+                        startElement.style.left = "12px";
+                        endElement.style.right = "12px";
                     }
                 }, 100);
             }
         }
     }
 
-    displayDashInTimeCode(middleElement: HTMLSpanElement, startElementClientRect: DOMRect, timeCodeContainer: HTMLElement, endElementClientRect: DOMRect, startElement: HTMLSpanElement, endElement: HTMLSpanElement, focusContainerClientRect: DOMRect) {
-        middleElement.style.display = 'block';
+    displayDashInTimeCode(
+        middleElement: HTMLSpanElement,
+        startElementClientRect: DOMRect,
+        timeCodeContainer: HTMLElement,
+        endElementClientRect: DOMRect,
+        startElement: HTMLSpanElement,
+        endElement: HTMLSpanElement,
+        focusContainerClientRect: DOMRect,
+    ) {
+        middleElement.style.display = "block";
         middleElement.style.left = `${startElementClientRect.width + 12 + 2}px`;
         timeCodeContainer.style.minWidth = `${12 + startElementClientRect.width + 6 + endElementClientRect.width + 12}px`;
-        startElement.style.left = '12px';
-        endElement.style.right = '12px';
+        startElement.style.left = "12px";
+        endElement.style.right = "12px";
 
         setTimeout(() => {
             const timeCodeContainerClientRect = timeCodeContainer.getBoundingClientRect();
@@ -771,21 +971,21 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      */
     public refreshTimeCursor(event?: any) {
         if (isFinite(this.currentTime) && isFinite(this.duration)) {
-            const selector = '.tc-cursor';
+            const selector = ".tc-cursor";
             const mainTimelineWidth = this.mainTimeline.nativeElement.offsetWidth;
             const mainTimelineLeftPosition = this.mainTimeline.nativeElement.offsetLeft;
             const mainBlock: HTMLElement = this.mainBlockContainer.nativeElement.querySelector(selector);
             const listBlock: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(selector);
-            const listBlockTimeline: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.timeline');
+            const listBlockTimeline: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(".timeline");
             const listBlocksContainerRect = this.listOfBlocksContainer.nativeElement.getBoundingClientRect();
             const listBlockTimelineRect = listBlockTimeline?.getBoundingClientRect();
             const listBlockTimelineLeftPosition = listBlockTimelineRect
                 ? listBlockTimelineRect.left - listBlocksContainerRect.left
                 : mainTimelineLeftPosition;
-            mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth / this.duration)}px`;
+            mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth) / this.duration}px`;
             mainBlock.style.width = `2px`;
-            listBlock.style.left = `${listBlockTimelineLeftPosition + (this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth / (this.focusTcOut - this.focusTcIn)}px`;
-            const accordion: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector('.p-accordion');
+            listBlock.style.left = `${listBlockTimelineLeftPosition + ((this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth) / (this.focusTcOut - this.focusTcIn)}px`;
+            const accordion: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(".p-accordion");
             const accordionBoundRect = accordion?.getBoundingClientRect();
             listBlock.style.height = `${accordionBoundRect?.height}px`;
             listBlock.style.width = `2px`;
@@ -808,8 +1008,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const container: HTMLElement = this.focusContainer.nativeElement;
         container.style.left = `0`;
         container.style.width = `100%`;
-        container.setAttribute('data-x', '0');
-        container.setAttribute('data-y', '0');
+        container.setAttribute("data-x", "0");
+        container.setAttribute("data-y", "0");
         this.handleZoomRangeChange();
     }
 
@@ -833,10 +1033,15 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 if (!blockMetadata) {
                     return;
                 }
-                const baseColor = (metadata?.viewControl?.color) ? metadata.viewControl.color : blockMetadata.defaultColor;
+                const baseColor = metadata?.viewControl?.color
+                    ? metadata.viewControl.color
+                    : blockMetadata.defaultColor;
                 let localisations = null;
                 try {
-                    localisations = (this.resourceType === 'stock' && (this.tcIn < 0 || this.durationFromConfig > 0)) ? blockMetadata.data : metadataManager.getTimelineLocalisations(metadata);
+                    localisations =
+                        this.resourceType === "stock" && (this.tcIn < 0 || this.durationFromConfig > 0)
+                            ? blockMetadata.data
+                            : metadataManager.getTimelineLocalisations(metadata);
                     if (localisations) {
                         localisations.forEach((l: TimelineLocalisation) => {
                             l.color = baseColor;
@@ -844,13 +1049,12 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                         });
                     }
                 } catch (e) {
-                    this.logger.warn('Error to parse metadata');
+                    this.logger.warn("Error to parse metadata");
                 }
             });
         }
         return listOfLocalisations;
     }
-
 
     /**
      * On mouse enter on tc bloc
@@ -865,8 +1069,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         selectedBlockElement.style.left = `${rect.left}px`;
         selectedBlockElement.style.top = `${rect.top + defaultMouseMargin}px`;
         selectedBlockElement.style.bottom = `auto`;
-        selectedBlockElement.style.display = 'block';
-        selectedBlockElement.style.transform = 'none';
+        selectedBlockElement.style.display = "block";
+        selectedBlockElement.style.transform = "none";
         this.selectedBlock = localisation;
         setTimeout(() => {
             const selectedBlockElementBoundRect = selectedBlockElement.getBoundingClientRect();
@@ -885,15 +1089,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 const ancestorBoundRect = ancestor.host.getBoundingClientRect();
                 if (selectedBlockElementBoundRect.bottom > ancestorBoundRect.bottom) {
                     const display = selectedBlockElement.style.display;
-                    selectedBlockElement.style.display = 'none';
+                    selectedBlockElement.style.display = "none";
                     selectedBlockElement.style.bottom = `${ancestorBoundRect.bottom - rect.top + 16}px`;
                     selectedBlockElement.style.top = `auto`;
                     selectedBlockElement.style.display = display;
                 }
             }
-
         }, 10);
-
     }
 
     /**
@@ -901,10 +1103,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * @param $event any
      */
     public handleMouseLeaveOnTc($event: any) {
-        this.selectedBlockElement.nativeElement.style.display = 'none';
+        this.selectedBlockElement.nativeElement.style.display = "none";
         this.selectedBlock = null;
     }
-
 
     /**
      * handle mouse to drawxit
@@ -921,8 +1122,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     updateMouseEvent(event: any) {
         const mainContainer: Element = this.listOfBlocksContainer.nativeElement.offsetParent;
         const targetContainer: HTMLElement = this.listOfBlocksContainer.nativeElement;
-        this.selectionPosition.x = parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
-        this.selectionPosition.y = parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
+        this.selectionPosition.x =
+            parseInt(event.clientX, 0) - mainContainer.parentElement.offsetLeft - targetContainer.offsetLeft;
+        this.selectionPosition.y =
+            parseInt(event.clientY, 0) - mainContainer.parentElement.offsetTop - targetContainer.offsetTop;
     }
 
     toggleAllNodes() {
@@ -955,7 +1158,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         this.configIsOpen = !this.configIsOpen;
         if (this.configIsOpen) {
             this.selectedNodesBeforeChange = [];
-            this.selectedNodes().forEach(selectedNode => {
+            this.selectedNodes().forEach((selectedNode) => {
                 this.selectedNodesBeforeChange.push(selectedNode);
             });
         }
@@ -984,14 +1187,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     updateTreeComponent() {
         setTimeout(() => {
-            this.nodes.forEach(parentNode => {
+            this.nodes.forEach((parentNode) => {
                 let allChildrenUnchecked: boolean = true;
                 let allChildrenChecked: boolean = true;
                 parentNode.children?.forEach((child: any) => {
-                    if (this.selectedNodes().find(node => node.key === child.key)) {
+                    if (this.selectedNodes().find((node) => node.key === child.key)) {
                         allChildrenUnchecked = false;
                     }
-                    if (!this.selectedNodes().find(node => node.key === child.key)) {
+                    if (!this.selectedNodes().find((node) => node.key === child.key)) {
                         allChildrenChecked = false;
                     }
                 });
@@ -1003,7 +1206,6 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const nbSelectedNodes = this.selectedNodes().length;
         this.allNodesChecked = nbSelectedNodes === nbNodes;
         this.indeterminate = nbSelectedNodes > 0 && nbSelectedNodes < nbNodes;
-
     }
     /**
      * Export the tv days
@@ -1012,5 +1214,4 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     exportTvDays() {
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.TIMELINE_EXPORT_TV_DAYS);
     }
-
 }

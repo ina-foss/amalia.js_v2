@@ -1,27 +1,26 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
-import {ToastComponent} from './toast.component';
-import {MessageService} from "primeng/api";
+import { ToastComponent } from "./toast.component";
+import { MessageService } from "primeng/api";
 
-describe('ToastComponent', () => {
+describe("ToastComponent", () => {
     let component: ToastComponent;
     let fixture: ComponentFixture<ToastComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ToastComponent],
+            imports: [ToastComponent],
             providers: [MessageService],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA]
-        })
-                .compileComponents();
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        }).compileComponents();
 
         fixture = TestBed.createComponent(ToastComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });

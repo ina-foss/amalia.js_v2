@@ -1,12 +1,8 @@
-import { Directive, HostListener } from '@angular/core';
+import { Directive, HostListener } from "@angular/core";
 
-@Directive({
-    selector: '[appPreventCtrlScroll]',
-    standalone: false
-})
+@Directive({ selector: "[appPreventCtrlScroll]" })
 export class PreventCtrlScrollDirective {
-
-    @HostListener('wheel', ['$event'])
+    @HostListener("wheel", ["$event"])
     onWheel(event: WheelEvent) {
         if (event.ctrlKey) {
             event.preventDefault();

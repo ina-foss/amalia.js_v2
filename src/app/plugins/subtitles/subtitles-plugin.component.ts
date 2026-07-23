@@ -1,24 +1,23 @@
-import {PluginBase} from '../../core/plugin/plugin-base';
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {PlayerEventType} from '../../core/constant/event-type';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {Utils} from '../../core/utils/utils';
-import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
-import {SubtitleConfig} from '../../core/config/model/subtitle-config';
-import filter from 'lodash/filter';
-import map from 'lodash/map';
-import trim from 'lodash/trim';
-import {MediaPlayerService} from '../../service/media-player-service';
+import { PluginBase } from "../../core/plugin/plugin-base";
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { PlayerEventType } from "../../core/constant/event-type";
+import { PluginConfigData } from "../../core/config/model/plugin-config-data";
+import { Utils } from "../../core/utils/utils";
+import { TranscriptionLocalisation } from "../../core/metadata/model/transcription-localisation";
+import { SubtitleConfig } from "../../core/config/model/subtitle-config";
+import filter from "lodash/filter";
+import map from "lodash/map";
+import trim from "lodash/trim";
+import { MediaPlayerService } from "../../service/media-player-service";
 
 @Component({
-    selector: 'amalia-subtitles',
-    standalone: false,
-    templateUrl: './subtitles-plugin.component.html',
-    styleUrls: ['./subtitles-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom
+    selector: "amalia-subtitles",
+    templateUrl: "./subtitles-plugin.component.html",
+    styleUrls: ["./subtitles-plugin.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> implements OnInit {
-    public static PLUGIN_NAME = 'SUBTITLE';
+    public static PLUGIN_NAME = "SUBTITLE";
     public static TC_DELTA = 0.5;
     /**
      * Return  current time
@@ -26,7 +25,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     public currentTime: number;
     public subTitle: string;
     public transcriptions: Array<TranscriptionLocalisation> = null;
-    public posSubtitle: ['none', 'up', 'down'];
+    public posSubtitle: ["none", "up", "down"];
     /**
      * Plugin display state
      */
@@ -40,13 +39,20 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
         super.ngOnInit();
     }
 
-
     override init(): void {
         super.init();
         this.handleDisplayState();
-        this.addListener(this.mediaPlayerElement.eventEmitter,PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter,PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
-        this.addListener(this.mediaPlayerElement.eventEmitter,PlayerEventType.POSITION_SUBTITLE_CHANGE, this.changeSubtitlePosition);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.METADATA_LOADED,
+            this.handleMetadataLoaded,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.POSITION_SUBTITLE_CHANGE,
+            this.changeSubtitlePosition,
+        );
     }
     /**
      * switch container class based on width
@@ -62,7 +68,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
     public getDefaultConfig(): PluginConfigData<SubtitleConfig> {
         return {
             name: SubtitlesPluginComponent.PLUGIN_NAME,
-            data: {parseLevel: 2, tcDelta: SubtitlesPluginComponent.TC_DELTA}
+            data: { parseLevel: 2, tcDelta: SubtitlesPluginComponent.TC_DELTA },
         };
     }
 
@@ -96,8 +102,11 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
             this.transcriptions = new Array<TranscriptionLocalisation>();
             handleMetadataIds.forEach((metadataId) => {
                 this.logger.info(`get metadata for ${metadataId}`);
-                const transcriptionLocalisations = metadataManager
-                    .getTranscriptionLocalisations(metadataId, this.pluginConfiguration.data.parseLevel, false);
+                const transcriptionLocalisations = metadataManager.getTranscriptionLocalisations(
+                    metadataId,
+                    this.pluginConfiguration.data.parseLevel,
+                    false,
+                );
                 if (transcriptionLocalisations && transcriptionLocalisations.length > 0) {
                     this.transcriptions = this.transcriptions.concat(transcriptionLocalisations);
                 }
@@ -113,11 +122,10 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
             const currentTime = this.currentTime;
             const tcDelta = this.pluginConfiguration.data?.tcDelta || SubtitlesPluginComponent.TC_DELTA;
             const listOfTranscription = filter(this.transcriptions, (l) => {
-                return currentTime >= l.tcIn - tcDelta
-                    && currentTime < l.tcOut + tcDelta;
+                return currentTime >= l.tcIn - tcDelta && currentTime < l.tcOut + tcDelta;
             });
             if (listOfTranscription && listOfTranscription.length) {
-                let texts: any = map(listOfTranscription, 'text');
+                let texts: any = map(listOfTranscription, "text");
                 texts = trim(texts);
                 this.subTitle = texts.toString();
             } else {
@@ -132,8 +140,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
      */
 
     private changeSubtitlePosition(event) {
-        this.logger.debug('Change position subtitles', event);
+        this.logger.debug("Change position subtitles", event);
         this.posSubtitle = event;
     }
-
 }

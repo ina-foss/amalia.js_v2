@@ -12,16 +12,16 @@ import {
     Output,
     Renderer2,
     SimpleChange,
-} from '@angular/core';
-import Sortable, {Options} from 'sortablejs';
-import {GLOBALS} from './globals';
-import {SortablejsBindings} from './sortablejs-bindings';
-import {SortablejsService} from './sortablejs.service';
+} from "@angular/core";
+import Sortable, { Options } from "sortablejs";
+import { GLOBALS } from "./globals";
+import { SortablejsBindings } from "./sortablejs-bindings";
+import { SortablejsService } from "./sortablejs.service";
 
 export type SortableData = any | any[];
 
 const getIndexesFromEvent = (event: SortableEvent) => {
-    if (event.hasOwnProperty('newDraggableIndex') && event.hasOwnProperty('oldDraggableIndex')) {
+    if (event.hasOwnProperty("newDraggableIndex") && event.hasOwnProperty("oldDraggableIndex")) {
         return {
             new: event.newDraggableIndex,
             old: event.oldDraggableIndex,
@@ -34,12 +34,8 @@ const getIndexesFromEvent = (event: SortableEvent) => {
     }
 };
 
-@Directive({
-    selector: '[sortablejs]',
-    standalone: false
-})
+@Directive({ selector: "[sortablejs]" })
 export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
-
     @Input()
     sortablejs: SortableData; // array or a FormArray
 
@@ -57,16 +53,16 @@ export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
     @Output() sortablejsInit = new EventEmitter();
 
     constructor(
-            @Optional() @Inject(GLOBALS) private globalConfig: Options,
-            private service: SortablejsService,
-            private element: ElementRef,
-            private zone: NgZone,
-            private renderer: Renderer2,
-    ) {
-    }
+        @Optional() @Inject(GLOBALS) private globalConfig: Options,
+        private service: SortablejsService,
+        private element: ElementRef,
+        private zone: NgZone,
+        private renderer: Renderer2,
+    ) {}
 
     ngOnInit() {
-        if (Sortable && Sortable.create) { // Sortable does not exist in angular universal (SSR)
+        if (Sortable && Sortable.create) {
+            // Sortable does not exist in angular universal (SSR)
             this.create();
         }
     }
@@ -78,7 +74,7 @@ export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
             const previousOptions: Options = optionsChange.previousValue;
             const currentOptions: Options = optionsChange.currentValue;
 
-            Object.keys(currentOptions).forEach(optionName => {
+            Object.keys(currentOptions).forEach((optionName) => {
                 if (currentOptions[optionName] !== previousOptions[optionName]) {
                     // use low-level option setter
                     this.sortableInstance.option(optionName, this.options[optionName]);
@@ -94,7 +90,9 @@ export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     private create() {
-        const container = this.sortablejsContainer ? this.element.nativeElement.querySelector(this.sortablejsContainer) : this.element.nativeElement;
+        const container = this.sortablejsContainer
+            ? this.element.nativeElement.querySelector(this.sortablejsContainer)
+            : this.element.nativeElement;
 
         setTimeout(() => {
             this.sortableInstance = Sortable.create(container, this.options);
@@ -113,15 +111,16 @@ export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     private get options() {
-        return {...this.optionsWithoutEvents, ...this.overridenOptions};
+        return { ...this.optionsWithoutEvents, ...this.overridenOptions };
     }
 
     private get optionsWithoutEvents() {
-        return {...(this.globalConfig || {}), ...(this.sortablejsOptions || {})};
+        return { ...(this.globalConfig || {}), ...(this.sortablejsOptions || {}) };
     }
 
     private proxyEvent(eventName: string, ...params: any[]) {
-        this.zone.run(() => { // re-entering zone, see https://github.com/SortableJS/angular-sortablejs/issues/110#issuecomment-408874600
+        this.zone.run(() => {
+            // re-entering zone, see https://github.com/SortableJS/angular-sortablejs/issues/110#issuecomment-408874600
             if (this.optionsWithoutEvents && this.optionsWithoutEvents[eventName]) {
                 this.optionsWithoutEvents[eventName](...params);
             }
@@ -129,12 +128,12 @@ export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     private get isCloning() {
-        return this.sortableInstance.options.group.checkPull(this.sortableInstance, this.sortableInstance) === 'clone';
+        return this.sortableInstance.options.group.checkPull(this.sortableInstance, this.sortableInstance) === "clone";
     }
 
     private clone<T>(item: T): T {
         // by default pass the item through, no cloning performed
-        return (this.sortablejsCloneFunction || (subitem => subitem))(item);
+        return (this.sortablejsCloneFunction || ((subitem) => subitem))(item);
     }
 
     private get overridenOptions(): Options {
@@ -144,17 +143,17 @@ export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
             onAdd: (event: SortableEvent) => {
                 this.service.transfer = (items: any[]) => {
                     this.getBindings().injectIntoEvery(event.newIndex, items);
-                    this.proxyEvent('onAdd', event);
+                    this.proxyEvent("onAdd", event);
                 };
 
-                this.proxyEvent('onAddOriginal', event);
+                this.proxyEvent("onAddOriginal", event);
             },
             onRemove: (event: SortableEvent) => {
                 const bindings = this.getBindings();
 
                 if (bindings.provided) {
                     if (this.isCloning) {
-                        this.service.transfer(bindings.getFromEvery(event.oldIndex).map(item => this.clone(item)));
+                        this.service.transfer(bindings.getFromEvery(event.oldIndex).map((item) => this.clone(item)));
 
                         // great thanks to https://github.com/tauu
                         // event.item is the original item from the source list which is moved to the target list
@@ -174,18 +173,17 @@ export class SortablejsDirective implements OnInit, OnChanges, OnDestroy {
                     this.service.transfer = null;
                 }
 
-                this.proxyEvent('onRemove', event);
+                this.proxyEvent("onRemove", event);
             },
             onUpdate: (event: SortableEvent) => {
                 const bindings = this.getBindings();
                 const indexes = getIndexesFromEvent(event);
 
                 bindings.injectIntoEvery(indexes.new, bindings.extractFromEvery(indexes.old));
-                this.proxyEvent('onUpdate', event);
+                this.proxyEvent("onUpdate", event);
             },
         };
     }
-
 }
 
 interface SortableEvent {

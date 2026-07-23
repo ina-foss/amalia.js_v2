@@ -12,7 +12,7 @@
 | 2 | Builder esbuild + karma moderne | ✅ (lint + 856 specs + build ; dist −361 Ko, styles.css −188 Ko, −396 paquets npm ; EventEmitter interne remplace le builtin 'events') | 2026-07-23 | |
 | 3 | Dédup styles (miroir shadow, theme.css, primeflex, primeicons) | ✅ code+tests (main.js 5,93→3,53 Mo −40 %, styles.css 723 Ko→18 o, polices −1,49 Mo) — **smoke visuel à dérouler avant merge** | 2026-07-23 | 3 commits |
 | 4 | Réductions JS (lodash, hls type-only) + tsconfig | ✅ (lint + 856 specs + build mono-fichier ; main.js −50,7 Ko / −17,3 Ko gzip) | 2026-07-23 | |
-| 5 | Standalone + `createApplication()` | ⬜ | | |
+| 5 | Standalone + `createApplication()` | ✅ (lint + 858 specs + build mono-fichier ; main.js −44,2 Ko / −5,9 Ko transfert ; app.module.ts supprimé → bootstrap.ts) | 2026-07-23 | |
 | 6 | `PlaybackState` signals + politique de zone PluginBase | ⬜ | | |
 | 7 | OnPush vague 1 (sûrs) | ⬜ | | |
 | 7 | OnPush vague 2 (moyens) | ⬜ | | |

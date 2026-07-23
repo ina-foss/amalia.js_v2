@@ -1,4 +1,4 @@
-import {PluginBase} from '../../core/plugin/plugin-base';
+import { PluginBase } from "../../core/plugin/plugin-base";
 import {
     AfterViewInit,
     ChangeDetectorRef,
@@ -7,16 +7,17 @@ import {
     HostBinding,
     OnInit,
     ViewChild,
-    ViewEncapsulation
-} from '@angular/core';
-import {PlayerEventType} from '../../core/constant/event-type';
-import {PluginConfigData} from '../../core/config/model/plugin-config-data';
-import {HistogramConfig} from '../../core/config/model/histogram-config';
-import {MediaPlayerService} from '../../service/media-player-service';
-import {DefaultLogger} from '../../core/logger/default-logger';
-import WaveSurfer from 'wavesurfer.js';
-import Minimap from 'wavesurfer.js/dist/plugins/minimap.js';
-import Zoom from 'wavesurfer.js/dist/plugins/zoom.js';
+    ViewEncapsulation,
+} from "@angular/core";
+import { PlayerEventType } from "../../core/constant/event-type";
+import { PluginConfigData } from "../../core/config/model/plugin-config-data";
+import { HistogramConfig } from "../../core/config/model/histogram-config";
+import { MediaPlayerService } from "../../service/media-player-service";
+import { DefaultLogger } from "../../core/logger/default-logger";
+import WaveSurfer from "wavesurfer.js";
+import Minimap from "wavesurfer.js/dist/plugins/minimap.js";
+import Zoom from "wavesurfer.js/dist/plugins/zoom.js";
+import { NgClass } from "@angular/common";
 
 /**
  * Shape of the peaks payload expected to live in `Metadata.data` for the
@@ -38,18 +39,18 @@ interface SurferPeaks {
  * clicks on the waveform delegate to `mediaPlayer.setCurrentTime()`.
  */
 @Component({
-    selector: 'amalia-histogram',
-    standalone: false,
-    templateUrl: './histogram-plugin.component.html',
-    styleUrls: ['./histogram-plugin.component.scss'],
-    encapsulation: ViewEncapsulation.ShadowDom
+    selector: "amalia-histogram",
+    templateUrl: "./histogram-plugin.component.html",
+    styleUrls: ["./histogram-plugin.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    imports: [NgClass],
 })
 export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit {
-    public static PLUGIN_NAME = 'HISTOGRAM';
+    public static PLUGIN_NAME = "HISTOGRAM";
     public static DEFAULT_PAD_PEAKS = 32;
-    public static DEFAULT_WAVE_COLOR = 'rgb(54,76,97)';
-    public static DEFAULT_CURSOR_COLOR = '#ffffff';
-    public static DEFAULT_MINIMAP_OVERLAY_COLOR = 'rgba(100,100,100,0.5)';
+    public static DEFAULT_WAVE_COLOR = "rgb(54,76,97)";
+    public static DEFAULT_CURSOR_COLOR = "#ffffff";
+    public static DEFAULT_MINIMAP_OVERLAY_COLOR = "rgba(100,100,100,0.5)";
     public static DEFAULT_MIN_PX_PER_SEC = 0;
     public static DEFAULT_MIN_PX_PER_SEC_SPECTROGRAM = 180;
     public static DEFAULT_MINIMAP_HEIGHT = 30;
@@ -63,21 +64,21 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      *  Kept deliberately larger than the 10px-wide CSS grip handle drawn by the consumer app
      *  (px-front) so the hit zone stays easy to grab even though the visual affordance is small. */
     private static readonly VIEWPORT_HANDLE_HIT_PX = 8;
-    private static readonly ERROR_MSG_WAVE_FORMS = 'Les formes d\'ondes n\'ont pas pu être chargées';
+    private static readonly ERROR_MSG_WAVE_FORMS = "Les formes d'ondes n'ont pas pu être chargées";
 
-    @ViewChild('wavesurferContainer')
+    @ViewChild("wavesurferContainer")
     public wavesurferContainer!: ElementRef<HTMLElement>;
-    @ViewChild('minimapContainer')
+    @ViewChild("minimapContainer")
     public minimapContainer!: ElementRef<HTMLElement>;
-    @ViewChild('minimapHitArea')
+    @ViewChild("minimapHitArea")
     public minimapHitArea!: ElementRef<HTMLElement>;
 
-    @HostBinding('style.--amalia-histogram-bottom-inset')
-    public histogramBottomInset = '0px';
+    @HostBinding("style.--amalia-histogram-bottom-inset")
+    public histogramBottomInset = "0px";
 
     public pinned = false;
     public pinnedControlbar = false;
-    public displayState: string = 'l';
+    public displayState: string = "l";
     private resizeDebounce: any = null;
     private pendingTimeouts = new Set<ReturnType<typeof setTimeout>>();
     private destroyed = false;
@@ -101,7 +102,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     constructor(
         playerService: MediaPlayerService,
         private cd: ChangeDetectorRef,
-        private hostElement: ElementRef<HTMLElement>
+        private hostElement: ElementRef<HTMLElement>,
     ) {
         super(playerService);
         this.pluginName = HistogramPluginComponent.PLUGIN_NAME;
@@ -140,15 +141,39 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     override init(): void {
         super.init();
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, this.handleMetadataLoaded);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.DURATION_CHANGE,
+            this.handleOnDurationChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.METADATA_LOADED,
+            this.handleMetadataLoaded,
+        );
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.START_SEEKING, this.handleStartSeeking);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.CONTROL_BAR_TOGGLED, this.handleControlBarToggled);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handlePlayerResized);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_CONTROLBAR_CHANGE, this.handlePinnedControlbarChange);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PINNED_SLIDER_CHANGE, this.handlePinnedSliderChange);
-        this.displayState = this.mediaPlayerElement.getDisplayState() ?? 'l';
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.CONTROL_BAR_TOGGLED,
+            this.handleControlBarToggled,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_RESIZED,
+            this.handlePlayerResized,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PINNED_CONTROLBAR_CHANGE,
+            this.handlePinnedControlbarChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PINNED_SLIDER_CHANGE,
+            this.handlePinnedSliderChange,
+        );
+        this.displayState = this.mediaPlayerElement.getDisplayState() ?? "l";
         // If metadata are already loaded by the time this plugin is created
         // (typical lazy-load via `loadDataSourceForPlugin('histogram')` resolved
         // before insertion), render immediately. Otherwise we rely on the
@@ -171,8 +196,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
                 withSpectrogram: false,
                 waveColor: HistogramPluginComponent.DEFAULT_WAVE_COLOR,
                 cursorColor: HistogramPluginComponent.DEFAULT_CURSOR_COLOR,
-                minimapHeight: HistogramPluginComponent.DEFAULT_MINIMAP_HEIGHT
-            }
+                minimapHeight: HistogramPluginComponent.DEFAULT_MINIMAP_HEIGHT,
+            },
         };
     }
 
@@ -183,7 +208,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     public override handleMetadataLoaded = (): void => {
         const metadataId = this.pluginConfiguration?.metadataIds?.[0];
         if (!metadataId) {
-            this.logger?.warn('metadataIds is missing in plugin configuration');
+            this.logger?.warn("metadataIds is missing in plugin configuration");
             return;
         }
         const metadataManager = this.mediaPlayerElement?.metadataManager;
@@ -195,7 +220,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const peaks = this.extractPeaks(metadataId);
         if (!peaks) {
             this.logger?.warn(`No usable peaks payload found in metadata '${metadataId}'`);
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERROR, HistogramPluginComponent.ERROR_MSG_WAVE_FORMS);
+            this.mediaPlayerElement.eventEmitter.emit(
+                PlayerEventType.ERROR,
+                HistogramPluginComponent.ERROR_MSG_WAVE_FORMS,
+            );
             return;
         }
         this.peaks = peaks;
@@ -206,7 +234,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             return;
         }
         this.createOrUpdateWavesurfer();
-        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ERASE_ERROR, HistogramPluginComponent.ERROR_MSG_WAVE_FORMS);
+        this.mediaPlayerElement.eventEmitter.emit(
+            PlayerEventType.ERASE_ERROR,
+            HistogramPluginComponent.ERROR_MSG_WAVE_FORMS,
+        );
     };
 
     /**
@@ -219,7 +250,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const metadata = this.mediaPlayerElement.metadataManager.getMetadata(metadataId);
             const payload: any = metadata?.data ?? metadata?.localisation;
             if (payload && Array.isArray(payload.posbins) && Array.isArray(payload.negbins)) {
-                return {posbins: payload.posbins, negbins: payload.negbins};
+                return { posbins: payload.posbins, negbins: payload.negbins };
             }
         } catch (e) {
             this.logger?.warn(`Error reading peaks metadata '${metadataId}'`, e);
@@ -236,7 +267,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const padPeaks = new Array(Math.max(0, padCount)).fill(0);
         return [
             [...padPeaks, ...(this.peaks?.posbins ?? [])],
-            [...padPeaks, ...(this.peaks?.negbins ?? [])]
+            [...padPeaks, ...(this.peaks?.negbins ?? [])],
         ];
     }
 
@@ -257,10 +288,17 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const minimapProgressColor = data.minimapProgressColor ?? progressColor;
         const minimapOverlayColor = data.minimapOverlayColor ?? HistogramPluginComponent.DEFAULT_MINIMAP_OVERLAY_COLOR;
         const cursorColor = data.cursorColor ?? HistogramPluginComponent.DEFAULT_CURSOR_COLOR;
-        const minPxPerSec = data.minPxPerSec ?? (withSpectrogram
+        const minPxPerSec =
+            data.minPxPerSec ??
+            (withSpectrogram
                 ? HistogramPluginComponent.DEFAULT_MIN_PX_PER_SEC_SPECTROGRAM
                 : HistogramPluginComponent.DEFAULT_MIN_PX_PER_SEC);
-        const splitChannels = withSpectrogram ? false : [{waveColor, progressColor}, {waveColor, progressColor}];
+        const splitChannels = withSpectrogram
+            ? false
+            : [
+                  { waveColor, progressColor },
+                  { waveColor, progressColor },
+              ];
         const waveformHeight = this.getWaveformChannelHeight(splitChannels);
         const minimapChannelHeight = this.getChannelHeight(this.getMinimapTotalHeight(), splitChannels);
 
@@ -278,16 +316,16 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             minPxPerSec: 0,
             fillParent: true,
             interact: false,
-            dragToSeek: false
+            dragToSeek: false,
         });
-        minimapPlugin.on('click', (progress: number) => this.navigateMinimapToProgress(progress));
+        minimapPlugin.on("click", (progress: number) => this.navigateMinimapToProgress(progress));
         this.minimapPlugin = minimapPlugin;
         this.attachMinimapViewportDrag();
         this.lastAppliedMinimapHeight = minimapChannelHeight;
 
         const plugins: any[] = [minimapPlugin];
         if (!withSpectrogram) {
-            plugins.push(Zoom.create({exponentialZooming: true, maxZoom: 400}));
+            plugins.push(Zoom.create({ exponentialZooming: true, maxZoom: 400 }));
         }
 
         this.wavesurfer = WaveSurfer.create({
@@ -307,7 +345,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             dragToSeek: false,
             cursorColor,
             cursorWidth: 2,
-            plugins
+            plugins,
         });
 
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
@@ -317,11 +355,13 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         (this.wavesurfer as any).seekTo = overriddenSeekTo;
 
         // User-driven seeking on the waveform delegates back to the main player.
-        this.wavesurfer.on('interaction', (newTime: number) => {
+        this.wavesurfer.on("interaction", (newTime: number) => {
             this.seekMediaPlayerToTime(newTime);
         });
-        this.wavesurfer.on('ready', () => {
-            const minimapPlugin: any = this.wavesurfer?.getActivePlugins().find((plugin: any) => plugin?.miniWavesurfer);
+        this.wavesurfer.on("ready", () => {
+            const minimapPlugin: any = this.wavesurfer
+                ?.getActivePlugins()
+                .find((plugin: any) => plugin?.miniWavesurfer);
             if (minimapPlugin?.miniWavesurfer) {
                 minimapPlugin.miniWavesurfer.getCurrentTime = overriddenGetCurrentTime;
                 minimapPlugin.miniWavesurfer.seekTo = overriddenSeekTo;
@@ -341,7 +381,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      *  against a stub/mock lacking the method (e.g. in tests). */
     private forceMinimapRefit(minimapPlugin: any): void {
         const miniWavesurfer = minimapPlugin?.miniWavesurfer;
-        if (miniWavesurfer && typeof miniWavesurfer.zoom === 'function') {
+        if (miniWavesurfer && typeof miniWavesurfer.zoom === "function") {
             miniWavesurfer.zoom(0);
         }
     }
@@ -383,7 +423,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             try {
                 this.wavesurfer.destroy();
             } catch (e) {
-                this.logger?.warn('Error while destroying wavesurfer', e);
+                this.logger?.warn("Error while destroying wavesurfer", e);
             }
             this.wavesurfer = null;
         }
@@ -399,7 +439,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     private getMinimapTotalHeight(): number {
-        return Math.floor((this.minimapContainer?.nativeElement?.clientHeight ?? 0) || HistogramPluginComponent.DEFAULT_MINIMAP_HEIGHT);
+        return Math.floor(
+            (this.minimapContainer?.nativeElement?.clientHeight ?? 0) ||
+                HistogramPluginComponent.DEFAULT_MINIMAP_HEIGHT,
+        );
     }
 
     private getConfiguredSplitChannels(): false | Array<unknown> {
@@ -407,7 +450,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     }
 
     private attachWaveformResizeObserver(): void {
-        if (!this.wavesurferContainer || typeof ResizeObserver !== 'function') {
+        if (!this.wavesurferContainer || typeof ResizeObserver !== "function") {
             return;
         }
         this.waveformResizeObserver?.disconnect();
@@ -422,7 +465,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.cancelTimeout(this.resizeDebounce);
         this.resizeDebounce = this.scheduleTimeout(
             () => this.syncWaveformSize(),
-            HistogramPluginComponent.RERENDER_DEBOUNCE_MS
+            HistogramPluginComponent.RERENDER_DEBOUNCE_MS,
         );
     }
 
@@ -437,12 +480,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         let changed = false;
         if (waveformHeight !== this.lastAppliedWaveformHeight) {
             this.lastAppliedWaveformHeight = waveformHeight;
-            this.wavesurfer.setOptions({height: waveformHeight, fillParent: true});
+            this.wavesurfer.setOptions({ height: waveformHeight, fillParent: true });
             changed = true;
         }
         if (minimapHeight !== this.lastAppliedMinimapHeight) {
             this.lastAppliedMinimapHeight = minimapHeight;
-            this.minimapPlugin?.miniWavesurfer?.setOptions({height: minimapHeight, fillParent: true});
+            this.minimapPlugin?.miniWavesurfer?.setOptions({ height: minimapHeight, fillParent: true });
             changed = true;
         }
         // The minimap's own wavesurfer instance only re-renders on setOptions() above when its
@@ -483,7 +526,8 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
         const activePlugins = this.wavesurfer.getActivePlugins() as any[];
         const minimapPlugin = activePlugins.find((plugin: any) => plugin?.miniWavesurfer);
-        const minimapRenderer = minimapPlugin?.miniWavesurfer?.getRenderer?.() ?? minimapPlugin?.miniWavesurfer?.renderer;
+        const minimapRenderer =
+            minimapPlugin?.miniWavesurfer?.getRenderer?.() ?? minimapPlugin?.miniWavesurfer?.renderer;
         minimapRenderer?.renderProgress?.(safeProgress, false);
     }
 
@@ -511,15 +555,15 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         const overlay = (this.minimapPlugin as any)?.overlay as HTMLElement | undefined;
 
         this.minimapViewportDragCleanup?.();
-        hitArea.style.cursor = 'pointer';
-        hitArea.style.touchAction = 'none';
+        hitArea.style.cursor = "pointer";
+        hitArea.style.touchAction = "none";
         if (overlay) {
-            overlay.style.pointerEvents = 'auto';
-            overlay.style.touchAction = 'none';
-            overlay.style.zIndex = '21';
+            overlay.style.pointerEvents = "auto";
+            overlay.style.touchAction = "none";
+            overlay.style.zIndex = "21";
         }
 
-        type DragMode = 'pan' | 'resize-start' | 'resize-end' | null;
+        type DragMode = "pan" | "resize-start" | "resize-end" | null;
 
         let activePointerId: number | null = null;
         let dragMode: DragMode = null;
@@ -544,7 +588,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         // wavesurfer's own JS state (getScroll()/getWidth()), always relative to hitArea's rect
         // (it spans the full track regardless of which element — hitArea or the overlay —
         // actually received the pointer event), so both listeners agree on the same geometry.
-        const getViewportEdges = (): { leftSeconds: number; rightSeconds: number; leftX: number; rightX: number } | null => {
+        const getViewportEdges = (): {
+            leftSeconds: number;
+            rightSeconds: number;
+            leftX: number;
+            rightX: number;
+        } | null => {
             if (!this.wavesurfer || !this.duration) {
                 return null;
             }
@@ -569,35 +618,38 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         // picking whichever edge the pointer is actually closer to, rather than always
         // favouring the start handle.
         const detectResizeEdge = (
-            event: PointerEvent, edges: { leftX: number; rightX: number }
-        ): 'resize-start' | 'resize-end' | null => {
+            event: PointerEvent,
+            edges: { leftX: number; rightX: number },
+        ): "resize-start" | "resize-end" | null => {
             const distToStart = Math.abs(event.clientX - edges.leftX);
             const distToEnd = Math.abs(event.clientX - edges.rightX);
             if (distToStart <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX && distToStart <= distToEnd) {
-                return 'resize-start';
+                return "resize-start";
             }
-            return distToEnd <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX ? 'resize-end' : null;
+            return distToEnd <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX ? "resize-end" : null;
         };
         const beginResizeDrag = (
-            event: PointerEvent, resizeEdge: 'resize-start' | 'resize-end', edges: { leftSeconds: number; rightSeconds: number }
+            event: PointerEvent,
+            resizeEdge: "resize-start" | "resize-end",
+            edges: { leftSeconds: number; rightSeconds: number },
         ): void => {
             // The edge NOT being dragged stays fixed (the anchor); the other one needs its own
             // starting position captured too, so pointermove can compute its new position as
             // `draggedEdgeStart + deltaSeconds` — reusing the anchor's value for that base was
             // the bug: it collapsed the resize onto the wrong edge whenever the anchor wasn't
             // at/near 0.
-            resizeAnchorSeconds = resizeEdge === 'resize-start' ? edges.rightSeconds : edges.leftSeconds;
-            resizeDraggedEdgeStartSeconds = resizeEdge === 'resize-start' ? edges.leftSeconds : edges.rightSeconds;
+            resizeAnchorSeconds = resizeEdge === "resize-start" ? edges.rightSeconds : edges.leftSeconds;
+            resizeDraggedEdgeStartSeconds = resizeEdge === "resize-start" ? edges.leftSeconds : edges.rightSeconds;
             resizeHitAreaWidthPx = hitArea.getBoundingClientRect().width;
             dragMode = resizeEdge;
-            setCursor(event, 'ew-resize');
+            setCursor(event, "ew-resize");
             (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
         };
         const beginPanOrSeek = (event: PointerEvent): void => {
-            dragMode = this.canScrollWaveform() ? 'pan' : null;
-            setCursor(event, dragMode === 'pan' ? 'grabbing' : 'pointer');
+            dragMode = this.canScrollWaveform() ? "pan" : null;
+            setCursor(event, dragMode === "pan" ? "grabbing" : "pointer");
             (event.currentTarget as Element).setPointerCapture?.(event.pointerId);
-            if (dragMode === 'pan') {
+            if (dragMode === "pan") {
                 this.panWaveformViewportToProgress(getProgressFromPointer(event));
             }
         };
@@ -629,7 +681,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             const distToStart = Math.abs(event.clientX - edges.leftX);
             const distToEnd = Math.abs(event.clientX - edges.rightX);
             const nearEdge = Math.min(distToStart, distToEnd) <= HistogramPluginComponent.VIEWPORT_HANDLE_HIT_PX;
-            setCursor(event, nearEdge ? 'ew-resize' : (this.canScrollWaveform() ? 'grab' : 'pointer'));
+            setCursor(event, nearEdge ? "ew-resize" : this.canScrollWaveform() ? "grab" : "pointer");
         };
         const onPointerMove = (event: PointerEvent) => {
             if (activePointerId !== event.pointerId || !this.wavesurfer) {
@@ -641,11 +693,16 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             stopEvent(event);
             const deltaX = event.clientX - startX;
             hasMoved = hasMoved || Math.abs(deltaX) > 4;
-            if (dragMode === 'pan') {
+            if (dragMode === "pan") {
                 this.panWaveformViewportToProgress(getProgressFromPointer(event));
-            } else if (dragMode === 'resize-start' || dragMode === 'resize-end') {
+            } else if (dragMode === "resize-start" || dragMode === "resize-end") {
                 this.resizeWaveformViewport(
-                    dragMode, event.clientX, startX, resizeHitAreaWidthPx, resizeAnchorSeconds, resizeDraggedEdgeStartSeconds
+                    dragMode,
+                    event.clientX,
+                    startX,
+                    resizeHitAreaWidthPx,
+                    resizeAnchorSeconds,
+                    resizeDraggedEdgeStartSeconds,
                 );
             }
         };
@@ -660,7 +717,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             activePointerId = null;
             dragMode = null;
             hasMoved = false;
-            setCursor(event, 'pointer');
+            setCursor(event, "pointer");
             (event.currentTarget as Element).releasePointerCapture?.(event.pointerId);
         };
         const onClick = (event: MouseEvent) => {
@@ -671,19 +728,19 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
         const interactiveElements = [hitArea, ...(overlay ? [overlay] : [])];
         for (const el of interactiveElements) {
-            el.addEventListener('pointerdown', onPointerDown, true);
-            el.addEventListener('pointermove', onPointerMove, true);
-            el.addEventListener('pointerup', onPointerUp, true);
-            el.addEventListener('pointercancel', onPointerUp, true);
-            el.addEventListener('click', onClick, true);
+            el.addEventListener("pointerdown", onPointerDown, true);
+            el.addEventListener("pointermove", onPointerMove, true);
+            el.addEventListener("pointerup", onPointerUp, true);
+            el.addEventListener("pointercancel", onPointerUp, true);
+            el.addEventListener("click", onClick, true);
         }
         this.minimapViewportDragCleanup = () => {
             for (const el of interactiveElements) {
-                el.removeEventListener('pointerdown', onPointerDown, true);
-                el.removeEventListener('pointermove', onPointerMove, true);
-                el.removeEventListener('pointerup', onPointerUp, true);
-                el.removeEventListener('pointercancel', onPointerUp, true);
-                el.removeEventListener('click', onClick, true);
+                el.removeEventListener("pointerdown", onPointerDown, true);
+                el.removeEventListener("pointermove", onPointerMove, true);
+                el.removeEventListener("pointerup", onPointerUp, true);
+                el.removeEventListener("pointercancel", onPointerUp, true);
+                el.removeEventListener("click", onClick, true);
             }
         };
     }
@@ -702,7 +759,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             return;
         }
         const maxScroll = metrics.totalWidth - metrics.visibleWidth;
-        const targetScroll = Math.max(0, Math.min(this.clampProgress(progress) * metrics.totalWidth - metrics.visibleWidth / 2, maxScroll));
+        const targetScroll = Math.max(
+            0,
+            Math.min(this.clampProgress(progress) * metrics.totalWidth - metrics.visibleWidth / 2, maxScroll),
+        );
         this.wavesurfer.setScroll(targetScroll);
     }
 
@@ -714,12 +774,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * pointerdown so repeated moves recompute from fixed absolutes and never drift.
      */
     private resizeWaveformViewport(
-        mode: 'resize-start' | 'resize-end',
+        mode: "resize-start" | "resize-end",
         clientX: number,
         startX: number,
         hitAreaWidthPx: number,
         anchorSeconds: number,
-        draggedEdgeStartSeconds: number
+        draggedEdgeStartSeconds: number,
     ): void {
         if (!this.wavesurfer || !this.duration || !hitAreaWidthPx) {
             return;
@@ -737,7 +797,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
         let leftSeconds: number;
         let rightSeconds: number;
-        if (mode === 'resize-end') {
+        if (mode === "resize-end") {
             leftSeconds = anchorSeconds;
             rightSeconds = Math.min(this.duration, Math.max(anchorSeconds + minVisibleDuration, draggedEdgeSeconds));
         } else {
@@ -751,7 +811,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
         const newPxPerSec = Math.min(
             HistogramPluginComponent.MAX_ZOOM_PX_PER_SEC,
-            metrics.visibleWidth / visibleDuration
+            metrics.visibleWidth / visibleDuration,
         );
         this.wavesurfer.zoom(newPxPerSec);
         this.wavesurfer.setScroll(leftSeconds * newPxPerSec);
@@ -775,7 +835,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         if (!totalWidth || !visibleWidth) {
             return null;
         }
-        return {totalWidth, visibleWidth};
+        return { totalWidth, visibleWidth };
     }
 
     private seekMediaPlayerToProgress(progress: number): void {
@@ -798,8 +858,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     private queueTimeRender(time: number): void {
         if (!this.wavesurfer || isNaN(time)) return;
-        if (this.lastRenderedTime >= 0
-            && Math.abs(time - this.lastRenderedTime) < HistogramPluginComponent.MIN_TIME_DELTA_BEFORE_REPAINT) {
+        if (
+            this.lastRenderedTime >= 0 &&
+            Math.abs(time - this.lastRenderedTime) < HistogramPluginComponent.MIN_TIME_DELTA_BEFORE_REPAINT
+        ) {
             return;
         }
         this.queuedTime = time;
@@ -835,7 +897,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.cancelTimeout(this.resizeDebounce);
         this.resizeDebounce = this.scheduleTimeout(() => {
             if (this.wavesurfer) {
-                this.wavesurfer.setOptions({duration: this.duration});
+                this.wavesurfer.setOptions({ duration: this.duration });
             } else if (this.peaks) {
                 this.createOrUpdateWavesurfer();
             } else if (this.mediaPlayerElement.isMetadataLoaded) {
@@ -858,7 +920,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     };
 
     private handlePlayerResized = (): void => {
-        this.displayState = this.mediaPlayerElement.getDisplayState() ?? 'l';
+        this.displayState = this.mediaPlayerElement.getDisplayState() ?? "l";
         this.scheduleWaveformSizeSync();
         this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
     };
@@ -903,9 +965,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     private syncBottomInsetIfNeeded(): void {
         const controlBarElement = this.getControlBarElement();
-        const nextBottomInset = (controlBarElement && this.pinnedControlbar)
-            ? `${Math.max(0, Math.ceil(controlBarElement.getBoundingClientRect().height || 0))}px`
-            : '0px';
+        const nextBottomInset =
+            controlBarElement && this.pinnedControlbar
+                ? `${Math.max(0, Math.ceil(controlBarElement.getBoundingClientRect().height || 0))}px`
+                : "0px";
         if (this.histogramBottomInset === nextBottomInset) {
             return;
         }
@@ -915,7 +978,11 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     private attachControlBarResizeObserver(): void {
         const controlBarElement = this.getControlBarElement();
-        if (!controlBarElement || typeof ResizeObserver !== 'function' || this.observedControlBar === controlBarElement) {
+        if (
+            !controlBarElement ||
+            typeof ResizeObserver !== "function" ||
+            this.observedControlBar === controlBarElement
+        ) {
             return;
         }
         this.controlBarResizeObserver?.disconnect();
@@ -929,18 +996,22 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         while (node) {
             const root = node.getRootNode();
             if (root instanceof ShadowRoot) {
-                const found = root.querySelector('amalia-control-bar');
+                const found = root.querySelector("amalia-control-bar");
                 if (found) return found as HTMLElement;
                 // Remonter au host du shadow root pour chercher dans le DOM parent
                 const host = root.host;
                 const parent = host?.parentElement;
                 if (parent) {
-                    const foundInParent = parent.querySelector('amalia-control-bar');
+                    const foundInParent = parent.querySelector("amalia-control-bar");
                     if (foundInParent) return foundInParent as HTMLElement;
                 }
                 node = host;
             } else {
-                return (root as Document | DocumentFragment).querySelector?.('amalia-control-bar') as HTMLElement | null ?? null;
+                return (
+                    ((root as Document | DocumentFragment).querySelector?.(
+                        "amalia-control-bar",
+                    ) as HTMLElement | null) ?? null
+                );
             }
         }
         return null;
@@ -952,7 +1023,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     override ngOnDestroy(): void {
         this.destroyed = true;
-        this.pendingTimeouts.forEach(timeout => clearTimeout(timeout));
+        this.pendingTimeouts.forEach((timeout) => clearTimeout(timeout));
         this.pendingTimeouts.clear();
         this.resizeDebounce = null;
         this.controlBarResizeObserver?.disconnect();
