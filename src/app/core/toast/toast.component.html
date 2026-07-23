@@ -1,6 +1,6 @@
 <p-toast [position]="position" [key]="key" appendTo="self">
     <ng-template let-message pTemplate="headless" let-closeFn="closeFn">
-        <p-progressBar [value]="message.data.progress" [showValue]="false" styleClass="progress-bar"></p-progressBar>
+        <p-progressBar [value]="message.data.progress()" [showValue]="false" styleClass="progress-bar"></p-progressBar>
         <div class="p-toast-message-template-content">
             @if (message.severity === "error") {
                 <div class="p-toast-message-template-error-icon">

@@ -14,7 +14,7 @@
 | 4 | Réductions JS (lodash, hls type-only) + tsconfig | ✅ (lint + 856 specs + build mono-fichier ; main.js −50,7 Ko / −17,3 Ko gzip) | 2026-07-23 | |
 | 5 | Standalone + `createApplication()` | ✅ (lint + 858 specs + build mono-fichier ; main.js −44,2 Ko / −5,9 Ko transfert ; app.module.ts supprimé → bootstrap.ts) | 2026-07-23 | |
 | 6 | `PlaybackState` signals + politique de zone PluginBase | ✅ (lint + 876 specs dont 17 nouvelles playback-state + build mono-fichier ; main.js 3,44 Mo stable, comportement inchangé — défaut `'zone'`) | 2026-07-23 | |
-| 7 | OnPush vague 1 (sûrs) | ⬜ | | |
+| 7 | OnPush vague 1 (sûrs) | ✅ (lint + 876 specs + build mono-fichier ; main.js 3,44 Mo stable ; ina-messages/toast/subtitles/time-bar en OnPush — subtitles et time-bar consomment PlaybackState via computeds, listeners TIME_CHANGE/DURATION_CHANGE/SEEKING supprimés, 4 detectChanges manuels retirés du toast) | 2026-07-23 | |
 | 7 | OnPush vague 2 (moyens) | ⬜ | | |
 | 7 | OnPush vague 3 (durs) | ⬜ | | |
 | 8 | Hors-zone + `@defer` transcription + audit setTimeout | ⬜ | | |

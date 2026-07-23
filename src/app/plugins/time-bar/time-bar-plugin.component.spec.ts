@@ -1,6 +1,5 @@
 import { waitForAsync, getTestBed, TestBed } from '@angular/core/testing';
 import { TimeBarPluginComponent } from './time-bar-plugin.component';
-import { ComponentFixture } from '@angular/core/testing';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { ConfigurationManager } from '../../core/config/configuration-manager';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -21,6 +20,8 @@ import { ElementRef } from '@angular/core';
 import { FormatUtils } from 'src/app/core/utils/format-utils';
 import { Utils } from 'src/app/core/utils/utils';
 import { LABEL } from '../../core/constant/labels';
+import { PlaybackState } from '../../core/state/playback-state';
+import { PlayerEventType } from '../../core/constant/event-type';
 
 describe('TimeBar plugin test', () => {
     let injector: TestBed;
@@ -80,20 +81,20 @@ describe('TimeBar plugin test', () => {
         plugin.mediaPlayerElement = mpe;
         plugin.ngOnInit();
         plugin.hideTimeBar();
-        expect(plugin.active).toEqual(false);
+        expect(plugin.active()).toEqual(false);
         plugin.showTimeBar();
-        expect(plugin.active).toEqual(true);
+        expect(plugin.active()).toEqual(true);
+        // setCurrentTime émet TIME_CHANGE sur l'emitter du mpe : le store PlaybackState relit
+        // le média et le computed timeTimeBar (phase 7) suit sans listener dédié.
         mediaPlayer.setCurrentTime(10);
-        plugin.handleOnTimeChange();
-        expect(plugin.timeTimeBar).toEqual(10);
+        expect(plugin.timeTimeBar()).toEqual(10);
         plugin.handleDisplayState();
-        expect(plugin.displayState).toEqual('l');
+        expect(plugin.displayState()).toEqual('l');
         mpe.setMediaPlayerWidth(320);
         plugin.handleDisplayState();
-        expect(plugin.displayState).toEqual('xs');
+        expect(plugin.displayState()).toEqual('xs');
         plugin.showTimeBar();
-        expect(plugin.active).toEqual(false);
-        plugin.handleOnDurationChange();
+        expect(plugin.active()).toEqual(false);
         playerService.get('PLAYER');
         playerService.get('PLAYER2');
         playerService.get(null);
@@ -135,8 +136,15 @@ describe('TimeBar plugin test', () => {
             getCurrentTime: () => 5,
             getDuration: () => 100
         };
+        // Store réel connecté à un emitter réel : les computeds startTc/timeTimeBar/
+        // durationTimeBar (phase 7) se nourrissent de playback.* au lieu des anciens
+        // handlers TIME_CHANGE/DURATION_CHANGE/SEEKING.
+        const emitter = new EventEmitter();
+        const playback = new PlaybackState();
+        playback.connect(emitter, () => mediaPlayer as any);
         const mediaPlayerElement = {
-            eventEmitter: new EventEmitter(),
+            eventEmitter: emitter,
+            playback,
             getConfiguration: () => ({ tcOffset: 10, player: { framerate: 30 } }),
             getDisplayState: () => 's',
             getMediaPlayer: () => mediaPlayer,
@@ -160,18 +168,22 @@ describe('TimeBar plugin test', () => {
         expect(Number(plugin.fps)).toBe(30);
 
         plugin.showTimeBar();
-        expect(plugin.active).toBeFalse();
+        expect(plugin.active()).toBeFalse();
 
-        plugin.handleOnTimeChange();
-        expect(plugin.timeTimeBar).toBe(17);
+        expect(plugin.startTc()).toBe(12);
+        expect(plugin.durationTimeBar()).toBeNaN();
 
-        plugin.handleOnDurationChange();
-        expect(plugin.startTc).toBe(12);
-        expect(plugin.timeTimeBar).toBe(17);
-        expect(plugin.durationTimeBar).toBe(112);
+        emitter.emit(PlayerEventType.TIME_CHANGE);
+        expect(plugin.timeTimeBar()).toBe(17);
 
-        plugin.handleOnSeeking(3);
-        expect(plugin.timeTimeBar).toBe(15);
+        emitter.emit(PlayerEventType.DURATION_CHANGE);
+        expect(plugin.durationTimeBar()).toBe(112);
+
+        emitter.emit(PlayerEventType.SEEKING, 3);
+        expect(plugin.timeTimeBar()).toBe(15);
+
+        emitter.emit(PlayerEventType.SEEKED);
+        expect(plugin.timeTimeBar()).toBe(17);
     });
 
     it('falls back to the default time format', () => {

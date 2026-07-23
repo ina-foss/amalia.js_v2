@@ -1,4 +1,4 @@
-import { Component, Input, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, signal } from "@angular/core";
 import { InaMessage, MessageSeverity } from "./ina-messages.model";
 
 interface Message {
@@ -16,6 +16,10 @@ interface Message {
     selector: "ina-messages",
     templateUrl: "./ina-messages.component.html",
     styleUrls: ["./ina-messages.component.scss"],
+    // OnPush (phase 7 vague 1) : l'état affiché (messages) est un signal — toute écriture
+    // (addMessage/setMessages/clear/removeMessage, y compris hors zone) notifie la vue.
+    // Les autres champs lus par le template (enableIcon, escape) sont des @Input.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InaMessagesComponent {
     @Input() key: string = "ina-messages";

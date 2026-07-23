@@ -1,3 +1,4 @@
+import { signal, WritableSignal } from '@angular/core';
 import { SubtitlesPluginComponent } from './subtitles-plugin.component';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { DefaultLogger } from '../../core/logger/default-logger';
@@ -5,8 +6,11 @@ import { PlayerEventType } from '../../core/constant/event-type';
 
 describe('SubtitlesPluginComponent', () => {
     let component: SubtitlesPluginComponent;
+    // Store PlaybackState simulé : seul currentTime est lu par le computed subTitle.
+    let currentTime: WritableSignal<number>;
 
     beforeEach(() => {
+        currentTime = signal(12.5);
         component = new SubtitlesPluginComponent({} as MediaPlayerService);
         (component as any).logger = new DefaultLogger('subtitles-spec');
         (component as any).pluginConfiguration = {
@@ -15,6 +19,7 @@ describe('SubtitlesPluginComponent', () => {
         };
         (component as any).mediaPlayerElement = {
             eventEmitter: { on: jasmine.createSpy('on') },
+            playback: { currentTime },
             getDisplayState: jasmine.createSpy('getDisplayState').and.returnValue('m'),
             getConfiguration: jasmine.createSpy('getConfiguration').and.returnValue({
                 tcOffset: 0,
@@ -41,57 +46,55 @@ describe('SubtitlesPluginComponent', () => {
         });
     });
 
-    it('init should set display state and register listeners', () => {
+    it('init should set display state and register signal-writing listeners with policy none', () => {
         const addListenerSpy = spyOn(component as any, 'addListener').and.callFake(() => undefined);
         const handleDisplayStateSpy = spyOn(component, 'handleDisplayState').and.callThrough();
 
         component.init();
 
         expect(handleDisplayStateSpy).toHaveBeenCalled();
-        expect(addListenerSpy).toHaveBeenCalledWith((component as any).mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, (component as any).handleOnTimeChange);
-        expect(addListenerSpy).toHaveBeenCalledWith((component as any).mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, (component as any).handleMetadataLoaded);
-        expect(addListenerSpy).toHaveBeenCalledWith((component as any).mediaPlayerElement.eventEmitter, PlayerEventType.POSITION_SUBTITLE_CHANGE, (component as any).changeSubtitlePosition);
+        expect(addListenerSpy).toHaveBeenCalledWith((component as any).mediaPlayerElement.eventEmitter, PlayerEventType.METADATA_LOADED, (component as any).handleMetadataLoaded, { policy: 'none' });
+        expect(addListenerSpy).toHaveBeenCalledWith((component as any).mediaPlayerElement.eventEmitter, PlayerEventType.POSITION_SUBTITLE_CHANGE, (component as any).changeSubtitlePosition, { policy: 'none' });
+        // Plus d'abonnement TIME_CHANGE : subTitle dérive de playback.currentTime() (computed).
+        const timeChangeRegistrations = addListenerSpy.calls.allArgs().filter((args) => args[1] === PlayerEventType.TIME_CHANGE);
+        expect(timeChangeRegistrations.length).toBe(0);
     });
 
     it('handleDisplayState should mirror media player state', () => {
         component.handleDisplayState();
-        expect(component.displayState).toBe('m');
+        expect(component.displayState()).toBe('m');
     });
 
-    it('handleOnTimeChange should refresh subtitle for current time', () => {
-        (component as any).transcriptions = [{ tcIn: 12, tcOut: 13, text: 'alpha' }];
-        (component as any).handleOnTimeChange();
-        expect(component.currentTime).toBe(12.5);
-        expect(component.subTitle).toBe('alpha');
+    it('subTitle should derive the subtitle from playback current time', () => {
+        component.transcriptions.set([{ tcIn: 12, tcOut: 13, text: 'alpha' } as any]);
+        expect(component.subTitle()).toBe('alpha');
     });
 
     it('handleMetadataLoaded should refresh metadata', () => {
         const refreshSpy = spyOn(component as any, 'refreshMetadata').and.callThrough();
         (component as any).handleMetadataLoaded();
         expect(refreshSpy).toHaveBeenCalled();
-        expect((component as any).transcriptions.length).toBe(2);
+        expect(component.transcriptions().length).toBe(2);
     });
 
     it('refreshMetadata should no-op when metadata ids are missing', () => {
         (component as any).pluginConfiguration = { data: { parseLevel: 2 } };
-        (component as any).transcriptions = null;
+        component.transcriptions.set(null);
         (component as any).refreshMetadata();
-        expect((component as any).transcriptions).toBeNull();
+        expect(component.transcriptions()).toBeNull();
     });
 
-    it('updateSubtitleContent should clear subtitle when no match or no data', () => {
-        (component as any).transcriptions = [{ tcIn: 1, tcOut: 2, text: 'old' }];
-        component.currentTime = 10;
-        (component as any).updateSubtitleContent();
-        expect(component.subTitle).toBeNull();
+    it('subTitle should be null when no match or no data', () => {
+        component.transcriptions.set([{ tcIn: 1, tcOut: 2, text: 'old' } as any]);
+        currentTime.set(10);
+        expect(component.subTitle()).toBeNull();
 
-        (component as any).transcriptions = null;
-        (component as any).updateSubtitleContent();
-        expect(component.subTitle).toBeNull();
+        component.transcriptions.set(null);
+        expect(component.subTitle()).toBeNull();
     });
 
     it('changeSubtitlePosition should set requested position', () => {
         (component as any).changeSubtitlePosition('down');
-        expect(component.posSubtitle).toBe('down' as any);
+        expect(component.posSubtitle()).toBe('down' as any);
     });
 });
