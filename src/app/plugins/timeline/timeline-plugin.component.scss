@@ -59,6 +59,29 @@
     display: none !important;
   }
 
+  // Icônes inline issues du sprite SVG (remplacent les glyphes de police primeicons).
+  // Taille identique aux anciens glyphes (1rem), couleur héritée via currentColor.
+  .amalia-pi-icon {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: -0.125em;
+  }
+
+  // Icône de bloc dans le header d'accordéon : espace l'icône du libellé
+  // (équivalent visuel de l'ancienne largeur fixe pi-fw).
+  .block-icon {
+    margin-right: 4px;
+  }
+
+  // Icône de noeud d'arbre rendue dans le template de label : reproduit
+  // l'espacement (gap 0.5rem) de l'ancien span d'icône de p-tree.
+  .amalia-pi-icon.p-tree-node-icon {
+    margin-right: 0.5rem;
+  }
+
   .icon {
     height: 20px;
     width: 15px;
@@ -603,12 +626,15 @@
       flex-direction: row-reverse;
       justify-content: flex-end;
 
+      // Chevrons du header d'accordéon : désormais des <svg> du sprite
+      // (classes hooks pi-chevron-*), même taille que l'ancien glyphe (10px).
       .pi-chevron-down,
       .pi-chevron-right {
         color: var(--amalia-plugin-timeline-primary-color, #0B7698);
         padding: 0 10px 0 2px !important;
         margin: 0 !important;
-        font-size: 10px !important;
+        width: 10px !important;
+        height: 10px !important;
       }
 
     }

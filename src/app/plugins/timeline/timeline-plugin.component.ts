@@ -188,7 +188,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             key: metadata.type,
             label: level1Label,
             children: [],
-            icon,
+            data: { spriteIcon: icon },
             checked: true,
             expanded: true
         };
@@ -197,6 +197,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     getNodeLabelAndIcon(metadata: { type: string; }) {
         let level1Label: string = '';
+        // `icon` = id d'un symbole du sprite SVG (src/assets/svgs/symbol/svg/sprite.symbol.svg)
         let icon: string = undefined;
         const segmentationRegExp = new RegExp(DataType.SEGMENTATION, 'g');
         const facesRecognitionRegExp = new RegExp(DataType.FACES_RECOGNITION, 'g');
@@ -206,23 +207,23 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
         if (segmentationRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.SEGMENTATION, 'g'), 'Segmentation sonore');
-            icon = 'pi pi-fw pi-volume-down';
+            icon = 'pi-volume-down';
         }
         if (facesRecognitionRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.FACES_RECOGNITION, 'g'), 'Reconnaissance faciale');
-            icon = 'pi pi-fw pi-eye';
+            icon = 'pi-eye';
         }
         if (dayScheduleRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.DAY_SCHEDULE, 'g'), 'Partie journée de programme');
-            icon = 'pi pi-fw pi-calendar';
+            icon = 'pi-calendar';
         }
         if (documentLieRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.DOCUMENTS_LIES, 'g'), 'Documents liés segmentés');
-            icon = 'pi pi-fw pi-file';
+            icon = 'pi-file';
         }
         if (extraitsUtilisateurRegExp.test(metadata.type)) {
             level1Label = metadata.type.replace(new RegExp(DataType.EXTRAITS_UTILISATEUR, 'g'), 'Extraits utilisateur');
-            icon = 'pi pi-fw pi-tags';
+            icon = 'pi-tags';
         }
         if (level1Label.endsWith('-')) {
             level1Label = level1Label.substring(0, level1Label.length - 1);
@@ -474,10 +475,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         return {
             key: metadata.id,
             label: (metadata?.label) ?? metadata.id,
-            data: { color },
+            data: { color, spriteIcon: this.getNodeLabelAndIcon(metadata).icon },
             checked: true,
-            expanded: true,
-            icon: this.getNodeLabelAndIcon(metadata).icon
+            expanded: true
         };
     }
     filterHidden: boolean = false;

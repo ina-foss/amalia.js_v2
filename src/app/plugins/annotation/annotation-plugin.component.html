@@ -4,40 +4,59 @@
             <p-button
                 class="highlight"
                 label="Ajouter un segment"
-                icon="pi pi-plus"
                 (click)="initializeNewSegment()"
                 (keydown)="$event.stopPropagation()"
                 size="small"
                 [disabled]="dataLoading"
-            ></p-button>
+            >
+                <ng-template #icon>
+                    <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-plus'"></use>
+                    </svg>
+                </ng-template>
+            </p-button>
             @if (segmentsInfo.subLocalisations.length !== 0) {
                 <p-button
                     class="no-highlight"
                     label="Début"
                     (click)="setTcIn()"
                     (keydown)="$event.stopPropagation()"
-                    icon="pi pi-clock"
                     size="small"
-                ></p-button>
+                >
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-clock'"></use>
+                        </svg>
+                    </ng-template>
+                </p-button>
                 <p-button
                     class="no-highlight"
                     label="Fin"
                     (click)="setTcOut()"
                     (keydown)="$event.stopPropagation()"
-                    icon="pi pi-clock"
                     size="small"
-                ></p-button>
+                >
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-clock'"></use>
+                        </svg>
+                    </ng-template>
+                </p-button>
             }
         </div>
         @if (segmentsInfo.subLocalisations.length !== 0) {
             <div>
                 <p-button
                     class="no-highlight no-outline"
-                    icon="pi pi-download"
                     size="small"
                     (click)="toggleExportMenu()"
                     (keydown)="$event.stopPropagation()"
                 >
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-download'"></use>
+                        </svg>
+                    </ng-template>
                 </p-button>
                 @if (enabledExportButtons) {
                     <div class="export-menu">
@@ -80,7 +99,9 @@
                         <span class="font-bold text-2xl block">{{ message.header }}</span>
                         <div class="flex justify-content-end w-full">
                             <button type="button" class="p-dialog-titlebar-icon p-link" (click)="cd.onReject()">
-                                <i class="pi pi-times"></i>
+                                <svg class="amalia-pi-icon" aria-hidden="true">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times'"></use>
+                                </svg>
                             </button>
                         </div>
                     </div>

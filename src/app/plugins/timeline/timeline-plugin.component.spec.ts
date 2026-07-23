@@ -3860,7 +3860,7 @@ describe('TimelinePluginComponent', () => {
 
         expect(newNode.key).toBe(metadata.type);
         expect(newNode.label).toBe('Segmentation sonore');
-        expect(newNode.icon).toBe('pi pi-fw pi-volume-down');
+        expect(newNode.data.spriteIcon).toBe('pi-volume-down');
         expect(newNode.children.length).toBe(0);
         expect(newNode.checked).toBeTrue();
         expect(newNode.expanded).toBeTrue();
@@ -4985,31 +4985,31 @@ describe('getNodeLabelAndIcon', () => {
     it('SEGMENTATION → libellé "Segmentation sonore" + icône volume', () => {
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.SEGMENTATION });
         expect(level1Label).toBe('Segmentation sonore');
-        expect(icon).toBe('pi pi-fw pi-volume-down');
+        expect(icon).toBe('pi-volume-down');
     });
 
     it('FACES_RECOGNITION → libellé "Reconnaissance faciale" + icône œil', () => {
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.FACES_RECOGNITION });
         expect(level1Label).toBe('Reconnaissance faciale');
-        expect(icon).toBe('pi pi-fw pi-eye');
+        expect(icon).toBe('pi-eye');
     });
 
     it('DAY_SCHEDULE → libellé "Partie journée de programme" + icône calendrier', () => {
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.DAY_SCHEDULE });
         expect(level1Label).toBe('Partie journée de programme');
-        expect(icon).toBe('pi pi-fw pi-calendar');
+        expect(icon).toBe('pi-calendar');
     });
 
     it('DOCUMENTS_LIES → libellé "Documents liés segmentés" + icône fichier', () => {
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.DOCUMENTS_LIES });
         expect(level1Label).toBe('Documents liés segmentés');
-        expect(icon).toBe('pi pi-fw pi-file');
+        expect(icon).toBe('pi-file');
     });
 
     it('EXTRAITS_UTILISATEUR → libellé "Extraits utilisateur" + icône tags', () => {
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: DataType.EXTRAITS_UTILISATEUR });
         expect(level1Label).toBe('Extraits utilisateur');
-        expect(icon).toBe('pi pi-fw pi-tags');
+        expect(icon).toBe('pi-tags');
     });
 
     it('type inconnu → libellé vide + icône undefined', () => {
@@ -5021,19 +5021,19 @@ describe('getNodeLabelAndIcon', () => {
     it('trim du tiret final : "FACES_RECOGNITION-" → "Reconnaissance faciale"', () => {
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: `${DataType.FACES_RECOGNITION}-` });
         expect(level1Label).toBe('Reconnaissance faciale'); // sans le '-'
-        expect(icon).toBe('pi pi-fw pi-eye');
+        expect(icon).toBe('pi-eye');
     });
 
     it('types avec suffixes : "SEGMENTATION-foo" → remplace le préfixe et conserve le suffixe', () => {
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: `${DataType.SEGMENTATION}-foo` });
         expect(level1Label).toBe('Segmentation sonore-foo');
-        expect(icon).toBe('pi pi-fw pi-volume-down');
+        expect(icon).toBe('pi-volume-down');
     });
 
     it('multiple occurrences du mot-clé → tous remplacés', () => {
         const complexType = `${DataType.DOCUMENTS_LIES}-${DataType.DOCUMENTS_LIES}-X`;
         const { level1Label, icon } = component.getNodeLabelAndIcon({ type: complexType });
         expect(level1Label).toBe('Documents liés segmentés-Documents liés segmentés-X');
-        expect(icon).toBe('pi pi-fw pi-file');
+        expect(icon).toBe('pi-file');
     });
 });

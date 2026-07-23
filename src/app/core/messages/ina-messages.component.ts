@@ -8,6 +8,7 @@ interface Message {
   closable?: boolean;
   sticky?: boolean;
   key?: string;
+  /** Id du symbole d'icône dans le sprite SVG (src/assets/svgs/symbol/svg/sprite.symbol.svg). */
   icon?: string;
 }
 
@@ -28,25 +29,26 @@ export class InaMessagesComponent {
 
   readonly messages = signal<Message[]>([]);
 
+  // spriteIcon = id du symbole dans le sprite SVG (sprite.symbol.svg)
   readonly severityConfig = [
     {
       severity: 'success' as const,
-      iconClass: 'pi pi-check',
+      spriteIcon: 'pi-check',
       containerClass: 'p-message-success'
     },
     {
       severity: 'error' as const,
-      iconClass: 'pi pi-times',
+      spriteIcon: 'pi-times',
       containerClass: 'p-message-error'
     },
     {
       severity: 'info' as const,
-      iconClass: 'pi pi-info',
+      spriteIcon: 'pi-info',
       containerClass: 'p-message-info'
     },
     {
       severity: 'warn' as const,
-      iconClass: 'pi pi-exclamation-triangle',
+      spriteIcon: 'pi-exclamation-triangle',
       containerClass: 'p-message-warn'
     }
   ] as const;
@@ -77,7 +79,7 @@ export class InaMessagesComponent {
       closable: message.closable ?? this.closable,
       sticky: message.sticky ?? this.sticky,
       key: message.key ?? this.key,
-      icon: this.enableIcon && config ? config.iconClass : undefined
+      icon: this.enableIcon && config ? config.spriteIcon : undefined
     };
 
     this.messages.update(currentMessages => [...currentMessages, primengMessage]);
@@ -94,7 +96,7 @@ export class InaMessagesComponent {
         closable: msg.closable ?? this.closable,
         sticky: msg.sticky ?? this.sticky,
         key: msg.key ?? this.key,
-        icon: this.enableIcon && config ? config.iconClass : undefined
+        icon: this.enableIcon && config ? config.spriteIcon : undefined
       };
     });
 

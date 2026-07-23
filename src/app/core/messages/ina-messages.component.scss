@@ -10,6 +10,17 @@ $messages-icon-color: var(--surface-0); // Changed from surface-900 to surface-0
 $messages-close-color: var(--surface-900);
 
 :host ::ng-deep {
+  // Icônes inline issues du sprite SVG (remplacent les glyphes de police primeicons).
+  // Taille par défaut identique aux anciens glyphes (1rem), couleur héritée via currentColor.
+  .amalia-pi-icon {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: -0.125em;
+  }
+
   .p-messages {
     margin: 0;
     padding: 0;
@@ -45,20 +56,10 @@ $messages-close-color: var(--surface-900);
             background: $messages-info-color;
             margin-right: 0;
 
-            &.pi-info:before {
-              content: "i";
-              color: black;
-              font-size: 18px;
-              font-weight: 500;
-            }
-
-            i {
+            .amalia-pi-icon {
               color: $messages-icon-color;
-              font-size: 1.6rem;
-              line-height: 1;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              width: 1.6rem;
+              height: 1.6rem;
             }
           }
 
@@ -95,9 +96,9 @@ $messages-close-color: var(--surface-900);
             }
 
             .pi-times {
-              font-size: 14px;
+              width: 14px;
+              height: 14px;
               color: #555;
-              font-weight: normal;
             }
           }
         }
@@ -126,13 +127,10 @@ $messages-close-color: var(--surface-900);
             background: $messages-success-color;
             margin-right: 0;
 
-            i {
+            .amalia-pi-icon {
               color: $messages-icon-color;
-              font-size: 1.6rem;
-              line-height: 1;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              width: 1.6rem;
+              height: 1.6rem;
             }
           }
 
@@ -170,13 +168,10 @@ $messages-close-color: var(--surface-900);
             background: $messages-warning-color;
             margin-right: 0;
 
-            i {
+            .amalia-pi-icon {
               color: $messages-icon-color;
-              font-size: 1.6rem;
-              line-height: 1;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              width: 1.6rem;
+              height: 1.6rem;
             }
           }
 
@@ -214,13 +209,10 @@ $messages-close-color: var(--surface-900);
             background: $messages-error-color;
             margin-right: 0;
 
-            i {
+            .amalia-pi-icon {
               color: $messages-icon-color;
-              font-size: 1.6rem;
-              line-height: 1;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              width: 1.6rem;
+              height: 1.6rem;
             }
           }
 
@@ -256,10 +248,10 @@ $messages-close-color: var(--surface-900);
         align-items: center;
         justify-content: center;
 
-        i {
+        .amalia-pi-icon {
           color: $messages-icon-color;
-          font-size: 1.6rem;
-          line-height: 1;
+          width: 1.6rem;
+          height: 1.6rem;
         }
       }
 
@@ -289,10 +281,10 @@ $messages-close-color: var(--surface-900);
         align-items: center;
         justify-content: center;
 
-        i {
+        .amalia-pi-icon {
           color: $messages-icon-color;
-          font-size: 1.6rem;
-          line-height: 1;
+          width: 1.6rem;
+          height: 1.6rem;
         }
       }
 
@@ -322,10 +314,10 @@ $messages-close-color: var(--surface-900);
         align-items: center;
         justify-content: center;
 
-        i {
+        .amalia-pi-icon {
           color: $messages-icon-color;
-          font-size: 1.6rem;
-          line-height: 1;
+          width: 1.6rem;
+          height: 1.6rem;
         }
       }
 
@@ -364,17 +356,15 @@ $messages-close-color: var(--surface-900);
       border-radius: 100px;
       margin-right: 0;
 
-      i {
+      .amalia-pi-icon {
         color: $messages-icon-color;
-        font-size: 1.6rem;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 1.6rem;
+        height: 1.6rem;
 
         &.pi-exclamation-triangle,
         &.pi-info {
-          font-size: 1.9rem;
+          width: 1.9rem;
+          height: 1.9rem;
           margin-top: 1px;
         }
       }
@@ -400,10 +390,10 @@ $messages-close-color: var(--surface-900);
         align-items: center;
         justify-content: center;
 
-        i {
+        .amalia-pi-icon {
           color: $messages-icon-color;
-          font-size: 1.6rem;
-          line-height: 1;
+          width: 1.6rem;
+          height: 1.6rem;
         }
       }
 

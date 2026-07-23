@@ -387,7 +387,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.confirmationService.confirm({
             message: `Etes-vous sûr de vouloir supprimer le segment ['${msg}']`,
             header: 'Confirmation',
-            icon: 'pi pi-exclamation-triangle',
+            // note : pas d'icône ici — le template pTemplate="headless" du p-confirmDialog
+            // ne rend pas message.icon (la propriété était sans effet).
             rejectButtonStyleClass: "p-button-text",
             rejectLabel: "Annuler",
             acceptLabel: "Supprimer",

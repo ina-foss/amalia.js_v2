@@ -3,15 +3,33 @@
     <p-toolbar>
         <div class="p-toolbar-group-start">
             @if (tvDaysEnabled) {
-            <p-button icon="pi pi-download" (onClick)="exportTvDays()" label="Exporter les données"
-                class="p-button-download"></p-button>
+            <p-button (onClick)="exportTvDays()" label="Exporter les données"
+                class="p-button-download">
+                <ng-template #icon>
+                    <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-download'"></use>
+                    </svg>
+                </ng-template>
+            </p-button>
             }
         </div>
         <div class="p-toolbar-group-end">
             <div class="flex items-center gap-2 toolbar-end-buttons">
-                <p-button icon="pi pi-search-minus" (onClick)="unZoom()" [text]="true" [rounded]="true"></p-button>
-                <p-button id="timeline-toolbar-filter-button" icon="pi pi-filter" (onClick)="toggleConfig()"
-                    [text]="true" [rounded]="true"></p-button>
+                <p-button (onClick)="unZoom()" [text]="true" [rounded]="true">
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-search-minus'"></use>
+                        </svg>
+                    </ng-template>
+                </p-button>
+                <p-button id="timeline-toolbar-filter-button" (onClick)="toggleConfig()"
+                    [text]="true" [rounded]="true">
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-filter'"></use>
+                        </svg>
+                    </ng-template>
+                </p-button>
             </div>
         </div>
     </p-toolbar>
@@ -94,19 +112,33 @@
             <p-accordion-header>
                 <ng-template #toggleicon let-active="active">
                     @if (active) {
-                    <i class="pi pi-chevron-down"></i>
+                    <svg class="amalia-pi-icon pi-chevron-down" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-chevron-down'"></use>
+                    </svg>
                     } @else {
-                    <i class="pi pi-chevron-right"></i>
+                    <svg class="amalia-pi-icon pi-chevron-right" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-chevron-right'"></use>
+                    </svg>
                     }
                 </ng-template>
                 @if (block.label != "") {
                 <div class="block-header">
                     <div class="timeline-block-label ellipsis">
-                        <i [class]="block.icon"></i>{{ block.label }}
+                        @if (block.icon) {
+                        <svg class="amalia-pi-icon block-icon" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + block.icon"></use>
+                        </svg>
+                        }{{ block.label }}
                     </div>
                     <div class="block-header-buttons">
-                        <p-button icon="pi pi-times" (click)="removeBlock(block)" (keyPress)="removeBlock(block)"
-                            (keyDown)="removeBlock(block)" (keyUp)="removeBlock(block)" [text]="true"></p-button>
+                        <p-button (click)="removeBlock(block)" (keyPress)="removeBlock(block)"
+                            (keyDown)="removeBlock(block)" (keyUp)="removeBlock(block)" [text]="true">
+                            <ng-template #icon>
+                                <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times'"></use>
+                                </svg>
+                            </ng-template>
+                        </p-button>
                     </div>
                 </div>
                 }
@@ -164,13 +196,25 @@
             </div>
 
             @if (filterHidden) {
-            <p-button icon="pi pi-search" [rounded]="true" (click)="toggleFilter()" (keyPress)="toggleFilter()"
-                (keyDown)="toggleFilter()" (keyUp)="toggleFilter()" class="btn-show-filter" />
+            <p-button [rounded]="true" (click)="toggleFilter()" (keyPress)="toggleFilter()"
+                (keyDown)="toggleFilter()" (keyUp)="toggleFilter()" class="btn-show-filter">
+                <ng-template #icon>
+                    <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-search'"></use>
+                    </svg>
+                </ng-template>
+            </p-button>
             }
             @if (!filterHidden) {
-            <p-button icon="pi pi-times" [rounded]="true" [text]="true" severity="secondary" (click)="toggleFilter()"
+            <p-button [rounded]="true" [text]="true" severity="secondary" (click)="toggleFilter()"
                 (keyPress)="toggleFilter()" (keyDown)="toggleFilter()" (keyUp)="toggleFilter()"
-                class="btn-hide-filter" />
+                class="btn-hide-filter">
+                <ng-template #icon>
+                    <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times'"></use>
+                    </svg>
+                </ng-template>
+            </p-button>
             }
         </div>
         <div class="main" [ngClass]="{ 'filter-hidden': filterHidden }">
@@ -178,6 +222,11 @@
             <p-tree [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes"
                 (selectionChange)="updateTreeComponent()">
                 <ng-template let-node pTemplate="default">
+                    @if (node.data && node.data.spriteIcon) {
+                    <svg class="amalia-pi-icon p-tree-node-icon" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + node.data.spriteIcon"></use>
+                    </svg>
+                    }
                     @if (node.data && node.data.color) {
                     <span class="color" [ngStyle]="{ 'background-color': node.data.color }"></span>
                     }
@@ -189,6 +238,11 @@
             <p-tree [value]="nodes" selectionMode="checkbox" [filter]="true" filterPlaceholder="Rechercher..."
                 filterMode="strict" [(selection)]="selectedNodes" (selectionChange)="updateTreeComponent()">
                 <ng-template let-node pTemplate="default">
+                    @if (node.data && node.data.spriteIcon) {
+                    <svg class="amalia-pi-icon p-tree-node-icon" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + node.data.spriteIcon"></use>
+                    </svg>
+                    }
                     @if (node.data && node.data.color) {
                     <span class="color" [ngStyle]="{ 'background-color': node.data.color }"></span>
                     }

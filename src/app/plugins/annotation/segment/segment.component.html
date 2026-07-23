@@ -37,8 +37,8 @@
                                 placeholder="Ajouter un titre"
                             ></textarea>
                             <div class="title-edit-actions">
-                                <i
-                                    class="pi pi-check"
+                                <svg
+                                    class="amalia-pi-icon pi-check"
                                     (click)="confirmTitleEdit()"
                                     (keydown.enter)="
                                         segment.label && segment.label.length > 250 ? null : confirmTitleEdit()
@@ -52,16 +52,20 @@
                                     "
                                     [style.opacity]="segment.label && segment.label.length > 250 ? '0.5' : '1'"
                                     pTooltip="Valider"
-                                ></i>
-                                <i
-                                    class="pi pi-times-circle"
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-check'"></use>
+                                </svg>
+                                <svg
+                                    class="amalia-pi-icon pi-times-circle"
                                     (click)="cancelTitleEdit()"
                                     (keydown.enter)="cancelTitleEdit()"
                                     (mousedown)="onTitleActionMouseDown()"
                                     role="button"
                                     tabindex="0"
                                     pTooltip="Annuler"
-                                ></i>
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times-circle'"></use>
+                                </svg>
                             </div>
                         </div>
                         @if (segment.data.isTitleEditing === true && segment.label && segment.label.length > 250) {
@@ -70,37 +74,44 @@
                     </div>
                 }
                 <div class="header-buttons">
-                    <i
+                    <svg
                         id="btnclone"
-                        class="pi pi-clone"
+                        class="amalia-pi-icon pi-clone"
                         (click)="cloneSegment()"
                         (keydown.enter)="cloneSegment()"
                         role="button"
                         tabindex="0"
-                        severity="secondary"
                         pTooltip="Dupliquer un segment"
-                    ></i>
-                    <i
+                    >
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-clone'"></use>
+                    </svg>
+                    <svg
                         id="btnremove"
-                        class="pi pi-trash"
+                        class="amalia-pi-icon pi-trash"
                         (click)="removeSegment()"
                         (keydown.enter)="removeSegment()"
                         role="button"
                         tabindex="0"
-                        severity="danger"
                         pTooltip="Supprimer"
-                    ></i>
+                    >
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-trash'"></use>
+                    </svg>
                     @if (segment.data.idDocument) {
                         <p-button
                             id="btnclone"
-                            icon="pi pi-fw pi-file"
                             (click)="openNotilusMaterial()"
                             (keydown)="$event.stopPropagation()"
                             [rounded]="true"
                             severity="secondary"
                             styleClass="notilus-filled-circle"
                             pTooltip="Ouvrir dans Notilus"
-                        />
+                        >
+                            <ng-template #icon>
+                                <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-file'"></use>
+                                </svg>
+                            </ng-template>
+                        </p-button>
                     }
                 </div>
             </ng-template>
@@ -139,7 +150,6 @@
                             }
                         </div>
                         <p-button
-                            icon="pi pi-camera"
                             (click)="updateThumbnail()"
                             (keydown.enter)="updateThumbnail()"
                             pTooltip="Sélectionner une imagette"
@@ -153,7 +163,13 @@
                                     segment.data.media === 'AUDIO' ||
                                     segment.thumb === '/assets/amalia/images/newAudioBackGround.png',
                             }"
-                        />
+                        >
+                            <ng-template #icon>
+                                <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-camera'"></use>
+                                </svg>
+                            </ng-template>
+                        </p-button>
                     </div>
                     <div class="readonly-segment-info-content">
                         <div class="readonly-segment-tc">
@@ -444,8 +460,8 @@
                                 placeholder="Ajouter une description"
                             ></textarea>
                             <div class="description-edit-actions">
-                                <i
-                                    class="pi pi-check"
+                                <svg
+                                    class="amalia-pi-icon pi-check"
                                     (click)="confirmDescriptionEdit()"
                                     (keydown.enter)="
                                         segment.description && segment.description.length > 1000
@@ -465,16 +481,20 @@
                                         segment.description && segment.description.length > 1000 ? '0.5' : '1'
                                     "
                                     pTooltip="Valider"
-                                ></i>
-                                <i
-                                    class="pi pi-times-circle"
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-check'"></use>
+                                </svg>
+                                <svg
+                                    class="amalia-pi-icon pi-times-circle"
                                     (click)="cancelDescriptionEdit()"
                                     (keydown.enter)="cancelDescriptionEdit()"
                                     (mousedown)="onDescriptionActionMouseDown()"
                                     role="button"
                                     tabindex="0"
                                     pTooltip="Annuler"
-                                ></i>
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times-circle'"></use>
+                                </svg>
                             </div>
                         </div>
                         @if (segment.description && segment.description.length > 1000) {

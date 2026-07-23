@@ -4,7 +4,9 @@
       <div class="p-message-wrapper">
         @if (enableIcon && message.icon) {
           <span class="p-message-icon">
-            <i [class]="message.icon"></i>
+            <svg [class]="'amalia-pi-icon ' + message.icon" aria-hidden="true">
+              <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + message.icon"></use>
+            </svg>
           </span>
         }
         @if (message.summary) {
@@ -22,7 +24,9 @@
             aria-label="Close"
             (click)="removeMessage($index)"
           >
-            <i class="pi pi-times"></i>
+            <svg class="amalia-pi-icon pi-times" aria-hidden="true">
+              <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times'"></use>
+            </svg>
           </button>
         }
       </div>

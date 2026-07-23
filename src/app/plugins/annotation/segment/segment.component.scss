@@ -12,21 +12,28 @@
     border: 2.5px solid $colors-primitive-primary-color;
   }
 
-  .pi:hover {
+  // Icônes inline issues du sprite SVG (remplacent les glyphes de police primeicons).
+  // Même taille que les anciens glyphes (14px ici), couleur héritée via currentColor.
+  .amalia-pi-icon:hover {
     opacity: .5;
   }
 
-  .pi {
+  .amalia-pi-icon {
     cursor: pointer;
-    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: -0.125em;
   }
 
-  .pi.pi-check {
+  .amalia-pi-icon.pi-check {
     color: green;
   }
 
-  .pi.pi-times-circle,
-  .pi.pi-trash {
+  .amalia-pi-icon.pi-times-circle,
+  .amalia-pi-icon.pi-trash {
     color: red;
   }
 
@@ -449,9 +456,9 @@
           &:hover {
             background: color-mix(in srgb, var(--INA-Blanc, #FFF) 90%, transparent);
 
-            // neutralise le .pi:hover global (opacity .5) qui délaverait
+            // neutralise le .amalia-pi-icon:hover global (opacity .5) qui délaverait
             // l'icône caméra sur ce fond clair
-            .pi {
+            .amalia-pi-icon {
               opacity: 1;
             }
           }

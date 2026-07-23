@@ -31,7 +31,6 @@
                         ],
                         "styles": [
                             "src/styles.scss",
-                            "node_modules/primeicons/primeicons.css",
                             "src/assets/themes/aura-light-blue/theme.css",
                             "node_modules/primeflex/primeflex.min.css"
                         ],
@@ -111,7 +110,6 @@
                         ],
                         "styles": [
                             "src/styles.scss",
-                            "node_modules/primeicons/primeicons.css",
                             "src/assets/themes/aura-light-blue/theme.css",
                             "node_modules/primeflex/primeflex.min.css"
                         ],
