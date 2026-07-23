@@ -8,7 +8,6 @@ import { AnnotationsService } from 'src/app/service/annotations.service';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ChipModule } from 'primeng/chip';
 import { TooltipModule } from 'primeng/tooltip';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TcFormatPipe } from 'src/app/core/utils/tc-format.pipe';
 import { Subject } from 'rxjs';
 import { FormatUtils } from '../../../core/utils/format-utils';
@@ -66,8 +65,7 @@ describe('SegmentComponent', () => {
                 FormsModule,
                 AutoCompleteModule,
                 ChipModule,
-                TooltipModule,
-                BrowserAnimationsModule
+                TooltipModule
             ],
             providers: [
                 { provide: MessageService, useValue: mockMessageService },

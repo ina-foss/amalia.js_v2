@@ -200,7 +200,37 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     /**
      * List of control for Zone 1
      */
-    public elements: Array<ControlBarConfig> = [];
+    private _elements: Array<ControlBarConfig> = [];
+    /**
+     * Contrôles indexés par zone. getControlsByZone est appelé depuis un @for du template
+     * (une fois par colonne et par cycle de change detection) : le cache évite de re-filtrer
+     * la liste complète à chaque CD. Invalidé par le setter de `elements`.
+     */
+    private _controlsByZone: Map<number, Array<ControlBarConfig>> | null = null;
+
+    get elements(): Array<ControlBarConfig> {
+        return this._elements;
+    }
+
+    set elements(value: Array<ControlBarConfig>) {
+        this._elements = value;
+        if (!value) {
+            this._controlsByZone = null;
+            return;
+        }
+        this._controlsByZone = new Map();
+        // Certaines configurations fournissent un objet au lieu d'un tableau ; l'ancien
+        // _.filter itérait alors ses valeurs (sémantique lodash « collection »).
+        const controls: ControlBarConfig[] = Array.isArray(value) ? value : Object.values(value);
+        for (const control of controls) {
+            const zoneControls = this._controlsByZone.get(control.zone);
+            if (zoneControls) {
+                zoneControls.push(control);
+            } else {
+                this._controlsByZone.set(control.zone, [control]);
+            }
+        }
+    }
     /**
      * State of controlBar
      */
@@ -1043,8 +1073,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param zone zone id
      */
     public getControlsByZone(zone: number): Array<ControlBarConfig> {
-        if (this.elements) {
-            return _.filter<ControlBarConfig>(this.elements, { zone });
+        if (this._controlsByZone) {
+            return this._controlsByZone.get(zone) ?? [];
         }
         return null;
     }

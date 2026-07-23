@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { InaMessagesComponent } from './ina-messages.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { InaMessage } from './ina-messages.model';
 
 describe('InaMessagesComponent', () => {
@@ -11,7 +10,6 @@ describe('InaMessagesComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [InaMessagesComponent],
-      imports: [NoopAnimationsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     });
     fixture = TestBed.createComponent(InaMessagesComponent);

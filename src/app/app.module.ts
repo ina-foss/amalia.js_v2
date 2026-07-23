@@ -17,7 +17,6 @@ import {ThumbnailService} from './service/thumbnail-service';
 import {SanitizeHtmlPipe} from './core/utils/sanitize-html.pipe';
 import {TimelinePluginComponent} from './plugins/timeline/timeline-plugin.component';
 import {TooltipModule} from 'primeng/tooltip';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {SortablejsDirective} from "./core/directive/inaSortablejs/sortablejs.directive";
 import {AnnotationPluginComponent} from './plugins/annotation/annotation-plugin.component';
 import {ButtonModule} from 'primeng/button';
@@ -55,7 +54,6 @@ import { AmaliaPreset } from './core/styles/amalia-primeng-preset';
     imports: [
         BrowserModule,
         CommonModule,
-        BrowserAnimationsModule,
         HttpClientModule,
         FormsModule,
         TooltipModule,

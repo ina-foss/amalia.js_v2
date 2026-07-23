@@ -15,7 +15,6 @@ import { MetadataManager } from "../../core/metadata/metadata-manager";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MediaElement } from "../../core/media/media-element";
 import { MessageModule } from 'primeng/message';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { PlayerEventType } from '../../core/constant/event-type';
 
@@ -122,7 +121,7 @@ describe('TranscriptionPluginComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [TranscriptionPluginComponent],
-            imports: [HttpClientTestingModule, BrowserAnimationsModule, MessageModule],
+            imports: [HttpClientTestingModule, MessageModule],
             providers: [MediaPlayerService, MessageService],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();

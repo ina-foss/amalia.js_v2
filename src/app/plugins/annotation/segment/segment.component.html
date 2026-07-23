@@ -261,8 +261,8 @@
                                         }
                                         <p-chip
                                             id="hiddenCategoriesSummaryChip"
-                                            [label]="'+' + hiddenCategoriesCount"
-                                            [pTooltip]="displayRemaining(categories(), hiddenCategoriesCount)"
+                                            [label]="'+' + hiddenCategoriesCount()"
+                                            [pTooltip]="remainingCategoriesTooltip()"
                                         />
                                     }
                                     @if (categories().length === 0) {
@@ -312,8 +312,8 @@
                                         }
                                         <p-chip
                                             id="hiddenKeywordsSummaryChip"
-                                            [label]="'+' + hiddenKeywordsCount"
-                                            [pTooltip]="displayRemaining(keywords(), hiddenKeywordsCount)"
+                                            [label]="'+' + hiddenKeywordsCount()"
+                                            [pTooltip]="remainingKeywordsTooltip()"
                                         />
                                     }
                                     @if (keywords().length === 0) {

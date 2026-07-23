@@ -9,5 +9,10 @@ if (environment.production) {
     enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+platformBrowserDynamic().bootstrapModule(AppModule, {
+    // Coalesce les ré-entrées de zone (7 zone.run par timeupdate via PluginBase.wrapInZone)
+    // et les événements DOM en un seul cycle de change detection par frame.
+    ngZoneEventCoalescing: true,
+    ngZoneRunCoalescing: true,
+})
     .catch(err => console.error(err));

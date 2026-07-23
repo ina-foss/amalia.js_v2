@@ -128,8 +128,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     filteredCategories: string[];
     filteredKeywords: string[];
-    hiddenCategoriesCount: number = 0;
-    hiddenKeywordsCount: number = 0;
+    hiddenCategoriesCount = signal(0);
+    hiddenKeywordsCount = signal(0);
     readonlyCategoriesClassName = 'readonly-segment-categories';
     readOnlyKeywordsClassName = 'readonly-segment-keywords';
     hiddenCategoriesSummaryChipId = 'hiddenCategoriesSummaryChip';
@@ -156,6 +156,12 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         return prop;
     });
+    /**
+     * Tooltips des chips « +N » précalculés : displayRemaining était appelé depuis le template,
+     * donc réévalué à chaque cycle de change detection.
+     */
+    public remainingCategoriesTooltip = computed(() => this.displayRemaining(this.categories(), this.hiddenCategoriesCount()));
+    public remainingKeywordsTooltip = computed(() => this.displayRemaining(this.keywords(), this.hiddenKeywordsCount()));
     editableSegmentTcWrap: boolean = false;
 
 
@@ -1340,8 +1346,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public updateCategoriesAndKeywordsDisplay() {
         if (this.readOnlyCategoriesDiv && this.readOnlyKeywordsDiv) {
-            this.hiddenCategoriesCount = this.updateDisplay(this.readOnlyCategoriesDiv, this.readonlyCategoriesClassName, this.hiddenCategoriesSummaryChipId);
-            this.hiddenKeywordsCount = this.updateDisplay(this.readOnlyKeywordsDiv, this.readOnlyKeywordsClassName, this.hiddenKeywordsSummaryChipId);
+            this.hiddenCategoriesCount.set(this.updateDisplay(this.readOnlyCategoriesDiv, this.readonlyCategoriesClassName, this.hiddenCategoriesSummaryChipId));
+            this.hiddenKeywordsCount.set(this.updateDisplay(this.readOnlyKeywordsDiv, this.readOnlyKeywordsClassName, this.hiddenKeywordsSummaryChipId));
         }
     }
     updateTcsDisplay() {
@@ -1413,7 +1419,26 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         return hiddenChipsCount;
     }
 
+    /**
+     * Cache des largeurs mesurées par (police, texte). La mesure crée un span dans le body et
+     * force un reflow ; appelée depuis le template (tooltips de chips), elle s'exécutait à
+     * chaque cycle de change detection pour chaque chip. Invalidé au chargement des webfonts
+     * (les métriques changent quand Lato remplace la police de substitution).
+     */
+    private static readonly textWidthCache = new Map<string, number>();
+
+    static {
+        if (typeof document !== 'undefined') {
+            document.fonts?.ready.then(() => SegmentComponent.textWidthCache.clear());
+        }
+    }
+
     public calculateTextWidth(text: string, font: string): number {
+        const cacheKey = `${font}|${text}`;
+        const cached = SegmentComponent.textWidthCache.get(cacheKey);
+        if (cached !== undefined) {
+            return cached;
+        }
         const span = document.createElement('span');
         span.style.font = font;
         span.style.visibility = 'hidden';
@@ -1422,6 +1447,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         document.body.appendChild(span);
         const width = span.offsetWidth;
         document.body.removeChild(span);
+        if (SegmentComponent.textWidthCache.size > 2000) {
+            SegmentComponent.textWidthCache.clear();
+        }
+        SegmentComponent.textWidthCache.set(cacheKey, width);
         return width;
     }
 

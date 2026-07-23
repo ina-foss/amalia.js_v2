@@ -35,7 +35,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PlayerEventType } from '../../core/constant/event-type';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AnnotationLocalisation } from 'src/app/core/metadata/model/annotation-localisation';
 import { ShortcutEvent } from 'src/app/core/config/model/shortcuts-event';
 import { AnnotationsService } from 'src/app/service/annotations.service';
@@ -1271,8 +1270,7 @@ describe('AnnotationPluginComponent ManageSegments', () => {
                 ConfirmDialogModule,
                 ProgressBarModule,
                 ProgressSpinnerModule,
-                AutoCompleteModule,
-                BrowserAnimationsModule],
+                AutoCompleteModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
 
