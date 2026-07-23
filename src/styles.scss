@@ -1,17 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
-@import "src/assets/themes/aura-light-blue/theme.css";
-
-// PrimeNG's own base component styles are injected dynamically into document.head at runtime;
-// that CSS never reaches components rendered inside a Shadow DOM. Without this rule, PrimeNG's
-// visually-hidden a11y helper text (e.g. "No selected item" on p-autocomplete) renders as plain
-// visible text inside our shadow roots instead of staying screen-reader-only.
-.p-hidden-accessible {
-  border: 0;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
-}
+/* Styles globaux (page de dev uniquement — les web components sont en Shadow DOM).
+   Le thème PrimeNG est fourni à runtime par providePrimeNG (preset Aura token-based,
+   src/app/core/styles/amalia-primeng-preset.ts) et répliqué dans les shadow roots par
+   PrimengShadowStylesService — plus aucun CSS de thème n'est embarqué ici. */

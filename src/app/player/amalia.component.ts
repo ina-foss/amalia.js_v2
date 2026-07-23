@@ -4,10 +4,12 @@ import {
     ElementRef,
     EventEmitter,
     HostListener,
+    inject,
     Input,
     OnDestroy,
     OnInit,
     Output,
+    ProviderToken,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
@@ -30,6 +32,7 @@ import { PlayerEventType } from '../core/constant/event-type';
 import { HttpConfigLoader } from '../core/config/loader/http-config-loader';
 import { BaseUtils } from '../core/utils/base-utils';
 import { MediaPlayerService } from '../service/media-player-service';
+import { PrimengShadowStylesService } from '../core/styles/primeng-shadow-styles.service';
 import { ThumbnailService } from '../service/thumbnail-service';
 
 import * as _ from 'lodash';
@@ -261,6 +264,22 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         ' amalia-secondary-color': false
     };
 
+    /**
+     * Résolus via le contexte d'injection quand il existe (composant créé par Angular),
+     * null quand le composant est instancié avec `new` dans les specs — même pattern
+     * que PluginBase.tryInject.
+     */
+    private readonly hostElementRef: ElementRef | null = AmaliaComponent.tryInject(ElementRef);
+    private readonly primengShadowStyles: PrimengShadowStylesService | null = AmaliaComponent.tryInject(PrimengShadowStylesService);
+
+    private static tryInject<T>(token: ProviderToken<T>): T | null {
+        try {
+            return inject(token, { optional: true });
+        } catch {
+            return null;
+        }
+    }
+
     constructor(playerService: MediaPlayerService, httpClient: HttpClient, thumbnailService: ThumbnailService, private readonly cdr: ChangeDetectorRef) {
         this.httpClient = httpClient;
         this.playerService = playerService;
@@ -272,6 +291,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * Invoked immediately after the  first time the component has initialised
      */
     public ngOnInit() {
+        // Miroir des styles PrimeNG (document.head) vers le shadow root du player.
+        this.primengShadowStyles?.attach(this.hostElementRef?.nativeElement?.shadowRoot);
         // Init media player
         this.mediaPlayerElement = this.playerService.get(this.playerId);
         this.playerService.increment(this.playerId);

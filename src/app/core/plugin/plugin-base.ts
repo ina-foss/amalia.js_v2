@@ -1,7 +1,8 @@
 import { MediaPlayerElement } from '../media-player-element';
 import { PluginConfigData } from '../config/model/plugin-config-data';
 import { DefaultLogger } from '../logger/default-logger';
-import { ChangeDetectorRef, Component, inject, Input, NgZone, OnDestroy, OnInit, ProviderToken } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, ProviderToken } from '@angular/core';
+import { PrimengShadowStylesService } from '../styles/primeng-shadow-styles.service';
 import { PlayerEventType } from '../constant/event-type';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { AmaliaException } from '../exception/amalia-exception';
@@ -129,6 +130,12 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
      * Change detector used to mark the (custom element) view dirty after event-driven updates.
      */
     private readonly _pluginCdr: ChangeDetectorRef | null = PluginBase.tryInject(ChangeDetectorRef);
+    /**
+     * Miroir des styles PrimeNG (document.head) vers le shadow root du plugin — remplace
+     * l'ancien @import de styles.scss/theme.css dans le SCSS des composants Shadow DOM.
+     */
+    private readonly _shadowStyles: PrimengShadowStylesService | null = PluginBase.tryInject(PrimengShadowStylesService);
+    private readonly _pluginElementRef: ElementRef | null = PluginBase.tryInject(ElementRef);
 
     /**
      * Resolve a dependency from the current injection context, returning null when there is no
@@ -151,6 +158,7 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this._shadowStyles?.attach(this._pluginElementRef?.nativeElement?.shadowRoot);
         this.logger = new DefaultLogger(`${this.pluginName}`);
         this.mediaPlayerElement = this.playerService.get(this.playerId);
         if (!this.mediaPlayerElement) {
