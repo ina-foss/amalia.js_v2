@@ -1,5 +1,5 @@
 <div #headerElement class="row">
-    <div class="col-3 storyboard-size">
+    <div class="storyboard-size">
         <div class="first"></div>
         <div
             class="size medium"
@@ -21,7 +21,7 @@
         ></div>
         <div class="last"></div>
     </div>
-    <div class="col-9 interval" (mouseleave)="openIntervalList = false">
+    <div class="interval" (mouseleave)="openIntervalList = false">
         <p class="label" (click)="toggleList()" (keydown.enter)="toggleList()" role="button" tabindex="0">
             <span>Intervalle: </span>
             @if ((selectedInterval[1] < 60 && selectedInterval[0] == "tc") || selectedInterval[0] == "frame") {

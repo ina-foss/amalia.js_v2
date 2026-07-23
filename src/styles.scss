@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 @import "src/assets/themes/aura-light-blue/theme.css";
-@import "primeflex/primeflex.min.css";
 
 // PrimeNG's own base component styles are injected dynamically into document.head at runtime;
 // that CSS never reaches components rendered inside a Shadow DOM. Without this rule, PrimeNG's

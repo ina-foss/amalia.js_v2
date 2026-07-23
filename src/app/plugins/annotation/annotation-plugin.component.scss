@@ -238,3 +238,21 @@
   }
 
 }
+
+/* Utilitaires locaux reprenant les classes primeflex utilisées par ce composant
+   (primeflex retiré du projet — valeurs identiques à primeflex v3). */
+.flex { display: flex; }
+.block { display: block; }
+.flex-row { flex-direction: row; }
+.flex-column { flex-direction: column; }
+.justify-content-center { justify-content: center; }
+.justify-content-end { justify-content: flex-end; }
+.gap-2 { gap: 0.5rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mb-0 { margin-bottom: 0; }
+.p-2 { padding: 0.5rem; }
+.w-full { width: 100%; }
+.font-bold { font-weight: 700; }
+.text-2xl { font-size: 1.5rem; }
+.surface-overlay { background-color: var(--surface-overlay); }
+.border-round { border-radius: var(--border-radius); }

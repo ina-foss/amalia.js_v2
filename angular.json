@@ -31,8 +31,7 @@
                         ],
                         "styles": [
                             "src/styles.scss",
-                            "src/assets/themes/aura-light-blue/theme.css",
-                            "node_modules/primeflex/primeflex.min.css"
+                            "src/assets/themes/aura-light-blue/theme.css"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [
@@ -110,8 +109,7 @@
                         ],
                         "styles": [
                             "src/styles.scss",
-                            "src/assets/themes/aura-light-blue/theme.css",
-                            "node_modules/primeflex/primeflex.min.css"
+                            "src/assets/themes/aura-light-blue/theme.css"
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [
