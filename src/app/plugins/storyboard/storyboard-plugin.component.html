@@ -21,7 +21,7 @@
         ></div>
         <div class="last"></div>
     </div>
-    <div class="interval" (mouseleave)="openIntervalList = false">
+    <div class="interval" (mouseleave)="openIntervalList.set(false)">
         <p class="label" (click)="toggleList()" (keydown.enter)="toggleList()" role="button" tabindex="0">
             <span>Intervalle: </span>
             @if ((selectedInterval[1] < 60 && selectedInterval[0] == "tc") || selectedInterval[0] == "frame") {
@@ -49,11 +49,11 @@
             @if (selectedInterval[0] == "frame") {
                 <span class="selected"> {{ images }} </span>
             }
-            <svg class="amalia-svg-down icon" [ngClass]="{ active: openIntervalList }">
+            <svg class="amalia-svg-down icon" [ngClass]="{ active: openIntervalList() }">
                 <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
             </svg>
         </p>
-        <ul [ngClass]="{ active: openIntervalList }">
+        <ul [ngClass]="{ active: openIntervalList() }">
             <li class="label">Temps :</li>
             @for (tci of tcIntervals; track tci) {
                 <li
@@ -108,7 +108,7 @@
 >
     <div class="vs-scroll" #scrollElement></div>
     <div class="vs-container" #storyboardElement>
-        @for (tc of listOfThumbnailFilter; track tc; let isLast = $last; let isFirst = $first) {
+        @for (tc of listOfThumbnailFilter(); track tc; let isLast = $last; let isFirst = $first) {
             <div
                 (click)="seekToTc(tc)"
                 (keydown.enter)="seekToTc(tc)"
@@ -138,7 +138,7 @@
 <div
     class="auto-scroll"
     pTooltip="{{ pluginConfiguration.data.labelSynchro }}"
-    [ngClass]="{ active: displaySynchro }"
+    [ngClass]="{ active: displaySynchro() }"
     (click)="scrollToActiveThumbnail(selectedTc, true)"
     (keydown.enter)="scrollToActiveThumbnail(selectedTc, true)"
     role="button"

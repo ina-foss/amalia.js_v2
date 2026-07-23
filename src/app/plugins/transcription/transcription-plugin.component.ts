@@ -1,5 +1,14 @@
 import { PluginBase } from "../../core/plugin/plugin-base";
-import { AfterViewInit, Component, ElementRef, PipeTransform, ViewChild, ViewEncapsulation } from "@angular/core";
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    PipeTransform,
+    signal,
+    ViewChild,
+    ViewEncapsulation,
+} from "@angular/core";
 import { PlayerEventType } from "../../core/constant/event-type";
 import { PluginConfigData } from "../../core/config/model/plugin-config-data";
 import { TranscriptionConfig } from "../../core/config/model/transcription-config";
@@ -33,6 +42,14 @@ export class TcFormatPipe implements PipeTransform {
     styleUrls: ["./transcription-plugin.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
     imports: [NgClass, Tooltip, ToastComponent, TcFormatPipe_1, SanitizeHtmlPipe],
+    // OnPush (phase 7 vague 2) : le karaoké (handleOnTimeChange) reste du DOM direct
+    // (querySelectorAll + classList) hors template ; tout l'état lu par le template et muté
+    // hors handlers de template est signalisé (transcriptions, displaySynchro, searching,
+    // typing, index, listOfSearchedNodes). Les listeners player TIME_CHANGE/SEEKED/SEEKING/
+    // METADATA_LOADED sont en policy 'none' (DOM + écritures de signals uniquement). Les
+    // champs restés plats (tcDisplayFormat, fps, tcOffset, resourceType, labels de config)
+    // sont renseignés dans ngOnInit/init(), couverts par le listener INIT 'zone' de PluginBase.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements AfterViewInit {
     public static PLUGIN_NAME = "TRANSCRIPTION";
@@ -59,17 +76,29 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public headerElement: ElementRef<HTMLElement>;
     @ViewChild("searchText")
     public searchText: ElementRef;
-    public searching = false;
-    public typing = false;
-    public index = 0;
+    /** Recherche active (icône loupe/compteur) — signal : lu par le template. */
+    public readonly searching = signal(false);
+    /** Saisie en cours (icône clear) — signal : lu par le template. */
+    public readonly typing = signal(false);
+    /** Position 1-based du mot recherché courant — signal : lu par le template. */
+    public readonly index = signal(0);
     /**
      * Return  current time
      */
     public currentTime: number;
-    public transcriptions: Array<TranscriptionLocalisation> = null;
-    public listOfSearchedNodes: Array<HTMLElement>;
+    /**
+     * Transcriptions parsées (null tant qu'aucune métadonnée n'est chargée) — signal :
+     * écrites par parseTranscription sous le listener METADATA_LOADED (policy 'none').
+     */
+    public readonly transcriptions = signal<Array<TranscriptionLocalisation>>(null);
+    /** Résultats de recherche (le template lit .length) — signal. */
+    public readonly listOfSearchedNodes = signal<Array<HTMLElement>>(undefined);
     private searchedWordIndex = 0;
-    public displaySynchro = false;
+    /**
+     * Bouton synchro — signal : basculé par les listeners SEEKED/TIME_CHANGE (policy 'none')
+     * et le timer d'auto-synchronisation.
+     */
+    public readonly displaySynchro = signal(false);
     private lastSelectedNode = null;
     private lastSegmentTcIn: number | null = null;
     private lastSegmentTcOut: number | null = null;
@@ -116,23 +145,33 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             }
             if (this.pluginConfiguration.data.autoScroll) {
                 this.autoScroll = true;
+                // Karaoké 100 % DOM direct (querySelectorAll + classList) + écritures de
+                // signals (displaySynchro) → policy 'none' : ni zone.run ni markForCheck.
                 this.addListener(
                     this.mediaPlayerElement.eventEmitter,
                     PlayerEventType.TIME_CHANGE,
                     this.handleOnTimeChange,
+                    { policy: "none" },
                 );
             }
         }
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTranscription();
         }
+        // handleMetadataLoaded n'écrit que le signal transcriptions (parseTranscription) puis
+        // du DOM différé ; SEEKED/SEEKING ne font que du DOM + le signal displaySynchro → 'none'.
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.METADATA_LOADED,
             this.handleMetadataLoaded,
+            { policy: "none" },
         );
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeekedEvent);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeekingEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeekedEvent, {
+            policy: "none",
+        });
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeekingEvent, {
+            policy: "none",
+        });
     }
 
     /**
@@ -154,7 +193,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
     copyAll() {
         const tcOffset = this.mediaPlayerElement.getConfiguration()?.tcOffset;
-        const copiedText = this.transcriptions
+        const copiedText = this.transcriptions()
             .map((localisation) => {
                 const tcIn = this.tcFormatPipe.transform(localisation.tcIn + tcOffset, this.tcDisplayFormat);
                 const tcOut = this.tcFormatPipe.transform(localisation.tcOut + tcOffset, this.tcDisplayFormat);
@@ -218,7 +257,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
 
     private handleSeekedEvent = (): void => {
-        this.displaySynchro = false;
+        this.displaySynchro.set(false);
         if (this.autoSyncTimer !== null) {
             clearTimeout(this.autoSyncTimer);
             this.autoSyncTimer = null;
@@ -271,10 +310,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public handleChangeInput(value) {
         if (value.length > 0) {
-            this.typing = true;
+            this.typing.set(true);
         }
-        if (this.searching === true) {
-            this.searching = false;
+        if (this.searching() === true) {
+            this.searching.set(false);
             Array.from(
                 this.transcriptionElement.nativeElement.querySelectorAll(
                     `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
@@ -456,9 +495,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const scrollNode: HTMLElement = this.transcriptionElement.nativeElement.querySelector(
             `.${TranscriptionPluginComponent.SELECTOR_SEGMENT}.${TranscriptionPluginComponent.SELECTOR_SELECTED}`,
         );
-        if (scrollNode && this.displaySynchro === false) {
+        if (scrollNode && this.displaySynchro() === false) {
             this.scrollToNode(scrollNode);
-            this.displaySynchro = false;
+            this.displaySynchro.set(false);
         }
     }
 
@@ -474,14 +513,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             const visible = scrollPos < maxScrollPos;
             if (this.ignoreNextScroll && !visible) {
                 this.ignoreNextScroll = false;
-                this.displaySynchro = false;
+                this.displaySynchro.set(false);
             }
             if (this.currentTime === 0) {
                 this.transcriptionElement.nativeElement.scrollTop = 0;
             }
             // scroll to node if he's not visible
             if (this.autoScroll) {
-                if (!visible && this.displaySynchro === false) {
+                if (!visible && this.displaySynchro() === false) {
                     this.isAutoScrolling = true;
                     this.transcriptionElement.nativeElement.scrollTop = scrollPos - minScroll;
                     setTimeout(() => {
@@ -528,13 +567,15 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.lastSegmentTcIn = null;
         this.lastSegmentTcOut = null;
         this._inGap = false;
-        if (!this.transcriptions || (this.transcriptions && this.transcriptions.length === 0)) {
+        const currentTranscriptions = this.transcriptions();
+        if (!currentTranscriptions || currentTranscriptions.length === 0) {
             const handleMetadataIds = this.pluginConfiguration.metadataIds;
             const metadataManager = this.mediaPlayerElement.metadataManager;
             this.logger.info(` Metadata loaded transcription ${handleMetadataIds}`);
             // Check if metadata is initialized
             if (metadataManager && handleMetadataIds && Utils.isArrayLike<string>(handleMetadataIds)) {
-                this.transcriptions = new Array<TranscriptionLocalisation>();
+                // Construit la liste localement puis publie en une seule écriture de signal.
+                let transcriptions = new Array<TranscriptionLocalisation>();
                 handleMetadataIds.forEach((metadataId) => {
                     this.logger.info(`get metadata for ${metadataId}`);
                     const transcriptionLocalisations = metadataManager.getTranscriptionLocalisations(
@@ -543,17 +584,17 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         this.pluginConfiguration.data.withSubLocalisations,
                     );
                     if (transcriptionLocalisations && transcriptionLocalisations.length > 0) {
-                        this.transcriptions = this.transcriptions.concat(transcriptionLocalisations);
+                        transcriptions = transcriptions.concat(transcriptionLocalisations);
                     }
                 });
                 // Add sort by tcin
-                if (this.transcriptions) {
-                    this.transcriptions = sortBy(this.transcriptions, ["tcIn"]);
+                if (transcriptions) {
+                    transcriptions = sortBy(transcriptions, ["tcIn"]);
                     const tcIn = this.pluginConfiguration?.data?.tcIn;
                     const duration = this.pluginConfiguration?.data?.duration;
                     if (tcIn > 0 || duration > 0) {
                         let transcriptionsToBeRemoved = [];
-                        this.transcriptions.forEach((transcription, index) => {
+                        transcriptions.forEach((transcription, index) => {
                             if (transcription.tcOut < tcIn) {
                                 transcriptionsToBeRemoved.push(transcription);
                             }
@@ -561,11 +602,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                                 transcriptionsToBeRemoved.push(transcription);
                             }
                         });
-                        this.transcriptions = this.transcriptions.filter(
+                        transcriptions = transcriptions.filter(
                             (transcription) => !transcriptionsToBeRemoved.includes(transcription),
                         );
                     }
                 }
+                this.transcriptions.set(transcriptions);
             }
         }
     }
@@ -575,9 +617,12 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
 
     public searchWord(searchText: string) {
-        this.listOfSearchedNodes = new Array<HTMLElement>();
+        // Le tableau est poussé au fil de la boucle (synchrone) : le signal est publié une fois
+        // en tête, la vue lit la longueur finale au rendu suivant.
+        const listOfSearchedNodes = new Array<HTMLElement>();
+        this.listOfSearchedNodes.set(listOfSearchedNodes);
         if (searchText !== "" && searchText !== this.pluginConfiguration.data.label) {
-            this.searching = true;
+            this.searching.set(true);
             Array.from(
                 this.transcriptionElement.nativeElement.querySelectorAll(
                     `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
@@ -585,14 +630,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             ).forEach((node) => {
                 node.classList.remove(TranscriptionPluginComponent.SEARCH_SELECTOR);
                 if (TextUtils.hasSearchText(node.textContent, searchText)) {
-                    this.listOfSearchedNodes.push(node as HTMLElement);
+                    listOfSearchedNodes.push(node as HTMLElement);
                     // add active class to first element
-                    this.index = this.searchedWordIndex + 1;
-                    this.listOfSearchedNodes.forEach((n) => {
+                    this.index.set(this.searchedWordIndex + 1);
+                    listOfSearchedNodes.forEach((n) => {
                         n.classList.add(TranscriptionPluginComponent.SEARCH_FOUNDED);
                     });
-                    this.listOfSearchedNodes[0].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
-                    const scrollNode: HTMLElement = this.listOfSearchedNodes[0].parentElement.parentElement;
+                    listOfSearchedNodes[0].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
+                    const scrollNode: HTMLElement = listOfSearchedNodes[0].parentElement.parentElement;
                     if (scrollNode) {
                         const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
                         this.transcriptionElement.nativeElement.scrollTop = scrollPos;
@@ -608,9 +653,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
 
     public scrollToSearchedWord(direction: string) {
-        if (this.listOfSearchedNodes && this.listOfSearchedNodes.length > 0) {
-            if (this.listOfSearchedNodes[this.searchedWordIndex]) {
-                this.listOfSearchedNodes[this.searchedWordIndex].classList.remove(
+        const listOfSearchedNodes = this.listOfSearchedNodes();
+        if (listOfSearchedNodes && listOfSearchedNodes.length > 0) {
+            if (listOfSearchedNodes[this.searchedWordIndex]) {
+                listOfSearchedNodes[this.searchedWordIndex].classList.remove(
                     TranscriptionPluginComponent.SEARCH_SELECTOR,
                 );
             }
@@ -619,19 +665,16 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             } else {
                 this.searchedWordIndex = this.searchedWordIndex + 1;
             }
-            if (this.searchedWordIndex > this.listOfSearchedNodes.length - 1 && direction === "down") {
+            if (this.searchedWordIndex > listOfSearchedNodes.length - 1 && direction === "down") {
                 this.searchedWordIndex = 0;
             } else if (this.searchedWordIndex < 0 && direction === "up") {
-                this.searchedWordIndex = this.listOfSearchedNodes.length - 1;
+                this.searchedWordIndex = listOfSearchedNodes.length - 1;
             }
-            this.index = this.searchedWordIndex + 1;
+            this.index.set(this.searchedWordIndex + 1);
             this.ignoreNextScroll = true;
             this.autoScroll = false;
-            this.listOfSearchedNodes[this.searchedWordIndex].classList.add(
-                TranscriptionPluginComponent.SEARCH_SELECTOR,
-            );
-            const scrollNode: HTMLElement =
-                this.listOfSearchedNodes[this.searchedWordIndex].parentElement.parentElement;
+            listOfSearchedNodes[this.searchedWordIndex].classList.add(TranscriptionPluginComponent.SEARCH_SELECTOR);
+            const scrollNode: HTMLElement = listOfSearchedNodes[this.searchedWordIndex].parentElement.parentElement;
             if (scrollNode) {
                 const scrollPos = scrollNode.offsetTop - this.transcriptionElement.nativeElement.offsetTop;
                 this.transcriptionElement.nativeElement.scrollTop = scrollPos;
@@ -667,7 +710,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.automaticallyScrolled = false;
             }, 100);
         }
-        this.displaySynchro = false;
+        this.displaySynchro.set(false);
     }
 
     /**
@@ -676,10 +719,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
 
     public clearSearchList() {
         this.autoScroll = true;
-        this.index = 0;
+        this.index.set(0);
         this.searchedWordIndex = 0;
-        this.listOfSearchedNodes = null;
-        this.searching = false;
+        this.listOfSearchedNodes.set(null);
+        this.searching.set(false);
         Array.from(
             this.transcriptionElement.nativeElement.querySelectorAll(`.${TranscriptionPluginComponent.SELECTOR_WORD}`),
         ).forEach((node) => {
@@ -691,13 +734,14 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private isHandleShortCutNeeded(event): boolean {
         return (
             event.key === this.pluginConfiguration.data.key &&
-            this.searching === false &&
+            this.searching() === false &&
             this.searchText.nativeElement.value !== ""
         );
     }
 
     private isScrollToNextWordNeeded(): boolean {
-        return this.listOfSearchedNodes && this.listOfSearchedNodes.length !== 0 && this.searchedWordIndex !== null;
+        const listOfSearchedNodes = this.listOfSearchedNodes();
+        return listOfSearchedNodes && listOfSearchedNodes.length !== 0 && this.searchedWordIndex !== null;
     }
 
     /***
@@ -709,27 +753,27 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this.prevSearchValue = this.searchText.nativeElement.value;
                 this.clearSearchList();
                 this.searchWord(this.searchText.nativeElement.value);
-                this.searching = true;
+                this.searching.set(true);
             } else {
                 if (this.isScrollToNextWordNeeded()) {
                     let direction = this.computeDirection();
-                    this.searching = true;
+                    this.searching.set(true);
                     this.scrollToSearchedWord(direction);
                 } else {
                     this.searchWord(this.searchText.nativeElement.value);
-                    this.searching = true;
+                    this.searching.set(true);
                 }
             }
         }
         if (event.key === TranscriptionPluginComponent.BACKSPACE_KEY && this.searchText.nativeElement.value !== "") {
             this.clearSearchList();
-            this.typing = false;
+            this.typing.set(false);
         }
     }
 
     private computeDirection = () => {
         let direction = "down";
-        if (this.searchedWordIndex === this.listOfSearchedNodes.length) {
+        if (this.searchedWordIndex === this.listOfSearchedNodes().length) {
             direction = "up";
         }
         return direction;
@@ -763,10 +807,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             if (!(top && bottom)) {
                 visible = false;
             }
-            this.displaySynchro = visible === false;
-            if (this.displaySynchro && this.autoScroll) {
+            this.displaySynchro.set(visible === false);
+            if (this.displaySynchro() && this.autoScroll) {
                 this.startAutoSyncTimer();
-            } else if (!this.displaySynchro && this.autoSyncTimer !== null) {
+            } else if (!this.displaySynchro() && this.autoSyncTimer !== null) {
                 clearTimeout(this.autoSyncTimer);
                 this.autoSyncTimer = null;
             }
@@ -790,7 +834,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * Postpone the automatic resync while the user is actively browsing the transcription
      */
     public resetAutoSyncTimer() {
-        if (this.displaySynchro && this.autoSyncTimer !== null) {
+        if (this.displaySynchro() && this.autoSyncTimer !== null) {
             this.startAutoSyncTimer();
         }
     }
@@ -814,7 +858,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
             this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>(".segment"),
         );
 
-        this.transcriptions.forEach((tr) => {
+        this.transcriptions().forEach((tr) => {
             const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(
                 this.predicateIsNodeTcInTcOutMatching(tr),
             );
@@ -936,8 +980,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 () =>
                     this.transcriptionElement &&
                     this.transcriptionElement.nativeElement &&
-                    this.transcriptions &&
-                    this.transcriptions.length > 0,
+                    this.transcriptions() &&
+                    this.transcriptions().length > 0,
                 undefined,
                 this.handleMatchedTextStyle.bind(this),
                 this.intervalStep,

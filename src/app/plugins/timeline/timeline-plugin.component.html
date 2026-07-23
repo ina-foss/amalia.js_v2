@@ -42,14 +42,14 @@
     <div class="timeline-block">
         <div class="focus handle-border" #focusContainer>
             <div class="time-code">
-                @if (focusTcOut) {
-                <span class="start">{{ focusTcIn | tcFormat: timeFormat : fps }}</span>
+                @if (focusTcOut()) {
+                <span class="start">{{ focusTcIn() | tcFormat: timeFormat : fps }}</span>
                 }
-                @if (focusTcIn) {
+                @if (focusTcIn()) {
                 <span class="middle">-</span>
                 }
-                @if (focusTcOut) {
-                <span class="end">{{ focusTcOut | tcFormat: timeFormat : fps }}</span>
+                @if (focusTcOut()) {
+                <span class="end">{{ focusTcOut() | tcFormat: timeFormat : fps }}</span>
                 }
             </div>
         </div>
@@ -59,7 +59,7 @@
                 @switch (loc.tcIn != null && loc.tcOut != null) {
                 @default {
                 <div class="cue-point" [attr.data-color]="loc.color" [ngStyle]="{
-                                    left: (loc.tc * 100) / duration + '%',
+                                    left: (loc.tc * 100) / duration() + '%',
                                     'background-color': loc.color ? loc.color : mainBlockColor,
                                 }" [attr.data-tc]="loc.tc" (click)="callSeek(loc.tc)"
                     (keydown.enter)="callSeek(loc.tc)" role="button" tabindex="0"></div>
@@ -68,8 +68,8 @@
                 <div class="segment" [attr.data-tc]="loc.tcIn" (click)="callSeek(loc.tcIn)"
                     (keydown.enter)="callSeek(loc.tcIn)" role="button" tabindex="0"
                     [attr.data-color]="loc.color" [ngStyle]="{
-                                    left: (loc.tcIn * 100) / duration + '%',
-                                    width: ((loc.tcOut - loc.tcIn) * 100) / duration + '%',
+                                    left: (loc.tcIn * 100) / duration() + '%',
+                                    width: ((loc.tcOut - loc.tcIn) * 100) / duration() + '%',
                                     'background-color': loc.color ? loc.color : mainBlockColor,
                                 }"></div>
                 }
@@ -155,11 +155,11 @@
                                         'background-color': loc.color
                                             ? loc.color
                                             : block.defaultColor,
-                                        left: focusTcOut > focusTcIn ? ((loc.tcIn - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
-                                        width: focusTcOut > focusTcIn
+                                        left: focusTcOut() > focusTcIn() ? ((loc.tcIn - focusTcIn()) * 100) / (focusTcOut() - focusTcIn()) + '%' : '0%',
+                                        width: focusTcOut() > focusTcIn()
                                             ? (loc.tcOut - loc.tcIn === 0
                                                 ? '1px'
-                                                : ((loc.tcOut - loc.tcIn) * 100) / (focusTcOut - focusTcIn) + '%')
+                                                : ((loc.tcOut - loc.tcIn) * 100) / (focusTcOut() - focusTcIn()) + '%')
                                             : '0%',
                                     }"></div>
                     } @else {
@@ -170,7 +170,7 @@
                                         'background-color': loc.color
                                             ? loc.color
                                             : block.defaultColor,
-                                        left: focusTcOut > focusTcIn ? ((loc.tc - focusTcIn) * 100) / (focusTcOut - focusTcIn) + '%' : '0%',
+                                        left: focusTcOut() > focusTcIn() ? ((loc.tc - focusTcIn()) * 100) / (focusTcOut() - focusTcIn()) + '%' : '0%',
                                     }" [attr.data-tc]="loc.tc" [attr.data-type]="loc.type" (click)="callSeek(loc.tc)">
                     </div>
                     }
@@ -181,7 +181,7 @@
         }
     </p-accordion>
 </div>
-<div class="menu" #menuContainer [ngClass]="{ open: configIsOpen }">
+<div class="menu" #menuContainer [ngClass]="{ open: configIsOpen() }">
     <div class="content" id="menu-content">
         <div class="header">
             <div class="select-segments">

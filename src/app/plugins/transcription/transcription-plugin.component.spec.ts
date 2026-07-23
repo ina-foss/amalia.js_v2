@@ -201,10 +201,10 @@ describe("TranscriptionPluginComponent", () => {
 
     it("should copy single localisation and emit event", async () => {
         // Mock transcriptions
-        component.transcriptions = [
+        component.transcriptions.set([
             { tcIn: 10, tcOut: 20, text: "Text 1", label: "Text 1", thumb: "Text 1" },
             { tcIn: 30, tcOut: 40, text: "Text 2", label: "Text 2", thumb: "Text 2" },
-        ];
+        ]);
         const localisation = { tcIn: 10, tcOut: 20, text: "Hello", label: "Hello", thumb: "Hello" };
         spyOn(component.mediaPlayerElement.eventEmitter, "emit");
 
@@ -223,10 +223,10 @@ describe("TranscriptionPluginComponent", () => {
 
     it("should copy all transcriptions and emit event", async () => {
         // Mock transcriptions
-        component.transcriptions = [
+        component.transcriptions.set([
             { tcIn: 10, tcOut: 20, text: "Text 1", label: "Text 1", thumb: "Text 1" },
             { tcIn: 30, tcOut: 40, text: "Text 2", label: "Text 2", thumb: "Text 2" },
-        ];
+        ]);
         spyOn(component.mediaPlayerElement.eventEmitter, "emit");
         await component.copyAll();
 
@@ -347,14 +347,14 @@ describe("TranscriptionPluginComponent", () => {
             </div>
         `;
         component.transcriptionElement = new ElementRef(container);
-        component.displaySynchro = true;
+        component.displaySynchro.set(true);
         const handleOnTimeChangeSpy = spyOn<any>(component, "handleOnTimeChange").and.callThrough();
 
         component.scrollToSelectedSegment();
 
         expect(handleOnTimeChangeSpy).toHaveBeenCalled();
         expect(container.querySelector(".segment.selected")).toBeTruthy();
-        expect(component.displaySynchro).toBeFalse();
+        expect(component.displaySynchro()).toBeFalse();
     });
 
     it("should call media seek in callSeek", () => {
@@ -372,12 +372,12 @@ describe("TranscriptionPluginComponent", () => {
         const node = document.createElement("span");
         node.className = "w selected-text";
         component.transcriptionElement.nativeElement.appendChild(node);
-        component.searching = true;
+        component.searching.set(true);
 
         component.handleChangeInput("abc");
 
-        expect(component.typing).toBeTrue();
-        expect(component.searching).toBeFalse();
+        expect(component.typing()).toBeTrue();
+        expect(component.searching()).toBeFalse();
         expect(node.classList.contains("selected-text")).toBeFalse();
     });
 
@@ -445,8 +445,8 @@ describe("TranscriptionPluginComponent", () => {
         (component as any).parseTranscription();
 
         expect(getTranscriptionLocalisations).toHaveBeenCalled();
-        expect(component.transcriptions.length).toBe(1);
-        expect((component.transcriptions[0] as any).text).toBe("keep");
+        expect(component.transcriptions().length).toBe(1);
+        expect((component.transcriptions()[0] as any).text).toBe("keep");
     });
 
     it("searchWord should find words, mark them and set scroll", () => {
@@ -461,9 +461,9 @@ describe("TranscriptionPluginComponent", () => {
 
         component.searchWord("bon");
 
-        expect(component.searching).toBeTrue();
-        expect(component.listOfSearchedNodes.length).toBe(1);
-        expect(component.listOfSearchedNodes[0].classList.contains("selected-text")).toBeTrue();
+        expect(component.searching()).toBeTrue();
+        expect(component.listOfSearchedNodes().length).toBe(1);
+        expect(component.listOfSearchedNodes()[0].classList.contains("selected-text")).toBeTrue();
     });
 
     it("scrollToSearchedWord should wrap indexes up and down", () => {
@@ -475,7 +475,7 @@ describe("TranscriptionPluginComponent", () => {
         p2.appendChild(a);
         p2.appendChild(b);
         component.transcriptionElement = new ElementRef(parent);
-        component.listOfSearchedNodes = [a as any, b as any];
+        component.listOfSearchedNodes.set([a as any, b as any]);
         (component as any).searchedWordIndex = 1;
 
         component.scrollToSearchedWord("down");
@@ -489,13 +489,13 @@ describe("TranscriptionPluginComponent", () => {
         const n = document.createElement("span");
         n.className = "w selected-text founded-text";
         component.transcriptionElement.nativeElement.appendChild(n);
-        component.listOfSearchedNodes = [n as any];
-        component.searching = true;
+        component.listOfSearchedNodes.set([n as any]);
+        component.searching.set(true);
 
         component.clearSearchList();
 
-        expect(component.searching).toBeFalse();
-        expect(component.listOfSearchedNodes).toBeNull();
+        expect(component.searching()).toBeFalse();
+        expect(component.listOfSearchedNodes()).toBeNull();
         expect(n.classList.contains("selected-text")).toBeFalse();
         expect(n.classList.contains("founded-text")).toBeFalse();
     });
@@ -505,21 +505,21 @@ describe("TranscriptionPluginComponent", () => {
         component.pluginConfiguration.data.key = "Enter" as any;
         const clearSpy = spyOn(component, "clearSearchList").and.callThrough();
         const searchSpy = spyOn(component, "searchWord").and.callFake(() => {
-            component.listOfSearchedNodes = [document.createElement("span") as any];
+            component.listOfSearchedNodes.set([document.createElement("span") as any]);
         });
         const scrollSpy = spyOn(component, "scrollToSearchedWord");
-        component.listOfSearchedNodes = [];
+        component.listOfSearchedNodes.set([]);
         (component as any).searchedWordIndex = 0;
 
         component.handleShortcut({ key: "Enter" } as any);
-        component.searching = false;
+        component.searching.set(false);
         component.handleShortcut({ key: "Enter" } as any);
         component.handleShortcut({ key: "Backspace" } as any);
 
         expect(searchSpy).toHaveBeenCalledWith("foo");
         expect(scrollSpy).toHaveBeenCalled();
         expect(clearSpy).toHaveBeenCalled();
-        expect(component.typing).toBeFalse();
+        expect(component.typing()).toBeFalse();
     });
 
     it("updateSynchro should set displaySynchro when selected word is not visible", () => {
@@ -546,7 +546,7 @@ describe("TranscriptionPluginComponent", () => {
 
         component.updateSynchro();
 
-        expect(component.displaySynchro).toBeTrue();
+        expect(component.displaySynchro()).toBeTrue();
     });
 
     it("should match composed named entity and apply css class", () => {
@@ -559,14 +559,14 @@ describe("TranscriptionPluginComponent", () => {
             </div></div>
           </div>`;
         component.transcriptionElement = new ElementRef(container);
-        component.transcriptions = [
+        component.transcriptions.set([
             {
                 tcIn: 0,
                 tcOut: 2,
                 text: "Emmanuel Macron",
                 annotations: [{ matchedText: "Emmanuel Macron" }],
             } as any,
-        ];
+        ]);
 
         (component as any).handleMatchedTextStyle();
 
@@ -585,14 +585,14 @@ describe("TranscriptionPluginComponent", () => {
             </div></div>
           </div>`;
         component.transcriptionElement = new ElementRef(container);
-        component.transcriptions = [
+        component.transcriptions.set([
             {
                 tcIn: 0,
                 tcOut: 2,
                 text: "Emmanuel Macron Paris",
                 annotations: [{ matchedText: ["Emmanuel Macron", "Paris"] }],
             } as any,
-        ];
+        ]);
 
         (component as any).handleMatchedTextStyle();
 
@@ -610,14 +610,14 @@ describe("TranscriptionPluginComponent", () => {
             </div></div>
           </div>`;
         component.transcriptionElement = new ElementRef(container);
-        component.transcriptions = [
+        component.transcriptions.set([
             {
                 tcIn: 0,
                 tcOut: 2,
                 text: "Paris",
                 annotations: [{ matchedText: ["Paris"] }],
             } as any,
-        ];
+        ]);
 
         (component as any).handleMatchedTextStyle();
 

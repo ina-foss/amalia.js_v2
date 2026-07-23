@@ -72,7 +72,7 @@ describe('StoryboardPluginComponent automatic synchronization', () => {
     it('does not start auto-sync when synchronization is inactive', () => {
         const { component } = createComponent();
         const scrollSpy = spyOn(component, 'scrollToActiveThumbnail');
-        component.displaySynchro = false;
+        component.displaySynchro.set(false);
         jasmine.clock().install();
 
         component.resetAutoSyncTimer();

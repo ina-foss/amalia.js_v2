@@ -1,5 +1,5 @@
 import { PluginBase } from "../../core/plugin/plugin-base";
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, signal, ViewChild, ViewEncapsulation } from "@angular/core";
 import { PlayerEventType } from "../../core/constant/event-type";
 import { PluginConfigData } from "../../core/config/model/plugin-config-data";
 import { StoryboardConfig } from "../../core/config/model/storyboard-config";
@@ -16,6 +16,15 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
     styleUrls: ["./storyboard-plugin.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
     imports: [Tooltip, NgClass, TcFormatPipe],
+    // OnPush (phase 7 vague 2) : les trois champs template mutés hors handlers de template
+    // (displaySynchro, openIntervalList, listOfThumbnailFilter — timers, listeners player)
+    // sont des signals ; le reste est soit constant, soit muté uniquement par des handlers
+    // de template (size, selectedInterval → la vue est marquée dirty par l'événement), soit
+    // renseigné dans init() (baseUrl, enableLabel, fps, sizeThumbnail, tcOffset — couvert
+    // par le listener INIT 'zone' ou le METADATA_LOADED 'schedule'). Le TIME_CHANGE throttlé
+    // et SEEKED/SEEKING ne font que du DOM (classList/scroll) et des écritures de signals →
+    // policy 'none'.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> implements OnInit {
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 500;
@@ -28,7 +37,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public msgMedium = "Affichage moyennes miniatures";
     public msgLarge = "Affichage grandes miniatures";
     public listOfThumbnail: Array<number>;
-    public listOfThumbnailFilter: Array<number>;
+    /**
+     * Fenêtre de miniatures rendue par le @for du template — signal : mutée depuis des
+     * timers (auto-sync, resize différé) et des listeners player hors zone.
+     */
+    public readonly listOfThumbnailFilter = signal<Array<number>>([]);
     public storyboardElement: ElementRef<HTMLElement>;
     @ViewChild("scrollElement", { static: false })
     public scrollElement: ElementRef<HTMLElement>;
@@ -75,9 +88,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public selectedInterval: [string, number];
     /**
-     * state list of interval
+     * state list of interval — signal : refermé par updateThumbnailSize depuis des timers
+     * (handleThumbnailSizeChange) et le listener METADATA_LOADED.
      */
-    public openIntervalList: boolean;
+    public readonly openIntervalList = signal(false);
 
     /**
      * Default size of thumbnails
@@ -96,9 +110,10 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      */
     public heightThumbnail: number;
     /**
-     * default state of button synchro
+     * default state of button synchro — signal : basculé par les listeners SEEKED/scroll
+     * et le timer d'auto-synchronisation, tous hors zone Angular.
      */
-    public displaySynchro = false;
+    public readonly displaySynchro = signal(false);
     public activeThumbnail: any;
     public selectedTc = 0;
     public selectedIntervalitem = 0;
@@ -110,7 +125,6 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     constructor(playerService: MediaPlayerService) {
         super(playerService);
         this.pluginName = StoryboardPluginComponent.PLUGIN_NAME;
-        this.listOfThumbnailFilter = [];
         this.selectedInterval = ["tc", this.tcIntervals[this.tcInterval]];
         this.throttleTimeChange = throttle(
             this.handleSeeked,
@@ -131,17 +145,29 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.initStoryboard();
             }
             this.sizeThumbnail = this.getWindowWidth();
+            // TIME_CHANGE/SEEKED/SEEKING ne font que du DOM (classList active, scrollTop) et
+            // des écritures de signals (displaySynchro, listOfThumbnailFilter) → policy 'none' :
+            // pas de zone.run ni de markForCheck, l'écriture de signal notifie la vue OnPush.
             this.addListener(
                 this.mediaPlayerElement.eventEmitter,
                 PlayerEventType.TIME_CHANGE,
                 this.throttleTimeChange,
+                { policy: "none" },
             );
-            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeekedEvent);
-            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeekedEvent, {
+                policy: "none",
+            });
+            this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking, {
+                policy: "none",
+            });
+            // handleMetadataLoaded écrit aussi des champs plats lus par le template (baseUrl,
+            // duration via initStoryboard) → 'schedule' : handler tel quel + markForCheck hors
+            // zone (tick coalescé par le scheduler hybride).
             this.addListener(
                 this.mediaPlayerElement.eventEmitter,
                 PlayerEventType.METADATA_LOADED,
                 this.handleMetadataLoaded,
+                { policy: "schedule" },
             );
         }
         this.handleSeeked();
@@ -240,8 +266,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.currentTime = Number.isFinite(time) ? time : this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
 
         if (this.isHandleSeekNeeded()) {
-            let lastTc = this.listOfThumbnailFilter[this.listOfThumbnailFilter.length - 1];
-            let firstTc = this.listOfThumbnailFilter[0];
+            const listOfThumbnailFilter = this.listOfThumbnailFilter();
+            let lastTc = listOfThumbnailFilter[listOfThumbnailFilter.length - 1];
+            let firstTc = listOfThumbnailFilter[0];
             this.selectedTc = this.currentTime;
             const isForward = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
             const outRange = this.getOutRange(isForward, firstTc, lastTc);
@@ -263,9 +290,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                     thumbnailNode.classList.add("active");
                 });
             }
-            if (isForward && outRange && this.displaySynchro === false) {
+            if (isForward && outRange && this.displaySynchro() === false) {
                 this.updateScrollForTimeCode(lastTc, isForward);
-            } else if (!isForward && outRange && this.displaySynchro === false) {
+            } else if (!isForward && outRange && this.displaySynchro() === false) {
                 this.updateScrollForTimeCode(firstTc, isForward);
             }
         }
@@ -294,7 +321,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     }
 
     private handleSeekedEvent = (): void => {
-        this.displaySynchro = false;
+        this.displaySynchro.set(false);
         if (this.autoSyncTimer !== null) {
             clearTimeout(this.autoSyncTimer);
             this.autoSyncTimer = null;
@@ -410,11 +437,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 }
                 const start = (scrollTop / this.heightThumbnail) * this.itemPerLine;
                 const end = start + (clientHeight / this.heightThumbnail) * this.itemPerLine;
-                this.listOfThumbnailFilter = this.listOfThumbnail.slice(start, end);
+                this.listOfThumbnailFilter.set(this.listOfThumbnail.slice(start, end));
             } else {
                 const is = 0;
                 const ie = is + this.itemPerLine;
-                this.listOfThumbnailFilter = this.listOfThumbnail.slice(is, ie);
+                this.listOfThumbnailFilter.set(this.listOfThumbnail.slice(is, ie));
             }
         }
         this.updateSynchro();
@@ -443,15 +470,15 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             if (!(top && bottom)) {
                 visible = false;
             }
-            this.displaySynchro = !visible;
-            if (this.displaySynchro) {
+            this.displaySynchro.set(!visible);
+            if (this.displaySynchro()) {
                 this.startAutoSyncTimer();
             } else if (this.autoSyncTimer !== null) {
                 clearTimeout(this.autoSyncTimer);
                 this.autoSyncTimer = null;
             }
         } else {
-            this.displaySynchro = false;
+            this.displaySynchro.set(false);
         }
     }
 
@@ -472,7 +499,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Postpone the automatic resync while the user is actively browsing the storyboard
      */
     public resetAutoSyncTimer() {
-        if (this.displaySynchro && this.autoSyncTimer !== null) {
+        if (this.displaySynchro() && this.autoSyncTimer !== null) {
             this.startAutoSyncTimer();
         }
     }
@@ -482,7 +509,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * @param tc time code
      */
     public seekToTc(tc: number) {
-        this.displaySynchro = false;
+        this.displaySynchro.set(false);
         this.selectedTc = tc;
         this.mediaPlayerElement.getMediaPlayer().playbackRate = 1;
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(tc);
@@ -510,7 +537,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         }
         this.listOfThumbnail = range(0, this.duration, interval);
         // close menu
-        this.openIntervalList = false;
+        this.openIntervalList.set(false);
         this.updateScrollHeight();
         this.handleScroll();
         this.selectThumbnail();
@@ -588,7 +615,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
      * Invoked on click button synchro
      */
     public scrollToActiveThumbnail(tc: number, withSeek: boolean = false) {
-        this.displaySynchro = false;
+        this.displaySynchro.set(false);
         this.isAutoScrolling = true;
         this.handleScroll();
         const scrollTop = parseFloat(this.storyboardElement.nativeElement.parentElement.dataset.scrollTop);
@@ -601,14 +628,14 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
                 this.seekToTc(this.currentTime);
             }, 800);
         }
-        this.displaySynchro = false;
+        this.displaySynchro.set(false);
     }
 
     /**
      * Toggle openList
      */
     public toggleList() {
-        this.openIntervalList = !this.openIntervalList;
+        this.openIntervalList.update((open) => !open);
     }
 
     waitAndReload(event: any) {
@@ -629,6 +656,9 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     }
 
     override ngOnDestroy(): void {
+        // Annule un appel "trailing" du throttle TIME_CHANGE encore en attente : le handler
+        // (policy 'none') ferait du DOM sur un composant détruit.
+        this.throttleTimeChange?.cancel?.();
         if (this.autoSyncTimer !== null) {
             clearTimeout(this.autoSyncTimer);
         }

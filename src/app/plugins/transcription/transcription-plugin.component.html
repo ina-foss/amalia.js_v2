@@ -1,12 +1,12 @@
-@if (transcriptions && transcriptions.length > 0) {
+@if (transcriptions() && transcriptions().length > 0) {
     <div class="search-block" (keyup)="handleShortcut($event)">
         <div class="search-text">
             <div class="clear-icon">
-                @if (typing === true) {
+                @if (typing() === true) {
                     <svg
                         class="amalia-svg-clear-size icon"
-                        (click)="clearSearchList(); active = false; typing = false; searchText.value = ''"
-                        (keydown.enter)="clearSearchList(); active = false; typing = false; searchText.value = ''"
+                        (click)="clearSearchList(); active = false; typing.set(false); searchText.value = ''"
+                        (keydown.enter)="clearSearchList(); active = false; typing.set(false); searchText.value = ''"
                         role="button"
                         tabindex="0"
                     >
@@ -24,7 +24,7 @@
             />
             <div
                 class="search-icon"
-                [ngClass]="{ show: searching === false }"
+                [ngClass]="{ show: searching() === false }"
                 (click)="searchWord(searchText.value)"
                 (keydown.enter)="searchWord(searchText.value)"
                 role="button"
@@ -35,15 +35,15 @@
                 </svg>
                 <span class="icon-loupe-m"></span>
             </div>
-            @if (listOfSearchedNodes?.length >= 0 && searching === true) {
+            @if (listOfSearchedNodes()?.length >= 0 && searching() === true) {
                 <div class="v-line"></div>
             }
-            @if (listOfSearchedNodes?.length >= 0 && searching === true) {
-                <div class="search-result">{{ index }} / {{ listOfSearchedNodes?.length }}</div>
+            @if (listOfSearchedNodes()?.length >= 0 && searching() === true) {
+                <div class="search-result">{{ index() }} / {{ listOfSearchedNodes()?.length }}</div>
             }
             <div
                 class="up"
-                [ngClass]="{ show: listOfSearchedNodes?.length > 0 && searching === true }"
+                [ngClass]="{ show: listOfSearchedNodes()?.length > 0 && searching() === true }"
                 (click)="$event.stopPropagation(); scrollToSearchedWord('up')"
                 (keydown.enter)="$event.stopPropagation(); scrollToSearchedWord('up')"
                 role="button"
@@ -55,7 +55,7 @@
             </div>
             <div
                 class="down"
-                [ngClass]="{ show: listOfSearchedNodes?.length > 0 && searching === true }"
+                [ngClass]="{ show: listOfSearchedNodes()?.length > 0 && searching() === true }"
                 (click)="$event.stopPropagation(); scrollToSearchedWord('down')"
                 (keydown.enter)="$event.stopPropagation(); scrollToSearchedWord('down')"
                 role="button"
@@ -77,7 +77,7 @@
         <div
             class="auto-scroll"
             pTooltip="{{ pluginConfiguration.data.labelSynchro }}"
-            [ngClass]="{ active: displaySynchro }"
+            [ngClass]="{ active: displaySynchro() }"
             (click)="scrollToSelectedSegment()"
             (keydown.enter)="scrollToSelectedSegment()"
             role="button"
@@ -97,7 +97,7 @@
         (click)="resetAutoSyncTimer()"
         (keydown)="resetAutoSyncTimer()"
     >
-        @for (t of transcriptions; track t) {
+        @for (t of transcriptions(); track t) {
             <div class="segment" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
                 <div class="copybutton tooltip" (click)="copy(t)">
                     <span class="tooltiptext">Copier la transcription</span>

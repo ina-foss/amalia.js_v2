@@ -1,11 +1,14 @@
 import { PluginBase } from "../../core/plugin/plugin-base";
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     computed,
     ElementRef,
+    inject,
     Input,
+    NgZone,
     OnInit,
     signal,
     ViewChild,
@@ -67,6 +70,16 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
         ToastComponent,
         TcFormatPipe,
     ],
+    // OnPush (phase 7 vague 2) : duration/focusTcIn/focusTcOut/configIsOpen sont des signals
+    // (mutés par les listeners DURATION_CHANGE/ELEMENT_CLICK 'none' et par les fins de drag/
+    // resize interactjs exécutées hors zone) ; selectedNodes était déjà un signal. Les
+    // collections restées plates (listOfBlocks, listOfBlocksIndexes, nodes, mainLocalisations,
+    // allNodesChecked, indeterminate) ne sont mutées que par des handlers de template (vue
+    // marquée dirty par l'événement) ou sous les listeners METADATA_LOADED/USER_SEGMENT_CHANGED
+    // laissés volontairement en 'zone' (zone.run + markForCheck) : parseTimelineMetadata mute
+    // ces champs en place et met à jour les TreeNode PrimeNG, et updateTreeComponent pose un
+    // setTimeout qui doit rester dans la zone.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit, AfterViewInit {
     public static PLUGIN_NAME = "TIMELINE";
@@ -75,12 +88,16 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public mainLocalisations: Array<TimelineLocalisation>;
     public listOfBlocks: Array<TimeLineBlock> = [];
     public listOfBlocksIndexes: Array<number> = [];
-    public configIsOpen = false;
+    /** Menu de filtres ouvert — signal : refermé par le listener document ELEMENT_CLICK ('none'). */
+    public readonly configIsOpen = signal(false);
     public currentTime = 0;
-    public duration = 0;
+    /** Durée du média — signal : écrite par DURATION_CHANGE ('none') et le waitFor d'init. */
+    public readonly duration = signal(0);
     public override tcOffset = 0;
-    public focusTcIn = 0;
-    public focusTcOut = 0;
+    /** Bornes du zoom (fenêtre focus) — signals : écrites par les fins de drag/resize interactjs
+     *  exécutées hors zone Angular et par DURATION_CHANGE ('none'). */
+    public readonly focusTcIn = signal(0);
+    public readonly focusTcOut = signal(0);
     public tcIn = 0;
     public durationFromConfig = 0;
     public resourceType: "stock" | "flux";
@@ -228,6 +245,26 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     @ViewChild("messages") messagesComponent!: ToastComponent;
     tvDaysEnabled: boolean = false;
 
+    /**
+     * Zone Angular locale (celle de PluginBase est privée) : l'installation interactjs
+     * (drag/resize de la fenêtre de zoom) tourne hors zone pour que chaque pointermove du
+     * drag ne déclenche pas de change detection ; les résultats sont commités via signals.
+     */
+    private readonly ngZone: NgZone | null = TimelinePluginComponent.tryInjectNgZone();
+
+    private static tryInjectNgZone(): NgZone | null {
+        try {
+            return inject(NgZone, { optional: true });
+        } catch {
+            return null;
+        }
+    }
+
+    /** Exécute `fn` hors zone Angular quand la zone est disponible, sinon telle quelle. */
+    private runOutsideAngular<T>(fn: () => T): T {
+        return this.ngZone ? this.ngZone.runOutsideAngular(fn) : fn();
+    }
+
     constructor(
         playerService: MediaPlayerService,
         private cdr: ChangeDetectorRef,
@@ -256,7 +293,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     override ngOnInit(): void {
         try {
-            this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.closeMenu);
+            // closeMenu n'écrit que des signals (configIsOpen, selectedNodes) → 'none' :
+            // plus de zone.run/markForCheck sur chaque clic document.
+            this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.closeMenu, { policy: "none" });
             this.resourceType = this.pluginConfiguration?.data?.resourceType;
             this.tcIn = this.pluginConfiguration?.data?.tcIn;
             this.durationFromConfig = this.pluginConfiguration?.data?.duration;
@@ -278,7 +317,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     initAfterMediaPlayerElementIsReady() {
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
+        this.duration.set(this.mediaPlayerElement.getMediaPlayer().getDuration());
         if (this.mediaPlayerElement.getConfiguration().loadMetadataOnDemand) {
             this.init();
             this.handleMetadataLoaded();
@@ -286,10 +325,14 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         }
         this.refreshTimeCursor();
         this.updateTimeCodePosition();
+        // Appelé depuis le timer de Utils.waitFor (hors de tout listener player) : init/
+        // handleMetadataLoaded mutent des champs plats lus par le template (listOfBlocks,
+        // nodes, mainLocalisations…) → notification explicite de la vue OnPush.
+        this.cdr.markForCheck();
     }
 
     closeMenu(event: any) {
-        if (this.configIsOpen === true) {
+        if (this.configIsOpen() === true) {
             if (
                 !Utils.isInComposedPath("menu-content", event) &&
                 !Utils.isInComposedPath("timeline-toolbar-filter-button", event)
@@ -376,16 +419,25 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (this.pluginConfiguration.data.mainBlockColor) {
             this.mainBlockColor = this.pluginConfiguration.data.mainBlockColor;
         }
-        this.initFocusResizable(this.focusContainer.nativeElement);
+        // Installation interactjs (resizable + draggable + dragend/resizeend) hors zone :
+        // les pointermove du drag/resize ne déclenchent plus de change detection, les
+        // résultats (handleZoomRangeChange) sont commités via les signals focusTcIn/focusTcOut.
+        this.runOutsideAngular(() => this.initFocusResizable(this.focusContainer.nativeElement));
+        // Le mousemove ne fait qu'actualiser selectionPosition (non lu par le template) → 'none'.
         this.addListener(
             this.listOfBlocksContainer.nativeElement,
             PlayerEventType.HTML_ELEMENT_MOUSE_MOVE,
             this.handleMouseMoveToDrawRect,
+            { policy: "none" },
         );
         if (this.mediaPlayerElement.isMetadataLoaded) {
             this.parseTimelineMetadata();
             this.handleOnDurationChange();
         }
+        // METADATA_LOADED/USER_SEGMENT_CHANGED restent volontairement en 'zone' :
+        // parseTimelineMetadata mute en place des collections plates lues par le template
+        // (listOfBlocks, listOfBlocksIndexes, nodes, mainLocalisations) et les TreeNode
+        // PrimeNG, et updateTreeComponent pose un setTimeout qui doit rester dans la zone.
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.METADATA_LOADED,
@@ -396,11 +448,17 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             PlayerEventType.USER_SEGMENT_CHANGED,
             this.handleMetadataLoaded,
         );
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        // TIME_CHANGE (chemin chaud) : currentTime n'est pas lu par le template et
+        // refreshTimeCursor ne fait que du DOM → 'none'. DURATION_CHANGE n'écrit que les
+        // signals duration/focusTcIn/focusTcOut (+ DOM) → 'none'.
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange, {
+            policy: "none",
+        });
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.DURATION_CHANGE,
             this.handleOnDurationChange,
+            { policy: "none" },
         );
     }
 
@@ -486,7 +544,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     adjustForStock(listOfLocalisations: { tcIn: number; tcOut: number }[]) {
         if (this.resourceType === "stock" && (!isNaN(this.tcIn) || this.durationFromConfig > 0)) {
-            const tcOut = this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration;
+            const tcOut =
+                this.durationFromConfig > 0 ? this.tcIn + this.durationFromConfig : this.tcIn + this.duration();
             return listOfLocalisations.filter((l: { tcIn: number; tcOut: number }) => this.checkTcForStock(l, tcOut));
         }
         return listOfLocalisations;
@@ -566,6 +625,10 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         });
         this.selectedNodes.set(selected);
         this.updateTreeComponent();
+        // detectChanges conservé (phase 7) : listOfBlocks/listOfBlocksIndexes sont réordonnés
+        // en place (références inchangées) — il faut matérialiser synchroniquement l'accordéon
+        // et l'arbre reconstruits avant les mesures DOM qui suivent dans le flux d'init
+        // (refreshTimeCursor mesure .p-accordion). Non remplaçable par une écriture de signal.
         this.cdr.detectChanges();
     }
 
@@ -810,6 +873,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             });
             if (nodeAdded) {
                 this.listOfBlocksIndexes.sort((a, b) => a - b);
+                // detectChanges conservé (phase 7) : le tri mute listOfBlocksIndexes en place
+                // (même référence), le [(value)] du p-accordion ne verrait pas le changement
+                // sans un passage de CD synchrone.
                 this.cdr.detectChanges();
             }
         } else {
@@ -862,9 +928,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
 
     private handleOnDurationChange() {
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
-        this.duration = this.mediaPlayerElement.getMediaPlayer().getDuration();
-        this.focusTcIn = this.tcOffset;
-        this.focusTcOut = this.tcOffset + this.duration;
+        this.duration.set(this.mediaPlayerElement.getMediaPlayer().getDuration());
+        this.focusTcIn.set(this.tcOffset);
+        this.focusTcOut.set(this.tcOffset + this.duration());
         this.refreshTimeCursor();
     }
 
@@ -876,9 +942,13 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const focusWidth = this.focusContainer.nativeElement.offsetWidth;
         const leftPos = Math.abs(this.focusContainer.nativeElement.offsetLeft);
         const mainContainerWidth = this.mainBlockContainer.nativeElement.clientWidth;
-        this.focusTcIn = this.tcOffset + Math.max((leftPos * this.duration) / mainContainerWidth, 0);
-        this.focusTcOut =
-            this.tcOffset + Math.min(((leftPos + focusWidth) * this.duration) / mainContainerWidth, this.duration);
+        const duration = this.duration();
+        // Écritures de signals : exécuté hors zone (dragend/resizeend interactjs), la
+        // notification de la vue OnPush passe par le scheduler hybride.
+        this.focusTcIn.set(this.tcOffset + Math.max((leftPos * duration) / mainContainerWidth, 0));
+        this.focusTcOut.set(
+            this.tcOffset + Math.min(((leftPos + focusWidth) * duration) / mainContainerWidth, duration),
+        );
         this.updateTimeCodePosition();
         this.refreshTimeCursor();
     }
@@ -970,7 +1040,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * In charge to refresh time cursor
      */
     public refreshTimeCursor(event?: any) {
-        if (isFinite(this.currentTime) && isFinite(this.duration)) {
+        if (isFinite(this.currentTime) && isFinite(this.duration())) {
             const selector = ".tc-cursor";
             const mainTimelineWidth = this.mainTimeline.nativeElement.offsetWidth;
             const mainTimelineLeftPosition = this.mainTimeline.nativeElement.offsetLeft;
@@ -982,9 +1052,9 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             const listBlockTimelineLeftPosition = listBlockTimelineRect
                 ? listBlockTimelineRect.left - listBlocksContainerRect.left
                 : mainTimelineLeftPosition;
-            mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth) / this.duration}px`;
+            mainBlock.style.left = `${mainTimelineLeftPosition + (this.currentTime * mainTimelineWidth) / this.duration()}px`;
             mainBlock.style.width = `2px`;
-            listBlock.style.left = `${listBlockTimelineLeftPosition + ((this.tcOffset + this.currentTime - this.focusTcIn) * mainTimelineWidth) / (this.focusTcOut - this.focusTcIn)}px`;
+            listBlock.style.left = `${listBlockTimelineLeftPosition + ((this.tcOffset + this.currentTime - this.focusTcIn()) * mainTimelineWidth) / (this.focusTcOut() - this.focusTcIn())}px`;
             const accordion: HTMLElement = this.listOfBlocksContainer.nativeElement.querySelector(".p-accordion");
             const accordionBoundRect = accordion?.getBoundingClientRect();
             listBlock.style.height = `${accordionBoundRect?.height}px`;
@@ -1155,8 +1225,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     toggleConfig() {
-        this.configIsOpen = !this.configIsOpen;
-        if (this.configIsOpen) {
+        this.configIsOpen.update((open) => !open);
+        if (this.configIsOpen()) {
             this.selectedNodesBeforeChange = [];
             this.selectedNodes().forEach((selectedNode) => {
                 this.selectedNodesBeforeChange.push(selectedNode);

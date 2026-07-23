@@ -1,11 +1,14 @@
 import { PluginBase } from "../../core/plugin/plugin-base";
 import {
     AfterViewInit,
-    ChangeDetectorRef,
+    ChangeDetectionStrategy,
     Component,
     ElementRef,
     HostBinding,
+    inject,
+    NgZone,
     OnInit,
+    signal,
     ViewChild,
     ViewEncapsulation,
 } from "@angular/core";
@@ -44,6 +47,12 @@ interface SurferPeaks {
     styleUrls: ["./histogram-plugin.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
     imports: [NgClass],
+    // OnPush (phase 7 vague 2) : le rendu wavesurfer est déjà coalescé par rAF (queueTimeRender)
+    // et ne passe pas par le template ; les deux seuls états lus par la vue (displayState,
+    // host binding --amalia-histogram-bottom-inset) sont des signals. Tous les listeners player
+    // sont en policy 'none' (écritures de signals, DOM/wavesurfer, champs non template) et la
+    // création wavesurfer + ses abonnements/observers tournent hors zone Angular.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistogramPluginComponent extends PluginBase<HistogramConfig> implements OnInit, AfterViewInit {
     public static PLUGIN_NAME = "HISTOGRAM";
@@ -73,12 +82,22 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     @ViewChild("minimapHitArea")
     public minimapHitArea!: ElementRef<HTMLElement>;
 
+    /**
+     * Inset bas (hauteur de la control-bar épinglée) — signal : muté depuis des setTimeout et
+     * des callbacks ResizeObserver hors zone ; lu par le host binding ci-dessous (les lectures
+     * de signals dans les host bindings sont réactives, la vue OnPush est re-notifiée).
+     */
+    private readonly histogramBottomInsetSignal = signal("0px");
+
     @HostBinding("style.--amalia-histogram-bottom-inset")
-    public histogramBottomInset = "0px";
+    public get histogramBottomInset(): string {
+        return this.histogramBottomInsetSignal();
+    }
 
     public pinned = false;
     public pinnedControlbar = false;
-    public displayState: string = "l";
+    /** Plugin display state — signal : réécrit par le listener PLAYER_RESIZED (policy 'none'). */
+    public readonly displayState = signal<string>("l");
     private resizeDebounce: any = null;
     private pendingTimeouts = new Set<ReturnType<typeof setTimeout>>();
     private destroyed = false;
@@ -99,9 +118,28 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     public override logger: DefaultLogger;
 
+    /**
+     * Zone Angular locale (celle de PluginBase est privée) : la création de wavesurfer et
+     * l'enregistrement de ses handlers/observers se font hors zone pour ne pas déclencher
+     * de change detection sur chaque frame/rAF/pointermove interne à la waveform.
+     */
+    private readonly ngZone: NgZone | null = HistogramPluginComponent.tryInjectNgZone();
+
+    private static tryInjectNgZone(): NgZone | null {
+        try {
+            return inject(NgZone, { optional: true });
+        } catch {
+            return null;
+        }
+    }
+
+    /** Exécute `fn` hors zone Angular quand la zone est disponible, sinon telle quelle. */
+    private runOutsideAngular<T>(fn: () => T): T {
+        return this.ngZone ? this.ngZone.runOutsideAngular(fn) : fn();
+    }
+
     constructor(
         playerService: MediaPlayerService,
-        private cd: ChangeDetectorRef,
         private hostElement: ElementRef<HTMLElement>,
     ) {
         super(playerService);
@@ -128,8 +166,9 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         });
         const config = this.mediaPlayerElement?.getConfiguration();
         if (config && config.loadMetadataOnDemand) {
+            // detectChanges manuel supprimé (phase 7) : handleMetadataLoaded ne mute que du
+            // hors-template (peaks, duration, instance wavesurfer) — rien à re-rendre ici.
             this.handleMetadataLoaded();
-            this.cd.detectChanges();
         }
     }
 
@@ -140,40 +179,59 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
 
     override init(): void {
         super.init();
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        // Tous les handlers ci-dessous ne font que du DOM/wavesurfer (rendu rAF-coalescé via
+        // queueTimeRender), des écritures de signals (displayState, histogramBottomInset) ou de
+        // champs non lus par le template (peaks, duration, pinned*) → policy 'none' : pas de
+        // zone.run ni de markForCheck, l'écriture de signal notifie elle-même la vue OnPush.
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange, {
+            policy: "none",
+        });
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.DURATION_CHANGE,
             this.handleOnDurationChange,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.METADATA_LOADED,
             this.handleMetadataLoaded,
+            { policy: "none" },
         );
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.START_SEEKING, this.handleStartSeeking);
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.START_SEEKING,
+            this.handleStartSeeking,
+            { policy: "none" },
+        );
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking, {
+            policy: "none",
+        });
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.CONTROL_BAR_TOGGLED,
             this.handleControlBarToggled,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PLAYER_RESIZED,
             this.handlePlayerResized,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PINNED_CONTROLBAR_CHANGE,
             this.handlePinnedControlbarChange,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PINNED_SLIDER_CHANGE,
             this.handlePinnedSliderChange,
+            { policy: "none" },
         );
-        this.displayState = this.mediaPlayerElement.getDisplayState() ?? "l";
+        this.displayState.set(this.mediaPlayerElement.getDisplayState() ?? "l");
         // If metadata are already loaded by the time this plugin is created
         // (typical lazy-load via `loadDataSourceForPlugin('histogram')` resolved
         // before insertion), render immediately. Otherwise we rely on the
@@ -278,6 +336,14 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         if (!this.wavesurferContainer || !this.minimapContainer || !this.minimapHitArea || !this.peaks) {
             return;
         }
+        // Création wavesurfer/minimap + enregistrement de ses handlers ("interaction", "ready",
+        // click minimap, pointer* du drag de viewport) hors zone Angular : ces callbacks ne
+        // touchent aucun état template et ne doivent pas déclencher de change detection.
+        this.runOutsideAngular(() => this.buildWavesurfer());
+    }
+
+    /** Corps de la (re)création wavesurfer — exécuté hors zone via {@link createOrUpdateWavesurfer}. */
+    private buildWavesurfer(): void {
         this.destroyWavesurfer();
 
         const data = this.pluginConfiguration.data;
@@ -454,11 +520,14 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             return;
         }
         this.waveformResizeObserver?.disconnect();
-        this.waveformResizeObserver = new ResizeObserver(() => this.scheduleWaveformSizeSync());
-        this.waveformResizeObserver.observe(this.wavesurferContainer.nativeElement);
-        if (this.minimapContainer) {
-            this.waveformResizeObserver.observe(this.minimapContainer.nativeElement);
-        }
+        // Observer hors zone : ses callbacks ne font que replanifier un resize wavesurfer.
+        this.runOutsideAngular(() => {
+            this.waveformResizeObserver = new ResizeObserver(() => this.scheduleWaveformSizeSync());
+            this.waveformResizeObserver.observe(this.wavesurferContainer.nativeElement);
+            if (this.minimapContainer) {
+                this.waveformResizeObserver.observe(this.minimapContainer.nativeElement);
+            }
+        });
     }
 
     private scheduleWaveformSizeSync(): void {
@@ -920,7 +989,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
     };
 
     private handlePlayerResized = (): void => {
-        this.displayState = this.mediaPlayerElement.getDisplayState() ?? "l";
+        this.displayState.set(this.mediaPlayerElement.getDisplayState() ?? "l");
         this.scheduleWaveformSizeSync();
         this.scheduleTimeout(() => this.syncBottomInsetIfNeeded());
     };
@@ -969,10 +1038,10 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             controlBarElement && this.pinnedControlbar
                 ? `${Math.max(0, Math.ceil(controlBarElement.getBoundingClientRect().height || 0))}px`
                 : "0px";
-        if (this.histogramBottomInset === nextBottomInset) {
+        if (this.histogramBottomInsetSignal() === nextBottomInset) {
             return;
         }
-        this.histogramBottomInset = nextBottomInset;
+        this.histogramBottomInsetSignal.set(nextBottomInset);
         this.scheduleWaveformSizeSync();
     }
 
@@ -986,8 +1055,12 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
             return;
         }
         this.controlBarResizeObserver?.disconnect();
-        this.controlBarResizeObserver = new ResizeObserver(() => this.syncBottomInsetIfNeeded());
-        this.controlBarResizeObserver.observe(controlBarElement);
+        // Observer hors zone : syncBottomInsetIfNeeded écrit un signal (histogramBottomInset),
+        // qui notifie lui-même la vue OnPush.
+        this.runOutsideAngular(() => {
+            this.controlBarResizeObserver = new ResizeObserver(() => this.syncBottomInsetIfNeeded());
+            this.controlBarResizeObserver.observe(controlBarElement);
+        });
         this.observedControlBar = controlBarElement;
     }
 

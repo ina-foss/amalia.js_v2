@@ -94,7 +94,7 @@ describe('StoryboardPluginComponent', () => {
         component.updateThumbnailSize();
 
         expect(component.listOfThumbnail.length).toBeGreaterThan(0);
-        expect(component.openIntervalList).toBeFalse();
+        expect(component.openIntervalList()).toBeFalse();
         expect(handleScrollSpy).toHaveBeenCalled();
         expect(selectThumbnailSpy).toHaveBeenCalled();
     });
@@ -120,7 +120,7 @@ describe('StoryboardPluginComponent', () => {
         jasmine.clock().tick(801);
         jasmine.clock().uninstall();
 
-        expect(component.listOfThumbnailFilter.length).toBeGreaterThan(0);
+        expect(component.listOfThumbnailFilter().length).toBeGreaterThan(0);
         expect(storyboard.style.transform).toContain('translateY');
         expect(selectThumbnailSpy).toHaveBeenCalled();
     });
@@ -152,7 +152,7 @@ describe('StoryboardPluginComponent', () => {
         const { component, storyboard } = createComponent();
         component.activeThumbnail = null;
         component.updateSynchro();
-        expect(component.displaySynchro).toBeFalse();
+        expect(component.displaySynchro()).toBeFalse();
 
         const active = document.createElement('div');
         component.activeThumbnail = active;
@@ -162,7 +162,7 @@ describe('StoryboardPluginComponent', () => {
         Object.defineProperty(storyboard, 'clientHeight', { value: 50, configurable: true });
 
         component.updateSynchro();
-        expect(component.displaySynchro).toBeTrue();
+        expect(component.displaySynchro()).toBeTrue();
     });
 
     it('seekToTc should set playbackRate and seek media', () => {
@@ -180,8 +180,8 @@ describe('StoryboardPluginComponent', () => {
         mediaPlayer.getCurrentTime.and.returnValue(45);
         component.currentTime = 30;
         component.listOfThumbnail = [0, 20, 40, 60, 80];
-        component.listOfThumbnailFilter = [20, 40];
-        component.displaySynchro = false;
+        component.listOfThumbnailFilter.set([20, 40]);
+        component.displaySynchro.set(false);
 
         const t1 = document.createElement('div');
         t1.className = 'thumbnail';
@@ -201,8 +201,8 @@ describe('StoryboardPluginComponent', () => {
         const cancel = jasmine.createSpy('cancel');
         component.throttleTimeChange = { cancel };
         component.listOfThumbnail = [0, 20, 40, 60, 80];
-        component.listOfThumbnailFilter = [20, 40];
-        component.displaySynchro = true;
+        component.listOfThumbnailFilter.set([20, 40]);
+        component.displaySynchro.set(true);
 
         const thumbnail = document.createElement('div');
         thumbnail.className = 'thumbnail';
@@ -255,10 +255,10 @@ describe('StoryboardPluginComponent', () => {
 
     it('toggleList and waitAndReload should update state and retry image loading', () => {
         const { component } = createComponent();
-        component.openIntervalList = false;
+        component.openIntervalList.set(false);
 
         component.toggleList();
-        expect(component.openIntervalList).toBeTrue();
+        expect(component.openIntervalList()).toBeTrue();
 
         const target = document.createElement('img');
         target.dataset.imgsrc = '/image.jpg';

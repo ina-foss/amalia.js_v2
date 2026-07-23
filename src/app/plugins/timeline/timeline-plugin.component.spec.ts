@@ -72,12 +72,12 @@ describe("TimelinePluginComponent", () => {
         expect(component.mainBlockColor).toBeUndefined();
         expect(component.mainLocalisations).toBeUndefined();
         expect(component.listOfBlocks).toEqual([]);
-        expect(component.configIsOpen).toBeFalse();
+        expect(component.configIsOpen()).toBeFalse();
         expect(component.currentTime).toBe(0);
-        expect(component.duration).toBe(0);
+        expect(component.duration()).toBe(0);
         expect(component.tcOffset).toBe(0);
-        expect(component.focusTcIn).toBe(0);
-        expect(component.focusTcOut).toBe(0);
+        expect(component.focusTcIn()).toBe(0);
+        expect(component.focusTcOut()).toBe(0);
         expect(component.selectionPosition).toEqual({ x: 0, y: 0, startX: 0, startY: 0 });
         expect(component.isDrawingRectangle).toBeFalse();
         expect(component.colors.length).toBeGreaterThan(0);
@@ -89,12 +89,12 @@ describe("TimelinePluginComponent", () => {
     });
 
     it("should toggle config state", () => {
-        component.configIsOpen = false;
+        component.configIsOpen.set(false);
         component.toggleConfig();
-        expect(component.configIsOpen).toBeTrue();
+        expect(component.configIsOpen()).toBeTrue();
 
         component.toggleConfig();
-        expect(component.configIsOpen).toBeFalse();
+        expect(component.configIsOpen()).toBeFalse();
     });
 
     it("should toggle all nodes", () => {
@@ -3668,7 +3668,7 @@ describe("TimelinePluginComponent 2", () => {
     it("Should handle refreshTimeCursor", () => {
         fixture.detectChanges();
         component.currentTime = 600;
-        component.duration = 1800;
+        component.duration.set(1800);
         component.refreshTimeCursor();
     });
     it("Should handle unZoom", () => {
@@ -3693,7 +3693,7 @@ describe("TimelinePluginComponent 2", () => {
         spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), "getCurrentTime").and.returnValue(0);
         mediaPlayerElement.metadataManager.init().then(() => {
             component.currentTime = 600;
-            component.duration = 1800;
+            component.duration.set(1800);
             fixture.detectChanges();
             tick(35000);
             flush();
@@ -3821,7 +3821,7 @@ describe("TimelinePluginComponent 2", () => {
         spyOngetCurrentTime = spyOn(mediaPlayerElement.getMediaPlayer(), "getCurrentTime").and.returnValue(0);
         mediaPlayerElement.metadataManager.init().then(() => {
             component.currentTime = 600;
-            component.duration = 1800;
+            component.duration.set(1800);
             fixture.detectChanges();
             tick(35000);
             flush();
@@ -3841,7 +3841,7 @@ describe("TimelinePluginComponent 2", () => {
         const spyOnCloseMenu = spyOn(component, "closeMenu").and.callThrough();
         mediaPlayerElement.metadataManager.init().then(() => {
             component.currentTime = 600;
-            component.duration = 1800;
+            component.duration.set(1800);
             fixture.detectChanges();
             tick(35000);
             flush();
@@ -4358,10 +4358,10 @@ describe("TimelinePluginComponent 3 ", () => {
 
         // Valeurs de test
         component.currentTime = 50;
-        component.duration = 100;
+        component.duration.set(100);
         component.tcOffset = 0;
-        component.focusTcIn = 0;
-        component.focusTcOut = 100;
+        component.focusTcIn.set(0);
+        component.focusTcOut.set(100);
         component.timeFormat = "s";
         fixture.detectChanges();
     });
@@ -4392,7 +4392,7 @@ describe("TimelinePluginComponent 3 ", () => {
     });
     it("should skip DOM updates if currentTime or duration is not finite", () => {
         component.currentTime = NaN;
-        component.duration = 100;
+        component.duration.set(100);
 
         const mainBlock = jasmine.createSpyObj("mainBlock", ["style"]);
         spyOn(component.mainBlockContainer.nativeElement, "querySelector").and.returnValue(mainBlock);
