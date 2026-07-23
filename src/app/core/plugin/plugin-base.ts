@@ -10,6 +10,19 @@ import { Subscription } from "rxjs";
 import { Utils } from "../utils/utils";
 
 /**
+ * Execution policy of a player-event listener with respect to change detection:
+ * - `'zone'`: `zone.run(fn)` + `markForCheck()` — historical behaviour, forces a change
+ *   detection tick through the zone (player events are emitted from a plain EventEmitter,
+ *   often outside Angular's zone).
+ * - `'schedule'`: `fn` + `markForCheck()` without re-entering the zone — relies on the hybrid
+ *   scheduler (Angular ≥ 18): `markForCheck()` outside the zone schedules a coalesced
+ *   `ApplicationRef.tick()`, in both zone and zoneless modes.
+ * - `'none'`: bare `fn`, no change-detection notification — for handlers that only write
+ *   signals (the signal write schedules the tick itself) or do pure DOM work.
+ */
+export type ListenerZonePolicy = 'zone' | 'schedule' | 'none';
+
+/**
  * Base class for create plugin
  */
 @Component({
@@ -185,19 +198,39 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
         this.handleMetadataLoaded();
     };
 
-    addListener(element: any, playerEventType: PlayerEventType, func: any) {
-        Utils.addListener(this, element, playerEventType, this.wrapInZone(func));
+    addListener(element: any, playerEventType: PlayerEventType, func: any, opts?: { policy?: ListenerZonePolicy }) {
+        const policy = opts?.policy ?? this.defaultListenerPolicy(playerEventType);
+        Utils.addListener(this, element, playerEventType, this.wrapForCd(func, policy));
     }
 
     /**
-     * Wraps a player-event handler so it always runs inside the Angular zone and marks the view
-     * for check afterwards. Player events are emitted from a plain Node EventEmitter whose `emit`
-     * may originate outside Angular's zone (the host page drives the player via the custom-element
-     * API), in which case mutations done by the handler would not trigger change detection. The
-     * wrapper's `name` is preserved so the listener de-duplication/removal logic in `Utils` (which
-     * matches on the bound function name) keeps working.
+     * Default {@link ListenerZonePolicy} applied by {@link addListener} when the caller does not
+     * pass an explicit policy. Returns `'zone'` — strictly identical behaviour to the historical
+     * `wrapInZone` during the OnPush/zoneless transition. Subclasses can override this to relax
+     * the policy per event type (e.g. rAF-coalesced or signal-writing handlers → `'none'`).
      */
-    private wrapInZone(func: any): any {
+    protected defaultListenerPolicy(playerEventType: PlayerEventType): ListenerZonePolicy {
+        return 'zone';
+    }
+
+    /**
+     * Wraps a player-event handler according to the given {@link ListenerZonePolicy}. Player
+     * events are emitted from a plain EventEmitter whose `emit` may originate outside Angular's
+     * zone (the host page drives the player via the custom-element API), in which case mutations
+     * done by the handler would not trigger change detection:
+     * - `'zone'`: runs the handler inside the Angular zone and marks the view for check;
+     * - `'schedule'`: runs the handler as-is and marks the view for check (the hybrid scheduler
+     *   turns the out-of-zone `markForCheck` into a coalesced tick);
+     * - `'none'`: returns the handler untouched.
+     * IMPORTANT: the wrapper's `name` is preserved (`Object.defineProperty`) so the listener
+     * de-duplication/removal logic in `Utils` (which matches on the bound function name) keeps
+     * working.
+     */
+    private wrapForCd(func: any, policy: ListenerZonePolicy): any {
+        if (policy === 'none') {
+            // Bare handler: its own `name` is naturally preserved for the Utils name-based dedup.
+            return func;
+        }
         const zone = this._pluginZone;
         const cdr = this._pluginCdr;
         const wrapped = function (...args: any[]) {
@@ -207,7 +240,7 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
                 cdr?.markForCheck();
                 return result;
             };
-            return zone ? zone.run(run) : run();
+            return (policy === 'zone' && zone) ? zone.run(run) : run();
         };
         Object.defineProperty(wrapped, 'name', { value: func.name, configurable: true });
         return wrapped;

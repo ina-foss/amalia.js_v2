@@ -66,7 +66,10 @@ describe('TimeBar plugin test', () => {
         mpe.configurationManager.configData = configData;
         const obj = document.createElement('video');
         mpe.setMediaPlayer(obj);
-        const mediaPlayer = new MediaElement(obj, eventEmitter);
+        // Référence construite avec l'emitter du mpe : depuis la phase 6, setMediaPlayer connecte
+        // le store PlaybackState sur l'emitter interne (11 abonnements), un emitter vierge ne
+        // serait plus deep-equal.
+        const mediaPlayer = new MediaElement(obj, mpe.eventEmitter);
         expect(mpe.getMediaPlayer()).toEqual(mediaPlayer);
         mpe.setMediaPlayerWidth(1980);
         playerService.players.set('PLAYER', mpe);

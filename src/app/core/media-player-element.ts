@@ -12,6 +12,7 @@ import { DefaultLogger } from './logger/default-logger';
 import { MediaElement } from './media/media-element';
 import { EventEmitter } from './utils/event-emitter';
 import { PlayerEventType } from './constant/event-type';
+import { PlaybackState } from './state/playback-state';
 import { PreferenceStorageManager } from './storage/preference-storage-manager';
 import { LoggerLevel } from './logger/logger-level';
 import AmaliaPlayer from '../player/photo/components/AmaliaPlayer';
@@ -38,6 +39,13 @@ export class MediaPlayerElement {
     private readonly _preferenceStorageManager: PreferenceStorageManager;
     private readonly logger: LoggerInterface;
     private readonly _eventEmitter: EventEmitter;
+    /**
+     * Store de signals de l'état de lecture (phase 6 du plan perf) : alimenté hors zone
+     * depuis l'EventEmitter interne, consommé progressivement par les plugins via
+     * `playback.currentTime()` etc. Une instance par MediaPlayerElement, connectée une
+     * seule fois par vie de l'instance dans {@link setMediaPlayer}.
+     */
+    public readonly playback = new PlaybackState();
     public isMetadataLoaded = false;
     public width: number;
 
@@ -187,6 +195,12 @@ export class MediaPlayerElement {
             this.mediaPlayer && this.mediaPlayer.unsubscribeListeners();
         }
         this.mediaPlayer = new MediaElement(mediaPlayer, this._eventEmitter);
+        // Connexion du store de signals : premier point où l'emitter ET un media player
+        // existent. `connect` est idempotent — un MediaPlayerElement recyclé (detach/reattach
+        // du même player-id) repasse ici sans s'abonner deux fois, et les accesseurs paresseux
+        // suivent le MediaElement re-créé. Pas de teardown nécessaire : l'emitter, le store et
+        // ce MediaPlayerElement sont détruits ensemble (MediaPlayerService.delete).
+        this.playback.connect(this._eventEmitter, () => this.mediaPlayer, () => this.getDisplayState());
         this.logger.debug('set media player', mediaPlayer);
     }
 
