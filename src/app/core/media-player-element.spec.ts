@@ -10,7 +10,7 @@ import {PlayerState} from './constant/player-state';
 import {DefaultMetadataConverter} from './metadata/converter/default-metadata-converter';
 import {DefaultMetadataLoader} from './metadata/loader/default-metadata-loader';
 import {MediaElement} from './media/media-element';
-import {EventEmitter} from 'events';
+import { EventEmitter } from './utils/event-emitter';
 import {ConfigurationManager} from './config/configuration-manager';
 import {PlayerEventType} from './constant/event-type';
 

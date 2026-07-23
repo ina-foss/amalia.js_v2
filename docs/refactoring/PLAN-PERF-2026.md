@@ -7,9 +7,9 @@
 
 | Phase | Contenu | Statut | Date | Commit/PR |
 |---|---|---|---|---|
-| 0 | Persistance du plan + baseline + size-report | 🔄 en cours | 2026-07-22 | |
-| 1 | Quick wins (package.json, coalescing, templates chauds, animations) | ⬜ | | |
-| 2 | Builder esbuild + karma moderne | ⬜ | | |
+| 0 | Persistance du plan + baseline + size-report | ✅ | 2026-07-22 | ff720d9 |
+| 1 | Quick wins (package.json, coalescing, templates chauds, animations) | ✅ (lint + 856 specs + build ; main.js −62 Ko) | 2026-07-23 | 7e8c757 |
+| 2 | Builder esbuild + karma moderne | ✅ (lint + 856 specs + build ; dist −361 Ko, styles.css −188 Ko, −396 paquets npm ; EventEmitter interne remplace le builtin 'events') | 2026-07-23 | |
 | 3 | Dédup styles (miroir shadow, theme.css, primeflex, primeicons) | ⬜ | | |
 | 4 | Réductions JS (lodash, hls type-only) + tsconfig | ⬜ | | |
 | 5 | Standalone + `createApplication()` | ⬜ | | |

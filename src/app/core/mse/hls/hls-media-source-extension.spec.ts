@@ -1,5 +1,5 @@
 import { HLSMediaSourceExtension } from './hls-media-source-extension';
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../../utils/event-emitter';
 import { PlayerConfigData } from '../../config/model/player-config-data';
 import { DefaultLogger } from '../../logger/default-logger';
 import { C2PAConfig } from '../../utils/hls-c2pa-bridge';

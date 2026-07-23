@@ -1,5 +1,9 @@
-import {enableProdMode} from '@angular/core';
+// Polyfills : à charger avant tout code Angular (remplacent l'ancien couple
+// polyfills.ts + scripts[] d'angular.json, concaténés en tête du bundle).
 import 'zone.js';
+// Polyfill customized built-in elements (Safari) — IIFE auto-exécutée sans exports.
+import '@ungap/custom-elements';
+import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 import {AppModule} from './app/app.module';

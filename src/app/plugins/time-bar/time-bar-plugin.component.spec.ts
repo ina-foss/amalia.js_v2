@@ -4,7 +4,7 @@ import { ComponentFixture } from '@angular/core/testing';
 import { MediaPlayerService } from '../../service/media-player-service';
 import { ConfigurationManager } from '../../core/config/configuration-manager';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../../core/utils/event-emitter';
 import { MediaElement } from '../../core/media/media-element';
 import { PluginConfigData } from '../../core/config/model/plugin-config-data';
 import { TimeBarConfig } from '../../core/config/model/time-bar-config';

@@ -16,7 +16,7 @@ import {PlayerEventType} from "../../core/constant/event-type";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {TcFormatPipe} from "../../core/utils/tc-format.pipe";
 import {ShortcutEvent, ShortcutControl, Shortcut} from 'src/app/core/config/model/shortcuts-event';
-import {EventEmitter} from 'events';
+import { EventEmitter } from '../../core/utils/event-emitter';
 
 const initTestData = (component: ControlBarPluginComponent, mediaPlayerElement: MediaPlayerElement, logger: DefaultLogger, httpClient: HttpClient) => {
     mediaPlayerElement = new MediaPlayerElement();

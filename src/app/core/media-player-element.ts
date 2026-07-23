@@ -10,7 +10,7 @@ import { ConfigData } from './config/model/config-data';
 import { PluginConfigData } from './config/model/plugin-config-data';
 import { DefaultLogger } from './logger/default-logger';
 import { MediaElement } from './media/media-element';
-import { EventEmitter } from 'events';
+import { EventEmitter } from './utils/event-emitter';
 import { PlayerEventType } from './constant/event-type';
 import { PreferenceStorageManager } from './storage/preference-storage-manager';
 import { LoggerLevel } from './logger/logger-level';

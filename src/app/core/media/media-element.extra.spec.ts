@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../utils/event-emitter';
 import { MediaElement } from './media-element';
 import { PlayerEventType } from '../constant/event-type';
 import { Utils } from '../utils/utils';

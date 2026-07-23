@@ -3,7 +3,7 @@ import Hls, { FragmentLoaderConstructor, FragmentLoaderContext, Loader } from 'h
 import { PlayerConfigData } from '../../config/model/player-config-data';
 import { AmaliaException } from '../../exception/amalia-exception';
 import { PlayerEventType } from '../../constant/event-type';
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../../utils/event-emitter';
 import { CustomFragmentLoader } from './hls-custom-f-loader';
 import { LoggerInterface } from '../../logger/logger-interface';
 import { Utils } from '../../utils/utils';

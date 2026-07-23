@@ -1,6 +1,6 @@
 import {waitForAsync, getTestBed, TestBed} from '@angular/core/testing';
 import {MediaElement} from './media-element';
-import {EventEmitter} from 'events';
+import { EventEmitter } from '../utils/event-emitter';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {HttpClient} from '@angular/common/http';

@@ -1,5 +1,5 @@
 import { LoggerInterface } from '../logger/logger-interface';
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../utils/event-emitter';
 import { PlayerEventType } from '../constant/event-type';
 import { MediaSourceExtension } from '../mse/media-source-extension';
 import { PlayerConfigData } from '../config/model/player-config-data';

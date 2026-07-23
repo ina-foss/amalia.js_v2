@@ -1,7 +1,7 @@
 import {MediaSourceExtension} from './media-source-extension';
 import {PlayerConfigData} from '../config/model/player-config-data';
 import {PlayerEventType} from '../constant/event-type';
-import {EventEmitter} from 'events';
+import { EventEmitter } from '../utils/event-emitter';
 import {LoggerInterface} from '../logger/logger-interface';
 import {Utils} from "../utils/utils";
 
