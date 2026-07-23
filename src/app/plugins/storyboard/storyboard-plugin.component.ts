@@ -3,7 +3,8 @@ import {Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angu
 import {PlayerEventType} from '../../core/constant/event-type';
 import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {StoryboardConfig} from '../../core/config/model/storyboard-config';
-import * as _ from 'lodash';
+import throttle from 'lodash/throttle';
+import range from 'lodash/range';
 import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
@@ -47,7 +48,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     /**
      * Media fps
      */
-    public fps: number;
+    public override fps: number;
     /**
      * show time code label
      */
@@ -109,11 +110,11 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         this.pluginName = StoryboardPluginComponent.PLUGIN_NAME;
         this.listOfThumbnailFilter = [];
         this.selectedInterval = ['tc', this.tcIntervals[this.tcInterval]];
-        this.throttleTimeChange = _.throttle(this.handleSeeked, StoryboardPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
+        this.throttleTimeChange = throttle(this.handleSeeked, StoryboardPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
 
 
-    init() {
+    override init() {
         super.init();
         this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
         this.fps = this.mediaPlayerElement.getMediaPlayer().framerate;
@@ -470,7 +471,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         if (this.selectedInterval[0] === 'frame') {
             interval = (1 / this.fps) * interval;
         }
-        this.listOfThumbnail = _.range(0, this.duration, interval);
+        this.listOfThumbnail = range(0, this.duration, interval);
         // close menu
         this.openIntervalList = false;
         this.updateScrollHeight();
@@ -584,7 +585,7 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
         }
     }
 
-    ngOnDestroy(): void {
+    override ngOnDestroy(): void {
         if (this.autoSyncTimer !== null) {
             clearTimeout(this.autoSyncTimer);
         }

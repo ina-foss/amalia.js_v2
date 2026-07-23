@@ -45,7 +45,7 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
     /**
      * Media fps
      */
-    public fps = DEFAULT.FPS;
+    public override fps = DEFAULT.FPS;
 
     /**
      * Plugin display state
@@ -74,12 +74,12 @@ export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements
         this.pluginName = TimeBarPluginComponent.PLUGIN_NAME;
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         super.ngOnInit();
     }
 
 
-    init() {
+    override init() {
         super.init();
         this.handleDisplayState();
         this.theme = this.pluginConfiguration.data.theme;

@@ -967,7 +967,7 @@ export default class PlayerHtmlElement extends BaseHtmlElement {
         return snapshotData;
     }
 
-    public removeFromDom() {
+    public override removeFromDom() {
         this.dom.removeEventListener('fullscreenchange', this._fullscreenChangeRef);
         this._image.removeEventListener('load', this._imageLoadRef);
         this._image.removeEventListener('error', this._imageErrorRef);

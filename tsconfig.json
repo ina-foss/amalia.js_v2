@@ -3,6 +3,10 @@
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
+        "isolatedModules": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
         "resolveJsonModule": true,
         "outDir": "./dist/out-tsc",
         "sourceMap": true,

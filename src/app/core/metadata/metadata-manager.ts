@@ -10,7 +10,7 @@ import {MetadataUtils} from '../utils/metadata-utils';
 import {TranscriptionLocalisation} from './model/transcription-localisation';
 import {Histogram} from './model/histogram';
 import {TimelineLocalisation} from './model/timeline-localisation';
-import * as _ from 'lodash';
+import filter from 'lodash/filter';
 import {AnnotationLocalisation} from "./model/annotation-localisation";
 import {HistogramLoader} from './loader/histogram-loader';
 
@@ -143,7 +143,7 @@ export class MetadataManager {
      * @returns listOfMetadataById
      */
     public getMetadataByType(metadataType: string): Array<Metadata> {
-        return _.filter<Metadata>([...this.listOfMetadata.values()], {type: metadataType});
+        return filter<Metadata>([...this.listOfMetadata.values()], {type: metadataType});
     }
 
     /**

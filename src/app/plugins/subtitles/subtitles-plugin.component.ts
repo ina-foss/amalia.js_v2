@@ -5,7 +5,9 @@ import {PluginConfigData} from '../../core/config/model/plugin-config-data';
 import {Utils} from '../../core/utils/utils';
 import {TranscriptionLocalisation} from '../../core/metadata/model/transcription-localisation';
 import {SubtitleConfig} from '../../core/config/model/subtitle-config';
-import * as _ from 'lodash';
+import filter from 'lodash/filter';
+import map from 'lodash/map';
+import trim from 'lodash/trim';
 import {MediaPlayerService} from '../../service/media-player-service';
 
 @Component({
@@ -34,12 +36,12 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
         this.pluginName = SubtitlesPluginComponent.PLUGIN_NAME;
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         super.ngOnInit();
     }
 
 
-    init(): void {
+    override init(): void {
         super.init();
         this.handleDisplayState();
         this.addListener(this.mediaPlayerElement.eventEmitter,PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
@@ -78,7 +80,7 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
      * Invoked on metadata loaded
      */
 
-    protected handleMetadataLoaded() {
+    protected override handleMetadataLoaded() {
         this.refreshMetadata();
     }
 
@@ -110,13 +112,13 @@ export class SubtitlesPluginComponent extends PluginBase<SubtitleConfig> impleme
         if (this.transcriptions) {
             const currentTime = this.currentTime;
             const tcDelta = this.pluginConfiguration.data?.tcDelta || SubtitlesPluginComponent.TC_DELTA;
-            const listOfTranscription = _.filter(this.transcriptions, (l) => {
+            const listOfTranscription = filter(this.transcriptions, (l) => {
                 return currentTime >= l.tcIn - tcDelta
                     && currentTime < l.tcOut + tcDelta;
             });
             if (listOfTranscription && listOfTranscription.length) {
-                let texts: any = _.map(listOfTranscription, 'text');
-                texts = _.trim(texts);
+                let texts: any = map(listOfTranscription, 'text');
+                texts = trim(texts);
                 this.subTitle = texts.toString();
             } else {
                 this.subTitle = null;

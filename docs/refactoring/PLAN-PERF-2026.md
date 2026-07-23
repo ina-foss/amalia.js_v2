@@ -11,7 +11,7 @@
 | 1 | Quick wins (package.json, coalescing, templates chauds, animations) | ✅ (lint + 856 specs + build ; main.js −62 Ko) | 2026-07-23 | 7e8c757 |
 | 2 | Builder esbuild + karma moderne | ✅ (lint + 856 specs + build ; dist −361 Ko, styles.css −188 Ko, −396 paquets npm ; EventEmitter interne remplace le builtin 'events') | 2026-07-23 | |
 | 3 | Dédup styles (miroir shadow, theme.css, primeflex, primeicons) | ✅ code+tests (main.js 5,93→3,53 Mo −40 %, styles.css 723 Ko→18 o, polices −1,49 Mo) — **smoke visuel à dérouler avant merge** | 2026-07-23 | 3 commits |
-| 4 | Réductions JS (lodash, hls type-only) + tsconfig | ⬜ | | |
+| 4 | Réductions JS (lodash, hls type-only) + tsconfig | ✅ (lint + 856 specs + build mono-fichier ; main.js −50,7 Ko / −17,3 Ko gzip) | 2026-07-23 | |
 | 5 | Standalone + `createApplication()` | ⬜ | | |
 | 6 | `PlaybackState` signals + politique de zone PluginBase | ⬜ | | |
 | 7 | OnPush vague 1 (sûrs) | ⬜ | | |

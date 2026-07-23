@@ -7,7 +7,7 @@ import { DEFAULT } from "../../core/constant/default";
 import { AnnotationLocalisation } from "../../core/metadata/model/annotation-localisation";
 import { PlayerEventType } from "../../core/constant/event-type";
 import { Utils } from "../../core/utils/utils";
-import * as _ from "lodash";
+import sortBy from "lodash/sortBy";
 import { ConfirmationService } from "primeng/api";
 import { FileService } from "../../service/file.service";
 import { FormatUtils } from "../../core/utils/format-utils";
@@ -52,7 +52,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         subLocalisations: []
     };
     public tcDisplayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's';
-    public fps = DEFAULT.FPS;
+    public override fps = DEFAULT.FPS;
     public autoScroll = true;
     public segmentBeforeEdition: AnnotationLocalisation;
     public currentTime: number;
@@ -70,12 +70,12 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
 
     sortAnnotations() {
         if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
-            this.segmentsInfo.subLocalisations = _.sortBy(this.segmentsInfo.subLocalisations, ['tcIn']);
+            this.segmentsInfo.subLocalisations = sortBy(this.segmentsInfo.subLocalisations, ['tcIn']);
             this.cdr.detectChanges();
         }
     }
 
-    ngOnInit() {
+    override ngOnInit() {
         try {
             super.ngOnInit();
         } catch (e) {
@@ -123,7 +123,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         }
     }
 
-    init() {
+    override init() {
         super.init();
         if (this.pluginConfiguration.data) {
             this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
@@ -205,7 +205,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
      * Invoked on metadata loaded
      */
 
-    handleMetadataLoaded() {
+    override handleMetadataLoaded() {
         this.parseAnnotation();
     }
 
@@ -763,7 +763,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             this.intervalStep, 100));
     }
 
-    ngOnDestroy(): void {
+    override ngOnDestroy(): void {
         if (!!this.subscriptionToEventsEmitters && this.subscriptionToEventsEmitters.length > 0) {
             for (const subscription of this.subscriptionToEventsEmitters) {
                 subscription.unsubscribe();

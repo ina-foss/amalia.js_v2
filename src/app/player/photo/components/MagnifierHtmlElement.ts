@@ -271,7 +271,7 @@ export default class MagnifierHtmlElement extends BaseHtmlElement {
         }
     }
 
-    public removeFromDom() {
+    public override removeFromDom() {
         if (this._pendingFrame !== null) {
             cancelAnimationFrame(this._pendingFrame);
             this._pendingFrame = null;

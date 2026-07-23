@@ -442,6 +442,7 @@ export class MediaPlayerElement {
                 return baseUrl.search('\\?') === -1 ? `${baseUrl}?${tcParam}=${roundedTc}` : `${baseUrl}&${tcParam}=${roundedTc}`;
             }
         }
+        return undefined;
     }
 
     private roundThumbnailTimeCode(tc: number): number {

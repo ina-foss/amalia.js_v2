@@ -21,7 +21,7 @@ import { PlayerEventType } from '../../core/constant/event-type';
 import { DataType } from '../../core/constant/data-type';
 import { Utils } from '../../core/utils/utils';
 import { TimeLineBlock, TimelineLocalisation } from '../../core/metadata/model/timeline-localisation';
-import * as _ from 'lodash';
+import find from 'lodash/find';
 import { Metadata } from '@ina/amalia-model';
 import { TreeNode } from 'primeng/api';
 import { MetadataManager } from 'src/app/core/metadata/metadata-manager';
@@ -44,7 +44,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     public configIsOpen = false;
     public currentTime = 0;
     public duration = 0;
-    public tcOffset = 0;
+    public override tcOffset = 0;
     public focusTcIn = 0;
     public focusTcOut = 0;
     public tcIn = 0;
@@ -136,7 +136,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         Utils.displaySnackBar(this.messagesComponent, "Des segments sont issus de traitements IA et peuvent contenir des erreurs.", 'info');
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         try {
             this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.closeMenu);
             this.resourceType = this.pluginConfiguration?.data?.resourceType;
@@ -240,7 +240,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
 
-    init() {
+    override init() {
         super.init();
         if (this.pluginConfiguration.data) {
             this.timeFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
@@ -817,7 +817,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
      * Called when metadata loaded
      */
 
-    protected handleMetadataLoaded() {
+    protected override handleMetadataLoaded() {
         this.parseTimelineMetadata();
     }
 
@@ -829,7 +829,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         if (handleMetadataIds) {
             this.pluginConfiguration.data.mainMetadataIds.forEach((metadataId) => {
                 const metadata = metadataManager.getMetadata(metadataId);
-                const blockMetadata: TimeLineBlock = _.find<TimeLineBlock>(this.listOfBlocks, { id: metadataId });
+                const blockMetadata: TimeLineBlock = find<TimeLineBlock>(this.listOfBlocks, { id: metadataId });
                 if (!blockMetadata) {
                     return;
                 }

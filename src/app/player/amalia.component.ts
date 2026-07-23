@@ -35,7 +35,7 @@ import { MediaPlayerService } from '../service/media-player-service';
 import { PrimengShadowStylesService } from '../core/styles/primeng-shadow-styles.service';
 import { ThumbnailService } from '../service/thumbnail-service';
 
-import * as _ from 'lodash';
+import throttle from 'lodash/throttle';
 import { ControlBarPluginComponent } from '../plugins/control-bar/control-bar-plugin.component';
 import { LoggerLevel } from '../core/logger/logger-level';
 import { Utils } from "../core/utils/utils";
@@ -284,7 +284,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.httpClient = httpClient;
         this.playerService = playerService;
         this.thumbnailService = thumbnailService;
-        this.throttleFunc = _.throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, { trailing: false });
+        this.throttleFunc = throttle(this.setPreviewThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME, { trailing: false });
     }
 
     /**

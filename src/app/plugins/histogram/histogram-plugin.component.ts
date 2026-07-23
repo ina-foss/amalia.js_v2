@@ -107,7 +107,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.pluginName = HistogramPluginComponent.PLUGIN_NAME;
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         this.logger = new DefaultLogger(`${this.pluginName}`);
         try {
             super.ngOnInit();
@@ -137,7 +137,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
         this.handleMetadataLoaded();
     }
 
-    init(): void {
+    override init(): void {
         super.init();
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
         this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.DURATION_CHANGE, this.handleOnDurationChange);
@@ -180,7 +180,7 @@ export class HistogramPluginComponent extends PluginBase<HistogramConfig> implem
      * Read peaks from {@link MetadataManager} and (re)create wavesurfer.
      * Called at init when metadata are already loaded and on every METADATA_LOADED event.
      */
-    public handleMetadataLoaded = (): void => {
+    public override handleMetadataLoaded = (): void => {
         const metadataId = this.pluginConfiguration?.metadataIds?.[0];
         if (!metadataId) {
             this.logger?.warn('metadataIds is missing in plugin configuration');

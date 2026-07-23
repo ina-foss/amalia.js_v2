@@ -162,7 +162,7 @@ export default class IncrementInfo extends BaseHtmlElement {
         this._resultSpan.style.pointerEvents = 'none';
     }
 
-    public removeFromDom() {
+    public override removeFromDom() {
         super.removeFromDom();
     }
 }

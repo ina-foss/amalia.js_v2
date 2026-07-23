@@ -1,4 +1,4 @@
-import * as Hls from "hls.js";
+import type { HlsConfig } from "hls.js";
 
 export interface PlayerConfigData {
     src: string | MediaStream | MediaSource | Blob | null;
@@ -11,7 +11,7 @@ export interface PlayerConfigData {
     crossOrigin?: string;
     data?: any;
     framerate?: number;
-    hls?: { enable: boolean; config?: Hls.HlsConfig };
+    hls?: { enable: boolean; config?: HlsConfig };
     mpegDash?: { enable: boolean; config?: any };
     ratio?: "16:9" | "4:3";
     media?: "AUDIO" | "VIDEO" | "PICTURE";

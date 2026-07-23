@@ -8,7 +8,7 @@ import { TranscriptionLocalisation } from '../../core/metadata/model/transcripti
 import { DEFAULT } from '../../core/constant/default';
 import { TextUtils } from '../../core/utils/text-utils';
 import { MediaPlayerService } from '../../service/media-player-service';
-import * as _ from 'lodash';
+import sortBy from 'lodash/sortBy';
 import { FormatUtils } from '../../core/utils/format-utils';
 import { DefaultLogger } from "../../core/logger/default-logger";
 import { ToastComponent } from 'src/app/core/toast/toast.component';
@@ -42,7 +42,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public static BACKSPACE_KEY = 'Backspace';
     public static SELECTOR_NAMED_ENTITY = 'named-entity';
     public tcDisplayFormat: 'h' | 'm' | 's' | 'minutes' | 'f' | 'ms' | 'mms' | 'hours' | 'seconds' = 's';
-    public fps = DEFAULT.FPS;
+    public override fps = DEFAULT.FPS;
     public autoScroll = false;
     public active = false;
     public ignoreNextScroll = false;
@@ -69,7 +69,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private _inGap: boolean = false;
     private prevSearchValue = '';
     public tcFormatPipe = new TcFormatPipe();
-    logger: DefaultLogger;
+    override logger: DefaultLogger;
 
     @ViewChild('messages') messagesComponent!: ToastComponent;
 
@@ -83,7 +83,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         this.pluginName = TranscriptionPluginComponent.PLUGIN_NAME;
     }
 
-    ngOnInit() {
+    override ngOnInit() {
         try {
             super.ngOnInit();
             this.resourceType = this.pluginConfiguration?.data?.resourceType;
@@ -97,7 +97,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
 
-    init() {
+    override init() {
         super.init();
         if (this.pluginConfiguration.data) {
             this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
@@ -449,7 +449,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      * Invoked on metadata loaded
      */
 
-    protected handleMetadataLoaded() {
+    protected override handleMetadataLoaded() {
         if (this.metaDataLoaded()) {
             this.parseTranscription();
             // Force initial word sync after Angular re-renders the template (e.g. detached mode, paused video)
@@ -486,7 +486,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 });
                 // Add sort by tcin
                 if (this.transcriptions) {
-                    this.transcriptions = _.sortBy(this.transcriptions, ['tcIn']);
+                    this.transcriptions = sortBy(this.transcriptions, ['tcIn']);
                     const tcIn = this.pluginConfiguration?.data?.tcIn;
                     const duration = this.pluginConfiguration?.data?.duration;
                     if (tcIn > 0 || duration > 0) {
@@ -800,7 +800,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         Utils.displaySnackBar(this.messagesComponent, "Les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.", 'info');
     }
 
-    ngOnDestroy(): void {
+    override ngOnDestroy(): void {
         if (this.autoSyncTimer !== null) {
             clearTimeout(this.autoSyncTimer);
         }

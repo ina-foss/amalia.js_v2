@@ -12,7 +12,12 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import * as _ from 'lodash';
+import throttle from 'lodash/throttle';
+import debounce from 'lodash/debounce';
+import orderBy from 'lodash/orderBy';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import type { DebouncedFunc } from 'lodash';
 import { PlayerEventType } from '../../core/constant/event-type';
 import { ControlBarConfig } from '../../core/config/model/control-bar-config';
 import { PluginConfigData } from '../../core/config/model/plugin-config-data';
@@ -344,14 +349,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public pictureZoomLevel = 100;
     private pendingFrameJump = 0;
-    private readonly debouncedSeek: _.DebouncedFunc<() => void>;
+    private readonly debouncedSeek: DebouncedFunc<() => void>;
 
     constructor(playerService: MediaPlayerService, thumbnailService: ThumbnailService, private readonly renderer: Renderer2, private readonly cdr: ChangeDetectorRef, private readonly ngZone: NgZone) {
         super(playerService);
         this.pluginName = ControlBarPluginComponent.PLUGIN_NAME;
         this.thumbnailService = thumbnailService;
-        this.throttleFunc = _.throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
-        this.debouncedSeek = _.debounce(() => this.executeFrameJump(), ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
+        this.throttleFunc = throttle(this.updateThumbnail, ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
+        this.debouncedSeek = debounce(() => this.executeFrameJump(), ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME);
     }
 
     listenToDisplaySliderDisplayChanges() {
@@ -389,7 +394,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
 
-    init() {
+    override init() {
         super.init();
         this.elements = this.pluginConfiguration?.data || [];
         // init playbackrates
@@ -1064,7 +1069,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (!this.pluginConfiguration || !this.pluginConfiguration.data) {
             return false;
         }
-        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: componentName });
+        const control = find<ControlBarConfig>(this.pluginConfiguration.data, { control: componentName });
         return (control !== undefined && control !== null);
     }
 
@@ -1105,8 +1110,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     public getControlsByPriority(priority: number, zone: number): Array<ControlBarConfig> {
         if (this.elements) {
-            this.elements = _.orderBy(this.elements, ['order']);
-            return _.filter<ControlBarConfig>(this.elements, { priority, zone });
+            this.elements = orderBy(this.elements, ['order']);
+            return filter<ControlBarConfig>(this.elements, { priority, zone });
         }
         return [];
     }
@@ -1962,7 +1967,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (!this.pluginConfiguration || !this.pluginConfiguration.data) {
             return;
         }
-        const control = _.find<ControlBarConfig>(this.pluginConfiguration.data, { control: 'volume' });
+        const control = find<ControlBarConfig>(this.pluginConfiguration.data, { control: 'volume' });
         if (control && control.data && control.data.tracks) {
             this.listOfTracks = control.data.tracks;
             this.selectedTrack = this.listOfTracks[0].track;

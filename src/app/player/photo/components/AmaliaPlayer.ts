@@ -51,7 +51,7 @@ export default class AmaliaPlayer extends BaseHtmlElement{
         this.dom.dispatchEvent(event);
     }
 
-    public addEventListener(event: any, callback: any) {
+    public override addEventListener(event: any, callback: any) {
         this.dom.addEventListener(event, callback);
         return this;
     }
