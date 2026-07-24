@@ -122,8 +122,8 @@ describe("SegmentComponent", () => {
 
         it("should format tcIn and tcOut on init", () => {
             component.ngOnInit();
-            expect(component.tcInFormatted).toBeDefined();
-            expect(component.tcOutFormatted).toBeDefined();
+            expect(component.tcInFormatted()).toBeDefined();
+            expect(component.tcOutFormatted()).toBeDefined();
         });
     });
 
@@ -213,12 +213,12 @@ describe("SegmentComponent", () => {
         });
 
         it("should cancel tcIn edit and restore previous value", () => {
-            component.tcInFormatted = "00:01:40:00";
+            component.tcInFormatted.set("00:01:40:00");
             component.startTcInEdit();
-            component.tcInFormatted = "00:02:00:00";
+            component.tcInFormatted.set("00:02:00:00");
             component.cancelTcInEdit();
 
-            expect(component.tcInFormatted).toBe("00:01:40:00");
+            expect(component.tcInFormatted()).toBe("00:01:40:00");
             expect(component.segment.data.isTcInEditing).toBeFalse();
         });
 
@@ -256,12 +256,12 @@ describe("SegmentComponent", () => {
         });
 
         it("should cancel tcOut edit and restore previous value", () => {
-            component.tcOutFormatted = "00:03:20:00";
+            component.tcOutFormatted.set("00:03:20:00");
             component.startTcOutEdit();
-            component.tcOutFormatted = "00:04:00:00";
+            component.tcOutFormatted.set("00:04:00:00");
             component.cancelTcOutEdit();
 
-            expect(component.tcOutFormatted).toBe("00:03:20:00");
+            expect(component.tcOutFormatted()).toBe("00:03:20:00");
             expect(component.segment.data.isTcOutEditing).toBeFalse();
         });
 
@@ -287,12 +287,12 @@ describe("SegmentComponent", () => {
         });
 
         it("should cancel tc edit and restore previous value", () => {
-            component.tcFormatted = "00:01:40:00";
+            component.tcFormatted.set("00:01:40:00");
             component.startTcEdit();
-            component.tcFormatted = "00:02:00:00";
+            component.tcFormatted.set("00:02:00:00");
             component.cancelTcEdit();
 
-            expect(component.tcFormatted).toBe("00:01:40:00");
+            expect(component.tcFormatted()).toBe("00:01:40:00");
             expect(component.segment.data.isTcEditing).toBeFalse();
         });
 
@@ -578,13 +578,13 @@ describe("SegmentComponent", () => {
 
     describe("Toggle Description", () => {
         it("should toggle description collapsed state", () => {
-            component.isDescriptionCollapsed = true;
+            component.isDescriptionCollapsed.set(true);
             const event = new Event("click");
             spyOn(event, "preventDefault");
 
             component.toggleDescription(event);
 
-            expect(component.isDescriptionCollapsed).toBeFalse();
+            expect(component.isDescriptionCollapsed()).toBeFalse();
         });
     });
 
@@ -861,16 +861,16 @@ describe("SegmentComponent", () => {
             const snackBarSpy = spyOn(component, "displaySnackBar");
             component.segment.tcOffset = 5;
             component.segment.data.tcMax = 30;
-            component.tcInFormatted = "00:00:10:00";
-            component.tcOutFormatted = "00:00:20:00";
+            component.tcInFormatted.set("00:00:10:00");
+            component.tcOutFormatted.set("00:00:20:00");
 
             expect(component.tcValidators("tcIn", "00:00:10:00")).toBe("00:00:10:00");
             expect(component.tcValidators("tcIn", "00:00:25:00", true).error).toBeTrue();
             expect(component.tcValidators("tcIn", "00:00:02:00", true).error).toBeTrue();
-            component.tcOutFormatted = "00:00:40:00";
+            component.tcOutFormatted.set("00:00:40:00");
             expect(component.tcValidators("tcIn", "00:00:35:00", true).error).toBeTrue();
 
-            component.tcInFormatted = "00:00:10:00";
+            component.tcInFormatted.set("00:00:10:00");
             expect(component.tcValidators("tcOut", "00:00:05:00", true).error).toBeTrue();
             expect(component.tcValidators("tcOut", "00:00:35:00", true).error).toBeTrue();
             component.segment.tcOffset = 15;
@@ -1100,13 +1100,13 @@ describe("SegmentComponent", () => {
 
             component.setIsEllipsed();
 
-            expect(component.isEllipsed).toBeTrue();
+            expect(component.isEllipsed()).toBeTrue();
         });
 
         it("does nothing when the readonly title element never becomes ready", () => {
             component.titlediv = undefined as any;
             expect(() => component.setIsEllipsed()).not.toThrow();
-            expect(component.isEllipsed).toBeFalsy();
+            expect(component.isEllipsed()).toBeFalsy();
         });
     });
 
@@ -1121,7 +1121,7 @@ describe("SegmentComponent", () => {
 
             component.setIsDescriptionTruncated();
 
-            expect(component.isDescriptionTruncated).toBeTrue();
+            expect(component.isDescriptionTruncated()).toBeTrue();
             expect(positionSpy).toHaveBeenCalled();
         });
     });

@@ -1472,6 +1472,9 @@ describe("AnnotationPluginComponent ManageSegments", () => {
             (segment) => segment.id === "003001y7tygn",
         );
         segmentToPlay.data.selected = true;
+        // phase 7 OnPush : mutation en place hors composant → notification explicite
+        // (équivalent des bumps faits par les mutateurs du composant).
+        component.notifySegmentsChanged();
         fixture.detectChanges();
         const segmentToPlayCard = fixture.debugElement.query(
             (el) =>

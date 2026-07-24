@@ -1,10 +1,10 @@
-@if (inLoading) {
+@if (inLoading()) {
     <div
         class="p-progress-spinner"
         [ngClass]="{
-            'p-progress-spinner-pinned': pinned,
-            'p-progress-spinner-pinnedControlbar': pinnedControlbar,
-            'p-progress-spinner-audio': playerConfig?.player?.media === 'AUDIO',
+            'p-progress-spinner-pinned': pinned(),
+            'p-progress-spinner-pinnedControlbar': pinnedControlbar(),
+            'p-progress-spinner-audio': playerConfig()?.player?.media === 'AUDIO',
         }"
         aria-label="loading"
         aria-busy="true"
@@ -24,62 +24,62 @@
 }
 <div
     #mediaContainer
-    (mouseenter)="displayControlBar(true); resetTimer(); playerHover = true"
-    (mouseover)="playerHover = true; focus()"
-    (mouseout)="displayControlBar(false); playerHover = false"
-    (focus)="displayControlBar(true); resetTimer(); playerHover = true"
-    (blur)="displayControlBar(false); playerHover = false"
-    (mousemove)="resetTimer(); displayControlBar(true); focus(); playerHover = true"
+    (mouseenter)="displayControlBar(true); resetTimer(); playerHover.set(true)"
+    (mouseover)="playerHover.set(true); focus()"
+    (mouseout)="displayControlBar(false); playerHover.set(false)"
+    (focus)="displayControlBar(true); resetTimer(); playerHover.set(true)"
+    (blur)="displayControlBar(false); playerHover.set(false)"
+    (mousemove)="resetTimer(); displayControlBar(true); focus(); playerHover.set(true)"
     (load)="startTimer()"
     (contextmenu)="onContextMenu($event)"
-    class="media-player aspect-ratio-{{ ratio }}"
-    [class.audio-player]="playerConfig?.player?.media === 'AUDIO'"
+    class="media-player aspect-ratio-{{ ratio() }}"
+    [class.audio-player]="playerConfig()?.player?.media === 'AUDIO'"
     (onresize)="handleWindowResize()"
     [ngClass]="{
-        pinned: pinned,
-        pinnedControlbar: pinnedControlbar,
-        'amalia-player-bg-color1': posterBackgound['amalia-player-bg-color1'],
-        'amalia-primary-color': posterBackgound['amalia-primary-color'],
-        'amalia-secondary-color': posterBackgound[' amalia-secondary-color'],
+        pinned: pinned(),
+        pinnedControlbar: pinnedControlbar(),
+        'amalia-player-bg-color1': posterBackgound()['amalia-player-bg-color1'],
+        'amalia-primary-color': posterBackgound()['amalia-primary-color'],
+        'amalia-secondary-color': posterBackgound()[' amalia-secondary-color'],
     }"
     tabindex="0"
     (click)="controlClicked($event)"
     (keydown.enter)="controlClicked($event)"
 >
-    @if (playerConfig?.player?.media != "PICTURE") {
+    @if (playerConfig()?.player?.media != "PICTURE") {
         <video
             #video
-            [hidden]="state != PlayerState.INITIALIZED"
+            [hidden]="state() != PlayerState.INITIALIZED"
             class="player"
             preload="metadata"
-            [poster]="videoPoster"
-            [ngClass]="{ 'poster-icon': videoPoster !== '' }"
+            [poster]="videoPoster()"
+            [ngClass]="{ 'poster-icon': videoPoster() !== '' }"
         ></video>
     }
     <!-- Amalia Photo -->
-    @if (playerConfig?.player?.media === "PICTURE") {
+    @if (playerConfig()?.player?.media === "PICTURE") {
         <div #photoHost class="picture-host"></div>
     }
     <img
         #previewThumbnail
         class="preview-thumbnail"
-        [hidden]="!enablePreviewThumbnail"
-        [src]="thumbnailBlobVideo"
+        [hidden]="!enablePreviewThumbnail()"
+        [src]="thumbnailBlobVideo()"
         alt="video-preview"
         fetchPriority="high"
         importance="high"
     />
-    @if (inError) {
+    @if (inError()) {
         <div class="error">
             <svg class="amalia-svg-error-size icon">
                 <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#error'"></use>
             </svg>
-            <p>Une erreur technique est survenue.<br />{{ errorMessage }}</p>
+            <p>Une erreur technique est survenue.<br />{{ errorMessage() }}</p>
         </div>
     }
 </div>
 
-<div #contextMenu (mouseleave)="contextMenuState = false" [hidden]="!contextMenuState" class="context-menu">
+<div #contextMenu (mouseleave)="contextMenuState.set(false)" [hidden]="!contextMenuState()" class="context-menu">
     <ul>
         <li>Amalia-V{{ version }}</li>
     </ul>

@@ -1,12 +1,15 @@
 import {
     AfterViewInit,
+    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     computed,
+    DestroyRef,
     effect,
     ElementRef,
     EventEmitter,
     HostListener,
+    inject,
     input,
     Input,
     OnDestroy,
@@ -15,6 +18,7 @@ import {
     signal,
     ViewChild,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { AnnotationAction, AnnotationLocalisation } from "../../../core/metadata/model/annotation-localisation";
 import { debounceTime, of, Subscription } from "rxjs";
 import { FormatUtils } from "../../../core/utils/format-utils";
@@ -60,6 +64,17 @@ import { TcFormatPipe } from "../../../core/utils/tc-format.pipe";
         AutoComplete,
         TcFormatPipe,
     ],
+    // OnPush (phase 7 vague 3) : l'état template muté hors événements de template est
+    // signalisé (isEllipsed/isDescriptionTruncated via rAF, truncatedDescription via
+    // setTimeout, tcIn/tcOut/tcFormatted via effects + valueChanges débouncés) ; le listener
+    // brut SHORTCUT_KEYDOWN (Utils.addListener, sans zone) et les subscriptions valueChanges
+    // notifient la vue via markForCheck (cdr propre) ; les mutations en place du segment
+    // faites côté annotation sont propagées par l'input refreshHint (bump de
+    // segmentsVersion → input change → vue marquée). Les champs restés plats (segment,
+    // filteredCategories/Keywords, editableSegmentTcWrap non lu par le template,
+    // ignoreNext*Blur, *BeforeEdit) ne sont mutés que dans des handlers de template ou ne
+    // sont pas lus par le template.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     //Inputs
@@ -75,6 +90,15 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     availableKeywords: string[] = [];
     @Input()
     mediaPlayerElement: MediaPlayerElement;
+    /**
+     * Pont de notification OnPush (phase 7) : l'annotation parente bump segmentsVersion à
+     * chaque mutation en place de `segment` faite de son côté (selected, tcIn/tcOut, thumb,
+     * label restauré…) — le changement de valeur de cet input marque cette vue pour re-lecture
+     * des champs de `segment`. (`segment`/availableCategories/availableKeywords restent des
+     * @Input classiques : les specs les affectent directement, input() serait cassant.)
+     */
+    @Input()
+    refreshHint = 0;
 
     //InputSignals
     public tcIn = input<number>(0);
@@ -127,10 +151,13 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public tcInputRef: ElementRef;
     @ViewChild("segmentTcRef")
     public segmentTcRef: ElementRef;
-    public isEllipsed: boolean = false;
-    public isDescriptionCollapsed: boolean = true;
-    public isDescriptionTruncated: boolean = false;
-    public truncatedDescription: string = "";
+    /** Signal : écrit depuis un rAF (waitForReady), hors événement de template. */
+    public readonly isEllipsed = signal(false);
+    public readonly isDescriptionCollapsed = signal(true);
+    /** Signal : écrit depuis un rAF (waitForReady). */
+    public readonly isDescriptionTruncated = signal(false);
+    /** Signal : écrit depuis les setTimeout de positionToggleSpan/toggleDescription. */
+    public readonly truncatedDescription = signal("");
 
     private titleBeforeEdit: string = "";
     private tcInBeforeEdit: string = "";
@@ -153,9 +180,16 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             ? /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d:)(\d{2})$/
             : /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
     private formChangesSubscriptions: Subscription[] = [];
-    public tcInFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
-    public tcOutFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
-    public tcFormatted = FormatUtils.formatTime(0, this.tcDisplayFormat, this.fps);
+    /**
+     * DestroyRef pour takeUntilDestroyed : filet de sécurité des subscriptions valueChanges
+     * (les tableaux formChangesSubscriptions/titleEditSubscriptions restent la désinscription
+     * fonctionnelle à la sortie du mode édition).
+     */
+    private readonly destroyRef = inject(DestroyRef);
+    /** Signaux : écrits par les effects tcIn/tcOut et les valueChanges débouncés (timers). */
+    public readonly tcInFormatted = signal(FormatUtils.formatTime(0, "f", DEFAULT.FPS));
+    public readonly tcOutFormatted = signal(FormatUtils.formatTime(0, "f", DEFAULT.FPS));
+    public readonly tcFormatted = signal(FormatUtils.formatTime(0, "f", DEFAULT.FPS));
     public setTcInvoked: boolean = false;
     public propertyBeforeEdition: { key: string; value: string }[] = [];
 
@@ -207,10 +241,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         private annotationsService: AnnotationsService,
     ) {
         effect(() => {
-            this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
+            this.tcInFormatted.set(FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps));
         });
         effect(() => {
-            this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
+            this.tcOutFormatted.set(FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps));
         });
 
         effect(() => {
@@ -254,7 +288,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (tc !== this.segment.tc) {
                     this.segment.tc = tc;
                 }
-                this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
+                this.tcFormatted.set(FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps));
                 this.setTcInvoked = true;
             }
         }
@@ -274,7 +308,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private checkTcIn(value: string, displaySnackBar?: boolean): any {
         const tcIn = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
-        const tcOut = FormatUtils.convertFormattedTcToSeconds(this.tcOutFormatted, this.tcDisplayFormat, this.fps);
+        const tcOut = FormatUtils.convertFormattedTcToSeconds(this.tcOutFormatted(), this.tcDisplayFormat, this.fps);
         const tcOffset = this.segment.tcOffset;
         const tcMax = this.segment.data.tcMax;
 
@@ -295,7 +329,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private checkTcOut(value: string, tcMax: number, displaySnackBar?: boolean): any {
         const tcOut = FormatUtils.convertFormattedTcToSeconds(value, this.tcDisplayFormat, this.fps);
-        const tcIn = FormatUtils.convertFormattedTcToSeconds(this.tcInFormatted, this.tcDisplayFormat, this.fps);
+        const tcIn = FormatUtils.convertFormattedTcToSeconds(this.tcInFormatted(), this.tcDisplayFormat, this.fps);
         const tcOffset = this.segment.tcOffset;
         if (tcIn > tcOut || tcOut > tcMax || tcOffset > tcOut) {
             if (displaySnackBar === true) {
@@ -381,7 +415,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public resetTcOutFormControlErrors() {
         let tcMax = this.segment.data.tcMax ? this.segment.data.tcMax : Number.MAX_VALUE;
-        const tcOutCheckResult = this.checkTcOut(this.tcOutFormatted, tcMax, false);
+        const tcOutCheckResult = this.checkTcOut(this.tcOutFormatted(), tcMax, false);
         if (!tcOutCheckResult.error === true) {
             const tcOutFormControl = this.segmentForm.form.controls["tcOut"];
             if (tcOutFormControl) {
@@ -391,7 +425,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public resetTcInFormControlErrors() {
-        const tcInCheckResult = this.checkTcIn(this.tcInFormatted, false);
+        const tcInCheckResult = this.checkTcIn(this.tcInFormatted(), false);
         if (!tcInCheckResult.error === true) {
             const tcInFormControl = this.segmentForm.form.controls["tcIn"];
             if (tcInFormControl) {
@@ -448,11 +482,11 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 if (this.setTcInvoked !== true) {
                     if (this.segment.tcIn >= 0 && this.segment.tc >= 0) {
                         this.segment.tcOut = this.segment.tcIn + this.segment.tc;
-                        this.tcOutFormatted = FormatUtils.formatTime(
+                        this.tcOutFormatted.set(FormatUtils.formatTime(
                             this.segment.tcOut,
                             this.tcDisplayFormat,
                             this.fps,
-                        );
+                        ));
                     }
                 }
             }
@@ -501,7 +535,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         if (tcOutOnly) {
             //tcout edition
-            this.tcOutFormatted = FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps);
+            this.tcOutFormatted.set(FormatUtils.formatTime(this.segment.tcOut, this.tcDisplayFormat, this.fps));
             this.actionEmitter.emit({ type: "edit", payload: this.segment });
             setTimeout(() => {
                 this.activateTcOutEdition();
@@ -510,7 +544,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         if (tcOnly) {
             //tc edition
-            this.tcFormatted = FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps);
+            this.tcFormatted.set(FormatUtils.formatTime(this.segment.tc, this.tcDisplayFormat, this.fps));
             this.actionEmitter.emit({ type: "edit", payload: this.segment });
             setTimeout(() => {
                 this.activateTcEdition();
@@ -553,10 +587,14 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     switchMap((value) => {
                         return of(this.tcValidators("tcOut", value, true));
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe(() => {
                     //On reset l'état valid ou non du control tcInFormatted puisqu'il dépend de tcOut
                     this.resetTcInFormControlErrors();
+                    // Callback débounceé (timer) : les erreurs de formulaire (classes
+                    // ng-invalid) doivent être re-rendues sous OnPush.
+                    this.cdr.markForCheck();
                 });
             this.formChangesSubscriptions.push(tcOutSubscription);
 
@@ -566,9 +604,11 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     switchMap((value) => {
                         return of(this.tcValidators("tcOut", value));
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe((value) => {
                     this.afterTcOutValidation(value);
+                    this.cdr.markForCheck();
                 });
             this.formChangesSubscriptions.push(tcOutSubscription1);
         }
@@ -583,10 +623,13 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     switchMap((value) => {
                         return of(this.tcValidators("tcIn", value, true));
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe(() => {
                     //On reset l'état valid ou non du control tcOutFormatted puisqu'il dépend de tcIn
                     this.resetTcOutFormControlErrors();
+                    // Callback débounceé (timer) : notifie la vue OnPush (classes ng-invalid).
+                    this.cdr.markForCheck();
                 });
             this.formChangesSubscriptions.push(tcInSubscription);
             //A chaque modification de tcInFormatted - via une assignation ou via l'ui ngModel - nous checkons le tcIn puis modifions le tc (la durée)
@@ -595,9 +638,11 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     switchMap((value) => {
                         return of(this.tcValidators("tcIn", value));
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe((value) => {
                     this.afterTcInValidation(value);
+                    this.cdr.markForCheck();
                 });
             this.formChangesSubscriptions.push(tcInSubscription1);
         }
@@ -611,8 +656,12 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     switchMap((value) => {
                         return of(this.tcValidators("tc", value, true));
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
-                .subscribe(() => {});
+                .subscribe(() => {
+                    // Callback débounceé (timer) : notifie la vue OnPush (classes ng-invalid).
+                    this.cdr.markForCheck();
+                });
             this.formChangesSubscriptions.push(tcSubscription);
 
             const tcSubscription1 = tcFormControl.valueChanges
@@ -620,9 +669,11 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                     switchMap((value) => {
                         return of(this.tcValidators("tc", value));
                     }),
+                    takeUntilDestroyed(this.destroyRef),
                 )
                 .subscribe((value) => {
                     this.afterTcValidation(value);
+                    this.cdr.markForCheck();
                 });
             this.formChangesSubscriptions.push(tcSubscription1);
         }
@@ -630,54 +681,66 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     private activateCategoriesEdition = () => {
         const categoriesFormControl = this.segmentForm.form.controls["categories"];
         if (categoriesFormControl) {
-            const categoriesSubscription = categoriesFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
-                this.segment.property = this.property();
-                if (this.categories().length > 10) {
-                    categoriesFormControl.setErrors({ invalid: true });
-                } else {
-                    categoriesFormControl.setErrors(null);
-                }
-            });
+            const categoriesSubscription = categoriesFormControl.valueChanges
+                .pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef))
+                .subscribe(() => {
+                    this.segment.property = this.property();
+                    if (this.categories().length > 10) {
+                        categoriesFormControl.setErrors({ invalid: true });
+                    } else {
+                        categoriesFormControl.setErrors(null);
+                    }
+                    // Callback débounceé (timer) : notifie la vue OnPush.
+                    this.cdr.markForCheck();
+                });
             this.formChangesSubscriptions.push(categoriesSubscription);
         }
     };
     private activateKeywordsEdition = () => {
         const keywordsFormControl = this.segmentForm.form.controls["keywords"];
         if (keywordsFormControl) {
-            const keywordsSubscription = keywordsFormControl.valueChanges.pipe(debounceTime(100)).subscribe(() => {
-                this.segment.property = this.property();
-                if (this.keywords().length > 10) {
-                    keywordsFormControl.setErrors({ invalid: true });
-                } else {
-                    keywordsFormControl.setErrors(null);
-                }
-            });
+            const keywordsSubscription = keywordsFormControl.valueChanges
+                .pipe(debounceTime(100), takeUntilDestroyed(this.destroyRef))
+                .subscribe(() => {
+                    this.segment.property = this.property();
+                    if (this.keywords().length > 10) {
+                        keywordsFormControl.setErrors({ invalid: true });
+                    } else {
+                        keywordsFormControl.setErrors(null);
+                    }
+                    // Callback débounceé (timer) : notifie la vue OnPush.
+                    this.cdr.markForCheck();
+                });
             this.formChangesSubscriptions.push(keywordsSubscription);
         }
     };
     private activateTitleEdition = (subscriptions: Subscription[] = this.formChangesSubscriptions) => {
         const titleFormControl = this.segmentForm.form.controls["title"];
         if (titleFormControl) {
-            const titleChangesSubscription = titleFormControl.valueChanges.subscribe((value) => {
-                if (value.length > 250) {
-                    titleFormControl.setErrors({ Error: true });
-                } else {
-                    titleFormControl.setErrors(null);
-                }
-            });
+            const titleChangesSubscription = titleFormControl.valueChanges
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((value) => {
+                    if (value.length > 250) {
+                        titleFormControl.setErrors({ Error: true });
+                    } else {
+                        titleFormControl.setErrors(null);
+                    }
+                });
             subscriptions.push(titleChangesSubscription);
         }
     };
     private activateDescriptionEdition = () => {
         const descriptionFormControl = this.segmentForm.form.controls["description"];
         if (descriptionFormControl) {
-            const descriptionChangesSubscription = descriptionFormControl.valueChanges.subscribe((value) => {
-                if (value.length > 1000) {
-                    descriptionFormControl.setErrors({ Error: true });
-                } else {
-                    descriptionFormControl.setErrors(null);
-                }
-            });
+            const descriptionChangesSubscription = descriptionFormControl.valueChanges
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((value) => {
+                    if (value.length > 1000) {
+                        descriptionFormControl.setErrors({ Error: true });
+                    } else {
+                        descriptionFormControl.setErrors(null);
+                    }
+                });
             this.formChangesSubscriptions.push(descriptionChangesSubscription);
         }
     };
@@ -752,7 +815,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // TcIn inline editing
     public startTcInEdit() {
-        this.tcInBeforeEdit = this.tcInFormatted;
+        this.tcInBeforeEdit = this.tcInFormatted();
         this.segment.data.isTcInEditing = true;
         this.activateEdition({ tcInOnly: true });
         setTimeout(() => {
@@ -773,7 +836,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public cancelTcInEdit() {
-        this.tcInFormatted = this.tcInBeforeEdit;
+        this.tcInFormatted.set(this.tcInBeforeEdit);
         this.segment.tcIn = FormatUtils.convertTcToSeconds(this.tcInBeforeEdit);
         this.segment.data.isTcInEditing = false;
     }
@@ -799,7 +862,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // TcOut inline editing
     public startTcOutEdit() {
-        this.tcOutBeforeEdit = this.tcOutFormatted;
+        this.tcOutBeforeEdit = this.tcOutFormatted();
         this.segment.data.isTcOutEditing = true;
         this.activateEdition({ tcOutOnly: true });
         setTimeout(() => {
@@ -820,7 +883,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public cancelTcOutEdit() {
-        this.tcOutFormatted = this.tcOutBeforeEdit;
+        this.tcOutFormatted.set(this.tcOutBeforeEdit);
         this.segment.tcOut = FormatUtils.convertTcToSeconds(this.tcOutBeforeEdit);
         this.segment.data.isTcOutEditing = false;
     }
@@ -846,7 +909,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Tc inline editing
     public startTcEdit() {
-        this.tcBeforeEdit = this.tcFormatted;
+        this.tcBeforeEdit = this.tcFormatted();
         this.segment.data.isTcEditing = true;
         this.activateEdition({ tcOnly: true });
 
@@ -868,7 +931,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public cancelTcEdit() {
-        this.tcFormatted = this.tcBeforeEdit;
+        this.tcFormatted.set(this.tcBeforeEdit);
         this.segment.tc = FormatUtils.convertTcToSeconds(this.tcBeforeEdit);
         this.segment.data.isTcEditing = false;
     }
@@ -1062,7 +1125,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 target.value = "";
             }
 
-            this.cdr.detectChanges();
+            // detectChanges supprimé (phase 7) : handler d'événement de template (la vue est
+            // déjà marquée) + categories est un signal — l'écriture notifie la vue.
             return;
         }
 
@@ -1092,7 +1156,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 target.value = "";
             }
 
-            this.cdr.detectChanges();
+            // detectChanges supprimé (phase 7) : handler d'événement de template + keywords
+            // est un signal — l'écriture notifie la vue.
             return;
         }
 
@@ -1188,8 +1253,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit(): void {
         this.setCategoriesFromProperty(this.segment.property);
         this.setKeywordsFromProperty(this.segment.property);
-        this.tcInFormatted = FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps);
-        this.tcOutFormatted = FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps);
+        this.tcInFormatted.set(FormatUtils.formatTime(this.tcIn(), this.tcDisplayFormat, this.fps));
+        this.tcOutFormatted.set(FormatUtils.formatTime(this.tcOut(), this.tcDisplayFormat, this.fps));
     }
 
     ngAfterViewInit(): void {
@@ -1232,7 +1297,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
         this.waitForReady(
             () => this.readOnlyTitleReady(),
             () => {
-                this.isEllipsed = this.titlediv.nativeElement.scrollWidth > this.titlediv.nativeElement.clientWidth;
+                this.isEllipsed.set(this.titlediv.nativeElement.scrollWidth > this.titlediv.nativeElement.clientWidth);
             },
         );
     }
@@ -1244,8 +1309,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.descp.nativeElement.getBoundingClientRect();
                 const lineHeight = parseFloat(window.getComputedStyle(this.descp.nativeElement).lineHeight);
                 const nbLines = Math.ceil(this.descp.nativeElement.clientHeight / lineHeight);
-                this.isDescriptionTruncated =
-                    this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || nbLines > 3;
+                this.isDescriptionTruncated.set(this.descp.nativeElement.scrollHeight > this.descp.nativeElement.clientHeight || nbLines > 3);
                 this.positionToggleSpan();
             },
         );
@@ -1259,9 +1323,9 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             const containerRect = descEl.parentElement?.getBoundingClientRect();
             if (!containerRect) return;
 
-            this.truncatedDescription = this.getVisibleText(descEl);
+            this.truncatedDescription.set(this.getVisibleText(descEl));
 
-            if (this.isDescriptionCollapsed && this.afficherplus?.nativeElement) {
+            if (this.isDescriptionCollapsed() && this.afficherplus?.nativeElement) {
                 const spanEl = this.afficherplus.nativeElement as HTMLElement;
 
                 spanEl.style.position = "relative";
@@ -1270,7 +1334,7 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 spanEl.style.bottom = "auto";
             }
 
-            if (!this.isDescriptionCollapsed && this.affichermoins?.nativeElement) {
+            if (!this.isDescriptionCollapsed() && this.affichermoins?.nativeElement) {
                 const spanEl = this.affichermoins.nativeElement as HTMLElement;
                 spanEl.style.position = "relative";
                 spanEl.style.top = "auto";
@@ -1282,12 +1346,12 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public toggleDescription(event: Event) {
         event.preventDefault();
-        this.isDescriptionCollapsed = !this.isDescriptionCollapsed;
+        this.isDescriptionCollapsed.set(!this.isDescriptionCollapsed());
         this.positionToggleSpan();
         setTimeout(() => {
             const descEl = this.descp?.nativeElement as HTMLElement;
             if (descEl) {
-                this.truncatedDescription = this.getVisibleText(descEl);
+                this.truncatedDescription.set(this.getVisibleText(descEl));
             }
         }, 100);
     }
@@ -1379,6 +1443,9 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             this.filteredCategories = this.filteredCategories.slice(0, 9);
             this.filteredCategories.splice(0, 0, $event.query);
         }
+        // detectChanges conservé (phase 7) : matérialise synchroniquement [suggestions] pour
+        // l'overlay de l'AutoComplete PrimeNG (qui attend le changement d'input dans la
+        // foulée du completeMethod) — comportement historique.
         this.cdr.detectChanges();
     }
 
@@ -1399,6 +1466,8 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
             this.filteredKeywords = this.filteredKeywords.slice(0, 9);
             this.filteredKeywords.splice(0, 0, $event.query);
         }
+        // detectChanges conservé (phase 7) : même raison que searchCategories (matérialisation
+        // synchrone des suggestions pour l'AutoComplete PrimeNG).
         this.cdr.detectChanges();
     }
 
@@ -1489,9 +1558,9 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
                 const margin = 24 + 2;
                 const gap = 2;
                 const segmentTcGap = 2;
-                const tcInTextSize = this.calculateTextWidth(this.tcInFormatted, "Lato") + margin;
-                const tcOutTextSize = this.calculateTextWidth(this.tcOutFormatted, "Lato") + margin;
-                const tcTextSize = this.calculateTextWidth(this.tcFormatted, "Lato") + margin;
+                const tcInTextSize = this.calculateTextWidth(this.tcInFormatted(), "Lato") + margin;
+                const tcOutTextSize = this.calculateTextWidth(this.tcOutFormatted(), "Lato") + margin;
+                const tcTextSize = this.calculateTextWidth(this.tcFormatted(), "Lato") + margin;
                 const labelTcInSize = this.calculateTextWidth("Début", "Lato") + gap;
                 const labelTcOutSize = this.calculateTextWidth("Fin", "Lato") + gap;
                 const labelTcSize = this.calculateTextWidth("Durée", "Lato") + gap;
@@ -1611,6 +1680,10 @@ export class SegmentComponent implements OnInit, AfterViewInit, OnDestroy {
     public handleShortcuts(event: ShortcutEvent) {
         if (event.targets.find((target) => target.toLowerCase() === "ANNOTATIONS".toLowerCase())) {
             this.applyShortcut(event);
+            // Listener brut (Utils.addListener, sans wrapper de zone) : applyShortcut mute
+            // segment.data.* lus par le template → notification explicite de la vue OnPush
+            // (markForCheck hors zone → tick coalescé via le scheduler hybride).
+            this.cdr.markForCheck();
         }
     }
 

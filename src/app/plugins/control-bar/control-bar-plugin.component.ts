@@ -1,5 +1,6 @@
 import { PluginBase } from "../../core/plugin/plugin-base";
 import {
+    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -9,6 +10,7 @@ import {
     NgZone,
     Output,
     Renderer2,
+    signal,
     ViewChild,
     ViewEncapsulation,
 } from "@angular/core";
@@ -36,6 +38,19 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
     styleUrls: ["./control-bar-plugin.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
     imports: [NgClass, NgStyle, Tooltip, FormsModule, TcFormatPipe],
+    // OnPush (phase 7 vague 3) : tout champ lu par le template et muté depuis un listener
+    // player, un setTimeout ou un chemin raccourci clavier est un signal — les listeners
+    // correspondants passent en policy 'none' (l'écriture de signal programme elle-même le
+    // tick, plus de zone.run ni markForCheck). Les champs restés plats sont soit écrits
+    // uniquement dans init() (elements/controlsByZone, extractTcIn/Out, enableThumbnail,
+    // listOfTracks, listOfSubtitles, defaultRatio, tcOffset — couverts par le listener INIT
+    // de PluginBase resté en 'zone' → markForCheck), soit mutés seulement par des handlers
+    // de template (onProgressBar — l'événement marque la vue), soit non lus par le template
+    // (keypressed, playbackrateByImages, indexPlaybackRate, enablePinnedSlider…). Les
+    // lectures directes de isPaused()/withMergeVolume dans le template sont couvertes par
+    // les listeners PLAYING/PAUSED/ENDED en 'schedule' (notifyPlayStateChanged) et par les
+    // événements de template qui les font basculer.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig>> {
     public static PLUGIN_NAME = "CONTROL_BAR";
@@ -103,33 +118,33 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public sliderPosition = 0;
     public moving = false;
     /**
-     * Player playback rate
+     * Player playback rate — signal : muté par PLAYBACK_RATE_CHANGE ('none') et le drag interactjs.
      */
-    public currentPlaybackRate = 1;
+    public readonly currentPlaybackRate = signal(1);
     /**
-     * Player playbackrate slider 1
+     * Player playbackrate slider 1 — signal : muté avec currentPlaybackRate.
      */
-    public currentPlaybackRateSlider = 1;
+    public readonly currentPlaybackRateSlider = signal(1);
     /**
-     * Playbackrate slider state
+     * Playbackrate slider state — signal : muté par displaySlider() (raccourci clavier possible).
      */
-    public enablePlaybackSlider = false;
+    public readonly enablePlaybackSlider = signal(false);
     /**
-     * Pinned Controls state
+     * Pinned Controls state — signal : muté par pinControls() (raccourci clavier possible).
      */
-    public pinnedSlider = false;
+    public readonly pinnedSlider = signal(false);
     /**
-     * Pinned slider state
+     * Pinned slider state (non lu par le template)
      */
     public enablePinnedSlider = false;
     /**
-     *  Pinned slider and ControlBar
+     *  Pinned slider and ControlBar — signal : muté avec pinnedSlider/enablePlaybackSlider.
      */
-    public pinned = false;
+    public readonly pinned = signal(false);
     /**
-     * Enable Menu
+     * Enable Menu — signal : muté par DOCUMENT_CLICK ('none') et les raccourcis.
      */
-    public enableMenu = false;
+    public readonly enableMenu = signal(false);
     /**
      * In charge to notify download event
      */
@@ -137,78 +152,85 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public callback = new EventEmitter<any>();
 
     /**
-     * Volume left side
+     * Volume left side — signal : muté par les raccourcis clavier (SHORTCUT_KEYDOWN 'none')
+     * et mute/unmute ; lié en [(ngModel)] (two-way binding de signal).
      */
-    public volumeLeft = 50;
+    public readonly volumeLeft = signal(50);
 
     /**
-     * Volume right side
+     * Volume right side — signal : idem volumeLeft.
      */
-    public volumeRight = 50;
+    public readonly volumeRight = signal(50);
 
     /**
-     * Selected aspectRatio
+     * Selected aspectRatio — signal : muté par ASPECT_RATIO_CHANGE ('none').
      */
-    public aspectRatio: "16:9" | "4:3" = "4:3";
+    public readonly aspectRatio = signal<"16:9" | "4:3">("4:3");
     /**
-     * Default aspect ratio
+     * Default aspect ratio (écrit uniquement dans init(), couvert par INIT 'zone')
      */
     public defaultRatio;
     /**
-     * return  current time
+     * return current time — signal : muté par TIME_CHANGE/DURATION_CHANGE ('none') et le drag.
+     * Non dérivé de playback.displayTime() : pendant un drag en mode inverse, SEEKING est émis
+     * avec duration-currentTime, le store ne peut donc pas restituer exactement ce champ.
      */
-    public currentTime = 0;
+    public readonly currentTime = signal(0);
     /**
-     * currentime
+     * currentime affiché — signal : écrit exactement là où l'ancien champ l'était
+     * (handleOnTimeChange applique inverse, handleOnDurationChange ne l'applique pas,
+     * moveSliderCursor n'y touche pas) — pas un computed pour préserver ces nuances.
      */
-    public time = 0;
+    public readonly time = signal(0);
     /**
-     * inverse display currentime
+     * inverse display currentime — signal : muté par prevPlaybackRate (raccourci possible).
      */
-    public inverse = false;
+    public readonly inverse = signal(false);
 
     /**
-     * Progress bar value
+     * Progress bar value — signal : muté par TIME_CHANGE ('none') et le drag.
      */
-    public progressBarValue = 0;
+    public readonly progressBarValue = signal(0);
     /**
-     * Media duration
+     * Media duration — signal : muté par DURATION_CHANGE ('none') et resynchronisé dans init().
      */
-    public duration = 0;
+    public readonly duration = signal(0);
     /**
-     * List of Controls
+     * List of Controls — signal : reconstruit par handleDisplayState (PLAYER_RESIZED 'none') ;
+     * son écriture (nouvelle référence à chaque appel) notifie aussi la vue pour les champs
+     * plats rafraîchis au même moment (elements/controlsByZone réordonnés, displayState).
      */
-    public controls: Array<ControlBarConfig> = [];
+    public readonly controls = signal<Array<ControlBarConfig>>([]);
     public indexPlaybackRate = 3;
     /**
-     * In sliding
+     * In sliding — signal (état du drag de la barre de progression).
      */
-    public inSliding = false;
+    public readonly inSliding = signal(false);
     /**
      * keypressed
      */
     public keypressed = "";
     /**
-     * Volume slider state
+     * Volume slider state — signal : muté par les timeouts de volumeMouseEnter/applyShortcut.
      */
-    public enableVolumeSlider = false;
+    public readonly enableVolumeSlider = signal(false);
     /**
-     * Menu list ratio state
+     * Menu list ratio state — signal : muté par le timeout d'aspectRatioMouseEnter.
      */
-    public enableListRatio = false;
-    public openPisteAudio = false;
+    public readonly enableListRatio = signal(false);
+    public readonly openPisteAudio = signal(false);
     /**
-     * position of subtitles
+     * position of subtitles — signal : muté par updateSubtitlePosition (raccourci possible).
      */
-    public subtitlePosition = "none";
+    public readonly subtitlePosition = signal("none");
     /**
-     * default label subtitle
+     * default label subtitle — signal : muté avec subtitlePosition.
      */
-    public selectedLabel = "Aucun (original)";
+    public readonly selectedLabel = signal("Aucun (original)");
     /**
-     * List positions subtitle state
+     * List positions subtitle state — signal : muté par hideAll() (timeouts/raccourcis).
      */
-    public enableListPositionsSubtitle = false;
+    public readonly enableListPositionsSubtitle = signal(false);
     /**
      * List of control for Zone 1
      */
@@ -244,21 +266,21 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
     }
     /**
-     * State of controlBar
+     * State of controlBar — signal : muté par PLAYER_MOUSE_ENTER/LEAVE ('none', chemin chaud).
      */
-    public activated = false;
+    public readonly activated = signal(false);
     /**
-     * display state (s/m/l)
+     * display state (s/m/l) — signal : muté par PLAYER_RESIZED ('none').
      */
-    public displayState: string = "l";
+    public readonly displayState = signal<string>("l");
     /**
-     * FullScreenMode state
+     * FullScreenMode state — signal : muté par PLAYER_RESIZED ('none').
      */
-    public fullScreenMode = false;
+    public readonly fullScreenMode = signal(false);
     /**
-     * slider displayed
+     * slider displayed — signal : lu par le drag interactjs hors CD.
      */
-    public selectedSlider = "slider1";
+    public readonly selectedSlider = signal("slider1");
     /**
      * show menu slider
      */
@@ -268,7 +290,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public clickedVolume = false;
     /**
-     * list position subtitles
+     * list position subtitles (troisième entrée = valeurs initiales de selectedLabel/
+     * subtitlePosition, comme avant leur passage en signals)
      */
     public listOfSubtitles = [
         { label: "Bas", key: "down" },
@@ -276,7 +299,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             label: "Haut",
             key: "up",
         },
-        { label: this.selectedLabel, key: this.subtitlePosition },
+        { label: "Aucun (original)", key: "none" },
     ];
     /**
      * progressBar element
@@ -287,11 +310,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Handle thumbnail
      */
     private readonly thumbnailService: ThumbnailService;
-    public tcThumbnail = 0;
+    /** Timecode de la vignette de survol — signal : muté par les mousemove de drag/survol. */
+    public readonly tcThumbnail = signal(0);
     public enableThumbnail = false;
     private thumbnailConfigInitialized = false;
-    public thumbnailHidden = true;
-    public thumbnailPosition = 0;
+    /** Visibilité de la vignette — signal : mutée par les handlers de drag. */
+    public readonly thumbnailHidden = signal(true);
+    /** Position de la vignette — signal : mutée par les mousemove de drag/survol. */
+    public readonly thumbnailPosition = signal(0);
     @ViewChild("thumbnail")
     public thumbnailElement: ElementRef<HTMLElement>;
     @ViewChild("thumbnailContainer")
@@ -315,8 +341,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public rightVolumeSlider: ElementRef;
     public playbackrateByImages = false;
     public listOfTracks: Array<{ label: string; track: string }> = [];
-    public selectedTrack = null;
-    public selectedTrackLabel = "";
+    /** Piste audio sélectionnée — signal (écrite dans initTracks et changeAudioTrack). */
+    public readonly selectedTrack = signal<string | null>(null);
+    public readonly selectedTrackLabel = signal("");
     @ViewChild("displaySlider")
     displaySliderElement: ElementRef;
     @ViewChild("pinControls")
@@ -324,17 +351,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     aspectRatioMouseEnterTimeOut: any;
     volumeMouseEnterTimeOut: any;
     /**
-     * Picture player magnify state
+     * Picture player magnify state — signal : muté par PICTURE_MAGNIFY ('none', remplace
+     * l'ancien ngZone.run + markForCheck).
      */
-    public magnifyEnabled = false;
+    public readonly magnifyEnabled = signal(false);
     /**
-     * Picture player crop mode state
+     * Picture player crop mode state — signal (remplace le markForCheck manuel).
      */
-    public cropModeEnabled = false;
+    public readonly cropModeEnabled = signal(false);
     /**
-     * Picture player annotation mode state ('draw' | 'text' | 'erase' | null)
+     * Picture player annotation mode state ('draw' | 'text' | 'erase' | null) — signal
+     * (remplace le markForCheck manuel).
      */
-    public annotationMode: "draw" | "text" | "erase" | null = null;
+    public readonly annotationMode = signal<"draw" | "text" | "erase" | null>(null);
     /**
      * Available annotation colors
      */
@@ -356,17 +385,18 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         { label: "Large", lineWidth: 10, fontSize: 40 },
     ];
     /**
-     * Currently selected annotation color
+     * Currently selected annotation color — signal (remplace le markForCheck manuel).
      */
-    public annotationColor: string = "#ff0000";
+    public readonly annotationColor = signal<string>("#ff0000");
     /**
-     * Currently selected annotation stroke width
+     * Currently selected annotation stroke width — signal (remplace le markForCheck manuel).
      */
-    public annotationLineWidth: number = 5;
+    public readonly annotationLineWidth = signal<number>(5);
     /**
-     * Picture player current zoom level (%)
+     * Picture player current zoom level (%) — signal : muté par PICTURE_ZOOM_CHANGE ('none',
+     * remplace l'ancien ngZone.run + markForCheck).
      */
-    public pictureZoomLevel = 100;
+    public readonly pictureZoomLevel = signal(100);
     private pendingFrameJump = 0;
     private readonly debouncedSeek: DebouncedFunc<() => void>;
 
@@ -460,76 +490,121 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         // pinned controls
         const pinnedControlBarWithControls = this.pluginConfiguration?.pinnedControls;
-        if (pinnedControlBarWithControls && !this.pinnedSlider) {
+        if (pinnedControlBarWithControls && !this.pinnedSlider()) {
             this.applyPinnedControlsState(true);
         }
 
         // Resync slider position with the real media state (handles DOM reattachment on player deploy/detach)
         const player = this.mediaPlayerElement.getMediaPlayer();
-        this.duration = player?.getDuration();
-        this.currentTime = player?.getCurrentTime();
-        if (!isNaN(this.currentTime) && !isNaN(this.duration) && this.duration > 0) {
-            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(6));
+        this.duration.set(player?.getDuration());
+        this.currentTime.set(player?.getCurrentTime());
+        if (!isNaN(this.currentTime()) && !isNaN(this.duration()) && this.duration() > 0) {
+            this.progressBarValue.set(parseFloat(((this.currentTime() / this.duration()) * 100).toFixed(6)));
         }
 
-        // Init Events
+        // Init Events — policy 'none' (phase 7 OnPush) : ces handlers n'écrivent que des
+        // signals (l'écriture programme le tick) et/ou font du DOM pur — plus de zone.run
+        // ni de markForCheck, y compris sur les chemins chauds TIME_CHANGE et MOUSE_ENTER/LEAVE.
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.DURATION_CHANGE,
             this.handleOnDurationChange,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PLAYBACK_RATE_CHANGE,
             this.handlePlaybackRateChange,
+            { policy: "none" },
         );
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.TIME_CHANGE, this.handleOnTimeChange, {
+            policy: "none",
+        });
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.ASPECT_RATIO_CHANGE,
             this.handleAspectRatioChange,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PLAYER_MOUSE_ENTER,
             this.handlePlayerMouseenter,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PLAYER_MOUSE_LEAVE,
             this.handlePlayerMouseleave,
+            { policy: "none" },
         );
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_RESIZED,
+            this.handleWindowResize,
+            { policy: "none" },
+        );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PICTURE_ZOOM_CHANGE,
             this.handlePictureZoomChange,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PICTURE_MAGNIFY,
             this.handlePictureMagnifyChange,
+            { policy: "none" },
         );
-        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_KEYDOWN, this.handleShortcuts);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.SHORTCUT_KEYDOWN,
+            this.handleShortcuts,
+            { policy: "none" },
+        );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.DOCUMENT_CLICK,
             this.hideControlsMenuOnClickDocument,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PLAYER_SIMULATE_SLIDER,
             this.handlePlaybackRateChangeByImages,
+            { policy: "none" },
         );
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.PLAYER_STOP_SIMULATE_PLAY,
             this.handlePlaybackRateChangeByImagesStop,
+            { policy: "none" },
         );
+        // Le template lit directement mediaPlayerElement.getMediaPlayer()?.isPaused() (icônes
+        // play/pause) : sous OnPush, PLAYING/PAUSED/ENDED en 'schedule' marquent la vue pour
+        // ré-évaluer ces expressions non-signal (déclenchés hors clic template, ex. API host).
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYING, this.notifyPlayStateChanged, {
+            policy: "schedule",
+        });
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PAUSED, this.notifyPlayStateChanged, {
+            policy: "schedule",
+        });
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ENDED, this.notifyPlayStateChanged, {
+            policy: "schedule",
+        });
         // Set default aspect ratio
         this.getDefaultAspectRatio();
         this.handleDisplayState();
         this.initTracks();
+    }
+
+    /**
+     * Handler volontairement vide : le wrapper 'schedule' de PluginBase.addListener fait le
+     * markForCheck — seule notification nécessaire pour ré-évaluer les lectures template
+     * directes de isPaused() (voir enregistrements PLAYING/PAUSED/ENDED dans init()).
+     */
+    private notifyPlayStateChanged() {
+        // markForCheck via la policy 'schedule'
     }
 
     /**
@@ -540,9 +615,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handleOnDurationChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime();
-        this.time = this.currentTime;
-        this.duration = this.mediaPlayerElement.getMediaPlayer()?.getDuration();
+        this.currentTime.set(this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime());
+        this.time.set(this.currentTime());
+        this.duration.set(this.mediaPlayerElement.getMediaPlayer()?.getDuration());
     }
 
     /**
@@ -551,14 +626,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handleOnTimeChange() {
-        this.currentTime = this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime();
-        if (!this.inSliding && !isNaN(this.currentTime)) {
-            this.progressBarValue = parseFloat(((this.currentTime / this.duration) * 100).toFixed(6));
+        this.currentTime.set(this.mediaPlayerElement.getMediaPlayer()?.getCurrentTime());
+        if (!this.inSliding() && !isNaN(this.currentTime())) {
+            this.progressBarValue.set(parseFloat(((this.currentTime() / this.duration()) * 100).toFixed(6)));
         }
-        if (this.inverse === false) {
-            this.time = this.currentTime;
+        if (this.inverse() === false) {
+            this.time.set(this.currentTime());
         } else {
-            this.time = this.duration - this.currentTime;
+            this.time.set(this.duration() - this.currentTime());
         }
     }
 
@@ -587,14 +662,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.mediaPlayerElement.getMediaPlayer()?.isPaused() && playbackRate !== 1) {
             this.mediaPlayerElement.getMediaPlayer()?.play();
         }
-        this.currentPlaybackRate = playbackRate;
+        this.currentPlaybackRate.set(playbackRate);
         if (playbackRate === 1) {
             setTimeout(() => this.selectActivePlaybackrate(), 10);
         }
-        if (this.currentPlaybackRate >= 1 || this.currentPlaybackRate <= -1) {
-            this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+        if (this.currentPlaybackRate() >= 1 || this.currentPlaybackRate() <= -1) {
+            this.currentPlaybackRateSlider.set(Math.round(this.currentPlaybackRate()));
         } else {
-            this.currentPlaybackRateSlider = this.currentPlaybackRate;
+            this.currentPlaybackRateSlider.set(this.currentPlaybackRate());
         }
     }
 
@@ -604,7 +679,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handleAspectRatioChange(event) {
-        this.aspectRatio = event;
+        this.aspectRatio.set(event);
     }
 
     /**
@@ -613,7 +688,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handlePlayerMouseenter() {
-        this.activated = true;
+        this.activated.set(true);
     }
 
     /**
@@ -622,7 +697,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     private handlePlayerMouseleave() {
-        this.activated = false;
+        this.activated.set(false);
     }
 
     /**
@@ -632,21 +707,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public handleWindowResize() {
         this.handleDisplayState();
         // handle full screen on esc press
-        this.fullScreenMode = document.fullscreenElement !== null;
+        this.fullScreenMode.set(document.fullscreenElement !== null);
     }
 
+    // Écriture de signal pure : plus besoin de ngZone.run + markForCheck (phase 7) — le
+    // scheduler hybride programme le tick même quand l'événement arrive hors zone.
     public handlePictureZoomChange(zoomLevel: number) {
-        this.ngZone.run(() => {
-            this.pictureZoomLevel = zoomLevel ?? 100;
-            this.cdr.markForCheck();
-        });
+        this.pictureZoomLevel.set(zoomLevel ?? 100);
     }
 
     public handlePictureMagnifyChange(event: CustomEvent) {
-        this.ngZone.run(() => {
-            this.magnifyEnabled = event.detail?.magnify ?? false;
-            this.cdr.markForCheck();
-        });
+        this.magnifyEnabled.set(event.detail?.magnify ?? false);
     }
 
     /**
@@ -664,16 +735,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse event
      */
     public handleProgressBarMouseMove(event) {
-        if (this.inSliding) {
+        if (this.inSliding()) {
             const value = this.getMouseValue(event);
-            this.progressBarValue = value;
-            this.currentTime = (value * this.duration) / 100;
-            if (this.inverse === false) {
-                this.time = this.currentTime;
+            this.progressBarValue.set(value);
+            this.currentTime.set((value * this.duration()) / 100);
+            if (this.inverse() === false) {
+                this.time.set(this.currentTime());
             } else {
-                this.time = this.duration - this.currentTime;
+                this.time.set(this.duration() - this.currentTime());
             }
-            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, this.time);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKING, this.time());
             // Keep the thumbnail preview following the cursor while actively dragging, not just on hover.
             if (
                 this.enableThumbnail &&
@@ -682,13 +753,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             ) {
                 const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
                 const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
-                const tc = parseFloat(this.currentTime.toFixed(6));
+                const tc = parseFloat(this.currentTime().toFixed(6));
                 if (isFinite(tc)) {
-                    this.tcThumbnail = tc;
-                    this.thumbnailPosition = Math.min(
+                    this.tcThumbnail.set(tc);
+                    this.thumbnailPosition.set(Math.min(
                         Math.max(0, event.offsetX - thumbnailSize / 2),
                         containerWidth - thumbnailSize,
-                    );
+                    ));
                 }
                 this.throttleFunc(event);
             }
@@ -704,8 +775,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     public hideControlsMenuOnClickDocument() {
         // click outside the player
-        if (this.enableMenu) {
-            this.enableMenu = !this.enableMenu;
+        if (this.enableMenu()) {
+            this.enableMenu.set(!this.enableMenu());
         }
     }
 
@@ -794,8 +865,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         };
         if (matchesShortcut(volumeUpShortcut, shortcutToBeApplied.shortcut)) {
             this.volumeButton.nativeElement.dispatchEvent(new MouseEvent("mouseenter"));
-            this.volumeRight = Math.min(this.volumeRight + 5, 100);
-            this.volumeLeft = Math.min(this.volumeLeft + 5, 100);
+            this.volumeRight.set(Math.min(this.volumeRight() + 5, 100));
+            this.volumeLeft.set(Math.min(this.volumeLeft() + 5, 100));
             if (this.volumeMouseEnterTimeOut) {
                 clearTimeout(this.volumeMouseEnterTimeOut);
             }
@@ -805,8 +876,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         if (matchesShortcut(volumeDownShortcut, shortcutToBeApplied.shortcut)) {
             this.volumeButton.nativeElement.dispatchEvent(new MouseEvent("mouseenter"));
-            this.volumeRight = Math.max(this.volumeRight - 5, 0);
-            this.volumeLeft = Math.max(this.volumeLeft - 5, 0);
+            this.volumeRight.set(Math.max(this.volumeRight() - 5, 0));
+            this.volumeLeft.set(Math.max(this.volumeLeft() - 5, 0));
             if (this.volumeMouseEnterTimeOut) {
                 clearTimeout(this.volumeMouseEnterTimeOut);
             }
@@ -912,8 +983,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     private closeMenuIfOpen(): void {
-        if (this.enableMenu) {
-            this.enableMenu = false;
+        if (this.enableMenu()) {
+            this.enableMenu.set(false);
         }
     }
 
@@ -958,32 +1029,32 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (!action) {
             return false;
         }
-        if (!this.magnifyEnabled) {
+        if (!this.magnifyEnabled()) {
             action();
         }
         return true;
     }
 
     public get drawModeEnabled(): boolean {
-        return this.annotationMode === "draw";
+        return this.annotationMode() === "draw";
     }
 
     public get textModeEnabled(): boolean {
-        return this.annotationMode === "text";
+        return this.annotationMode() === "text";
     }
 
     public get eraseModeEnabled(): boolean {
-        return this.annotationMode === "erase";
+        return this.annotationMode() === "erase";
     }
 
     public get annotationModeEnabled(): boolean {
-        return this.annotationMode !== null;
+        return this.annotationMode() !== null;
     }
 
     @HostListener("document:keydown.escape")
     public onEscapeKey(): void {
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
-        if (this.cropModeEnabled) {
+        if (this.cropModeEnabled()) {
             picturePlayer?.disableCropMode();
             this.setCropModeEnabled(false);
         }
@@ -994,7 +1065,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     private toggleCropMode(picturePlayer: any): void {
-        if (this.cropModeEnabled) {
+        if (this.cropModeEnabled()) {
             picturePlayer?.disableCropMode();
             this.setCropModeEnabled(false);
         } else {
@@ -1009,18 +1080,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     private setCropModeEnabled(enabled: boolean): void {
-        this.cropModeEnabled = enabled;
-        this.cdr.markForCheck();
+        this.cropModeEnabled.set(enabled);
     }
 
     private toggleAnnotationMode(picturePlayer: any, mode: "draw" | "text" | "erase"): void {
-        if (this.annotationMode === mode) {
+        if (this.annotationMode() === mode) {
             picturePlayer?.disableAnnotationMode();
             this.setAnnotationMode(null);
             return;
         }
         // Crop and annotation are mutually exclusive.
-        if (this.cropModeEnabled) {
+        if (this.cropModeEnabled()) {
             picturePlayer?.disableCropMode();
             this.setCropModeEnabled(false);
         }
@@ -1037,32 +1107,29 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     }
 
     private setAnnotationMode(mode: "draw" | "text" | "erase" | null): void {
-        this.annotationMode = mode;
-        this.cdr.markForCheck();
+        this.annotationMode.set(mode);
     }
 
     private applyAnnotationSettings(picturePlayer: any): void {
-        picturePlayer?.setAnnotationColor(this.annotationColor);
-        picturePlayer?.setAnnotationLineWidth(this.annotationLineWidth);
-        const size = this.annotationSizes.find((s) => s.lineWidth === this.annotationLineWidth);
+        picturePlayer?.setAnnotationColor(this.annotationColor());
+        picturePlayer?.setAnnotationLineWidth(this.annotationLineWidth());
+        const size = this.annotationSizes.find((s) => s.lineWidth === this.annotationLineWidth());
         if (size) {
             picturePlayer?.setAnnotationFontSize(size.fontSize);
         }
     }
 
     public selectAnnotationColor(color: string): void {
-        this.annotationColor = color;
+        this.annotationColor.set(color);
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
         picturePlayer?.setAnnotationColor(color);
-        this.cdr.markForCheck();
     }
 
     public selectAnnotationSize(size: { label: string; lineWidth: number; fontSize: number }): void {
-        this.annotationLineWidth = size.lineWidth;
+        this.annotationLineWidth.set(size.lineWidth);
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
         picturePlayer?.setAnnotationLineWidth(size.lineWidth);
         picturePlayer?.setAnnotationFontSize(size.fontSize);
-        this.cdr.markForCheck();
     }
 
     private downloadSnapshot(dataUrl: string): void {
@@ -1170,16 +1237,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (priority === 1) {
             return true;
         }
-        if (this.displayState === "l") {
+        if (this.displayState() === "l") {
             return priority >= 2 && priority <= 5;
         }
-        if (this.displayState === "m") {
+        if (this.displayState() === "m") {
             return priority >= 2 && priority <= 4;
         }
-        if (this.displayState === "sm") {
+        if (this.displayState() === "sm") {
             return priority >= 2 && priority <= 3;
         }
-        if (this.displayState === "s") {
+        if (this.displayState() === "s") {
             return priority === 2;
         }
         return false;
@@ -1201,9 +1268,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public changeVolume(value: string | number, volumeSide?: string) {
         if (this.mediaPlayerElement?.getMediaPlayer()?.withMergeVolume) {
             if (volumeSide === "l") {
-                this.volumeRight = this.volumeLeft;
+                this.volumeRight.set(this.volumeLeft());
             } else {
-                this.volumeLeft = this.volumeRight;
+                this.volumeLeft.set(this.volumeRight());
             }
             this.mediaPlayerElement.getMediaPlayer()?.setVolume(Number(value));
         } else {
@@ -1218,10 +1285,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     public moveSliderCursor(value: any) {
         this.logger.info("moveSliderCursor ", value);
-        this.progressBarValue = value;
-        this.currentTime = (value * this.duration) / 100;
-        const oldPlaybackrate = this.currentPlaybackRate;
-        if (this.currentPlaybackRate === 1) {
+        this.progressBarValue.set(value);
+        this.currentTime.set((value * this.duration()) / 100);
+        const oldPlaybackrate = this.currentPlaybackRate();
+        if (this.currentPlaybackRate() === 1) {
             this.playbackrateByImages = false;
         }
         const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
@@ -1229,11 +1296,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             return;
         }
         if (mediaPlayer.reverseMode === true) {
-            this.currentTime = this.duration - this.currentTime;
-            mediaPlayer.setCurrentTime(this.currentTime);
+            this.currentTime.set(this.duration() - this.currentTime());
+            mediaPlayer.setCurrentTime(this.currentTime());
         } else {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_CLEAR_INTERVAL);
-            mediaPlayer.setCurrentTime(this.currentTime);
+            mediaPlayer.setCurrentTime(this.currentTime());
             if (this.playbackrateByImages) {
                 this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE, oldPlaybackrate);
             } else {
@@ -1249,7 +1316,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * control bar container (part of the fullscreened subtree) so it remains visible.
      */
     public changeTooltipEmplacement() {
-        if (this.fullScreenMode === true) {
+        if (this.fullScreenMode() === true) {
             setTimeout(() => {
                 const tooltip = document.body.querySelector(".p-tooltip");
                 if (tooltip) {
@@ -1265,8 +1332,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public handleDisplayState() {
-        this.controls = [];
-        this.displayState = this.mediaPlayerElement.getDisplayState();
+        this.controls.set([]);
+        this.displayState.set(this.mediaPlayerElement.getDisplayState());
         // Controls priority 5
         let controlsP5 = [];
         // Controls priority 4
@@ -1289,19 +1356,19 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         controlsP3 ??= [];
         controlsP2 ??= [];
 
-        if (this.displayState === "l") {
-            this.controls = controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2);
-        } else if (this.displayState === "m") {
-            this.controls = controlsP5;
-        } else if (this.displayState === "sm") {
-            this.controls = controlsP5.concat(controlsP4);
-        } else if (this.displayState === "s") {
-            this.controls = controlsP5.concat(controlsP4).concat(controlsP3);
-        } else if (this.displayState === "xs") {
-            this.controls = controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2);
+        if (this.displayState() === "l") {
+            this.controls.set(controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2));
+        } else if (this.displayState() === "m") {
+            this.controls.set(controlsP5);
+        } else if (this.displayState() === "sm") {
+            this.controls.set(controlsP5.concat(controlsP4));
+        } else if (this.displayState() === "s") {
+            this.controls.set(controlsP5.concat(controlsP4).concat(controlsP3));
+        } else if (this.displayState() === "xs") {
+            this.controls.set(controlsP5.concat(controlsP4).concat(controlsP3).concat(controlsP2));
         }
         //remove controls not in menu
-        this.controls = this.controls.filter((control) => !control.notInMenu);
+        this.controls.set(this.controls().filter((control) => !control.notInMenu));
         //readjust Pin and speed slider
         setTimeout(() => {
             this.updatePinAndSpeedSliderPositions();
@@ -1316,7 +1383,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     private updatePicturePlayerDisplayState() {
         const picturePlayer = this.mediaPlayerElement.getPicturePlayer();
         if (picturePlayer) {
-            picturePlayer.setDisplayState(this.displayState);
+            picturePlayer.setDisplayState(this.displayState());
         }
     }
 
@@ -1324,7 +1391,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change aspect ratio
      */
     public changeAspectRatio() {
-        this.mediaPlayerElement.aspectRatio = this.aspectRatio === "4:3" ? "16:9" : "4:3";
+        this.mediaPlayerElement.aspectRatio = this.aspectRatio() === "4:3" ? "16:9" : "4:3";
     }
 
     /**
@@ -1333,25 +1400,25 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     public getDefaultAspectRatio() {
         this.defaultRatio = this.mediaPlayerElement.aspectRatio;
-        this.aspectRatio = this.defaultRatio;
+        this.aspectRatio.set(this.defaultRatio);
     }
 
     /**
      * Invoked on change playback rate
      */
     public onChangePlaybackRate(value: number) {
-        this.currentPlaybackRate = value;
-        if (this.currentPlaybackRate < 1 && this.currentPlaybackRate > -1) {
-            this.currentPlaybackRateSlider = this.currentPlaybackRate;
+        this.currentPlaybackRate.set(value);
+        if (this.currentPlaybackRate() < 1 && this.currentPlaybackRate() > -1) {
+            this.currentPlaybackRateSlider.set(this.currentPlaybackRate());
         } else {
-            this.currentPlaybackRateSlider = Math.round(this.currentPlaybackRate);
+            this.currentPlaybackRateSlider.set(Math.round(this.currentPlaybackRate()));
         }
         if (this.mediaPlayerElement.getMediaPlayer()?.isPaused() && value !== 1) {
             this.mediaPlayerElement.getMediaPlayer()?.play();
         }
         const mp = this.mediaPlayerElement.getMediaPlayer();
         if (mp) {
-            mp.playbackRate = this.currentPlaybackRate;
+            mp.playbackRate = this.currentPlaybackRate();
         }
     }
 
@@ -1365,9 +1432,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         }
         mediaPlayer.withMergeVolume = !mediaPlayer.withMergeVolume;
         if (mediaPlayer.withMergeVolume) {
-            const v = Math.max(this.volumeRight, this.volumeLeft);
-            this.volumeLeft = v;
-            this.volumeRight = v;
+            const v = Math.max(this.volumeRight(), this.volumeLeft());
+            this.volumeLeft.set(v);
+            this.volumeRight.set(v);
             this.changeVolume(v);
         }
     }
@@ -1377,8 +1444,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse enter
      */
     public progressBarMouseEnter(event: MouseEvent) {
-        if (this.enableThumbnail && !this.inSliding) {
-            this.thumbnailHidden = false;
+        if (this.enableThumbnail && !this.inSliding()) {
+            this.thumbnailHidden.set(false);
         }
     }
 
@@ -1386,8 +1453,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Handle mouse leave on progress bar
      */
     public progressBarMouseLeave() {
-        if (this.enableThumbnail && !this.inSliding) {
-            this.thumbnailHidden = true;
+        if (this.enableThumbnail && !this.inSliding()) {
+            this.thumbnailHidden.set(true);
         }
     }
 
@@ -1396,17 +1463,17 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event mouse move
      */
     public progressBarMouseMove(event: MouseEvent) {
-        if (this.enableThumbnail && !this.inSliding && this.thumbnailHidden === false) {
+        if (this.enableThumbnail && !this.inSliding() && this.thumbnailHidden() === false) {
             const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
             const thumbnailSize = this.thumbnailElement.nativeElement.offsetWidth;
             const value = this.getMouseValue(event);
-            const tc = parseFloat(((value * this.duration) / 100).toFixed(6));
+            const tc = parseFloat(((value * this.duration()) / 100).toFixed(6));
             if (isFinite(tc)) {
-                this.tcThumbnail = tc;
-                this.thumbnailPosition = Math.min(
+                this.tcThumbnail.set(tc);
+                this.thumbnailPosition.set(Math.min(
                     Math.max(0, event.offsetX - thumbnailSize / 2),
                     containerWidth - thumbnailSize,
-                );
+                ));
             }
             this.throttleFunc(event);
         }
@@ -1416,9 +1483,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Progress bar on mouse down
      */
     public handleProgressBarMouseDown() {
-        this.inSliding = true;
+        this.inSliding.set(true);
         if (this.enableThumbnail) {
-            this.thumbnailHidden = false;
+            this.thumbnailHidden.set(false);
         }
     }
 
@@ -1436,11 +1503,11 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * @param event  click event
      */
     public handleProgressBarMouseUp(event) {
-        this.inSliding = false;
+        this.inSliding.set(false);
         const value = this.getMouseValue(event);
         this.moveSliderCursor(value);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SEEKED, value);
-        this.thumbnailHidden = false;
+        this.thumbnailHidden.set(false);
     }
 
     /**
@@ -1449,7 +1516,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public updateThumbnail(event: MouseEvent) {
         const containerWidth = this.progressBarElement.nativeElement.offsetWidth;
-        const tc = parseFloat(((event.offsetX * this.duration) / containerWidth).toFixed(6));
+        const tc = parseFloat(((event.offsetX * this.duration()) / containerWidth).toFixed(6));
         const currentTime = parseFloat(tc.toFixed(6));
         const url = this.mediaPlayerElement.getThumbnailUrl(currentTime, true);
         if (isFinite(tc)) {
@@ -1478,9 +1545,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change playback rate
      */
     private prevPlaybackRate() {
-        this.inverse = true;
+        this.inverse.set(true);
         this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
-        const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
+        const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate());
         const bufferSize = this.changeBufferSize(index);
         this.mediaPlayerElement.getMediaPlayer()?.mse.setMaxBufferLengthConfig(bufferSize);
         this.mediaPlayerElement.getMediaPlayer()?.mse.setMaxBufferLengthConfig(bufferSize);
@@ -1491,7 +1558,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private nextPlaybackRate() {
         this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
-        const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate);
+        const index = this.forwardPlaybackRateStep.indexOf(this.currentPlaybackRate());
         const bufferSize = this.changeBufferSize(index);
         this.mediaPlayerElement.getMediaPlayer()?.mse.setMaxBufferLengthConfig(bufferSize);
     }
@@ -1510,10 +1577,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.getPlaybackStepValue(this.forwardPlaybackRateStep, true) < speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.forwardPlaybackRateStep));
         } else {
-            this.currentPlaybackRate = this.getPlaybackStepValue(this.forwardPlaybackRateStep, true);
+            this.currentPlaybackRate.set(this.getPlaybackStepValue(this.forwardPlaybackRateStep, true));
             this.mediaPlayerElement.eventEmitter.emit(
                 PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE,
-                this.currentPlaybackRate,
+                this.currentPlaybackRate(),
             );
         }
         setTimeout(() => this.selectActivePlaybackrate(), 10);
@@ -1529,23 +1596,23 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (this.getPlaybackStepValue(this.backwardPlaybackRateStep, true) > speed) {
             this.changePlaybackRate(this.getPlaybackStepValue(this.backwardPlaybackRateStep));
         } else {
-            this.currentPlaybackRate = this.getPlaybackStepValue(this.backwardPlaybackRateStep, true);
+            this.currentPlaybackRate.set(this.getPlaybackStepValue(this.backwardPlaybackRateStep, true));
             const mediaPlayer = this.mediaPlayerElement.getMediaPlayer();
             const mainSource = !mediaPlayer?.reverseMode;
-            if (this.currentPlaybackRate < 0 && mainSource === false) {
+            if (this.currentPlaybackRate() < 0 && mainSource === false) {
                 const tc = mediaPlayer?.getCurrentTime();
                 mediaPlayer?.mse.switchToMainSrc().then(() => {
                     this.mediaPlayerElement.getMediaPlayer()?.setReverseMode(false);
                     this.mediaPlayerElement.getMediaPlayer()?.setCurrentTime(Math.max(0, tc));
                     this.mediaPlayerElement.eventEmitter.emit(
                         PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE,
-                        this.currentPlaybackRate,
+                        this.currentPlaybackRate(),
                     );
                 });
             } else {
                 this.mediaPlayerElement.eventEmitter.emit(
                     PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE,
-                    this.currentPlaybackRate,
+                    this.currentPlaybackRate(),
                 );
             }
         }
@@ -1573,7 +1640,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     private getPlaybackStepValue(playbackRateStep: Array<number>, ignoreSetPlaybackrate?: boolean): number {
         let playbackRate;
-        let indexOfCurrentPlaybackRate = playbackRateStep.indexOf(this.currentPlaybackRate);
+        let indexOfCurrentPlaybackRate = playbackRateStep.indexOf(this.currentPlaybackRate());
         indexOfCurrentPlaybackRate = indexOfCurrentPlaybackRate + 1;
         if (indexOfCurrentPlaybackRate > playbackRateStep.length - 1) {
             indexOfCurrentPlaybackRate = 0;
@@ -1592,16 +1659,16 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Invoked for change playback rate
      */
     private changePlaybackRate(value: number) {
-        this.currentPlaybackRate = value;
+        this.currentPlaybackRate.set(value);
         const mp = this.mediaPlayerElement.getMediaPlayer();
         if (mp) {
-            mp.playbackRate = this.currentPlaybackRate;
+            mp.playbackRate = this.currentPlaybackRate();
         }
         setTimeout(() => this.selectActivePlaybackrate(), 10);
     }
 
     public handlePlayerMouseHover() {
-        this.activated = true;
+        this.activated.set(true);
     }
 
     /**
@@ -1615,8 +1682,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         } else {
             for (const subtitle of this.listOfSubtitles) {
                 if (subtitlePosition === subtitle.key) {
-                    this.selectedLabel = subtitle.label;
-                    this.subtitlePosition = subtitlePosition;
+                    this.selectedLabel.set(subtitle.label);
+                    this.subtitlePosition.set(subtitlePosition);
                 }
             }
         }
@@ -1628,14 +1695,14 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     public updateSubtitleInfos() {
         let j: number;
         for (let i = 0; i < this.listOfSubtitles.length; i++) {
-            if (this.subtitlePosition === this.listOfSubtitles[i].key) {
+            if (this.subtitlePosition() === this.listOfSubtitles[i].key) {
                 if (i === this.listOfSubtitles.length - 1) {
                     j = 0;
                 } else {
                     j = i + 1;
                 }
-                this.subtitlePosition = this.listOfSubtitles[j].key;
-                this.selectedLabel = this.listOfSubtitles[j].label;
+                this.subtitlePosition.set(this.listOfSubtitles[j].key);
+                this.selectedLabel.set(this.listOfSubtitles[j].label);
             }
         }
     }
@@ -1644,8 +1711,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Toggle Display playbackslider
      */
     private displaySlider() {
-        this.enablePlaybackSlider = !this.enablePlaybackSlider;
-        if (this.enablePlaybackSlider && this.pinnedSlider) {
+        this.enablePlaybackSlider.set(!this.enablePlaybackSlider());
+        if (this.enablePlaybackSlider() && this.pinnedSlider()) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
         } else {
             this.mediaPlayerElement.eventEmitter.emit(
@@ -1653,7 +1720,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.enablePinnedSlider,
             );
         }
-        this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
+        this.pinned.set(this.enablePlaybackSlider() && this.pinnedSlider());
         setTimeout(() => this.initDragThumb(), 10);
     }
 
@@ -1665,7 +1732,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Toggle Pinned class playback slider
      */
     private pinControls() {
-        this.applyPinnedControlsState(!this.pinnedSlider);
+        this.applyPinnedControlsState(!this.pinnedSlider());
     }
 
     /**
@@ -1678,9 +1745,9 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * re-inits, silently un-pinning a controlbar the config says should always stay pinned.
      */
     private applyPinnedControlsState(pinnedSlider: boolean) {
-        this.pinnedSlider = pinnedSlider;
+        this.pinnedSlider.set(pinnedSlider);
         this.enablePinnedSlider = pinnedSlider;
-        if (this.enablePlaybackSlider && this.pinnedSlider) {
+        if (this.enablePlaybackSlider() && this.pinnedSlider()) {
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, this.enablePinnedSlider);
         } else {
             this.mediaPlayerElement.eventEmitter.emit(
@@ -1688,7 +1755,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 this.enablePinnedSlider,
             );
         }
-        this.pinned = this.enablePlaybackSlider && this.pinnedSlider;
+        this.pinned.set(this.enablePlaybackSlider() && this.pinnedSlider());
     }
 
     /**
@@ -1719,7 +1786,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                 "href",
                 baseUrl.search("\\?") === -1
                     ? `${baseUrl}?${tcParam}=${currentTime}`
-                    : `${baseUrl}&${tcParam}=${this.currentTime}`,
+                    : `${baseUrl}&${tcParam}=${this.currentTime()}`,
             );
         }
     }
@@ -1757,10 +1824,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public changeSlider() {
-        if (this.selectedSlider === "slider1") {
-            this.selectedSlider = "slider2";
+        if (this.selectedSlider() === "slider1") {
+            this.selectedSlider.set("slider2");
         } else {
-            this.selectedSlider = "slider1";
+            this.selectedSlider.set("slider1");
         }
         setTimeout(() => this.initDragThumb(), 10);
     }
@@ -1770,27 +1837,27 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
 
     public switchDisplayCurrentTime() {
-        if (this.inverse === true) {
-            this.inverse = false;
-            this.time = this.currentTime;
+        if (this.inverse() === true) {
+            this.inverse.set(false);
+            this.time.set(this.currentTime());
         } else {
-            this.inverse = true;
-            this.time = this.duration - this.currentTime;
+            this.inverse.set(true);
+            this.time.set(this.duration() - this.currentTime());
         }
     }
 
     public hideAll(control?) {
-        if (this.enableMenu && control !== "menu") {
-            this.enableMenu = !this.enableMenu;
+        if (this.enableMenu() && control !== "menu") {
+            this.enableMenu.set(!this.enableMenu());
         }
-        if (this.enableVolumeSlider) {
-            this.enableVolumeSlider = !this.enableVolumeSlider;
+        if (this.enableVolumeSlider()) {
+            this.enableVolumeSlider.set(!this.enableVolumeSlider());
         }
-        if (this.enableListPositionsSubtitle) {
-            this.enableListPositionsSubtitle = !this.enableListPositionsSubtitle;
+        if (this.enableListPositionsSubtitle()) {
+            this.enableListPositionsSubtitle.set(!this.enableListPositionsSubtitle());
         }
-        if (this.enableListRatio) {
-            this.enableListRatio = !this.enableListRatio;
+        if (this.enableListRatio()) {
+            this.enableListRatio.set(!this.enableListRatio());
         }
     }
 
@@ -1817,25 +1884,25 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     aspectRatioMouseEnter() {
         this.hideAll("ratio");
-        this.enableListRatio = true;
+        this.enableListRatio.set(true);
         if (this.aspectRatioMouseEnterTimeOut) {
             clearTimeout(this.aspectRatioMouseEnterTimeOut);
         }
         this.aspectRatioMouseEnterTimeOut = setTimeout(() => {
-            this.enableListRatio = false;
+            this.enableListRatio.set(false);
         }, 4000);
     }
 
     volumeMouseEnter(data: any) {
         this.hideAll("volume");
-        this.enableVolumeSlider = true;
+        this.enableVolumeSlider.set(true);
         this.openVolume(data);
         if (this.volumeMouseEnterTimeOut) {
             clearTimeout(this.volumeMouseEnterTimeOut);
         }
         this.volumeMouseEnterTimeOut = setTimeout(() => {
-            this.enableVolumeSlider = false;
-            this.openPisteAudio = false;
+            this.enableVolumeSlider.set(false);
+            this.openPisteAudio.set(false);
         }, 4000);
     }
 
@@ -1843,8 +1910,8 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      * Mute sound
      */
     public mute() {
-        this.volumeRight = 0;
-        this.volumeLeft = 0;
+        this.volumeRight.set(0);
+        this.volumeLeft.set(0);
         return this.mediaPlayerElement.getMediaPlayer()?.mute();
     }
 
@@ -1856,13 +1923,13 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         if (!mediaPlayer) {
             return;
         }
-        this.volumeRight = mediaPlayer.getVolume("r");
-        this.volumeLeft = mediaPlayer.getVolume("l");
-        if (this.volumeLeft < 50 || this.volumeRight < 50) {
+        this.volumeRight.set(mediaPlayer.getVolume("r"));
+        this.volumeLeft.set(mediaPlayer.getVolume("l"));
+        if (this.volumeLeft() < 50 || this.volumeRight() < 50) {
             mediaPlayer.setVolume(50, "r");
             mediaPlayer.setVolume(50, "l");
-            this.volumeRight = mediaPlayer.getVolume("r");
-            this.volumeLeft = mediaPlayer.getVolume("l");
+            this.volumeRight.set(mediaPlayer.getVolume("r"));
+            this.volumeLeft.set(mediaPlayer.getVolume("l"));
         }
         return mediaPlayer.unmute();
     }
@@ -1920,7 +1987,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
             ],
             listeners: {
                 move(event) {
-                    if (self.selectedSlider === "slider2") {
+                    if (self.selectedSlider() === "slider2") {
                         setTimeout(() => self.handleMoveDragThumb(event, position, step, maxWidth), 50);
                         event.stopImmediatePropagation();
                     } else {
@@ -1939,7 +2006,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
                     }
                 },
                 end(event) {
-                    if (self.selectedSlider === "slider2") {
+                    if (self.selectedSlider() === "slider2") {
                         setTimeout(() => self.handleStopMoveDragThumb(values, position.x), 10);
                         event.stopImmediatePropagation();
                     }
@@ -2065,10 +2132,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
 
     private toggleVolume() {
         this.volumeButton.nativeElement.click();
-        if (this.volumeLeft > 0 || this.volumeRight > 0) {
+        if (this.volumeLeft() > 0 || this.volumeRight() > 0) {
             this.mute();
         }
-        if (this.volumeLeft === 0 && this.volumeRight === 0) {
+        if (this.volumeLeft() === 0 && this.volumeRight() === 0) {
             this.unmute();
         }
     }
@@ -2080,10 +2147,10 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         const control = find<ControlBarConfig>(this.pluginConfiguration.data, { control: "volume" });
         if (control && control.data && control.data.tracks) {
             this.listOfTracks = control.data.tracks;
-            this.selectedTrack = this.listOfTracks[0].track;
-            this.selectedTrackLabel = this.listOfTracks.find((x) => x.track === this.selectedTrack).label;
+            this.selectedTrack.set(this.listOfTracks[0].track);
+            this.selectedTrackLabel.set(this.listOfTracks.find((x) => x.track === this.selectedTrack()).label);
             this.logger.info(
-                `[AUDIO_TRACK_DEBUG] initTracks listOfTracks=${JSON.stringify(this.listOfTracks)} selectedTrack=${this.selectedTrack}`,
+                `[AUDIO_TRACK_DEBUG] initTracks listOfTracks=${JSON.stringify(this.listOfTracks)} selectedTrack=${this.selectedTrack()}`,
             );
         }
     }
@@ -2114,12 +2181,12 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
         } else {
             if (side === "r") {
                 const oldVolumeRight = mediaPlayer.getVolume("r");
-                this.volumeRight = oldVolumeRight === 0 ? 50 : 0;
-                this.changeVolume(this.volumeRight, side);
+                this.volumeRight.set(oldVolumeRight === 0 ? 50 : 0);
+                this.changeVolume(this.volumeRight(), side);
             } else if (side === "l") {
                 const oldVolumeLeft = mediaPlayer.getVolume("l");
-                this.volumeLeft = oldVolumeLeft === 0 ? 50 : 0;
-                this.changeVolume(this.volumeLeft, side);
+                this.volumeLeft.set(oldVolumeLeft === 0 ? 50 : 0);
+                this.changeVolume(this.volumeLeft(), side);
             }
         }
     }
@@ -2131,7 +2198,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
     changeAudioTrack(trackId: any) {
         this.logger.info(`[AUDIO_TRACK_DEBUG] changeAudioTrack -> trackId=${trackId}`);
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.AUDIO_CHANNEL_CHANGE, trackId);
-        this.selectedTrack = trackId;
-        this.selectedTrackLabel = this.listOfTracks.find((x) => x.track === this.selectedTrack).label;
+        this.selectedTrack.set(trackId);
+        this.selectedTrackLabel.set(this.listOfTracks.find((x) => x.track === this.selectedTrack()).label);
     }
 }

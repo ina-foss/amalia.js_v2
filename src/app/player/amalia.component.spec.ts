@@ -113,7 +113,7 @@ describe("AmaliaComponent", () => {
         fixture.detectChanges();
         const event = new MouseEvent("contextmenu", { clientX: 100, clientY: 100 });
         component.onContextMenu(event);
-        expect(component.contextMenuState).toBeTrue();
+        expect(component.contextMenuState()).toBeTrue();
     });
 
     it("should handle play event", () => {
@@ -121,7 +121,7 @@ describe("AmaliaComponent", () => {
         component._setEnableThumbnailForTesting(true);
         spyOn(component as any, "handlePlay").and.callThrough();
         component._handlePlayForTesting();
-        expect(component.enablePreviewThumbnail).toBeFalse();
+        expect(component.enablePreviewThumbnail()).toBeFalse();
         expect(component.previewThumbnailUrl).toBe("");
     });
 
@@ -129,15 +129,15 @@ describe("AmaliaComponent", () => {
         fixture.detectChanges();
         const errorEvent = { message: "Error" };
         component._handleErrorForTesting(errorEvent);
-        expect(component.inError).toBeTrue();
-        expect(component.errorMessage).toEqual(errorEvent);
+        expect(component.inError()).toBeTrue();
+        expect(component.errorMessage()).toEqual(errorEvent);
     });
     it("should handle erase error event", () => {
         fixture.detectChanges();
         const errorEvent = { message: "Error Erased" };
         component._handleEraseErrorForTesting(errorEvent);
-        expect(component.inError).toBeFalse();
-        expect(component.errorMessage).toEqual(errorEvent);
+        expect(component.inError()).toBeFalse();
+        expect(component.errorMessage()).toEqual(errorEvent);
     });
 
     it("should set preview thumbnail", () => {
@@ -165,7 +165,7 @@ describe("AmaliaComponent", () => {
         const emitMock = spyOn(component.mediaPlayerElement.eventEmitter, "emit").and.callThrough();
         component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_CONTROLBAR_CHANGE, true);
         tick(100);
-        expect(component.pinnedControlbar).toBeTrue();
+        expect(component.pinnedControlbar()).toBeTrue();
         const expects = emitMock.calls.all();
         expect(expects[0].args[0]).toEqual(PlayerEventType.PINNED_CONTROLBAR_CHANGE); //TIME_CHANGE
         expect(expects[0].args[1]).toBeTrue(); //handleOnTimeChange
@@ -186,7 +186,7 @@ describe("AmaliaComponent", () => {
         const emitMock = spyOn(component.mediaPlayerElement.eventEmitter, "emit").and.callThrough();
         component.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PINNED_SLIDER_CHANGE, true);
         tick(100);
-        expect(component.pinnedControlbar).toBeFalse();
+        expect(component.pinnedControlbar()).toBeFalse();
         expect(emitMock).toHaveBeenCalledWith(PlayerEventType.CONTROL_BAR_TOGGLED, {
             pinnedControlBar: false,
             pinned: true,
@@ -227,12 +227,12 @@ describe("AmaliaComponent", () => {
     });
     it("should add the audio-player class only for audio media", () => {
         fixture.detectChanges();
-        component.playerConfig = { player: { media: "AUDIO" } } as any;
+        component.playerConfig.set({ player: { media: "AUDIO" } } as any);
         fixture.detectChanges();
 
         expect(fixture.nativeElement.shadowRoot.querySelector(".media-player").classList).toContain("audio-player");
 
-        component.playerConfig = { player: { media: "VIDEO" } } as any;
+        component.playerConfig.set({ player: { media: "VIDEO" } } as any);
         fixture.detectChanges();
 
         expect(fixture.nativeElement.shadowRoot.querySelector(".media-player").classList).not.toContain("audio-player");
@@ -299,7 +299,7 @@ describe("AmaliaComponent - runtime controls", () => {
             getThumbnail: () => Promise.resolve("blob"),
             listThumbnails: [],
         };
-        component.playerHover = true;
+        component.playerHover.set(true);
     });
 
     it("should emit keydown/keyup and manage pressed keys list", () => {
@@ -314,9 +314,9 @@ describe("AmaliaComponent - runtime controls", () => {
 
     it("handleKeyDownEvent should set hover and forward to emitKeyDownEvent", () => {
         const spy = spyOn(component, "emitKeyDownEvent");
-        component.playerHover = false;
+        component.playerHover.set(false);
         component.handleKeyDownEvent({ key: "a" } as any);
-        expect(component.playerHover).toBeTrue();
+        expect(component.playerHover()).toBeTrue();
         expect(spy).toHaveBeenCalled();
     });
 
@@ -357,7 +357,7 @@ describe("AmaliaComponent - runtime controls", () => {
 
         component.tc = 1;
         component.displayImages(50, 1000, false);
-        expect(component.enablePreviewThumbnail).toBeTrue();
+        expect(component.enablePreviewThumbnail()).toBeTrue();
         expect(loopSpy).toHaveBeenCalled();
 
         component.tc = 1;
@@ -371,7 +371,7 @@ describe("AmaliaComponent - runtime controls", () => {
         img.onload(new Event("load"));
         tick();
 
-        expect((component as any).thumbnailBlobVideo).toBe("/thumb.jpg");
+        expect((component as any).thumbnailBlobVideo()).toBe("/thumb.jpg");
         p.then((value) => expect(value).toBeGreaterThanOrEqual(0));
     }));
 
@@ -381,7 +381,7 @@ describe("AmaliaComponent - runtime controls", () => {
         const setPreviewSpy = spyOn<any>(component, "setPreviewThumbnail").and.callThrough();
 
         (component as any).handleSeeking(3.14159);
-        expect(component.enablePreviewThumbnail).toBeTrue();
+        expect(component.enablePreviewThumbnail()).toBeTrue();
         expect(throttleSpy).toHaveBeenCalled();
 
         setPreviewSpy.calls.reset();
@@ -391,17 +391,17 @@ describe("AmaliaComponent - runtime controls", () => {
 
     it("onInitConfig/onErrorInitConfig and control click should update state", () => {
         component.handleLoading();
-        expect(component.inLoading).toBeTrue();
+        expect(component.inLoading()).toBeTrue();
         component.handleLoadingEnd();
-        expect(component.inLoading).toBeFalse();
+        expect(component.inLoading()).toBeFalse();
 
         (component as any).onInitConfig("READY" as any);
         expect(component.autoplay).toBeTrue();
-        expect(component.videoPoster).toBe("/poster.jpg");
-        expect(component.posterBackgound["amalia-primary-color"]).toBeTrue();
+        expect(component.videoPoster()).toBe("/poster.jpg");
+        expect(component.posterBackgound()["amalia-primary-color"]).toBeTrue();
 
         (component as any).onErrorInitConfig("ERROR" as any);
-        expect(component.inError).toBeTrue();
+        expect(component.inError()).toBeTrue();
 
         component.controlClicked({} as any);
         expect(mediaMock.playPause).toHaveBeenCalled();
@@ -557,9 +557,9 @@ describe("AmaliaComponent - targeted new code coverage", () => {
     });
 
     it("updatePlayerSizeWithAspectRatio should adapt audio height to pinned controls", () => {
-        component.playerConfig = { player: { media: "AUDIO" } } as any;
+        component.playerConfig.set({ player: { media: "AUDIO" } } as any);
         component.aspectRatio = "16:9";
-        component.pinned = true;
+        component.pinned.set(true);
 
         const host = document.createElement("div");
         const mediaContainer = document.createElement("div");
@@ -576,20 +576,20 @@ describe("AmaliaComponent - targeted new code coverage", () => {
         expect(mediaContainer.style.left).toBe("0px");
         expect(mediaContainer.style.top).toBe("0px");
 
-        component.pinned = false;
-        component.pinnedControlbar = true;
+        component.pinned.set(false);
+        component.pinnedControlbar.set(true);
         component.updatePlayerSizeWithAspectRatio();
 
         expect(mediaContainer.style.height).toBe("250px");
 
-        component.pinnedControlbar = false;
+        component.pinnedControlbar.set(false);
         component.updatePlayerSizeWithAspectRatio();
 
         expect(mediaContainer.style.height).toBe("100%");
     });
 
     it("handleFullScreenChange should use mediaContainer for audio mode", () => {
-        component.playerConfig = { player: { media: "AUDIO" } } as any;
+        component.playerConfig.set({ player: { media: "AUDIO" } } as any);
         (component as any).mediaPlayerElement = mediaPlayerElementMock;
         const mediaContainer = document.createElement("div");
         Object.defineProperty(mediaContainer, "offsetWidth", { configurable: true, value: 400 });
@@ -602,7 +602,7 @@ describe("AmaliaComponent - targeted new code coverage", () => {
     });
 
     it("emitKeyDownEvent should append additional keys to listKeys", () => {
-        component.playerHover = true;
+        component.playerHover.set(true);
         component.listKeys = ["Control"];
         (component as any).mediaPlayerElement = mediaPlayerElementMock;
 

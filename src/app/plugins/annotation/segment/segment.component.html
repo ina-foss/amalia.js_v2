@@ -7,7 +7,7 @@
                     <div
                         #titlediv
                         class="segment-title ellipsis"
-                        [pTooltip]="isEllipsed ? segment.label : ''"
+                        [pTooltip]="isEllipsed() ? segment.label : ''"
                         (click)="startTitleEdit()"
                         (keydown.enter)="startTitleEdit()"
                         role="button"
@@ -399,11 +399,11 @@
                             (keydown.enter)="startDescriptionEdit()"
                             role="button"
                             tabindex="0"
-                            [style.display]="!isDescriptionTruncated || !isDescriptionCollapsed ? 'block' : 'none'"
+                            [style.display]="!isDescriptionTruncated() || !isDescriptionCollapsed() ? 'block' : 'none'"
                             style="cursor: pointer"
                         >
                             {{ segment.description }}
-                            @if (isDescriptionTruncated && !isDescriptionCollapsed) {
+                            @if (isDescriptionTruncated() && !isDescriptionCollapsed()) {
                                 <span
                                     #affichermoins
                                     class="readonly-segment-description-afficher-moins"
@@ -421,11 +421,11 @@
                             (keydown.enter)="startDescriptionEdit()"
                             role="button"
                             tabindex="0"
-                            [style.display]="isDescriptionTruncated && isDescriptionCollapsed ? 'block' : 'none'"
+                            [style.display]="isDescriptionTruncated() && isDescriptionCollapsed() ? 'block' : 'none'"
                             style="cursor: pointer"
                         >
-                            {{ truncatedDescription }}
-                            @if (isDescriptionTruncated && isDescriptionCollapsed) {
+                            {{ truncatedDescription() }}
+                            @if (isDescriptionTruncated() && isDescriptionCollapsed()) {
                                 <span
                                     #afficherplus
                                     class="readonly-segment-description-afficher-plus"

@@ -1,13 +1,13 @@
 <div #controlBarContainer class="controlbar" (mouseover)="handlePlayerMouseHover(); changeTooltipEmplacement()">
     <!-- Menu of controls displayed on "s" grid-->
     <div
-        class="time-label {{ displayState }}"
+        class="time-label {{ displayState() }}"
         [ngClass]="{
-            activated: activated || pinnedSlider,
-            pinned: (pinnedSlider && enablePlaybackSlider) || (enablePlaybackSlider && activated),
+            activated: activated() || pinnedSlider(),
+            pinned: (pinnedSlider() && enablePlaybackSlider()) || (enablePlaybackSlider() && activated()),
         }"
     >
-        @if (time > 0 && duration > 0) {
+        @if (time() > 0 && duration() > 0) {
             <button
                 type="button"
                 class="time-display"
@@ -15,34 +15,34 @@
                 (keydown.enter)="switchDisplayCurrentTime(); hideAll()"
             >
                 <span class="time-current">
-                    @if (inverse) {
+                    @if (inverse()) {
                         <span>- </span>
                     }
-                    {{ time | tcFormat: "f" }}</span
+                    {{ time() | tcFormat: "f" }}</span
                 >
-                <span class="time-duration"> / {{ duration | tcFormat: "f" }} </span>
+                <span class="time-duration"> / {{ duration() | tcFormat: "f" }} </span>
             </button>
         }
     </div>
     @if (enableThumbnail) {
         <div
             #thumbnailContainer
-            [hidden]="thumbnailHidden"
-            class="thumbnail-container {{ displayState }}"
-            [ngClass]="{ pinned: pinned }"
-            [ngStyle]="{ left: thumbnailPosition + 'px' }"
+            [hidden]="thumbnailHidden()"
+            class="thumbnail-container {{ displayState() }}"
+            [ngClass]="{ pinned: pinned() }"
+            [ngStyle]="{ left: thumbnailPosition() + 'px' }"
         >
             <img #thumbnail class="thumbnail" alt="thumbnail" src="" />
-            <div class="tc-thumbnail">{{ tcThumbnail + tcOffset | tcFormat: "f" }}</div>
+            <div class="tc-thumbnail">{{ tcThumbnail() + tcOffset | tcFormat: "f" }}</div>
         </div>
     }
-    <div class="controls-container {{ displayState }}" [ngClass]="{ activated: activated, pinned: pinnedSlider }">
+    <div class="controls-container {{ displayState() }}" [ngClass]="{ activated: activated(), pinned: pinnedSlider() }">
         @if (elements) {
             <div
                 class="control-bar"
                 (mouseover)="handlePlayerMouseHover()"
                 (focus)="handlePlayerMouseHover()"
-                (mouseleave)="enableVolumeSlider = false"
+                (mouseleave)="enableVolumeSlider.set(false)"
                 tabindex="-1"
             >
                 @if (hasComponentWithoutZone("progressBar")) {
@@ -58,8 +58,8 @@
                                     <span
                                         class="time-extract-duration"
                                         [style]="{
-                                            left: 'calc(' + (extractTcIn / duration) * 100 + '% + 2px)',
-                                            width: ((extractTcOut - extractTcIn) / duration) * 100 + '%',
+                                            left: 'calc(' + (extractTcIn / duration()) * 100 + '% + 2px)',
+                                            width: ((extractTcOut - extractTcIn) / duration()) * 100 + '%',
                                         }"
                                     ></span>
                                 }
@@ -68,7 +68,7 @@
                                         type="button"
                                         aria-label="Aller au début de l'extrait"
                                         class="time-extract tc-in"
-                                        [style]="{ left: 'calc(' + (extractTcIn / duration) * 100 + '% - 2px)' }"
+                                        [style]="{ left: 'calc(' + (extractTcIn / duration()) * 100 + '% - 2px)' }"
                                         (click)="seekTo(extractTcIn)"
                                         (keydown.enter)="seekTo(extractTcIn)"
                                     ></button>
@@ -78,7 +78,7 @@
                                         type="button"
                                         aria-label="Aller à la fin de l'extrait"
                                         class="time-extract tc-out"
-                                        [style]="{ left: 'calc(' + (extractTcOut / duration) * 100 + '% - 4px)' }"
+                                        [style]="{ left: 'calc(' + (extractTcOut / duration()) * 100 + '% - 4px)' }"
                                         (click)="seekTo(extractTcOut)"
                                         (keydown.enter)="seekTo(extractTcOut)"
                                     ></button>
@@ -87,7 +87,7 @@
                         }
                         <div class="ui-slider">
                             <div
-                                [style]="{ width: (currentTime / duration) * 100 + '%' }"
+                                [style]="{ width: (currentTime() / duration()) * 100 + '%' }"
                                 class="ui-slider-progress"
                             ></div>
                             <input
@@ -95,7 +95,7 @@
                                 step="0.01"
                                 class="slider"
                                 min="0"
-                                [value]="progressBarValue"
+                                [value]="progressBarValue()"
                                 #progressBar
                                 (mousedown)="handleProgressBarMouseDown()"
                                 (mousemove)="handleProgressBarMouseMove($event)"
@@ -153,14 +153,14 @@
                                         [attr.aria-label]="c.label"
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                     >
-                                        @if (fullScreenMode === false) {
+                                        @if (fullScreenMode() === false) {
                                             <svg class="amalia-svg-fullscreen-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"
                                                 ></use>
                                             </svg>
                                         }
-                                        @if (fullScreenMode === true) {
+                                        @if (fullScreenMode() === true) {
                                             <svg class="amalia-svg-compress-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#compress'"
@@ -182,16 +182,16 @@
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                         (mouseenter)="aspectRatioMouseEnter()"
                                     >
-                                        <div class="value">{{ aspectRatio }}</div>
+                                        <div class="value">{{ aspectRatio() }}</div>
                                         <div
                                             class="list-options"
-                                            [ngClass]="{ on: enableListRatio }"
-                                            (mouseleave)="enableListRatio = false"
+                                            [ngClass]="{ on: enableListRatio() }"
+                                            (mouseleave)="enableListRatio.set(false)"
                                         >
                                             <ul>
                                                 <li class="header-list">{{ c.label }}</li>
                                                 <li
-                                                    [ngClass]="{ selected: aspectRatio == '4:3' }"
+                                                    [ngClass]="{ selected: aspectRatio() == '4:3' }"
                                                     (click)="setVideoAspectRatio('16:9')"
                                                     (keydown.enter)="setVideoAspectRatio('16:9')"
                                                     role="button"
@@ -208,7 +208,7 @@
                                                     }
                                                 </li>
                                                 <li
-                                                    [ngClass]="{ selected: aspectRatio == '16:9' }"
+                                                    [ngClass]="{ selected: aspectRatio() == '16:9' }"
                                                     (click)="setVideoAspectRatio('4:3')"
                                                     (keydown.enter)="setVideoAspectRatio('4:3')"
                                                     role="button"
@@ -233,12 +233,12 @@
                                     <div
                                         pTooltip="{{ c.label }}"
                                         tooltipPosition="top"
-                                        [ngClass]="{ show: shouldShowControl(c.priority) && currentPlaybackRate !== 1 }"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) && currentPlaybackRate() !== 1 }"
                                         class="playback-rate control text"
                                         [attr.aria-label]="c.label"
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                     >
-                                        {{ currentPlaybackRate }}x
+                                        {{ currentPlaybackRate() }}x
                                     </div>
                                 }
                                 <!--Download-->
@@ -353,7 +353,7 @@
                                         (mouseenter)="volumeMouseEnter(c.data)"
                                         #volumeButton
                                     >
-                                        @if (volumeLeft > 0 || volumeRight > 0) {
+                                        @if (volumeLeft() > 0 || volumeRight() > 0) {
                                             <svg
                                                 pTooltip="{{ c.label }}"
                                                 tooltipPosition="top"
@@ -369,7 +369,7 @@
                                                 ></use>
                                             </svg>
                                         }
-                                        @if (volumeLeft == 0 && volumeRight == 0) {
+                                        @if (volumeLeft() == 0 && volumeRight() == 0) {
                                             <svg
                                                 class="amalia-svg-volume-off-size icon"
                                                 (click)="handleMuteUnmuteVolume()"
@@ -385,10 +385,10 @@
                                         }
                                         <div
                                             class="volume-control"
-                                            [ngClass]="{ on: enableVolumeSlider }"
-                                            (mouseleave)="enableVolumeSlider = false; openPisteAudio = false"
+                                            [ngClass]="{ on: enableVolumeSlider() }"
+                                            (mouseleave)="enableVolumeSlider.set(false); openPisteAudio.set(false)"
                                         >
-                                            <div class="channel-volume-sliders" [hidden]="openPisteAudio">
+                                            <div class="channel-volume-sliders" [hidden]="openPisteAudio()">
                                                 <div class="header-list">Volume (m)</div>
                                                 <div class="channel-volume-control">
                                                     <div class="channel-volume-control-left">
@@ -398,14 +398,14 @@
                                                             (keydown.enter)="handleMuteUnmuteVolume('l')"
                                                             class="channel-volume-icon"
                                                         >
-                                                            @if (volumeLeft > 0) {
+                                                            @if (volumeLeft() > 0) {
                                                                 <svg class="amalia-svg-volume-on-size icon">
                                                                     <use
                                                                         [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"
                                                                     ></use>
                                                                 </svg>
                                                             }
-                                                            @if (volumeLeft == 0) {
+                                                            @if (volumeLeft() == 0) {
                                                                 <svg class="amalia-svg-volume-off-size icon">
                                                                     <use
                                                                         [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"
@@ -415,7 +415,7 @@
                                                         </button>
                                                         <div class="left-volume-slider ui-slider">
                                                             <div
-                                                                [style]="{ width: volumeLeft + '%' }"
+                                                                [style]="{ width: volumeLeft() + '%' }"
                                                                 class="ui-slider-progress"
                                                             ></div>
                                                             <input
@@ -436,7 +436,7 @@
                                                     <div class="channel-volume-control-mid-container">
                                                         @if (mediaPlayerElement?.getMediaPlayer()?.withMergeVolume) {
                                                             <div
-                                                                [style]="{ left: volumeLeft + '%' }"
+                                                                [style]="{ left: volumeLeft() + '%' }"
                                                                 class="channel-volume-control-mid on"
                                                             ></div>
                                                         }
@@ -448,14 +448,14 @@
                                                             (keydown.enter)="handleMuteUnmuteVolume('r')"
                                                             class="channel-volume-icon"
                                                         >
-                                                            @if (volumeRight > 0) {
+                                                            @if (volumeRight() > 0) {
                                                                 <svg class="amalia-svg-volume-on-size icon">
                                                                     <use
                                                                         [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-on'"
                                                                     ></use>
                                                                 </svg>
                                                             }
-                                                            @if (volumeRight == 0) {
+                                                            @if (volumeRight() == 0) {
                                                                 <svg class="amalia-svg-volume-off-size icon">
                                                                     <use
                                                                         [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#volume-off'"
@@ -465,7 +465,7 @@
                                                         </button>
                                                         <div class="right-volume-slider ui-slider">
                                                             <div
-                                                                [style]="{ width: volumeRight + '%' }"
+                                                                [style]="{ width: volumeRight() + '%' }"
                                                                 class="ui-slider-progress"
                                                             ></div>
                                                             <input
@@ -509,15 +509,15 @@
                                                             type="button"
                                                             class="channel-track"
                                                             (click)="
-                                                                openPisteAudio = !openPisteAudio;
+                                                                openPisteAudio.set(!openPisteAudio());
                                                                 $event.stopPropagation()
                                                             "
                                                             (keydown.enter)="
-                                                                openPisteAudio = !openPisteAudio;
+                                                                openPisteAudio.set(!openPisteAudio());
                                                                 $event.stopPropagation()
                                                             "
-                                                            [ngClass]="{ on: openPisteAudio }"
-                                                            (mouseleave)="activated = true"
+                                                            [ngClass]="{ on: openPisteAudio() }"
+                                                            (mouseleave)="activated.set(true)"
                                                         >
                                                             <svg
                                                                 class="amalia-svg-volume-on-size icon"
@@ -528,7 +528,7 @@
                                                                 ></use>
                                                             </svg>
                                                             <span class="piste-audio-title">Piste audio</span>
-                                                            <span class="text-right">{{ selectedTrackLabel }}</span>
+                                                            <span class="text-right">{{ selectedTrackLabel() }}</span>
                                                             <div class="piste-info-mid">
                                                                 <svg class="amalia-svg-right-size icon">
                                                                     <use
@@ -540,16 +540,16 @@
                                                     }
                                                 </div>
                                             </div>
-                                            @if (openPisteAudio == true) {
-                                                <div class="list-tracks" [ngClass]="{ on: openPisteAudio }">
+                                            @if (openPisteAudio() == true) {
+                                                <div class="list-tracks" [ngClass]="{ on: openPisteAudio() }">
                                                     <button
                                                         type="button"
                                                         class="title"
                                                         (click)="
-                                                            openPisteAudio = !openPisteAudio; $event.stopPropagation()
+                                                            openPisteAudio.set(!openPisteAudio()); $event.stopPropagation()
                                                         "
                                                         (keydown.enter)="
-                                                            openPisteAudio = !openPisteAudio; $event.stopPropagation()
+                                                            openPisteAudio.set(!openPisteAudio()); $event.stopPropagation()
                                                         "
                                                     >
                                                         <div class="piste-info-mid">
@@ -568,7 +568,7 @@
                                                                 (keydown.enter)="changeAudioTrack(audioTrack.track)"
                                                                 role="button"
                                                                 tabindex="0"
-                                                                [ngClass]="{ selected: selectedTrack == audioTrack.track }"
+                                                                [ngClass]="{ selected: selectedTrack() == audioTrack.track }"
                                                             >
                                                                 <svg class="amalia-svg-checked-size icon">
                                                                     <use
@@ -593,7 +593,7 @@
                                         class="control subtitle"
                                         [attr.aria-label]="c.label"
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
-                                        (mouseenter)="hideAll(); enableListPositionsSubtitle = true"
+                                        (mouseenter)="hideAll(); enableListPositionsSubtitle.set(true)"
                                     >
                                         <svg class="amalia-svg-subtitle-size icon">
                                             <use
@@ -602,15 +602,15 @@
                                         </svg>
                                         <div
                                             class="list-options"
-                                            [ngClass]="{ on: enableListPositionsSubtitle }"
-                                            (mouseleave)="enableListPositionsSubtitle = false"
+                                            [ngClass]="{ on: enableListPositionsSubtitle() }"
+                                            (mouseleave)="enableListPositionsSubtitle.set(false)"
                                         >
                                             <ul>
                                                 <li class="header-list">{{ c.label }}</li>
                                                 @for (pos of listOfSubtitles; track pos) {
                                                     <li
                                                         class="position"
-                                                        [ngClass]="{ selected: subtitlePosition === pos.key }"
+                                                        [ngClass]="{ selected: subtitlePosition() === pos.key }"
                                                         (click)="updateSubtitlePosition(pos.key)"
                                                         (keydown.enter)="updateSubtitlePosition(pos.key)"
                                                         role="button"
@@ -634,19 +634,19 @@
                                         type="button"
                                         pTooltip="{{ c.label }}"
                                         tooltipPosition="top"
-                                        [ngClass]="{ show: shouldShowControl(c.priority) && controls.length > 0 }"
+                                        [ngClass]="{ show: shouldShowControl(c.priority) && controls().length > 0 }"
                                         class="control menu"
                                         [attr.aria-label]="c.label"
                                         (click)="
                                             hideAll('menu');
                                             $event.stopPropagation();
-                                            enableMenu = !enableMenu;
+                                            enableMenu.set(!enableMenu());
                                             alignMenuToTrigger($event.currentTarget)
                                         "
                                         (keydown.enter)="
                                             hideAll('menu');
                                             $event.stopPropagation();
-                                            enableMenu = !enableMenu;
+                                            enableMenu.set(!enableMenu());
                                             alignMenuToTrigger($event.currentTarget)
                                         "
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
@@ -721,14 +721,14 @@
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                     >
-                                        @if (!magnifyEnabled) {
+                                        @if (!magnifyEnabled()) {
                                             <svg class="amalia-svg-magnify-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"
                                                 ></use>
                                             </svg>
                                         }
-                                        @if (magnifyEnabled) {
+                                        @if (magnifyEnabled()) {
                                             <svg class="amalia-svg-magnify-off-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"
@@ -742,7 +742,7 @@
                                     <div
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control zoom-info"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                     >
@@ -761,7 +761,7 @@
                                             </svg>
                                         </button>
                                         <span pTooltip="{{ c.data?.result?.tooltip }}" tooltipPosition="top" class="zoom-result"
-                                            >{{ pictureZoomLevel }}%</span
+                                            >{{ pictureZoomLevel() }}%</span
                                         >
                                         <button
                                             type="button"
@@ -787,7 +787,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fitToScreen"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -812,7 +812,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fullsize"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -837,7 +837,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control rotate"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -862,7 +862,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fliph"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -887,7 +887,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control flipv"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -912,20 +912,20 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control fullscreen"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
                                         [ngStyle]="{ order: c.order ? c.order : '0' }"
                                     >
-                                        @if (!fullScreenMode) {
+                                        @if (!fullScreenMode()) {
                                             <svg class="amalia-svg-fullscreen-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen'"
                                                 ></use>
                                             </svg>
                                         }
-                                        @if (fullScreenMode) {
+                                        @if (fullScreenMode()) {
                                             <svg class="amalia-svg-fullscreen-off-size icon">
                                                 <use
                                                     [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#fullscreen-off'"
@@ -942,7 +942,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control center"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -967,8 +967,8 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control crop"
-                                        [class.magnify-locked]="magnifyEnabled"
-                                        [class.active]="cropModeEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
+                                        [class.active]="cropModeEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -992,7 +992,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control draw"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [class.active]="drawModeEnabled"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
@@ -1021,7 +1021,7 @@
                                                     @for (col of annotationColors; track col) {
                                                         <span
                                                             class="annotation-color-swatch"
-                                                            [class.selected]="annotationColor === col"
+                                                            [class.selected]="annotationColor() === col"
                                                             [style.background-color]="col"
                                                             (click)="
                                                                 $event.stopPropagation(); selectAnnotationColor(col)
@@ -1038,7 +1038,7 @@
                                                     @for (size of annotationSizes; track size) {
                                                         <span
                                                             class="annotation-size-option"
-                                                            [class.selected]="annotationLineWidth === size.lineWidth"
+                                                            [class.selected]="annotationLineWidth() === size.lineWidth"
                                                             (click)="
                                                                 $event.stopPropagation(); selectAnnotationSize(size)
                                                             "
@@ -1068,7 +1068,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control text"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [class.active]="textModeEnabled"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
@@ -1097,7 +1097,7 @@
                                                     @for (col of annotationColors; track col) {
                                                         <span
                                                             class="annotation-color-swatch"
-                                                            [class.selected]="annotationColor === col"
+                                                            [class.selected]="annotationColor() === col"
                                                             [style.background-color]="col"
                                                             (click)="
                                                                 $event.stopPropagation(); selectAnnotationColor(col)
@@ -1114,7 +1114,7 @@
                                                     @for (size of annotationSizes; track size) {
                                                         <span
                                                             class="annotation-size-option"
-                                                            [class.selected]="annotationLineWidth === size.lineWidth"
+                                                            [class.selected]="annotationLineWidth() === size.lineWidth"
                                                             (click)="
                                                                 $event.stopPropagation(); selectAnnotationSize(size)
                                                             "
@@ -1140,7 +1140,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control erase"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [class.active]="eraseModeEnabled"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
@@ -1169,7 +1169,7 @@
                                                     @for (size of annotationSizes; track size) {
                                                         <span
                                                             class="annotation-size-option"
-                                                            [class.selected]="annotationLineWidth === size.lineWidth"
+                                                            [class.selected]="annotationLineWidth() === size.lineWidth"
                                                             (click)="
                                                                 $event.stopPropagation(); selectAnnotationSize(size)
                                                             "
@@ -1200,7 +1200,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control reset"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -1225,7 +1225,7 @@
                                         tooltipPosition="top"
                                         [ngClass]="{ show: shouldShowControl(c.priority) }"
                                         class="control snapshot"
-                                        [class.magnify-locked]="magnifyEnabled"
+                                        [class.magnify-locked]="magnifyEnabled()"
                                         [attr.aria-label]="c.label"
                                         (click)="controlClicked(c.control); hideAll()"
                                         (keydown.enter)="controlClicked(c.control); hideAll()"
@@ -1275,12 +1275,12 @@
         <!-- Menu of controls displayed on "m" grid-->
         <div
             #controlsMenu
-            class="controls-menu {{ displayState }}"
-            [ngClass]="{ on: enableMenu, pinned: pinnedSlider && enablePlaybackSlider }"
-            (mouseenter)="activated = true"
+            class="controls-menu {{ displayState() }}"
+            [ngClass]="{ on: enableMenu(), pinned: pinnedSlider() && enablePlaybackSlider() }"
+            (mouseenter)="activated.set(true)"
         >
             <ul>
-                @for (c of controls; track $index) {
+                @for (c of controls(); track $index) {
                     @switch (c.control) {
                         <!--FullScreen Button -->
                         @case ("toggleFullScreen") {
@@ -1306,22 +1306,22 @@
                         @case ("aspectRatio") {
                             <li
                                 class="aspect-ratio control text"
-                                (click)="enableListRatio = !enableListRatio; $event.stopPropagation()"
-                                (keydown.enter)="enableListRatio = !enableListRatio; $event.stopPropagation()"
+                                (click)="enableListRatio.set(!enableListRatio()); $event.stopPropagation()"
+                                (keydown.enter)="enableListRatio.set(!enableListRatio()); $event.stopPropagation()"
                                 role="button"
                                 tabindex="0"
                                 [ngStyle]="{ order: c.order ? c.order : '0' }"
-                                [ngClass]="{ on: enableListRatio }"
+                                [ngClass]="{ on: enableListRatio() }"
                             >
-                                <div class="ratio">{{ aspectRatio }}</div>
+                                <div class="ratio">{{ aspectRatio() }}</div>
                                 <span>{{ c.label }}</span>
                                 <svg class="amalia-svg-right-size icon">
                                     <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
                                 </svg>
-                                <span class="text-right">{{ aspectRatio }}</span>
-                                <ul class="list-options" [ngClass]="{ on: enableListRatio }">
+                                <span class="text-right">{{ aspectRatio() }}</span>
+                                <ul class="list-options" [ngClass]="{ on: enableListRatio() }">
                                     <li
-                                        [ngClass]="{ selected: aspectRatio == '4:3' }"
+                                        [ngClass]="{ selected: aspectRatio() == '4:3' }"
                                         (click)="setVideoAspectRatio('4:3'); hideAll()"
                                         (keydown.enter)="setVideoAspectRatio('4:3'); hideAll()"
                                         role="button"
@@ -1338,7 +1338,7 @@
                                         }
                                     </li>
                                     <li
-                                        [ngClass]="{ selected: aspectRatio == '16:9' }"
+                                        [ngClass]="{ selected: aspectRatio() == '16:9' }"
                                         (click)="setVideoAspectRatio('16:9'); hideAll()"
                                         (keydown.enter)="setVideoAspectRatio('16:9'); hideAll()"
                                         role="button"
@@ -1407,14 +1407,14 @@
                                 class="control subtitle"
                                 [ngStyle]="{ order: c.order ? c.order : '0' }"
                                 (click)="
-                                    enableListPositionsSubtitle = !enableListPositionsSubtitle; $event.stopPropagation()
+                                    enableListPositionsSubtitle.set(!enableListPositionsSubtitle()); $event.stopPropagation()
                                 "
                                 (keydown.enter)="
-                                    enableListPositionsSubtitle = !enableListPositionsSubtitle; $event.stopPropagation()
+                                    enableListPositionsSubtitle.set(!enableListPositionsSubtitle()); $event.stopPropagation()
                                 "
                                 role="button"
                                 tabindex="0"
-                                [ngClass]="{ on: enableListPositionsSubtitle }"
+                                [ngClass]="{ on: enableListPositionsSubtitle() }"
                             >
                                 @if (c.icon) {
                                     <svg class="amalia-svg-{{ c.icon }}-size icon">
@@ -1427,12 +1427,12 @@
                                 <svg class="amalia-svg-right-size icon">
                                     <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#right'"></use>
                                 </svg>
-                                <span class="text-right">{{ selectedLabel }}</span>
-                                <ul class="list-options" [ngClass]="{ on: enableListPositionsSubtitle }">
+                                <span class="text-right">{{ selectedLabel() }}</span>
+                                <ul class="list-options" [ngClass]="{ on: enableListPositionsSubtitle() }">
                                     @for (pos of listOfSubtitles; track pos) {
                                         <li
                                             class="position"
-                                            [ngClass]="{ selected: subtitlePosition === pos.key }"
+                                            [ngClass]="{ selected: subtitlePosition() === pos.key }"
                                             (click)="updateSubtitlePosition(pos.key)"
                                             (keydown.enter)="updateSubtitlePosition(pos.key)"
                                             role="button"
@@ -1459,14 +1459,14 @@
                                 tabindex="0"
                                 [ngStyle]="{ order: c.order ? c.order : '0' }"
                             >
-                                @if (!magnifyEnabled) {
+                                @if (!magnifyEnabled()) {
                                     <svg class="amalia-svg-magnify-size icon">
                                         <use
                                             [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify'"
                                         ></use>
                                     </svg>
                                 }
-                                @if (magnifyEnabled) {
+                                @if (magnifyEnabled()) {
                                     <svg class="amalia-svg-magnify-off-size icon">
                                         <use
                                             [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#magnify-off'"
@@ -1480,7 +1480,7 @@
                         @case ("fitToScreen") {
                             <li
                                 class="control fitToScreen"
-                                [class.magnify-locked]="magnifyEnabled"
+                                [class.magnify-locked]="magnifyEnabled()"
                                 (click)="controlClicked(c.control)"
                                 (keydown.enter)="controlClicked(c.control)"
                                 role="button"
@@ -1501,7 +1501,7 @@
                         @case ("fullsize") {
                             <li
                                 class="control fullsize"
-                                [class.magnify-locked]="magnifyEnabled"
+                                [class.magnify-locked]="magnifyEnabled()"
                                 (click)="controlClicked(c.control)"
                                 (keydown.enter)="controlClicked(c.control)"
                                 role="button"
@@ -1522,7 +1522,7 @@
                         @case ("rotate") {
                             <li
                                 class="control rotate"
-                                [class.magnify-locked]="magnifyEnabled"
+                                [class.magnify-locked]="magnifyEnabled()"
                                 (click)="controlClicked(c.control)"
                                 (keydown.enter)="controlClicked(c.control)"
                                 role="button"
@@ -1543,7 +1543,7 @@
                         @case ("fliph") {
                             <li
                                 class="control fliph"
-                                [class.magnify-locked]="magnifyEnabled"
+                                [class.magnify-locked]="magnifyEnabled()"
                                 (click)="controlClicked(c.control)"
                                 (keydown.enter)="controlClicked(c.control)"
                                 role="button"
@@ -1564,7 +1564,7 @@
                         @case ("flipv") {
                             <li
                                 class="control flipv"
-                                [class.magnify-locked]="magnifyEnabled"
+                                [class.magnify-locked]="magnifyEnabled()"
                                 (click)="controlClicked(c.control)"
                                 (keydown.enter)="controlClicked(c.control)"
                                 role="button"
@@ -1585,7 +1585,7 @@
                         @case ("fullscreen") {
                             <li
                                 class="control fullscreen"
-                                [class.magnify-locked]="magnifyEnabled"
+                                [class.magnify-locked]="magnifyEnabled()"
                                 (click)="controlClicked(c.control)"
                                 (keydown.enter)="controlClicked(c.control)"
                                 role="button"
@@ -1628,12 +1628,12 @@
         </div>
         <!-- Slider -->
         <div
-            class="playback-rate-slider {{ displayState }}"
-            [ngClass]="{ activated: enablePlaybackSlider && (activated || pinnedSlider) }"
+            class="playback-rate-slider {{ displayState() }}"
+            [ngClass]="{ activated: enablePlaybackSlider() && (activated() || pinnedSlider()) }"
         >
             <div class="slider">
                 @if (elements && hasComponentWithoutZone("playbackRateCustomSteps")) {
-                    <div [ngClass]="{ selected: selectedSlider === 'slider2' }" (oninit)="initDragThumb()">
+                    <div [ngClass]="{ selected: selectedSlider() === 'slider2' }" (oninit)="initDragThumb()">
                         <ul class="playback-rate-values">
                             @for (
                                 pr of sliderListOfPlaybackRateCustomSteps;
@@ -1644,7 +1644,7 @@
                             ) {
                                 <li
                                     class="playbackrate-value"
-                                    [ngClass]="{ first: isFirst, last: isLast, active: pr == currentPlaybackRate }"
+                                    [ngClass]="{ first: isFirst, last: isLast, active: pr == currentPlaybackRate() }"
                                     (click)="changePlaybackrate(pr, true)"
                                     (keydown.enter)="changePlaybackrate(pr, true)"
                                     role="button"
@@ -1660,7 +1660,7 @@
                 @if (elements && hasComponentWithoutZone("playbackRateSteps")) {
                     <div
                         class="playbackratestep"
-                        [ngClass]="{ selected: selectedSlider === 'slider1' }"
+                        [ngClass]="{ selected: selectedSlider() === 'slider1' }"
                         (oninit)="initDragThumb()"
                     >
                         <ul class="playback-rate-values">
@@ -1676,7 +1676,7 @@
                                     [ngClass]="{
                                         first: isFirst,
                                         last: isLast,
-                                        active: pr == currentPlaybackRateSlider,
+                                        active: pr == currentPlaybackRateSlider(),
                                     }"
                                     (click)="changePlaybackrate(pr, true)"
                                     (keydown.enter)="changePlaybackrate(pr, true)"
@@ -1694,7 +1694,7 @@
             </div>
         </div>
     </div>
-    <div class="controls-reduced-container {{ displayState }}" [ngClass]="{ activated: activated }">
+    <div class="controls-reduced-container {{ displayState() }}" [ngClass]="{ activated: activated() }">
         <!-- play pause mode-->
         <button
             type="button"

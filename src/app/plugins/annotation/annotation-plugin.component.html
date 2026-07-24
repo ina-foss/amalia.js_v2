@@ -7,7 +7,7 @@
                 (click)="initializeNewSegment()"
                 (keydown)="$event.stopPropagation()"
                 size="small"
-                [disabled]="dataLoading"
+                [disabled]="dataLoadingState()"
             >
                 <ng-template #icon>
                     <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
@@ -15,7 +15,7 @@
                     </svg>
                 </ng-template>
             </p-button>
-            @if (segmentsInfo.subLocalisations.length !== 0) {
+            @if (segments().length !== 0) {
                 <p-button
                     class="no-highlight"
                     label="Début"
@@ -44,7 +44,7 @@
                 </p-button>
             }
         </div>
-        @if (segmentsInfo.subLocalisations.length !== 0) {
+        @if (segments().length !== 0) {
             <div>
                 <p-button
                     class="no-highlight no-outline"
@@ -85,7 +85,7 @@
             </div>
         }
     </div>
-    @if (segmentsInfo.subLocalisations.length === 0) {
+    @if (segments().length === 0) {
         <div class="annotation-empty-text">
             Veuillez cliquer sur “Ajouter un segment” pour débuter la segmentation du média.
         </div>
@@ -129,13 +129,13 @@
         </p-confirmDialog>
     </div>
     <div class="segments scrollable-content" #annotationElement>
-        @if (!noSpinner && dataLoading) {
+        @if (!noSpinner && dataLoadingState()) {
             <div class="card flex justify-content-center spinner-background">
                 <p-progressSpinner ariaLabel="loading" />
             </div>
         }
         <ng-container>
-            @for (segment of segmentsInfo.subLocalisations; track segment; let i = $index) {
+            @for (segment of segments(); track segment; let i = $index) {
                 <div class="segment">
                     <amalia-segment
                         [segment]="segment"
@@ -150,6 +150,7 @@
                         [availableCategories]="availableCategories"
                         [availableKeywords]="availableKeywords"
                         [mediaPlayerElement]="mediaPlayerElement"
+                        [refreshHint]="segmentsVersion()"
                         id="{{ technical_id + i }}"
                         (actionEmitter)="manageSegment($event)"
                     />

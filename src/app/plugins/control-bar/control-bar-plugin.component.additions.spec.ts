@@ -20,18 +20,18 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
 
     describe('shouldShowControl()', () => {
         it('should return true for priority 1 regardless of display state', () => {
-            component.displayState = 'l';
+            component.displayState.set('l');
             expect(component.shouldShowControl(1)).toBeTrue();
-            component.displayState = 'm';
+            component.displayState.set('m');
             expect(component.shouldShowControl(1)).toBeTrue();
-            component.displayState = 'sm';
+            component.displayState.set('sm');
             expect(component.shouldShowControl(1)).toBeTrue();
-            component.displayState = 's';
+            component.displayState.set('s');
             expect(component.shouldShowControl(1)).toBeTrue();
         });
 
         it('should return true for priorities 2-5 in large display state', () => {
-            component.displayState = 'l';
+            component.displayState.set('l');
             expect(component.shouldShowControl(2)).toBeTrue();
             expect(component.shouldShowControl(3)).toBeTrue();
             expect(component.shouldShowControl(4)).toBeTrue();
@@ -39,7 +39,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         });
 
         it('should return true for priorities 2-4 in medium display state', () => {
-            component.displayState = 'm';
+            component.displayState.set('m');
             expect(component.shouldShowControl(2)).toBeTrue();
             expect(component.shouldShowControl(3)).toBeTrue();
             expect(component.shouldShowControl(4)).toBeTrue();
@@ -47,7 +47,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         });
 
         it('should return true for priorities 2-3 in small-medium display state', () => {
-            component.displayState = 'sm';
+            component.displayState.set('sm');
             expect(component.shouldShowControl(2)).toBeTrue();
             expect(component.shouldShowControl(3)).toBeTrue();
             expect(component.shouldShowControl(4)).toBeFalse();
@@ -55,7 +55,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         });
 
         it('should return true only for priority 2 in small display state', () => {
-            component.displayState = 's';
+            component.displayState.set('s');
             expect(component.shouldShowControl(2)).toBeTrue();
             expect(component.shouldShowControl(3)).toBeFalse();
             expect(component.shouldShowControl(4)).toBeFalse();
@@ -63,7 +63,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         });
 
         it('should return false for unknown display state', () => {
-            component.displayState = 'unknown';
+            component.displayState.set('unknown');
             expect(component.shouldShowControl(1)).toBeTrue();
             expect(component.shouldShowControl(2)).toBeFalse();
             expect(component.shouldShowControl(3)).toBeFalse();
@@ -87,8 +87,8 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
                 disableAnnotationMode: jasmine.createSpy('disableAnnotationMode'),
                 takeSnapshot: jasmine.createSpy('takeSnapshot').and.returnValue('snapshot-data')
             };
-            component.magnifyEnabled = false;
-            (component as any).annotationMode = null;
+            component.magnifyEnabled.set(false);
+            (component as any).annotationMode.set(null);
             (component as any).mediaPlayerElement = {
                 getMediaPlayer: () => ({isPaused: () => true, playPause: jasmine.createSpy('playPause')}),
                 getPicturePlayer: () => picturePlayer
@@ -162,7 +162,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         });
 
         it('should clear annotations and disable mode for reset control when annotation mode enabled', () => {
-            (component as any).annotationMode = 'draw';
+            (component as any).annotationMode.set('draw');
             component.controlClicked('reset');
             expect(picturePlayer.clearAnnotations).toHaveBeenCalled();
             expect(picturePlayer.disableAnnotationMode).toHaveBeenCalled();
@@ -170,7 +170,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         });
 
         it('should only clear annotations for reset control when annotation mode disabled', () => {
-            (component as any).annotationMode = null;
+            (component as any).annotationMode.set(null);
             component.controlClicked('reset');
             expect(picturePlayer.clearAnnotations).toHaveBeenCalled();
             expect(picturePlayer.disableAnnotationMode).not.toHaveBeenCalled();
@@ -193,8 +193,8 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
                 mute: jasmine.createSpy('mute'),
                 unmute: jasmine.createSpy('unmute')
             };
-            component.volumeLeft = 50;
-            component.volumeRight = 50;
+            component.volumeLeft.set(50);
+            component.volumeRight.set(50);
             (component as any).mediaPlayerElement = { getMediaPlayer: () => mediaPlayer };
             spyOn(component, 'changeVolume').and.stub();
         });
@@ -209,8 +209,8 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         it('should mute both channels when no side specified and current volume > 0', () => {
             mediaPlayer.getVolume.and.returnValue(50);
             component.handleMuteUnmuteVolume();
-            expect(component.volumeLeft).toBe(0);
-            expect(component.volumeRight).toBe(0);
+            expect(component.volumeLeft()).toBe(0);
+            expect(component.volumeRight()).toBe(0);
             expect(mediaPlayer.mute).toHaveBeenCalled();
         });
 
@@ -225,28 +225,28 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
         it('should toggle mute for left channel when side is l and volume > 0', () => {
             mediaPlayer.getVolume.and.callFake((side?: string) => side === 'l' ? 50 : 50);
             component.handleMuteUnmuteVolume('l');
-            expect(component.volumeLeft).toBe(0);
+            expect(component.volumeLeft()).toBe(0);
             expect(component.changeVolume).toHaveBeenCalledWith(0, 'l');
         });
 
         it('should unmute left channel when side is l and volume is 0', () => {
             mediaPlayer.getVolume.and.callFake((side?: string) => side === 'l' ? 0 : 50);
             component.handleMuteUnmuteVolume('l');
-            expect(component.volumeLeft).toBe(50);
+            expect(component.volumeLeft()).toBe(50);
             expect(component.changeVolume).toHaveBeenCalledWith(50, 'l');
         });
 
         it('should toggle mute for right channel when side is r and volume > 0', () => {
             mediaPlayer.getVolume.and.callFake((side?: string) => side === 'r' ? 50 : 50);
             component.handleMuteUnmuteVolume('r');
-            expect(component.volumeRight).toBe(0);
+            expect(component.volumeRight()).toBe(0);
             expect(component.changeVolume).toHaveBeenCalledWith(0, 'r');
         });
 
         it('should unmute right channel when side is r and volume is 0', () => {
             mediaPlayer.getVolume.and.callFake((side?: string) => side === 'r' ? 0 : 50);
             component.handleMuteUnmuteVolume('r');
-            expect(component.volumeRight).toBe(50);
+            expect(component.volumeRight()).toBe(50);
             expect(component.changeVolume).toHaveBeenCalledWith(50, 'r');
         });
     });
@@ -268,7 +268,7 @@ describe('ControlBarPluginComponent (additional coverage)', () => {
                     getAttribute: jasmine.createSpy('getAttribute').and.returnValue('50')
                 }
             } as any;
-            component.selectedSlider = 'slider1';
+            component.selectedSlider.set('slider1');
             spyOn(component, 'changePlaybackrate').and.stub();
         });
 

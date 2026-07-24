@@ -35,7 +35,7 @@ npm start
 
 Then open:
 
-- http://localhost:4202/
+- http://localhost:4210/
 
 ## Running examples
 
@@ -56,7 +56,7 @@ Then open:
 
 ### Web Components bootstrap
 
-The Angular module registers several custom elements (Angular Elements). There is no “classic” Angular app bootstrap; the module defines custom elements in `ngDoBootstrap()`.
+There is no “classic” Angular app bootstrap (no root component, no NgModule). `src/main.ts` loads the polyfills then calls `bootstrapAmaliaElements()` (`src/app/bootstrap.ts`), which creates the application with `createApplication()` and registers the custom elements (Angular Elements). All components are standalone.
 
 Custom elements include:
 - `amalia-player`
@@ -254,9 +254,7 @@ npm run lint
 
 ## Build
 
-This project builds:
-- the Angular output under `dist/`
-- a packaged output under `dist/amalia`
+This project builds a packaged output under `dist/amalia`.
 
 Build everything (lint + icons + component build):
 
@@ -266,15 +264,11 @@ npm run build
 
 ### Web Component bundle
 
-After the Angular build, a helper script concatenates:
-- `dist/amalia/runtime.js`
-- `dist/amalia/polyfills.js`
-- `dist/amalia/scripts.js`
-- `dist/amalia/main.js`
-
-into:
+The Angular build (esbuild) emits a single `dist/amalia/main.js` (ESM, polyfills included). After the build, `build-web-component.js` copies it to:
 
 - `dist/amalia/amalia-<version>.min.js`
+
+It also enforces the **single-file distribution contract**: the build fails if an unexpected JS chunk appears in `dist/amalia` (e.g. introduced by a dynamic `import()` or a worker).
 
 ## Publishing
 
@@ -288,13 +282,7 @@ npm run publish
 
 ## E2E
 
-The repo provides:
-
-```sh
-npm run e2e
-```
-
-Note: the actual E2E runner/setup depends on the workspace configuration. If `ng e2e` is not configured in your environment, you may need to add/configure an E2E solution.
+There is currently no E2E setup: the `npm run e2e` script still exists in `package.json` but the corresponding `e2e` target was removed from `angular.json`, so it fails. An E2E solution would need to be added/configured first.
 
 ## Documentation generation
 
@@ -316,11 +304,11 @@ See [CHANGELOG.md](./CHANGELOG.md)
 
 ## Dependency versions (from `package.json`)
 
-- Angular: ^18.x
+- Angular: 21.2.17 (pinned)
 - RxJS: ~7.8.x
-- TypeScript: ~5.5.x
+- TypeScript: ~5.9.x
 - hls.js: ^1.6.x
-- PrimeNG: ^17.x
+- PrimeNG: ^21.x
 
 ## Known caveats / notes
 

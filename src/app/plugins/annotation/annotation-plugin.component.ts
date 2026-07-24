@@ -1,4 +1,15 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild, ViewEncapsulation } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    computed,
+    effect,
+    ElementRef,
+    OnDestroy,
+    signal,
+    ViewChild,
+    ViewEncapsulation,
+} from "@angular/core";
 import { PluginBase } from "../../core/plugin/plugin-base";
 import { PluginConfigData } from "../../core/config/model/plugin-config-data";
 import { AnnotationConfig } from "../../core/config/model/annotation-config";
@@ -43,6 +54,18 @@ export interface ExportColumnsHeader {
     styleUrls: ["./annotation-plugin.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
     imports: [Bind, Button, ToastComponent, ConfirmDialog, PrimeTemplate, ProgressSpinner, SegmentComponent],
+    // OnPush (phase 7 vague 3) : la liste de segments est mutée en place par des timers
+    // (Utils.waitFor) — le template itère sur segments(), copie superficielle recalculée à
+    // chaque notifySegmentsChanged() (signal segmentsVersion), et chaque mutateur bump ce
+    // signal. dataLoading (champ plat de PluginBase) est doublé par le signal
+    // dataLoadingState (override setDataLoading). La synchro inter-instances passe par le
+    // signal AnnotationsService.refreshedBy + un effect local — plus aucun appel au cdr
+    // d'un autre composant. Les champs restés plats (availableCategories/Keywords, fps,
+    // noSpinner, technical_id, assetId, link) ne changent qu'à l'init ; enabledExportButtons
+    // n'est muté que par des handlers de template (l'événement marque la vue). Les
+    // detectChanges restants (tous sur le cdr PROPRE du composant) sont conservés et
+    // commentés : ils matérialisent la vue depuis des contextes timer sans zone.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> implements OnDestroy {
     public static PLUGIN_NAME = "ANNOTATIONS";
@@ -72,9 +95,44 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     enabledExportButtons: boolean = false;
     public technical_id: string;
 
+    /**
+     * Compteur de version de la liste de segments : subLocalisations est mutée en place
+     * (souvent depuis des timers Utils.waitFor, hors de tout événement de template) — chaque
+     * mutateur appelle {@link notifySegmentsChanged} pour notifier la vue OnPush.
+     */
+    public readonly segmentsVersion = signal(0);
+    /**
+     * Source du @for du template : copie superficielle recalculée à chaque bump de
+     * segmentsVersion (nouvelle référence → re-diff du @for, identités des segments
+     * préservées → DOM réutilisé).
+     */
+    public readonly segments = computed<AnnotationLocalisation[]>(() => {
+        this.segmentsVersion();
+        return [...(this.segmentsInfo?.subLocalisations ?? [])];
+    });
+    /**
+     * Miroir signal de PluginBase.dataLoading (champ plat), seul lu par le template —
+     * setDataLoading est appelé depuis les timers Utils.waitFor.
+     */
+    public readonly dataLoadingState = signal(false);
+
+    public override setDataLoading(dataLoading: boolean) {
+        super.setDataLoading(dataLoading);
+        this.dataLoadingState.set(dataLoading);
+    }
+
+    /** Notifie la vue OnPush qu'une mutation en place de la liste de segments a eu lieu. */
+    public notifySegmentsChanged(): void {
+        this.segmentsVersion.update((version) => version + 1);
+    }
+
     sortAnnotations() {
         if (this.segmentsInfo.subLocalisations && this.segmentsInfo.subLocalisations.length > 0) {
             this.segmentsInfo.subLocalisations = sortBy(this.segmentsInfo.subLocalisations, ["tcIn"]);
+            this.notifySegmentsChanged();
+            // detectChanges conservé (phase 7) : appelé depuis ngOnInit et depuis les timers
+            // Utils.waitFor — matérialise synchroniquement la liste triée avant les mesures/
+            // scrolls qui suivent dans le flux (comportement historique).
             this.cdr.detectChanges();
         }
     }
@@ -213,6 +271,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 // Add sort by tcin
                 this.sortAnnotations();
             }
+            // Notifie la vue OnPush même quand la liste rechargée est vide (sortAnnotations
+            // ne bump que si elle contient des éléments).
+            this.notifySegmentsChanged();
         }
     }
 
@@ -255,6 +316,25 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         this.pluginName = AnnotationPluginComponent.PLUGIN_NAME;
         this.technical_id = crypto.randomUUID();
         annotationsService.registerAnnotation(this);
+        // Synchronisation inter-instances (phase 7) : remplace l'ancienne boucle
+        // annotation.cdr.detectChanges() de syncOtherAnnotationsComponents — chaque instance
+        // réagit elle-même au signal partagé du service.
+        effect(() => {
+            const refresh = this.annotationsService.refreshedBy();
+            if (refresh.version === 0 || refresh.sourceTechnicalId === this.technical_id) {
+                return;
+            }
+            if (!this.mediaPlayerElement) {
+                return;
+            }
+            // Déféré hors du passage de CD porteur de l'effect : handleMetadataLoaded →
+            // sortAnnotations exécute un detectChanges synchrone, interdit pendant un cycle
+            // de change detection (même séquencement que l'ancien .then() de promesse).
+            queueMicrotask(() => {
+                this.handleMetadataLoaded();
+                this.setDataLoading(false);
+            });
+        });
     }
 
     public initializeNewSegment() {
@@ -315,6 +395,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                 type: "init",
                 payload: segmentToBeAdded,
             };
+            // detectChanges conservé (phase 7) : contexte timer Utils.waitFor (hors zone/
+            // événement) — matérialise la désélection avant l'émission d'ANNOTATION_ADD,
+            // dont le handler hôte peut lire le DOM (comportement historique).
             this.cdr.detectChanges();
             this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.ANNOTATION_ADD, event);
             this.subscriptionToEventsEmitters.push(
@@ -355,6 +438,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     this.segmentsInfo.subLocalisations.splice(insertAt, 0, segment);
                 }
             }
+            // Exécuté depuis un timer Utils.waitFor : le bump notifie la vue OnPush.
+            this.notifySegmentsChanged();
             setTimeout(this.scroll.bind(this), 50);
         }
     }
@@ -363,6 +448,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (event.status === "success") {
             const indexOfSegment = this.segmentsInfo.subLocalisations.indexOf(event.payload);
             this.segmentsInfo.subLocalisations.splice(indexOfSegment, 1);
+            this.notifySegmentsChanged();
         }
     }
 
@@ -376,6 +462,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     localisation.thumb = "/assets/amalia/images/newAudioBackGround.png";
                 }
             });
+            // Timer Utils.waitFor : mutations en place (tcOffset/tcMax/thumb) lues par les
+            // segments enfants → bump.
+            this.notifySegmentsChanged();
         }
     }
 
@@ -387,16 +476,20 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             if (segment.label !== undefined && segment.label.includes(SegmentComponent.SEGMENT_SANS_TITRE)) {
                 segment.label = "";
             }
+            this.notifySegmentsChanged();
         }
     }
 
     public unselectAllSegments() {
         this.segmentsInfo?.subLocalisations?.forEach((segment) => (segment.data.selected = false));
+        this.notifySegmentsChanged();
     }
 
     public saveSegment(event) {
         if (event.status === "success") {
             event.payload.segment.data.selected = true;
+            // Timer Utils.waitFor : mutation en place lue par le segment enfant → bump.
+            this.notifySegmentsChanged();
         }
     }
 
@@ -408,6 +501,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
                     delete segment[key];
                 }
             }
+            this.notifySegmentsChanged();
         }
     }
 
@@ -462,6 +556,9 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             noSuccessSnackBar === false && this.displaySnackBar(event.responseMessage, event.status);
             if (event.status === "success") {
                 this.syncOtherAnnotationsComponents();
+                // detectChanges conservé (phase 7, cdr PROPRE du composant) : contexte timer
+                // Utils.waitFor — rafraîchit la vue locale après les mutations du cycle
+                // événementiel (selected, tc, thumb) sans attendre le prochain tick.
                 this.cdr.detectChanges();
             }
         } else {
@@ -596,20 +693,20 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             this.annotationsService.getAnnotations(),
         ).filter((annotation) => annotation !== this);
         for (const annotation of otherAnnotations) {
+            // Écriture du signal dataLoadingState de l'instance sœur (spinner on) : la vue
+            // OnPush de la sœur est notifiée par sa propre écriture de signal, pas par un cdr.
             annotation.setDataLoading(true);
         }
         this.mediaPlayerElement.metadataManager.loadDataSourceForPlugin(AnnotationPluginComponent.PLUGIN_NAME).then(
             () => {
-                for (const annotation of otherAnnotations) {
-                    annotation.handleMetadataLoaded();
-                    annotation.setDataLoading(false);
-                    annotation.cdr.detectChanges();
-                }
+                // phase 7 : plus de handleMetadataLoaded()/cdr.detectChanges() imposés aux
+                // instances sœurs — le signal du service les notifie et chacune se
+                // resynchronise via son effect (voir constructeur).
+                this.annotationsService.notifyAnnotationsRefreshed(this.technical_id);
             },
             () => {
                 for (const annotation of otherAnnotations) {
                     annotation.setDataLoading(false);
-                    annotation.cdr.detectChanges();
                 }
             },
         );
@@ -630,6 +727,10 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (param.event.status === "success") {
             this.segmentsInfo.subLocalisations.splice(param.index, 0, param.event.payload);
             param.sourceSegment.data.selected = false;
+            this.notifySegmentsChanged();
+            // detectChanges conservé (phase 7) : contexte timer Utils.waitFor — matérialise
+            // synchroniquement le segment cloné avant le scroll différé qui le cherche dans
+            // le DOM (comportement historique).
             this.cdr.detectChanges();
             setTimeout(this.scroll.bind(this), 50);
         }
@@ -638,6 +739,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
     public selectSegment(event: AnnotationLocalisation) {
         this.unselectAllSegments();
         event.data.selected = true;
+        this.notifySegmentsChanged();
         this.annotationsService.setFocusedAnnotation(this);
     }
 
@@ -650,6 +752,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tcIn = event.payload.updatedSegment.tcIn;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
+            // Timer Utils.waitFor : tcIn/tcOut sont des inputs des segments enfants → bump.
+            this.notifySegmentsChanged();
         }
     }
 
@@ -696,6 +800,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         if (event.status === "success") {
             event.payload.segment.tcOut = event.payload.updatedSegment.tcOut;
             event.payload.segment.tc = event.payload.updatedSegment.tc;
+            this.notifySegmentsChanged();
         }
     }
 
@@ -822,6 +927,7 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
             event.payload.segment.data.selected = true;
             event.payload.segment.data.tcThumbnail = event.payload.updatedSegment.data.tcThumbnail;
             event.payload.segment.thumb = event.payload.updatedSegment.thumb;
+            this.notifySegmentsChanged();
         }
     }
 
@@ -829,6 +935,8 @@ export class AnnotationPluginComponent extends PluginBase<AnnotationConfig> impl
         const scrollNode: HTMLElement = this.annotationElement.nativeElement.querySelector(".segment-selected");
         if (scrollNode) {
             scrollNode.scrollIntoView({ behavior: "smooth", block: "center" });
+            // detectChanges conservé (phase 7) : contexte timer Utils.waitFor — comportement
+            // historique (rafraîchit la vue après le scroll).
             this.cdr.detectChanges();
         }
         const pluginTitle = document.querySelector(".plugin-title");

@@ -1,4 +1,5 @@
 import {
+    ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -10,6 +11,7 @@ import {
     OnInit,
     Output,
     ProviderToken,
+    signal,
     ViewChild,
     ViewEncapsulation,
 } from "@angular/core";
@@ -48,6 +50,15 @@ import { NgClass } from "@angular/common";
     styleUrls: ["./amalia.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
     imports: [NgClass],
+    // OnPush (phase 7 vague 3) : les listeners player de ce composant racine passent par son
+    // addListener local (Utils.addListener brut, PAS de zone.run/markForCheck) — tout champ lu
+    // par le template et muté depuis ces handlers, un timeout/interval ou une promesse est donc
+    // un signal (l'écriture programme elle-même le tick via le scheduler hybride). Les champs
+    // restés plats (version, aspectRatio, tc, previewThumbnailUrl, mainSource, muteShortcuts,
+    // listKeys) ne sont pas lus par le template ou ne changent qu'avant le
+    // premier rendu (ngOnInit). Les 3 detectChanges structurels (ngOnInit + queueMicrotask
+    // d'onInitConfig/onErrorInitConfig) sont conservés — voir leurs commentaires.
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AmaliaComponent implements OnInit, OnDestroy {
     public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
@@ -57,9 +68,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     public version = environment.VERSION;
     public chrono;
     /**
-     * player state
+     * player state — signal : muté dans ngOnInit et depuis la chaîne de promesses d'init
+     * (onInitConfig/onErrorInitConfig), hors zone potentielle.
      */
-    public state: PlayerState;
+    public readonly state = signal<PlayerState | undefined>(undefined);
     /**
      * Interval Images
      */
@@ -70,9 +82,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     public aspectRatio;
 
     /**
-     * True for shown context menu
+     * True for shown context menu — signal : muté par le listener ELEMENT_CONTEXT_MENU
+     * (non wrappé zone) et par le (mouseleave) du template.
      */
-    public contextMenuState: boolean;
+    public readonly contextMenuState = signal(false);
 
     /**
      * player state 4by3
@@ -80,14 +93,17 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     public PlayerState = PlayerState;
 
     /**
-     * Player configuration
+     * Player configuration — signal : assignée dans ngOnInit avant le premier rendu, mais lue
+     * par le template (media AUDIO/PICTURE) ; en signal, toute réassignation (specs comprises)
+     * notifie la vue OnPush.
      */
-    public playerConfig: ConfigData;
+    public readonly playerConfig = signal<ConfigData | undefined>(undefined);
 
     /**
-     * In charge to show preview thumbnail
+     * In charge to show preview thumbnail — signal : muté par les listeners SEEKING/PLAYING
+     * (non wrappés) et par l'interval de displayImages.
      */
-    public enablePreviewThumbnail = false;
+    public readonly enablePreviewThumbnail = signal(false);
     /**
      * preview thumbnail url
      */
@@ -119,9 +135,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
     private enableThumbnail: boolean;
     /**
-     * true when the mouse in over the player
+     * true when the mouse in over the player — signal : muté par les handlers de template
+     * (mouseover/mouseout…) et par le listener KEYDOWN_HISTOGRAM (non wrappé).
      */
-    public playerHover = false;
+    public readonly playerHover = signal(false);
 
     private _config: any;
     // mainSource as src video
@@ -190,35 +207,37 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
     public tc = 0;
     /**
-     * true when player load content
+     * true when player load content — signal : muté par PLAYER_LOADING_BEGIN/END (non wrappés)
+     * et par la chaîne de promesses d'init.
      */
-    public inLoading = false;
+    public readonly inLoading = signal(false);
 
     /**
-     * true when error
+     * true when error — signal : muté par ERROR/ERASE_ERROR (non wrappés).
      */
-    public inError = false;
+    public readonly inError = signal(false);
 
     /**
      * Default loader
      */
     public logger = new DefaultLogger();
     /**
-     * default aspect ratio
+     * default aspect ratio — signal : réécrit par updatePlayerSizeWithAspectRatio, appelé
+     * depuis des listeners non wrappés (ASPECT_RATIO_CHANGE, PINNED_*…) et un setTimeout.
      */
-    public ratio = "16-9";
+    public readonly ratio = signal("16-9");
     /**
      * In charge to get instance of player
      */
     public playerService: MediaPlayerService;
     /**
-     * Pinned Slider state
+     * Pinned Slider state — signal : muté par le listener PINNED_SLIDER_CHANGE (non wrappé).
      */
-    public pinned = false;
+    public readonly pinned = signal(false);
     /**
-     * Pinned ControlBar state
+     * Pinned ControlBar state — signal : muté par le listener PINNED_CONTROLBAR_CHANGE (non wrappé).
      */
-    public pinnedControlbar = false;
+    public readonly pinnedControlbar = signal(false);
     /**
      * In charge to load resource
      */
@@ -244,26 +263,28 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
     public listKeys = [];
     /**
-     * thumbnail blob preview on seeking
+     * thumbnail blob preview on seeking — signal : muté par la promesse du ThumbnailService
+     * et par showImage (boucle d'images).
      */
-    public thumbnailBlobVideo = "";
+    public readonly thumbnailBlobVideo = signal("");
 
     public throttleFunc;
     /**
-     * Message d'erreur
+     * Message d'erreur — signal : muté par ERROR/ERASE_ERROR (non wrappés).
      */
-    public errorMessage;
+    public readonly errorMessage = signal<any>(undefined);
 
     /**
      * attribut qui definit une image a afficher lorsque la video est en cours de chargement,<br/>
      * ou jusqu'a ce que l'utilisateur ne joue la video.
+     * Signal : renseigné dans onInitConfig (chaîne de promesses d'init).
      */
-    public videoPoster = "";
-    public posterBackgound = {
+    public readonly videoPoster = signal("");
+    public readonly posterBackgound = signal<Record<string, boolean>>({
         "amalia-player-bg-color1": false,
         "amalia-primary-color": false,
         " amalia-secondary-color": false,
-    };
+    });
 
     /**
      * Résolus via le contexte d'injection quand il existe (composant créé par Angular),
@@ -307,20 +328,23 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         // Init media player
         this.mediaPlayerElement = this.playerService.get(this.playerId);
         this.playerService.increment(this.playerId);
-        this.state = PlayerState.CREATED;
-        this.inLoading = true;
+        this.state.set(PlayerState.CREATED);
+        this.inLoading.set(true);
         // init default manager (converter, metadata loader)
         this.initDefaultHandlers();
-        this.playerConfig = this.config;
+        this.playerConfig.set(this.config);
         // The `#photoHost` element is rendered conditionally via `*ngIf="playerConfig.player.media === 'PICTURE'"`.
         // We must trigger a change detection cycle here so that:
         //  1. The `*ngIf` is evaluated against the just-assigned `playerConfig`.
         //  2. The non-static `@ViewChild('photoHost')` query is updated and `photoHost.nativeElement` is available below.
+        // detectChanges structurel conservé (phase 7 OnPush) : la matérialisation synchrone du
+        // ViewChild n'est pas remplaçable par une écriture de signal (le tick coalescé serait
+        // trop tardif pour le setPicturePlayer() ci-dessous).
         this.cdr.detectChanges();
         if (this.configLoader && this.metadataConverter && this.metadataLoader) {
             // set media player in charge to play video, audio or picture files.
-            if (this.playerConfig?.player?.media === "PICTURE") {
-                const player = this.playerConfig.player;
+            if (this.playerConfig()?.player?.media === "PICTURE") {
+                const player = this.playerConfig().player;
                 const imagesSrc = this.resolvePictureImages(player);
                 // Picture-specific fields come from `player.data` (free-form payload),
                 // the rest is mapped explicitly from the typed PlayerConfigData properties.
@@ -342,7 +366,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             }
             const histogramLoader = new HistogramLoader(this.httpClient, this.logger);
             this.mediaPlayerElement
-                .init(this.playerConfig, this.metadataLoader, this.configLoader, histogramLoader)
+                .init(this.playerConfig(), this.metadataLoader, this.configLoader, histogramLoader)
                 .then((state) => this.onInitConfig(state))
                 .catch((state) => this.onErrorInitConfig(state));
             // bind events
@@ -418,7 +442,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      */
 
     public onContextMenu(event: MouseEvent) {
-        this.contextMenuState = true;
+        this.contextMenuState.set(true);
         const defaultMouseMargin = 15;
         this.contextMenu.nativeElement.style.left = `${event.offsetX - defaultMouseMargin}px`;
         this.contextMenu.nativeElement.style.top = `${event.offsetY - defaultMouseMargin}px`;
@@ -434,18 +458,18 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         if (!htmlElement) {
             return;
         }
-        if (this.playerConfig?.player?.media === "AUDIO") {
+        if (this.playerConfig()?.player?.media === "AUDIO") {
             const isFullscreen = document.fullscreenElement != null;
             const maxHeight = this.getMaxHeight(isFullscreen, htmlElement);
             this.resetContainerSizeBeforeFullScreen();
             htmlElement.style.width = "100%";
             htmlElement.style.maxWidth = "none";
-            htmlElement.style.height = this.pinned || this.pinnedControlbar ? `${Math.max(0, maxHeight)}px` : "100%";
+            htmlElement.style.height = this.pinned() || this.pinnedControlbar() ? `${Math.max(0, maxHeight)}px` : "100%";
             htmlElement.style.left = "0px";
             htmlElement.style.top = "0px";
             htmlElement.style["object-fit"] = "fill";
         } else if (this.aspectRatio && this.aspectRatio !== "") {
-            this.ratio = this.aspectRatio.replace(":", "-");
+            this.ratio.set(this.aspectRatio.replace(":", "-"));
             const isFullscreen = document.fullscreenElement != null;
 
             const maxWidth = this.getMaxWidth(isFullscreen, htmlElement);
@@ -500,8 +524,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
             !isFullscreen && this.containerSizeBeforeFullScreen
                 ? this.containerSizeBeforeFullScreen.height
                 : layoutContainer.offsetHeight;
-        const maxHeightWhenNotPinned = this.pinnedControlbar ? maxParentHeight - 50 : maxParentHeight;
-        return this.pinned ? maxParentHeight - 100 : maxHeightWhenNotPinned;
+        const maxHeightWhenNotPinned = this.pinnedControlbar() ? maxParentHeight - 50 : maxParentHeight;
+        return this.pinned() ? maxParentHeight - 100 : maxHeightWhenNotPinned;
     };
     /**
      * Retourne la largeur maximale du parent de la video en tenant compte de la taille du conteneur parent de la video avant le passage au plein écran.
@@ -518,10 +542,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     };
 
     private getPlayerLayoutElement(): HTMLElement | null {
-        if (this.playerConfig?.player?.media === "PICTURE") {
+        if (this.playerConfig()?.player?.media === "PICTURE") {
             return this.photoHost?.nativeElement ?? null;
         }
-        if (this.playerConfig?.player?.media === "AUDIO") {
+        if (this.playerConfig()?.player?.media === "AUDIO") {
             return this.mediaContainer?.nativeElement ?? null;
         }
         return this.mediaPlayer?.nativeElement ?? null;
@@ -678,37 +702,37 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     }
 
     public handleLoading() {
-        this.inLoading = true;
+        this.inLoading.set(true);
     }
 
     public handleLoadingEnd() {
-        this.inLoading = false;
+        this.inLoading.set(false);
     }
 
     public handlePinnedControlbarChange(event) {
-        this.pinnedControlbar = event;
-        this.pinned = false;
+        this.pinnedControlbar.set(event);
+        this.pinned.set(false);
         this.updatePlayerSizeWithAspectRatio();
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.CONTROL_BAR_TOGGLED, {
-            pinnedControlBar: this.pinnedControlbar,
-            pinned: this.pinned,
+            pinnedControlBar: this.pinnedControlbar(),
+            pinned: this.pinned(),
         });
     }
 
     public handlePinnedSliderChange(event) {
-        this.pinned = event;
-        this.pinnedControlbar = false;
+        this.pinned.set(event);
+        this.pinnedControlbar.set(false);
         this.updatePlayerSizeWithAspectRatio();
         this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.CONTROL_BAR_TOGGLED, {
-            pinnedControlBar: this.pinnedControlbar,
-            pinned: this.pinned,
+            pinnedControlBar: this.pinnedControlbar(),
+            pinned: this.pinned(),
         });
     }
 
     private handleSeeking(tc: number) {
         this.logger.debug("handleSeeking");
         if (this.enableThumbnail && this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1) {
-            this.enablePreviewThumbnail = true;
+            this.enablePreviewThumbnail.set(true);
             const timecode = parseFloat(tc.toFixed(2));
             this.throttleFunc(timecode);
         }
@@ -724,7 +748,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
 
     private handlePlay() {
         if (this.enableThumbnail) {
-            this.enablePreviewThumbnail = false;
+            this.enablePreviewThumbnail.set(false);
             this.previewThumbnailUrl = "";
         }
     }
@@ -734,8 +758,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param event error type
      */
     private handleError(event: any) {
-        this.inError = true;
-        this.errorMessage = event;
+        this.inError.set(true);
+        this.errorMessage.set(event);
         this.logger.error("Error", event);
     }
 
@@ -744,8 +768,8 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param event erase error message
      */
     private handleEraseError(event: any) {
-        this.inError = false;
-        this.errorMessage = event;
+        this.inError.set(false);
+        this.errorMessage.set(event);
         this.logger.info("Erase Error", event);
     }
 
@@ -793,7 +817,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                     .getThumbnail(this.previewThumbnailUrl, tc)
                     .then((blob) => {
                         if (typeof blob !== "undefined") {
-                            this.thumbnailBlobVideo = blob;
+                            this.thumbnailBlobVideo.set(blob);
                         }
                     })
                     .catch((err) => this.logger.warn("Thumbnail load failed", err));
@@ -806,17 +830,18 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param state player init state
      */
     private onInitConfig(state: PlayerState) {
-        this.state = state;
-        this.inLoading = false;
+        this.state.set(state);
+        this.inLoading.set(false);
         this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
         this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail?.enableThumbnail || false;
         this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || "16:8";
-        this.ratio = this.aspectRatio.replace(":", "-");
-        this.videoPoster = this.mediaPlayerElement.getConfiguration().player.poster || "";
+        this.ratio.set(this.aspectRatio.replace(":", "-"));
+        this.videoPoster.set(this.mediaPlayerElement.getConfiguration().player.poster || "");
 
-        if (this.videoPoster !== "") {
-            if (this.mediaPlayerElement.getConfiguration().player.posterBackground) {
-                this.posterBackgound["" + this.mediaPlayerElement.getConfiguration().player.posterBackground] = true;
+        if (this.videoPoster() !== "") {
+            const posterBackground = this.mediaPlayerElement.getConfiguration().player.posterBackground;
+            if (posterBackground) {
+                this.posterBackgound.update((backgrounds) => ({ ...backgrounds, ["" + posterBackground]: true }));
             }
         }
         const debug = this.mediaPlayerElement.preferenceStorageManager.getItem("debug");
@@ -836,6 +861,10 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         // the same INIT event) settles first -- calling detectChanges() synchronously here can
         // otherwise race a not-yet-checked ancestor/sibling and throw
         // ExpressionChangedAfterItHasBeenCheckedError in dev mode.
+        // detectChanges structurel conservé (phase 7 OnPush) : ceinture et bretelles pendant la
+        // transition — les écritures de signals ci-dessus programment déjà un tick, mais ce
+        // passage synchrone garantit que la vue (spinner, poster, ratio) est matérialisée dès la
+        // fin de la chaîne d'init, indépendamment du scheduler.
         queueMicrotask(() => this.cdr.detectChanges());
     }
 
@@ -844,12 +873,13 @@ export class AmaliaComponent implements OnInit, OnDestroy {
      * @param state player init state
      */
     private onErrorInitConfig(state: PlayerState) {
-        this.state = state;
-        this.inLoading = false;
-        this.inError = true;
+        this.state.set(state);
+        this.inLoading.set(false);
+        this.inError.set(true);
         this.logger.error(`Error to initialize player.`);
         // See onInitConfig(): same risk of the spinner staying stuck without a CD cycle here,
-        // deferred one microtask for the same reason.
+        // deferred one microtask for the same reason. detectChanges structurel conservé
+        // (phase 7 OnPush), même justification que dans onInitConfig.
         queueMicrotask(() => this.cdr.detectChanges());
     }
 
@@ -889,7 +919,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         // In picture mode the video element is hidden, so offsetParent returns null.
         // Fall back to mediaContainer which is the equivalent starting point.
         const useContainerAsFullscreenRoot =
-            this.playerConfig?.player?.media === "PICTURE" || this.playerConfig?.player?.media === "AUDIO";
+            this.playerConfig()?.player?.media === "PICTURE" || this.playerConfig()?.player?.media === "AUDIO";
         const element = (
             useContainerAsFullscreenRoot
                 ? this.mediaContainer.nativeElement
@@ -922,7 +952,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
     }
 
     public handleKeyDownEvent(event) {
-        this.playerHover = true;
+        this.playerHover.set(true);
         this.emitKeyDownEvent(event);
     }
 
@@ -938,7 +968,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         if (key === " ") {
             key = "espace";
         }
-        if (this.playerHover === true) {
+        if (this.playerHover() === true) {
             if (this.listKeys.length === 0) {
                 this.listKeys.push(key);
                 keys = key;
@@ -1023,7 +1053,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         this.tc = parseFloat(this.tc.toFixed(2));
         this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
         // Set thumbnail video
-        this.enablePreviewThumbnail = true;
+        this.enablePreviewThumbnail.set(true);
         if (this.enableThumbnail) {
             this.loopImages(this.tc);
             // this.setPreviewThumbnail(this.tc);
@@ -1059,7 +1089,7 @@ export class AmaliaComponent implements OnInit, OnDestroy {
                 resolve(diff);
             };
             this.previewThumbnailElement.nativeElement.onerror = () => resolve(0);
-            this.thumbnailBlobVideo = url;
+            this.thumbnailBlobVideo.set(url);
         });
     }
 
