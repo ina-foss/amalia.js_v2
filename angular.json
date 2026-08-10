@@ -56,17 +56,27 @@
                             "budgets": [
                                 {
                                     "type": "initial",
-                                    "maximumWarning": "6.2mb",
-                                    "maximumError": "7mb"
+                                    "maximumWarning": "3.7mb",
+                                    "maximumError": "4mb"
                                 },
                                 {
                                     "type": "anyComponentStyle",
-                                    "maximumWarning": "1.5mb",
-                                    "maximumError": "2mb"
+                                    "maximumWarning": "100kb",
+                                    "maximumError": "200kb"
                                 }
                             ]
                         },
                         "development": {
+                            "optimization": false,
+                            "sourceMap": true
+                        },
+                        "zoneless": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.zoneless.ts"
+                                }
+                            ],
                             "optimization": false,
                             "sourceMap": true
                         }
@@ -83,6 +93,9 @@
                         },
                         "development": {
                             "buildTarget": "amalia:build:development"
+                        },
+                        "zoneless": {
+                            "buildTarget": "amalia:build:zoneless"
                         }
                     }
                 },

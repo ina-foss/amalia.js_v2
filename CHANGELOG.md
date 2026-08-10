@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2.1.26-develop (non publiée) — refactoring performance post-migration
+
+Chantier `refactor/perf-v21` (plan et suivi : `docs/refactoring/PLAN-PERF-2026.md`). Aucun changement d'API publique : le contrat mono-fichier `amalia-<version>.min.js` (`<script type="module">`) et l'API événementielle host sont inchangés.
+
+**Chiffres** : `main.js` 5,93 → 3,46 Mo (−41 %, gzip 1,19 Mo → 954 Ko), `styles.css` 723 Ko → 18 octets, 1,49 Mo de polices sorties du dist, build de production de plusieurs minutes → ~20 s, et pendant la lecture : 1 tick de change detection coalescé ciblé au lieu de 7 vérifications complètes de l'arbre par `timeupdate`.
+
+* **Build** : migration Webpack (`ngx-build-plus`) → esbuild (`@angular/build:application`) ; karma sur `@angular/build:karma` ; `build-web-component.js` passe d'un concat à une copie + garde-fou anti-chunk ; −396 paquets npm ; polyfills absorbés par `main.ts` ; EventEmitter interne (le builtin Node `events` n'est plus une dépendance).
+* **Styles** : suppression du thème legacy `aura-light-blue` (244 Ko, embarqué ×5) au profit du preset token-based + `PrimengShadowStylesService` (miroir des styles PrimeNG vers les shadow roots) ; suppression de primeflex et primeicons (icônes migrées vers le sprite SVG maison — corrige les glyphes cassés en Shadow DOM) ; retrait de `@angular/animations` (PrimeNG 21 est CSS-only).
+* **Architecture** : composants 100 % standalone, bootstrap `createApplication()` (`src/app/bootstrap.ts`), `provideHttpClient()` ; store de signals `PlaybackState` par player alimenté hors zone ; politique de zone par listener (`'zone' | 'schedule' | 'none'`) dans `PluginBase` ; **13/13 composants en `OnPush`** ; ~40 `detectChanges/markForCheck` manuels supprimés (les structurels restants sont commentés).
+* **Runtime** : coalescing de zone ; mousemove/scroll haute fréquence hors zone (directive `amaliaOutside*`, throttle rAF) ; wavesurfer/interactjs/ResizeObservers hors zone ; transcription en rendu différé par segment (`@defer` + placeholder isométrique, flag `data.deferredRendering`) ; audit exhaustif des 74 `setTimeout` (gate zoneless soldé).
+* **Zoneless (préparé)** : `ng serve -c zoneless` active `provideZonelessChangeDetection()` ; le flip par défaut attend un cycle de release en production (`environment.zoneless`).
+* **Divers** : `environment.prod.ts` corrigé (`production: true`) ; budgets angular.json resserrés (initial 3,6/4 Mo, styles composant 100/200 Ko) ; lodash importé par méthode ; `isolatedModules` + `noImplicitOverride`/`noImplicitReturns`/`noFallthroughCasesInSwitch`.
+
 ## 2.1.25-develop (non publiée — depuis le tag 2.1.24)
 
 Version essentiellement consacrée à la montée **Angular 17→21 / PrimeNG 17→21** et à sa traîne de correctifs visuels (dont les casses spécifiques au Shadow DOM), plus une passe de fiabilisation histogramme/minimap et annotations. Aucun changement d'API publique du web component.

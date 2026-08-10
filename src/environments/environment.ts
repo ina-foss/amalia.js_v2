@@ -5,6 +5,8 @@ import packageInfo from '../../package.json';
 
 export const environment = {
     production: false,
+    /** Phase 9 : change detection zoneless (cf. environment.prod.ts et le plan perf). */
+    zoneless: false,
     VERSION: packageInfo.version
 };
 

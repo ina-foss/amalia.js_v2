@@ -1,5 +1,6 @@
-import {ApplicationRef, provideZoneChangeDetection, Type} from '@angular/core';
+import {ApplicationRef, provideZonelessChangeDetection, provideZoneChangeDetection, Type} from '@angular/core';
 import {createApplication} from '@angular/platform-browser';
+import {environment} from '../environments/environment';
 import {provideHttpClient} from '@angular/common/http';
 import {createCustomElement} from '@angular/elements';
 import {ConfirmationService, MessageService} from 'primeng/api';
@@ -43,8 +44,13 @@ export const AMALIA_CUSTOM_ELEMENTS: ReadonlyArray<readonly [string, Type<unknow
 export async function bootstrapAmaliaElements(): Promise<ApplicationRef> {
     const appRef = await createApplication({
         providers: [
-            // Équivalent des anciennes options { ngZoneEventCoalescing, ngZoneRunCoalescing } de bootstrapModule.
-            provideZoneChangeDetection({eventCoalescing: true, runCoalescing: true}),
+            // Phase 9 (zoneless) : sélection par environnement. Tant que le gate « 1 cycle de
+            // release » n'est pas passé, le défaut reste le mode zone avec coalescing
+            // (équivalent des anciennes options ngZone*Coalescing de bootstrapModule) ;
+            // `ng serve -c zoneless` permet de valider le mode zoneless dès maintenant.
+            environment.zoneless
+                ? provideZonelessChangeDetection()
+                : provideZoneChangeDetection({eventCoalescing: true, runCoalescing: true}),
             // Remplace HttpClientModule (déprécié) — les loaders/services injectent HttpClient.
             provideHttpClient(),
             MediaPlayerService,
