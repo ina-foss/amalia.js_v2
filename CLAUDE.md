@@ -56,13 +56,20 @@ Chaque plugin étend `PluginBase<T>` (`src/app/core/plugin/plugin-base.ts`) : il
 
 ### Shadow DOM et styles PrimeNG
 
-La plupart des composants utilisent l'encapsulation Shadow DOM. PrimeNG 21 (theming par design tokens, preset `AmaliaPreset` dans `src/app/core/styles/amalia-primeng-preset.ts`) n'injecte ses styles que dans `document.head` : `PrimengShadowStylesService` les **miroite** vers chaque shadow root via des `CSSStyleSheet` construites + `MutationObserver`. Les icônes viennent du sprite SVG maison (pas de primeicons).
+La plupart des composants utilisent l'encapsulation Shadow DOM. PrimeNG 21 (theming par design tokens, preset `AmaliaPreset` dans `src/app/core/styles/amalia-primeng-preset.ts`) n'injecte ses styles que dans `document.head` : `PrimengShadowStylesService` les **miroite** vers chaque shadow root (balises `<style>` insérées en tête du root — l'ordre préserve la cascade historique : PrimeNG d'abord, surcharges du composant ensuite — suivies par `MutationObserver`). Ne jamais ré-importer de CSS de thème dans un SCSS de composant. Les icônes viennent du sprite SVG maison (`npm run build:icon`, usage `<svg><use xlink:href="/assets/svgs/symbol/svg/sprite.symbol.svg#id">`) — primeicons et primeflex ont été supprimés.
 
-## Chantier en cours : refactoring performance
+## Chantier refactoring performance : livré (branche `refactor/perf-v21`)
 
-Branche `refactor/perf-v21`. Le document maître est `docs/refactoring/PLAN-PERF-2026.md` (suivi des phases, décisions actées, architecture cible zoneless) — **le consulter et le mettre à jour** pour tout travail sur ce chantier. Gates systématiques avant de considérer une phase livrée : `ng lint` + `npm test` + `npm run build:component` + `node scripts/size-report.mjs` + la checklist `docs/refactoring/SMOKE-CHECKLIST.md`.
+Document maître : `docs/refactoring/PLAN-PERF-2026.md` (suivi des phases, décisions actées) — **à maintenir** pour tout travail lié. Toutes les phases sont livrées (main.js 5,93 → 3,46 Mo, 13/13 composants OnPush, 887 specs), sauf :
+- **Flip zoneless** : préparé mais différé — `ng serve -c zoneless` active `provideZonelessChangeDetection()` via `environment.zoneless` ; le flip définitif (flag en prod + retrait de l'import zone.js dans main.ts) attend ≥ 1 cycle de release en prod.
+- **Smoke visuel avant merge** : dérouler `docs/refactoring/SMOKE-CHECKLIST.md` sur les samples.
 
-Points de vigilance issus de ce chantier :
-- Migration progressive des composants vers `ChangeDetectionStrategy.OnPush` en consommant `PlaybackState` ; l'objectif final est le zoneless.
-- Ne pas réintroduire lodash entier (`import ... from 'lodash'`) : imports par méthode (`lodash/xxx`). hls.js n'est importé qu'en type-only.
+Gates systématiques pour toute évolution : `ng lint` + `npm test` + `npm run build:component` (garde mono-fichier + budgets 3,7/4 Mo) + `node scripts/size-report.mjs`.
+
+Règles issues du chantier (à respecter dans tout nouveau code) :
+- **Tous les composants sont `OnPush`** : tout champ lu par un template et muté hors handler de template (événement player, `setTimeout`, promesse, observer) doit être un `signal`/`computed`. Pour l'état de lecture, consommer `PlaybackState` ; pour les listeners player, choisir la `ListenerZonePolicy` la plus faible possible (`'none'` si le handler n'écrit que des signals ou du DOM).
+- Nouveaux `setTimeout` : suivre la grille de `docs/refactoring/SETTIMEOUT-AUDIT.md` (catégories a/b/c ; « attendre le rendu » = `afterNextRender`, jamais `setTimeout(0)`) — c'est ce qui garde le code zoneless-safe.
+- Événements DOM haute fréquence (mousemove/scroll) : directives `amaliaOutsideMousemove`/`amaliaOutsideScroll` (`src/app/core/directive/outside-zone-event.directive.ts`), handlers en écritures de signals.
+- Ne pas réintroduire lodash entier (`import ... from 'lodash'`) : imports par méthode (`lodash/xxx`). hls.js n'est importé qu'en type-only dans les modèles de config.
+- La transcription rend les mots en `@defer` par segment (flag `data.deferredRendering`) : tout nouveau code qui fait du `querySelectorAll` sur les mots (`.w`) doit gérer l'hydratation (cf. `hydrateAllWordsThen`).
 - `MIGRATION-ANGULAR21-PRIMENG21.md` documente les breaking changes PrimeNG 17→21 (dont `<p-messages>` remplacé par le composant maison `InaMessagesComponent`).
