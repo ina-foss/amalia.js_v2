@@ -29,7 +29,7 @@
     (mouseout)="displayControlBar(false); playerHover.set(false)"
     (focus)="displayControlBar(true); resetTimer(); playerHover.set(true)"
     (blur)="displayControlBar(false); playerHover.set(false)"
-    (mousemove)="resetTimer(); displayControlBar(true); focus(); playerHover.set(true)"
+    [amaliaOutsideMousemove]="onMousemoveOutside"
     (load)="startTimer()"
     (contextmenu)="onContextMenu($event)"
     class="media-player aspect-ratio-{{ ratio() }}"

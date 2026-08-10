@@ -322,6 +322,13 @@
               text-decoration: $amalia-plugin-transcription-hover-text-decoration;
             }
           }
+
+          // Placeholder des blocs @defer (rendu par-mot différé) : texte brut du segment,
+          // même police/line-height que les mots .w pour une hauteur ≈ identique
+          // (préserve le scroll-sync basé sur les offsetTop des segments).
+          .w-placeholder {
+            cursor: pointer;
+          }
         }
       }
     }

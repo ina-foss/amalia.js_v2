@@ -1,7 +1,7 @@
 import { MediaPlayerElement } from '../media-player-element';
 import { PluginConfigData } from '../config/model/plugin-config-data';
 import { DefaultLogger } from '../logger/default-logger';
-import { ChangeDetectorRef, Component, ElementRef, inject, Input, NgZone, OnDestroy, OnInit, ProviderToken } from '@angular/core';
+import { afterNextRender, ChangeDetectorRef, Component, ElementRef, inject, Injector, Input, NgZone, OnDestroy, OnInit, ProviderToken } from '@angular/core';
 import { PrimengShadowStylesService } from '../styles/primeng-shadow-styles.service';
 import { PlayerEventType } from '../constant/event-type';
 import { MediaPlayerService } from '../../service/media-player-service';
@@ -149,6 +149,11 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
      */
     private readonly _shadowStyles: PrimengShadowStylesService | null = PluginBase.tryInject(PrimengShadowStylesService);
     private readonly _pluginElementRef: ElementRef | null = PluginBase.tryInject(ElementRef);
+    /**
+     * Injecteur du plugin, requis par {@link runAfterNextRender} (`afterNextRender` a besoin
+     * d'un contexte d'injection). Null quand le plugin est instancié avec `new` dans les specs.
+     */
+    private readonly _pluginInjector: Injector | null = PluginBase.tryInject(Injector);
 
     /**
      * Resolve a dependency from the current injection context, returning null when there is no
@@ -247,6 +252,21 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     }
     removeListener(element: any, playerEventType: PlayerEventType, func: any) {
         Utils.unsubscribeTargetedElementEventListener(this, element, playerEventType, func);
+    }
+
+    /**
+     * Exécute `action` après le prochain rendu Angular (`afterNextRender`) — remplaçant
+     * zoneless-safe des `setTimeout(..., 0|50)` « attendre le rendu » (catégorie c de
+     * l'audit setTimeout). Fonctionne depuis un handler hors zone (l'injecteur est passé
+     * explicitement). Sans contexte d'injection (plugin instancié avec `new` dans les
+     * specs, donc sans template rendu par Angular), l'action est exécutée immédiatement.
+     */
+    protected runAfterNextRender(action: () => void): void {
+        if (this._pluginInjector) {
+            afterNextRender(action, { injector: this._pluginInjector });
+        } else {
+            action();
+        }
     }
 
     protected handleMetadataLoaded() {

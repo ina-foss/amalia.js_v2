@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, DeferBlockState, TestBed } from "@angular/core/testing";
 import { fakeAsync, tick } from "@angular/core/testing";
 import { TranscriptionPluginComponent } from "./transcription-plugin.component";
 import { MediaPlayerService } from "../../service/media-player-service";
-import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from "@angular/core";
+import { ApplicationRef, CUSTOM_ELEMENTS_SCHEMA, ElementRef } from "@angular/core";
 import { MediaPlayerElement } from "../../core/media-player-element";
 import { DefaultLogger } from "../../core/logger/default-logger";
 import { HttpClient } from "@angular/common/http";
@@ -642,4 +642,143 @@ describe("TranscriptionPluginComponent", () => {
         tick(101);
         expect(component.automaticallyScrolled).toBeFalse();
     }));
+
+    describe("rendu par-mot différé (@defer, phase 8)", () => {
+        /** Deux segments avec sous-localisations (7 mots au total) + annotations vides. */
+        const segments = () =>
+            [
+                {
+                    tcIn: 0,
+                    tcOut: 2,
+                    text: "Bonjour tout le monde",
+                    label: "seg1",
+                    thumb: "",
+                    annotations: [],
+                    subLocalisations: [
+                        { tcIn: 0, tcOut: 0.5, text: "Bonjour", label: "", thumb: "" },
+                        { tcIn: 0.5, tcOut: 1, text: "tout", label: "", thumb: "" },
+                        { tcIn: 1, tcOut: 1.5, text: "le", label: "", thumb: "" },
+                        { tcIn: 1.5, tcOut: 2, text: "monde", label: "", thumb: "" },
+                    ],
+                },
+                {
+                    tcIn: 2,
+                    tcOut: 4,
+                    text: "Deuxième segment ici",
+                    label: "seg2",
+                    thumb: "",
+                    annotations: [],
+                    subLocalisations: [
+                        { tcIn: 2, tcOut: 2.5, text: "Deuxième", label: "", thumb: "" },
+                        { tcIn: 2.5, tcOut: 3, text: "segment", label: "", thumb: "" },
+                        { tcIn: 3, tcOut: 4, text: "ici", label: "", thumb: "" },
+                    ],
+                },
+            ] as any;
+
+        beforeEach(() => {
+            spyOn(component.playerService, "get").and.returnValue(component.mediaPlayerElement);
+            component.tcOffset = 0;
+        });
+
+        it("rend le texte brut du segment en placeholder puis les mots après hydratation", async () => {
+            component.transcriptions.set(segments());
+            fixture.detectChanges();
+            const deferBlocks = await fixture.getDeferBlocks();
+            expect(deferBlocks.length).toBe(2);
+            await deferBlocks[0].render(DeferBlockState.Placeholder);
+            const shadow = fixture.nativeElement.shadowRoot;
+            const firstSegment = shadow.querySelectorAll(".segment")[0];
+            expect(firstSegment.querySelectorAll(".w-placeholder").length).toBe(1);
+            expect(firstSegment.querySelector(".w-placeholder").textContent).toContain("Bonjour tout le monde");
+            expect(firstSegment.querySelectorAll(".w").length).toBe(0);
+            await deferBlocks[0].render(DeferBlockState.Complete);
+            expect(firstSegment.querySelectorAll(".w").length).toBe(4);
+            expect(firstSegment.querySelectorAll(".w-placeholder").length).toBe(0);
+        });
+
+        it("deferredRendering=false : rendu direct des mots, sans bloc @defer", async () => {
+            component.deferredRendering = false;
+            component.transcriptions.set(segments());
+            fixture.detectChanges();
+            const deferBlocks = await fixture.getDeferBlocks();
+            expect(deferBlocks.length).toBe(0);
+            const shadow = fixture.nativeElement.shadowRoot;
+            expect(shadow.querySelectorAll(".w").length).toBe(7);
+            expect(shadow.querySelectorAll(".w-placeholder").length).toBe(0);
+        });
+
+        it("recherche : force l'hydratation des blocs puis relance la recherche sur le DOM complet", async () => {
+            component.transcriptions.set(segments());
+            fixture.detectChanges();
+            const deferBlocks = await fixture.getDeferBlocks();
+            for (const block of deferBlocks) {
+                await block.render(DeferBlockState.Placeholder);
+            }
+
+            component.searchWord("Bonjour");
+
+            // La recherche est différée : hydratation d'abord (forceRenderAll), sélection ensuite.
+            expect(component.forceRenderAll()).toBeTrue();
+            expect(component.searching()).toBeFalse();
+
+            for (const block of deferBlocks) {
+                await block.render(DeferBlockState.Complete);
+            }
+            // Flush du afterNextRender one-shot qui ré-exécute la recherche sur le DOM hydraté.
+            TestBed.inject(ApplicationRef).tick();
+
+            expect(component.searching()).toBeTrue();
+            expect(fixture.nativeElement.shadowRoot.querySelectorAll(".founded-text").length).toBe(1);
+        });
+
+        it("écrit activeSegmentTcIn (condition when d'hydratation) quand un segment devient actif", () => {
+            const obj = document.createElement("video");
+            component.mediaPlayerElement.setMediaPlayer(obj);
+            new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+            spyOn(component.mediaPlayerElement.getMediaPlayer(), "getCurrentTime").and.returnValue(0);
+            component.pluginConfiguration.data.mode = 2;
+
+            const container = document.createElement("div");
+            container.innerHTML = `
+                <div class="segment" data-tcin="0" data-tcout="2">
+                    <div class="subsegment"><div class="text">
+                        <span class="w" data-tcin="0" data-tcout="2">Bonjour</span>
+                    </div></div>
+                </div>`;
+            component.transcriptionElement = new ElementRef(container);
+
+            component._handleOnTimeChangeForTesting();
+
+            expect(component.activeSegmentTcIn()).toBe(0);
+        });
+
+        it("programme une re-sélection karaoké après hydratation quand le segment actif n'a pas encore ses mots", () => {
+            const obj = document.createElement("video");
+            component.mediaPlayerElement.setMediaPlayer(obj);
+            new MediaElement(obj, component.mediaPlayerElement.eventEmitter);
+            spyOn(component.mediaPlayerElement.getMediaPlayer(), "getCurrentTime").and.returnValue(0);
+            component.pluginConfiguration.data.mode = 2;
+            component.pluginConfiguration.data.withSubLocalisations = true;
+
+            // Segment actif non hydraté : placeholder présent, aucun mot .w rendu.
+            const container = document.createElement("div");
+            container.innerHTML = `
+                <div class="segment" data-tcin="0" data-tcout="2">
+                    <div class="subsegment"><div class="text">
+                        <span class="w-placeholder" data-tcin="0" data-tcout="2">Bonjour tout le monde</span>
+                    </div></div>
+                </div>`;
+            component.transcriptionElement = new ElementRef(container);
+            const scheduleSpy = spyOn<any>(component, "runAfterNextRender");
+
+            component._handleOnTimeChangeForTesting();
+            expect(scheduleSpy).toHaveBeenCalledTimes(1);
+
+            // Garde anti-boucle : un second passage sur le même segment ne reprogramme rien.
+            scheduleSpy.calls.reset();
+            component._handleOnTimeChangeForTesting();
+            expect(scheduleSpy).not.toHaveBeenCalled();
+        });
+    });
 });

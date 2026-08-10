@@ -9,13 +9,17 @@ import { MediaPlayerService } from "../../service/media-player-service";
 import { Tooltip } from "primeng/tooltip";
 import { NgClass } from "@angular/common";
 import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
+import {
+    OutsideZoneMousemoveDirective,
+    OutsideZoneScrollDirective,
+} from "../../core/directive/outside-zone-event.directive";
 
 @Component({
     selector: "amalia-storyboard",
     templateUrl: "./storyboard-plugin.component.html",
     styleUrls: ["./storyboard-plugin.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
-    imports: [Tooltip, NgClass, TcFormatPipe],
+    imports: [Tooltip, NgClass, TcFormatPipe, OutsideZoneMousemoveDirective, OutsideZoneScrollDirective],
     // OnPush (phase 7 vague 2) : les trois champs template mutés hors handlers de template
     // (displaySynchro, openIntervalList, listOfThumbnailFilter — timers, listeners player)
     // sont des signals ; le reste est soit constant, soit muté uniquement par des handlers
@@ -121,6 +125,16 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
     public stopScroll = false;
     private autoSyncTimer: ReturnType<typeof setTimeout> | null = null;
     private isAutoScrolling = false;
+
+    /**
+     * Handlers des événements haute fréquence migrés hors zone + throttle rAF (phase 8,
+     * directives OutsideZone*Directive) : exécutés hors zone Angular, au plus 1×/frame.
+     * handleScroll/updateSynchro n'écrivent que les signals listOfThumbnailFilter et
+     * displaySynchro plus du DOM (transform/scrollTop) ; resetAutoSyncTimer ne manipule
+     * que des timers.
+     */
+    public readonly onScrollOutside = (): void => this.handleScroll();
+    public readonly onMousemoveOutside = (): void => this.resetAutoSyncTimer();
 
     constructor(playerService: MediaPlayerService) {
         super(playerService);
@@ -313,10 +327,13 @@ export class StoryboardPluginComponent extends PluginBase<StoryboardConfig> impl
             this.mediaPlayerElement.getMediaPlayer().getDuration() >= 0
         ) {
             this.initStoryboard();
-            setTimeout(() => {
+            // Resynchronise la vignette active une fois les miniatures re-rendues (le @for lit
+            // le signal listOfThumbnailFilter écrit par initStoryboard→handleScroll) :
+            // afterNextRender remplace l'ancien setTimeout(100) — audit setTimeout catégorie c.
+            this.runAfterNextRender(() => {
                 this.currentTime = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
                 this.handleSeeked();
-            }, 100);
+            });
         }
     }
 

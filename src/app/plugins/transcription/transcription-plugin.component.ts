@@ -25,6 +25,10 @@ import { NgClass } from "@angular/common";
 import { Tooltip } from "primeng/tooltip";
 import { TcFormatPipe as TcFormatPipe_1 } from "../../core/utils/tc-format.pipe";
 import { SanitizeHtmlPipe } from "../../core/utils/sanitize-html.pipe";
+import {
+    OutsideZoneMousemoveDirective,
+    OutsideZoneScrollDirective,
+} from "../../core/directive/outside-zone-event.directive";
 
 export class TcFormatPipe implements PipeTransform {
     transform(
@@ -41,7 +45,15 @@ export class TcFormatPipe implements PipeTransform {
     templateUrl: "./transcription-plugin.component.html",
     styleUrls: ["./transcription-plugin.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
-    imports: [NgClass, Tooltip, ToastComponent, TcFormatPipe_1, SanitizeHtmlPipe],
+    imports: [
+        NgClass,
+        Tooltip,
+        ToastComponent,
+        TcFormatPipe_1,
+        SanitizeHtmlPipe,
+        OutsideZoneMousemoveDirective,
+        OutsideZoneScrollDirective,
+    ],
     // OnPush (phase 7 vague 2) : le karaoké (handleOnTimeChange) reste du DOM direct
     // (querySelectorAll + classList) hors template ; tout l'état lu par le template et muté
     // hors handlers de template est signalisé (transcriptions, displaySynchro, searching,
@@ -114,6 +126,39 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     private autoSyncTimer: ReturnType<typeof setTimeout> | null = null;
     private isAutoScrolling = false;
 
+    /**
+     * Rendu par-mot différé (@defer par segment) — feature-flag `data.deferredRendering`
+     * (défaut true), renseigné dans init() avant le premier rendu (comme les autres champs
+     * plats de config, couvert par le listener INIT 'zone' de PluginBase).
+     */
+    public deferredRendering = true;
+    /**
+     * Force l'hydratation de tous les blocs @defer (condition `when` du template) — signal :
+     * passé à true par la recherche (searchWord) et le surlignage des entités nommées
+     * (handleMatchedTextStyle), qui ont besoin de tous les mots dans le DOM.
+     */
+    public readonly forceRenderAll = signal(false);
+    /**
+     * tcIn du segment actif (karaoké) — signal : condition `when` du @defer du segment
+     * correspondant, pour que le segment actif s'hydrate même hors viewport (seek lointain
+     * en pause) via le cycle de rendu Angular (déterministe, contrairement au trigger
+     * `on viewport` qui dépend de l'IntersectionObserver).
+     */
+    public readonly activeSegmentTcIn = signal<number | null>(null);
+    /** Vrai une fois l'hydratation globale (forceRenderAll) rendue : les mots sont dans le DOM. */
+    private wordsRendered = false;
+    /** Garde anti-boucle : tcIn du dernier segment pour lequel un refresh karaoké a été programmé. */
+    private karaokeRefreshTcIn: number | null = null;
+
+    /**
+     * Handlers des événements haute fréquence migrés hors zone + throttle rAF (phase 8,
+     * directives OutsideZone*Directive) : exécutés hors zone Angular, au plus 1×/frame.
+     * handleScroll/updateSynchro n'écrivent que le signal displaySynchro et des flags non
+     * bindés ; resetAutoSyncTimer ne manipule que des timers.
+     */
+    public readonly onScrollOutside = (): void => this.handleScroll(true);
+    public readonly onMousemoveOutside = (): void => this.resetAutoSyncTimer();
+
     constructor(playerService: MediaPlayerService) {
         super(playerService);
         this.pluginName = TranscriptionPluginComponent.PLUGIN_NAME;
@@ -139,6 +184,8 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     override init() {
         super.init();
         if (this.pluginConfiguration.data) {
+            // Feature-flag du rendu par-mot différé (@defer par segment), défaut true.
+            this.deferredRendering = this.pluginConfiguration.data.deferredRendering !== false;
             this.tcDisplayFormat = this.pluginConfiguration.data.timeFormat || this.getDefaultConfig().data.timeFormat;
             if (this.pluginConfiguration.data.fps) {
                 this.fps = this.pluginConfiguration.data.fps;
@@ -223,6 +270,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 label: "Rechercher dans la transcription",
                 key: "Enter",
                 labelSynchro: "Synchronisation de la transcription",
+                deferredRendering: true,
             },
         };
     }
@@ -458,6 +506,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 this._inGap = false;
                 this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcin"));
                 this.lastSegmentTcOut = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcout"));
+                // Hydrate le bloc @defer du segment actif via la condition `when` du template
+                // (écriture de signal → tick coalescé → rendu), y compris hors viewport.
+                this.activeSegmentTcIn.set(this.lastSegmentTcIn);
                 segmentFilteredNodes.forEach((segmentNode) => {
                     segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
                 });
@@ -474,6 +525,19 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                 });
                 if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
                     this.selectWords(karaokeTcDelta);
+                    // Rendu différé : si le segment actif vient seulement d'être déclenché
+                    // (aucun `.w` encore rendu — hydratation asynchrone), re-exécute la
+                    // sélection karaoké après le prochain rendu (cas seek lointain en pause :
+                    // le scroll se fait sur les offsets des segments, toujours présents, puis
+                    // le mot est re-sélectionné ici). Garde anti-boucle par segment.
+                    if (
+                        this.deferredRendering &&
+                        !segmentFilteredNodes[0].querySelector(`.${TranscriptionPluginComponent.SELECTOR_WORD}`) &&
+                        this.karaokeRefreshTcIn !== this.lastSegmentTcIn
+                    ) {
+                        this.karaokeRefreshTcIn = this.lastSegmentTcIn;
+                        this.runAfterNextRender(() => this.handleOnTimeChange());
+                    }
                 }
                 if (this.lastSelectedNode !== segmentFilteredNodes[0]) {
                     this.lastSelectedNode = segmentFilteredNodes;
@@ -550,8 +614,10 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     protected override handleMetadataLoaded() {
         if (this.metaDataLoaded()) {
             this.parseTranscription();
-            // Force initial word sync after Angular re-renders the template (e.g. detached mode, paused video)
-            setTimeout(() => this.handleOnTimeChange(), 50);
+            // Synchronisation initiale des mots une fois le template re-rendu (mode détaché,
+            // vidéo en pause) : afterNextRender remplace l'ancien setTimeout(50) — audit
+            // setTimeout catégorie c (« attendre le rendu »).
+            this.runAfterNextRender(() => this.handleOnTimeChange());
         }
     }
 
@@ -613,10 +679,42 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     }
 
     /**
+     * Vrai quand le rendu différé est actif et que tous les mots ne sont pas encore dans le
+     * DOM : les chemins qui font un querySelectorAll global sur `.w` (recherche, entités
+     * nommées) doivent d'abord forcer l'hydratation des blocs @defer. La présence d'un
+     * placeholder dans le DOM fait foi : un DOM sans placeholder (tout hydraté, ou DOM
+     * fabriqué dans les specs) n'a besoin d'aucune hydratation.
+     */
+    private needsWordHydration(): boolean {
+        if (!this.deferredRendering || this.wordsRendered) {
+            return false;
+        }
+        return !!this.transcriptionElement?.nativeElement?.querySelector(".w-placeholder");
+    }
+
+    /**
+     * Force l'hydratation de tous les blocs @defer (signal forceRenderAll → condition `when`
+     * du template) puis ré-exécute `action` après le rendu — l'hydratation est asynchrone,
+     * afterNextRender garantit que les mots sont dans le DOM au moment de la sélection.
+     */
+    private hydrateAllWordsThen(action: () => void): void {
+        this.forceRenderAll.set(true);
+        this.runAfterNextRender(() => {
+            this.wordsRendered = true;
+            action();
+        });
+    }
+
+    /**
      * Search word and scroll to first result
      */
 
     public searchWord(searchText: string) {
+        if (this.needsWordHydration()) {
+            // Rendu différé : hydrate tous les segments puis relance la recherche sur le DOM complet.
+            this.hydrateAllWordsThen(() => this.searchWord(searchText));
+            return;
+        }
         // Le tableau est poussé au fil de la boucle (synchrone) : le signal est publié une fois
         // en tête, la vue lit la longueur finale au rendu suivant.
         const listOfSearchedNodes = new Array<HTMLElement>();
@@ -851,6 +949,18 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
      */
     private handleMatchedTextStyle() {
         if (!this.transcriptionElement || !this.transcriptionElement.nativeElement) {
+            return;
+        }
+        const hasNamedEntities = (this.transcriptions() ?? []).some((tr) => tr.annotations?.length > 0);
+        if (!hasNamedEntities) {
+            // Rien à surligner : inutile de parcourir le DOM (et surtout de forcer
+            // l'hydratation des blocs @defer).
+            return;
+        }
+        if (this.needsWordHydration()) {
+            // Rendu différé : le surlignage repose sur querySelectorAll des mots → hydrate
+            // tous les segments puis ré-exécute la sélection sur le DOM complet.
+            this.hydrateAllWordsThen(() => this.handleMatchedTextStyle());
             return;
         }
         const listOfNamedEntitiesNodes = new Set<HTMLElement>();

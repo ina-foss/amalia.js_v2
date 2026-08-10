@@ -88,16 +88,18 @@
             </svg>
         </div>
     </div>
+    <!-- scroll/mousemove (haute fréquence) : hors zone + throttle rAF (phase 8) ;
+         click/keydown (basse fréquence) restent in-template. -->
     <div
         class="transcription"
         #transcriptionElement
         tabindex="0"
-        (scroll)="handleScroll(true)"
-        (mousemove)="resetAutoSyncTimer()"
+        [amaliaOutsideScroll]="onScrollOutside"
+        [amaliaOutsideMousemove]="onMousemoveOutside"
         (click)="resetAutoSyncTimer()"
         (keydown)="resetAutoSyncTimer()"
     >
-        @for (t of transcriptions(); track t) {
+        @for (t of transcriptions(); track t.tcIn) {
             <div class="segment" [attr.data-tcin]="t.tcIn" [attr.data-tcOut]="t.tcOut">
                 <div class="copybutton tooltip" (click)="copy(t)">
                     <span class="tooltiptext">Copier la transcription</span>
@@ -144,13 +146,40 @@
                     <div class="title">{{ t.label }}</div>
                     <div class="text" (click)="seekToWord($event)">
                         @if (t.subLocalisations && t.subLocalisations.length > 0) {
-                            @for (w of t.subLocalisations; track w) {
-                                <div
-                                    class="w"
-                                    [attr.data-tcin]="w.tcIn"
-                                    [attr.data-tcOut]="w.tcOut"
-                                    [innerHTML]="w.text + ' ' | sanitizeHtml: 'html'"
-                                ></div>
+                            @if (deferredRendering) {
+                                <!-- Rendu par-mot différé (phase 8) : hydraté à l'entrée dans le
+                                     viewport, quand le segment devient actif (karaoké/seek — condition
+                                     when activeSegmentTcIn) ou globalement via forceRenderAll
+                                     (recherche, entités nommées). Le placeholder est le texte brut du
+                                     segment : hauteur ≈ identique, le scroll-sync sur les offsetTop
+                                     des segments reste valable. -->
+                                @defer (on viewport; when forceRenderAll() || t.tcIn === activeSegmentTcIn()) {
+                                    @for (w of t.subLocalisations; track w.tcIn) {
+                                        <div
+                                            class="w"
+                                            [attr.data-tcin]="w.tcIn"
+                                            [attr.data-tcOut]="w.tcOut"
+                                            [innerHTML]="w.text + ' ' | sanitizeHtml: 'html'"
+                                        ></div>
+                                    }
+                                } @placeholder {
+                                    <span
+                                        class="w-placeholder"
+                                        [attr.data-tcin]="t.tcIn"
+                                        [attr.data-tcOut]="t.tcOut"
+                                        [innerHTML]="t.text | sanitizeHtml: 'html'"
+                                    ></span>
+                                }
+                            } @else {
+                                <!-- Rendu direct historique (data.deferredRendering === false). -->
+                                @for (w of t.subLocalisations; track w.tcIn) {
+                                    <div
+                                        class="w"
+                                        [attr.data-tcin]="w.tcIn"
+                                        [attr.data-tcOut]="w.tcOut"
+                                        [innerHTML]="w.text + ' ' | sanitizeHtml: 'html'"
+                                    ></div>
+                                }
                             }
                         } @else {
                             <span

@@ -77,8 +77,8 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
     // allNodesChecked, indeterminate) ne sont mutées que par des handlers de template (vue
     // marquée dirty par l'événement) ou sous les listeners METADATA_LOADED/USER_SEGMENT_CHANGED
     // laissés volontairement en 'zone' (zone.run + markForCheck) : parseTimelineMetadata mute
-    // ces champs en place et met à jour les TreeNode PrimeNG, et updateTreeComponent pose un
-    // setTimeout qui doit rester dans la zone.
+    // ces champs en place et met à jour les TreeNode PrimeNG. Le setTimeout d'updateTreeComponent
+    // notifie lui-même la CD (markForCheck, audit setTimeout phase 8) et est zoneless-safe.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelinePluginComponent extends PluginBase<TimelineConfig> implements OnInit, AfterViewInit {
@@ -437,7 +437,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         // METADATA_LOADED/USER_SEGMENT_CHANGED restent volontairement en 'zone' :
         // parseTimelineMetadata mute en place des collections plates lues par le template
         // (listOfBlocks, listOfBlocksIndexes, nodes, mainLocalisations) et les TreeNode
-        // PrimeNG, et updateTreeComponent pose un setTimeout qui doit rester dans la zone.
+        // PrimeNG. (Le setTimeout d'updateTreeComponent notifie désormais lui-même la CD
+        // via markForCheck — audit setTimeout phase 8 — et n'impose plus la zone.)
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.METADATA_LOADED,
@@ -1256,6 +1257,8 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
     }
 
     updateTreeComponent() {
+        // Le setTimeout(10) attend que PrimeNG ait propagé la sélection (ngModel/selectionChange)
+        // avant de recalculer checked/partialSelected sur les TreeNode.
         setTimeout(() => {
             this.nodes.forEach((parentNode) => {
                 let allChildrenUnchecked: boolean = true;
@@ -1271,6 +1274,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
                 parentNode.checked = allChildrenChecked;
                 parentNode.partialSelected = !allChildrenChecked && !allChildrenUnchecked;
             });
+            // Les TreeNode PrimeNG (checked/partialSelected) sont lus par le template de p-tree
+            // et ne sont pas signalisables : on notifie explicitement la CD — markForCheck hors
+            // zone programme un tick coalescé via le scheduler hybride, ce qui rend ce timer
+            // zoneless-safe (audit setTimeout, catégorie b).
+            this.cdr.markForCheck();
         }, 10);
         const nbNodes = this.getAllNodes(this.nodes).length;
         const nbSelectedNodes = this.selectedNodes().length;

@@ -25,4 +25,9 @@ export interface TranscriptionConfig {
     tcIn?: number;
     duration?: number;
     resourceType?: 'stock' | 'flux';
+    /**
+     * Rendu par-mot différé (@defer par segment, placeholder = texte brut du segment).
+     * Défaut true ; passer à false pour retrouver le rendu direct historique.
+     */
+    deferredRendering?: boolean;
 }

@@ -98,11 +98,13 @@
         </ul>
     </div>
 </div>
+<!-- scroll/mousemove (haute fréquence) : hors zone + throttle rAF (phase 8) ;
+     click/keydown (basse fréquence) restent in-template. -->
 <div
     class="storyboard"
     tabindex="0"
-    (scroll)="handleScroll()"
-    (mousemove)="resetAutoSyncTimer()"
+    [amaliaOutsideScroll]="onScrollOutside"
+    [amaliaOutsideMousemove]="onMousemoveOutside"
     (click)="resetAutoSyncTimer()"
     (keydown)="resetAutoSyncTimer()"
 >

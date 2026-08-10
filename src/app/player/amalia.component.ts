@@ -43,13 +43,14 @@ import { LoggerLevel } from "../core/logger/logger-level";
 import { Utils } from "../core/utils/utils";
 import { ShortcutEvent } from "../core/config/model/shortcuts-event";
 import { NgClass } from "@angular/common";
+import { OutsideZoneMousemoveDirective } from "../core/directive/outside-zone-event.directive";
 
 @Component({
     selector: "amalia-player",
     templateUrl: "./amalia.component.html",
     styleUrls: ["./amalia.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
-    imports: [NgClass],
+    imports: [NgClass, OutsideZoneMousemoveDirective],
     // OnPush (phase 7 vague 3) : les listeners player de ce composant racine passent par son
     // addListener local (Utils.addListener brut, PAS de zone.run/markForCheck) — tout champ lu
     // par le template et muté depuis ces handlers, un timeout/interval ou une promesse est donc
@@ -1006,6 +1007,22 @@ export class AmaliaComponent implements OnInit, OnDestroy {
         clearTimeout(this.chrono);
         this.startTimer();
     }
+
+    /**
+     * Handler du mousemove racine, migré hors zone + throttle rAF (phase 8, directive
+     * OutsideZoneMousemoveDirective) : s'exécute hors zone Angular, au plus 1×/frame.
+     * - resetTimer/displayControlBar : timers + émissions player (PLAYER_MOUSE_ENTER/LEAVE),
+     *   les listeners qui les écoutent portent leur propre ListenerZonePolicy ;
+     * - focus() : DOM pur ;
+     * - playerHover : signal (l'écriture programme seule le tick, la vue est OnPush).
+     * Les bindings basse fréquence (mouseenter/mouseover/mouseout/focus/blur) restent in-template.
+     */
+    public readonly onMousemoveOutside = (): void => {
+        this.resetTimer();
+        this.displayControlBar(true);
+        this.focus();
+        this.playerHover.set(true);
+    };
 
     // hide controls if mouse in inactive since 3 seconds
 
