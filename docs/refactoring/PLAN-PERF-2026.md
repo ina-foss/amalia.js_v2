@@ -20,6 +20,7 @@
 | 8 | Hors-zone + `@defer` transcription + audit setTimeout | ✅ (lint + 887 specs dont 11 nouvelles + build mono-fichier sans chunk ; main.js 3,46 Mo stable ; directives `OutsideZone{Mousemove,Scroll}Directive` (runOutsideAngular + throttle rAF, input-callback — pas d'output pour éviter le markViewDirty du wrapListener) appliquées au mousemove racine du player et aux scroll/mousemove transcription+storyboard (click/keydown et drag progress-bar restent in-template) ; transcription : `@defer (on viewport; when forceRenderAll() \|\| t.tcIn === activeSegmentTcIn())` par segment, placeholder = texte brut isométrique, `track t.tcIn`/`track w.tcIn`, feature-flag `data.deferredRendering` (défaut true), recherche/entités nommées forcent l'hydratation puis re-sélectionnent via afterNextRender, seek en pause couvert par le when activeSegmentTcIn + re-sélection karaoké one-shot ; audit setTimeout soldé : 2 conversions (c) en `PluginBase.runAfterNextRender` (transcription handleMetadataLoaded, storyboard handleMetadataLoaded), 1 (b) markForCheck (timeline updateTreeComponent, TreeNode PrimeNG), le reste trié (a) — TOUT ✅ dans SETTIMEOUT-AUDIT.md) | 2026-08-10 | |
 | 9 | Zoneless | 🟡 **préparée** — `provideZonelessChangeDetection()` sélectionné par `environment.zoneless` (bootstrap.ts), config de build/serve `zoneless` pour valider dès maintenant (`ng serve -c zoneless`). Gates code soldés (13/13 OnPush, audit setTimeout ✅, politiques compatibles NgZone noop). **Flip final = `zoneless: true` dans environment.prod.ts + retrait de l'import zone.js dans main.ts, APRÈS ≥ 1 cycle de release en prod des phases 1-8** | 2026-08-10 | |
 | 10 | Budgets finaux, CHANGELOG, docs | ✅ (budgets initial 3,6/4 Mo + anyComponentStyle 100/200 Ko ; CHANGELOG 2.1.26-develop ; PLAYER_EXPERT_INTEGRATION.md corrigé — le concat n'existe plus ; environment.prod.ts corrigé production: true) | 2026-08-10 | |
+| — | **Smoke visuel avant merge** | 🟡 **partiel** — passe hors réseau INA du 2026-08-12 consignée dans [SMOKE-CHECKLIST.md](SMOKE-CHECKLIST.md#passe-du-2026-08-12-fin-de-chantier-branche-refactorperf-v21) : control-bar experte, transcription (karaoké/auto-scroll/recherche/`@defer`), timeline (accordéons/p-tree/interactjs), toast et absence de fuite de listeners **validés** ; 6 anomalies rejouées sur le bundle pré-chantier 2.1.24 ⇒ **toutes pré-existantes**. Reste à dérouler **sur le réseau INA** : médias réels (hls.js/backwardsSrc/vignettes), waveform, plein écran réel, annotation/segments + export Excel (dans `player-expert`), mode photo, mesures Angular DevTools M1/M2 | 2026-08-12 | |
 
 ## Contexte
 
@@ -46,7 +47,7 @@ Un **store de signals `PlaybackState`** (framework-free, 1 instance par `MediaPl
 
 ## Phases (chacune = livraison indépendante, avec gates)
 
-**Gates systématiques** : `ng lint` + `npm test` (51 specs vertes) + `npm run build:component` + `node scripts/size-report.mjs` + [SMOKE-CHECKLIST.md](SMOKE-CHECKLIST.md).
+**Gates systématiques** : `ng lint` + `npm test` (887 specs vertes en fin de chantier) + `npm run build:component` + `node scripts/size-report.mjs` + [SMOKE-CHECKLIST.md](SMOKE-CHECKLIST.md).
 
 ### Phase 0 — Persistance du plan + baseline
 
