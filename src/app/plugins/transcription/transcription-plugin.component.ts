@@ -134,8 +134,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     public deferredRendering = true;
     /**
      * Force l'hydratation de tous les blocs @defer (condition `when` du template) — signal :
-     * passé à true par la recherche (searchWord) et le surlignage des entités nommées
-     * (handleMatchedTextStyle), qui ont besoin de tous les mots dans le DOM.
+     * passé à true par la seule recherche (searchWord), qui a besoin de tous les mots dans le
+     * DOM. Le surlignage des entités nommées, lui, est marqué sur les données
+     * ({@link markNamedEntities}) et n'hydrate donc plus rien.
      */
     public readonly forceRenderAll = signal(false);
     /**
@@ -673,6 +674,9 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
                         );
                     }
                 }
+                // Marque les entités nommées sur les données avant publication : le premier rendu
+                // porte déjà les classes, sans hydrater les blocs @defer (cf. markNamedEntities).
+                this.markNamedEntities(transcriptions);
                 this.transcriptions.set(transcriptions);
             }
         }
@@ -937,168 +941,88 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         }
     }
 
-    private predicateIsNodeTcInTcOutMatching(transcription) {
-        return (segment) =>
-            Math.round(transcription.tcIn) === Math.round(parseFloat(segment.getAttribute("data-tcin"))) &&
-            Math.round(transcription.tcOut) === Math.round(parseFloat(segment.getAttribute("data-tcout")));
-    }
-
     /**
-     * Ajoute la classe css named-entity aux textes correspondants aux annotations (named entities).
-     * @private
+     * Marque sur les **données** les mots appartenant à une entité nommée (`isNamedEntity`), lu
+     * ensuite par le template via `[class.named-entity]`.
+     *
+     * Remplace le surlignage historique en `querySelectorAll` : celui-ci exigeait que tous les
+     * mots soient dans le DOM et forçait donc l'hydratation de tous les blocs `@defer` dès qu'un
+     * seul segment portait une annotation — cas dominant sur les assets réels (mesuré sur un
+     * flux TV d'une heure : 127 segments sur 151 annotés, 10 405 mots et 12 955 nœuds rendus au
+     * chargement, soit le gain du rendu différé annulé). En marquant les données, le `@defer`
+     * reste différé : un segment hydraté plus tard obtient ses classes par binding.
+     *
+     * L'algorithme de correspondance est celui d'origine, transposé du `NodeList` de `.w` vers le
+     * tableau des sous-localisations, pour conserver le comportement à l'identique :
+     * - `matchedText` composé (« Emmanuel Macron ») : les mots consécutifs doivent tous
+     *   correspondre, sinon aucun n'est marqué ;
+     * - `matchedText` simple : tout mot correspondant est marqué ;
+     * - segment sans sous-localisations : le segment lui-même porte le drapeau (un tableau d'un
+     *   seul élément, ce qui reproduit le fait qu'un texte composé n'y matche jamais).
+     *
+     * La comparaison passe toujours par {@link TextUtils.hasSearchText} (casse et diacritiques).
      */
-    private handleMatchedTextStyle() {
-        if (!this.transcriptionElement || !this.transcriptionElement.nativeElement) {
+    private markNamedEntities(transcriptions: Array<TranscriptionLocalisation>): void {
+        if (!transcriptions || transcriptions.length === 0) {
             return;
         }
-        const hasNamedEntities = (this.transcriptions() ?? []).some((tr) => tr.annotations?.length > 0);
-        if (!hasNamedEntities) {
-            // Rien à surligner : inutile de parcourir le DOM (et surtout de forcer
-            // l'hydratation des blocs @defer).
-            return;
-        }
-        if (this.needsWordHydration()) {
-            // Rendu différé : le surlignage repose sur querySelectorAll des mots → hydrate
-            // tous les segments puis ré-exécute la sélection sur le DOM complet.
-            this.hydrateAllWordsThen(() => this.handleMatchedTextStyle());
-            return;
-        }
-        const listOfNamedEntitiesNodes = new Set<HTMLElement>();
-        const segmentElementNodes = Array.from(
-            this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>(".segment"),
-        );
-
-        this.transcriptions().forEach((tr) => {
-            const segmentElementNodesForCurrentTranscription = segmentElementNodes.filter(
-                this.predicateIsNodeTcInTcOutMatching(tr),
-            );
-            tr.annotations.forEach((a) => {
-                const matchedTexts = Array.isArray(a.matchedText) ? a.matchedText : [a.matchedText];
-                matchedTexts.forEach((matchedText) =>
-                    this.collectNamedEntityNodes(
-                        matchedText,
-                        segmentElementNodesForCurrentTranscription,
-                        listOfNamedEntitiesNodes,
-                    ),
-                );
+        transcriptions.forEach((tr) => {
+            const words = tr.subLocalisations?.length > 0 ? tr.subLocalisations : [tr];
+            words.forEach((word) => (word.isNamedEntity = false));
+            if (!tr.annotations?.length) {
+                return;
+            }
+            tr.annotations.forEach((annotation) => {
+                const matchedTexts = Array.isArray(annotation.matchedText)
+                    ? annotation.matchedText
+                    : [annotation.matchedText];
+                matchedTexts.forEach((matchedText) => this.markMatchedWords(matchedText, words));
             });
-        });
-
-        listOfNamedEntitiesNodes.forEach((e) => {
-            e.classList.add(TranscriptionPluginComponent.SELECTOR_NAMED_ENTITY);
         });
     }
 
     /**
-     * Collecte les noeuds de mots correspondant à un texte d'annotation (named entity).
-     * @private
+     * Marque les mots d'un segment correspondant à un `matchedText` d'annotation.
      */
-    private collectNamedEntityNodes(
-        matchedText: string,
-        segmentElementNodes: HTMLElement[],
-        listOfNamedEntitiesNodes: Set<HTMLElement>,
-    ) {
-        if (matchedText.includes(" ")) {
-            //Matched texte est composé exemple: Emmanuel Macron
-            const matchedTextArray = matchedText.split(" ");
-            segmentElementNodes.forEach((segmentElementNode) => {
-                const wordElementNodes = segmentElementNode.querySelectorAll(
-                    `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
-                );
-                wordElementNodes.forEach((node, nodeIndex) => {
-                    TranscriptionPluginComponent.matchComposedSearchKey(
-                        node,
-                        matchedTextArray,
-                        wordElementNodes,
-                        nodeIndex,
-                        listOfNamedEntitiesNodes,
-                    );
-                });
-            });
-        } else {
-            segmentElementNodes.forEach((segmentElementNode) => {
-                const wordElementNodes = segmentElementNode.querySelectorAll(
-                    `.${TranscriptionPluginComponent.SELECTOR_WORD}`,
-                );
-                wordElementNodes.forEach((node) => {
-                    if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedText)) {
-                        listOfNamedEntitiesNodes.add(node as HTMLElement);
-                    }
-                });
-            });
+    private markMatchedWords(matchedText: string, words: Array<TranscriptionLocalisation>): void {
+        if (typeof matchedText !== "string") {
+            return;
         }
-    }
-
-    private static matchComposedSearchKey = (
-        node: Element,
-        matchedTextArray: string[],
-        wordElementNodes: NodeListOf<Element>,
-        nodeIndex: number,
-        listOfNamedEntitiesNodes: Set<HTMLElement>,
-    ) => {
-        if (node.textContent && TextUtils.hasSearchText(node.textContent, matchedTextArray[0])) {
-            let allMatched = true;
-            let arrayOfMatchingWords = [];
-            arrayOfMatchingWords.push(node);
-            matchedTextArray.forEach((value, pos) => {
-                const __ret = TranscriptionPluginComponent.matchRemainingWords(
-                    pos,
-                    wordElementNodes,
-                    nodeIndex,
-                    allMatched,
-                    value,
-                    arrayOfMatchingWords,
-                );
-                allMatched = __ret.allMatched;
-                arrayOfMatchingWords = __ret.arrayOfMatchingWords;
+        if (!matchedText.includes(" ")) {
+            words.forEach((word) => {
+                if (TextUtils.hasSearchText(word.text, matchedText)) {
+                    word.isNamedEntity = true;
+                }
+            });
+            return;
+        }
+        // Texte composé : la suite de mots à partir de l'index courant doit matcher entièrement.
+        const parts = matchedText.split(" ");
+        words.forEach((word, index) => {
+            if (!TextUtils.hasSearchText(word.text, parts[0])) {
+                return;
+            }
+            const candidates = [word];
+            const allMatched = parts.every((part, pos) => {
+                if (pos === 0) {
+                    return true;
+                }
+                const next = words[index + pos];
+                if (!next || !TextUtils.hasSearchText(next.text, part)) {
+                    return false;
+                }
+                candidates.push(next);
+                return true;
             });
             if (allMatched) {
-                arrayOfMatchingWords.forEach((wordNode) => {
-                    listOfNamedEntitiesNodes.add(wordNode);
-                });
+                candidates.forEach((candidate) => (candidate.isNamedEntity = true));
             }
-        }
-    };
-    private static matchRemainingWords = (
-        pos: number,
-        wordElementNodes: NodeListOf<Element>,
-        nodeIndex: number,
-        allMatched: boolean,
-        value: string,
-        arrayOfMatchingWords: any[],
-    ) => {
-        if (pos > 0) {
-            const nextNode = wordElementNodes[nodeIndex + pos];
-            if (
-                allMatched &&
-                nextNode &&
-                nextNode.textContent &&
-                TextUtils.hasSearchText(nextNode.textContent, value)
-            ) {
-                arrayOfMatchingWords.push(nextNode);
-            } else {
-                allMatched = false;
-                arrayOfMatchingWords = [];
-            }
-        }
-        return { allMatched, arrayOfMatchingWords };
-    };
+        });
+    }
 
     ngAfterViewInit(): void {
-        this.subscriptionToEventsEmitters.push(
-            Utils.waitFor(
-                () =>
-                    this.transcriptionElement &&
-                    this.transcriptionElement.nativeElement &&
-                    this.transcriptions() &&
-                    this.transcriptions().length > 0,
-                undefined,
-                this.handleMatchedTextStyle.bind(this),
-                this.intervalStep,
-                this.timeout,
-                this.setDataLoading.bind(this),
-            ),
-        );
+        // Le surlignage des entités nommées ne dépend plus du DOM (markNamedEntities est appelé
+        // par parseTranscription) : le Utils.waitFor qui attendait le rendu des mots a disparu.
         Utils.displaySnackBar(
             this.messagesComponent,
             "Les transcriptions sont issues d'un traitement par IA et peuvent contenir des erreurs.",

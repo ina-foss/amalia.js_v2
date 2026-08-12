@@ -549,80 +549,90 @@ describe("TranscriptionPluginComponent", () => {
         expect(component.displaySynchro()).toBeTrue();
     });
 
-    it("should match composed named entity and apply css class", () => {
-        const container = document.createElement("div");
-        container.innerHTML = `
-          <div class="segment" data-tcin="0" data-tcout="2">
-            <div class="subsegment"><div class="text">
-              <span class="w">Emmanuel</span>
-              <span class="w">Macron</span>
-            </div></div>
-          </div>`;
-        component.transcriptionElement = new ElementRef(container);
-        component.transcriptions.set([
-            {
-                tcIn: 0,
-                tcOut: 2,
-                text: "Emmanuel Macron",
-                annotations: [{ matchedText: "Emmanuel Macron" }],
-            } as any,
-        ]);
+    // Les entités nommées sont marquées sur les données (isNamedEntity) et rendues par le binding
+    // [class.named-entity] : plus aucun querySelectorAll, donc plus d'hydratation forcée des
+    // blocs @defer. Les specs assertent donc les drapeaux, au niveau du nouveau contrat.
+    const segmentAvecMots = (mots: string[], matchedText: string | string[]) => ({
+        tcIn: 0,
+        tcOut: 2,
+        text: mots.join(" "),
+        subLocalisations: mots.map((text, i) => ({ text, tcIn: i, tcOut: i + 1 })),
+        annotations: [{ matchedText }],
+    });
+    const drapeaux = (segment: any) => segment.subLocalisations.map((w: any) => w.isNamedEntity === true);
 
-        (component as any).handleMatchedTextStyle();
+    it("should mark composed named entity on the words", () => {
+        const segment = segmentAvecMots(["Emmanuel", "Macron"], "Emmanuel Macron");
 
-        const marked = container.querySelectorAll(".named-entity");
-        expect(marked.length).toBe(2);
+        (component as any).markNamedEntities([segment]);
+
+        expect(drapeaux(segment)).toEqual([true, true]);
     });
 
-    it("should apply css class when matchedText is an array of strings", () => {
-        const container = document.createElement("div");
-        container.innerHTML = `
-          <div class="segment" data-tcin="0" data-tcout="2">
-            <div class="subsegment"><div class="text">
-              <span class="w">Emmanuel</span>
-              <span class="w">Macron</span>
-              <span class="w">Paris</span>
-            </div></div>
-          </div>`;
-        component.transcriptionElement = new ElementRef(container);
-        component.transcriptions.set([
-            {
-                tcIn: 0,
-                tcOut: 2,
-                text: "Emmanuel Macron Paris",
-                annotations: [{ matchedText: ["Emmanuel Macron", "Paris"] }],
-            } as any,
-        ]);
+    it("should mark words when matchedText is an array of strings", () => {
+        const segment = segmentAvecMots(["Emmanuel", "Macron", "Paris"], ["Emmanuel Macron", "Paris"]);
 
-        (component as any).handleMatchedTextStyle();
+        (component as any).markNamedEntities([segment]);
 
-        const marked = container.querySelectorAll(".named-entity");
         // 2 mots pour le texte composé + 1 mot simple
-        expect(marked.length).toBe(3);
+        expect(drapeaux(segment)).toEqual([true, true, true]);
     });
 
-    it("should match single-word entity when matchedText is an array with one entry", () => {
-        const container = document.createElement("div");
-        container.innerHTML = `
-          <div class="segment" data-tcin="0" data-tcout="2">
-            <div class="subsegment"><div class="text">
-              <span class="w">Paris</span>
-            </div></div>
-          </div>`;
-        component.transcriptionElement = new ElementRef(container);
-        component.transcriptions.set([
-            {
-                tcIn: 0,
-                tcOut: 2,
-                text: "Paris",
-                annotations: [{ matchedText: ["Paris"] }],
-            } as any,
-        ]);
+    it("should mark single-word entity when matchedText is an array with one entry", () => {
+        const segment = segmentAvecMots(["Paris"], ["Paris"]);
 
-        (component as any).handleMatchedTextStyle();
+        (component as any).markNamedEntities([segment]);
 
-        const marked = container.querySelectorAll(".named-entity");
-        expect(marked.length).toBe(1);
+        expect(drapeaux(segment)).toEqual([true]);
+    });
+
+    it("should not mark a composed entity when the following words do not match", () => {
+        const segment = segmentAvecMots(["Emmanuel", "Dupont"], "Emmanuel Macron");
+
+        (component as any).markNamedEntities([segment]);
+
+        expect(drapeaux(segment)).toEqual([false, false]);
+    });
+
+    it("should mark only the matching words of a segment", () => {
+        const segment = segmentAvecMots(["le", "president", "Macron", "parle"], "Macron");
+
+        (component as any).markNamedEntities([segment]);
+
+        expect(drapeaux(segment)).toEqual([false, false, true, false]);
+    });
+
+    it("should fall back on the segment itself when there is no sub-localisation", () => {
+        const segment: any = { tcIn: 0, tcOut: 2, text: "Paris", annotations: [{ matchedText: "Paris" }] };
+
+        (component as any).markNamedEntities([segment]);
+
+        expect(segment.isNamedEntity).toBeTrue();
+    });
+
+    it("should leave words unmarked when the segment carries no annotation", () => {
+        const segment: any = {
+            tcIn: 0,
+            tcOut: 2,
+            text: "Emmanuel Macron",
+            subLocalisations: [
+                { text: "Emmanuel", tcIn: 0, tcOut: 1 },
+                { text: "Macron", tcIn: 1, tcOut: 2 },
+            ],
+        };
+
+        (component as any).markNamedEntities([segment]);
+
+        expect(drapeaux(segment)).toEqual([false, false]);
+    });
+
+    it("should not force the @defer hydration when named entities are present", () => {
+        component.deferredRendering = true;
+        component.forceRenderAll.set(false);
+
+        (component as any).markNamedEntities([segmentAvecMots(["Emmanuel", "Macron"], "Emmanuel Macron")]);
+
+        expect(component.forceRenderAll()).toBeFalse();
     });
 
     it("scrollToSelectedSegment should reset auto flag after timeout", fakeAsync(() => {

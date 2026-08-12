@@ -157,6 +157,7 @@
                                     @for (w of t.subLocalisations; track w.tcIn) {
                                         <div
                                             class="w"
+                                            [class.named-entity]="w.isNamedEntity"
                                             [attr.data-tcin]="w.tcIn"
                                             [attr.data-tcOut]="w.tcOut"
                                             [innerHTML]="w.text + ' ' | sanitizeHtml: 'html'"
@@ -175,6 +176,7 @@
                                 @for (w of t.subLocalisations; track w.tcIn) {
                                     <div
                                         class="w"
+                                        [class.named-entity]="w.isNamedEntity"
                                         [attr.data-tcin]="w.tcIn"
                                         [attr.data-tcOut]="w.tcOut"
                                         [innerHTML]="w.text + ' ' | sanitizeHtml: 'html'"
@@ -184,6 +186,7 @@
                         } @else {
                             <span
                                 class="w"
+                                [class.named-entity]="t.isNamedEntity"
                                 [attr.data-tcin]="t.tcIn"
                                 [attr.data-tcOut]="t.tcOut"
                                 [innerHTML]="t.text | sanitizeHtml: 'html'"

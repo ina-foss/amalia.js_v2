@@ -173,13 +173,26 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
   des assets CSS.
 - **`displayState` reste `'l'` après sortie du plein écran** (au lieu de revenir à `'m'`) ;
   `fullScreenMode` et l'icône, eux, sont corrects.
-- **Constat perf : le `@defer` de la phase 8 est annulé dès qu'une transcription porte des
-  entités nommées.** `handleMatchedTextStyle()` hydrate **tous** les segments pour pouvoir faire
-  son `querySelectorAll` de surlignage. Sur le flux LCI : 127 segments sur 151 portent des
-  entités → **0 placeholder, 10 405 mots, 12 955 nœuds** rendus au chargement. C'est le cas
-  dominant sur les assets INA réels. Piste : n'hydrater que les segments porteurs d'annotations,
-  ou appliquer le surlignage à l'hydratation de chaque segment (le code filtre déjà les nœuds
-  par segment via `predicateIsNodeTcInTcOutMatching`).
+- ~~**Le `@defer` de la phase 8 est annulé dès qu'une transcription porte des entités
+  nommées.**~~ **Corrigé** — `handleMatchedTextStyle()` hydratait **tous** les segments pour son
+  `querySelectorAll` de surlignage ; sur le flux LCI, 127 segments sur 151 portent des entités
+  → 0 placeholder, 10 405 mots, 12 955 nœuds au chargement, soit le gain du rendu différé annulé
+  dans le cas dominant. Le surlignage est désormais **marqué sur les données**
+  (`TranscriptionLocalisation.isNamedEntity`, calculé par `markNamedEntities` à l'issue du parse)
+  et rendu par `[class.named-entity]` : plus aucun `querySelectorAll`, donc plus d'hydratation
+  forcée. Mesuré sur le panneau à entités nommées du harnais (120 segments, 191 entités,
+  255 mots marqués) :
+
+  | État | Mots rendus | Placeholders | Mots surlignés | `forceRenderAll` |
+  |---|---:|---:|---:|---|
+  | Chargement | **77** (avant : 5 194) | 116 | 0 | `false` |
+  | Seek sur un segment annoté | 188 | 112 | 4 | `false` |
+  | Après recherche | 5 194 | 0 | **255** | `true` |
+
+  Parité de comportement vérifiée : après hydratation globale on retrouve exactement les
+  255 surlignages de la version DOM, cas composés inclus (« Maï-Maï Brottes »). La recherche
+  reste le seul déclencheur de `forceRenderAll`. Note : le gain n'a pas été remesuré sur le flux
+  LCI réel (il faudrait mettre à jour la copie du bundle dans `player-expert`).
 
 ### Bloqué par l'environnement
 
