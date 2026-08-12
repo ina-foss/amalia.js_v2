@@ -183,7 +183,10 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
   Côté `player-expert`, l'application n'a plus à fournir d'image : le `poster` PNG de
   `asset-details.component.ts` et les 3 globs `newAudioBackGround.png` d'`angular.json` (dont 2
   pointaient sur un fichier absent) sont supprimés ; seule la couleur `posterBackground` reste
-  configurée.
+  configurée. **Vérifié sur le flux radio réel** : plus aucune 404, `<video>` sans `poster`,
+  filigrane présent dans le DOM (100×100, centré). Il y reste invisible parce que la **waveform
+  occupe toute la surface du player** — l'ancienne image PNG était masquée de la même façon, ce
+  404 ne coûtait donc qu'une requête inutile.
 - **`displayState` reste `'l'` après sortie du plein écran** (au lieu de revenir à `'m'`) ;
   `fullScreenMode` et l'icône, eux, sont corrects.
 - **`playerConfig()` contient l'input brut, pas la configuration résolue** (pré-existant, découvert
@@ -212,8 +215,30 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
 
   Parité de comportement vérifiée : après hydratation globale on retrouve exactement les
   255 surlignages de la version DOM, cas composés inclus (« Maï-Maï Brottes »). La recherche
-  reste le seul déclencheur de `forceRenderAll`. Note : le gain n'a pas été remesuré sur le flux
-  LCI réel (il faudrait mettre à jour la copie du bundle dans `player-expert`).
+  reste le seul déclencheur de `forceRenderAll`.
+
+  **Mesure confirmée sur le flux LCI réel** (dans `player-expert`, 151 segments dont 127 annotés,
+  10 405 mots et 597 marqués comme entités nommées) :
+
+  | | Avant | Après |
+  |---|---:|---:|
+  | Mots rendus au chargement | 10 405 | **413** (−96,0 %) |
+  | Placeholders | 0 | **146** |
+  | Nœuds DOM de la transcription | 12 955 | **3 109** (−76,0 %) |
+  | `forceRenderAll` au chargement | `true` | **`false`** |
+  | Chips d'entités nommées | 401 | 401 |
+
+  Seek à 1500 s (segment hors viewport initial) : le segment s'hydrate à la demande
+  (`activeSegmentTcIn` 1475,95), 730 mots rendus, 140 placeholders restants, **35 mots surlignés
+  par le binding** et `forceRenderAll` toujours `false`. Recherche : hydratation globale,
+  **597 mots surlignés — exactement le compte marqué dans les données**.
+
+  **Contrepartie assumée** : le premier résultat de recherche passe de ~190 ms à **~3,5 s** sur cet
+  asset, parce que l'hydratation des 10 405 mots n'est plus déjà faite au chargement — le coût est
+  déplacé du chargement (systématique) vers la première recherche (à la demande). Piste pour le
+  supprimer aussi : chercher sur le modèle de données (`subLocalisations`) plutôt que sur le DOM,
+  puis n'hydrater que les segments porteurs d'occurrences — même remède que pour les entités
+  nommées, ce qui retirerait le dernier `forceRenderAll`.
 
 ### Bloqué par l'environnement
 
