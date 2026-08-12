@@ -18,7 +18,7 @@
 ## Pré-requis
 
 - [ ] `ng lint` vert
-- [ ] `npm test` vert (887 specs, ChromeHeadlessCI)
+- [ ] `npm test` vert (892 specs, ChromeHeadlessCI)
 - [ ] `npm run build:component` sans erreur ni warning de budget
 - [ ] `node scripts/size-report.mjs` : delta vs baseline cohérent avec la phase
 
@@ -99,8 +99,9 @@ identique ⇒ pré-existant, pas une régression du chantier.
 
 ### Pré-requis — vert
 
-`ng lint` vert · `npm test` **887/887** (couverture 87,3 % stmts) · `build:component` sans
-erreur (garde mono-fichier OK) · `size-report` : **3,46 Mo** (−2,47 Mo vs baseline).
+`ng lint` vert · `npm test` **887/887** à cette date (couverture 87,3 % stmts ; 892 depuis les
+correctifs post-smoke) · `build:component` sans erreur (garde mono-fichier OK) · `size-report` :
+**3,46 Mo** (−2,47 Mo vs baseline).
 
 ### Validé
 

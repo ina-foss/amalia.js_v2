@@ -20,6 +20,7 @@ npm run build              # lint + icônes + build composant + types + package.
 npm run build:component    # ng build prod + build-web-component.js (contrat mono-fichier)
 npm run build:icon         # régénère le sprite SVG depuis src/styles/svgs/*.svg
 node scripts/size-report.mjs   # tailles dist/ + delta vs docs/refactoring/size-baseline.json
+node scripts/gen-smoke-offline.mjs   # pages de smoke jouables hors réseau INA (cf. SMOKE-CHECKLIST.md)
 ```
 
 Lancer un seul fichier de specs (le builder `@angular/build:karma` supporte `--include`) :
@@ -32,7 +33,11 @@ Tests : Jasmine/Karma. Rapports JUnit dans `target/surefire-reports/`, couvertur
 
 ## Contrat de distribution : fichier unique
 
-Le build livre **un seul bundle** `dist/amalia/amalia-<version>.min.js` (ESM), consommé tel quel par les applications hôtes (cf. `docs/PLAYER_EXPERT_INTEGRATION.md`). `build-web-component.js` **fait échouer le build** si un chunk JS inattendu apparaît dans `dist/amalia/` — donc pas d'`import()` dynamique ni de worker qui créerait un chunk.
+Le build livre **un seul bundle** `dist/amalia/amalia-<version>.min.js` (ESM), consommé tel quel par les applications hôtes (cf. `docs/PLAYER_EXPERT_INTEGRATION.md`). `build-web-component.js` **fait échouer le build** dans deux cas :
+- un **chunk JS** inattendu dans `dist/amalia/` — donc pas d'`import()` dynamique ni de worker ;
+- un **asset externalisé** dans `dist/amalia/media/`, ce qu'esbuild produit dès qu'un SCSS contient une `url()` relative. C'est une violation du même contrat : l'hôte charge le bundle depuis `/assets/`, l'URL relative résout donc à la racine du site et renvoie 404 (cas réel corrigé : `media/newAudioBackGround.png`).
+
+Les assets partagés légitimes passent par `src/assets` (sprite SVG, images), servis sous `/assets/` par l'hôte et référencés en **chemin absolu**.
 
 ## Architecture
 
@@ -60,9 +65,13 @@ La plupart des composants utilisent l'encapsulation Shadow DOM. PrimeNG 21 (them
 
 ## Chantier refactoring performance : livré (branche `refactor/perf-v21`)
 
-Document maître : `docs/refactoring/PLAN-PERF-2026.md` (suivi des phases, décisions actées) — **à maintenir** pour tout travail lié. Toutes les phases sont livrées (main.js 5,93 → 3,46 Mo, 13/13 composants OnPush, 887 specs), sauf :
+Document maître : `docs/refactoring/PLAN-PERF-2026.md` (suivi des phases, décisions actées) — **à maintenir** pour tout travail lié. Toutes les phases sont livrées (main.js 5,93 → 3,46 Mo, 13/13 composants OnPush, 892 specs), sauf :
 - **Flip zoneless** : préparé mais différé — `ng serve -c zoneless` active `provideZonelessChangeDetection()` via `environment.zoneless` ; le flip définitif (flag en prod + retrait de l'import zone.js dans main.ts) attend ≥ 1 cycle de release en prod.
-- **Smoke visuel avant merge** : dérouler `docs/refactoring/SMOKE-CHECKLIST.md` sur les samples.
+- **Smoke visuel avant merge** : 2 passes déroulées le 2026-08-12, résultats et méthode dans `docs/refactoring/SMOKE-CHECKLIST.md`. Il reste à couvrir **annotation/segments + export Excel** (bloqué par un 500 du backend dev sur `POST /api/dossier/segments/stock`) et les mesures Angular DevTools M1/M2.
+
+Deux points de méthode issus de ces passes, utiles pour tout futur smoke :
+- Les hôtes média des samples ne répondent plus et `samples/medias/` est vide : hors réseau INA, utiliser `node scripts/gen-smoke-offline.mjs` (flux HLS public, vignettes picsum, métadonnées locales). L'option `--ref <bundle>` rejoue le même scénario sur un bundle antérieur — c'est le contrôle qui distingue une régression d'un comportement pré-existant.
+- La validation qui compte se fait **dans `player-expert`** : `node_modules/@ina/amalia` y est un lien vers `dist/amalia`, donc un `npm run build:component` suffit à tester le bundle courant sur des médias réels (les `dataSources` de l'app sont des URLs `/api/...` authentifiées, non reproductibles en page samples isolée).
 
 Gates systématiques pour toute évolution : `ng lint` + `npm test` + `npm run build:component` (garde mono-fichier + budgets 3,7/4 Mo) + `node scripts/size-report.mjs`.
 
@@ -71,5 +80,7 @@ Règles issues du chantier (à respecter dans tout nouveau code) :
 - Nouveaux `setTimeout` : suivre la grille de `docs/refactoring/SETTIMEOUT-AUDIT.md` (catégories a/b/c ; « attendre le rendu » = `afterNextRender`, jamais `setTimeout(0)`) — c'est ce qui garde le code zoneless-safe.
 - Événements DOM haute fréquence (mousemove/scroll) : directives `amaliaOutsideMousemove`/`amaliaOutsideScroll` (`src/app/core/directive/outside-zone-event.directive.ts`), handlers en écritures de signals.
 - Ne pas réintroduire lodash entier (`import ... from 'lodash'`) : imports par méthode (`lodash/xxx`). hls.js n'est importé qu'en type-only dans les modèles de config.
-- La transcription rend les mots en `@defer` par segment (flag `data.deferredRendering`) : tout nouveau code qui fait du `querySelectorAll` sur les mots (`.w`) doit gérer l'hydratation (cf. `hydrateAllWordsThen`).
+- La transcription rend les mots en `@defer` par segment (flag `data.deferredRendering`). **Ne pas surligner/marquer les mots via `querySelectorAll` sur `.w`** : ça force l'hydratation de tous les segments et annule le gain (mesuré sur un flux TV réel : 10 405 mots et 12 955 nœuds rendus au chargement au lieu de 413 et 3 109). Marquer sur les **données** puis lire par binding, comme `markNamedEntities` → `isNamedEntity` → `[class.named-entity]`. `hydrateAllWordsThen`/`forceRenderAll` ne subsistent que pour la recherche, seul chemin qui hydrate encore tout (~3,5 s sur une transcription d'une heure — même remède applicable si on veut le supprimer).
+- **Aucune `url()` relative dans un SCSS** : le builder esbuild externalise l'asset dans `dist/amalia/media/`, fichier annexe que les hôtes ne servent pas (le bundle est chargé depuis `/assets/`, l'URL résout à la racine → 404 constaté en intégration). `build-web-component.js` fait maintenant échouer le build si ce dossier réapparaît. Pour une image : sprite SVG en chemin absolu `/assets/svgs/...`, ou vectoriel inline dans le template (cf. `<ng-template #audioWatermark>` du player).
+- **Piège connu** : `AmaliaComponent.playerConfig()` contient l'**input brut**, pas la configuration résolue. Si l'hôte passe une URL de config (cas de tous les samples), `playerConfig()?.player` est `undefined` et les branches `media === 'AUDIO'` / `'PICTURE'` du template ne s'activent pas. Pour un test fiable de ces chemins, passer la config **en ligne** (comme `player-expert`) ; pour du code nouveau, préférer `mediaPlayerElement.getConfiguration()`.
 - `MIGRATION-ANGULAR21-PRIMENG21.md` documente les breaking changes PrimeNG 17→21 (dont `<p-messages>` remplacé par le composant maison `InaMessagesComponent`).
