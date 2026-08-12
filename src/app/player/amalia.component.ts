@@ -42,7 +42,7 @@ import { ControlBarPluginComponent } from "../plugins/control-bar/control-bar-pl
 import { LoggerLevel } from "../core/logger/logger-level";
 import { Utils } from "../core/utils/utils";
 import { ShortcutEvent } from "../core/config/model/shortcuts-event";
-import { NgClass } from "@angular/common";
+import { NgClass, NgTemplateOutlet } from "@angular/common";
 import { OutsideZoneMousemoveDirective } from "../core/directive/outside-zone-event.directive";
 
 @Component({
@@ -50,7 +50,7 @@ import { OutsideZoneMousemoveDirective } from "../core/directive/outside-zone-ev
     templateUrl: "./amalia.component.html",
     styleUrls: ["./amalia.component.scss"],
     encapsulation: ViewEncapsulation.ShadowDom,
-    imports: [NgClass, OutsideZoneMousemoveDirective],
+    imports: [NgClass, NgTemplateOutlet, OutsideZoneMousemoveDirective],
     // OnPush (phase 7 vague 3) : les listeners player de ce composant racine passent par son
     // addListener local (Utils.addListener brut, PAS de zone.run/markForCheck) — tout champ lu
     // par le template et muté depuis ces handlers, un timeout/interval ou une promesse est donc

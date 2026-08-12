@@ -88,6 +88,8 @@ const reachable = (cfg) => {
     c.player.src = AUDIO;
     c.player.backwardsSrc = AUDIO;
     delete c.player.crossOrigin;
+    // Media audio : declenche le filigrane `.audio-watermark` du player (vectoriel inline).
+    c.player.media = "AUDIO";
     writeCfg("histogram", c);
 }
 {
@@ -121,6 +123,12 @@ ${body}
 </body>
 </html>
 `;
+
+// Config audio minimale passee en ligne (cf. _smoke-audio-inline.html).
+const INLINE_AUDIO_CONFIG = JSON.stringify({
+    player: { src: AUDIO, media: "AUDIO", ratio: "16:9" },
+    pluginsConfiguration: {},
+}).replace(/'/g, "&apos;");
 
 const pages = {
     "_smoke-transcription.html": page(
@@ -188,6 +196,20 @@ const pages = {
     <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
   </amalia-player>
   <amalia-time-bar player-id="PLAYER"></amalia-time-bar>
+</div>`,
+    ),
+
+    // Config passee EN LIGNE (objet JSON dans l'attribut), comme le fait player-expert. C'est le
+    // seul mode ou `playerConfig()` du composant expose `.player` : avec une URL de config, les
+    // branches `media === 'AUDIO'` / `'PICTURE'` du template ne se declenchent pas (limitation
+    // pre-existante). Cette page verifie donc le filigrane audio.
+    "_smoke-audio-inline.html": page(
+        "Smoke — filigrane audio (config en ligne)",
+        `
+<div class="box" style="width:640px;height:360px;">
+  <amalia-player player-id="PLAYER" config='${INLINE_AUDIO_CONFIG}'>
+    <amalia-control-bar player-id="PLAYER"></amalia-control-bar>
+  </amalia-player>
 </div>`,
     ),
 

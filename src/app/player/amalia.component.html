@@ -9,6 +9,9 @@
         aria-label="loading"
         aria-busy="true"
     >
+        @if (playerConfig()?.player?.media === "AUDIO") {
+            <ng-container [ngTemplateOutlet]="audioWatermark"></ng-container>
+        }
         <svg viewBox="25 25 50 50" class="p-progress-spinner-svg" style="animation-duration: 2s">
             <circle
                 cx="50"
@@ -46,6 +49,14 @@
     (click)="controlClicked($event)"
     (keydown.enter)="controlClicked($event)"
 >
+    <!-- Filigrane des médias audio : rendu par le sprite SVG (déjà chargé pour les icônes)
+         plutôt que par une image de fond en CSS. L'ancien `url(newAudioBackGround.png)` était
+         externalisé par esbuild dans `dist/amalia/media/`, fichier annexe que les applications
+         hôtes ne servaient pas — 404 en intégration, et contrat mono-fichier rompu. Le player
+         n'a donc plus besoin qu'un hôte lui fournisse un `poster` pour l'audio. -->
+    @if (playerConfig()?.player?.media === "AUDIO") {
+        <ng-container [ngTemplateOutlet]="audioWatermark"></ng-container>
+    }
     @if (playerConfig()?.player?.media != "PICTURE") {
         <video
             #video
@@ -85,3 +96,18 @@
     </ul>
 </div>
 <ng-content></ng-content>
+
+<!-- Filigrane des medias audio. Vectoriel INLINE volontairement : ni `url()` en CSS (esbuild
+     l'externaliserait dans `dist/amalia/media/`, fichier annexe que les hotes ne servent pas -
+     404 constate en integration), ni `<use>` vers le sprite (dont le symbole `headphones` est un
+     bitmap de 24 Ko encapsule, et dont le chargement externe perturbe les specs qui comptent les
+     requestAnimationFrame globaux). Inline = aucune requete, aucun fichier annexe. -->
+<ng-template #audioWatermark>
+    <svg class="audio-watermark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+            d="M12 2a9 9 0 0 0-9 9v6a1 1 0 0 0 2 0v-6a7 7 0 0 1 14 0v6a1 1 0 0 0 2 0v-6a9 9 0 0 0-9-9Z"
+        />
+        <rect x="2" y="12.5" width="4.5" height="8.5" rx="2.25" />
+        <rect x="17.5" y="12.5" width="4.5" height="8.5" rx="2.25" />
+    </svg>
+</ng-template>

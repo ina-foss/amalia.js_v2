@@ -24,6 +24,20 @@ const buildWebComponent = async () => {
     if (!(await fs.pathExists(path.join(OUT, 'main.js')))) {
         throw new Error(`${OUT}/main.js introuvable — le build Angular a-t-il réussi ?`);
     }
+    // `dist/amalia/media/` est le dossier où esbuild externalise les assets référencés par une
+    // `url()` relative dans un SCSS. Une telle référence est un fichier annexe que les hôtes ne
+    // servent pas (constaté en intégration : 404 sur `media/newAudioBackGround.png`, résolu
+    // depuis la racine du site) : c'est une violation du contrat mono-fichier au même titre
+    // qu'un chunk JS. Les assets partagés passent par `src/assets` (sprite SVG, images), servis
+    // sous `/assets/` par l'hôte.
+    if (await fs.pathExists(path.join(OUT, 'media'))) {
+        const externalised = await fs.readdir(path.join(OUT, 'media'));
+        throw new Error(
+            `Contrat mono-fichier violé, asset(s) externalisé(s) dans ${OUT}/media : ${externalised.join(', ')}. ` +
+            `Une url() relative dans un SCSS a été extraite par esbuild — utiliser le sprite SVG ` +
+            `(<use xlink:href="/assets/svgs/..."/>) ou un chemin absolu sous /assets/.`
+        );
+    }
 
     await fs.copy(path.join(OUT, 'main.js'), path.join(OUT, `amalia-${version}.min.js`));
     await fs.copy(path.join(OUT, 'main.js'), 'samples/main.js');

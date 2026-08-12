@@ -164,15 +164,36 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
 
 ### Défauts trouvés en conditions réelles
 
-- **404 `/media/newAudioBackGround.png`** — le SCSS du player référence
-  `assets/amalia/images/newAudioBackGround.png` ; le build esbuild (phase 2) l'externalise en
-  `dist/amalia/media/newAudioBackGround.png`. L'app charge le bundle depuis `/assets/`, l'URL
-  relative résout donc en `/media/…` → 404, et le fond du player audio perd son image
-  (dégradation douce : la couleur primaire reste). **Contredit le contrat mono-fichier** de
-  `CLAUDE.md`. Piste : inliner l'image en data-URI dans le SCSS, ou relever le seuil d'inlining
-  des assets CSS.
+- ~~**404 `/media/newAudioBackGround.png`**~~ **Corrigé** — le SCSS du player référençait
+  `assets/amalia/images/newAudioBackGround.png` ; le build esbuild (phase 2) l'externalisait en
+  `dist/amalia/media/newAudioBackGround.png`, or l'app charge le bundle depuis `/assets/` donc
+  l'URL relative résolvait en `/media/…` → 404 et perte de l'image de fond du player audio.
+  Le filigrane est désormais un **vectoriel inline** dans le template
+  (`<ng-template #audioWatermark>`, rendu dans l'overlay de chargement et dans le conteneur) :
+  aucune requête, aucun fichier annexe. La garde de `build-web-component.js` **échoue maintenant
+  si `dist/amalia/media/` réapparaît**, au même titre qu'un chunk JS.
+
+  Deux options ont été écartées, mesures à l'appui : le data-URI (le `headphones.svg` existant
+  n'est pas un vectoriel mais un **bitmap de 24 Ko encapsulé dans un `<pattern>`**, dupliqué dans
+  chaque shadow root par le miroir de styles) et le `<use>` vers le sprite (même bitmap, et son
+  chargement externe fait échouer les 2 specs de `outside-zone-event.directive.spec.ts` qui
+  comptent les `requestAnimationFrame` **globaux** — vérifié : suite verte avec une forme inline,
+  2 échecs avec le `<use>`).
+
+  Côté `player-expert`, l'application n'a plus à fournir d'image : le `poster` PNG de
+  `asset-details.component.ts` et les 3 globs `newAudioBackGround.png` d'`angular.json` (dont 2
+  pointaient sur un fichier absent) sont supprimés ; seule la couleur `posterBackground` reste
+  configurée.
 - **`displayState` reste `'l'` après sortie du plein écran** (au lieu de revenir à `'m'`) ;
   `fullScreenMode` et l'icône, eux, sont corrects.
+- **`playerConfig()` contient l'input brut, pas la configuration résolue** (pré-existant, découvert
+  en vérifiant le filigrane). Le signal est alimenté par `this.playerConfig.set(this.config)` : si
+  l'hôte passe un **objet** de configuration (cas de `player-expert`), `.player` est exploitable ;
+  s'il passe une **URL** (cas de tous les samples), `playerConfig()?.player` reste `undefined` et
+  **toutes les branches `media === 'AUDIO'` / `'PICTURE'` du template sont mortes** — classes
+  `audio-player` et `p-progress-spinner-audio` jamais appliquées, `#photoHost` jamais rendu.
+  C'est pourquoi l'ancien fond audio ne s'affichait que dans l'app. Correction envisageable :
+  lire `mediaPlayerElement.getConfiguration()` (la config résolue) plutôt que l'input.
 - ~~**Le `@defer` de la phase 8 est annulé dès qu'une transcription porte des entités
   nommées.**~~ **Corrigé** — `handleMatchedTextStyle()` hydratait **tous** les segments pour son
   `querySelectorAll` de surlignage ; sur le flux LCI, 127 segments sur 151 portent des entités

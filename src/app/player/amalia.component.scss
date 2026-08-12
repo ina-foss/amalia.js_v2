@@ -43,6 +43,22 @@
     z-index: 1;
   }
 
+  // Filigrane des médias audio (sprite SVG) : centré, purement décoratif, reprend la taille de
+  // l'ancienne image de fond CSS (100px). Déclaré à ce niveau car il est rendu dans deux
+  // contextes, tous deux positionnés : l'overlay de chargement `.p-progress-spinner` et le
+  // conteneur `.media-player`. Un `poster` fourni par l'hôte reste au-dessus (z-index 1).
+  .audio-watermark {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    fill: rgba(255, 255, 255, 0.65);
+  }
+
   .media-player {
     position: relative;
     height: 100%;
@@ -182,10 +198,12 @@
     z-index: $amalia-loading-plugin-histogram-z-index;
   }
 
-  // The waveform watermark only makes sense while loading an AUDIO-only player (no video
-  // frame to show); video/picture players get the plain color background above instead.
+  // Les médias audio n'ont pas d'image à montrer : le filigrane est rendu par `.audio-watermark`
+  // (sprite SVG, cf. amalia.component.html), y compris pendant le chargement où il est visible
+  // sous le spinner. Ne pas réintroduire d'`url()` ici : esbuild externaliserait l'asset dans
+  // `dist/amalia/media/`, ce qui casse le contrat mono-fichier (404 côté application hôte).
   .p-progress-spinner-audio {
-    background: url("../../assets/amalia/images/newAudioBackGround.png") center/100px no-repeat, $amalia-primary-color;
+    background: $amalia-primary-color;
   }
 
   .p-progress-spinner-pinned {
