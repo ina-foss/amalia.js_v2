@@ -118,7 +118,21 @@ erreur (garde mono-fichier OK) · `size-report` : **3,46 Mo** (−2,47 Mo vs bas
 
 - **Réattach d'un plugin** : les listeners sont bien retirés au détach mais **pas
   re-souscrits** au réattach (TIME_CHANGE/SEEKING/SEEKED/INIT 5→4→4, METADATA_LOADED 8→6→6)
-  ⇒ karaoké mort après un cycle. Le DOM du plugin, lui, se re-rend.
+  ⇒ karaoké définitivement figé. Le DOM du plugin, lui, se re-rend.
+  Seuil mesuré = celui du `scheduleDestroy` d'Angular Elements (~10 ms) :
+
+  | Cycle | Listeners | Mots actifs à 10 s | à 100 s | Karaoké |
+  |---|---:|---:|---:|---|
+  | baseline | 74 | 33 | 251 | vivant |
+  | `remove()` + `append()` synchrones | 74 | 33 | 251 | vivant |
+  | `remove()` + 800 ms + `append()` | 68 | 251 | 251 | figé |
+
+  Conséquence pour les hôtes : le Document Picture-in-Picture de `player-expert`
+  (`asset-details.component.ts`, `restoreDocumentPiPNodes`) déplace les nœuds de façon
+  **synchrone** et n'est donc pas affecté ; en revanche tout démontage réel (`@if`, onglet,
+  changement de route puis retour) laisse le plugin muet. Piste de correction :
+  `PluginBase.ngOnInit` n'ajoute l'écouteur METADATA_LOADED de rattrapage que si
+  `isMetadataLoaded` est faux — au réattach il est vrai, et `init()` seul ne re-souscrit pas.
 - **Détach/réattach du `<amalia-player>`** : `element.mediaPlayerElement` devient `undefined`
   après le premier cycle (le `<video>` reste en `readyState 4`).
 - **Storyboard** : aucune vignette rendue (`listOfThumbnailFilter` reste vide alors que
@@ -128,6 +142,65 @@ erreur (garde mono-fichier OK) · `size-report` : **3,46 Mo** (−2,47 Mo vs bas
   `plugin-instance="1095"` alors que `timeline-type.json` porte des types `…-P1`.
 - **`amalia-photo-plugin.html`** : page obsolète — `amalia-photo` n'est pas un custom element
   enregistré (le mode photo/cropper vit dans le player, `src/app/player/photo/`).
+
+### Passe réseau INA du 2026-08-12 (dans `player-expert`, localhost:4201)
+
+Le harnais isolé ne suffisait pas : les hôtes média des samples (`traitgpu03.wsmedia.p.sas.ina`,
+`ws-media-vm.ina.fr:3001`) **ne répondent plus** (timeout, 0 octet), alors que le réseau INA est
+joignable (`sso.agac.d.sas.ina` → 200). L'hôte média réellement utilisé aujourd'hui est
+**`wsmedia.api.d.sas.ina`**, et les `dataSources` de l'app sont des URLs relatives `/api/...`
+servies par son backend authentifié — non reproductibles dans une page samples isolée.
+
+La passe a donc été déroulée **dans l'application hôte**, sur les 5 natures de média. Le bundle
+servi par l'app (`/assets/amalia-2.1.26.min.js`) est **identique au bit près** au build de la
+branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien sur le chantier.
+
+| Asset | Validé |
+|---|---|
+| `flux:tv:LCI:20230601T130000:3600` (1 h) | HLS via hls.js (`readyState 4`, 3600 s) ; karaoké en lecture ; auto-scroll ; seek en pause **et** en lecture ; recherche sur **10 405 mots en 190 ms** (3 occurrences, navigation, clear) ; **lecture inverse `backwardsSrc`** (bascule de blob, temps qui recule) ; **vignette de survol réelle** (740×416, blob authentifié, TC affiché) ; **plein écran réel** (`fullScreenMode` true, `displayState` `'l'`, icône `compress`, retour correct) |
+| `stock:FPVDB07011409.01:600` (26 min) | **Storyboard réel** : 53 vignettes calculées, 23 rendues (virtualisation), **23/23 images 300×225 chargées**, vignette active qui suit la lecture (60 → 300 → 900 s), clic vignette → seek exact (1020 s) |
+| `flux:radio:FBL:20230601T130000:3600` | **Waveform wavesurfer** : instance créée, `duration 3600`, **12 canvas visibles** (1920×98 onde, 1920×72 minimap), peaks 2 canaux, curseur synchronisé au dixième en lecture (2,3 = 2,3) et après seek (1200 = 1200) |
+| `stock:FIC05001010409` (photo) | **cropperjs** : image réelle 3000×3000, 24 éléments cropper, control-bar photo 16 contrôles, loupe (toggle), **zoom 25 % → 100 %** par le raccourci `z` (`.cropper-canvas` 750→3000 px, signal + label suivent) |
+
+### Défauts trouvés en conditions réelles
+
+- **404 `/media/newAudioBackGround.png`** — le SCSS du player référence
+  `assets/amalia/images/newAudioBackGround.png` ; le build esbuild (phase 2) l'externalise en
+  `dist/amalia/media/newAudioBackGround.png`. L'app charge le bundle depuis `/assets/`, l'URL
+  relative résout donc en `/media/…` → 404, et le fond du player audio perd son image
+  (dégradation douce : la couleur primaire reste). **Contredit le contrat mono-fichier** de
+  `CLAUDE.md`. Piste : inliner l'image en data-URI dans le SCSS, ou relever le seuil d'inlining
+  des assets CSS.
+- **`displayState` reste `'l'` après sortie du plein écran** (au lieu de revenir à `'m'`) ;
+  `fullScreenMode` et l'icône, eux, sont corrects.
+- **Constat perf : le `@defer` de la phase 8 est annulé dès qu'une transcription porte des
+  entités nommées.** `handleMatchedTextStyle()` hydrate **tous** les segments pour pouvoir faire
+  son `querySelectorAll` de surlignage. Sur le flux LCI : 127 segments sur 151 portent des
+  entités → **0 placeholder, 10 405 mots, 12 955 nœuds** rendus au chargement. C'est le cas
+  dominant sur les assets INA réels. Piste : n'hydrater que les segments porteurs d'annotations,
+  ou appliquer le surlignage à l'hydratation de chaque segment (le code filtre déjà les nœuds
+  par segment via `predicateIsNodeTcInTcOutMatching`).
+
+### Bloqué par l'environnement
+
+- **Annotation / segments : non testé.** Le module « Segmentation » monte bien
+  `<amalia-annotation>`, mais `POST /api/dossier/segments/stock` renvoie **500** côté backend dev.
+  `manageEventResponseStatus` attend via `Utils.waitFor` (10 s) que l'hôte renseigne
+  `event.status` sur l'événement `ANNOTATION_*` ; le contrat n'est jamais honoré, amalia expire et
+  affiche « init delai d'attente dépassé ». Côté amalia le comportement est correct (émission,
+  attente, toast d'erreur — chemin `displaySnackBar` validé au passage), mais **CRUD, chips,
+  autocomplete, dialog de confirmation, export JSON/Excel et snapshot restent à dérouler** une
+  fois le 500 corrigé.
+- **Mesures M1/M2** (ticks CD, ms scripting) : non relevées.
+
+### Pistes écartées après vérification
+
+- « Anomalie de seek en pause » : **fausse alerte**. Les seeks qui ne repositionnaient pas le
+  karaoké tombaient tous dans un **trou entre segments** (corrélation parfaite sur 15 cibles ; la
+  transcription ne couvre que 91 % du flux). `selectSegment` laisse `activeSegmentTcIn` inchangé
+  quand aucun segment ne couvre le temps courant — correct.
+- « Storyboard sans vignettes » : dû aux hôtes de vignettes injoignables dans les pages isolées ;
+  parfaitement fonctionnel sur média réel.
 
 ### Non validable hors réseau INA — à dérouler avant merge
 
