@@ -41,6 +41,7 @@ import { Ripple } from "primeng/ripple";
 import { Checkbox } from "primeng/checkbox";
 import { FormsModule } from "@angular/forms";
 import { Tree } from "primeng/tree";
+import { ChevronDownIcon, ChevronRightIcon } from "primeng/icons";
 import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
 
 @Component({
@@ -66,6 +67,8 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
         Checkbox,
         FormsModule,
         Tree,
+        ChevronDownIcon,
+        ChevronRightIcon,
         PrimeTemplate,
         ToastComponent,
         TcFormatPipe,

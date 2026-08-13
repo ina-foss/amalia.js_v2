@@ -624,14 +624,24 @@
       display: flex;
       flex-direction: row-reverse;
       justify-content: flex-end;
+      // Avant le miroir PrimeNG (phase 3c), le padding token du header
+      // (dt('accordion.header.padding'), 1.125rem) n'atteignait pas le shadow root :
+      // le header était collé au bord du panneau et le chevron se trouvait AVANT
+      // l'origine du tc-cursor (bord gauche de la timeline). Le miroir a introduit
+      // ce padding et poussait le chevron après le curseur — on le neutralise.
+      padding: 0;
 
-      // Chevrons du header d'accordéon : désormais des <svg> du sprite
-      // (classes hooks pi-chevron-*), même taille que l'ancien glyphe (10px).
+      // Chevrons du header d'accordéon : composants d'icônes PrimeNG (classes hooks
+      // pi-chevron-*), même boîte de 10px que l'ancien glyphe de police — leurs tracés
+      // remplissent le viewBox comme le glyphe, contrairement au sprite maison (grille
+      // 24×24 à marges internes, dessin moitié trop petit à boîte égale).
+      // Espacement en margin (et non padding comme pour l'ancien glyphe) : en box-sizing
+      // border-box, un padding horizontal de 12px sur 10px de large laissait une zone de
+      // contenu de 0px — le SVG ne peignait plus rien.
       .pi-chevron-down,
       .pi-chevron-right {
         color: var(--amalia-plugin-timeline-primary-color, #0B7698);
-        padding: 0 10px 0 2px !important;
-        margin: 0 !important;
+        margin: 0 10px 0 2px !important;
         width: 10px !important;
         height: 10px !important;
       }
@@ -883,6 +893,15 @@
     padding: 0 15px !important;
     background: var(--accordion-header-active-background, #F9FAFB);
     display: block;
+
+    // PrimeNG 21 ajoute un conteneur interne .p-accordioncontent-content avec un
+    // padding token (0 1.125rem 1.125rem) : il décalait la .timeline des blocs de
+    // 18px et la rétrécissait de 36px par rapport à la timeline principale, d'où
+    // un tc-cursor désaligné du curseur principal (refreshTimeCursor calcule la
+    // position avec la largeur de la timeline principale).
+    .p-accordioncontent-content {
+      padding: 0;
+    }
   }
 
   .p-accordionpanel:not(.p-accordionpanel-active) .p-accordioncontent {

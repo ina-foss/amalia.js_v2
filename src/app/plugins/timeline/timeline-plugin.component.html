@@ -110,15 +110,14 @@
             class="grabbable" pDraggable="listOfBlocks" pDroppable="listOfBlocks" (onDragStart)="onDragStart(idx)"
             (onDrop)="onDrop(idx)">
             <p-accordion-header>
+                <!-- Chevrons : composants d'icônes PrimeNG (tracés denses viewBox 14×14, déjà
+                     dans le bundle via p-tree) — le sprite maison est sur une grille 24×24 avec
+                     marges internes, son dessin paraissait moitié trop petit à boîte égale. -->
                 <ng-template #toggleicon let-active="active">
                     @if (active) {
-                    <svg class="amalia-pi-icon pi-chevron-down" aria-hidden="true">
-                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-chevron-down'"></use>
-                    </svg>
+                    <svg data-p-icon="chevron-down" class="pi-chevron-down" aria-hidden="true"></svg>
                     } @else {
-                    <svg class="amalia-pi-icon pi-chevron-right" aria-hidden="true">
-                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-chevron-right'"></use>
-                    </svg>
+                    <svg data-p-icon="chevron-right" class="pi-chevron-right" aria-hidden="true"></svg>
                     }
                 </ng-template>
                 @if (block.label != "") {

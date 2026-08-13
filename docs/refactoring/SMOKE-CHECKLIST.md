@@ -188,6 +188,35 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
   filigrane présent dans le DOM (100×100, centré). Il y reste invisible parce que la **waveform
   occupe toute la surface du player** — l'ancienne image PNG était masquée de la même façon, ce
   404 ne coûtait donc qu'une requête inutile.
+- ~~**Timeline : chevrons d'accordéon invisibles + tc-cursor désaligné**~~ **Corrigé**
+  (constaté dans `player-expert` le 2026-08-13, reproduit sur `_smoke-timeline.html`).
+  Deux régressions distinctes du même écran :
+  - *Chevrons* : la migration sprite (phase 3a) a remplacé le glyphe `<i class="pi pi-chevron-*">`
+    par un `<svg>` mais a conservé le style historique `padding: 0 10px 0 2px` + `width: 10px`.
+    En `box-sizing: border-box`, 12 px de padding horizontal sur 10 px de large laissent une
+    **zone de contenu de 0 px** : un glyphe de police déborde, un viewport SVG ne peint rien.
+    Deux remèdes successifs : l'espacement passe en `margin` (le SVG peint), puis le sprite
+    maison est remplacé par les **composants d'icônes PrimeNG** (`ChevronDown/RightIcon`,
+    `svg[data-p-icon]`, déjà dans le bundle via `p-tree` — coût nul). Motif : le sprite est sur
+    une **grille 24×24 à marges internes** (dessin ≈ 46 % du viewBox) alors que le glyphe de
+    police et les icônes PrimeNG remplissent leur boîte (≈ 88 %) — à boîte égale de 10 px, le
+    chevron du sprite paraissait moitié trop petit (mesuré : 4,6 px vs 8,6 px de dessin).
+    Leçons sprite : ne jamais recycler un padding de glyphe sur un `<svg>` dimensionné, et
+    comparer la **densité du viewBox** avant de substituer une icône à un glyphe de police.
+  - *Curseur et position des chevrons* : cause systémique = le **miroir PrimeNG de la
+    phase 3c**. En 2.1.24 (prod), les styles dynamiques de PrimeNG 21 restaient dans
+    `document.head` et n'atteignaient **jamais** les shadow roots : l'accordéon n'y recevait
+    que le SCSS du composant. Le miroir a donc appliqué pour la première fois les paddings
+    tokens de l'accordéon : celui de `.p-accordioncontent-content` (`0 1.125rem 1.125rem`)
+    décalait les `.timeline` des blocs de 18 px et les rétrécissait de 36 px alors que
+    `refreshTimeCursor` positionne le curseur des blocs avec la **largeur de la timeline
+    principale** (désalignement dès t=0, dérive croissante) ; celui de `.p-accordionheader`
+    (`1.125rem`) poussait le chevron **après** l'origine du curseur et triplait la hauteur
+    des headers (53 px vs 17 px en prod). Remède : `padding: 0` sur les deux ; réalignement
+    vérifié au pixel près (Δ = 1 px de bordure) à t=0 et t=60 s sur la page de smoke.
+    **Leçon pour tout écran shadow DOM :** le miroir phase 3c applique des styles PrimeNG
+    que la prod n'a jamais appliqués — au moindre écart de layout vs prod, suspecter un token
+    PrimeNG nouvellement mirroré plutôt qu'une évolution du SCSS maison.
 - **`displayState` reste `'l'` après sortie du plein écran** (au lieu de revenir à `'m'`) ;
   `fullScreenMode` et l'icône, eux, sont corrects.
 - **`playerConfig()` contient l'input brut, pas la configuration résolue** (pré-existant, découvert
