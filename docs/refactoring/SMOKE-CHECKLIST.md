@@ -203,6 +203,18 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
     chevron du sprite paraissait moitié trop petit (mesuré : 4,6 px vs 8,6 px de dessin).
     Leçons sprite : ne jamais recycler un padding de glyphe sur un `<svg>` dimensionné, et
     comparer la **densité du viewBox** avant de substituer une icône à un glyphe de police.
+- ~~**Icônes `pi-*` du sprite moitié trop petites partout** (annotation/segmentation,
+  toolbar timeline, icônes de blocs, toasts)~~ **Corrigé** (constaté dans `player-expert`
+  le 2026-08-13 sur l'écran annotation). Généralisation du problème des chevrons : les
+  21 sources `src/styles/svgs/pi-*.svg` de la phase 3a sont sur une **grille 24×24 à
+  marges internes** (dessin 47-75 % du viewBox) alors que les glyphes primeicons qu'elles
+  remplacent sont **plein cadre** (mesuré sur les composants d'icônes PrimeNG : densité
+  1,0 sauf `times` 0,79, `check` 0,93, chevrons 0,86). À boîte CSS « identique à l'ancien
+  glyphe » (1rem/0.875rem), le dessin paraissait donc moitié plus petit qu'en prod.
+  Remède : **recadrage des viewBox** de chaque source sur la bbox du dessin (carré centré,
+  densité cible = celle du glyphe primeicons équivalent) puis `npm run build:icon` —
+  aucune boîte CSS ni template modifiés, tous les écrans consommateurs du sprite
+  retrouvent la taille prod d'un coup.
   - *Curseur et position des chevrons* : cause systémique = le **miroir PrimeNG de la
     phase 3c**. En 2.1.24 (prod), les styles dynamiques de PrimeNG 21 restaient dans
     `document.head` et n'atteignaient **jamais** les shadow roots : l'accordéon n'y recevait
