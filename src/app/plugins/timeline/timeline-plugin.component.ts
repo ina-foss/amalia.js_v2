@@ -1260,20 +1260,7 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         // Le setTimeout(10) attend que PrimeNG ait propagé la sélection (ngModel/selectionChange)
         // avant de recalculer checked/partialSelected sur les TreeNode.
         setTimeout(() => {
-            this.nodes.forEach((parentNode) => {
-                let allChildrenUnchecked: boolean = true;
-                let allChildrenChecked: boolean = true;
-                parentNode.children?.forEach((child: any) => {
-                    if (this.selectedNodes().find((node) => node.key === child.key)) {
-                        allChildrenUnchecked = false;
-                    }
-                    if (!this.selectedNodes().find((node) => node.key === child.key)) {
-                        allChildrenChecked = false;
-                    }
-                });
-                parentNode.checked = allChildrenChecked;
-                parentNode.partialSelected = !allChildrenChecked && !allChildrenUnchecked;
-            });
+            this.refreshParentNodesSelectionState();
             // Les TreeNode PrimeNG (checked/partialSelected) sont lus par le template de p-tree
             // et ne sont pas signalisables : on notifie explicitement la CD — markForCheck hors
             // zone programme un tick coalescé via le scheduler hybride, ce qui rend ce timer
@@ -1284,6 +1271,20 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
         const nbSelectedNodes = this.selectedNodes().length;
         this.allNodesChecked = nbSelectedNodes === nbNodes;
         this.indeterminate = nbSelectedNodes > 0 && nbSelectedNodes < nbNodes;
+    }
+
+    /**
+     * Recalcule checked/partialSelected de chaque nœud parent à partir de la sélection courante
+     * (lookup O(1) via selectedNodesMap, indexée par clé de nœud).
+     */
+    private refreshParentNodesSelectionState() {
+        const selectedNodesByKey = this.selectedNodesMap();
+        this.nodes.forEach((parentNode) => {
+            const children = parentNode.children ?? [];
+            const nbCheckedChildren = children.filter((child: any) => selectedNodesByKey.has(child.key)).length;
+            parentNode.checked = nbCheckedChildren === children.length;
+            parentNode.partialSelected = nbCheckedChildren > 0 && nbCheckedChildren < children.length;
+        });
     }
     /**
      * Export the tv days

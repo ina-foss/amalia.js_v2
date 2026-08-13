@@ -497,60 +497,83 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
         const segmentElementNodes = Array.from(
             this.transcriptionElement.nativeElement.querySelectorAll<HTMLElement>(".segment"),
         );
-        if (segmentElementNodes) {
-            const segmentFilteredNodes = segmentElementNodes.filter(
-                (node) =>
-                    this.currentTime >= parseFloat(node.getAttribute("data-tcin")) - karaokeTcDelta &&
-                    this.currentTime < parseFloat(node.getAttribute("data-tcout")),
-            );
-            if (segmentFilteredNodes && segmentFilteredNodes.length > 0) {
-                this._inGap = false;
-                this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcin"));
-                this.lastSegmentTcOut = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcout"));
-                // Hydrate le bloc @defer du segment actif via la condition `when` du template
-                // (écriture de signal → tick coalescé → rendu), y compris hors viewport.
-                this.activeSegmentTcIn.set(this.lastSegmentTcIn);
-                segmentFilteredNodes.forEach((segmentNode) => {
-                    segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                });
-                segmentElementNodes.forEach((n) => {
-                    if (n.classList.value !== "segment selected") {
-                        n.querySelector(".subsegment").classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
-                        const subSegmentElement = n.querySelector<HTMLElement>(".subsegment");
-                        const textElement = subSegmentElement.querySelector<HTMLElement>(".text");
-                        const wElementNodes = Array.from(textElement.querySelectorAll<HTMLElement>(".w"));
-                        wElementNodes.forEach((word) => {
-                            word.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
-                        });
-                    }
-                });
-                if (this.pluginConfiguration.data && this.pluginConfiguration.data.withSubLocalisations) {
-                    this.selectWords(karaokeTcDelta);
-                    // Rendu différé : si le segment actif vient seulement d'être déclenché
-                    // (aucun `.w` encore rendu — hydratation asynchrone), re-exécute la
-                    // sélection karaoké après le prochain rendu (cas seek lointain en pause :
-                    // le scroll se fait sur les offsets des segments, toujours présents, puis
-                    // le mot est re-sélectionné ici). Garde anti-boucle par segment.
-                    if (
-                        this.deferredRendering &&
-                        !segmentFilteredNodes[0].querySelector(`.${TranscriptionPluginComponent.SELECTOR_WORD}`) &&
-                        this.karaokeRefreshTcIn !== this.lastSegmentTcIn
-                    ) {
-                        this.karaokeRefreshTcIn = this.lastSegmentTcIn;
-                        this.runAfterNextRender(() => this.handleOnTimeChange());
-                    }
-                }
-                if (this.lastSelectedNode !== segmentFilteredNodes[0]) {
-                    this.lastSelectedNode = segmentFilteredNodes;
-                    this.scroll();
-                }
-            } else if (!this._inGap) {
-                this._inGap = true;
-                this.lastSegmentTcIn = null;
-                this.lastSegmentTcOut = null;
-                this.lastSelectedNode = null;
-            }
+        const segmentFilteredNodes = segmentElementNodes.filter(
+            (node) =>
+                this.currentTime >= parseFloat(node.getAttribute("data-tcin")) - karaokeTcDelta &&
+                this.currentTime < parseFloat(node.getAttribute("data-tcout")),
+        );
+        if (segmentFilteredNodes.length === 0) {
+            this.enterGap();
+            return;
         }
+        this._inGap = false;
+        this.lastSegmentTcIn = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcin"));
+        this.lastSegmentTcOut = parseFloat(segmentFilteredNodes[0].getAttribute("data-tcout"));
+        // Hydrate le bloc @defer du segment actif via la condition `when` du template
+        // (écriture de signal → tick coalescé → rendu), y compris hors viewport.
+        this.activeSegmentTcIn.set(this.lastSegmentTcIn);
+        segmentFilteredNodes.forEach((segmentNode) => {
+            segmentNode.classList.add(TranscriptionPluginComponent.SELECTOR_SELECTED);
+        });
+        this.clearInactiveSegmentsStyle(segmentElementNodes);
+        if (this.pluginConfiguration.data?.withSubLocalisations) {
+            this.selectWords(karaokeTcDelta);
+            this.refreshKaraokeAfterDeferredRender(segmentFilteredNodes[0]);
+        }
+        if (this.lastSelectedNode !== segmentFilteredNodes[0]) {
+            this.lastSelectedNode = segmentFilteredNodes;
+            this.scroll();
+        }
+    }
+
+    /**
+     * Aucun segment actif au temps courant : réinitialise l'état de sélection (une seule fois).
+     */
+    private enterGap() {
+        if (this._inGap) {
+            return;
+        }
+        this._inGap = true;
+        this.lastSegmentTcIn = null;
+        this.lastSegmentTcOut = null;
+        this.lastSelectedNode = null;
+    }
+
+    /**
+     * Retire les styles de sélection/karaoké des segments qui ne sont plus actifs.
+     * @param segmentElementNodes tous les segments rendus
+     */
+    private clearInactiveSegmentsStyle(segmentElementNodes: HTMLElement[]) {
+        segmentElementNodes.forEach((n) => {
+            if (n.classList.value === "segment selected") {
+                return;
+            }
+            const subSegmentElement = n.querySelector<HTMLElement>(".subsegment");
+            subSegmentElement.classList.remove(TranscriptionPluginComponent.SELECTOR_SELECTED);
+            const textElement = subSegmentElement.querySelector<HTMLElement>(".text");
+            const wElementNodes = Array.from(textElement.querySelectorAll<HTMLElement>(".w"));
+            wElementNodes.forEach((word) => {
+                word.classList.remove(TranscriptionPluginComponent.SELECTOR_ACTIVATED);
+            });
+        });
+    }
+
+    /**
+     * Rendu différé : si le segment actif vient seulement d'être déclenché (aucun `.w` encore
+     * rendu — hydratation asynchrone), re-exécute la sélection karaoké après le prochain rendu
+     * (cas seek lointain en pause : le scroll se fait sur les offsets des segments, toujours
+     * présents, puis le mot est re-sélectionné ici). Garde anti-boucle par segment.
+     * @param activeSegmentNode segment actif au temps courant
+     */
+    private refreshKaraokeAfterDeferredRender(activeSegmentNode: HTMLElement) {
+        if (!this.deferredRendering || this.karaokeRefreshTcIn === this.lastSegmentTcIn) {
+            return;
+        }
+        if (activeSegmentNode.querySelector(`.${TranscriptionPluginComponent.SELECTOR_WORD}`)) {
+            return;
+        }
+        this.karaokeRefreshTcIn = this.lastSegmentTcIn;
+        this.runAfterNextRender(() => this.handleOnTimeChange());
     }
 
     /**
