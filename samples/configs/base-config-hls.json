@@ -42,7 +42,7 @@
           "zone": 1,
           "order": 2,
           "data": {
-            "href": "http://localhost:4200/assets/logo.svg"
+            "href": "http://localhost:4201/assets/logo.svg"
           }
         },
         {
@@ -52,7 +52,7 @@
           "zone": 1,
           "order": 1,
           "data": {
-            "href": "http://localhost:4200/assets/logo.svg"
+            "href": "http://localhost:4201/assets/logo.svg"
           },
           "priority": 1
         },

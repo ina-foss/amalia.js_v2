@@ -43,7 +43,7 @@ Les assets partagés légitimes passent par `src/assets` (sprite SVG, images), s
 
 ### Bootstrap sans composant racine
 
-Pas d'app Angular classique : `src/main.ts` charge les polyfills (zone.js, `@ungap/custom-elements`) puis `bootstrapAmaliaElements()` (`src/app/bootstrap.ts`) crée l'application via `createApplication()` et enregistre les custom elements. Tous les composants sont **standalone** (aucun NgModule) et portent leurs propres imports.
+Pas d'app Angular classique : `src/main.ts` charge les polyfills (`@ungap/custom-elements` ; zone.js n'est plus chargé depuis le flip zoneless — cf. `src/zone-polyfill.ts`) puis `bootstrapAmaliaElements()` (`src/app/bootstrap.ts`) crée l'application via `createApplication()` (avec `provideZonelessChangeDetection()`) et enregistre les custom elements. Tous les composants sont **standalone** (aucun NgModule) et portent leurs propres imports.
 
 ### Objet runtime central : `MediaPlayerElement`
 
@@ -53,7 +53,7 @@ Pas d'app Angular classique : `src/main.ts` charge les polyfills (zone.js, `@ung
 
 ### Système de plugins
 
-Chaque plugin étend `PluginBase<T>` (`src/app/core/plugin/plugin-base.ts`) : il reçoit un `playerId`, récupère le `MediaPlayerElement` correspondant, et fusionne sa configuration (défauts du plugin + config globale du player + attribut/input direct). Les listeners d'événements player déclarent une `ListenerZonePolicy` (`'zone'` | `'schedule'` | `'none'`) qui pilote leur interaction avec la change detection — voir les commentaires dans plugin-base.ts avant d'en changer une.
+Chaque plugin étend `PluginBase<T>` (`src/app/core/plugin/plugin-base.ts`) : il reçoit un `playerId`, récupère le `MediaPlayerElement` correspondant, et fusionne sa configuration (défauts du plugin + config globale du player + attribut/input direct). Les listeners d'événements player déclarent une `ListenerZonePolicy` (`'schedule'` | `'none'` ; l'ancienne politique `'zone'` a disparu avec le flip zoneless) qui pilote leur interaction avec la change detection — voir les commentaires dans plugin-base.ts avant d'en changer une.
 
 ### Store de signals `PlaybackState`
 
@@ -65,8 +65,8 @@ La plupart des composants utilisent l'encapsulation Shadow DOM. PrimeNG 21 (them
 
 ## Chantier refactoring performance : livré (branche `refactor/perf-v21`)
 
-Document maître : `docs/refactoring/PLAN-PERF-2026.md` (suivi des phases, décisions actées) — **à maintenir** pour tout travail lié. Toutes les phases sont livrées (main.js 5,93 → 3,46 Mo, 13/13 composants OnPush, 892 specs), sauf :
-- **Flip zoneless** : préparé mais différé — `ng serve -c zoneless` active `provideZonelessChangeDetection()` via `environment.zoneless` ; le flip définitif (flag en prod + retrait de l'import zone.js dans main.ts) attend ≥ 1 cycle de release en prod.
+Document maître : `docs/refactoring/PLAN-PERF-2026.md` (suivi des phases, décisions actées) — **à maintenir** pour tout travail lié. Toutes les phases sont livrées (main.js 5,93 → 3,42 Mo, 13/13 composants OnPush, 892 specs), y compris :
+- **Flip zoneless** : **livré le 2026-08-14** (gate « 1 cycle de release » levé sur décision) — zoneless par défaut dans tous les environnements, zone.js retiré du bundle (`src/zone-polyfill.ts`, no-op), politique `'zone'` supprimée de `PluginBase` (défaut → `'schedule'`). Secours : `ng build -c zoneful` (fileReplacements → `zone-polyfill.zoneful.ts` + `environment.zoneful.ts`) reproduit le bundle zoné pré-flip, à conserver 1 release. Ne pas réintroduire zone.js via l'option `polyfills` d'angular.json : le builder émettrait un `polyfills.js` séparé, en violation du contrat mono-fichier.
 - **Smoke visuel avant merge** : 2 passes déroulées le 2026-08-12, résultats et méthode dans `docs/refactoring/SMOKE-CHECKLIST.md`. Il reste à couvrir **annotation/segments + export Excel** (bloqué par un 500 du backend dev sur `POST /api/dossier/segments/stock`) et les mesures Angular DevTools M1/M2.
 
 Deux points de méthode issus de ces passes, utiles pour tout futur smoke :

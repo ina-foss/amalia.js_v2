@@ -44,7 +44,7 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
     // tick, plus de zone.run ni markForCheck). Les champs restés plats sont soit écrits
     // uniquement dans init() (elements/controlsByZone, extractTcIn/Out, enableThumbnail,
     // listOfTracks, listOfSubtitles, defaultRatio, tcOffset — couverts par le listener INIT
-    // de PluginBase resté en 'zone' → markForCheck), soit mutés seulement par des handlers
+    // de PluginBase en 'schedule' → markForCheck), soit mutés seulement par des handlers
     // de template (onProgressBar — l'événement marque la vue), soit non lus par le template
     // (keypressed, playbackrateByImages, indexPlaybackRate, enablePinnedSlider…). Les
     // lectures directes de isPaused()/withMergeVolume dans le template sont couvertes par
@@ -167,7 +167,7 @@ export class ControlBarPluginComponent extends PluginBase<Array<ControlBarConfig
      */
     public readonly aspectRatio = signal<"16:9" | "4:3">("4:3");
     /**
-     * Default aspect ratio (écrit uniquement dans init(), couvert par INIT 'zone')
+     * Default aspect ratio (écrit uniquement dans init(), couvert par INIT 'schedule')
      */
     public defaultRatio;
     /**

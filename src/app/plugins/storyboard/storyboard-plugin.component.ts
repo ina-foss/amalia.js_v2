@@ -25,7 +25,7 @@ import {
     // sont des signals ; le reste est soit constant, soit muté uniquement par des handlers
     // de template (size, selectedInterval → la vue est marquée dirty par l'événement), soit
     // renseigné dans init() (baseUrl, enableLabel, fps, sizeThumbnail, tcOffset — couvert
-    // par le listener INIT 'zone' ou le METADATA_LOADED 'schedule'). Le TIME_CHANGE throttlé
+    // par les listeners INIT/METADATA_LOADED 'schedule'). Le TIME_CHANGE throttlé
     // et SEEKED/SEEKING ne font que du DOM (classList/scroll) et des écritures de signals →
     // policy 'none'.
     changeDetection: ChangeDetectionStrategy.OnPush,

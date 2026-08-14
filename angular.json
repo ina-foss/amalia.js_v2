@@ -70,15 +70,34 @@
                             "optimization": false,
                             "sourceMap": true
                         },
-                        "zoneless": {
+                        "zoneful": {
                             "fileReplacements": [
                                 {
                                     "replace": "src/environments/environment.ts",
-                                    "with": "src/environments/environment.zoneless.ts"
+                                    "with": "src/environments/environment.zoneful.ts"
+                                },
+                                {
+                                    "replace": "src/zone-polyfill.ts",
+                                    "with": "src/zone-polyfill.zoneful.ts"
                                 }
                             ],
-                            "optimization": false,
-                            "sourceMap": true
+                            "optimization": true,
+                            "outputHashing": "none",
+                            "sourceMap": false,
+                            "namedChunks": true,
+                            "extractLicenses": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "3.7mb",
+                                    "maximumError": "4mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "100kb",
+                                    "maximumError": "200kb"
+                                }
+                            ]
                         }
                     }
                 },
@@ -94,8 +113,8 @@
                         "development": {
                             "buildTarget": "amalia:build:development"
                         },
-                        "zoneless": {
-                            "buildTarget": "amalia:build:zoneless"
+                        "zoneful": {
+                            "buildTarget": "amalia:build:zoneful"
                         }
                     }
                 },

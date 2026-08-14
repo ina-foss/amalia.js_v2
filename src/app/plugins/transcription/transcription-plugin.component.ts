@@ -60,7 +60,7 @@ export class TcFormatPipe implements PipeTransform {
     // typing, index, listOfSearchedNodes). Les listeners player TIME_CHANGE/SEEKED/SEEKING/
     // METADATA_LOADED sont en policy 'none' (DOM + écritures de signals uniquement). Les
     // champs restés plats (tcDisplayFormat, fps, tcOffset, resourceType, labels de config)
-    // sont renseignés dans ngOnInit/init(), couverts par le listener INIT 'zone' de PluginBase.
+    // sont renseignés dans ngOnInit/init(), couverts par le listener INIT 'schedule' de PluginBase.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig> implements AfterViewInit {
@@ -129,7 +129,7 @@ export class TranscriptionPluginComponent extends PluginBase<TranscriptionConfig
     /**
      * Rendu par-mot différé (@defer par segment) — feature-flag `data.deferredRendering`
      * (défaut true), renseigné dans init() avant le premier rendu (comme les autres champs
-     * plats de config, couvert par le listener INIT 'zone' de PluginBase).
+     * plats de config, couvert par le listener INIT 'schedule' de PluginBase).
      */
     public deferredRendering = true;
     /**

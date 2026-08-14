@@ -1,7 +1,7 @@
 import { MediaPlayerElement } from '../media-player-element';
 import { PluginConfigData } from '../config/model/plugin-config-data';
 import { DefaultLogger } from '../logger/default-logger';
-import { afterNextRender, ChangeDetectorRef, Component, ElementRef, inject, Injector, Input, NgZone, OnDestroy, OnInit, ProviderToken } from '@angular/core';
+import { afterNextRender, ChangeDetectorRef, Component, ElementRef, inject, Injector, Input, OnDestroy, OnInit, ProviderToken } from '@angular/core';
 import { PrimengShadowStylesService } from '../styles/primeng-shadow-styles.service';
 import { PlayerEventType } from '../constant/event-type';
 import { MediaPlayerService } from '../../service/media-player-service';
@@ -11,16 +11,16 @@ import { Utils } from "../utils/utils";
 
 /**
  * Execution policy of a player-event listener with respect to change detection:
- * - `'zone'`: `zone.run(fn)` + `markForCheck()` — historical behaviour, forces a change
- *   detection tick through the zone (player events are emitted from a plain EventEmitter,
- *   often outside Angular's zone).
- * - `'schedule'`: `fn` + `markForCheck()` without re-entering the zone — relies on the hybrid
- *   scheduler (Angular ≥ 18): `markForCheck()` outside the zone schedules a coalesced
- *   `ApplicationRef.tick()`, in both zone and zoneless modes.
+ * - `'schedule'`: `fn` + `markForCheck()` — relies on the hybrid scheduler (Angular ≥ 18):
+ *   `markForCheck()` from an out-of-Angular callback schedules a coalesced
+ *   `ApplicationRef.tick()`, in both zoneless (the default since the phase 9 flip) and
+ *   zoned (`zoneful` fallback build) modes.
  * - `'none'`: bare `fn`, no change-detection notification — for handlers that only write
  *   signals (the signal write schedules the tick itself) or do pure DOM work.
+ * The historical `'zone'` policy (`zone.run` + `markForCheck`) was removed with the phase 9
+ * zoneless flip: without zone.js, it degraded to `'schedule'` anyway.
  */
-export type ListenerZonePolicy = 'zone' | 'schedule' | 'none';
+export type ListenerZonePolicy = 'schedule' | 'none';
 
 /**
  * Base class for create plugin
@@ -135,11 +135,6 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
     protected pluginName: string;
     logger: DefaultLogger;
     /**
-     * Angular zone, used to re-enter the zone when player events (emitted from a non-Angular
-     * EventEmitter, often outside the zone) update component state, so change detection runs.
-     */
-    private readonly _pluginZone: NgZone | null = PluginBase.tryInject(NgZone);
-    /**
      * Change detector used to mark the (custom element) view dirty after event-driven updates.
      */
     private readonly _pluginCdr: ChangeDetectorRef | null = PluginBase.tryInject(ChangeDetectorRef);
@@ -210,22 +205,21 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
 
     /**
      * Default {@link ListenerZonePolicy} applied by {@link addListener} when the caller does not
-     * pass an explicit policy. Returns `'zone'` — strictly identical behaviour to the historical
-     * `wrapInZone` during the OnPush/zoneless transition. Subclasses can override this to relax
-     * the policy per event type (e.g. rAF-coalesced or signal-writing handlers → `'none'`).
+     * pass an explicit policy. Returns `'schedule'` — the handler runs as-is and the view is
+     * marked for check (coalesced tick via the hybrid scheduler). Subclasses can override this
+     * to relax the policy per event type (e.g. rAF-coalesced or signal-writing handlers → `'none'`).
      */
     protected defaultListenerPolicy(playerEventType: PlayerEventType): ListenerZonePolicy {
-        return 'zone';
+        return 'schedule';
     }
 
     /**
      * Wraps a player-event handler according to the given {@link ListenerZonePolicy}. Player
-     * events are emitted from a plain EventEmitter whose `emit` may originate outside Angular's
-     * zone (the host page drives the player via the custom-element API), in which case mutations
-     * done by the handler would not trigger change detection:
-     * - `'zone'`: runs the handler inside the Angular zone and marks the view for check;
+     * events are emitted from a plain EventEmitter whose `emit` originates outside Angular
+     * (the host page drives the player via the custom-element API), in which case mutations
+     * done by the handler would not trigger change detection on their own:
      * - `'schedule'`: runs the handler as-is and marks the view for check (the hybrid scheduler
-     *   turns the out-of-zone `markForCheck` into a coalesced tick);
+     *   turns the out-of-Angular `markForCheck` into a coalesced tick);
      * - `'none'`: returns the handler untouched.
      * IMPORTANT: the wrapper's `name` is preserved (`Object.defineProperty`) so the listener
      * de-duplication/removal logic in `Utils` (which matches on the bound function name) keeps
@@ -236,16 +230,12 @@ export abstract class PluginBase<T> implements OnInit, OnDestroy {
             // Bare handler: its own `name` is naturally preserved for the Utils name-based dedup.
             return func;
         }
-        const zone = this._pluginZone;
         const cdr = this._pluginCdr;
         const wrapped = function (...args: any[]) {
             // `this` is bound to the plugin instance by Utils.addListener.
-            const run = () => {
-                const result = func.apply(this, args);
-                cdr?.markForCheck();
-                return result;
-            };
-            return (policy === 'zone' && zone) ? zone.run(run) : run();
+            const result = func.apply(this, args);
+            cdr?.markForCheck();
+            return result;
         };
         Object.defineProperty(wrapped, 'name', { value: func.name, configurable: true });
         return wrapped;

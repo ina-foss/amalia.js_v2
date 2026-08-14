@@ -79,8 +79,8 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
     // collections restées plates (listOfBlocks, listOfBlocksIndexes, nodes, mainLocalisations,
     // allNodesChecked, indeterminate) ne sont mutées que par des handlers de template (vue
     // marquée dirty par l'événement) ou sous les listeners METADATA_LOADED/USER_SEGMENT_CHANGED
-    // laissés volontairement en 'zone' (zone.run + markForCheck) : parseTimelineMetadata mute
-    // ces champs en place et met à jour les TreeNode PrimeNG. Le setTimeout d'updateTreeComponent
+    // en 'schedule' (markForCheck après le handler) : parseTimelineMetadata mute ces champs
+    // en place et met à jour les TreeNode PrimeNG. Le setTimeout d'updateTreeComponent
     // notifie lui-même la CD (markForCheck, audit setTimeout phase 8) et est zoneless-safe.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -437,11 +437,11 @@ export class TimelinePluginComponent extends PluginBase<TimelineConfig> implemen
             this.parseTimelineMetadata();
             this.handleOnDurationChange();
         }
-        // METADATA_LOADED/USER_SEGMENT_CHANGED restent volontairement en 'zone' :
+        // METADATA_LOADED/USER_SEGMENT_CHANGED restent en 'schedule' (défaut PluginBase) :
         // parseTimelineMetadata mute en place des collections plates lues par le template
         // (listOfBlocks, listOfBlocksIndexes, nodes, mainLocalisations) et les TreeNode
-        // PrimeNG. (Le setTimeout d'updateTreeComponent notifie désormais lui-même la CD
-        // via markForCheck — audit setTimeout phase 8 — et n'impose plus la zone.)
+        // PrimeNG — le markForCheck du wrapper notifie la vue OnPush. (Le setTimeout
+        // d'updateTreeComponent notifie lui-même la CD — audit setTimeout phase 8.)
         this.addListener(
             this.mediaPlayerElement.eventEmitter,
             PlayerEventType.METADATA_LOADED,

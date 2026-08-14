@@ -29,7 +29,7 @@ In Amalia core, the bundle is produced under:
 
 - `dist/amalia/amalia-<version>.min.js`
 
-The bundle is the single ESM `main.js` emitted by the Angular esbuild builder (`@angular/build:application`) — polyfills (zone.js, `@ungap/custom-elements`) are imported by `main.ts`, so there is nothing to concatenate anymore. `build-web-component.js` copies it under its versioned name and **fails the build if any unexpected chunk appears** (single-file contract guard).
+The bundle is the single ESM `main.js` emitted by the Angular esbuild builder (`@angular/build:application`) — the remaining polyfill (`@ungap/custom-elements`) is imported by `main.ts`, so there is nothing to concatenate anymore. Since the zoneless flip, **zone.js is no longer shipped**: the player runs with `provideZonelessChangeDetection()` and adds no global monkey-patching to the host page (hosts that need zone.js for their own framework must load it themselves, as `player-expert` does today). `build-web-component.js` copies the bundle under its versioned name and **fails the build if any unexpected chunk appears** (single-file contract guard).
 
 ---
 

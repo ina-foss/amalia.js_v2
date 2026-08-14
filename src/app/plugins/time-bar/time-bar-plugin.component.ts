@@ -21,7 +21,7 @@ import { TcFormatPipe } from "../../core/utils/tc-format.pipe";
     // plus de listeners TIME_CHANGE/DURATION_CHANGE/SEEKING), active/displayState sont des
     // signals alimentés par des listeners 'schedule'. Les champs restés plats (theme,
     // labels, displayFormat, fps) ne changent que dans init(), exécuté avant le premier
-    // rendu ou sous le listener INIT de PluginBase (policy 'zone' → markForCheck).
+    // rendu ou sous le listener INIT de PluginBase (policy 'schedule' → markForCheck).
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimeBarPluginComponent extends PluginBase<TimeBarConfig> implements OnInit {
