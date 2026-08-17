@@ -81,9 +81,9 @@ Profil Angular DevTools sur `amalia-hls.html`, scénario : 30 s lecture + 1 seek
 | M3 : latence drag progress-bar | fluide | inchangée | inchangée | inchangée |
 | M4 : fuite listeners 5× attach/detach | 0 | 0 | 0 | 0 |
 
-> M2 relevée le 2026-08-17 (avant/après sur le harnais offline) — voir la section
-> « Mesure M2 du 2026-08-17 » en fin de document. M1 reste à relever (exige un build dev :
-> Angular DevTools ou `ng.ɵsetProfiler`, le bundle prod n'expose pas les hooks).
+> M1 **et** M2 relevées le 2026-08-17 — voir les sections « Mesure M2 » et « Mesure M1 » en
+> fin de document. M1 : cible phase 9 atteinte (1 tick coalescé par `timeupdate`, vues
+> ciblées, 0 tick à l'arrêt et sous mousemove).
 
 ---
 
@@ -298,9 +298,9 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
   passage). Le cas **stock** a été rejoué le 2026-08-17 : **le 500 est corrigé côté backend dev**
   (`POST /api/dossier/segments/stock` → 200), scénario complet vert (volet stock de la passe
   ci-dessous).
-- **Mesures M1/M2** (ticks CD, ms scripting) : ~~non relevées~~ **M2 relevée le 2026-08-17**
-  (voir la section dédiée en fin de document) ; M1 reste à relever — elle exige un build dev,
-  le bundle prod n'expose ni Angular DevTools ni `ng.ɵsetProfiler`.
+- **Mesures M1/M2** (ticks CD, ms scripting) : ~~non relevées~~ **toutes deux relevées le
+  2026-08-17** (voir les sections dédiées en fin de document) — M1 sur build dev
+  (`ng.ɵsetProfiler`), M2 par traces CDP avant/après sur bundles prod.
 
 ### Pistes écartées après vérification
 
@@ -330,9 +330,9 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
 - [ ] Sélection rectangle de segments : mécanisme non trouvé côté timeline (la case
       « Sélectionner des segments » existe mais ne change pas le clic → seek) ; à préciser
       côté annotation.
-- [ ] Mesures Angular DevTools (M1/M2) : **M2 relevée le 2026-08-17** sur le harnais offline
-      (le média INA ne change pas la charge CD ; voir la section dédiée). Reste **M1**
-      (ticks CD) : build dev requis (`npm start` + Angular DevTools ou `ng.ɵsetProfiler`).
+- [x] Mesures Angular DevTools (M1/M2) : **toutes deux relevées le 2026-08-17** sur le harnais
+      offline (le média INA ne change pas la charge CD ; voir les sections dédiées) — M1 via
+      `ng.ɵsetProfiler` sur build dev, cible phase 9 atteinte ; M2 par traces CDP avant/après.
 
 ---
 
@@ -458,6 +458,29 @@ actifs après 3 s de lecture).
   Une première paire de traces sur les pages expert a été jetée pour cette raison.
 - Mesure sur flux HLS public : l'origine du média ne change pas la charge de CD ; le média
   INA authentifié n'est de toute façon pas reproductible hors `player-expert`.
-- **M1 reste à relever** : compter les ticks exige un build dev (`npm start` +
-  Angular DevTools, ou `ng.ɵsetProfiler` scripté) ; comparatif zone-full possible via un
-  worktree sur un commit pré-flip.
+- ~~**M1 reste à relever**~~ Relevée dans la foulée — voir la section suivante.
+
+---
+
+## Mesure M1 du 2026-08-17 (build dev, `ng.ɵsetProfiler`)
+
+**Méthode.** Le bundle prod n'expose ni Angular DevTools ni les hooks de profiling : mesure
+sur **build dev** (`ng serve --port 4210 -c development`, zoneless comme la prod depuis le
+flip), page = **réplique exacte de `_smoke-transcription.html`** (player + time-bar +
+control-bar + 2 transcriptions + storyboard, config et métadonnées servies par le harnais
+4203, flux HLS public 120,6 s). Instrumentation : `ng.ɵsetProfiler` avec compteurs par type
+d'événement + comptage des templates re-exécutés par composant ; `timeupdate` comptés en
+parallèle sur le `<video>`.
+
+| Fenêtre | Ticks CD | Templates re-rendus | Verdict |
+|---|---|---|---|
+| 5 s à l'arrêt (pause, aucune interaction) | **0** (aucun événement de profiler) | 0 | aucune CD sans activité |
+| 10 s de lecture (38 `timeupdate` à ~3,8 Hz) | **38** — les 2 paires d'événements CD du profiler valent exactement 38, aucun re-sync | time-bar : 38, control-bar : 38, + 62 vues embarquées `@for`/tick (RepeaterContext 2 356) ; **player, transcriptions ×2, storyboard : 0** | **1 tick coalescé par `timeupdate`, vues ciblées** |
+| 5 s de mousemove à l'arrêt (191 évts au-dessus du player) | **0** | 0 | handlers hors zone : aucune écriture d'état changeante → aucun tick |
+
+**Cible phase 9 (« 1 tick/timeupdate, vues ciblées ») : atteinte.** Le reste de l'arbre
+(player, transcriptions, storyboard) n'est jamais re-rendu pendant la lecture — la CD ne
+touche que les vues qui consomment `PlaybackState`. La colonne « Baseline » du tableau des
+métriques n'a jamais été relevée (« (à mesurer) » d'origine) : la cible absolue de la
+phase 9 suffit ; un comparatif zone-full resterait possible via un worktree sur un commit
+pré-flip avec le même script `ɵsetProfiler`.
