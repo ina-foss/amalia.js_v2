@@ -81,6 +81,10 @@ Profil Angular DevTools sur `amalia-hls.html`, scénario : 30 s lecture + 1 seek
 | M3 : latence drag progress-bar | fluide | inchangée | inchangée | inchangée |
 | M4 : fuite listeners 5× attach/detach | 0 | 0 | 0 | 0 |
 
+> M2 relevée le 2026-08-17 (avant/après sur le harnais offline) — voir la section
+> « Mesure M2 du 2026-08-17 » en fin de document. M1 reste à relever (exige un build dev :
+> Angular DevTools ou `ng.ɵsetProfiler`, le bundle prod n'expose pas les hooks).
+
 ---
 
 ## Passe du 2026-08-12 (fin de chantier, branche `refactor/perf-v21`)
@@ -294,7 +298,9 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
   passage). Le cas **stock** a été rejoué le 2026-08-17 : **le 500 est corrigé côté backend dev**
   (`POST /api/dossier/segments/stock` → 200), scénario complet vert (volet stock de la passe
   ci-dessous).
-- **Mesures M1/M2** (ticks CD, ms scripting) : non relevées.
+- **Mesures M1/M2** (ticks CD, ms scripting) : ~~non relevées~~ **M2 relevée le 2026-08-17**
+  (voir la section dédiée en fin de document) ; M1 reste à relever — elle exige un build dev,
+  le bundle prod n'expose ni Angular DevTools ni `ng.ɵsetProfiler`.
 
 ### Pistes écartées après vérification
 
@@ -324,8 +330,9 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
 - [ ] Sélection rectangle de segments : mécanisme non trouvé côté timeline (la case
       « Sélectionner des segments » existe mais ne change pas le clic → seek) ; à préciser
       côté annotation.
-- [ ] Mesures Angular DevTools (M1/M2) : non relevées, nécessitent le scénario de référence
-      sur média INA.
+- [ ] Mesures Angular DevTools (M1/M2) : **M2 relevée le 2026-08-17** sur le harnais offline
+      (le média INA ne change pas la charge CD ; voir la section dédiée). Reste **M1**
+      (ticks CD) : build dev requis (`npm start` + Angular DevTools ou `ng.ɵsetProfiler`).
 
 ---
 
@@ -406,3 +413,51 @@ Console : 1 occurrence du `getComputedStyle`/ShadowRoot pré-existant (une ouver
 d'autocomplete, cf. ci-dessus) et 1 `NG0100 ExpressionChangedAfterItHasBeenChecked` dans
 `AssetDetailsComponent` — composant de **player-expert** (app hôte en mode dev), hors périmètre
 du bundle amalia.
+
+---
+
+## Mesure M2 du 2026-08-17 (traces Chrome, harnais offline, avant/après)
+
+**Méthode.** Traces Chrome (CDP) sur `_smoke-transcription.html` (bundle courant 2.1.26,
+zoneless) et `_ref-smoke-transcription.html` (2.1.24 zone-full pré-chantier), même page,
+même flux HLS public de 120,6 s, **scénario scripté identique** : lecture 0 → 30 s, 1 seek
+programmé (54,5 s), substitut de drag = 36 pas de `currentTime` sur ~1,2 s, puis 10 s de
+mousemove synthétiques ~40 Hz au-dessus du player. Fenêtres bornées par `performance.mark`,
+dépouillement par **union d'intervalles** (pas de double comptage des événements imbriqués)
+via `node scripts/perf-m2-analyse.mjs <trace>` : « scripting » = FunctionCall/EvaluateScript/
+TimerFire/FireAnimationFrame/EventDispatch/GC ; « occupation » = tous les événements complets
+du thread principal. Vivacité vérifiée **des deux côtés** avant mesure (karaoké : 22 mots
+actifs après 3 s de lecture).
+
+| Fenêtre | 2.1.24 scripting | 2.1.26 scripting | 2.1.24 occupation thread principal | 2.1.26 occupation |
+|---|---:|---:|---:|---:|
+| Lecture 30 s | 28,5 ms/s | 28,0 ms/s | **323,5 ms/s (32 %)** | **130,3 ms/s (13 %)** |
+| Mousemove 10 s | 49,3 ms/s (307 évts) | 42,1 ms/s (366 évts) | 395,5 ms/s | 156,1 ms/s |
+| Seek en rafale (36 / 1,2 s) | 147,7 ms/s | 388,4 ms/s | 466,7 ms/s | 638,0 ms/s |
+
+**Lecture des résultats :**
+- Le JS pur est stable en lecture (~28 ms/s des deux côtés) : le gain du chantier n'est pas
+  dans l'exécution du code mais dans **l'occupation totale du thread principal ÷ 2,5**
+  (32 % → 13 % en lecture, 40 % → 16 % sous mousemove) — ce sont les recalculs de style et
+  layout épargnés par l'OnPush ciblé et le `@defer` (le harnais 2.1.24 rend ~6 700 mots
+  d'emblée, le courant ~540 + placeholders).
+- Mousemove : **4,3 ms de thread principal par événement contre 13,0 ms (÷ 3)** ; à budget
+  temps égal la boucle d'émission a débité 366 événements contre 307 (le handler zoné
+  ralentissait l'émetteur) — cohérent avec M3 « drag fluide ».
+- Seek en rafale : le courant est **plus cher** (26,2 vs 8,9 ms de scripting par seek) —
+  c'est l'hydratation `@defer` du segment cible payée à chaque seek, là où 2.1.24 avait tout
+  rendu d'avance. Stress artificiel (36 seeks en 1,2 s ; un drag réel throttle et l'UI seek
+  au relâchement) : à garder à l'œil, non bloquant, et c'est la contrepartie assumée du
+  rendu différé (cf. phase 8bis).
+
+**Notes de méthode :**
+- `_ref-smoke-expert.html` est **inutilisable pour la mesure** : la control-bar 2.1.24 plante
+  à l'init sur le harnais (`hasComponentWithoutZone` lit `.data` d'une config absente de la
+  page) — label temps vide, barre jamais rendue, scripting artificiellement bas. Toute mesure
+  comparative doit commencer par un **test de vie** (label temps ou karaoké qui avance).
+  Une première paire de traces sur les pages expert a été jetée pour cette raison.
+- Mesure sur flux HLS public : l'origine du média ne change pas la charge de CD ; le média
+  INA authentifié n'est de toute façon pas reproductible hors `player-expert`.
+- **M1 reste à relever** : compter les ticks exige un build dev (`npm start` +
+  Angular DevTools, ou `ng.ɵsetProfiler` scripté) ; comparatif zone-full possible via un
+  worktree sur un commit pré-flip.
