@@ -284,14 +284,14 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
 
 ### Bloqué par l'environnement
 
-- **Annotation / segments : non testé.** Le module « Segmentation » monte bien
-  `<amalia-annotation>`, mais `POST /api/dossier/segments/stock` renvoie **500** côté backend dev.
-  `manageEventResponseStatus` attend via `Utils.waitFor` (10 s) que l'hôte renseigne
-  `event.status` sur l'événement `ANNOTATION_*` ; le contrat n'est jamais honoré, amalia expire et
-  affiche « init delai d'attente dépassé ». Côté amalia le comportement est correct (émission,
-  attente, toast d'erreur — chemin `displaySnackBar` validé au passage), mais **CRUD, chips,
-  autocomplete, dialog de confirmation, export JSON/Excel et snapshot restent à dérouler** une
-  fois le 500 corrigé.
+- ~~**Annotation / segments : non testé.**~~ **Débloqué le 2026-08-17** — scénario déroulé
+  intégralement sur un asset **flux** (persistance via `/api/dossier/segments/flux`, qui répond
+  200), voir la passe ci-dessous. Le blocage initial : le module « Segmentation » montait bien
+  `<amalia-annotation>`, mais `POST /api/dossier/segments/stock` renvoyait **500** côté backend
+  dev ; `manageEventResponseStatus` attend via `Utils.waitFor` (10 s) que l'hôte renseigne
+  `event.status` sur l'événement `ANNOTATION_*` ; le contrat n'était jamais honoré, amalia
+  expirait et affichait « init delai d'attente dépassé » (chemin `displaySnackBar` validé au
+  passage). Le cas **stock** (`POST /api/dossier/segments/stock`) n'a pas été rejoué depuis.
 - **Mesures M1/M2** (ticks CD, ms scripting) : non relevées.
 
 ### Pistes écartées après vérification
@@ -314,12 +314,70 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
       (`handleWindowResize`) ; en fenêtre pilotée par CDP le passage plein écran ne change pas
       la taille de fenêtre, donc l'état ne bascule pas. Vérifié réactif en forçant un `resize`
       (icône `fullscreen` ↔ `compress`) — à confirmer sur un vrai navigateur.
-- [ ] **Annotation / segments** (CRUD, chips, autocomplete, dialog de confirmation, export
-      JSON + Excel, snapshot) : aucun sample ne déclare `<amalia-annotation>` → à dérouler
-      dans `player-expert`.
+- [x] **Annotation / segments** (CRUD, chips, autocomplete, dialog de confirmation, export
+      JSON + Excel, snapshot) : déroulé dans `player-expert` le 2026-08-17 sur l'asset flux LCI
+      (voir la passe ci-dessous) — a mis au jour et corrigé la **régression de l'export Excel**.
 - [ ] `amalia-test-vitesses.html` et le mode photo (zoom/magnifier/crop) : médias absents.
 - [ ] Sélection rectangle de segments : mécanisme non trouvé côté timeline (la case
       « Sélectionner des segments » existe mais ne change pas le clic → seek) ; à préciser
       côté annotation.
 - [ ] Mesures Angular DevTools (M1/M2) : non relevées, nécessitent le scénario de référence
       sur média INA.
+
+---
+
+## Passe annotation/segments du 2026-08-17 (dans `player-expert`, localhost:4201)
+
+Environnement : Chrome 151 piloté (CDP), réseau INA joignable. Page :
+`/asset/flux:tv:LCI:20230601T130000:3600?gridName=d3&a=annotations` (module « Segmentation »,
+grille `d3`). Bundle servi par l'app vérifié **identique au bit près** au `dist/amalia` de la
+branche avant la passe (MD5 `835ee840…`) puis après le correctif Excel (MD5 `cdd19f08…`).
+
+Le blocage de la passe du 2026-08-12 est levé sur cet asset : pour un **flux**, la persistance
+passe par `/api/dossier/segments/flux`, qui répond **200** sur toutes les opérations. Le dossier
+contenait 18 segments pré-existants ; les 2 segments créés par la passe ont été supprimés en fin
+de scénario (retour à l'état initial).
+
+### Validé
+
+| Scénario | Résultat |
+|---|---|
+| Création | « Ajouter un segment » → `POST /api/dossier/segments/flux` **200**, 18 → 19 cartes, listes annotations **et** timelines resynchronisées |
+| Édition à la volée (titre) | Clic titre → textarea inline, saisie, validation par le check → `PATCH` **200**, titre rendu sur la carte |
+| Chips catégories + autocomplete | Clic zone → `p-autoComplete` multiple ; suggestions affichées pendant la frappe ; 2 chips ajoutées (Entrée, saisie libre) ; blur → `PATCH` **200** ; chips rendues en lecture seule ; la chip résumé « +N » est bien masquée quand rien n'est replié |
+| Chips mots-clés | Même mécanique : chip ajoutée, `PATCH` **200** |
+| Clonage | `#btnclone` → carte « Copie de … » avec titre/chips repris, `POST` **200** |
+| Imagette (bouton caméra) | Visible sur chaque carte ; clic → capture PNG **960×540** de l'image au temps courant + `PATCH` **200** ; contre-épreuve à t=120 s : nouvelle capture différente (data-URI 256 Ko → 1,26 Mo) |
+| Dialog de confirmation | S'ouvre au `#btnremove` avec le titre du segment dans le message ; **Annuler** : dialog fermé, aucune requête, segment conservé ; **Supprimer** : `DELETE /api/dossier/segments/<id>` **200** (×2), liste revenue à 18 cartes |
+| Export JSON | Blob `application/json` de 32,5 Ko généré (file-saver) |
+| Export Excel | **Cassé à l'ouverture de la passe** (cf. défaut corrigé ci-dessous) ; après correctif : classeur de **51,8 Ko** généré, 0 erreur console |
+
+### Défaut corrigé — régression du chantier (phase 2, webpack → esbuild)
+
+- ~~**Export Excel mort : `TypeError: pUe is not a function` au clic**~~ **Corrigé.**
+  `FileService` importait `json-as-xlsx` en `import * as xlsx` puis l'appelait comme fonction.
+  Le paquet est un CJS dont `module.exports` **est** la fonction (sans marqueur `__esModule`) :
+  webpack passait l'export brut appelable (vérifié dans le bundle 2.1.24 : `l4t=N(578)` puis
+  `l4t(t,n)`), alors que le helper `__toESM` d'esbuild fabrique un **namespace non appelable**
+  (vérifié dans 2.1.26 : `pUe=Ts(gQ())` puis `pUe(n,e)` — le `pUe` de l'erreur console).
+  Invisible aux 892 specs car `callXlsx` y est systématiquement espionné, et invisible aux passes
+  précédentes car l'export Excel était précisément le scénario bloqué. Correctif : **import par
+  défaut** (`import xlsx from 'json-as-xlsx'`, typé par le `export default` du paquet), appel
+  direct. Gates verts (lint, 892/892, garde mono-fichier, 3,42 Mo inchangé à +12 octets près) et
+  **vérifié en réel** après rebuild : classeur téléchargé, console propre. Leçon générique du
+  passage à esbuild : tout `import * as ns` d'un CJS **appelé comme fonction** est cassé — le
+  repérer par audit statique plutôt que d'attendre le clic utilisateur.
+
+### Pré-existant (à ne pas imputer au chantier)
+
+- **`getComputedStyle` sur un `ShadowRoot` à chaque ouverture d'overlay d'autocomplete**
+  (3 erreurs console sur la passe, une par ouverture). Chaîne fautive dans PrimeNG :
+  `onOverlayAfterEnter → bindScrollListener → getScrollableParents` remonte la chaîne des
+  `parentNode` et passe chaque nœud à `getComputedStyle` — y compris le ShadowRoot (nodeType 11)
+  → TypeError, et les **listeners de scroll de l'overlay ne sont jamais liés** (le panneau ne se
+  repositionne/ferme pas au scroll). Le `DomHandler` du bundle 2.1.24 embarque le même algorithme
+  non gardé (seul `nodeType 9` est exclu) : même classe de défaut en prod, pas une régression.
+  Piste : à remonter côté PrimeNG/`@primeuix/utils` (garde `instanceof Element`).
+- **Durée négative affichée** sur un segment pré-existant à cheval sur minuit
+  (23:54:44 → 00:14:27 rendu « Durée : 00:-41:-17:00 ») — affichage seulement, aucune garde sur
+  le passage minuit dans le format TC.
