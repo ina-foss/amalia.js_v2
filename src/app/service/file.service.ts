@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {saveAs} from 'file-saver';
-import * as xlsx from 'json-as-xlsx';
+// Import par défaut obligatoire : json-as-xlsx est un CJS dont module.exports EST la fonction
+// (sans marqueur __esModule). Avec `import * as`, l'interop __toESM d'esbuild fabrique un
+// namespace non appelable -> TypeError au premier export Excel (régression constatée en 2.1.26).
+import xlsx from 'json-as-xlsx';
 
 @Injectable({providedIn: 'root'})
 export class FileService {
@@ -15,8 +18,7 @@ export class FileService {
     }
 
     public callXlsx(data, settings) {
-        const callableXlsx = xlsx as unknown as any;
-        callableXlsx(data, settings);
+        xlsx(data, settings);
     }
 
     public exportToExcel(jsonData: any[], fileName: string) {
