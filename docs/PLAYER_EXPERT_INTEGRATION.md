@@ -695,7 +695,48 @@ Player Expert defines and listens/emits these namespaced event constants:
 
 ---
 
-## 9) Troubleshooting
+## 9) Playback state signals (read-only)
+
+Since 2.1.26, each player exposes a **read-only signal store** of its playback state:
+
+```ts
+const playerEl = document.querySelector('amalia-player') as any;
+const playback = playerEl.mediaPlayerElement.playback; // PlaybackState
+```
+
+One instance per `MediaPlayerElement`, available as soon as the element is created (values keep their defaults — `0`, `false`, `'l'` — until media events start flowing).
+
+### Surface
+
+| Signal | Type | Fed by | Semantics |
+|---|---|---|---|
+| `currentTime()` | `number` | `TIME_CHANGE` | Current position in seconds |
+| `duration()` | `number` | `DURATION_CHANGE` | Media duration in seconds |
+| `playing()` | `boolean` | `PLAYING` / `PAUSED` / `ENDED` | Playback in progress |
+| `volume()` | `number` | `VOLUME_CHANGE` | Normalized volume 0..1 |
+| `muted()` | `boolean` | `VOLUME_CHANGE` | True when volume is 0 |
+| `playbackRate()` | `number` | `PLAYBACK_RATE_CHANGE` | Current playback speed |
+| `seekingTime()` | `number \| null` | `SEEKING` / `SEEKED` | Seek target in seconds, `null` outside a seek |
+| `fullscreen()` | `boolean` | `FULLSCREEN_STATE_CHANGE` | Fullscreen state (`document.fullscreenElement`) |
+| `displayState()` | `string` | `PLAYER_RESIZED` | Responsive display state `xs/s/sm/m/l` |
+| `displayTime()` | `number` (computed) | — | Seek target while dragging the progress bar, else `currentTime()` |
+| `progressPercent()` | `number` (computed) | — | 0-100 progress based on `displayTime()`; 0 while duration is unknown |
+
+### Contract
+
+- **Read-only**: every signal is exposed through `asReadonly()` — hosts cannot write. Writes are reserved to the player internals.
+- **Additive**: the EventEmitter remains the primary public event API, unchanged. Signals are a complement, not a replacement — no breaking change.
+- **Frozen surface**: removing or renaming any of the members above is a breaking change of the integration contract.
+
+### Consuming from an Angular host
+
+Angular signals are carried by the framework itself, not by an application instance: reading `playback.currentTime()` from a **host** component template or `computed()` works across distinct `ApplicationRef`s. A write performed by the player marks the consuming host views dirty and schedules the host's own change detection — including for `OnPush` components and zoneless hosts, with no `zone.run`, no `markForCheck`, and no `TIME_CHANGE` listener needed.
+
+This is the recommended integration path for hosts adopting OnPush/zoneless (e.g. Player Expert's signals migration): bind playback state through these signals, and keep the EventEmitter for workflow events (annotations, contribution juridique, etc.).
+
+---
+
+## 10) Troubleshooting
 
 ### Custom element not recognized
 
