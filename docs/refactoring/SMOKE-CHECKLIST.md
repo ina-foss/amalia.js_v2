@@ -291,7 +291,9 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
   dev ; `manageEventResponseStatus` attend via `Utils.waitFor` (10 s) que l'hôte renseigne
   `event.status` sur l'événement `ANNOTATION_*` ; le contrat n'était jamais honoré, amalia
   expirait et affichait « init delai d'attente dépassé » (chemin `displaySnackBar` validé au
-  passage). Le cas **stock** (`POST /api/dossier/segments/stock`) n'a pas été rejoué depuis.
+  passage). Le cas **stock** a été rejoué le 2026-08-17 : **le 500 est corrigé côté backend dev**
+  (`POST /api/dossier/segments/stock` → 200), scénario complet vert (volet stock de la passe
+  ci-dessous).
 - **Mesures M1/M2** (ticks CD, ms scripting) : non relevées.
 
 ### Pistes écartées après vérification
@@ -316,7 +318,8 @@ branche (MD5 `b035f9a956b1b3cf57bfdf5ea31256df`) : les observations portent bien
       (icône `fullscreen` ↔ `compress`) — à confirmer sur un vrai navigateur.
 - [x] **Annotation / segments** (CRUD, chips, autocomplete, dialog de confirmation, export
       JSON + Excel, snapshot) : déroulé dans `player-expert` le 2026-08-17 sur l'asset flux LCI
-      (voir la passe ci-dessous) — a mis au jour et corrigé la **régression de l'export Excel**.
+      **et** sur l'asset stock FPVDB07011409.01 (voir la passe ci-dessous) — a mis au jour et
+      corrigé la **régression de l'export Excel**.
 - [ ] `amalia-test-vitesses.html` et le mode photo (zoom/magnifier/crop) : médias absents.
 - [ ] Sélection rectangle de segments : mécanisme non trouvé côté timeline (la case
       « Sélectionner des segments » existe mais ne change pas le clic → seek) ; à préciser
@@ -381,3 +384,25 @@ de scénario (retour à l'état initial).
 - **Durée négative affichée** sur un segment pré-existant à cheval sur minuit
   (23:54:44 → 00:14:27 rendu « Durée : 00:-41:-17:00 ») — affichage seulement, aucune garde sur
   le passage minuit dans le format TC.
+
+### Volet stock (même jour) — `stock:FPVDB07011409.01:600`
+
+Page : `/asset/stock:FPVDB07011409.01:600?gridName=d3&a=annotations` (26 min, 2 segments
+pré-existants). **Le 500 du 2026-08-12 est corrigé côté backend dev** : `POST
+/api/dossier/segments/stock` répond **200**, plus aucun « init delai d'attente dépassé ».
+Scénario complet vert, mêmes gestes que le volet flux ; segments de test supprimés en fin de
+passe (retour aux 2 cartes pré-existantes).
+
+| Scénario | Résultat |
+|---|---|
+| Création | `POST /api/dossier/segments/stock` **200**, 2 → 3 cartes. La nouvelle carte est identifiable sans ambiguïté au milieu d'homonymes « Segment sans titre » : classe `segment-selected` + imagette PNG fraîche de 595 Ko (vs JPEG backend ~15 Ko des pré-existants) |
+| Édition titre + chip catégorie | `PATCH` **200** ×2, autocomplete rendue |
+| Clonage | « Copie de … », `POST` **200** |
+| Imagette (caméra) | Recapture à t=300 s (data-URI 595 → 300 Ko), `PATCH` **200** |
+| Dialog de confirmation | Annuler : aucune requête, segment conservé ; Supprimer : `DELETE` **200** ×2 |
+| Exports | JSON 5,8 Ko + **Excel 24 Ko** — le correctif json-as-xlsx vérifié aussi sur stock |
+
+Console : 1 occurrence du `getComputedStyle`/ShadowRoot pré-existant (une ouverture
+d'autocomplete, cf. ci-dessus) et 1 `NG0100 ExpressionChangedAfterItHasBeenChecked` dans
+`AssetDetailsComponent` — composant de **player-expert** (app hôte en mode dev), hors périmètre
+du bundle amalia.
