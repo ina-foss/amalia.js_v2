@@ -21,7 +21,6 @@ export class MetadataManager {
     private logger: LoggerInterface;
     private configurationManager: ConfigurationManager;
     private listOfMetadata: Map<string, Metadata> = new Map<string, Metadata>();
-    private toLoadData = 0;
     private readonly defaultLoader: Loader<Array<Metadata>>;
     /**
      * Dedicated loader used when a {@link ConfigDataSource} declares
@@ -50,12 +49,20 @@ export class MetadataManager {
         return new Promise((resolve) => {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
-                this.toLoadData = dataSources.length;
+                // Compteur LOCAL a cet appel : un champ d'instance serait corrompu par les
+                // loadDataSourceForPlugin() concurrents (chargement a la demande).
+                let remaining = dataSources.length;
+                const onDataSourceDone = () => {
+                    remaining--;
+                    if (remaining < 1) {
+                        resolve();
+                    }
+                };
                 dataSources.forEach(dataSource => {
-                    this.loadDataSource(dataSource, resolve)
+                    this.loadDataSource(dataSource, onDataSourceDone)
                             .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                 });
-                // resolve() called on complete
+                // resolve() appele quand toutes les sources sont terminees
             } else {
                 this.logger.info('Can\'t find data sources');
             }
@@ -91,24 +98,34 @@ export class MetadataManager {
             const dataSources = this.configurationManager.getCoreConfig().dataSources;
             this.logger.debug(`[AMALIA] loadDataSourceForPlugin: ${plugin} dataSources count: ${dataSources?.length || 0}`);
             if (dataSources && Utils.isArrayLike<Array<ConfigDataSource>>(dataSources)) {
-                this.toLoadData = 0;
+                // Compteur LOCAL a cet appel : l'ancien champ d'instance partage etait
+                // remis a zero par chaque appel concurrent (chargement simultane de
+                // plusieurs plugins par l'hote), corrompant le comptage des autres —
+                // certaines promesses ne se resolvaient jamais (module hote jamais monte).
+                let remaining = 0;
                 dataSources.forEach(dataSource => {
                     if (dataSource.plugin && dataSource.plugin.toUpperCase() === plugin.toUpperCase()) {
-                        this.toLoadData++;
+                        remaining++;
                     }
                 });
-                this.logger.debug(`Data source : sources to be loaded: ${this.toLoadData}`);
-                if (this.toLoadData !== 0) {
+                this.logger.debug(`Data source : sources to be loaded: ${remaining}`);
+                if (remaining !== 0) {
+                    const onDataSourceDone = () => {
+                        remaining--;
+                        if (remaining < 1) {
+                            resolve(undefined);
+                        }
+                    };
                     dataSources.forEach(dataSource => {
                         if (dataSource.plugin && dataSource.plugin.toUpperCase() === plugin.toUpperCase()) {
-                            this.loadDataSource(dataSource, resolve, reject)
+                            this.loadDataSource(dataSource, onDataSourceDone, reject)
                                     .then(() => this.logger.debug(`Data source : ${dataSource} loaded`));
                         }
                     });
                 } else {
                     resolve(undefined);
                 }
-                // resolve() called on complete
+                // resolve() appele quand toutes les sources du plugin sont terminees
             } else {
                 this.logger.info('Can\'t find data sources');
                 reject('Can\'t find data sources');
@@ -303,10 +320,9 @@ export class MetadataManager {
         } else {
             this.logger.warn('Error to load data');
         }
-        this.toLoadData--;
-        if (this.toLoadData < 1) {
-            completed();
-        }
+        // completed() signale la fin d'UNE source ; l'agregation (compteur) appartient
+        // a l'appelant (init / loadDataSourceForPlugin), chacun avec son compteur local.
+        completed();
     }
 
     /**
@@ -315,10 +331,7 @@ export class MetadataManager {
      * @param completed promise resolve function
      */
     private errorToLoadMetadata(url, completed) {
-        this.toLoadData--;
-        if (this.toLoadData < 1) {
-            completed();
-        }
+        completed();
         this.logger.warn(`Error to load data source : ${url}`);
     }
 }

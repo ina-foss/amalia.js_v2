@@ -336,6 +336,63 @@ describe('Test Metadata manager', () => {
         tick(100);
         flush();
     }));
+    it('Test MetaDataManager loadDataSourceForPlugin concurrents : chaque appel garde son propre comptage', fakeAsync(() => {
+        // Regression : le compteur etait un champ d'instance partage, remis a zero par
+        // chaque appel concurrent (chargement a la demande multi-slots cote hote) —
+        // timelines se resolvait avec une seule de ses deux sources et la promesse de
+        // l'autre plugin pouvait ne jamais se resoudre (module hote jamais monte).
+        const timelineConfig = require('tests/assets/config-mpe-with-timeline-info.json');
+        const annotationsConfig = require('tests/assets/config-mpe-with-annotations-info.json');
+        configData = {
+            ...timelineConfig,
+            dataSources: [...timelineConfig.dataSources, ...annotationsConfig.dataSources]
+        };
+        const segmentation_metadata_url = 'http://localhost/metadata/sample-timeline-01.json';
+        const faces_recognition_metadata_url = 'http://localhost/metadata/sample-timeline-02.json';
+        const annotation_metadata_url = 'https://calypso.api.d.sas.ina/notilusDossier/segments/flux?channel=FR2&startDate=2023-10-10 20:00:00&endDate=2023-10-10 20:30:00&format=AMALIA&clientId=annotations';
+        const segmentation_metadata_Model = require('tests/assets/metadata/sample-timeline-01.json');
+        const faces_recognition_metadata_model = require('tests/assets/metadata/sample-timeline-02.json');
+        const annotation_metadata_Model = require('tests/assets/metadata/sample-annotation.json');
+
+        configurationManager.load(configData).then(() => {
+            let timelinesResolved = false;
+            let annotationsResolved = false;
+            metadataManager.loadDataSourceForPlugin('timelines')
+                    .then(() => timelinesResolved = true)
+                    .catch(() => fail('timelines rejete'));
+            metadataManager.loadDataSourceForPlugin('annotations')
+                    .then(() => annotationsResolved = true)
+                    .catch(() => fail('annotations rejete'));
+
+            // 1re source timelines terminee : il en reste une, la promesse ne doit PAS se resoudre
+            httpTestingController.expectOne(segmentation_metadata_url).flush(segmentation_metadata_Model, {
+                status: 200,
+                statusText: 'Ok'
+            });
+            tick(1);
+            expect(timelinesResolved).toBeFalse();
+            expect(annotationsResolved).toBeFalse();
+
+            // La source annotations termine : SA promesse se resout, pas celle de timelines
+            httpTestingController.expectOne(annotation_metadata_url).flush(annotation_metadata_Model, {
+                status: 200,
+                statusText: 'Ok'
+            });
+            tick(1);
+            expect(annotationsResolved).toBeTrue();
+            expect(timelinesResolved).toBeFalse();
+
+            // 2e source timelines terminee : timelines se resout enfin
+            httpTestingController.expectOne(faces_recognition_metadata_url).flush(faces_recognition_metadata_model, {
+                status: 200,
+                statusText: 'Ok'
+            });
+            tick(1);
+            expect(timelinesResolved).toBeTrue();
+        });
+        tick(100);
+        flush();
+    }));
     it('Test MetaDataManager refreshDataSourceHeaders Annotation', () => {
         configData = require('tests/assets/config-mpe-with-annotations-info.json');
         const oldToken = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICItWm1vNDlTcXlOdEJnREJUMU5oLXdTczhiNHpVLTloWE0wS3VlT0tKTVI0In0.eyJleHAiOjE3MzY4NzUxOTUsImlhdCI6MTczNjg3NDg5NSwiYXV0aF90aW1lIjoxNzM2ODczOTg1LCJqdGkiOiI5OWZjZTAxZi03ZTQ4LTQzMjUtYmJlZS0wNzRiNDllOTE2MDIiLCJpc3MiOiJodHRwczovL3Nzby5ub3RpbHVzLmQuc2FzLmluYS9hdXRoL3JlYWxtcy9ub3RpbHVzIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjRhNTM5OTkxLTdhMTQtNGIxYS04M2EyLWYzMGY1Yzc4ZjJhMSIsInR5cCI6IkJlYXJlciIsImF6cCI6InBsYXllci1leHBlcnQiLCJub25jZSI6IlZEQnhiRVIyY21vNVZDMTRURXQyVWpVMVJFZGpmbEI1UldJNWVFaFBiRE5CTGpSZk16VlpUa3R2TUhwQyIsInNlc3Npb25fc3RhdGUiOiJiMzRjMDY3My00NDQ1LTQ3MWEtYjVmZS1jYTMwODU2OGU3YTkiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHBzOi8vcGxheWVyLWV4cGVydC5kLnNhcy5pbmEiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbm90aWx1cyIsIlJfQU5OT1RBVElPTlMiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19LCJwbGF5ZXItZXhwZXJ0Ijp7InJvbGVzIjpbIlJfSk9VUk5FRV9QUk9HUkFNTUUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIHJvbGVzIiwic2lkIjoiYjM0YzA2NzMtNDQ0NS00NzFhLWI1ZmUtY2EzMDg1NjhlN2E5IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiT21hciBDaXNzw6kiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJvY2lzc2UiLCJnaXZlbl9uYW1lIjoiT21hciIsImZhbWlseV9uYW1lIjoiQ2lzc8OpIiwiZW1haWwiOiJvY2lzc2UtcHJlc3RhdGFpcmVAaW5hLmZyIn0.PMf5v1aXKdTK7ItkneRqSKMfvx29Mia6U_LXKlEMl9Ic2_efjAknIVbz2dBPF_YzRIM-D_2drRwUKtSHvvOMsdFaYrQfnAQ9w9RcvwNjjPZIJZSWfZiT5x9uDWskeoU5_8kuTUWqtUcgwA5F_s2yvN-B0g1_Hs9j-f8hQu5BmJxDZnMTYKQXXfST_TKgmUC81en1a6Ay2PayPG5h2UgQvoNAZQvXOkFFECNVlJH8vrMRYnKHLGK_lHq7OvK_AmiF0Lo7aTWWWvAXXovppp12puglltJTX98k8NhvFsVEdtaMGgp04QGrUGazoMUvg55cOoFIgtAKlkh7nmhdCqt73g';
