@@ -1,0 +1,24 @@
+{
+  "tcOffset" : 0,
+  "player": {
+    "backwardsSrc": "https://ccavmedia-dd.akamaized.net/c2pa/reuls/master.m3u8",
+    "src": "https://ccavmedia-dd.akamaized.net/c2pa/reuls/master.m3u8",
+    "crossOrigin": "anonymous"
+  },
+  "dataSources": [
+    {
+      "url": "http://localhost:4203/metadata/timeline-type.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/timelines.json"
+    }
+  ],
+  "thumbnail": {
+    "baseUrl": "https://picsum.photos/id/237/200/300",
+    "enableThumbnail": true
+  },
+  "pluginsConfiguration": {
+    "TIME_BAR-PLAYER" : {
+     }
+  }
+}

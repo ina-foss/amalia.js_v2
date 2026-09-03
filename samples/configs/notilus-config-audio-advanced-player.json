@@ -1,0 +1,121 @@
+{
+    "player": {
+        "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
+        "crossOrigin": "anonymous",
+        "ratio": "16:8",
+        "poster": "/assets/images/newAudioBackGround.png",
+        "posterBackground": "amalia-primary-color",
+
+        "hls": {
+            "enable": true,
+            "config": {
+                "maxBufferLength": 12
+            }
+        }
+    },
+    "dataSources": [
+        {
+            "url": "http://localhost:4203/metadata/waveform-timeline0.json"
+        },
+        {
+            "url": "http://localhost:4203/metadata/waveform-timeline1.json"
+        },
+        {
+            "url": "http://localhost:4203/metadata/waveform-timeline0-zoom.json"
+        },
+        {
+            "url": "http://localhost:4203/metadata/waveform-timeline1-zoom.json"
+        }
+    ],
+    "thumbnail": {
+        "enableThumbnail": false
+    },
+    "pluginsConfiguration": {
+        "CONTROL_BAR-PLAYER": {
+            "fixed": true,
+            "data": [
+                {
+                    "label": "Barre de progression",
+                    "control": "progressBar"
+                },
+                {
+                    "label": "Download",
+                    "control": "download",
+                    "icon": "download",
+                    "zone": 1,
+                    "order": 1,
+                    "data": {
+                        "href": "http://localhost:4200/assets/logo.svg"
+                    },
+                    "priority": 1
+                },
+                {
+                    "label": "Playback Rate",
+                    "control": "playbackRate",
+                    "zone": 1,
+                    "order": 2,
+                    "priority": 1
+                },
+                {
+                    "label": "backward-10seconds",
+                    "icon": "backward-10seconds",
+                    "control": "backward-10seconds",
+                    "zone": 2,
+                    "priority": 1
+                },
+                {
+                    "label": "backward",
+                    "icon": "backward",
+                    "control": "backward",
+                    "zone": 2,
+                    "priority": 1
+                },
+                {
+                    "label": "Play / Pause",
+                    "control": "playPause",
+                    "zone": 2,
+                    "priority": 1
+                },
+                {
+                    "label": "forward",
+                    "icon": "forward",
+                    "control": "forward",
+                    "zone": 2,
+                    "priority": 1
+                },
+                {
+                    "label": "forward-10seconds",
+                    "icon": "forward-10seconds",
+                    "control": "forward-10seconds",
+                    "zone": 2,
+                    "priority": 1
+                },
+                {
+                    "label": "Volume",
+                    "control": "volume",
+                    "zone": 3,
+                    "data": {
+                        "channelMergeVolume": true,
+                        "channelMergerNode": "l"
+                    },
+                    "priority": 1
+                },
+                {
+                    "label": "Fullscreen",
+                    "control": "toggleFullScreen",
+                    "icon": "fullscreen",
+                    "zone": 3,
+                    "priority": 1
+                }
+            ]
+        },
+        "HISTOGRAM-PLAYER": {
+            "metadataIds": [
+                "1600693803925339-4096-0",
+                "1600693803925339-4096-1",
+                "waveform-a763c8ec165a441fac80088c3b486929-15000-0",
+                "waveform-a763c8ec165a441fac80088c3b486929-15000-1"
+            ]
+        }
+    }
+}

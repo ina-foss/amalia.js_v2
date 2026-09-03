@@ -1,0 +1,51 @@
+{
+    "dest": "src/assets/svgs/",
+    "log": "warn",
+    "shape": {
+        "dimension": {
+            "maxWidth": 50,
+            "precision": 1,
+            "attributes": false
+        },
+        "spacing": {
+            "padding": 0,
+            "box": "content"
+        },
+        "transform": [
+            {
+                "svgo": {
+                    "plugins": [
+                        {
+                            "name": "preset-default",
+                            "params": {
+                                "overrides": {
+                                    "convertShapeToPath": false,
+                                    "moveGroupAttrsToElems": false
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "svg": {
+        "xmlDeclaration": true,
+        "doctypeDeclaration": true,
+        "namespaceIDs": true,
+        "namespaceIDPrefix": "amalia-",
+        "namespaceClassnames": true,
+        "dimensionAttributes": true
+    },
+    "mode": {
+        "symbol": {
+            "prefix": "amalia-svg-%s",
+            "dimensions": "-size",
+            "render": {
+                "scss": false
+            },
+            "example": true,
+            "sprite": "svg/sprite.symbol.svg"
+        }
+    }
+}

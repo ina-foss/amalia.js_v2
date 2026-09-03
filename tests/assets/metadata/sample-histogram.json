@@ -1,0 +1,26 @@
+
+    {
+      "localisation": [
+        {
+          "data": {
+            "histogram": [
+              {
+                "posbins": "Dw4VEw0TDA8NFRESDQ0VEBUVEzckIyUeEwUGBQYGBgsKCwwpLDE",
+                "negbins": "CgoQDgoQCw4LEg8SDRASDhQVDy4iICghEwQFBAUFBQkICgomKCwv",
+                "nbbins": 2047,
+                "posmax": 81,
+                "negmax": 72
+              }
+            ]
+          },
+          "tcin": "00:00:00.0000",
+          "tcout": "00:00:00.0000",
+          "tclevel": 0
+        }
+      ],
+      "id": "1",
+      "type": "histogram",
+      "algorithm": "inaresearch-levl-converter",
+      "processor": "Ina Research",
+      "processed": 1584976180607
+    }

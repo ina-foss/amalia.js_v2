@@ -1,0 +1,510 @@
+<form #segmentForm="ngForm">
+    <amalia-toast #toast position="bottom-center" key="segment" />
+    <div class="readonly-segment">
+        <p-card [class]="{ 'segment-selected': segment.data.selected }">
+            <ng-template pTemplate="header">
+                @if (segment.data.isTitleEditing === false) {
+                    <div
+                        #titlediv
+                        class="segment-title ellipsis"
+                        [pTooltip]="isEllipsed() ? segment.label : ''"
+                        (click)="startTitleEdit()"
+                        (keydown.enter)="startTitleEdit()"
+                        role="button"
+                        tabindex="0"
+                    >
+                        {{ segment.label === "" || segment.label === undefined ? SEGMENT_SANS_TITRE : segment.label }}
+                    </div>
+                }
+                @if (segment.data.isTitleEditing === true) {
+                    <div class="readonly-title-container">
+                        <div
+                            class="readonly-title-edit"
+                            [class.error-line]="segment.label && segment.label.length > 250"
+                        >
+                            <textarea
+                                #titleInputReadonly
+                                id="title"
+                                name="title"
+                                [(ngModel)]="segment.label"
+                                rows="1"
+                                cols="30"
+                                pInputTextarea
+                                [autoResize]="true"
+                                (focus)="muteShortCuts()"
+                                (blur)="onTitleBlur()"
+                                (keydown)="onTitleEditKeydown($event)"
+                                placeholder="Ajouter un titre"
+                            ></textarea>
+                            <div class="title-edit-actions">
+                                <svg
+                                    class="amalia-pi-icon pi-check"
+                                    (click)="confirmTitleEdit()"
+                                    (keydown.enter)="
+                                        segment.label && segment.label.length > 250 ? null : confirmTitleEdit()
+                                    "
+                                    (mousedown)="onTitleActionMouseDown()"
+                                    role="button"
+                                    [attr.tabindex]="segment.label && segment.label.length > 250 ? -1 : 0"
+                                    [attr.aria-disabled]="segment.label && segment.label.length > 250"
+                                    [style.pointer-events]="
+                                        segment.label && segment.label.length > 250 ? 'none' : 'auto'
+                                    "
+                                    [style.opacity]="segment.label && segment.label.length > 250 ? '0.5' : '1'"
+                                    pTooltip="Valider"
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-check'"></use>
+                                </svg>
+                                <svg
+                                    class="amalia-pi-icon pi-times-circle"
+                                    (click)="cancelTitleEdit()"
+                                    (keydown.enter)="cancelTitleEdit()"
+                                    (mousedown)="onTitleActionMouseDown()"
+                                    role="button"
+                                    tabindex="0"
+                                    pTooltip="Annuler"
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times-circle'"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        @if (segment.data.isTitleEditing === true && segment.label && segment.label.length > 250) {
+                            <small class="segment-title-alignment" id="title-error"> 250 caractères maximum. </small>
+                        }
+                    </div>
+                }
+                <div class="header-buttons">
+                    <svg
+                        id="btnclone"
+                        class="amalia-pi-icon pi-clone"
+                        (click)="cloneSegment()"
+                        (keydown.enter)="cloneSegment()"
+                        role="button"
+                        tabindex="0"
+                        pTooltip="Dupliquer un segment"
+                    >
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-clone'"></use>
+                    </svg>
+                    <svg
+                        id="btnremove"
+                        class="amalia-pi-icon pi-trash"
+                        (click)="removeSegment()"
+                        (keydown.enter)="removeSegment()"
+                        role="button"
+                        tabindex="0"
+                        pTooltip="Supprimer"
+                    >
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-trash'"></use>
+                    </svg>
+                    @if (segment.data.idDocument) {
+                        <p-button
+                            id="btnclone"
+                            (click)="openNotilusMaterial()"
+                            (keydown)="$event.stopPropagation()"
+                            [rounded]="true"
+                            severity="secondary"
+                            styleClass="notilus-filled-circle"
+                            pTooltip="Ouvrir dans Notilus"
+                        >
+                            <ng-template #icon>
+                                <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-file'"></use>
+                                </svg>
+                            </ng-template>
+                        </p-button>
+                    }
+                </div>
+            </ng-template>
+            <p-divider />
+            <div>
+                <div class="readonly-segment-info">
+                    <div class="readonly-segment-thumbnail-block">
+                        <div
+                            [ngClass]="{
+                                'readonly-segment-thumbnail': !segment.thumb,
+                                'readonly-segment-thumbnail-no-background': segment.thumb,
+                            }"
+                        >
+                            @if (
+                                segment.data.media === "audio" ||
+                                segment.data.media === "AUDIO" ||
+                                segment.thumb === "/assets/amalia/images/newAudioBackGround.png"
+                            ) {
+                                <div class="thumbnail readonly-segment-audioThumbnail"></div>
+                            }
+                            <svg
+                                class="amalia-svg-blue-play-size icon"
+                                (click)="playMedia()"
+                                (keydown.enter)="playMedia()"
+                                role="button"
+                                tabindex="0"
+                            >
+                                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#blue-play'"></use>
+                            </svg>
+                            @if (
+                                segment.data.media !== "audio" &&
+                                segment.data.media !== "AUDIO" &&
+                                segment.thumb !== "/assets/amalia/images/newAudioBackGround.png"
+                            ) {
+                                <img class="thumbnail" alt="thumbnail" [src]="segment.thumb" />
+                            }
+                        </div>
+                        <p-button
+                            (click)="updateThumbnail()"
+                            (keydown.enter)="updateThumbnail()"
+                            pTooltip="Sélectionner une imagette"
+                            rounded="true"
+                            outlined="true"
+                            size="small"
+                            severity="secondary"
+                            [ngClass]="{
+                                'readonly-segment-no-camera-icon':
+                                    segment.data.media === 'audio' ||
+                                    segment.data.media === 'AUDIO' ||
+                                    segment.thumb === '/assets/amalia/images/newAudioBackGround.png',
+                            }"
+                        >
+                            <ng-template #icon>
+                                <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-camera'"></use>
+                                </svg>
+                            </ng-template>
+                        </p-button>
+                    </div>
+                    <div class="readonly-segment-info-content">
+                        <div class="readonly-segment-tc">
+                            <div class="readonly-segment-tc-item">
+                                @if (segment.data.isTcInEditing === false) {
+                                    <span
+                                        (click)="startTcInEdit()"
+                                        (keydown.enter)="startTcInEdit()"
+                                        class="tc-label"
+                                        role="button"
+                                        tabindex="0"
+                                    >
+                                        Début :
+                                        <span class="tc-value">{{ segment.tcIn | tcFormat: tcDisplayFormat }}</span>
+                                    </span>
+                                }
+                                @if (segment.data.isTcInEditing === true) {
+                                    <div class="readonly-tc-edit">
+                                        <span>Début :</span>
+                                        <input
+                                            #tcInReadonlyInput
+                                            pInputText
+                                            id="tcInReadonly"
+                                            name="tcIn"
+                                            [(ngModel)]="tcInFormatted"
+                                            class="tc-input-inline"
+                                            (focus)="muteShortCuts()"
+                                            (blur)="onTcInBlur()"
+                                            (keydown)="onTcInKeydown($event)"
+                                        />
+                                    </div>
+                                }
+                            </div>
+                            <div class="readonly-segment-tc-item">
+                                @if (segment.data.isTcOutEditing === false) {
+                                    <span
+                                        (click)="startTcOutEdit()"
+                                        (keydown.enter)="startTcOutEdit()"
+                                        class="tc-label"
+                                        role="button"
+                                        tabindex="0"
+                                    >
+                                        Fin :
+                                        <span class="tc-value">{{ segment.tcOut | tcFormat: tcDisplayFormat }}</span>
+                                    </span>
+                                }
+                                @if (segment.data.isTcOutEditing === true) {
+                                    <div class="readonly-tc-edit">
+                                        <span>Fin :</span>
+                                        <input
+                                            #tcOutReadonlyInput
+                                            pInputText
+                                            id="tcOutReadonly"
+                                            name="tcOut"
+                                            [(ngModel)]="tcOutFormatted"
+                                            class="tc-input-inline"
+                                            (focus)="muteShortCuts()"
+                                            (blur)="onTcOutBlur()"
+                                            (keydown)="onTcOutKeydown($event)"
+                                        />
+                                    </div>
+                                }
+                            </div>
+                            <div class="readonly-segment-tc-item">
+                                @if (segment.data.isTcEditing === false) {
+                                    <span
+                                        (click)="startTcEdit()"
+                                        (keydown.enter)="startTcEdit()"
+                                        class="tc-label"
+                                        role="button"
+                                        tabindex="0"
+                                    >
+                                        Durée :
+                                        <span class="tc-value">{{ segment.tc | tcFormat: tcDisplayFormat }}</span>
+                                    </span>
+                                }
+                                @if (segment.data.isTcEditing === true) {
+                                    <div class="readonly-tc-edit">
+                                        <span>Durée :</span>
+                                        <input
+                                            #tcReadonlyInput
+                                            pInputText
+                                            id="tcReadonly"
+                                            name="tc"
+                                            [(ngModel)]="tcFormatted"
+                                            class="tc-input-inline"
+                                            (focus)="muteShortCuts()"
+                                            (blur)="onTcBlur()"
+                                            (keydown)="onTcKeydown($event)"
+                                        />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <p-divider />
+                        <div class="readonly-segment-categories" #readOnlyCategoriesDiv>
+                            @if (segment.data.isCategoriesEditing === false) {
+                                <div (click)="startCategoriesEdit()" class="readonly-segment-categories-readonly">
+                                    @if (categories().length > 0) {
+                                        @for (category of categories(); track category) {
+                                            <p-chip
+                                                [label]="category"
+                                                [pTooltip]="textLatoWidthHigherThan(category, 300) ? category : ''"
+                                            />
+                                        }
+                                        <p-chip
+                                            id="hiddenCategoriesSummaryChip"
+                                            [label]="'+' + hiddenCategoriesCount()"
+                                            [pTooltip]="remainingCategoriesTooltip()"
+                                        />
+                                    }
+                                    @if (categories().length === 0) {
+                                        <span class="readonly-segment-no-categories">Catégories: aucune</span>
+                                    }
+                                </div>
+                            }
+                            @if (segment.data.isCategoriesEditing === true) {
+                                <div
+                                    #categoriesEditWrapper
+                                    (keydown.enter)="onCategoriesEnter($event)"
+                                    (keydown.escape)="onCategoriesEscape($event)"
+                                    (mousedown)="onCategoriesMouseDown($event)"
+                                >
+                                    <p-autoComplete
+                                        id="categoriesReadonly"
+                                        name="categories"
+                                        [ngModel]="categories()"
+                                        [suggestions]="filteredCategories"
+                                        (completeMethod)="searchCategories($event)"
+                                        [multiple]="true"
+                                        inputId="categories"
+                                        [forceSelection]="false"
+                                        appendTo="self"
+                                        (ngModelChange)="onCategoriesModelChange($event)"
+                                        (onFocus)="muteShortCuts()"
+                                        (onBlur)="onCategoriesBlur()"
+                                        [class.error-line]="categories() && categories().length > 10"
+                                    ></p-autoComplete>
+                                    @if (categories() && categories().length > 10) {
+                                        <small class="segment-categories-alignment" id="categories-error">
+                                            10 Catégories maximum.
+                                        </small>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <div class="readonly-segment-keywords" #readOnlyKeywordsDiv>
+                            @if (segment.data.isKeywordsEditing === false) {
+                                <div (click)="startKeywordsEdit()" class="readonly-segment-keywords-readonly">
+                                    @if (keywords().length > 0) {
+                                        @for (keyword of keywords(); track keyword) {
+                                            <p-chip
+                                                [label]="keyword"
+                                                [pTooltip]="textLatoWidthHigherThan(keyword, 300) ? keyword : ''"
+                                            />
+                                        }
+                                        <p-chip
+                                            id="hiddenKeywordsSummaryChip"
+                                            [label]="'+' + hiddenKeywordsCount()"
+                                            [pTooltip]="remainingKeywordsTooltip()"
+                                        />
+                                    }
+                                    @if (keywords().length === 0) {
+                                        <span class="readonly-segment-no-keywords">Mots-clés: aucun</span>
+                                    }
+                                </div>
+                            }
+                            @if (segment.data.isKeywordsEditing === true) {
+                                <div
+                                    #keywordsEditWrapper
+                                    (keydown.enter)="onKeywordsEnter($event)"
+                                    (keydown.escape)="onKeywordsEscape($event)"
+                                    (mousedown)="onKeywordsMouseDown($event)"
+                                >
+                                    <p-autoComplete
+                                        id="keywordsReadonly"
+                                        name="keywords"
+                                        [ngModel]="keywords()"
+                                        [suggestions]="filteredKeywords"
+                                        (completeMethod)="searchKeywords($event)"
+                                        [multiple]="true"
+                                        inputId="keywords"
+                                        [forceSelection]="false"
+                                        appendTo="self"
+                                        (ngModelChange)="onKeywordsModelChange($event)"
+                                        (onFocus)="muteShortCuts()"
+                                        (onBlur)="onKeywordsBlur()"
+                                        [class.error-line]="keywords() && keywords().length > 10"
+                                    ></p-autoComplete>
+                                    @if (keywords() && keywords().length > 10) {
+                                        <small class="segment-keywords-alignment" id="keywords-error">
+                                            10 Mots-clés maximum.
+                                        </small>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        @if (
+                            (!segment.description ||
+                                segment.description.length === 0 ||
+                                segment.description.trim().length === 0) &&
+                            !segment.data.isDescriptionEditing
+                        ) {
+                            <div
+                                class="readonly-segment-description-empty"
+                                (click)="startDescriptionEdit()"
+                                (keydown.enter)="startDescriptionEdit()"
+                                role="button"
+                                tabindex="0"
+                                style="cursor: pointer"
+                            >
+                                Description: aucune
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (
+                    segment.data.isDescriptionEditing === false &&
+                    segment.description &&
+                    segment.description.length !== 0 &&
+                    segment.description.trim().length !== 0
+                ) {
+                    <div class="readonly-segment-description">
+                        <p
+                            #descp
+                            (click)="startDescriptionEdit()"
+                            (keydown.enter)="startDescriptionEdit()"
+                            role="button"
+                            tabindex="0"
+                            [style.display]="!isDescriptionTruncated() || !isDescriptionCollapsed() ? 'block' : 'none'"
+                            style="cursor: pointer"
+                        >
+                            {{ segment.description }}
+                            @if (isDescriptionTruncated() && !isDescriptionCollapsed()) {
+                                <span
+                                    #affichermoins
+                                    class="readonly-segment-description-afficher-moins"
+                                    (click)="toggleDescription($event); $event.stopPropagation()"
+                                    (keydown.enter)="toggleDescription($event); $event.stopPropagation()"
+                                    role="button"
+                                    tabindex="0"
+                                    >Afficher -</span
+                                >
+                            }
+                        </p>
+                        <p
+                            #descp2
+                            (click)="startDescriptionEdit()"
+                            (keydown.enter)="startDescriptionEdit()"
+                            role="button"
+                            tabindex="0"
+                            [style.display]="isDescriptionTruncated() && isDescriptionCollapsed() ? 'block' : 'none'"
+                            style="cursor: pointer"
+                        >
+                            {{ truncatedDescription() }}
+                            @if (isDescriptionTruncated() && isDescriptionCollapsed()) {
+                                <span
+                                    #afficherplus
+                                    class="readonly-segment-description-afficher-plus"
+                                    (click)="toggleDescription($event); $event.stopPropagation()"
+                                    (keydown.enter)="toggleDescription($event); $event.stopPropagation()"
+                                    role="button"
+                                    tabindex="0"
+                                    >Afficher +</span
+                                >
+                            }
+                        </p>
+                    </div>
+                }
+                @if (segment.data.isDescriptionEditing === true) {
+                    <div class="readonly-description-edit-container">
+                        <div
+                            class="readonly-description-edit"
+                            [class.error-line]="segment.description && segment.description.length > 1000"
+                        >
+                            <textarea
+                                #descriptionEditTextarea
+                                id="descriptionReadonly"
+                                name="description"
+                                [(ngModel)]="segment.description"
+                                rows="5"
+                                cols="30"
+                                pInputTextarea
+                                [autoResize]="true"
+                                (focus)="muteShortCuts()"
+                                (blur)="onDescriptionBlur()"
+                                (keydown)="onDescriptionKeydown($event)"
+                                placeholder="Ajouter une description"
+                            ></textarea>
+                            <div class="description-edit-actions">
+                                <svg
+                                    class="amalia-pi-icon pi-check"
+                                    (click)="confirmDescriptionEdit()"
+                                    (keydown.enter)="
+                                        segment.description && segment.description.length > 1000
+                                            ? null
+                                            : confirmDescriptionEdit()
+                                    "
+                                    (mousedown)="onDescriptionActionMouseDown()"
+                                    role="button"
+                                    [attr.tabindex]="
+                                        segment.description && segment.description.length > 1000 ? -1 : 0
+                                    "
+                                    [attr.aria-disabled]="segment.description && segment.description.length > 1000"
+                                    [style.pointer-events]="
+                                        segment.description && segment.description.length > 1000 ? 'none' : 'auto'
+                                    "
+                                    [style.opacity]="
+                                        segment.description && segment.description.length > 1000 ? '0.5' : '1'
+                                    "
+                                    pTooltip="Valider"
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-check'"></use>
+                                </svg>
+                                <svg
+                                    class="amalia-pi-icon pi-times-circle"
+                                    (click)="cancelDescriptionEdit()"
+                                    (keydown.enter)="cancelDescriptionEdit()"
+                                    (mousedown)="onDescriptionActionMouseDown()"
+                                    role="button"
+                                    tabindex="0"
+                                    pTooltip="Annuler"
+                                >
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times-circle'"></use>
+                                </svg>
+                            </div>
+                        </div>
+                        @if (segment.description && segment.description.length > 1000) {
+                            <small class="segment-description-alignment" id="description-error">
+                                1000 caractères maximum.
+                            </small>
+                        }
+                    </div>
+                }
+            </div>
+        </p-card>
+    </div>
+</form>

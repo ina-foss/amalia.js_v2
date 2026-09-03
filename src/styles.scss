@@ -1,0 +1,4 @@
+/* Styles globaux (page de dev uniquement — les web components sont en Shadow DOM).
+   Le thème PrimeNG est fourni à runtime par providePrimeNG (preset Aura token-based,
+   src/app/core/styles/amalia-primeng-preset.ts) et répliqué dans les shadow roots par
+   PrimengShadowStylesService — plus aucun CSS de thème n'est embarqué ici. */

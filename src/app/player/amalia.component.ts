@@ -1,0 +1,1267 @@
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostListener,
+    inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ProviderToken,
+    signal,
+    ViewChild,
+    ViewEncapsulation,
+} from "@angular/core";
+import { DefaultConfigLoader } from "../core/config/loader/default-config-loader";
+import { DefaultConfigConverter } from "../core/config/converter/default-config-converter";
+import { DefaultMetadataConverter } from "../core/metadata/converter/default-metadata-converter";
+import { DefaultMetadataLoader } from "../core/metadata/loader/default-metadata-loader";
+import { HistogramLoader } from "../core/metadata/loader/histogram-loader";
+import { MediaPlayerElement } from "../core/media-player-element";
+import { AmaliaPlayerImageSource, AmaliaPlayerSettings } from "./photo/business/AmaliaPlayerSettings";
+import { HttpClient } from "@angular/common/http";
+import { DefaultLogger } from "../core/logger/default-logger";
+import { Loader } from "../core/loader/loader";
+import { ConfigData } from "../core/config/model/config-data";
+import { Converter } from "../core/converter/converter";
+import { Metadata } from "../core/metadata/model/metadata";
+import { environment } from "../../environments/environment";
+import { PlayerState } from "../core/constant/player-state";
+import { PlayerEventType } from "../core/constant/event-type";
+import { HttpConfigLoader } from "../core/config/loader/http-config-loader";
+import { BaseUtils } from "../core/utils/base-utils";
+import { MediaPlayerService } from "../service/media-player-service";
+import { PrimengShadowStylesService } from "../core/styles/primeng-shadow-styles.service";
+import { ThumbnailService, ThumbnailSize } from "../service/thumbnail-service";
+import { THUMBNAIL_CANCELLED } from "../core/loader/thumbnail-loader";
+import { quantizeThumbnailTc, THUMBNAIL_TC_STEP } from "../core/utils/thumbnail-tc";
+
+import throttle from "lodash/throttle";
+import { ControlBarPluginComponent } from "../plugins/control-bar/control-bar-plugin.component";
+import { LoggerLevel } from "../core/logger/logger-level";
+import { Utils } from "../core/utils/utils";
+import { ShortcutEvent } from "../core/config/model/shortcuts-event";
+import { NgClass, NgTemplateOutlet } from "@angular/common";
+import { OutsideZoneMousemoveDirective } from "../core/directive/outside-zone-event.directive";
+
+@Component({
+    selector: "amalia-player",
+    templateUrl: "./amalia.component.html",
+    styleUrls: ["./amalia.component.scss"],
+    encapsulation: ViewEncapsulation.ShadowDom,
+    imports: [NgClass, NgTemplateOutlet, OutsideZoneMousemoveDirective],
+    // OnPush (phase 7 vague 3) : les listeners player de ce composant racine passent par son
+    // addListener local (Utils.addListener brut, PAS de zone.run/markForCheck) — tout champ lu
+    // par le template et muté depuis ces handlers, un timeout/interval ou une promesse est donc
+    // un signal (l'écriture programme elle-même le tick via le scheduler hybride). Les champs
+    // restés plats (version, aspectRatio, tc, previewThumbnailUrl, mainSource, muteShortcuts,
+    // listKeys) ne sont pas lus par le template ou ne changent qu'avant le
+    // premier rendu (ngOnInit). Les 3 detectChanges structurels (ngOnInit + queueMicrotask
+    // d'onInitConfig/onErrorInitConfig) sont conservés — voir leurs commentaires.
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AmaliaComponent implements OnInit, OnDestroy {
+    public static DEFAULT_THROTTLE_INVOCATION_TIME = 150;
+    /**
+     * version of player
+     */
+    public version = environment.VERSION;
+    public chrono;
+    /**
+     * player state — signal : muté dans ngOnInit et depuis la chaîne de promesses d'init
+     * (onInitConfig/onErrorInitConfig), hors zone potentielle.
+     */
+    public readonly state = signal<PlayerState | undefined>(undefined);
+    /**
+     * Interval Images
+     */
+    public intervalImages;
+    /**
+     * Selected aspectRatio
+     */
+    public aspectRatio;
+
+    /**
+     * True for shown context menu — signal : muté par le listener ELEMENT_CONTEXT_MENU
+     * (non wrappé zone) et par le (mouseleave) du template.
+     */
+    public readonly contextMenuState = signal(false);
+
+    /**
+     * player state 4by3
+     */
+    public PlayerState = PlayerState;
+
+    /**
+     * Player configuration — signal : assignée dans ngOnInit avant le premier rendu, mais lue
+     * par le template (media AUDIO/PICTURE) ; en signal, toute réassignation (specs comprises)
+     * notifie la vue OnPush.
+     */
+    public readonly playerConfig = signal<ConfigData | undefined>(undefined);
+
+    /**
+     * In charge to show preview thumbnail — signal : muté par les listeners SEEKING/PLAYING
+     * (non wrappés) et par l'interval de displayImages.
+     */
+    public readonly enablePreviewThumbnail = signal(false);
+    /**
+     * preview thumbnail url
+     */
+    public previewThumbnailUrl = "";
+
+    /**
+     * Generate player base id
+     */
+    @Input()
+    public playerId = BaseUtils.getUniqueId();
+    /**
+     * Preview thumbnail container
+     */
+    @ViewChild("previewThumbnail", { static: true })
+    public previewThumbnailElement: ElementRef<HTMLVideoElement>;
+
+    /**
+     *
+     */
+    @ViewChild("photoHost", { static: false })
+    public photoHost: ElementRef<HTMLDivElement>;
+    /**
+     * Set player autoplay state
+     */
+    public autoplay: boolean;
+
+    /**
+     * Enable thumbnail
+     */
+    private enableThumbnail: boolean;
+    /**
+     * true when the mouse in over the player — signal : muté par les handlers de template
+     * (mouseover/mouseout…) et par le listener KEYDOWN_HISTOGRAM (non wrappé).
+     */
+    public readonly playerHover = signal(false);
+
+    private _config: any;
+    // mainSource as src video
+    public mainSource = true;
+    handleKeyUpEvent: any;
+
+    //mute shortcuts
+    public muteShortcuts = false;
+
+    get config(): any {
+        return this._config;
+    }
+
+    @Input()
+    set config(value: any) {
+        if (typeof value === "string") {
+            try {
+                value = JSON.parse(value);
+            } catch (e) {
+                this.logger.debug(`Config not json ${value}`);
+            }
+        }
+        this._config = value;
+    }
+
+    /**
+     * Config loader in charge to load config data
+     */
+    @Input()
+    public configLoader: Loader<ConfigData>;
+    /**
+     * Thumbnail service
+     */
+    private readonly thumbnailService: ThumbnailService;
+    /**
+     * Metadata converter, converter metadata parameter
+     */
+    @Input()
+    public metadataConverter: Converter<Metadata>;
+
+    /**
+     * Metadata loader
+     */
+    @Input()
+    public metadataLoader: Loader<Array<Metadata>>;
+
+    /**
+     * Amalia events
+     */
+    @Output()
+    public callback: EventEmitter<any> = new EventEmitter<any>();
+
+    /**
+     * get video html element
+     */
+    @ViewChild("video", { static: false })
+    public mediaPlayer: ElementRef<HTMLVideoElement>;
+
+    /**
+     * Get context menu html element
+     */
+    @ViewChild("contextMenu", { static: true })
+    public contextMenu: ElementRef<HTMLElement>;
+    /**
+     * tc
+     */
+    public tc = 0;
+    /**
+     * true when player load content — signal : muté par PLAYER_LOADING_BEGIN/END (non wrappés)
+     * et par la chaîne de promesses d'init.
+     */
+    public readonly inLoading = signal(false);
+
+    /**
+     * true when error — signal : muté par ERROR/ERASE_ERROR (non wrappés).
+     */
+    public readonly inError = signal(false);
+
+    /**
+     * Default loader
+     */
+    public logger = new DefaultLogger();
+    /**
+     * default aspect ratio — signal : réécrit par updatePlayerSizeWithAspectRatio, appelé
+     * depuis des listeners non wrappés (ASPECT_RATIO_CHANGE, PINNED_*…) et un setTimeout.
+     */
+    public readonly ratio = signal("16-9");
+    /**
+     * In charge to get instance of player
+     */
+    public playerService: MediaPlayerService;
+    /**
+     * Pinned Slider state — signal : muté par le listener PINNED_SLIDER_CHANGE (non wrappé).
+     */
+    public readonly pinned = signal(false);
+    /**
+     * Pinned ControlBar state — signal : muté par le listener PINNED_CONTROLBAR_CHANGE (non wrappé).
+     */
+    public readonly pinnedControlbar = signal(false);
+    /**
+     * In charge to load resource
+     */
+    private readonly httpClient: HttpClient;
+    /**
+     * mediaContainer element
+     */
+    @ViewChild("mediaContainer", { static: true })
+    public mediaContainer: ElementRef<HTMLElement>;
+    /**
+     * Sert à conserver les dimensions du mediaContainer avant qu' il ne passe en mode plein écran.<br/>
+     * Pour ensuite les utiliser lors de la sortie du plein écran
+     */
+    private containerSizeBeforeFullScreen: { width: number; height: number } | undefined;
+    /**
+     * Amalia player main manager
+     */
+    @Input()
+    public mediaPlayerElement: MediaPlayerElement;
+
+    /**
+     * List of pressed keys
+     */
+    public listKeys = [];
+    /**
+     * thumbnail blob preview on seeking — signal : muté par la promesse du ThumbnailService
+     * et par showImage (boucle d'images).
+     */
+    public readonly thumbnailBlobVideo = signal("");
+
+    /** Grandes vignettes (overlay plein cadre) préchargées en avance pendant une rafale ±5s / un drag :
+     *  3 pas ≈ 15 s au pas de 5 s — elles arrivent « juste à temps » pour l'upgrade net. */
+    private static readonly PREVIEW_LARGE_PREFETCH_STEPS = 3;
+    /** Petites vignettes (éclaireur) préchargées loin en avance : 8 pas ≈ 40 s au pas de 5 s,
+     *  soit ~1 s d'avance à 6-10 clics/s — l'image suit chaque clic même en zone froide. */
+    private static readonly PREVIEW_SMALL_PREFETCH_STEPS = 8;
+    /** Dernier timecode demandé à l'affichage — sert à l'upgrade éclaireur→grande du tc
+     *  courant (setPreviewThumbnail) même quand sa réponse arrive après une peinture cache. */
+    private lastPreviewTc: number | null = null;
+    /** Horloge logique des peintures d'overlay : incrémentée à chaque fetch display et à
+     *  chaque peinture depuis le cache (handleSeeking). */
+    private previewRequestSeq = 0;
+    /** Séquence de la dernière peinture — peinture monotone : une réponse plus ancienne que
+     *  l'image affichée est jetée (anti-désordre), mais toute réponse plus récente peint même
+     *  si une demande postérieure est déjà partie — la vignette défile pendant le glissement
+     *  et la rafale au lieu de figer jusqu'à l'arrêt du geste. */
+    private previewPaintedSeq = 0;
+    /** Timecode du SEEKING précédent, pour mesurer le pas réel entre deux demandes */
+    private lastSeekingTc: number | null = null;
+    /** Pas adaptatif (signé) entre deux demandes de vignette : en rafale rapide, les cibles
+     *  projetées avancent de plusieurs crans par fenêtre — le préchargement suit ce pas. */
+    private previewStride = 5;
+    /** Dernier pas brut observé (sans le filtre ≥ 1 s de previewStride) — amorcé à 5 pour
+     *  que la toute première rafale avant préfetche dès le 2ᵉ clic. */
+    private previousObservedStride = 5;
+    /** Garde du préchargement : vrai quand deux pas consécutifs sont cohérents (rafale).
+     *  En glissement, le pas = delta souris, arbitraire → prefetch pur gaspillage. */
+    private strideStable = false;
+
+    public throttleFunc;
+    /**
+     * Message d'erreur — signal : muté par ERROR/ERASE_ERROR (non wrappés).
+     */
+    public readonly errorMessage = signal<any>(undefined);
+
+    /**
+     * attribut qui definit une image a afficher lorsque la video est en cours de chargement,<br/>
+     * ou jusqu'a ce que l'utilisateur ne joue la video.
+     * Signal : renseigné dans onInitConfig (chaîne de promesses d'init).
+     */
+    public readonly videoPoster = signal("");
+    public readonly posterBackgound = signal<Record<string, boolean>>({
+        "amalia-player-bg-color1": false,
+        "amalia-primary-color": false,
+        " amalia-secondary-color": false,
+    });
+
+    /**
+     * Résolus via le contexte d'injection quand il existe (composant créé par Angular),
+     * null quand le composant est instancié avec `new` dans les specs — même pattern
+     * que PluginBase.tryInject.
+     */
+    private readonly hostElementRef: ElementRef | null = AmaliaComponent.tryInject(ElementRef);
+    private readonly primengShadowStyles: PrimengShadowStylesService | null =
+        AmaliaComponent.tryInject(PrimengShadowStylesService);
+
+    private static tryInject<T>(token: ProviderToken<T>): T | null {
+        try {
+            return inject(token, { optional: true });
+        } catch {
+            return null;
+        }
+    }
+
+    constructor(
+        playerService: MediaPlayerService,
+        httpClient: HttpClient,
+        thumbnailService: ThumbnailService,
+        private readonly cdr: ChangeDetectorRef,
+    ) {
+        this.httpClient = httpClient;
+        this.playerService = playerService;
+        this.thumbnailService = thumbnailService;
+        // trailing actif : la DERNIÈRE position d'une rafale ±5s ou d'un drag obtient
+        // toujours sa vignette (l'ancien { trailing: false } la perdait).
+        this.throttleFunc = throttle(
+            this.setPreviewThumbnail,
+            ControlBarPluginComponent.DEFAULT_THROTTLE_INVOCATION_TIME,
+        );
+    }
+
+    /**
+     * Invoked immediately after the  first time the component has initialised
+     */
+    public ngOnInit() {
+        // Miroir des styles PrimeNG (document.head) vers le shadow root du player.
+        this.primengShadowStyles?.attach(this.hostElementRef?.nativeElement?.shadowRoot);
+        // Init media player
+        this.mediaPlayerElement = this.playerService.get(this.playerId);
+        this.playerService.increment(this.playerId);
+        this.state.set(PlayerState.CREATED);
+        this.inLoading.set(true);
+        // init default manager (converter, metadata loader)
+        this.initDefaultHandlers();
+        this.playerConfig.set(this.config);
+        // The `#photoHost` element is rendered conditionally via `*ngIf="playerConfig.player.media === 'PICTURE'"`.
+        // We must trigger a change detection cycle here so that:
+        //  1. The `*ngIf` is evaluated against the just-assigned `playerConfig`.
+        //  2. The non-static `@ViewChild('photoHost')` query is updated and `photoHost.nativeElement` is available below.
+        // detectChanges structurel conservé (phase 7 OnPush) : la matérialisation synchrone du
+        // ViewChild n'est pas remplaçable par une écriture de signal (le tick coalescé serait
+        // trop tardif pour le setPicturePlayer() ci-dessous).
+        this.cdr.detectChanges();
+        if (this.configLoader && this.metadataConverter && this.metadataLoader) {
+            // set media player in charge to play video, audio or picture files.
+            if (this.playerConfig()?.player?.media === "PICTURE") {
+                const player = this.playerConfig().player;
+                const imagesSrc = this.resolvePictureImages(player);
+                // Picture-specific fields come from `player.data` (free-form payload),
+                // the rest is mapped explicitly from the typed PlayerConfigData properties.
+                const settings: AmaliaPlayerSettings = {
+                    imagesSrc,
+                    noToolbar: player.noToolbar ?? false,
+                    noTopbar: player.noTopbar ?? false,
+                    showGallery: player.showGallery ?? player.data?.showGallery ?? imagesSrc.length > 1,
+                    zoomStep: player.zoomStep,
+                    zoomSteps: player.zoomSteps,
+                    zoomMax: player.zoomMax,
+                    zoomMin: player.zoomMin,
+                    magnifyValue: player.magnifyValue,
+                    magnifyMaxValue: player.magnifyMaxValue,
+                };
+                this.mediaPlayerElement.setPicturePlayer(this.photoHost.nativeElement, settings);
+            } else {
+                this.mediaPlayerElement.setMediaPlayer(this.mediaPlayer.nativeElement);
+            }
+            const histogramLoader = new HistogramLoader(this.httpClient, this.logger);
+            this.mediaPlayerElement
+                .init(this.playerConfig(), this.metadataLoader, this.configLoader, histogramLoader)
+                .then((state) => this.onInitConfig(state))
+                .catch((state) => this.onErrorInitConfig(state));
+            // bind events
+            this.bindEvents();
+            // set mediaPlayer width for responsive grid
+            this.mediaPlayerElement.setMediaPlayerWidth(this.mediaContainer.nativeElement.offsetWidth);
+            if (this.enableThumbnail) {
+                this.setPreviewThumbnail(0);
+            }
+        } else {
+            this.logger.error("Error to initialize media player element.");
+        }
+        this.callback.emit(this.mediaPlayerElement);
+    }
+
+    private resolvePictureImages(player: any): AmaliaPlayerImageSource[] {
+        const normalize = (item: any, index: number): AmaliaPlayerImageSource | null => {
+            if (!item) {
+                return null;
+            }
+            const path = item.path || item.url || item.src;
+            if (!path) {
+                return null;
+            }
+            return {
+                name: item.name || item.label || `image-${index + 1}`,
+                path,
+                thumbPath: item.thumbPath || item.thumbnail || path,
+            };
+        };
+
+        const fromData =
+            player?.data?.imagesSrc || player?.data?.images || (Array.isArray(player?.data) ? player.data : null);
+        if (Array.isArray(fromData) && fromData.length > 0) {
+            const normalized = fromData.map(normalize).filter((item): item is AmaliaPlayerImageSource => !!item);
+            if (normalized.length > 0) {
+                return normalized;
+            }
+        }
+
+        const fallbackPath = typeof player?.src === "string" ? player.src : "";
+        return [
+            {
+                name: "image",
+                path: fallbackPath,
+                thumbPath: fallbackPath,
+            },
+        ];
+    }
+
+    /**
+     * update mediaPlayerWidth on window resize
+     */
+
+    public handleWindowResize() {
+        const mediaContainer = this.mediaContainer?.nativeElement;
+        if (!mediaContainer) return;
+        const shadowRoot = mediaContainer.getRootNode();
+        const hostWidth =
+            shadowRoot instanceof ShadowRoot
+                ? (shadowRoot.host as HTMLElement).offsetWidth
+                : mediaContainer.offsetWidth;
+        const width = hostWidth > 0 ? hostWidth : mediaContainer.offsetWidth;
+        if (width > 0) {
+            this.mediaPlayerElement.setMediaPlayerWidth(width);
+        }
+    }
+
+    /**
+     * Invoked on click context menu
+     * @param event mouse event
+     * @return return false for disable browser context menu
+     */
+
+    public onContextMenu(event: MouseEvent) {
+        this.contextMenuState.set(true);
+        const defaultMouseMargin = 15;
+        this.contextMenu.nativeElement.style.left = `${event.offsetX - defaultMouseMargin}px`;
+        this.contextMenu.nativeElement.style.top = `${event.offsetY - defaultMouseMargin}px`;
+        return false;
+    }
+
+    /**
+     * In charge to update player size with aspect ratio
+     */
+    @HostListener("window:resize")
+    updatePlayerSizeWithAspectRatio() {
+        const htmlElement = this.getPlayerLayoutElement();
+        if (!htmlElement) {
+            return;
+        }
+        if (this.playerConfig()?.player?.media === "AUDIO") {
+            const isFullscreen = document.fullscreenElement != null;
+            const maxHeight = this.getMaxHeight(isFullscreen, htmlElement);
+            this.resetContainerSizeBeforeFullScreen();
+            htmlElement.style.width = "100%";
+            htmlElement.style.maxWidth = "none";
+            htmlElement.style.height = this.pinned() || this.pinnedControlbar() ? `${Math.max(0, maxHeight)}px` : "100%";
+            htmlElement.style.left = "0px";
+            htmlElement.style.top = "0px";
+            htmlElement.style["object-fit"] = "fill";
+        } else if (this.aspectRatio && this.aspectRatio !== "") {
+            this.ratio.set(this.aspectRatio.replace(":", "-"));
+            const isFullscreen = document.fullscreenElement != null;
+
+            const maxWidth = this.getMaxWidth(isFullscreen, htmlElement);
+            const maxHeight = this.getMaxHeight(isFullscreen, htmlElement);
+
+            // Après le calcul de maxWidth et maxHeight, on vide la donnée sur la taille du conteneur avant plein écran
+            this.resetContainerSizeBeforeFullScreen();
+
+            const aspectRatio = this.aspectRatio
+                ? parseFloat(this.aspectRatio.split(":")[0]) / parseFloat(this.aspectRatio.split(":")[1])
+                : 16 / 9;
+            let w = Math.max(maxHeight * aspectRatio, maxWidth);
+            let h = w / aspectRatio;
+            if (w > maxWidth) {
+                h = Math.floor((maxWidth * h) / w);
+                w = maxWidth;
+            }
+            if (h > maxHeight) {
+                w = Math.floor((maxHeight * w) / h);
+                h = maxHeight;
+            }
+            htmlElement.style.width = `${w}px`;
+            htmlElement.style.height = `${h}px`;
+            htmlElement.style.left = `${Math.max(0, (maxWidth - w) / 2)}px`;
+            htmlElement.style.top = `${Math.max(0, (maxHeight - h) / 2)}px`;
+            htmlElement.style["object-fit"] = "fill";
+        } else {
+            htmlElement.style.width = `100%`;
+            htmlElement.style.height = `100%`;
+            htmlElement.style.left = `0`;
+            htmlElement.style.top = `0`;
+            htmlElement.style["object-fit"] = "none";
+        }
+
+        if (this.previewThumbnailElement) {
+            const previewThumbnailElement = this.previewThumbnailElement.nativeElement;
+            previewThumbnailElement.style.width = htmlElement.style.width;
+            previewThumbnailElement.style.height = htmlElement.style.height;
+            previewThumbnailElement.style.left = htmlElement.style.left;
+            previewThumbnailElement.style.top = htmlElement.style.top;
+        }
+    }
+
+    /**
+     * Retourne la hauteur maximale du parent de la video en tenant compte de la taille du conteneur parent de la video avant le passage au plein écran.
+     * @param isFullscreen plein écran
+     * @param htmlElement conteneur parent de la video
+     */
+    private getMaxHeight = (isFullscreen: boolean, htmlElement: HTMLElement) => {
+        const layoutContainer = this.getPlayerLayoutContainer(htmlElement);
+        const maxParentHeight =
+            !isFullscreen && this.containerSizeBeforeFullScreen
+                ? this.containerSizeBeforeFullScreen.height
+                : layoutContainer.offsetHeight;
+        const maxHeightWhenNotPinned = this.pinnedControlbar() ? maxParentHeight - 50 : maxParentHeight;
+        return this.pinned() ? maxParentHeight - 100 : maxHeightWhenNotPinned;
+    };
+    /**
+     * Retourne la largeur maximale du parent de la video en tenant compte de la taille du conteneur parent de la video avant le passage au plein écran.
+     * @param isFullscreen plein écran
+     * @param htmlElement conteneur parent de la video
+     */
+    private getMaxWidth = (isFullscreen: boolean, htmlElement: HTMLElement) => {
+        // Quand nous sortons du mode plein écran, maxWidth est la largeur du parent(mediaContainer) de la balise video(mediaPlayer) avant sa mise en plein écran
+        // sinon, maxWidth est la largeur du parent de la balise video
+        const layoutContainer = this.getPlayerLayoutContainer(htmlElement);
+        return !isFullscreen && this.containerSizeBeforeFullScreen
+            ? this.containerSizeBeforeFullScreen.width
+            : layoutContainer.offsetWidth;
+    };
+
+    private getPlayerLayoutElement(): HTMLElement | null {
+        if (this.playerConfig()?.player?.media === "PICTURE") {
+            return this.photoHost?.nativeElement ?? null;
+        }
+        if (this.playerConfig()?.player?.media === "AUDIO") {
+            return this.mediaContainer?.nativeElement ?? null;
+        }
+        return this.mediaPlayer?.nativeElement ?? null;
+    }
+
+    private getPlayerLayoutContainer(htmlElement: HTMLElement): HTMLElement {
+        const rootNode = htmlElement.getRootNode();
+        const hostElement = rootNode instanceof ShadowRoot ? rootNode.host : null;
+        return htmlElement.parentElement ?? (hostElement instanceof HTMLElement ? hostElement : null) ?? htmlElement;
+    }
+
+    /**
+     * In charge to bin events
+     */
+    private bindEvents() {
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKED, this.handleSeeked);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SEEKING, this.handleSeeking);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYING, this.handlePlay);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.KEYDOWN_HISTOGRAM,
+            this.handleKeyDownEvent,
+        );
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.KEYUP_HISTOGRAM, this.emitKeyUpEvent);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ERROR, this.handleError);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.ERASE_ERROR, this.handleEraseError);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYBACK_CLEAR_INTERVAL,
+            this.clearInterval,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.ASPECT_RATIO_CHANGE,
+            this.handleAspectRatioChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.FULLSCREEN_STATE_CHANGE,
+            this.handleFullScreenChange,
+        );
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.PLAYER_RESIZED, this.handleWindowResize);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PINNED_CONTROLBAR_CHANGE,
+            this.handlePinnedControlbarChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PINNED_SLIDER_CHANGE,
+            this.handlePinnedSliderChange,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYBACK_RATE_IMAGES_CHANGE,
+            this.scrollPlaybackRateImages,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_LOADING_BEGIN,
+            this.handleLoading,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.PLAYER_LOADING_END,
+            this.handleLoadingEnd,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.ELEMENT_CONTEXT_MENU,
+            this.onContextMenu,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_CURRENT_TIME,
+            this.sendCurrentTime,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_SET_CURRENT_TIME,
+            this.setCurrentTime,
+        );
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_ASK_FOR_DURATION,
+            this.sendDuration,
+        );
+        this.addListener(document, PlayerEventType.ELEMENT_CLICK, this.hideControlsMenuOnClickDocument);
+        this.addListener(document, PlayerEventType.ELEMENT_KEYDOWN, this.handleShortCutsKeyDownEvent);
+        this.addListener(document, PlayerEventType.ELEMENT_FOCUSIN, this.handleMuteShortcuts);
+        this.addListener(document, PlayerEventType.ELEMENT_FOCUSOUT, this.handleUnmuteShortcuts);
+        this.addListener(this.mediaPlayerElement.eventEmitter, PlayerEventType.SHORTCUT_MUTE, this.handleMuteShortcuts);
+        this.addListener(
+            this.mediaPlayerElement.eventEmitter,
+            PlayerEventType.SHORTCUT_UNMUTE,
+            this.handleUnmuteShortcuts,
+        );
+    }
+
+    handleMuteShortcuts($event) {
+        let needsToMuteShortcuts = false;
+        $event && (needsToMuteShortcuts = Utils.eventTargetNeedsToMuteShortcuts($event));
+        if ($event == undefined || needsToMuteShortcuts) {
+            this.muteShortcuts = true;
+        }
+    }
+
+    handleUnmuteShortcuts($event) {
+        let needsToMuteShortcuts = false;
+        $event && (needsToMuteShortcuts = Utils.eventTargetNeedsToMuteShortcuts($event));
+        if ($event == undefined || needsToMuteShortcuts) {
+            this.muteShortcuts = false;
+        }
+    }
+
+    handleShortCutsKeyDownEvent($event) {
+        let key = $event.key;
+        if (key === " ") {
+            key = "espace";
+        }
+        const shortcut: ShortcutEvent = {
+            shortcut: {
+                key: key.toLowerCase(),
+                ctrl: $event.ctrlKey,
+                shift: $event.shiftKey,
+                alt: $event.altKey,
+                meta: $event.metaKey,
+            },
+            targets: ["CONTROL_BAR", "ANNOTATIONS"],
+        };
+
+        if (this.muteShortcuts === false) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.SHORTCUT_KEYDOWN, shortcut);
+            const isNativeShortcut =
+                ($event.ctrlKey || $event.metaKey) && ["c", "v", "x", "a"].includes($event.key.toLowerCase());
+            if ($event.key !== "enter" && $event.key !== "Enter" && !isNativeShortcut) {
+                $event.preventDefault();
+            }
+        }
+    }
+
+    sendCurrentTime() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_CURRENT_TIME, {
+            currentTime: this.mediaPlayerElement.getMediaPlayer().getCurrentTime(),
+        });
+    }
+    setCurrentTime(event) {
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(event.currentTime);
+    }
+    sendDuration() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.NS_EVENT_CONTRIBUTION_JURIDIQUE_GET_DURATION, {
+            duration: this.mediaPlayerElement.getMediaPlayer().getDuration(),
+        });
+    }
+
+    public handleLoading() {
+        this.inLoading.set(true);
+    }
+
+    public handleLoadingEnd() {
+        this.inLoading.set(false);
+    }
+
+    public handlePinnedControlbarChange(event) {
+        this.pinnedControlbar.set(event);
+        this.pinned.set(false);
+        this.updatePlayerSizeWithAspectRatio();
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.CONTROL_BAR_TOGGLED, {
+            pinnedControlBar: this.pinnedControlbar(),
+            pinned: this.pinned(),
+        });
+    }
+
+    public handlePinnedSliderChange(event) {
+        this.pinned.set(event);
+        this.pinnedControlbar.set(false);
+        this.updatePlayerSizeWithAspectRatio();
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.CONTROL_BAR_TOGGLED, {
+            pinnedControlBar: this.pinnedControlbar(),
+            pinned: this.pinned(),
+        });
+    }
+
+    private handleSeeking(tc: number) {
+        this.logger.debug("handleSeeking");
+        if (this.enableThumbnail && this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1) {
+            this.enablePreviewThumbnail.set(true);
+            // Quantifié sur la grille des vignettes : clé de cache, URL et cibles projetées
+            // du préchargement partagent le même représentant (1:1) — le stride reste exact.
+            const timecode = quantizeThumbnailTc(tc);
+            // Pas réel observé entre deux demandes : dimensionne le préchargement rafale
+            if (this.lastSeekingTc !== null) {
+                const observed = timecode - this.lastSeekingTc;
+                this.strideStable = AmaliaComponent.isCoherentStride(observed, this.previousObservedStride);
+                this.previousObservedStride = observed;
+                if (Math.abs(observed) >= 1) {
+                    this.previewStride = observed;
+                }
+            }
+            this.lastSeekingTc = timecode;
+            // Affichage immédiat si une vignette est déjà en cache (préchargée par la
+            // rafale) : c'est ce qui permet à l'image de suivre le rythme des clics,
+            // le fetch réseau (~300 ms) étant trop lent pour le mode rapide.
+            // La grande (plein cadre) prime ; la petite sert d'éclaireur agrandi en
+            // attendant. Anti-downgrade structurel : la seule écriture asynchrone de
+            // thumbnailBlobVideo en mode seek est une grande (setPreviewThumbnail).
+            const cached = this.thumbnailService.getCached(timecode, 'large')
+                ?? this.thumbnailService.getCached(timecode, 'small');
+            if (cached) {
+                this.lastPreviewTc = timecode;
+                // Peinture cache = image la plus fraîche : avance l'horloge pour qu'une
+                // réponse réseau plus ancienne encore en vol ne l'écrase pas.
+                this.previewPaintedSeq = ++this.previewRequestSeq;
+                this.thumbnailBlobVideo.set(cached);
+            }
+            // sinon : on garde l'image courante — lastPreviewTc sera posé par le fetch throttlé
+            this.throttleFunc(timecode);
+        }
+    }
+
+    private handleSeeked() {
+        // La frame réellement décodée vient d'être peinte : elle prime sur la vignette.
+        // En rafale ±5s, le prochain clic ré-affichera l'overlay via SEEKING ; le garde
+        // playbackRate === 1 exclut le mode lecture par images (géré par displayImages).
+        if (this.mediaPlayerElement.getMediaPlayer().getPlaybackRate() === 1 && this.enableThumbnail) {
+            this.enablePreviewThumbnail.set(false);
+        }
+    }
+
+    private handlePlay() {
+        if (this.enableThumbnail) {
+            this.enablePreviewThumbnail.set(false);
+            this.previewThumbnailUrl = "";
+        }
+    }
+
+    /**
+     * Invoked when error event
+     * @param event error type
+     */
+    private handleError(event: any) {
+        this.inError.set(true);
+        this.errorMessage.set(event);
+        this.logger.error("Error", event);
+    }
+
+    /**
+     * Invoked when erasing an error event
+     * @param event erase error message
+     */
+    private handleEraseError(event: any) {
+        this.inError.set(false);
+        this.errorMessage.set(event);
+        this.logger.info("Erase Error", event);
+    }
+
+    /**
+     * Invoked on aspect ratio change
+     * @param event aspect ratio
+     */
+
+    private handleAspectRatioChange(event) {
+        this.logger.debug("handleAspectRatioChange", event);
+        this.aspectRatio = event;
+        this.updatePlayerSizeWithAspectRatio();
+    }
+
+    /**
+     * In charge to init default handlers when input not specified
+     */
+    private initDefaultHandlers() {
+        if (!this.configLoader) {
+            if (this.config && typeof this.config === "string" && this.config.search("^http") !== -1) {
+                this.configLoader = new HttpConfigLoader(new DefaultConfigConverter(), this.httpClient, this.logger);
+            } else {
+                // Default Config load this loader use input config parameter
+                this.configLoader = new DefaultConfigLoader(new DefaultConfigConverter(), this.logger);
+            }
+        }
+        if (!this.metadataConverter) {
+            // Default use parameter load metadata
+            this.metadataConverter = new DefaultMetadataConverter();
+        }
+        if (!this.metadataLoader) {
+            // Default use load source form http request
+            this.metadataLoader = new DefaultMetadataLoader(this.httpClient, this.metadataConverter, this.logger);
+        }
+    }
+
+    /**
+     * In charge to update thumbnail
+     */
+    private setPreviewThumbnail(tc: number) {
+        if (!isNaN(tc) && this.enableThumbnail) {
+            this.lastPreviewTc = tc;
+            this.previewThumbnailUrl = this.mediaPlayerElement.getThumbnailUrl(tc);
+            if (this.previewThumbnailUrl) {
+                const seq = ++this.previewRequestSeq;
+                this.thumbnailService
+                    .getThumbnail(this.previewThumbnailUrl, tc, 'large', {priority: 'display'})
+                    .then((blob) => {
+                        // Peinture monotone : une réponse plus ancienne que l'image affichée
+                        // est jetée (anti-désordre), une plus récente peint même si une demande
+                        // postérieure est partie (la vignette défile pendant le geste). Pour le
+                        // tc courant, la grande remplace l'éclaireur (upgrade voulu).
+                        if (typeof blob !== "undefined" && (seq > this.previewPaintedSeq || this.lastPreviewTc === tc)) {
+                            this.previewPaintedSeq = Math.max(this.previewPaintedSeq, seq);
+                            this.thumbnailBlobVideo.set(blob);
+                        }
+                    })
+                    .catch((err) => {
+                        // Supersede attendu en glissement (« le dernier display gagne ») : pas un échec
+                        if (err !== THUMBNAIL_CANCELLED) {
+                            this.logger.warn("Thumbnail load failed", err);
+                        }
+                    });
+                this.prefetchThumbnailsAhead(tc);
+            }
+        }
+    }
+
+    /**
+     * Mode rafale : préchauffe les vignettes des prochaines cibles projetées, au pas
+     * observé entre deux demandes et dans le sens du déplacement, pour que les clics
+     * suivants trouvent leur image en cache et l'affichent sans latence réseau.
+     * Deux étages : les petites (éclaireur, légères) loin en avance, les grandes
+     * (plein cadre) juste derrière — l'image suit toujours, d'abord en petite agrandie
+     * puis remplacée par la grande. Les caches bornés du ThumbnailService (éviction
+     * FIFO par taille) contiennent la dérive mémoire.
+     */
+    private prefetchThumbnailsAhead(tc: number) {
+        // Mode normal sobre : aucun préchargement hors contexte de seeking
+        // (l'amorçage setPreviewThumbnail(0) du ngOnInit ne fait qu'une requête).
+        // Garde de stabilité : sans pas répété (rafale), précharger revient à payer
+        // ~11 requêtes froides et aussitôt périmées par tick de glissement.
+        if (this.lastSeekingTc === null || !this.strideStable) {
+            return;
+        }
+        const stride = this.previewStride || 5;
+        const duration = this.mediaPlayerElement.getMediaPlayer()?.getDuration?.();
+        // Petites d'abord : leurs XHR légers partent en tête de file réseau
+        this.prefetchRange(tc, stride, AmaliaComponent.PREVIEW_SMALL_PREFETCH_STEPS, 'small', duration);
+        this.prefetchRange(tc, stride, AmaliaComponent.PREVIEW_LARGE_PREFETCH_STEPS, 'large', duration);
+    }
+
+    private prefetchRange(tc: number, stride: number, steps: number, size: ThumbnailSize, duration: number) {
+        for (let step = 1; step <= steps; step++) {
+            const ahead = quantizeThumbnailTc(tc + stride * step);
+            if (ahead < 0 || (Number.isFinite(duration) && duration > 0 && ahead > duration)) break;
+            if (typeof this.thumbnailService.getCached(ahead, size) !== "undefined") continue;
+            const url = this.mediaPlayerElement.getThumbnailUrl(ahead, size === 'small');
+            if (url) {
+                this.thumbnailService.getThumbnail(url, ahead, size, {priority: 'prefetch'}).catch(() => undefined);
+            }
+        }
+    }
+
+    /** Deux pas consécutifs cohérents = même signe, ≥ 1 s, amplitudes égales à la grille près
+     *  (±5 s exacts en rafale modulo quantification ; le jitter souris du glissement échoue). */
+    private static isCoherentStride(a: number, b: number): boolean {
+        return a * b > 0 && Math.abs(a) >= 1 && Math.abs(a - b) <= 2 * THUMBNAIL_TC_STEP;
+    }
+
+    /**
+     * Invoked on  init config
+     * @param state player init state
+     */
+    private onInitConfig(state: PlayerState) {
+        this.state.set(state);
+        this.inLoading.set(false);
+        this.autoplay = this.mediaPlayerElement.getConfiguration().player.autoplay || false;
+        this.enableThumbnail = this.mediaPlayerElement.getConfiguration().thumbnail?.enableThumbnail || false;
+        this.aspectRatio = this.mediaPlayerElement.getConfiguration().player.ratio || "16:8";
+        this.ratio.set(this.aspectRatio.replace(":", "-"));
+        this.videoPoster.set(this.mediaPlayerElement.getConfiguration().player.poster || "");
+
+        if (this.videoPoster() !== "") {
+            const posterBackground = this.mediaPlayerElement.getConfiguration().player.posterBackground;
+            if (posterBackground) {
+                this.posterBackgound.update((backgrounds) => ({ ...backgrounds, ["" + posterBackground]: true }));
+            }
+        }
+        const debug = this.mediaPlayerElement.preferenceStorageManager.getItem("debug");
+        this.logger.state(debug === null ? this.mediaPlayerElement.getConfiguration().debug : true);
+        this.logger.logLevel(
+            debug === null
+                ? this.mediaPlayerElement.getConfiguration().logLevel
+                : LoggerLevel.valToString(LoggerLevel.Debug),
+        );
+        this.updatePlayerSizeWithAspectRatio();
+        // Mirrors the detectChanges() call in ngOnInit for inLoading=true: this.mediaPlayerElement
+        // .init()'s promise chain can resolve without a change-detection-triggering event
+        // following it, so without this the spinner stays visually stuck (inLoading is already
+        // false in the model, the view just never re-renders) until an unrelated event (e.g. a
+        // mousemove) happens to run a CD cycle. Deferred one microtask so any other pending
+        // update already queued in this same resolution chain (e.g. a sibling plugin reacting to
+        // the same INIT event) settles first -- calling detectChanges() synchronously here can
+        // otherwise race a not-yet-checked ancestor/sibling and throw
+        // ExpressionChangedAfterItHasBeenCheckedError in dev mode.
+        // detectChanges structurel conservé (phase 7 OnPush) : ceinture et bretelles pendant la
+        // transition — les écritures de signals ci-dessus programment déjà un tick, mais ce
+        // passage synchrone garantit que la vue (spinner, poster, ratio) est matérialisée dès la
+        // fin de la chaîne d'init, indépendamment du scheduler.
+        queueMicrotask(() => this.cdr.detectChanges());
+    }
+
+    /**
+     * Invoked on error to init config
+     * @param state player init state
+     */
+    private onErrorInitConfig(state: PlayerState) {
+        this.state.set(state);
+        this.inLoading.set(false);
+        this.inError.set(true);
+        this.logger.error(`Error to initialize player.`);
+        // See onInitConfig(): same risk of the spinner staying stuck without a CD cycle here,
+        // deferred one microtask for the same reason. detectChanges structurel conservé
+        // (phase 7 OnPush), même justification que dans onInitConfig.
+        queueMicrotask(() => this.cdr.detectChanges());
+    }
+
+    /***
+     * focus mediaPlayer container
+     */
+    public focus() {
+        // keypress works only after a click
+        // this.mediaPlayer.nativeElement.click();
+        this.mediaContainer.nativeElement.focus();
+    }
+
+    /**
+     * Invoked on mouseenter and mouseleave events
+     */
+    public displayControlBar(_displayControlBar: boolean) {
+        if (_displayControlBar === true) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_ENTER);
+        } else if (_displayControlBar === false) {
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
+        }
+    }
+
+    /**
+     * Invoked on fullscreen change
+     */
+
+    public handleFullScreenChange() {
+        const isFullscreen = document.fullscreenElement !== null;
+        if (!isFullscreen) {
+            this.containerSizeBeforeFullScreen = {
+                width: this.mediaContainer.nativeElement.offsetWidth,
+                height: this.mediaContainer.nativeElement.offsetHeight,
+            };
+        }
+
+        // In picture mode the video element is hidden, so offsetParent returns null.
+        // Fall back to mediaContainer which is the equivalent starting point.
+        const useContainerAsFullscreenRoot =
+            this.playerConfig()?.player?.media === "PICTURE" || this.playerConfig()?.player?.media === "AUDIO";
+        const element = (
+            useContainerAsFullscreenRoot
+                ? this.mediaContainer.nativeElement
+                : this.mediaPlayer.nativeElement.offsetParent
+        ) as HTMLElement;
+        if (element) {
+            let parent = element.offsetParent as HTMLElement;
+            let condition = parent && parent.classList.contains("module") && parent.classList.contains("player");
+            while (parent && !condition) {
+                parent = parent.offsetParent as HTMLElement;
+                condition = parent && parent.classList.contains("module") && parent.classList.contains("player");
+            }
+            if (parent) {
+                this.mediaPlayerElement.toggleFullscreen(parent);
+            } else {
+                this.mediaPlayerElement.toggleFullscreen(element);
+            }
+        }
+        // Call updatePlayerSizeWithAspectRatio() directly since window:resize may not be triggered
+        // when entering/exiting fullscreen in all browsers
+        setTimeout(() => this.updatePlayerSizeWithAspectRatio(), 0);
+    }
+
+    /**
+     * Toggle back this.containerSizeBeforeFullScreen to undefined.
+     * To be used once, this.containerSizeBeforeFullScreen has already been used to compute the size of the video.
+     */
+    private resetContainerSizeBeforeFullScreen() {
+        this.containerSizeBeforeFullScreen = undefined;
+    }
+
+    public handleKeyDownEvent(event) {
+        this.playerHover.set(true);
+        this.emitKeyDownEvent(event);
+    }
+
+    /**
+     * invoked on keydown
+     */
+
+    public emitKeyDownEvent($event) {
+        this.focus();
+        let i;
+        let keys;
+        let key = $event.key;
+        if (key === " ") {
+            key = "espace";
+        }
+        if (this.playerHover() === true) {
+            if (this.listKeys.length === 0) {
+                this.listKeys.push(key);
+                keys = key;
+            }
+            for (i = 0; i < this.listKeys.length; i++) {
+                if (this.listKeys[i] !== key) {
+                    this.listKeys.push(key);
+                    keys += " + " + key;
+                }
+            }
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.KEYDOWN, keys);
+            if (key === "espace") {
+                $event.preventDefault();
+            }
+        }
+    }
+
+    public emitKeyUpEvent() {
+        this.listKeys = [];
+        this.focus();
+    }
+
+    public hideControlsMenuOnClickDocument($event) {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.DOCUMENT_CLICK, $event);
+    }
+
+    // hide controlBar after 3 seconds of mouse inactive
+    public startTimer() {
+        this.chrono = setTimeout(this.hideControls.bind(this), 1800);
+    }
+
+    // reset 3 seconds mouse inactive and start timer again
+    public resetTimer() {
+        // reset
+        clearTimeout(this.chrono);
+        this.startTimer();
+    }
+
+    /**
+     * Handler du mousemove racine, migré hors zone + throttle rAF (phase 8, directive
+     * OutsideZoneMousemoveDirective) : s'exécute hors zone Angular, au plus 1×/frame.
+     * - resetTimer/displayControlBar : timers + émissions player (PLAYER_MOUSE_ENTER/LEAVE),
+     *   les listeners qui les écoutent portent leur propre ListenerZonePolicy ;
+     * - focus() : DOM pur ;
+     * - playerHover : signal (l'écriture programme seule le tick, la vue est OnPush).
+     * Les bindings basse fréquence (mouseenter/mouseover/mouseout/focus/blur) restent in-template.
+     */
+    public readonly onMousemoveOutside = (): void => {
+        this.resetTimer();
+        this.displayControlBar(true);
+        this.focus();
+        this.playerHover.set(true);
+    };
+
+    // hide controls if mouse in inactive since 3 seconds
+
+    public hideControls() {
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_MOUSE_LEAVE);
+    }
+
+    public scrollPlaybackRateImages($event) {
+        let rewinding = false;
+        let playbackrate = $event;
+        this.mainSource = !this.mediaPlayerElement.getMediaPlayer().reverseMode;
+        if (playbackrate < 0) {
+            rewinding = true;
+            playbackrate = Math.abs(playbackrate);
+        }
+        const framesPerSecond = this.mediaPlayerElement.getMediaPlayer().framerate * playbackrate;
+        const ms = 1000;
+        this.mediaPlayerElement.getMediaPlayer().pause(true);
+        this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_SLIDER);
+        const self = this;
+        this.tc = this.mediaPlayerElement.getMediaPlayer().getCurrentTime();
+        this.intervalImages = setInterval(() => {
+            self.displayImages(framesPerSecond, ms, rewinding);
+        }, ms);
+    }
+
+    public clearInterval() {
+        if (this.intervalImages) {
+            clearInterval(this.intervalImages);
+            this.intervalImages = "";
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_SIMULATE_PLAY, false);
+            this.mediaPlayerElement.eventEmitter.emit(PlayerEventType.PLAYER_STOP_SIMULATE_PLAY);
+            this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
+            this.mediaPlayerElement.getMediaPlayer().play();
+        }
+    }
+
+    public displayImages(framesPerSecond, ms, rewinding) {
+        const frames = framesPerSecond / (1000 / ms);
+        if (rewinding === false) {
+            this.tc = this.tc + frames / this.mediaPlayerElement.getMediaPlayer().framerate;
+        } else {
+            this.tc = this.tc - frames / this.mediaPlayerElement.getMediaPlayer().framerate;
+        }
+        this.tc = parseFloat(this.tc.toFixed(2));
+        this.mediaPlayerElement.getMediaPlayer().setCurrentTime(this.tc);
+        // Set thumbnail video
+        this.enablePreviewThumbnail.set(true);
+        if (this.enableThumbnail) {
+            this.loopImages(this.tc);
+            // this.setPreviewThumbnail(this.tc);
+            // set current Time
+        }
+        if (this.tc > this.mediaPlayerElement.getMediaPlayer().getDuration() || this.tc < 0) {
+            clearInterval(this.intervalImages);
+        }
+    }
+
+    public loopImages(tc) {
+        this.showImage(tc)
+            .then((time) => {
+                const dif = 250 - Number(time);
+                const r = Math.max(250, dif);
+                setTimeout(() => this.loopImages(tc), r);
+            })
+            .catch((err) => this.logger.warn("loopImages failed", err));
+    }
+
+    public showImage(tc) {
+        let prevImg;
+        return new Promise((resolve) => {
+            const url = this.mediaPlayerElement.getThumbnailUrl(tc);
+            if (prevImg === url) {
+                resolve(0);
+            }
+            const t = new Date().getTime();
+            this.previewThumbnailElement.nativeElement.onload = () => {
+                prevImg = url;
+                const tm = new Date().getTime();
+                const diff = Number(tm - t);
+                resolve(diff);
+            };
+            this.previewThumbnailElement.nativeElement.onerror = () => resolve(0);
+            this.thumbnailBlobVideo.set(url);
+        });
+    }
+
+    public controlClicked($event) {
+        this.mediaPlayerElement.getMediaPlayer()?.playPause();
+    }
+
+    addListener(element: any, playerEventType: PlayerEventType, func: any) {
+        Utils.addListener(this, element, playerEventType, func);
+    }
+
+    ngOnDestroy(): void {
+        Utils.unsubscribeTargetedElementEventListeners(this);
+        this.playerService.decrement(this.playerId);
+        this.thumbnailService.clear();
+    }
+
+    /** @internal */
+    public _setEnableThumbnailForTesting(value: boolean): void {
+        this.enableThumbnail = value;
+    }
+
+    /** @internal */
+    public _setPreviewThumbnailForTesting(value): void {
+        this.setPreviewThumbnail(value);
+    }
+
+    /** @internal */
+    public _handleErrorForTesting(event: any) {
+        this.handleError(event);
+    }
+
+    /** @internal */
+    public _handleEraseErrorForTesting(event: any) {
+        this.handleEraseError(event);
+    }
+
+    /** @internal */
+    public _handlePlayForTesting() {
+        this.handlePlay();
+    }
+}

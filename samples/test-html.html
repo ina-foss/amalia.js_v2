@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Amalia</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="main.js" type="module"></script>
+    <style>
+        [style*="--aspect-ratio"] > :first-child {
+            width: 100%;
+        }
+
+        [style*="--aspect-ratio"] > img {
+            height: auto;
+        }
+
+        @supports (--custom:property) {
+            [style*="--aspect-ratio"] {
+                position: relative;
+            }
+
+            [style*="--aspect-ratio"]::before {
+                content: "";
+                display: block;
+                padding-bottom: calc(100% / (var(--aspect-ratio)));
+            }
+
+            [style*="--aspect-ratio"] > :first-child {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6 p-2" style="height: 500px; background-color: #0f7595;">
+            <div style="--aspect-ratio:16/9; max-height: inherit;                background-color: red;"></div>
+        </div>
+        <div class="col-6 p-2" style="height: 500px;  background-color: #00b0e8;">
+        </div>
+    </div>
+</div>
+</body>
+</html>

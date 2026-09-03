@@ -1,0 +1,127 @@
+{
+  "player": {
+    "backwardsSrc": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    "src": "https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8",
+    "crossOrigin": "anonymous"
+  },
+  "dataSources": [
+    {
+      "url": "http://localhost:4203/metadata/jt-d.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/jt-t.json"
+    },
+    {
+      "url": "http://localhost:4203/metadata/sample-transcription.json"
+    }
+  ],
+  "pluginsConfiguration": {
+    "CONTROL_BAR-PLAYER": {
+      "data": [
+        {
+          "label": "Barre de progression",
+          "control": "progressBar"
+        },
+        {
+          "label": "Capture Image",
+          "control": "download",
+          "icon": "screenshot",
+          "zone": 1,
+          "order": 2,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          }
+        },
+        {
+          "label": "Download",
+          "control": "download",
+          "icon": "download",
+          "zone": 1,
+          "order": 1,
+          "data": {
+            "href": "http://localhost:4200/assets/logo.svg"
+          }
+        },
+        {
+          "label": "Playback Rate",
+          "control": "playbackRate",
+          "zone": 1
+        },
+        {
+          "label": "backward-start",
+          "icon": "backward-start",
+          "control": "backward-start",
+          "zone": 2
+        },
+        {
+          "label": "backward-frame",
+          "icon": "backward-frame",
+          "control": "backward-frame",
+          "zone": 2
+        },
+        {
+          "label": "backward-5seconds",
+          "icon": "backward-5seconds",
+          "control": "backward-5seconds",
+          "zone": 2
+        },
+        {
+          "label": "backward",
+          "icon": "backward",
+          "control": "backward",
+          "zone": 2
+        },
+        {
+          "label": "Play / Pause",
+          "control": "playPause",
+          "zone": 2
+        },
+        {
+          "label": "forward",
+          "icon": "forward",
+          "control": "forward",
+          "zone": 2
+        },
+        {
+          "label": "forward-5seconds",
+          "icon": "forward-5seconds",
+          "control": "forward-5seconds",
+          "zone": 2
+        },
+        {
+          "label": "forward-frame",
+          "icon": "forward-frame",
+          "control": "forward-frame",
+          "zone": 2
+        },
+        {
+          "label": "forward-end",
+          "icon": "forward-end",
+          "control": "forward-end",
+          "zone": 2
+        },
+        {
+          "label": "Volume",
+          "control": "volume",
+          "zone": 3,
+          "data" : {
+            "channelMergeVolume" : true,
+            "channelMergerNode" : "l"
+
+          }
+        },
+        {
+          "label": "Fullscreen",
+          "control": "toggleFullScreen",
+          "icon": "fullscreen",
+          "zone": 3
+        },
+        {
+          "label": "Aspect ratio (a)",
+          "control": "aspectRatio",
+          "zone": 3
+        }
+      ]
+    }
+  }
+}

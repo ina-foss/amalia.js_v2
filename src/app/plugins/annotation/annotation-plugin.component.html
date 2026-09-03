@@ -1,0 +1,163 @@
+<div class="annotation-content">
+    <div class="header">
+        <div>
+            <p-button
+                class="highlight"
+                label="Ajouter un segment"
+                (click)="initializeNewSegment()"
+                (keydown)="$event.stopPropagation()"
+                size="small"
+                [disabled]="dataLoadingState()"
+            >
+                <ng-template #icon>
+                    <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
+                        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-plus'"></use>
+                    </svg>
+                </ng-template>
+            </p-button>
+            @if (segments().length !== 0) {
+                <p-button
+                    class="no-highlight"
+                    label="Début"
+                    (click)="setTcIn()"
+                    (keydown)="$event.stopPropagation()"
+                    size="small"
+                >
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-clock'"></use>
+                        </svg>
+                    </ng-template>
+                </p-button>
+                <p-button
+                    class="no-highlight"
+                    label="Fin"
+                    (click)="setTcOut()"
+                    (keydown)="$event.stopPropagation()"
+                    size="small"
+                >
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon p-button-icon-left" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-clock'"></use>
+                        </svg>
+                    </ng-template>
+                </p-button>
+            }
+        </div>
+        @if (segments().length !== 0) {
+            <div>
+                <p-button
+                    class="no-highlight no-outline"
+                    size="small"
+                    (click)="toggleExportMenu()"
+                    (keydown)="$event.stopPropagation()"
+                >
+                    <ng-template #icon>
+                        <svg class="amalia-pi-icon p-button-icon" aria-hidden="true">
+                            <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-download'"></use>
+                        </svg>
+                    </ng-template>
+                </p-button>
+                @if (enabledExportButtons) {
+                    <div class="export-menu">
+                        <div
+                            class="export-menu-item"
+                            (click)="downloadSegmentJsonFormat(); toggleExportMenu()"
+                            (keydown.enter)="downloadSegmentJsonFormat(); toggleExportMenu()"
+                            role="button"
+                            tabindex="0"
+                            style="cursor: pointer"
+                        >
+                            Exporter au format JSON
+                        </div>
+                        <div
+                            class="export-menu-item"
+                            (click)="downloadSegments(); toggleExportMenu()"
+                            (keydown.enter)="downloadSegments(); toggleExportMenu()"
+                            role="button"
+                            tabindex="0"
+                            style="cursor: pointer"
+                        >
+                            Exporter au format Excel
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    @if (segments().length === 0) {
+        <div class="annotation-empty-text">
+            Veuillez cliquer sur “Ajouter un segment” pour débuter la segmentation du média.
+        </div>
+    }
+    <amalia-toast #toast position="bottom-center" key="br" />
+    <div class="card flex justify-content-center">
+        <p-confirmDialog #cd [key]="technical_id" appendTo="self">
+            <ng-template pTemplate="headless" let-message>
+                <div class="flex flex-column p-2 surface-overlay border-round">
+                    <div class="flex flex-row">
+                        <span class="font-bold text-2xl block">{{ message.header }}</span>
+                        <div class="flex justify-content-end w-full">
+                            <button type="button" class="p-dialog-titlebar-icon p-link" (click)="cd.onReject()">
+                                <svg class="amalia-pi-icon" aria-hidden="true">
+                                    <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times'"></use>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="mb-0" style="white-space: pre-wrap; word-wrap: break-word">{{ message.message }}</p>
+                    <div class="flex flex-row justify-content-end gap-2 mt-4">
+                        <p-button
+                            [label]="message.rejectLabel"
+                            (click)="cd.onReject()"
+                            (keydown)="$event.stopPropagation()"
+                            class="p-button-outlined no-highlight"
+                            size="small"
+                        >
+                        </p-button>
+                        <p-button
+                            [label]="message.acceptLabel"
+                            (click)="cd.onAccept()"
+                            (keydown)="$event.stopPropagation()"
+                            class="highlight"
+                            size="small"
+                        >
+                        </p-button>
+                    </div>
+                </div>
+            </ng-template>
+        </p-confirmDialog>
+    </div>
+    <div class="segments scrollable-content" #annotationElement>
+        @if (!noSpinner && dataLoadingState()) {
+            <div class="card flex justify-content-center spinner-background">
+                <p-progressSpinner ariaLabel="loading" />
+            </div>
+        }
+        <ng-container>
+            @for (segment of segments(); track segment; let i = $index) {
+                <div class="segment">
+                    <amalia-segment
+                        [segment]="segment"
+                        [tcIn]="segment.tcIn"
+                        [tcOut]="segment.tcOut"
+                        [tcDisplayFormat]="'f'"
+                        [fps]="fps"
+                        (click)="selectSegment(segment)"
+                        (keydown.enter)="selectSegment(segment)"
+                        role="button"
+                        tabindex="0"
+                        [availableCategories]="availableCategories"
+                        [availableKeywords]="availableKeywords"
+                        [mediaPlayerElement]="mediaPlayerElement"
+                        [refreshHint]="segmentsVersion()"
+                        id="{{ technical_id + i }}"
+                        (actionEmitter)="manageSegment($event)"
+                    />
+                </div>
+            }
+        </ng-container>
+
+        <div class="segment-empty"></div>
+    </div>
+</div>

@@ -1,0 +1,152 @@
+<div #headerElement class="row">
+    <div class="storyboard-size">
+        <div class="first"></div>
+        <div
+            class="size medium"
+            pTooltip="{{ msgMedium }}"
+            [ngClass]="{ selected: size == 'medium' }"
+            (click)="handleThumbnailSizeChange('medium')"
+            (keydown.enter)="handleThumbnailSizeChange('medium')"
+            role="button"
+            tabindex="0"
+        ></div>
+        <div
+            class="size large"
+            pTooltip="{{ msgLarge }}"
+            [ngClass]="{ selected: size == 'large' }"
+            (click)="handleThumbnailSizeChange('large')"
+            (keydown.enter)="handleThumbnailSizeChange('large')"
+            role="button"
+            tabindex="0"
+        ></div>
+        <div class="last"></div>
+    </div>
+    <div class="interval" (mouseleave)="openIntervalList.set(false)">
+        <p class="label" (click)="toggleList()" (keydown.enter)="toggleList()" role="button" tabindex="0">
+            <span>Intervalle: </span>
+            @if ((selectedInterval[1] < 60 && selectedInterval[0] == "tc") || selectedInterval[0] == "frame") {
+                <span class="selected">{{ selectedInterval[1] }}&nbsp;</span>
+            }
+            @if (selectedInterval[1] >= 60 && selectedInterval[0] == "tc") {
+                <span class="selected">{{ selectedInterval[1] | tcFormat: "minutes" }}&nbsp;</span>
+            }
+            @if (selectedInterval[1] > 0 && selectedInterval[1] < 60 && selectedInterval[0] == "tc") {
+                <span class="selected"
+                    >{{ second }}
+                    @if (selectedInterval[1] > 1) {
+                        <span class="second-span">s</span>
+                    }
+                </span>
+            }
+            @if (selectedInterval[1] >= 60 && selectedInterval[0] == "tc") {
+                <span class="selected"
+                    >{{ minute }}
+                    @if (selectedInterval[1] > 60) {
+                        <span>s</span>
+                    }
+                </span>
+            }
+            @if (selectedInterval[0] == "frame") {
+                <span class="selected"> {{ images }} </span>
+            }
+            <svg class="amalia-svg-down icon" [ngClass]="{ active: openIntervalList() }">
+                <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#down2'"></use>
+            </svg>
+        </p>
+        <ul [ngClass]="{ active: openIntervalList() }">
+            <li class="label">Temps :</li>
+            @for (tci of tcIntervals; track tci) {
+                <li
+                    class="tc"
+                    [ngClass]="{ selected: selectedInterval[0] == 'tc' && selectedInterval[1] == tci }"
+                    (click)="selectedThumbnailSize('tc', tci)"
+                    (keydown.enter)="selectedThumbnailSize('tc', tci)"
+                    role="button"
+                    tabindex="0"
+                >
+                    @if (tci < 60) {
+                        <span
+                            >{{ tci }} {{ second }}
+                            @if (tci > 1) {
+                                <span>s</span>
+                            }
+                        </span>
+                    }
+                    @if (tci >= 60) {
+                        <span
+                            >{{ tci | tcFormat: "minutes" }} {{ minute }}
+                            @if (tci > 60) {
+                                <span>s</span>
+                            }
+                        </span>
+                    }
+                </li>
+            }
+            <li class="label">Nombre d'images:</li>
+            @for (fci of frameIntervals; track fci) {
+                <li
+                    class="frame"
+                    [ngClass]="{ selected: selectedInterval[0] == 'frame' && selectedInterval[1] == fci }"
+                    (click)="selectedThumbnailSize('frame', fci)"
+                    (keydown.enter)="selectedThumbnailSize('frame', fci)"
+                    role="button"
+                    tabindex="0"
+                >
+                    {{ fci }} {{ images }}
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+<!-- scroll/mousemove (haute fréquence) : hors zone + throttle rAF (phase 8) ;
+     click/keydown (basse fréquence) restent in-template. -->
+<div
+    class="storyboard"
+    tabindex="0"
+    [amaliaOutsideScroll]="onScrollOutside"
+    [amaliaOutsideMousemove]="onMousemoveOutside"
+    (click)="resetAutoSyncTimer()"
+    (keydown)="resetAutoSyncTimer()"
+>
+    <div class="vs-scroll" #scrollElement></div>
+    <div class="vs-container" #storyboardElement>
+        @for (tc of listOfThumbnailFilter(); track tc; let isLast = $last; let isFirst = $first) {
+            <div
+                (click)="seekToTc(tc)"
+                (keydown.enter)="seekToTc(tc)"
+                class="thumbnail {{ size }} {{ sizeThumbnail }}"
+                role="button"
+                tabindex="0"
+                [ngClass]="{ first: isFirst, last: isLast }"
+                [attr.data-tc]="tc"
+            >
+                <img
+                    data-max-retry="5"
+                    data-retry="0"
+                    class="image"
+                    loading="lazy"
+                    (error)="waitAndReload($event)"
+                    src="/assets/images/placeholder.png"
+                    [attr.data-imgsrc]="baseUrl + tc"
+                    alt="{{ tc | tcFormat: displayFormat : fps }}"
+                />
+                @if (enableLabel) {
+                    <div class="label">{{ tc + tcOffset | tcFormat: displayFormat : fps }}</div>
+                }
+            </div>
+        }
+    </div>
+</div>
+<div
+    class="auto-scroll"
+    pTooltip="{{ pluginConfiguration.data.labelSynchro }}"
+    [ngClass]="{ active: displaySynchro() }"
+    (click)="scrollToActiveThumbnail(selectedTc, true)"
+    (keydown.enter)="scrollToActiveThumbnail(selectedTc, true)"
+    role="button"
+    tabindex="0"
+>
+    <svg class="amalia-svg-auto-scroll-size icon">
+        <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#new_refresh'"></use>
+    </svg>
+</div>

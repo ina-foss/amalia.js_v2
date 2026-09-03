@@ -1,0 +1,35 @@
+<div class="p-messages" role="alert" aria-live="polite">
+  @for (message of messages(); track trackByFn($index, message)) {
+    <div [class]="'p-message p-message-' + message.severity">
+      <div class="p-message-wrapper">
+        @if (enableIcon && message.icon) {
+          <span class="p-message-icon">
+            <svg [class]="'amalia-pi-icon ' + message.icon" aria-hidden="true">
+              <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#' + message.icon"></use>
+            </svg>
+          </span>
+        }
+        @if (message.summary) {
+          <span class="p-message-summary">{{ message.summary }}</span>
+        }
+        @if (escape) {
+          <span class="p-message-detail">{{ message.detail }}</span>
+        } @else {
+          <span class="p-message-detail" [innerHTML]="message.detail"></span>
+        }
+        @if (message.closable) {
+          <button
+            type="button"
+            class="p-message-close"
+            aria-label="Close"
+            (click)="removeMessage($index)"
+          >
+            <svg class="amalia-pi-icon pi-times" aria-hidden="true">
+              <use [attr.xlink:href]="'/assets/svgs/symbol/svg/sprite.symbol.svg#pi-times'"></use>
+            </svg>
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>

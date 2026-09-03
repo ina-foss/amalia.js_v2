@@ -1,0 +1,883 @@
+@import '../../../core/styles/variables';
+@import '../../../core/styles/typo';
+
+:host ::ng-deep {
+
+  // En v21, p-card porte les classes `p-card` ET `segment-selected` sur le MÊME
+  // élément host (en v18 `.p-card` était un div interne). Le sélecteur descendant
+  // `.segment-selected .p-card` ne matchait donc plus -> on ajoute le compound.
+  .segment-selected .p-card,
+  .segment-selected.p-card {
+    border: 2.5px solid $colors-primitive-primary-color;
+  }
+
+  // Icônes inline issues du sprite SVG (remplacent les glyphes de police primeicons).
+  // Même taille que les anciens glyphes (14px ici), couleur héritée via currentColor.
+  .amalia-pi-icon:hover {
+    opacity: .5;
+  }
+
+  .amalia-pi-icon {
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: -0.125em;
+  }
+
+  .amalia-pi-icon.pi-check {
+    color: green;
+  }
+
+  .amalia-pi-icon.pi-times-circle,
+  .amalia-pi-icon.pi-trash {
+    color: red;
+  }
+
+  .pi-clone {
+    color: var(--amalia-primary-color, #0B7698);
+  }
+
+  .segment-categories-alignment,
+  .segment-keywords-alignment,
+  .segment-title-alignment,
+  .segment-description-alignment {
+    display: flex;
+    justify-content: flex-end;
+    color: var(--amalia-plugin-colors-semantic-error-state, #EE4343);
+  }
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  .readonly-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: 100%;
+
+    .error-line {
+      .p-autocomplete {
+        border-color: var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
+        box-shadow: none !important;
+        border-style: solid !important;
+        border-width: thin !important;
+        outline: none !important;
+      }
+    }
+
+    .p-component {
+      font-family: $amalia-font-family-lato;
+      font-size: 14px;
+    }
+
+    p-card {
+      width: 100%;
+      min-width: 0;
+    }
+
+    // min-width:0 : en v21 .p-card a min-width:auto -> un titre très long (nowrap
+    // + ellipsis) empêcherait la carte de rétrécir et la ferait déborder. v18
+    // avait min-width:0. On le rétablit sur la carte et son header (flex items).
+    .p-card {
+      min-width: 0;
+      border-radius: 8px;
+      /* overlay/container/shadow */
+      box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.30);
+      padding: 8px $amalia-spacings-border-radius-md;
+    }
+
+    .p-card-header {
+      min-width: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+    }
+
+    .segment-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--colors-text-text, #212529);
+      font-family: $amalia-font-family-lato;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      width: 100%;
+      cursor: pointer;
+      overflow: hidden;
+
+      &:hover {
+        border-radius: var(--spacings-border-radius-radius-sm, 4px);
+        background: $amalia-plugin-segmentation-hover-bg-color;
+      }
+    }
+
+    .readonly-title-container {
+      width: 100%;
+      height: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: $amalia-spacings-space-space-xs;
+    }
+
+    .readonly-title-edit {
+      display: flex;
+      flex-direction: row;
+      border-radius: 8px;
+      gap: $amalia-spacings-space-space-xs;
+      background: #fff;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--amalia-primary-color, #0B7698) !important;
+      box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5) !important;
+      margin-right: 8px;
+
+      textarea {
+        width: 100%;
+        max-height: 30px;
+        border: none;
+        outline: none;
+        resize: none;
+        background: transparent;
+        color: var(--chip-color, #595959);
+        font-family: $amalia-font-family-lato;
+        ;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+
+        &:focus {
+          box-shadow: none;
+        }
+      }
+    }
+
+    .readonly-title-edit.error-line {
+      border: 1px solid var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
+      box-shadow: none !important;
+    }
+
+    .title-edit-actions {
+      display: flex;
+      flex-direction: row;
+      max-height: 30px;
+      gap: $amalia-spacings-space-space-xs;
+      flex-shrink: 0;
+      align-items: center;
+      padding: 0 8px;
+    }
+
+    .readonly-segment-tc-item {
+      span {
+        cursor: pointer;
+      }
+    }
+
+    .readonly-tc-edit {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: $amalia-spacings-space-space-xs;
+
+      .tc-input-inline {
+        width: 100px;
+        padding: 0.25rem 0.5rem;
+        font-size: 14px;
+        border: 1px solid $amalia-primary-color !important;
+        box-shadow: 0 0 0 2.8px $amalia-box-shadow !important;
+      }
+
+      .tc-input-inline.p-inputtext.ng-dirty.ng-invalid {
+        border-color: var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
+        box-shadow: 0 0 0 2px var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
+      }
+    }
+
+    .readonly-description-edit-container {
+      padding: 4px 0;
+      display: flex;
+      flex-direction: column;
+      gap: $amalia-spacings-space-space-xs;
+    }
+
+    .readonly-description-edit {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      gap: $amalia-spacings-space-space-xs;
+      border-radius: 8px;
+      padding: 4px;
+      background: #fff;
+      border: 1px solid $amalia-primary-color !important;
+      box-shadow: 0 0 0 2.8px $amalia-box-shadow !important;
+
+      textarea {
+        width: 100%;
+        border: none;
+        outline: none;
+        resize: none;
+        background: transparent;
+
+        &:focus {
+          box-shadow: none;
+        }
+      }
+
+      .p-inputtextarea {
+        border: none !important;
+        box-shadow: none !important;
+      }
+    }
+
+    .readonly-description-edit.error-line {
+      border: 1px solid var(--amalia-plugin-colors-semantic-error-state, #EE4343) !important;
+      box-shadow: none !important;
+    }
+
+    .description-edit-actions {
+      display: flex;
+      flex-direction: row;
+      gap: $amalia-spacings-space-space-xs;
+      flex-shrink: 0;
+      align-items: center;
+      padding-right: 8px;
+
+    }
+
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .p-button-icon {
+        width: 14px;
+        height: 14px;
+        font-size: 14px;
+        line-height: 14px;
+        display: inline-block;
+      }
+
+      .p-button {
+        background: white;
+        color: $colors-primitive-primary-color;
+        border-style: none;
+      }
+
+      .notilus-filled-circle {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        background: $colors-primitive-primary-color;
+        border: 1px solid $colors-primitive-primary-color;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .p-button-danger {
+        color: red;
+      }
+    }
+
+    .p-divider.p-divider-horizontal {
+      // PrimeNG 21 n'injecte plus la ligne du divider dans le shadow DOM, et son
+      // padding horizontal (0 16px) rétrécit/centre le trait via ::before.
+      // On redessine la ligne en border-top sur le host : pleine largeur du
+      // conteneur (comme en v18), insensible au padding car la bordure est sur
+      // la border-box de l'élément.
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      height: 0;
+      border-top: 1px solid #e2e8f0;
+
+      &::before {
+        display: none;
+      }
+
+      .p-divider-content {
+        display: none;
+      }
+    }
+
+    .p-card-body {
+      padding: 0;
+    }
+
+    .p-card-content {
+      gap: $amalia-spacings-space-space-sm;
+    }
+
+    .readonly-segment-info {
+      display: flex;
+      flex-direction: row;
+      gap: $amalia-spacings-space-space-sm;
+      min-height: 120px;
+
+
+      .thumbnail {
+        border-radius: 4px !important;
+      }
+
+      .readonly-segment-thumbnail-block {
+        position: relative;
+        width: 165px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+
+        .p-button.p-button-outlined.p-button-secondary {
+          color: #64748b !important;
+          border-color: #64748b !important;
+          width: 33px !important;
+          height: 33px !important;
+        }
+
+        .readonly-segment-thumbnail {
+          position: absolute;
+          flex-shrink: 0;
+          background: url("/assets/images/placeholder.png") lightgray 0 0 / 100% 100% no-repeat;
+          width: 165px;
+          height: 111px;
+
+          img {
+            margin-top: 12px;
+            width: 160px;
+            height: 107px;
+          }
+
+          .amalia-svg-blue-play-size.icon {
+            display: none;
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        .readonly-segment-thumbnail:hover {
+          .amalia-svg-blue-play-size.icon {
+            display: block;
+            width: 24px;
+            height: 24px;
+            z-index: 2;
+            position: absolute;
+            top: 50%;
+            left: calc(50% - 12px);
+            cursor: pointer;
+            color: $amalia-primary-color;
+          }
+        }
+
+        .readonly-segment-no-camera-icon {
+          display: none;
+        }
+
+        .readonly-segment-audioThumbnail {
+          position: absolute;
+          flex-shrink: 0;
+          background: url("/assets/amalia/images/newAudioBackGround.png") $amalia-primary-color 0 0 / 100% 100% no-repeat;
+          margin-top: 12px;
+          width: 160px;
+          height: 107px;
+        }
+
+        .readonly-segment-thumbnail-no-background:hover {
+          .amalia-svg-blue-play-size.icon {
+            display: block;
+            width: 24px;
+            height: 24px;
+            z-index: 2;
+            position: absolute;
+            top: 50%;
+            left: calc(50% - 12px);
+            cursor: pointer;
+            color: $amalia-primary-color;
+
+          }
+        }
+
+        .readonly-segment-thumbnail-no-background {
+          position: absolute;
+          flex-shrink: 0;
+          width: 165px;
+          height: 111px;
+
+          img {
+            margin-top: 12px;
+            width: 160px;
+            height: 107px;
+          }
+
+          .amalia-svg-blue-play-size.icon {
+            display: none;
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        .p-button {
+          // Le CSS structurel de base de PrimeNG 21 (position:relative, inline-flex,
+          // border-radius du rounded, fond transparent de l'outlined...) est injecté
+          // dans document.head et n'atteint pas le Shadow DOM. Sans position:relative,
+          // le bouton caméra (float) était peint SOUS la vignette (position:absolute)
+          // et disparaissait pour la vidéo. On redéclare ici le minimum vital.
+          position: relative;
+          z-index: 1;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          background: transparent;
+          border: 1px solid #64748b;
+          border-radius: 50%;
+          cursor: pointer;
+          margin-top: 24px;
+          margin-right: 17px;
+          float: right;
+          width: 33px !important;
+          height: 33px !important;
+
+          &:hover {
+            background: color-mix(in srgb, var(--INA-Blanc, #FFF) 90%, transparent);
+
+            // neutralise le .amalia-pi-icon:hover global (opacity .5) qui délaverait
+            // l'icône caméra sur ce fond clair
+            .amalia-pi-icon {
+              opacity: 1;
+            }
+          }
+        }
+      }
+
+      .readonly-segment-info-content {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 165px);
+        // sans min-width:0, le calc ci-dessus ignore le gap (12px) du flex row
+        // et le contenu déborde de 12px à droite -> le divider dépassait l'icône suppression
+        min-width: 0;
+
+        .readonly-segment-tc {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          gap: 14px;
+
+          .readonly-segment-tc-item {
+            display: flex;
+            width: fit-content;
+            height: 32px;
+            flex-direction: column;
+            justify-content: center;
+            color: $global-textColor;
+
+            .tc-value {
+              color: var(--colors-text-text, #212529);
+              font-family: Lato;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 600;
+
+              &:hover {
+                border-radius: var(--spacings-border-radius-radius-sm, 4px);
+                background: $amalia-plugin-segmentation-hover-bg-color;
+                padding: 2px 0;
+              }
+            }
+
+            .tc-label {
+              color: var(--colors-text-text, #212529);
+              font-family: Lato;
+              font-size: 14px;
+              font-style: normal;
+              font-weight: 400;
+            }
+          }
+        }
+
+        // PrimeNG's own base structural/visual CSS for its overlay-based components (autocomplete
+        // dropdown, etc.) is injected dynamically into document.head at runtime and never reaches
+        // components rendered inside a Shadow DOM. The overlay's own JS-computed inline
+        // positioning (position/top/left) still works (set directly on the element), but without
+        // this rule the dropdown panel has no background/border/spacing and renders as unstyled
+        // text overlapping the rest of the segment card.
+        .p-autocomplete-overlay {
+          background: white;
+          border: 1px solid $amalia-plugin-segmentation-hover-bg-color;
+          border-radius: 8px;
+          box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+
+          .p-autocomplete-list-container {
+            max-height: 200px;
+            overflow-y: auto;
+          }
+
+          .p-autocomplete-list {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 4px 0 !important;
+          }
+
+          .p-autocomplete-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-family: Lato, sans-serif;
+            font-size: 14px;
+
+            &:hover,
+            &.p-autocomplete-option-focus {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+        }
+
+        .readonly-segment-categories {
+          position: relative;
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          gap: $amalia-spacings-space-space-xs;
+          padding: $amalia-spacings-border-radius-sm 0;
+          align-items: center;
+
+          .p-autocomplete {
+            // display:block pour que la box-shadow (bordure brillante) englobe
+            // tous les chips en UN seul rectangle (sinon, en display:inline v21,
+            // elle se fragmente ligne par ligne).
+            display: block;
+            box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5);
+            border-radius: 8px !important;
+
+            // .p-autocomplete-input = nouvelle classe v21 de l'input (avait une
+            // bordure native 2px inset car le reset PrimeNG n'atteint pas le shadow DOM)
+            .p-inputtext,
+            .p-autocomplete-input {
+              border: none !important;
+              outline: none !important;
+              box-shadow: none !important;
+              background: transparent !important;
+            }
+          }
+
+          .p-autocomplete-token,
+          .p-autocomplete-chip-item,
+          .p-autocomplete-chip {
+            list-style: none !important;
+            display: inline-flex;
+            align-items: center;
+            border-radius: 16px !important;
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip-item,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip {
+            padding: 4px 6px 4px 5px !important;
+          }
+
+          .p-autocomplete .p-autocomplete-multiple-container,
+          .p-autocomplete .p-autocomplete-input-multiple {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            list-style: none !important;
+            padding: 0 8px !important;
+            margin: 0 !important;
+          }
+
+          .readonly-segment-categories-readonly {
+            cursor: pointer;
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: $amalia-spacings-space-space-xs;
+            align-items: center;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+
+          .readonly-segment-no-categories {
+            color: var(--colors-text-subtitle, #757575);
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+
+          p-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 !important;
+          }
+
+          .p-chip {
+            display: inline-flex;
+            align-items: center;
+            background: $colors-primitive-primary-color;
+            color: #fff;
+            padding: 6px 8px 6px 5px !important;
+            max-height: 26px;
+          }
+
+          .p-chip-text,
+          .p-chip-label {
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: var(--button-hover-color, #FFF);
+
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+          }
+
+          .p-chip-remove-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+              display: block;
+            }
+          }
+        }
+
+        .readonly-segment-keywords {
+          position: relative;
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          gap: $amalia-spacings-space-space-xs;
+          padding: $amalia-spacings-border-radius-sm 0;
+          align-items: center;
+
+          .p-autocomplete-token,
+          .p-autocomplete-chip-item,
+          .p-autocomplete-chip {
+            list-style: none !important;
+            display: inline-flex;
+            align-items: center;
+            border-radius: 16px !important;
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          .p-autocomplete {
+            // display:block pour que la box-shadow (bordure brillante) englobe
+            // tous les chips en UN seul rectangle (sinon, en display:inline v21,
+            // elle se fragmente ligne par ligne).
+            display: block;
+            box-shadow: 0 0 0 2.8px var(--amalia-box-shadow, #ACE4F5);
+            border-radius: 8px !important;
+
+            // .p-autocomplete-input = nouvelle classe v21 de l'input (avait une
+            // bordure native 2px inset car le reset PrimeNG n'atteint pas le shadow DOM)
+            .p-inputtext,
+            .p-autocomplete-input {
+              border: none !important;
+              outline: none !important;
+              box-shadow: none !important;
+              background: transparent !important;
+            }
+          }
+
+          .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-token,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip-item,
+          .p-autocomplete .p-autocomplete-input-multiple .p-autocomplete-chip {
+            padding: 4px 6px 4px 5px !important;
+          }
+
+          .p-autocomplete .p-autocomplete-multiple-container,
+          .p-autocomplete .p-autocomplete-input-multiple {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            list-style: none !important;
+            padding: 0 8px !important;
+            margin: 0 !important;
+          }
+
+          .readonly-segment-keywords-readonly {
+            cursor: pointer;
+            position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: $amalia-spacings-space-space-xs;
+            align-items: center;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+
+          .readonly-segment-no-keywords {
+            color: var(--colors-text-subtitle, #757575);
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+
+            &:hover {
+              background: $amalia-plugin-segmentation-hover-bg-color;
+            }
+          }
+
+          p-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 !important;
+          }
+
+          .p-chip {
+            display: inline-flex;
+            align-items: center;
+            background: var(--chip-background, #EDEDED);
+            padding: 6px 8px 6px 5px !important;
+            max-height: 26px;
+          }
+
+          .p-chip-text,
+          .p-chip-label {
+            color: var(--global-textColor, #595959);
+            font-family: Lato;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            max-width: 300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          .p-chip-remove-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+
+    .readonly-segment-description-empty {
+      padding: 4px 0;
+      color: var(--colors-text-subtitle, #757575);
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+
+      &:hover {
+        background: $amalia-plugin-segmentation-hover-bg-color;
+      }
+    }
+
+    .collapsed {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 0;
+      text-overflow: clip; // Masque l'ellipsis automatique
+    }
+
+    p {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin: 0;
+      line-height: 150%;
+      /* 21px */
+    }
+
+    .readonly-segment-description {
+      width: 100%;
+      margin-bottom: 0;
+      margin-top: 0;
+      position: relative;
+
+      .readonly-segment-description-afficher-plus {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(to right, transparent, #fff 40%);
+        padding-left: 4px;
+        padding-right: 4px;
+        color: $amalia-primary-color;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 150%;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .readonly-segment-description-afficher-moins {
+        display: inline;
+        color: $amalia-primary-color;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        cursor: pointer;
+        margin-left: 4px;
+      }
+
+      &.description-collapsed {
+        p {
+          padding-right: 90px; // Espace pour "Afficher +"
+        }
+      }
+
+      &:hover {
+        cursor: pointer;
+        background: $amalia-plugin-segmentation-hover-bg-color;
+      }
+    }
+  }
+}

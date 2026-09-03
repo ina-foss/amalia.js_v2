@@ -1,0 +1,183 @@
+@import '../../core/styles/variables';
+
+
+:host ::ng-deep {
+  // PrimeNG centers the toast by combining an inline `left: 50%` (set by its own JS, which does
+  // reach us) with this `transform: translateX(-50%)` rule from its dynamically-injected base
+  // CSS (which does NOT reach components rendered inside a Shadow DOM). Without it the toast's
+  // left edge sits at the horizontal midpoint instead of the toast itself being centered.
+  .p-toast-bottom-center {
+    transform: translateX(-50%);
+  }
+
+  // Same Shadow DOM problem for the rest of the structural CSS that PrimeNG 21 injects into
+  // document.head (@primeuix/styles/toast + progressbar): width of the toast, box of the
+  // message and the whole geometry of the progress bar (the "timer") must be redeclared here.
+  .p-toast {
+    width: 25rem;
+    max-width: calc(100vw - 40px);
+    white-space: pre-line;
+    word-break: break-word;
+  }
+
+  .p-toast-message {
+    margin: 0 0 1rem 0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .p-toast-message-enter-active {
+    animation: p-animate-toast-enter 300ms ease-out;
+  }
+
+  .p-toast-message-leave-active {
+    animation: p-animate-toast-leave 250ms ease-in;
+  }
+
+  @keyframes p-animate-toast-enter {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes p-animate-toast-leave {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+      margin-bottom: 0;
+      transform: translateY(-100%) scale(0.6);
+    }
+  }
+
+  .p-progressbar {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    height: 4px !important;
+    max-height: 4px !important;
+  }
+
+  .p-progressbar-determinate {
+    background-color: white !important;
+  }
+
+  // PrimeNG 21 removed .p-progressbar-value-animate: the animated fill is .p-progressbar-value
+  .p-progressbar-determinate .p-progressbar-value {
+    position: absolute;
+    inset-inline-start: 0;
+    height: 100%;
+    width: 0%;
+    overflow: hidden;
+    transition: width 1s ease-in-out;
+    background-color: currentColor;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success {
+    background: #FFF !important;
+    color: #9ADC82 !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error {
+    background: #FFF !important;
+    color: #FF5757 !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-info {
+    background: #b3ddf4  !important;
+    color: #b3ddf4 !important;
+  }
+
+  .p-toast-message-template-content {
+    display: flex;
+    flex-direction: row;
+    padding: var(--spacings-space-space-md, 16px);
+    align-items: center;
+    gap: var(--border-radius-lg, 12px);
+    flex: 1 0 0;
+    background-color: white !important;
+
+    .p-toast-message-template-error-icon {
+      display: flex;
+      width: 32px;
+      height: 32px;
+      padding: var(--spacings-border-radius-radius-sm, 4px);
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacings-space-space-sm, 12px);
+      border-radius: 100px;
+      background: currentColor;
+
+    }
+
+    .p-toast-message-template-success-icon {
+      display: flex;
+      width: 32px;
+      height: 32px;
+      padding: var(--spacings-border-radius-radius-sm, 4px);
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacings-space-space-sm, 12px);
+      border-radius: 100px;
+      background: currentColor;
+    }
+
+    .p-toast-message-template-info-icon {
+      display: flex;
+      width: 32px;
+      height: 32px;
+      padding: var(--spacings-border-radius-radius-sm, 4px);
+      justify-content: center;
+      align-items: center;
+      gap: var(--spacings-space-space-sm, 12px);
+      border-radius: 100px;
+      background: currentColor;
+    }
+
+    .p-toast-detail {
+      display: flex;
+      padding-left: var(--spacings-space-space-md, 16px);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--border-radius-md, 8px);
+      flex: 1 0 0;
+      color: #212529;
+      text-align: justify;
+      font-family: Lato;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+
+    .p-toast-message-template-icon-size {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .p-toast-message-template-close-icon {
+      display: flex;
+      width: 28px;
+      height: 28px;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+  }
+
+  .p-toast-message {
+    border-style: none !important;
+  }
+
+  .p-toast-icon-close {
+    color: $amalia-icon-text-color !important;
+  }
+}

@@ -1,0 +1,16 @@
+<div class="histogram-container"
+     [ngClass]="{
+       'xs': displayState() === 'xs',
+       's': displayState() === 's',
+       'sm': displayState() === 'sm',
+       'm': displayState() === 'm',
+       'l': displayState() === 'l'
+     }"
+     tabindex="0"
+     (mouseenter)="onHistogramMouseEnter()"
+     (mouseleave)="onHistogramMouseLeave()">
+    <div #minimapContainer class="minimap-container">
+        <div #minimapHitArea class="minimap-hit-area"></div>
+    </div>
+    <div #wavesurferContainer class="wavesurfer-container"></div>
+</div>

@@ -1,0 +1,356 @@
+[
+  {
+    "id": "S194",
+    "label": "françois hollande (60.4%)",
+    "type": "audio_segmentation",
+    "processed": "2575087636439",
+    "localisation": [
+      {
+        "tcin": "00:01:42.87",
+        "tcout": "00:02:20.05",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:06:20.33",
+        "tcout": "00:06:39.46",
+        "tclevel": 0,
+        "label": "test"
+      }
+    ],
+    "viewControl": {
+      "color": "red"
+    }
+  },
+  {
+    "id": "S40",
+    "label": "armelle charrier (62.4%)",
+    "type": "audio_segmentation",
+    "processed": "2472129188065",
+    "localisation": [
+      {
+        "tcin": "00:02:32.15",
+        "tcout": "00:03:20.29",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:03:37.37",
+        "tcout": "00:04:45.32",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#33ccff"
+    }
+  },
+  {
+    "id": "unk-4",
+    "label": "speaker 4",
+    "type": "audio_segmentation",
+    "processed": "6993884947699",
+    "localisation": [
+      {
+        "tcin": "00:05:57.90",
+        "tcout": "00:06:05.09",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:06:05.71",
+        "tcout": "00:06:10.24",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:06:10.99",
+        "tcout": "00:06:20.33",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:06:39.46",
+        "tcout": "00:06:54.08",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:06:54.64",
+        "tcout": "00:07:02.11",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:07:57.96",
+        "tcout": "00:08:05.65",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "S340",
+    "label": "manuel valls (52%)",
+    "type": "audio_segmentation",
+    "processed": "9049504378187",
+    "localisation": [
+      {
+        "tcin": "00:07:02.11",
+        "tcout": "00:07:04.06",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:07:06.98",
+        "tcout": "00:07:13.38",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#33ccff"
+    }
+  },
+  {
+    "id": "S374",
+    "label": "michel sapin (53.2%)",
+    "type": "audio_segmentation",
+    "processed": "5649023875161",
+    "localisation": [
+      {
+        "tcin": "00:07:13.46",
+        "tcout": "00:07:33.20",
+        "tclevel": 0
+      },
+      {
+        "ArrayData": "null"
+      }
+    ],
+    "viewControl": {
+      "color": "#33ccff"
+    }
+  },
+  {
+    "id": "S267",
+    "label": "jean-françois copé (51.4%)",
+    "type": "audio_segmentation",
+    "processed": "7324320762554",
+    "localisation": [
+      {
+        "tcin": "00:07:33.20",
+        "tcout": "00:07:45.61",
+        "tclevel": 0
+      },
+      {
+        "ArrayData": "null"
+      }
+    ],
+    "viewControl": {
+      "color": "#33ccff"
+    }
+  },
+  {
+    "id": "S230",
+    "label": "henri guaino (51.4%)",
+    "type": "audio_segmentation",
+    "processed": "2382313389574",
+    "localisation": [
+      {
+        "tcin": "00:07:45.97",
+        "tcout": "00:07:57.96",
+        "tclevel": 0
+      },
+      {
+        "ArrayData": "null"
+      }
+    ],
+    "viewControl": {
+      "color": "#33ccff"
+    }
+  },
+  {
+    "id": "unk-9",
+    "label": "speaker 9",
+    "type": "audio_segmentation",
+    "processed": "9581113628975",
+    "localisation": [
+      {
+        "tcin": "00:08:42.38",
+        "tcout": "00:08:45.55",
+        "tclevel": 0
+      },
+      {
+        "ArrayData": "null"
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "unk-10",
+    "label": "speaker 10",
+    "type": "audio_segmentation",
+    "processed": "5867956731173",
+    "localisation": [
+      {
+        "tcin": "00:09:02.19",
+        "tcout": "00:09:46.34",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:09:54.06",
+        "tcout": "00:10:30.43",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "unk-11",
+    "label": "speaker 11",
+    "type": "audio_segmentation",
+    "processed": "7117605083894",
+    "localisation": [
+      {
+        "tcin": "00:10:53.43",
+        "tcout": "00:11:10.00",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:11:19.98",
+        "tcout": "00:11:26.04",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:11:27.61",
+        "tcout": "00:11:40.66",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:11:51.93",
+        "tcout": "00:12:13.30",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:13:47.69",
+        "tcout": "00:13:57.73",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "unk-12",
+    "label": "speaker 12",
+    "type": "audio_segmentation",
+    "processed": "1329067162436",
+    "localisation": [
+      {
+        "tcin": "00:11:10.38",
+        "tcout": "00:11:19.77",
+        "tclevel": 0
+      },
+      {
+        "ArrayData": "null"
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "unk-13",
+    "label": "speaker 13",
+    "type": "audio_segmentation",
+    "processed": "8282834661643",
+    "localisation": [
+      {
+        "tcin": "00:11:40.66",
+        "tcout": "00:11:51.93",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:12:59.93",
+        "tcout": "00:13:04.67",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:13:08.25",
+        "tcout": "00:13:13.54",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "unk-14",
+    "label": "speaker 14",
+    "type": "audio_segmentation",
+    "processed": "7737569845985",
+    "localisation": [
+      {
+        "tcin": "00:12:32.66",
+        "tcout": "00:12:56.01",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:13:13.77",
+        "tcout": "00:13:24.33",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:13:35.19",
+        "tcout": "00:13:47.69",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:13:57.73",
+        "tcout": "00:14:03.47",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "unk-15",
+    "label": "speaker 15",
+    "type": "audio_segmentation",
+    "processed": "2081683161884",
+    "localisation": [
+      {
+        "tcin": "00:12:56.01",
+        "tcout": "00:12:59.93",
+        "tclevel": 0
+      },
+      {
+        "tcin": "00:13:04.67",
+        "tcout": "00:13:08.25",
+        "tclevel": 0
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  },
+  {
+    "id": "unk-16",
+    "label": "speaker 16",
+    "type": "audio_segmentation",
+    "processed": "5725406482863",
+    "localisation": [
+      {
+        "tcin": "00:13:24.33",
+        "tcout": "00:13:35.19",
+        "tclevel": 0
+      },
+      {
+        "ArrayData": "null"
+      }
+    ],
+    "viewControl": {
+      "color": "#D8D8D8"
+    }
+  }
+]

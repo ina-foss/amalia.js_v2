@@ -1,0 +1,253 @@
+[
+    {
+        "localisation": [
+            {
+                "sublocalisations": {
+                    "localisation": [
+                        {
+                            "data": {
+                                "text": [
+                                    "Document composite"
+                                ],
+                                "attribute": [
+                                    {
+                                        "ticol": [
+                                            {
+                                                "provenance": "DA",
+                                                "value": "La lorgnette"
+                                            }
+                                        ],
+                                        "thumbnailId": "CPB08001259",
+                                        "genre": [
+                                            "Magazine"
+                                        ],
+                                        "chaine": [
+                                            "Antenne 2"
+                                        ],
+                                        "match": false,
+                                        "aut": [
+                                            {
+                                                "Bonte, Pierre": "Journaliste"
+                                            },
+                                            {
+                                                "Collaro, Stéphane": "Journaliste"
+                                            },
+                                            {
+                                                "Martin, Jacques": "Producteur"
+                                            },
+                                            {
+                                                "Oualid, Jean Pierre": "Réalisateur"
+                                            },
+                                            {
+                                                "Piem": "Journaliste"
+                                            },
+                                            {
+                                                "Pabiot, Gérard": "Journaliste"
+                                            }
+                                        ],
+                                        "ti": [
+                                            {
+                                                "provenance": "DAV",
+                                                "value": "La lorgnette : émission du 29 mai 1977"
+                                            }
+                                        ],
+                                        "entity": "instance",
+                                        "date": "1977-05-29 13:21:00",
+                                        "segmented": true,
+                                        "typedoc": {
+                                            "typeDoc": "Document composite",
+                                            "typeDocN-1": "Unité"
+                                        }
+                                    }
+                                ]
+                            },
+                            "type": "text",
+                            "tcin": "00:32:59.720",
+                            "tcout": "01:02:08.960",
+                            "tclevel": 1
+                        }
+                    ]
+                }
+            }
+        ],
+        "type": "DOCUMENTS_LIES-",
+        "label": "Document composite",
+        "version": 2,
+        "id": "DOCUMENTS_LIES-2654519490530637Document composite"
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": {
+                    "localisation": [
+                        {
+                            "data": {
+                                "text": [
+                                    "Document simple"
+                                ],
+                                "attribute": [
+                                    {
+                                        "ticol": [
+                                            {
+                                                "provenance": "DA",
+                                                "value": "Toujours sourire"
+                                            }
+                                        ],
+                                        "thumbnailId": "CPB77052838",
+                                        "genre": [
+                                            "Récit portrait"
+                                        ],
+                                        "chaine": [
+                                            "Antenne 2"
+                                        ],
+                                        "match": true,
+                                        "aut": [
+                                            {
+                                                "Job, Guy": "Réalisateur"
+                                            },
+                                            {
+                                                "Lancelot, Michel": "Producteur"
+                                            }
+                                        ],
+                                        "ti": [
+                                            {
+                                                "provenance": "DAV",
+                                                "value": "Buster Keaton"
+                                            }
+                                        ],
+                                        "entity": "instance",
+                                        "date": "1977-05-29 12:08:37",
+                                        "segmented": true,
+                                        "typedoc": {
+                                            "typeDoc": "Document simple",
+                                            "typeDocN-1": "Unité"
+                                        }
+                                    }
+                                ]
+                            },
+                            "type": "text",
+                            "tcin": "00:00:00.000",
+                            "tcout": "00:29:10.080",
+                            "tclevel": 1
+                        }
+                    ]
+                }
+            }
+        ],
+        "type": "DOCUMENTS_LIES-",
+        "label": "Document simple",
+        "version": 2,
+        "id": "DOCUMENTS_LIES-2654519490571479Document simple"
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": {
+                    "localisation": [
+                        {
+                            "data": {
+                                "text": [
+                                    "Sujet"
+                                ],
+                                "attribute": [
+                                    {
+                                        "segmented": true,
+                                        "typedoc": {
+                                            "typeDoc": "Sujet",
+                                            "typeDocN-1": "Unité"
+                                        },
+                                        "match": false,
+                                        "entity": "instance",
+                                        "thumbnailId": "CPB7705284701",
+                                        "ticol": [],
+                                        "ti": [
+                                            {
+                                                "provenance": "DAV",
+                                                "value": "Pastiche du festival de Cannes"
+                                            }
+                                        ],
+                                        "chaine": [
+                                            "Antenne 2"
+                                        ],
+                                        "genre": [
+                                            "Magazine"
+                                        ],
+                                        "date": "1977-05-29 13:26:00"
+                                    }
+                                ]
+                            },
+                            "type": "text",
+                            "tcin": "00:37:18.320",
+                            "tcout": "00:48:18.560",
+                            "tclevel": 1
+                        }
+                    ]
+                }
+            }
+        ],
+        "type": "DOCUMENTS_LIES-",
+        "label": "Sujet",
+        "version": 2,
+        "id": "DOCUMENTS_LIES-2654519490585435Sujet"
+    },
+    {
+        "localisation": [
+            {
+                "sublocalisations": {
+                    "localisation": [
+                        {
+                            "data": {
+                                "text": [
+                                    "Document simple"
+                                ],
+                                "attribute": [
+                                    {
+                                        "ticol": [],
+                                        "thumbnailId": "CPB08003448",
+                                        "genre": [
+                                            "Jeu",
+                                            "Tranche horaire"
+                                        ],
+                                        "chaine": [
+                                            "Antenne 2"
+                                        ],
+                                        "match": true,
+                                        "aut": [
+                                            {
+                                                "Oualid, Jean Pierre": "Réalisateur"
+                                            },
+                                            {
+                                                "Martin, Jacques": "Producteur"
+                                            }
+                                        ],
+                                        "ti": [
+                                            {
+                                                "provenance": "DAV",
+                                                "value": "Bon dimanche : programme du 29 mai 1977"
+                                            }
+                                        ],
+                                        "entity": "instance",
+                                        "date": "1977-05-29 12:01:48",
+                                        "segmented": true,
+                                        "typedoc": {
+                                            "typeDoc": "Document simple",
+                                            "typeDocN-1": "Unité"
+                                        }
+                                    }
+                                ]
+                            },
+                            "type": "text",
+                            "tcin": "00:00:00.000",
+                            "tcout": "01:02:09.200",
+                            "tclevel": 1
+                        }
+                    ]
+                }
+            }
+        ],
+        "type": "DOCUMENTS_LIES-",
+        "label": "Document simple",
+        "version": 2,
+        "id": "DOCUMENTS_LIES-2654519490606239Document simple"
+    }
+]

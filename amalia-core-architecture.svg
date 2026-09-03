@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="100%" height="100%" style="background-color: #090d16; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="100%" stop-color="#0e1726" />
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0b7698" />
+      <stop offset="100%" stop-color="#00f2fe" />
+    </linearGradient>
+    <linearGradient id="purpleGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7f5af0" />
+      <stop offset="100%" stop-color="#a78bfa" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#131b2e" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff9f43" />
+      <stop offset="100%" stop-color="#ffbe76" />
+    </linearGradient>
+
+    <!-- Filters for Glow -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="slightGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    
+    <!-- Patterns -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5" stroke-opacity="0.6"/>
+    </pattern>
+    <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#334155" />
+    </pattern>
+  </defs>
+
+  <!-- Background Grid & Dots -->
+  <rect width="1000" height="700" fill="url(#bgGrad)" />
+  <rect width="1000" height="700" fill="url(#grid)" />
+  <rect width="1000" height="700" fill="url(#dots)" opacity="0.5" />
+
+  <!-- Outer Frame -->
+  <rect x="15" y="15" width="970" height="670" rx="16" fill="none" stroke="#1e293b" stroke-width="2" />
+  
+  <!-- Header Title -->
+  <g transform="translate(45, 60)">
+    <!-- Decorative Tag -->
+    <rect x="0" y="-22" width="6" height="32" rx="3" fill="url(#blueGlow)" filter="url(#slightGlow)" />
+    <!-- Title Text -->
+    <text x="18" y="0" font-size="28" font-weight="800" fill="#f8fafc" letter-spacing="1">AMALIA.JS <tspan font-weight="300" fill="#00f2fe">CORE</tspan></text>
+    <text x="18" y="20" font-size="12" font-weight="500" fill="#64748b" letter-spacing="1.5">EXTENSIBLE METADATA-DRIVEN MULTIMEDIA FRAMEWORK</text>
+  </g>
+
+  <!-- Tag (Angular 21 + PrimeNG 21 Ready) -->
+  <g transform="translate(730, 42)">
+    <rect x="0" y="0" width="225" height="30" rx="15" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <circle cx="18" cy="15" r="5" fill="#10b981" filter="url(#slightGlow)" />
+    <text x="32" y="19" font-size="11" font-weight="700" fill="#f8fafc" letter-spacing="0.5">ANGULAR 21 &amp; PRIMENG 21 READY</text>
+  </g>
+
+  <!-- LEFT COLUMN: Extensible Plugin Architecture Map -->
+  <g transform="translate(45, 120)">
+    <!-- Section Title -->
+    <text x="0" y="20" font-size="14" font-weight="700" fill="#94a3b8" letter-spacing="1">ARCHITECTURE &amp; LIFECYCLE</text>
+    
+    <!-- Box 1: Custom Web Component Wrapper -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="380" height="85" rx="10" fill="url(#accentGrad)" stroke="#1e293b" stroke-width="1.5" />
+      <rect x="0" y="0" width="380" height="85" rx="10" fill="none" stroke="url(#blueGlow)" stroke-width="1" opacity="0.3" />
+      <!-- Header -->
+      <rect x="15" y="12" width="130" height="18" rx="4" fill="#0b7698" fill-opacity="0.2" />
+      <text x="22" y="25" font-size="9" font-weight="800" fill="#00f2fe" letter-spacing="0.5">WEB COMPONENT LAYER</text>
+      <!-- Title -->
+      <text x="15" y="48" font-size="15" font-weight="700" fill="#f8fafc">MediaPlayerElement</text>
+      <text x="15" y="66" font-size="11" fill="#94a3b8">Polyfilled custom HTML5 element wrapper for framework-agnostic usage</text>
+    </g>
+
+    <!-- Flow Arrow 1 -->
+    <g transform="translate(190, 125)">
+      <line x1="0" y1="0" x2="0" y2="25" stroke="#334155" stroke-width="2" stroke-dasharray="4 2" />
+      <path d="M -4 21 L 0 29 L 4 21 Z" fill="#334155" />
+    </g>
+
+    <!-- Box 2: Angular Amalia Component -->
+    <g transform="translate(0, 150)">
+      <rect x="0" y="0" width="380" height="85" rx="10" fill="url(#accentGrad)" stroke="#1e293b" stroke-width="1.5" />
+      <!-- Header -->
+      <rect x="15" y="12" width="130" height="18" rx="4" fill="#7f5af0" fill-opacity="0.2" />
+      <text x="22" y="25" font-size="9" font-weight="800" fill="#a78bfa" letter-spacing="0.5">ANGULAR ORCHESTRATOR</text>
+      <!-- Title -->
+      <text x="15" y="48" font-size="15" font-weight="700" fill="#f8fafc">AmaliaComponent</text>
+      <text x="15" y="66" font-size="11" fill="#94a3b8">Core Angular component linking HTML5 video events with custom views</text>
+    </g>
+
+    <!-- Flow Arrow 2 -->
+    <g transform="translate(190, 235)">
+      <line x1="0" y1="0" x2="0" y2="25" stroke="#334155" stroke-width="2" stroke-dasharray="4 2" />
+      <path d="M -4 21 L 0 29 L 4 21 Z" fill="#334155" />
+    </g>
+
+    <!-- Box 3: Plugin Base / Zone Defense -->
+    <g transform="translate(0, 260)">
+      <rect x="0" y="0" width="380" height="145" rx="10" fill="url(#accentGrad)" stroke="#1e293b" stroke-width="1.5" />
+      <rect x="0" y="0" width="380" height="145" rx="10" fill="none" stroke="url(#purpleGlow)" stroke-width="1" opacity="0.3" />
+      <!-- Header -->
+      <rect x="15" y="12" width="120" height="18" rx="4" fill="#e11d48" fill-opacity="0.2" />
+      <text x="22" y="25" font-size="9" font-weight="800" fill="#fda4af" letter-spacing="0.5">CORE BASE SERVICE</text>
+      <!-- Title -->
+      <text x="15" y="48" font-size="15" font-weight="700" fill="#f8fafc">PluginBase&lt;T&gt;</text>
+      <text x="15" y="66" font-size="11" fill="#94a3b8">Abstract foundation for all plugins (Timeline, Transcription...)</text>
+      
+      <!-- Inside features -->
+      <g transform="translate(15, 84)">
+        <rect x="0" y="0" width="165" height="42" rx="6" fill="#090d16" stroke="#1e293b" stroke-width="1" />
+        <circle cx="15" cy="21" r="3" fill="#00f2fe" />
+        <text x="26" y="21" font-size="10" font-weight="700" fill="#e2e8f0">Defensive tryInject()</text>
+        <text x="26" y="33" font-size="8" fill="#64748b">Stable unit test execution</text>
+      </g>
+      <g transform="translate(195, 84)">
+        <rect x="0" y="0" width="170" height="42" rx="6" fill="#090d16" stroke="#1e293b" stroke-width="1" />
+        <circle cx="15" cy="21" r="3" fill="#7f5af0" />
+        <text x="26" y="21" font-size="10" font-weight="700" fill="#e2e8f0">wrapInZone() Handler</text>
+        <text x="26" y="33" font-size="8" fill="#64748b">Zoneless-ready event safety</text>
+      </g>
+    </g>
+    
+    <!-- Central Event Hub Indicator -->
+    <g transform="translate(0, 420)">
+      <rect x="0" y="0" width="380" height="95" rx="10" fill="#0d1527" stroke="#0b7698" stroke-width="1" stroke-dasharray="2 2" />
+      <circle cx="35" cy="48" r="15" fill="#0b7698" fill-opacity="0.2" />
+      <path d="M 30 48 L 40 48 M 35 43 L 35 53" stroke="#00f2fe" stroke-width="2" stroke-linecap="round"/>
+      <text x="65" y="44" font-size="13" font-weight="700" fill="#f8fafc">Central Event Bus</text>
+      <text x="65" y="60" font-size="10" fill="#94a3b8">Binds user interactions, custom player actions and plugin state</text>
+      <text x="65" y="74" font-size="10" font-weight="700" fill="#00f2fe" letter-spacing="1">EVENT_CONTRIBUTION_JURIDIQUE • USER_SEGMENT_CHANGED</text>
+    </g>
+  </g>
+
+  <!-- RIGHT COLUMN: Visual Player Mockup & Synchronized Timelines -->
+  <g transform="translate(455, 120)">
+    <!-- Section Title -->
+    <text x="15" y="20" font-size="14" font-weight="700" fill="#94a3b8" letter-spacing="1">SYNCHRONIZED MULTI-TRACK VIEW</text>
+
+    <!-- Player Screen Mockup -->
+    <g transform="translate(15, 40)">
+      <rect x="0" y="0" width="485" height="240" rx="12" fill="#040711" stroke="#1e293b" stroke-width="2" />
+      
+      <!-- Video / Waveform Overlay -->
+      <path d="M 20 150 Q 80 50 140 160 T 260 80 T 380 180 T 465 140" fill="none" stroke="url(#blueGlow)" stroke-width="3" opacity="0.7" />
+      <path d="M 20 150 Q 80 50 140 160 T 260 80 T 380 180 T 465 140 L 485 240 L 0 240 Z" fill="url(#blueGlow)" opacity="0.05" />
+      
+      <!-- Grid Overlay on screen -->
+      <rect x="0" y="0" width="485" height="240" rx="12" fill="url(#grid)" opacity="0.2" />
+
+      <!-- Center Play Icon -->
+      <circle cx="242" cy="110" r="30" fill="#0b7698" fill-opacity="0.8" filter="url(#slightGlow)" />
+      <path d="M 233 97 L 258 110 L 233 123 Z" fill="#f8fafc" />
+
+      <!-- Timebar overlay bottom -->
+      <rect x="0" y="210" width="485" height="30" fill="#0f172a" fill-opacity="0.9" />
+      <!-- Current Time Cursor -->
+      <rect x="180" y="0" width="2" height="210" fill="#ff9f43" opacity="0.8" filter="url(#slightGlow)" />
+      <!-- Track progress -->
+      <rect x="15" y="222" width="455" height="6" rx="3" fill="#334155" />
+      <rect x="15" y="222" width="165" height="6" rx="3" fill="url(#blueGlow)" />
+      <circle cx="180" cy="225" r="6" fill="#00f2fe" filter="url(#slightGlow)" />
+      
+      <!-- Time indicator -->
+      <text x="25" y="195" font-size="11" font-weight="700" fill="#ff9f43" filter="url(#slightGlow)">01:23:45 / 03:00:00</text>
+    </g>
+
+    <!-- Track 1: Storyboard Thumbnails -->
+    <g transform="translate(15, 295)">
+      <rect x="0" y="0" width="485" height="55" rx="8" fill="#131b2e" stroke="#1e293b" stroke-width="1.5" />
+      <rect x="10" y="10" width="70" height="35" rx="4" fill="#1e293b" />
+      <rect x="90" y="10" width="70" height="35" rx="4" fill="url(#accentGrad)" stroke="#0b7698" stroke-width="1" />
+      <!-- Active frame cursor -->
+      <rect x="170" y="10" width="70" height="35" rx="4" fill="#1e293b" stroke="#ff9f43" stroke-width="1.5" />
+      <rect x="250" y="10" width="70" height="35" rx="4" fill="#1e293b" />
+      <rect x="330" y="10" width="70" height="35" rx="4" fill="#1e293b" />
+      <rect x="410" y="10" width="65" height="35" rx="4" fill="#1e293b" />
+      
+      <text x="95" y="31" font-size="8" font-weight="700" fill="#00f2fe">STORYBOARD</text>
+      <text x="175" y="31" font-size="8" font-weight="700" fill="#ff9f43">ACTIVE</text>
+      <!-- Sync marker -->
+      <rect x="180" y="0" width="2" height="55" fill="#ff9f43" opacity="0.8" />
+    </g>
+
+    <!-- Track 2: Metadata Timeline Blocks -->
+    <g transform="translate(15, 365)">
+      <rect x="0" y="0" width="485" height="75" rx="8" fill="#131b2e" stroke="#1e293b" stroke-width="1.5" />
+      <!-- Labels -->
+      <text x="12" y="20" font-size="10" font-weight="700" fill="#64748b">TIMELINE PLUGINS</text>
+      
+      <!-- Group block 1 -->
+      <rect x="12" y="30" width="100" height="15" rx="3" fill="#0b7698" fill-opacity="0.3" stroke="#0b7698" stroke-width="1" />
+      <text x="18" y="41" font-size="8" font-weight="700" fill="#00f2fe">Camera Angle A</text>
+
+      <!-- Group block 2 (Intersected by active line) -->
+      <rect x="125" y="30" width="140" height="15" rx="3" fill="#7f5af0" fill-opacity="0.3" stroke="#7f5af0" stroke-width="1" />
+      <text x="131" y="41" font-size="8" font-weight="700" fill="#a78bfa">Interviewer close-up</text>
+
+      <!-- Group block 3 -->
+      <rect x="280" y="30" width="190" height="15" rx="3" fill="#0b7698" fill-opacity="0.1" stroke="#334155" stroke-width="1" />
+      
+      <!-- Sub timeline row 2 -->
+      <rect x="40" y="50" width="115" height="15" rx="3" fill="#ff9f43" fill-opacity="0.2" stroke="#ff9f43" stroke-width="1" />
+      <text x="46" y="61" font-size="8" font-weight="700" fill="#ffbe76">Annotation zone</text>
+
+      <rect x="165" y="50" width="215" height="15" rx="3" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1" />
+      <text x="171" y="61" font-size="8" font-weight="700" fill="#34d399">Rights Track Sync</text>
+
+      <!-- Sync marker -->
+      <rect x="180" y="0" width="2" height="75" fill="#ff9f43" opacity="0.8" />
+    </g>
+
+    <!-- Track 3: Transcription Sync blocks -->
+    <g transform="translate(15, 455)">
+      <rect x="0" y="0" width="485" height="60" rx="8" fill="#131b2e" stroke="#1e293b" stroke-width="1.5" />
+      <text x="12" y="18" font-size="10" font-weight="700" fill="#64748b">TRANSCRIPTION PLUGIN</text>
+      
+      <!-- Transcription blocks -->
+      <rect x="12" y="28" width="120" height="22" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1" />
+      <text x="20" y="42" font-size="9" fill="#94a3b8">"Bonjour à tous..."</text>
+
+      <rect x="142" y="28" width="180" height="22" rx="4" fill="#0d1527" stroke="#ff9f43" stroke-width="1.5" />
+      <text x="150" y="42" font-size="9" font-weight="700" fill="#f8fafc">"Bienvenue dans l'univers Amalia"</text>
+
+      <rect x="332" y="28" width="140" height="22" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1" />
+      
+      <!-- Sync marker -->
+      <rect x="180" y="0" width="2" height="60" fill="#ff9f43" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- FOOTER: Tech Badges -->
+  <g transform="translate(45, 615)">
+    <!-- Dividing line -->
+    <line x1="0" y1="0" x2="910" y2="0" stroke="#1e293b" stroke-width="1" />
+    
+    <!-- Left Legend -->
+    <text x="0" y="28" font-size="11" font-weight="700" fill="#475569" letter-spacing="1">MODULAR BLOCKS &amp; PLUGINS</text>
+    <circle cx="170" cy="24" r="4" fill="#00f2fe" />
+    <text x="180" y="28" font-size="11" fill="#94a3b8">Timeline</text>
+
+    <circle cx="250" cy="24" r="4" fill="#a78bfa" />
+    <text x="260" y="28" font-size="11" fill="#94a3b8">Transcription</text>
+
+    <circle cx="360" cy="24" r="4" fill="#ffbe76" />
+    <text x="370" y="28" font-size="11" fill="#94a3b8">Annotation</text>
+
+    <circle cx="470" cy="24" r="4" fill="#34d399" />
+    <text x="480" y="28" font-size="11" fill="#94a3b8">Storyboard</text>
+
+    <!-- Right Copyright/Signature -->
+    <text x="910" y="28" font-size="11" font-weight="700" fill="#475569" text-anchor="end">INA • DEVELEMENT TEAM • 2026</text>
+  </g>
+</svg>

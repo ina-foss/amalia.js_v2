@@ -1,0 +1,352 @@
+[
+	{
+		"id": "S152",
+		"label": "elisabeth allain (67.6%)",
+		"type": "audio_segmentation",
+		"processed": "2657746877640",
+		"localisation": [
+				{
+				"tcin": "00:00:14.66",
+				"tcout": "00:00:38.30",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:00:39.03",
+				"tcout": "00:01:01.45",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:01:02.46",
+				"tcout": "00:01:20.49",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:01:36.55",
+				"tcout": "00:02:04.69",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:02:47.39",
+				"tcout": "00:03:15.42",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:04:01.07",
+				"tcout": "00:04:33.14",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:05:50.00",
+				"tcout": "00:06:01.18",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:07:17.62",
+				"tcout": "00:08:13.81",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:10:13.58",
+				"tcout": "00:10:26.42",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:10:31.65",
+				"tcout": "00:11:37.14",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:13:15.09",
+				"tcout": "00:14:06.17",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:14:52.28",
+				"tcout": "00:14:59.99",
+				"tclevel": 0
+			}
+		],
+		"viewControl": {
+			"color": "#33ccff"
+		}
+	},
+	{
+		"id": "unk-2",
+		"label": "locuteur 2",
+		"type": "audio_segmentation",
+		"processed": "6374902153040",
+		"localisation": [
+				{
+				"tcin": "00:01:21.98",
+				"tcout": "00:01:23.79",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:08:14.03",
+				"tcout": "00:08:17.86",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:08:20.85",
+				"tcout": "00:08:35.03",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:08:56.92",
+				"tcout": "00:09:03.34",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:09:28.31",
+				"tcout": "00:09:43.92",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:09:56.85",
+				"tcout": "00:10:13.58",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:10:26.42",
+				"tcout": "00:10:31.65",
+				"tclevel": 0
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "S194",
+		"label": "françois hollande (59.5%)",
+		"type": "audio_segmentation",
+		"processed": "3699432910808",
+		"localisation": [
+				{
+				"tcin": "00:02:04.69",
+				"tcout": "00:02:47.39",
+				"tclevel": 0
+			},
+				{
+				"ArrayData": "null"
+			}
+		],
+		"viewControl": {
+			"color": "#33ccff"
+		}
+	},
+	{
+		"id": "S322",
+		"label": "laurent fabius (58.3%)",
+		"type": "audio_segmentation",
+		"processed": "2207106395458",
+		"localisation": [
+				{
+				"tcin": "00:03:15.42",
+				"tcout": "00:04:00.65",
+				"tclevel": 0
+			},
+				{
+				"ArrayData": "null"
+			}
+		],
+		"viewControl": {
+			"color": "#33ccff"
+		}
+	},
+	{
+		"id": "unk-5",
+		"label": "locuteur 5",
+		"type": "audio_segmentation",
+		"processed": "2913413800229",
+		"localisation": [
+				{
+				"tcin": "00:04:33.14",
+				"tcout": "00:05:50.00",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:06:01.18",
+				"tcout": "00:07:17.62",
+				"tclevel": 0
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "unk-6",
+		"label": "locuteur 6",
+		"type": "audio_segmentation",
+		"processed": "9054475078966",
+		"localisation": [
+				{
+				"tcin": "00:08:35.86",
+				"tcout": "00:08:53.43",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:09:03.34",
+				"tcout": "00:09:16.97",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:09:21.00",
+				"tcout": "00:09:28.31",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:09:43.94",
+				"tcout": "00:09:56.85",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:11:51.59",
+				"tcout": "00:12:10.84",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:12:30.94",
+				"tcout": "00:12:42.19",
+				"tclevel": 0
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "unk-7",
+		"label": "locuteur 7",
+		"type": "audio_segmentation",
+		"processed": "1643075315083",
+		"localisation": [
+				{
+				"tcin": "00:08:53.43",
+				"tcout": "00:08:56.92",
+				"tclevel": 0
+			},
+				{
+				"ArrayData": "null"
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "unk-8",
+		"label": "locuteur 8",
+		"type": "audio_segmentation",
+		"processed": "3182379030430",
+		"localisation": [
+				{
+				"tcin": "00:11:37.14",
+				"tcout": "00:11:51.59",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:12:10.84",
+				"tcout": "00:12:30.94",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:12:42.19",
+				"tcout": "00:12:52.26",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:13:06.56",
+				"tcout": "00:13:15.02",
+				"tclevel": 0
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "unk-9",
+		"label": "locuteur 9",
+		"type": "audio_segmentation",
+		"processed": "1483789529878",
+		"localisation": [
+				{
+				"tcin": "00:12:52.26",
+				"tcout": "00:13:06.56",
+				"tclevel": 0
+			},
+				{
+				"ArrayData": "null"
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "unk-10",
+		"label": "locuteur 10",
+		"type": "audio_segmentation",
+		"processed": "4975498513579",
+		"localisation": [
+				{
+				"tcin": "00:14:06.37",
+				"tcout": "00:14:21.06",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:14:35.21",
+				"tcout": "00:14:41.13",
+				"tclevel": 0
+			},
+				{
+				"tcin": "00:14:42.28",
+				"tcout": "00:14:52.28",
+				"tclevel": 0
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "unk-11",
+		"label": "locuteur 11",
+		"type": "audio_segmentation",
+		"processed": "1119548804205",
+		"localisation": [
+				{
+				"tcin": "00:14:22.99",
+				"tcout": "00:14:28.74",
+				"tclevel": 0
+			},
+				{
+				"ArrayData": "null"
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	},
+	{
+		"id": "unk-12",
+		"label": "locuteur 12",
+		"type": "audio_segmentation",
+		"processed": "9074722158761",
+		"localisation": [
+				{
+				"tcin": "00:14:28.74",
+				"tcout": "00:14:35.21",
+				"tclevel": 0
+			},
+				{
+				"ArrayData": "null"
+			}
+		],
+		"viewControl": {
+			"color": "#D8D8D8"
+		}
+	}
+]

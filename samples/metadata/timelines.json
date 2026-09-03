@@ -1,0 +1,204 @@
+[ {
+    "localisation" : [ {
+        "sublocalisations" : {
+            "localisation" : [ {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:00:16.000",
+                "tcout" : "00:00:16.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:00:17.000",
+                "tcout" : "00:00:17.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:00:19.000",
+                "tcout" : "00:00:19.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:00:20.000",
+                "tcout" : "00:00:23.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:00:27.000",
+                "tcout" : "00:00:28.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:13:34.000",
+                "tcout" : "00:13:36.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:13:40.000",
+                "tcout" : "00:13:49.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:14:27.000",
+                "tcout" : "00:14:28.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:14:29.000",
+                "tcout" : "00:14:32.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "xavier bertrand" ],
+                    "attribute" : [ {
+                        "value" : "xavier bertrand",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:14:37.000",
+                "tcout" : "00:14:37.000",
+                "tclevel" : 1
+            } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:00.000",
+        "tcout" : "00:30:00.000",
+        "tclevel" : 0
+    } ],
+    "type" : "reconnaissance-de-visages",
+    "label" : "xavier bertrand",
+    "algorithm" : "face detection null",
+    "processor" : "null null",
+    "processed" : 1687435450,
+    "version" : 1,
+    "id" : "reconnaissance-de-visages1687435450xavier bertrand"
+}, {
+    "localisation" : [ {
+        "sublocalisations" : {
+            "localisation" : [ {
+                "data" : {
+                    "text" : [ "valerie precresse" ],
+                    "attribute" : [ {
+                        "value" : "valerie precresse",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:00:31.000",
+                "tcout" : "00:00:31.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "valerie precresse" ],
+                    "attribute" : [ {
+                        "value" : "valerie precresse",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:00:33.000",
+                "tcout" : "00:00:33.000",
+                "tclevel" : 1
+            }, {
+                "data" : {
+                    "text" : [ "valerie precresse" ],
+                    "attribute" : [ {
+                        "value" : "valerie precresse",
+                        "name" : "label",
+                        "score" : 1.0
+                    } ]
+                },
+                "type" : "text",
+                "tcin" : "00:15:46.000",
+                "tcout" : "00:15:46.000",
+                "tclevel" : 1
+            } ]
+        },
+        "type" : "text",
+        "tcin" : "00:00:00.000",
+        "tcout" : "00:30:00.000",
+        "tclevel" : 0
+    } ],
+    "type" : "FACES_RECOGNITION-",
+    "label" : "valerie precresse",
+    "algorithm" : "face detection null",
+    "processor" : "null null",
+    "processed" : 1687435450,
+    "version" : 1,
+    "id" : "reconnaissance-de-visages1687435450valerie precresse"
+} ]

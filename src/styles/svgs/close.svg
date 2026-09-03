@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="26px" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-1229.000000, -926.000000)">
+            <g transform="translate(1230.000000, 927.000000)">
+                <g>
+                    <g stroke="#FFFFFF">
+                        <circle cx="12" cy="12" r="12"></circle>
+                        <g transform="translate(6.000000, 6.000000)" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline
+                                    points="0.364702898 0.519067468 5.86877633 6.0231409 11.3728498 11.5272143"></polyline>
+                            <polyline
+                                    transform="translate(5.868776, 6.023141) scale(-1, 1) translate(-5.868776, -6.023141) "
+                                    points="0.364702898 0.519067468 5.86877633 6.0231409 11.3728498 11.5272143"></polyline>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

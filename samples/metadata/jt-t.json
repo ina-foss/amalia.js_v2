@@ -1,0 +1,451 @@
+{
+	"id": "TRANS-JT",
+	"type": "hierarchic_transcription",
+	"algorithm": "transcription_tool",
+	"processor": "vocapia_processor",
+	"processed": "2343646050031",
+	"localisation": [
+		{
+			"sublocalisations": {
+				"localisation": [
+								{
+						"tcin": "00:00:14.66",
+						"tcout": "00:14:59.99",
+						"tclevel": 1,
+						"sublocalisations": {
+							"localisation": [
+														{
+									"data": {
+										"text": [
+																				"voici les titres que nous développons aujourd'hui on après ces tractations diplomatiques s'intensifient pour sortir l'Ukraine de la crise, alors qu'à Bruxelles on prépare le sommet européen de demain à l'Élysée reçoit cet après-midi, les chefs de la diplomatie américaine, britannique et russe. Paris, qui espère faire avancer le dossier, qui continue à prôner le dialogue, on va en parler dans un instant avec notre correspondante à Moscou Zonia Xinhua Bolchakova après l'affaire côté un nouveau scandale provoque la colère et la stupéfaction à droite, ici en France, Patrick Buisson, ancien conseiller de Nicolas Sarkozy aurait enregistré plusieurs concerts gouverneur session tenue à l'Élysée, plusieurs expressions publié aujourd'hui dans Le Canard enchaîné sur il faut des documents qualifiés dehors par François Fillon lui-même cité dans les conversations et puis ce chiffre accablant : une femme sur trois serait victime de l'ancienne école sexuels depuis l'âge de 15 ans, c'est le résultat d'une enquête réalisée par l'agence européenne des droits fondamentaux, souvent cité en exemple les pays du nord de l'Europe s'affiche en haut du tableau moins bonne élève serait le Danemark.",
+																				""
+										]
+									},
+									"tcin": "00:00:14.66",
+									"tcout": "00:01:20.49",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"Le journal est cette réunion tout d'abord réunion internationale sur le Liban, François Hollande, accueille aujourd'hui son homologue Michel Sleimane à l'Élysée mais aussi une vingtaine de convives, six mois après la création d'un groupe international de soutien, il s'agit de faire le point sur les conséquences de la crise syrienne sur le pays du sel, chaque mois, selon le HCR, le pays verra débarquer 60000 nouveaux par réfugiés, la situation est devenue plus que critique.",
+																				""
+										]
+									},
+									"tcin": "00:01:36.55",
+									"tcout": "00:02:04.69",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"La communauté internationale, elle doit se combiner, et c'est ce que fait aujourd'hui dans trois directions : d'abord, l'aide aux réfugiés, il y a des montants financiers qui ont été dégagés, ils doivent être complétés et ils doivent être amplifié la seconde priorité, c'est le soutien à l'économie libanaise la dernière priorité c'est de garantir la sécurité du Liban et de permettre à l'armée libanaise d'avoir des équipements indispensables, la France, qui contribue pour sa part avec l'Arabie Saoudite.",
+																				""
+										]
+									},
+									"tcin": "00:02:04.69",
+									"tcout": "00:02:47.39",
+									"tclevel": 2,
+									"label": "françois hollande"
+								},
+														{
+									"data": {
+										"text": [
+																				"Le Liban : thème initial, donc de ce rendez-vous, mais la réunion reste fort d'être rattrapé par l'actualité, accaparé par la crise ukrainienne pour la première fois depuis les événements en Crimée, les chefs de la diplomatie américaine et russe, John Kerry Ay-Saguer Lavrov se retrouveront face-à-face cet après-midi et l'entourage du président français LA Doors et déjà confirmé, il y aura des contact sur l'Ukraine, la France et l'Allemagne pourrait même proposer un plan de sortie de crise, comme annoncé ce matin par Laurent Fabius.",
+																				""
+										]
+									},
+									"tcin": "00:02:47.39",
+									"tcout": "00:03:15.42",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"Je voulais aussi dire notre soutien. Au peuple ukrainien à l'unité de l'Ukraine à l'intégrité de l'Ukraine, la France a une position très claire qui est une position de fermeté aux principes que je viens d'énoncer et en même temps de recherche du dialogue, nous allons essayer avec mes collègues, de faire en sorte que ce dialogue puisse établir pour chercher des solutions à cette situation inacceptable, nous ne sommes pas du tout sûr de réussir, mais nous allons y consacrer toute notre énergie.",
+																				""
+										]
+									},
+									"tcin": "00:03:15.42",
+									"tcout": "00:04:00.65",
+									"tclevel": 2,
+									"label": "laurent fabius"
+								},
+														{
+									"data": {
+										"text": [
+																				"Laurent Fabius, qui a averti la Russie qu'elle s'exposera des sanctions celles engagées par la désescalade en Ukraine, tout comme William vous aider John Kerry est déjà arrivé à Paris savait Lavrov doit lui aussi gagner la capitale française, il était ce matin à Madrid, nous retrouvons pour en parler en direct de Moscou, notre correspondante il Bolchakova bonjour Ksenia en Espagne. Sergueï Lavrov a adorent déjà déclaré que la Russie ne permettrait pas un bain de sang en Ukraine que faut-il comprendre que Moscou est prêt à négocier aujourd'hui.",
+																				""
+										]
+									},
+									"tcin": "00:04:01.07",
+									"tcout": "00:04:33.14",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"Eh bien c'est plutôt mal parti en Espagne Serguei Lavrov n'a fait que réitérer les grands principes de la position russe et ses principes, ce sont les suivants : Moscou ne reconnaît pas le nouveau pouvoir en place à Kiev la possibilité d'une intervention militaire russe en Ukraine et légitime au nom du principe de protection des populations des Ukrainiens russophones mais aussi des citoyens russes présents sur place la se montrait extrêmement ferme et puis, il a aussi fait comprendre que Moscou restait sur le qui-vive, il n'y a aucun signe d'apaisement pour le moment sur le plan militaire, notamment parce que même si le Kremlin elle nie l'implication des forces russes dans le déploiement en Crimée, on sait que des facteurs, hé bien, la péninsule est complètement sous contrôle russe ce matin deux bases militaires qui dispose de missiles de aurait été également prise en main par ces fameuses selon les autorités ukrainiennes. Autre signe de mauvaise volonté de la part du chef de la diplomatie russe, hé bien ce matin il a boudé tout simplement une réunion de ce qu'on appelle le groupe des accords de Budapest, signé en 94 ce groupe bien étaient censés évoquer le principe de l'intégrité territoriale, prenne la sécurité nucléaire de ce pays, le nouveau ministre des Affaires étaient présents, hé bien la Lavrov, lui, n'est tout simplement pas venu.",
+																				""
+										]
+									},
+									"tcin": "00:04:33.14",
+									"tcout": "00:05:50.00",
+									"tclevel": 2,
+									"label": "locuteur 5"
+								},
+														{
+									"data": {
+										"text": [
+																				"La communauté internationale a pour convaincre Moscou agité à plusieurs reprises la menace des des sanctions. Un argument qui ne semble pas vraiment dissuader la Russie ils Ania.",
+																				""
+										]
+									},
+									"tcin": "00:05:50.00",
+									"tcout": "00:06:01.18",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"Mais alors c'est assez ambigu cette situation sur les sanctions, puisque d'un côté, on a un Vladimir Poutine le président russe qui affirme espérer que les tensions diplomatiques, les tensions politiques n'auront pas d'impact sur la coopération économique avec les partenaires traditionnels de la Russie et d'un autre côté, dans ce même président russe qu'hier extrêmement ferme, a prévenu que toutes sanctions occidentales auraient des conséquences à une sanction de l'Occident, hé bien, il y aurait des sanctions russes, une idée qui a été a très rapidement reprise par un sénateur proche du Kremlin chasse qui a déclaré ce matin que la chambre haute du Parlement était en train de plancher sur un projet de loi qui devrait permettre au président russe au gouvernement, hé bien tout simplement de confisquer les biens des entreprises européennes et américaines présentes en Russie, ce projet de loi et donc à l'étude en ce moment et ça rejoint un petit peu l'idée qu'évoquait un conseiller du Kremlin, hier, qui avait menacé les États-Unis, hé bien tout simplement de que l'avait menacé les États-Unis en disant que la Russie pourrait ne plus ne plus servir du dollar comme monnaie de référence, voire ne plus rembourser des emprunts que la Russie avait faite aux banques américaines, donc on est en train, clairement ici de préparer une riposte à ces sanctions économiques.",
+																				""
+										]
+									},
+									"tcin": "00:06:01.18",
+									"tcout": "00:07:17.62",
+									"tclevel": 2,
+									"label": "locuteur 5"
+								},
+														{
+									"data": {
+										"text": [
+																				"Génère chaque en direct de Moscou merci beaucoup en parlant justement d'enjeux économiques, un mot peut-être sur cette aide promise en vous le savez, à à l'Ukraine, les États-Unis ont d'ores et déjà offert hier un milliard de dollars sous forme de prêts bien l'Union européenne vient d'annoncer par la la voix de José Manuel Bah réseau Barroso, le président de la Commission européenne vient d'annoncer un près de 11 milliards d'euros dans les deux prochaines années. En attendant, sur le terrain des soldats russes occupent toujours les points stratégiques de Crimée, Vladimir Poutine a a beau avoir démenti hier tout déploiement sur le sol ukrainien c'est trop serait composée de 16000 hommes au total, les contingents, appuyées par des milices nationalistes ukrainiennes telles que l'éco-ZAC nos envoyés spéciaux Roméo Langlois et Abdallah oui ont pu pénétrer à l'intérieur d'un de leurs camps d'entraînement, voyez tout de suite le reportage.",
+																				""
+										]
+									},
+									"tcin": "00:07:17.62",
+									"tcout": "00:08:13.81",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"Mmh mmh ces soldats particulières sont des causes acte criminel, non, il a dit un chef de cette milice pro-russe nous ouvre les portes de l'une de ses bases au coeur de 6-0.",
+																				""
+										]
+									},
+									"tcin": "00:08:14.03",
+									"tcout": "00:08:35.03",
+									"tclevel": 2,
+									"label": "locuteur 2"
+								},
+														{
+									"data": {
+										"text": [
+																				"Moi je à chevaux, les drapeaux russe ou le folklore cause découle d'une tradition séculaire. Le point sur le constat, tout le monde peut devenir un cause ainsi les vraies causes le sang par le sang, mais si vous voulez faire partie de notre communauté, il faut passer par une période d'essai qui dure au moins un an, donc nous ne se drogue.",
+																				""
+										]
+									},
+									"tcin": "00:08:35.86",
+									"tcout": "00:08:53.43",
+									"tclevel": 2,
+									"label": "locuteur 6"
+								},
+														{
+									"data": {
+										"text": [
+																				"Sur la masse",
+																				""
+										]
+									},
+									"tcin": "00:08:53.43",
+									"tcout": "00:08:56.92",
+									"tclevel": 2,
+									"label": "locuteur 7"
+								},
+														{
+									"data": {
+										"text": [
+																				"voilà oui. Les jeunes recrues sont formés dans ses camps mensuellement. C'est la saison. Oui,",
+																				""
+										]
+									},
+									"tcin": "00:08:56.92",
+									"tcout": "00:09:03.34",
+									"tclevel": 2,
+									"label": "locuteur 2"
+								},
+														{
+									"data": {
+										"text": [
+																				"je dois ce que nous sommes prêts à affronter n'importe quelle situation en Crimée, à faire de notre mieux, on n'est pas là pour économiser nos forces, on est prêt à donner notre sang, c'est pour ça qu'on est là, c'est pour ça qu'on est raison Hébron. Oui.",
+																				""
+										]
+									},
+									"tcin": "00:09:03.34",
+									"tcout": "00:09:16.97",
+									"tclevel": 2,
+									"label": "locuteur 6"
+								},
+														{
+									"data": {
+										"text": [
+																				"Ils seront si notre mère patrie nous ordonne de faire quelque chose, nous le saurons dans la mère patrie nous a déjà commandé de nous lever en",
+																				""
+										]
+									},
+									"tcin": "00:09:21.00",
+									"tcout": "00:09:28.31",
+									"tclevel": 2,
+									"label": "locuteur 6"
+								},
+														{
+									"data": {
+										"text": [
+																				"masse. C'est son droit. Mon homologue, c'est de la même manière que de religion orthodoxe les causes disent patriotes et ils ont refusé de prêter allégeance au nouveau pouvoir ukrainien, deux des troupes russes faire 20 places sur la péninsule un",
+																				""
+										]
+									},
+									"tcin": "00:09:28.31",
+									"tcout": "00:09:43.92",
+									"tclevel": 2,
+									"label": "locuteur 2"
+								},
+														{
+									"data": {
+										"text": [
+																				"come-back, dit-il, nous ont réuni hier. Quand les causes-t-en-guerre du les autorise à ne pas faire le carême, ce soir sans qu'ils aient suffisamment d'énergie pour affronter leurs ennemis l'économie c'est vrai qu'ils ont ou avaler.",
+																				""
+										]
+									},
+									"tcin": "00:09:43.94",
+									"tcout": "00:09:56.85",
+									"tclevel": 2,
+									"label": "locuteur 6"
+								},
+														{
+									"data": {
+										"text": [
+																				"Les causes en lien étroit avec la nouvelle administration de Crimée difficile d'évaluer leur nombre et l'ampleur de leur arsenal, mais à la faveur des opérations russes, ils ont trouvé un nouveau sous. Mmh.",
+																				""
+										]
+									},
+									"tcin": "00:09:56.85",
+									"tcout": "00:10:13.58",
+									"tclevel": 2,
+									"label": "locuteur 2"
+								},
+														{
+									"data": {
+										"text": [
+																				"On en vient à cet incident sans précédent depuis la création du Conseil de coopération du Golfe : l'Arabie Saoudite, les Émirats arabes unis et Bahreïn ont rappelé leurs ambassadeurs à Doha. Ils accusent le Qatar d'ingérence dans leurs",
+																				""
+										]
+									},
+									"tcin": "00:10:13.58",
+									"tcout": "00:10:26.42",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"affaires intérieures. Cette décision intervient au lendemain d'une réunion houleuse sur le nous sans pouvoir.",
+																				""
+										]
+									},
+									"tcin": "00:10:26.42",
+									"tcout": "00:10:31.65",
+									"tclevel": 2,
+									"label": "locuteur 2"
+								},
+														{
+									"data": {
+										"text": [
+																				"En Égypte, le Qatar s'est rangé ouvertement du côté des Frères musulmans, les trois autres pays ont apporté un soutien massif au nouveau un régime le Qatar qui a dit tout à l'heure regretter une telle décision cette promesse, désormais, c'est à la Turquie le Premier ministre turc s'achète écart de One, quittera la politique si son parti ne remporte pas les élections municipales du 30 mars prochain le front uni, ce qui apparaît sur de lui, la cote de popularité de son parti de la justice et du développement n'aurait pas souffert du scandale de corruption qui agit pourtant en ce moment, les plus hautes sphères du régime, c'est l'un des rendez-vous aux politiques et puis l'en Chine la session annuelle du Parlement chinois s'est ouverte à Pékin, le tout premier rendez-vous du genre depuis l'investiture de type King tous les 3000 délégués se retrouvent pendant une semaine, le temps pour formuler des propositions à débattre des problèmes rencontrés dans les provinces chinoises, elle le cap cette année est clairement économique, l'objectif notamment accroître la consommation des Chinois Sandrine connaissent.",
+																				""
+										]
+									},
+									"tcin": "00:10:31.65",
+									"tcout": "00:11:37.14",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"C'est la grand-messe annuelle du Parlement chinois dans le palais du peuple, 3000 élus des quatre coins du pays, venez débattre de l'avenir de la Chine, mais surtout entendre les objectifs de développement économique. Pour cette année,",
+																				""
+										]
+									},
+									"tcin": "00:11:37.14",
+									"tcout": "00:11:51.59",
+									"tclevel": 2,
+									"label": "locuteur 8"
+								},
+														{
+									"data": {
+										"text": [
+																				"ça a été. Sinon accroître le PIB d'environ 7,5 pourcent limiter limiter la hausse de l'inflation, environ 3,5 pourcent créer créer 10 millions d'employeurs ben tu et augmenter les revenus de nos concitoyens, en accord avec le développement économique.",
+																				""
+										]
+									},
+									"tcin": "00:11:51.59",
+									"tcout": "00:12:10.84",
+									"tclevel": 2,
+									"label": "locuteur 6"
+								},
+														{
+									"data": {
+										"text": [
+																				"Samedi, chez les 30 je dois-je. Un objectif de croissance de 3.5 pourcent identique identique à l'an dernier, grâce notamment à l'augmentation de la demande intérieure avec le ralentissement de l'économie ces dernières années, les autorités chinoises veulent ainsi être moins dépendante des exportations, autre priorité affichée mener la guerre contre la pollution.",
+																				""
+										]
+									},
+									"tcin": "00:12:10.84",
+									"tcout": "00:12:30.94",
+									"tclevel": 2,
+									"label": "locuteur 8"
+								},
+														{
+									"data": {
+										"text": [
+																				"La pollution de l'environnement afin qu'une grande partie du territoire, elle est devenue un problème majeur car c'est la nature qui tire sa sonnette d'alarme contre le modèle de développement intense. Si,",
+																				""
+										]
+									},
+									"tcin": "00:12:30.94",
+									"tcout": "00:12:42.19",
+									"tclevel": 2,
+									"label": "locuteur 6"
+								},
+														{
+									"data": {
+										"text": [
+																				"si, parmi les pistes évoquées, la promotion des énergies vertes, grâce notamment à une taxe sur les énergies fossiles. Un message salué par les délégués.",
+																				""
+										]
+									},
+									"tcin": "00:12:42.19",
+									"tcout": "00:12:52.26",
+									"tclevel": 2,
+									"label": "locuteur 8"
+								},
+														{
+									"data": {
+										"text": [
+																				"La la famille, c'est pas mal. Récemment, il y a eu un plan d'action pour infléchir la pollution au charbon, au gaz et aux particuliers dans les cours d'eau, c'est certainement le problème qui touche la des gens des femmes tiennent.",
+																				""
+										]
+									},
+									"tcin": "00:12:52.26",
+									"tcout": "00:13:06.56",
+									"tclevel": 2,
+									"label": "locuteur 9"
+								},
+														{
+									"data": {
+										"text": [
+																				"Pour soutenir son économie Pékin lance aussi une offensive sur le plan de l'industrie militaire, un budget en hausse de 12 pourcent cette cette année.",
+																				""
+										]
+									},
+									"tcin": "00:13:06.56",
+									"tcout": "00:13:15.02",
+									"tclevel": 2,
+									"label": "locuteur 8"
+								},
+														{
+									"data": {
+										"text": [
+																				"Ce résultat à présent accablant, une femme sur trois a subi en Europe, une forme de violences physiques ou depuis l'âge de 15 ans, c'est ce que c'est ce qui ressort d'une enquête réalisée par l'agence européenne des droits fondamentaux, le rapport s'appuie sur le témoignage de 42000 femmes dans les 28 pays de l'Union, les taux de déclaration, les plus élevés ont été relevés dans les pays du nord, au Danemark et 52 pourcent des des femmes disent avoir été victimes de violences suivent la Finlande, la Suède ou encore les Pays-Bas et affaire exceptionnellement grave des documents répugnant à gauche comme à droite, on commente à tout va la faire des enregistrements clandestins réalisés par la patrie tu Buisson, l'ancien conseiller controversé de Nicolas Sarkozy, des extraits viennent d'être publiés par et Le Canard enchaîné ne Vanessa.",
+																				""
+										]
+									},
+									"tcin": "00:13:15.09",
+									"tcout": "00:14:06.17",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								},
+														{
+									"data": {
+										"text": [
+																				"C'était l'endroit où toute la classe politique avaient rendez-vous hier soir, toutes tendances confondues, le dîner annuel du CRIF, à la sortie, ils apprennent pour la plupart de la bouche des journalistes les agissements de Patrick Buisson incrédule d'abord puis.",
+																				""
+										]
+									},
+									"tcin": "00:14:06.37",
+									"tcout": "00:14:21.06",
+									"tclevel": 2,
+									"label": "locuteur 10"
+								},
+														{
+									"data": {
+										"text": [
+																				"Si c'est avéré, ce sont des pratiques détestables, l'entreprise, ce sont des moeurs étranges. Je me",
+																				""
+										]
+									},
+									"tcin": "00:14:22.99",
+									"tcout": "00:14:28.74",
+									"tclevel": 2,
+									"label": "locuteur 11"
+								},
+														{
+									"data": {
+										"text": [
+																				"souviens qu'Attali mais faire la même chose avec Mitterrand la l'habitude à l'Élysée.",
+																				""
+										]
+									},
+									"tcin": "00:14:28.74",
+									"tcout": "00:14:35.21",
+									"tclevel": 2,
+									"label": "locuteur 12"
+								},
+														{
+									"data": {
+										"text": [
+																				"Ce matin, à droite comme à gauche, où rivalisent d'adjectifs pour disqualifier de telles pratiques, il y a de quoi tomber de sa chaise Ecoutez quelqu'un à son insu, c'est d'une extrême violence, c'est quelque chose d'inacceptable sur le plan humain,",
+																				""
+										]
+									},
+									"tcin": "00:14:35.21",
+									"tcout": "00:14:52.28",
+									"tclevel": 2,
+									"label": "locuteur 10"
+								},
+														{
+									"data": {
+										"text": [
+																				"je suis attiré par de telles pratiques, c'est une question de morale publique, je ne sais pas amusez vous savez, je suis très, très attaché aux institutions et au reste.",
+																				""
+										]
+									},
+									"tcin": "00:14:52.28",
+									"tcout": "00:14:59.99",
+									"tclevel": 2,
+									"label": "elisabeth allain"
+								}
+							]
+						}
+					},
+								{
+						"ArrayData": "null"
+					}
+				]
+			},
+			"tclevel": 0
+		},
+		{
+			"ArrayData": "null"
+		}
+	]
+}

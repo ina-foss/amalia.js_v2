@@ -1,0 +1,72 @@
+@startuml
+
+package Core <<Frame>> {
+
+  interface MediaPlayerElement
+  interface MediaSourceExtension
+  interface MetadataConverter
+  interface ConfigConverter
+  interface LoggerInterface
+  interface LoaderInterface
+
+  LoggerInterface <|-- LoggerImpl
+
+  class MediaPlayerElement {
+
+  }
+
+  enum MediaPlayerEvents {
+    DAYS
+    HOURS
+    MINUTES
+  }
+
+  enum MediaPlayerErrorCode {
+    DAYS
+    HOURS
+    MINUTES
+  }
+
+  class MetadataManager {
+
+  }
+
+  class LoggerImpl {
+
+  }
+
+}
+
+package player <<Frame>> {
+  MediaPlayerElement <|-[hidden]- Html5Player
+  MediaSourceExtension <|-[hidden]- BaseMediaSourceExtension
+  BaseMediaSourceExtension <|-- HLSMediaSourceExtension
+  BaseMediaSourceExtension <|-- MpegDashMediaSourceExtension
+}
+
+package metadata <<Frame>> {
+  MetadataConverter <|-[hidden]- DefaultMetadataConverter
+  MetadataConverter <|-[hidden]- DataLakeFormatConverter
+}
+
+package loader <<Frame>> {
+  LoaderInterface <|-[hidden]- BaseLoader
+  BaseLoader <|-- DefaultMetadataLoader
+  BaseLoader <|-- WSLoader
+}
+
+package config <<Frame>> {
+  ConfigConverter <|-[hidden]- BaseConfigConverter
+}
+
+package utils <<Frame>> {
+  class FormatUtils {
+    static secondToTCLabel
+  }
+}
+
+
+
+
+
+@enduml
